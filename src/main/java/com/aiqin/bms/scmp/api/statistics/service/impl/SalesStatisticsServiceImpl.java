@@ -2,12 +2,10 @@ package com.aiqin.bms.scmp.api.statistics.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesMonthlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesYearlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesMonthlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesYearlyDao;
+import com.aiqin.bms.scmp.api.statistics.dao.*;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.*;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -36,6 +34,14 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
     private StatDeptSalesYearlyDao statDeptSalesYearlyDao;
     @Resource
     private StatDeptSalesMonthlyDao statDeptSalesMonthlyDao;
+    @Resource
+    private StatComMonthAccSalesDao statComMonthAccSalesDao;
+    @Resource
+    private StatDeptMonthAccSalesDao statDeptMonthAccSalesDao;
+    @Resource
+    private StatComCategorySalesDao statComCategorySalesDao;
+    @Resource
+    private StatDeptCategorySalesDao statDeptCategorySalesDao;
 
     private final static int YEAR = 0;
     private final static int MONTH = 2;
@@ -178,27 +184,41 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
         SaleDeptResponse deptResponse;
         SaleCompanyResponse companyResponse;
         SaleResponse saleResponse;
-        if (i == 0) {
+        if(i == YEAR){
             deptResponse = statDeptSalesYearlyDao.saleSumDept(saleRequest);
             companys = statDeptSalesYearlyDao.saleByCompany(saleRequest);
-        } else {
+        }else if(i == MONTH){
             deptResponse = statDeptSalesMonthlyDao.saleSumDept(saleRequest);
             companys = statDeptSalesMonthlyDao.saleByCompany(saleRequest);
+        }else if(i == 3){
+            deptResponse = statDeptMonthAccSalesDao.saleSumDept(saleRequest);
+            companys = statDeptMonthAccSalesDao.saleByCompany(saleRequest);
+        }else {
+            deptResponse = null;
+            companys = null;
         }
         if (CollectionUtils.isNotEmptyCollection(companys)) {
             companyList = Lists.newArrayList();
             for (CompanyAndDeptResponse company : companys) {
                 saleRequest.setPriceChannelCode(company.getPriceChannelCode());
-                if (i == 0) {
+                if(i == YEAR){
                     companyResponse = statDeptSalesYearlyDao.saleSumCompany(saleRequest);
-                } else {
+                }else if(i == MONTH){
                     companyResponse = statDeptSalesMonthlyDao.saleSumCompany(saleRequest);
+                }else if(i == 3){
+                    companyResponse = statDeptMonthAccSalesDao.saleSumCompany(saleRequest);
+                }else {
+                    companyResponse = null;
                 }
                 if (companyResponse != null) {
-                    if (i == YEAR) {
+                    if(i == YEAR){
                         saleList = statDeptSalesYearlyDao.saleStoreList(saleRequest);
-                    } else {
+                    }else if(i == MONTH){
                         saleList = statDeptSalesMonthlyDao.saleStoreList(saleRequest);
+                    }else if(i == 3){
+                        saleList = statDeptMonthAccSalesDao.saleStoreList(saleRequest);
+                    }else {
+                        saleList = null;
                     }
                     saleResponse = new SaleResponse();
                     this.saleList(saleList, saleResponse, companyResponse);
@@ -350,4 +370,228 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
         }
         return sale;
     }
+
+    @Override
+    public HttpResponse<SaleSumResponse> monthSaleInfo(SaleRequest saleRequest){
+        if(saleRequest == null || StringUtils.isBlank(saleRequest.getDate()) ||  saleRequest.getType() == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Long year = Long.valueOf(saleRequest.getDate().substring(0, 4));
+        Long month = Long.valueOf(saleRequest.getDate().substring(5));
+        saleRequest.setYear(year);
+        saleRequest.setMonth(month);
+        if(saleRequest.getType().equals(Global.COMPANY)){
+            // 计算月累计销售统计 - 公司
+            SaleSumResponse sumResponse = this.monthCompanySale(saleRequest);
+            return HttpResponse.success(sumResponse);
+        }else {
+            // 计算月累计销售统计 - 部门
+            if(StringUtils.isBlank(saleRequest.getProductSortCode())){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            SaleDeptResponse deptResponse = this.deptSale(saleRequest, 3);
+            return HttpResponse.success(deptResponse);
+        }
+    }
+
+    private SaleSumResponse monthCompanySale(SaleRequest saleRequest){
+        SaleSumResponse sumResponse;
+        List<SaleDeptResponse> deptList = Lists.newArrayList();
+        List<CompanyAndDeptResponse> departments;
+        List<CompanyAndDeptResponse> companys;
+        List<SaleCompanyResponse> companyList;
+        List<SaleStoreResponse> saleList;
+        SaleDeptResponse deptResponse;
+        SaleCompanyResponse companyResponse;
+        SaleResponse saleResponse;
+        sumResponse = statComMonthAccSalesDao.saleSum(saleRequest);
+        if(sumResponse != null){
+            departments = statComMonthAccSalesDao.saleByDept(saleRequest);
+            if(CollectionUtils.isNotEmptyCollection(departments)){
+                for(CompanyAndDeptResponse dept:departments){
+                    saleRequest.setProductSortCode(dept.getProductSortCode());
+                    deptResponse = statComMonthAccSalesDao.saleSumDept(saleRequest);
+                    companys = statComMonthAccSalesDao.saleByCompany(saleRequest);
+                    if(CollectionUtils.isNotEmptyCollection(companys)){
+                        companyList = Lists.newArrayList();
+                        for (CompanyAndDeptResponse company:companys){
+                            saleRequest.setPriceChannelCode(company.getPriceChannelCode());
+                            companyResponse = statComMonthAccSalesDao.saleSumCompany(saleRequest);
+                            if(companyResponse != null){
+                                saleList = statComMonthAccSalesDao.saleStoreList(saleRequest);
+                                saleResponse = new SaleResponse();
+                                this.saleList(saleList, saleResponse, companyResponse);
+                                companyResponse.setStoreList(saleList);
+                                saleResponse = new SaleResponse();
+                                BeanUtils.copyProperties(companyResponse, saleResponse);
+                                SaleResponse rate = this.saleRate(saleResponse, 0);
+                                BeanUtils.copyProperties(rate, companyResponse);
+                                companyResponse.setChanneRate(new BigDecimal(companyResponse.getChannelSalesAmount()).
+                                        divide(new BigDecimal(deptResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                companyResponse.setDistributionRate(new BigDecimal(companyResponse.getDistributionSalesAmount()).
+                                        divide(new BigDecimal(deptResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                companyList.add(companyResponse);
+                            }
+                        }
+                        deptResponse.setCompanyList(companyList);
+                        saleResponse = new SaleResponse();
+                        BeanUtils.copyProperties(deptResponse, saleResponse);
+                        SaleResponse rate = this.saleRate(saleResponse, 1);
+                        BeanUtils.copyProperties(rate, deptResponse);
+                        deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
+                                divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
+                                divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        deptList.add(deptResponse);
+                    }
+                }
+                saleResponse = new SaleResponse();
+                BeanUtils.copyProperties(sumResponse, saleResponse);
+                SaleResponse rate = this.saleRate(saleResponse, 1);
+                BeanUtils.copyProperties(rate, sumResponse);
+                sumResponse.setDeptList(deptList);
+                sumResponse.setChanneRate(new BigDecimal(1));
+                sumResponse.setDistributionRate(new BigDecimal(1));
+            }
+        }
+        return sumResponse;
+    }
+
+    @Override
+    public HttpResponse<CategoryResponse> categoryPromotion(SaleRequest saleRequest){
+        if(saleRequest == null || StringUtils.isBlank(saleRequest.getDate()) || saleRequest.getType() == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Long year = Long.valueOf(saleRequest.getDate().substring(0, 4));
+        Long month = Long.valueOf(saleRequest.getDate().substring(5));
+        saleRequest.setYear(year);
+        saleRequest.setMonth(month);
+        CategoryResponse response;
+        if(saleRequest.getType().equals(Global.COMPANY)){
+            // 计算品类促销统计 - 公司
+            response = this.companyCategory(saleRequest);
+        }else {
+            // 计算品类促销统计 - 部门
+            if(StringUtils.isBlank(saleRequest.getProductSortCode())){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            response = this.deptCategory(saleRequest);
+        }
+        return HttpResponse.success(response);
+    }
+
+    private CategoryResponse companyCategory(SaleRequest saleRequest){
+        List<CompanyAndDeptResponse> departments;
+        List<CompanyAndDeptResponse> companys;
+        List<CategoryResponse> deptList = Lists.newArrayList();
+        List<CategoryResponse> companyList;
+        List<CategoryResponse> categoryList;
+        CategoryResponse deptSum;
+        CategoryResponse companySum;
+        CategoryResponse sum = statComCategorySalesDao.categorySum(saleRequest);
+        if(sum != null){
+            departments = statComCategorySalesDao.categoryByDept(saleRequest);
+            if(CollectionUtils.isNotEmptyCollection(departments)) {
+                for (CompanyAndDeptResponse dept : departments) {
+                    saleRequest.setProductSortCode(dept.getProductSortCode());
+                    saleRequest.setPriceChannelCode(null);
+                    saleRequest.setStoreTypeCode(null);
+                    deptSum = statComCategorySalesDao.categorySum(saleRequest);
+                    companys = statComCategorySalesDao.categoryByCompany(saleRequest);
+                    if (CollectionUtils.isNotEmptyCollection(companys)) {
+                        companyList = Lists.newArrayList();
+                        for (CompanyAndDeptResponse company : companys) {
+                            saleRequest.setPriceChannelCode(company.getPriceChannelCode());
+                            saleRequest.setStoreTypeCode(null);
+                            companySum = statComCategorySalesDao.categorySum(saleRequest);
+                            if (companySum != null) {
+                                categoryList = statComCategorySalesDao.categoryList(saleRequest);
+                                if(CollectionUtils.isNotEmptyCollection(categoryList)){
+                                    for(CategoryResponse category:categoryList){
+                                        BigDecimal ratio = this.categoryRatio(category.getCurrSalesAmount(), category.getPreSalesAmount());
+                                        category.setSalesAmountLinkRelaGrowthRate(ratio);
+                                        category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin(), category.getPreMargin()));
+                                        category.setRate(new BigDecimal(category.getCurrSalesAmount()).
+                                                divide(new BigDecimal(companySum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
+                                    }
+                                }
+                                companySum.setCategoryList(categoryList);
+                                companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount(), companySum.getPreSalesAmount()));
+                                companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin(), companySum.getPreMargin()));
+                                companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
+                                        divide(new BigDecimal(deptSum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
+                                companyList.add(companySum);
+                            }
+                        }
+                        deptSum.setCategoryList(companyList);
+                        deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount(), deptSum.getPreSalesAmount()));
+                        deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin(), deptSum.getPreMargin()));
+                        deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
+                                divide(new BigDecimal(sum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
+                        deptList.add(deptSum);
+                    }
+                }
+                sum.setCategoryList(deptList);
+                sum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(sum.getCurrSalesAmount(), sum.getPreSalesAmount()));
+                sum.setMarginLinkRelaGrowthRate(this.categoryRatio(sum.getCurrMargin(), sum.getPreMargin()));
+                sum.setRate(new BigDecimal(1));
+            }
+        }
+        return sum;
+    }
+
+    private CategoryResponse deptCategory(SaleRequest saleRequest) {
+        List<CompanyAndDeptResponse> companys;
+        List<CategoryResponse> deptList = Lists.newArrayList();
+        List<CategoryResponse> companyList;
+        List<CategoryResponse> categoryList;
+        CategoryResponse deptSum;
+        CategoryResponse companySum;
+        deptSum = statDeptCategorySalesDao.categorySum(saleRequest);
+        companys = statDeptCategorySalesDao.categoryByCompany(saleRequest);
+        if (CollectionUtils.isNotEmptyCollection(companys)) {
+            companyList = Lists.newArrayList();
+            for (CompanyAndDeptResponse company : companys) {
+                saleRequest.setPriceChannelCode(company.getPriceChannelCode());
+                saleRequest.setStoreTypeCode(null);
+                companySum = statDeptCategorySalesDao.categorySum(saleRequest);
+                if (companySum != null) {
+                    categoryList = statDeptCategorySalesDao.categoryList(saleRequest);
+                    if (CollectionUtils.isNotEmptyCollection(categoryList)) {
+                        for (CategoryResponse category : categoryList) {
+                            category.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(category.getCurrSalesAmount(), category.getPreSalesAmount()));
+                            category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin(), category.getPreMargin()));
+                            category.setRate(new BigDecimal(category.getCurrSalesAmount()).
+                                    divide(new BigDecimal(companySum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        }
+                    }
+                    companySum.setCategoryList(categoryList);
+                    companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount(), companySum.getPreSalesAmount()));
+                    companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin(), companySum.getPreMargin()));
+                    companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
+                            divide(new BigDecimal(deptSum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    companyList.add(companySum);
+                }
+            }
+            deptSum.setCategoryList(companyList);
+            deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount(), deptSum.getPreSalesAmount()));
+            deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin(), deptSum.getPreMargin()));
+            deptSum.setRate(new BigDecimal(1));
+            deptList.add(deptSum);
+        }
+        return deptSum;
+    }
+
+    private BigDecimal categoryRatio(Long currAmount, Long preAmount){
+        BigDecimal big;
+        if(currAmount == 0 || preAmount == 0){
+            big = new BigDecimal(0);
+        }else {
+            BigDecimal curr = new BigDecimal(currAmount);
+            BigDecimal pre = new BigDecimal(preAmount);
+            big = curr.divide(pre, 4, BigDecimal.ROUND_HALF_UP).subtract(new BigDecimal(1));
+        }
+        return big;
+    }
+
 }

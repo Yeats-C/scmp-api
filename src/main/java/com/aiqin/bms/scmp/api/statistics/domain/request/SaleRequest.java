@@ -33,6 +33,10 @@ public class SaleRequest {
     @JsonProperty("price_channel_code")
     private String priceChannelCode;
 
+    @ApiModelProperty(value="门店类型")
+    @JsonProperty("store_type_code")
+    private Long storeTypeCode;
+
     @ApiModelProperty(value="组织类型: 0 公司 1 部门")
     @JsonProperty("type")
     private Integer type;
@@ -56,5 +60,25 @@ public class SaleRequest {
         this.dataTypeCode = dataTypeCode;
         this.productPropertyCode = productPropertyCode;
         this.productSortCode = productSortCode;
+    }
+
+    public SaleRequest(String date, Integer type, Integer dataTypeCode, Integer productPropertyCode, String productSortCode) {
+        this.date = date;
+        this.type = type;
+        this.dataTypeCode = dataTypeCode;
+        this.productPropertyCode = productPropertyCode;
+        this.productSortCode = productSortCode;
+    }
+
+    public SaleRequest(String date, Integer type, String productSortCode) {
+        this.date = date;
+        this.type = type;
+        this.productSortCode = productSortCode;
+    }
+
+    public SaleRequest(String date, String productSortCode, Integer reportType) {
+        this.date = date;
+        this.productSortCode = productSortCode;
+        this.reportType = reportType;
     }
 }

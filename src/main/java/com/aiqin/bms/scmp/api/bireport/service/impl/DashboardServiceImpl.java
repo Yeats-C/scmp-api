@@ -159,11 +159,13 @@ public class DashboardServiceImpl implements DashboardService {
         }
         if(dashboardMonthlyLossAmountRespVo != null){
             dashboardHomePageTitle.setMonthlyLossAmount(dashboardMonthlyLossAmountRespVo.getMonthlyLossAmount());
-            dashboardHomePageTitle.setChannelSalesAmount(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount());
         }
         if(dashboardDepCateProperSalesAmountRespVo != null){
-            Double contributionRate = dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
-            dashboardHomePageTitle.setContributionRate(contributionRate);
+            dashboardHomePageTitle.setChannelSalesAmount(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount());
+            if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
+                Double contributionRate = dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                dashboardHomePageTitle.setContributionRate(contributionRate);
+            }
         }
 
         return dashboardHomePageTitle;

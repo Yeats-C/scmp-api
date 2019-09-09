@@ -34,4 +34,8 @@ public class CompanyAndDeptResponse {
     @ApiModelProperty(value="品类名称")
     @JsonProperty("category_name")
     private String categoryName;
+
+    @ApiModelProperty(value="门店类型")
+    @JsonProperty("store_type_code")
+    private Long storeTypeCode;
 }

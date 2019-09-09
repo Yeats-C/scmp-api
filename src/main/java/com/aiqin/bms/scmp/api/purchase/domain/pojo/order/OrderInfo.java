@@ -261,4 +261,6 @@ public class OrderInfo {
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
 
+    @ApiModelProperty("订单详情")
+    private List<OrderInfoItemProductBatch> detailBatchList;
 }

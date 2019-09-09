@@ -2,12 +2,14 @@ package com.aiqin.bms.scmp.api.purchase.domain.converter;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -106,6 +108,19 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
         Map<String, PurchaseItemRespVo> map2 = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
         List<OrderInfoItem> items = orderInfo.getDetailList();
         List<OutboundProductReqVo> parts = Lists.newArrayList();
+        List<OutboundBatch> batchList = Lists.newArrayList();
+        OutboundBatch outboundBatch;
+        for (OrderInfoItemProductBatch batch : orderInfo.getDetailBatchList()) {
+            outboundBatch = new OutboundBatch();
+            outboundBatch.setSkuName(batch.getSkuName());
+            outboundBatch.setSkuCode(batch.getSkuCode());
+            outboundBatch.setSupplierCode(batch.getSupplierCode());
+            outboundBatch.setSupplierName(batch.getSupplierName());
+            outboundBatch.setPraQty(batch.getActualDeliverNum());
+            outboundBatch.setCreateBy(orderInfo.getCreateByName());
+            outboundBatch.setUpdateBy(orderInfo.getUpdateByName());
+            batchList.add(outboundBatch);
+        }
         OutboundProductReqVo outboundProduct;
         for (OrderInfoItem item : items) {
             outboundProduct = new OutboundProductReqVo();
@@ -155,6 +170,7 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
             parts.add(outboundProduct);
         }
         stockReqVO.setList(parts);
+        stockReqVO.setOutboundBatches(batchList);
         return stockReqVO;
     }
 }

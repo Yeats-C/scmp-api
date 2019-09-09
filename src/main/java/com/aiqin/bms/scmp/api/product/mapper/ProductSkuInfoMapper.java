@@ -66,4 +66,11 @@ public interface ProductSkuInfoMapper {
      */
     @MapKey("skuName")
     Map<String, ProductSkuInfo> selectBySkuNames(@Param("list") Set<String> skuNameList, @Param("companyCode") String companyCode);
+
+    /**
+     * 通过sku编码查询sku
+     * @param skuCode
+     * @return
+     */
+    ProductSkuInfo selectBySkuCode(String skuCode);
 }

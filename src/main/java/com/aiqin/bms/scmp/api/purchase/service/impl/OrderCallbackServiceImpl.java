@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -126,6 +127,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Resource
     private OutboundProductDao outboundProductDao;
     @Resource
+    private OutboundBatchDao outboundBatchDao;
+    @Resource
     private ProductCommonService productCommonService;
     @Resource
     private SupplyComService supplyComService;
@@ -137,6 +140,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private InboundDao inboundDao;
     @Resource
     private InboundProductDao inboundProductDao;
+    @Resource
+    private InboundBatchDao inboundBatchDao;
     @Resource
     private AllocationMapper allocationMapper;
     @Resource
@@ -235,6 +240,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 sumBoxGrossWeight += new BigDecimal(outboundDetailRequest.getNum())
                         .multiply(productSku.getBoxGrossWeight())
                         .multiply(orderWeightCoefficient).longValue();
+            } else {
+                throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", outboundDetailRequest.getSkuCode()));
             }
             orderInfoItem.setNum(outboundDetailRequest.getNum());
             orderInfoItem.setPictureUrl(picturesMap.containsKey(outboundDetailRequest.getSkuCode()) ? picturesMap.get(outboundDetailRequest.getSkuCode()).get(0).getProductPicturePath() : "");
@@ -276,20 +283,29 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         SupplyCompany supplyCompany;
         List<OrderInfoItemProductBatch> supplyDetailList = Lists.newArrayList();
         OrderInfoItemProductBatch orderInfoItemProductBatch;
+        Map<String, OrderInfoItem> orderInfoItemMap = detailList.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode, Function.identity()));
+        OrderInfoItem infoItem;
         for (OutboundSupplyDetailRequest supplyDetailRequest : request.getSupplyDetail()) {
             orderInfoItemProductBatch = new OrderInfoItemProductBatch();
             supplyCompany = supplyCompanyMap.get(supplyDetailRequest.getSupplyCode());
             if (supplyCompany == null) {
                 throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", supplyDetailRequest.getSupplyCode()));
             }
+            infoItem = orderInfoItemMap.get(supplyDetailRequest.getSkuCode());
+            if (infoItem == null) {
+                throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
+            }
             orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
             orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
             orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
             orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
             orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
+            orderInfoItemProductBatch.setSkuCode(supplyDetailRequest.getSkuCode());
+            orderInfoItemProductBatch.setSkuName(infoItem.getSkuName());
             supplyDetailList.add(orderInfoItemProductBatch);
         }
         orderInfo.setDetailList(detailList);
+        orderInfo.setDetailBatchList(supplyDetailList);
         Integer count = orderInfoMapper.insertSelective(orderInfo);
         LOGGER.info("添加订单:{}", count);
         Integer detailCount = orderInfoItemMapper.insertList(detailList);
@@ -363,17 +379,21 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         outbound.setOutboundOderCode(outboundOderCode);
 
         List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-        outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+        outboundProducts.stream().forEach(outboundProduct ->outboundProduct.setOutboundOderCode(outboundOderCode));
         int i = outboundDao.insertSelective(outbound);
         LOGGER.info("出库主表保存结果:{}", i);
         int j = outboundProductDao.insertBatch(outboundProducts);
         LOGGER.info("出库商品保存结果:{}", j);
+        List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
+        batchList.stream().forEach(outBoundBatch->outBoundBatch.setOutboundOderCode(outboundOderCode));
+        //添加供应商对应的商品信息
+        Integer count = outboundBatchDao.insertList(batchList);
+        LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
         //批次商品暂时没有
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         // 保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), stockReqVO, HandleTypeCoce.ADD_OUTBOUND_ODER.getName(), new Date(), stockReqVO.getCreateBy(), stockReqVO.getRemark());
-
         return outboundOderCode;
     }
 
@@ -442,6 +462,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuCodes = request.getDetailRequestList().stream().map(ReturnDetailRequest::getSkuCode).collect(Collectors.toList());
             List<ProductSkuPictures> picturesList = productSkuPicturesDao.listBySkuCodes(skuCodes);
             Map<String, List<ProductSkuPictures>> picturesMap = picturesList.stream().collect(Collectors.groupingBy(ProductSkuPictures::getProductSkuCode));
+            List<String> supplyIds = request.getDetailRequestList().stream().map(ReturnDetailRequest::getSupplyCode).collect(Collectors.toList());
+            Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
+            SupplyCompany supplyCompany;
             for (ReturnDetailRequest returnDetailRequest : request.getDetailRequestList()) {
                 //查询商品信息
                 returnOrderInfoItem = new ReturnOrderInfoItem();
@@ -480,6 +503,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 returnOrderInfoItem.setCompanyName(COMPANY_NAME);
                 returnOrderInfoItem.setWarehouseCode(returnDetailRequest.getWarehouseCode());
                 returnOrderInfoItem.setWarehouseName(returnDetailRequest.getWarehouseName());
+                supplyCompany = supplyCompanyMap.get(returnDetailRequest.getSupplyCode());
+                if (supplyCompany == null) {
+                    throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", returnDetailRequest.getSupplyCode()));
+                }
+                returnOrderInfoItem.setSupplyCode(returnDetailRequest.getSupplyCode());
+                returnOrderInfoItem.setSupplyName(supplyCompany.getSupplyName());
                 detailList.add(returnOrderInfoItem);
             }
             //实际金额 数量
@@ -496,13 +525,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfo.setCompanyName(COMPANY_NAME);
             returnOrderInfo.setUpdateByName(request.getOperator());
             returnOrderInfo.setUpdateById(request.getOperatorCode());
-            if (StringUtils.isNotBlank(request.getSupplierCode())) {
-                //供应商
-                SupplyCompany supplyCompany = supplyCompanyDao.selectBySupplierCode(request.getSupplierCode());
-                if (supplyCompany != null) {
-                    returnOrderInfo.setSupplierName(supplyCompany.getSupplierName());
-                }
-            }
             Integer count = returnOrderInfoMapper.insertSelective(returnOrderInfo);
             LOGGER.info("添加退货单:{}", count);
             Integer detailCount = returnOrderInfoItemMapper.insertList(detailList);
@@ -586,11 +608,15 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         //插入入库单商品表
         int insertProducts = inboundProductDao.insertBatch(list);
         LOGGER.info("插入入库单商品表返回结果:{}", insertProducts);
+        //添加供应商对应的商品信息
+        List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
+        batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+        Integer count = inboundBatchDao.insertList(batchList);
+        LOGGER.info("插入入库单供应商对应的商品信息返回结果:{}", count);
         //更新编码表
         encodingRuleDao.updateNumberValue(rule.getNumberingValue(), rule.getId());
         // 保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
-
         return inbound.getInboundOderCode();
     }
 
@@ -645,6 +671,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
             Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
+            allocationHandler(request,productSkuMap,allocation);
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(allocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
@@ -679,7 +706,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             allocation.setOutboundOderCode(outboundOderCode);
             allocation.setInboundOderCode(inboundOderCode);
             //生成调拨单
-            allocationInsert(allocation, type, typeName, productSkuMap, request.getSupplyDetailList());
+            allocationInsert(allocation, type, typeName);
             return HttpResponse.success();
         } catch (Exception e) {
             LOGGER.error("订单回调异常:{}", e);
@@ -687,6 +714,64 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
     }
 
+    /**
+     *  供应商与商品关系
+     */
+    private void allocationHandler(TransfersRequest requests,Map<String, OrderProductSkuResponse> productSkuMap,Allocation allocation){
+        OrderProductSkuResponse orderProductSkuResponse;
+        List<AllocationProduct> allocationProductList = Lists.newArrayList();
+        for (AllocationProduct allocationProduct : allocation.getDetailList()) {
+            orderProductSkuResponse = productSkuMap.get(allocationProduct.getSkuCode());
+            if (orderProductSkuResponse != null) {
+                allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
+                allocationProduct.setPictureUrl(orderProductSkuResponse.getPictureUrl());
+                allocationProduct.setSpecification(orderProductSkuResponse.getSpec());
+                allocationProduct.setColor(orderProductSkuResponse.getColorName());
+                allocationProduct.setModel(orderProductSkuResponse.getModel());
+                allocationProduct.setCategory(goodsRejectService.selectCategoryName(orderProductSkuResponse.getCategoryCode()));
+                allocationProduct.setUnit(orderProductSkuResponse.getUnitName());
+                allocationProduct.setBrand(orderProductSkuResponse.getBrandName());
+                allocationProduct.setType(productTypeList.get(orderProductSkuResponse.getProductType()));
+                allocationProduct.setTax(orderProductSkuResponse.getTaxRate().longValue());
+
+            }
+            allocationProduct.setAllocationCode(allocation.getAllocationCode());
+            allocationProduct.setCreateBy(allocation.getCreateBy());
+            allocationProduct.setCreateTime(allocation.getCreateTime());
+            allocationProduct.setUpdateTime(allocation.getUpdateTime());
+            allocationProduct.setUpdateBy(allocation.getUpdateBy());
+            allocationProductList.add(allocationProduct);
+        }
+        //添加
+        allocation.setDetailList(allocationProductList);
+        List<AllocationProductBatch> allocationProductBatchList = Lists.newArrayList();
+        AllocationProductBatch allocationProductBatch;
+        List<String> supplyIds = requests.getSupplyDetailList().stream().map(TransfersSupplyDetailRequest::getSupplyCode).collect(Collectors.toList());
+        Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
+        SupplyCompany supplyCompany;
+        for (TransfersSupplyDetailRequest request : requests.getSupplyDetailList()) {
+            allocationProductBatch = new AllocationProductBatch();
+            orderProductSkuResponse = productSkuMap.get(request.getSkuCode());
+            if (orderProductSkuResponse != null) {
+                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+            }
+            allocationProductBatch.setSkuCode(request.getSkuCode());
+            allocationProductBatch.setAllocationCode(allocation.getAllocationCode());
+            allocationProductBatch.setQuantity(request.getQuantity());
+            allocationProductBatch.setCreateBy(allocation.getCreateBy());
+            allocationProductBatch.setCreateTime(allocation.getCreateTime());
+            allocationProductBatch.setUpdateTime(allocation.getUpdateTime());
+            allocationProductBatch.setUpdateBy(allocation.getUpdateBy());
+            allocationProductBatch.setSupplierCode(request.getSupplyCode());
+            supplyCompany = supplyCompanyMap.get(request.getSupplyCode());
+            if (supplyCompany == null) {
+                throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", request.getSupplyCode()));
+            }
+            allocationProductBatch.setSupplierName(supplyCompany.getSupplyName());
+            allocationProductBatchList.add(allocationProductBatch);
+        }
+        allocation.setDetailBatchList(allocationProductBatchList);
+    }
     /**
      * 调拨出库单参数处理
      *
@@ -722,6 +807,19 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         stockReqVO.setPreArrivalTime(allocation.getUpdateTime());
         List<OutboundProductReqVo> parts = Lists.newArrayList();
         OutboundProductReqVo outboundProduct;
+        List<OutboundBatch> batchList = Lists.newArrayList();
+        OutboundBatch outboundBatch;
+        for (AllocationProductBatch batch : allocation.getDetailBatchList()) {
+            outboundBatch = new OutboundBatch();
+            outboundBatch.setSkuName(batch.getSkuName());
+            outboundBatch.setSkuCode(batch.getSkuCode());
+            outboundBatch.setSupplierCode(batch.getSupplierCode());
+            outboundBatch.setSupplierName(batch.getSupplierName());
+            outboundBatch.setPraQty(batch.getQuantity());
+            outboundBatch.setCreateBy(allocation.getCreateBy());
+            outboundBatch.setUpdateBy(allocation.getUpdateBy());
+            batchList.add(outboundBatch);
+        }
         for (AllocationProduct item : allocation.getDetailList()) {
             outboundProduct = new OutboundProductReqVo();
             //sku
@@ -760,6 +858,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             parts.add(outboundProduct);
         }
         stockReqVO.setList(parts);
+        stockReqVO.setOutboundBatches(batchList);
         return stockReqVO;
     }
 
@@ -807,6 +906,19 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         inbound.setUpdateBy(allocation.getUpdateBy());
         inbound.setUpdateTime(allocation.getUpdateTime());
         OrderProductSkuResponse orderProductSkuResponse;
+        List<InboundBatchReqVo> batchList = Lists.newArrayList();
+        InboundBatchReqVo inboundBatchReqVo;
+        for (AllocationProductBatch batch : allocation.getDetailBatchList()) {
+            inboundBatchReqVo = new InboundBatchReqVo();
+            inboundBatchReqVo.setSkuName(batch.getSkuName());
+            inboundBatchReqVo.setSkuCode(batch.getSkuCode());
+            inboundBatchReqVo.setSupplierCode(batch.getSupplierCode());
+            inboundBatchReqVo.setSupplierName(batch.getSupplierName());
+            inboundBatchReqVo.setPraQty(batch.getQuantity());
+            inboundBatchReqVo.setCreateBy(allocation.getCreateBy());
+            inboundBatchReqVo.setUpdateBy(allocation.getUpdateBy());
+            batchList.add(inboundBatchReqVo);
+        }
         for (AllocationProduct allocationProduct : allocation.getDetailList()) {
             product = new InboundProductReqVo();
             product.setPreInboundMainNum(allocationProduct.getQuantity());
@@ -834,6 +946,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             products.add(product);
         }
         inbound.setList(products);
+        inbound.setInboundBatchReqVos(batchList);
         return inbound;
     }
 
@@ -866,7 +979,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     /**
      * 调拨单添加
      */
-    private void allocationInsert(Allocation allocation, byte type, String typeName, Map<String, OrderProductSkuResponse> productSkuMap, List<TransfersSupplyDetailRequest> supplyDetailList) {
+    private void allocationInsert(Allocation allocation, byte type, String typeName ) {
         // 获取编码
         String content = HandleTypeCoce.ADD_ALLOCATION.getName();
         //保存日志
@@ -877,58 +990,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         allocation.setAllocationType(type);
         allocation.setAllocationTypeName(typeName);
         allocationMapper.insertSelective(allocation);
-        OrderProductSkuResponse orderProductSkuResponse;
-        List<AllocationProduct> allocationProductList = Lists.newArrayList();
-        for (AllocationProduct allocationProduct : allocation.getDetailList()) {
-            orderProductSkuResponse = productSkuMap.get(allocationProduct.getSkuCode());
-            if (orderProductSkuResponse != null) {
-                allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
-                allocationProduct.setPictureUrl(orderProductSkuResponse.getPictureUrl());
-                allocationProduct.setSpecification(orderProductSkuResponse.getSpec());
-                allocationProduct.setColor(orderProductSkuResponse.getColorName());
-                allocationProduct.setModel(orderProductSkuResponse.getModel());
-                allocationProduct.setCategory(goodsRejectService.selectCategoryName(orderProductSkuResponse.getCategoryCode()));
-                allocationProduct.setUnit(orderProductSkuResponse.getUnitName());
-                allocationProduct.setBrand(orderProductSkuResponse.getBrandName());
-                allocationProduct.setType(productTypeList.get(orderProductSkuResponse.getProductType()));
-                allocationProduct.setTax(orderProductSkuResponse.getTaxRate().longValue());
-
-            }
-            allocationProduct.setAllocationCode(allocation.getAllocationCode());
-            allocationProduct.setCreateBy(allocation.getCreateBy());
-            allocationProduct.setCreateTime(allocation.getCreateTime());
-            allocationProduct.setUpdateTime(allocation.getUpdateTime());
-            allocationProduct.setUpdateBy(allocation.getUpdateBy());
-            allocationProductList.add(allocationProduct);
-        }
-        allocationProductMapper.saveList(allocationProductList);
-        List<AllocationProductBatch> allocationProductBatchList = Lists.newArrayList();
-        AllocationProductBatch allocationProductBatch;
-        List<String> supplyIds = supplyDetailList.stream().map(TransfersSupplyDetailRequest::getSupplyCode).collect(Collectors.toList());
-        Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
-        SupplyCompany supplyCompany;
-        for (TransfersSupplyDetailRequest request : supplyDetailList) {
-            allocationProductBatch = new AllocationProductBatch();
-            orderProductSkuResponse = productSkuMap.get(request.getSkuCode());
-            if (orderProductSkuResponse != null) {
-                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
-            }
-            allocationProductBatch.setSkuCode(request.getSkuCode());
-            allocationProductBatch.setAllocationCode(allocation.getAllocationCode());
-            allocationProductBatch.setQuantity(request.getQuantity());
-            allocationProductBatch.setCreateBy(allocation.getCreateBy());
-            allocationProductBatch.setCreateTime(allocation.getCreateTime());
-            allocationProductBatch.setUpdateTime(allocation.getUpdateTime());
-            allocationProductBatch.setUpdateBy(allocation.getUpdateBy());
-            allocationProductBatch.setSupplierCode(request.getSupplyCode());
-            supplyCompany = supplyCompanyMap.get(request.getSupplyCode());
-            if (supplyCompany == null) {
-                throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", request.getSupplyCode()));
-            }
-            allocationProductBatch.setSupplierName(supplyCompany.getSupplyName());
-            allocationProductBatchList.add(allocationProductBatch);
-        }
-        allocationProductBatchMapper.saveList(allocationProductBatchList);
+        //添加详情
+        allocationProductMapper.saveList(allocation.getDetailList());
+        //添加供应商和商品关系
+        allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
     }
 
     /**

@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -41,6 +42,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemRe
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
+import com.aiqin.bms.scmp.api.supplier.mapper.UseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
@@ -65,6 +67,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -668,6 +671,313 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int importSaveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
+        ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
+        productSkuDraft.setCreateBy(getUser().getPersonName());
+        productSkuDraft.setCreateTime(new Date());
+        String skuCode = productSkuDraft.getSkuCode();
+        //保存主表
+        saveProductSkuDraft(productSkuDraft, skuCode);
+        //渠道
+        saveProductSkuChannelDraft(addSkuInfoReqVO, productSkuDraft);
+        //SKU标签信息
+        saveUseTagRecord(addSkuInfoReqVO, productSkuDraft);
+        //进销存
+        saveInvoicing(addSkuInfoReqVO, productSkuDraft);
+        //包装信息
+        savePackage(addSkuInfoReqVO, productSkuDraft);
+        //结算信息
+        saveCheckout(addSkuInfoReqVO, productSkuDraft);
+        //商产厂家
+        saveManufacturer(addSkuInfoReqVO, productSkuDraft);
+        return 0;
+    }
+
+    public void saveManufacturer(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        List<ProductSkuManufacturerRespVo> list = productSkuManufacturerService.getList(productSkuDraft.getSkuCode());
+        List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts = addSkuInfoReqVO.getProductSkuManufacturerDrafts();
+        List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts1 = BeanCopyUtils.copyList(list, ProductSkuManufacturerDraft.class);
+        if(CollectionUtils.isNotEmpty(productSkuManufacturerDrafts)){
+            ProductSkuManufacturerDraft productSkuManufacturerDraft = productSkuManufacturerDrafts.get(0);
+            ProductSkuManufacturerDraft productSkuManufacturerDraft1 = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst().orElseGet(null);
+            if(Objects.nonNull(productSkuManufacturerDraft1)){
+                BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDrafts,productSkuManufacturerDraft1);
+            }
+        }
+
+        if (CollectionUtils.isNotEmpty(productSkuManufacturerDrafts1)) {
+            productSkuManufacturerDrafts1.forEach(item -> {
+                item.setId(null);
+                item.setProductSkuCode(productSkuDraft.getSkuCode());
+                item.setProductSkuName(productSkuDraft.getSkuName());
+                item.setUsageStatus(StatusTypeCode.USE.getStatus());
+                item.setCreateBy(productSkuDraft.getCreateBy());
+                item.setUpdateBy(productSkuDraft.getUpdateBy());
+                item.setCreateTime(productSkuDraft.getCreateTime());
+                item.setUpdateTime(productSkuDraft.getUpdateTime());
+            });
+            productSkuManufacturerService.insertDraftList(productSkuManufacturerDrafts1);
+        }
+    }
+
+    public void saveCheckout(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        //结算信息
+        ProductSkuCheckoutDraft productSkuCheckoutDraft = addSkuInfoReqVO.getProductSkuCheckoutDraft();
+        ProductSkuCheckoutRespVo bySkuCode = productSkuCheckoutService.getBySkuCode(productSkuDraft.getSkuCode());
+        ProductSkuCheckoutDraft copy = BeanCopyUtils.copy(bySkuCode, ProductSkuCheckoutDraft.class);
+        if (null != productSkuCheckoutDraft) {
+            BeanCopyUtils.copyValueWithoutNull(productSkuCheckoutDraft,copy);
+            copy.setId(null);
+            copy.setSkuCode(productSkuDraft.getSkuCode());
+            copy.setSkuName(productSkuDraft.getSkuName());
+            copy.setCreateBy(productSkuDraft.getCreateBy());
+            copy.setUpdateBy(productSkuDraft.getUpdateBy());
+            copy.setCreateTime(productSkuDraft.getCreateTime());
+            copy.setUpdateTime(productSkuDraft.getUpdateTime());
+        }
+        productSkuCheckoutService.insertDraft(copy);
+    }
+
+    public void savePackage(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        //查包装信息
+        List<ProductSkuBoxPackingRespVo> list = productSkuBoxPackingService.getList(productSkuDraft.getSkuCode());
+        List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts1 = BeanCopyUtils.copyList(list, ProductSkuBoxPackingDraft.class);
+        List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = addSkuInfoReqVO.getProductSkuBoxPackingDrafts();
+        Map<String, ProductSkuBoxPackingRespVo> collect = list.stream().collect(Collectors.toMap(ProductSkuBoxPackingRespVo::getUnitCode, Function.identity()));
+        for (ProductSkuBoxPackingDraft respVo : productSkuBoxPackingDrafts1) {
+            ProductSkuBoxPackingRespVo productSkuBoxPackingRespVo = collect.get(respVo.getUnitCode());
+            if (Objects.nonNull(productSkuBoxPackingRespVo)) {
+                BeanCopyUtils.copyValueWithoutNull(productSkuBoxPackingRespVo,respVo);
+                productSkuBoxPackingDrafts.remove(productSkuBoxPackingRespVo);
+            }
+        }
+        productSkuBoxPackingDrafts.addAll(productSkuBoxPackingDrafts1);
+        //获取包装信息
+        if (CollectionUtils.isEmpty(addSkuInfoReqVO.getProductSkuBoxPackingDrafts())) {
+        }
+
+        if (CollectionUtils.isNotEmpty(productSkuBoxPackingDrafts)) {
+            productSkuBoxPackingDrafts.forEach(item -> {
+                item.setId(null);
+                item.setProductSkuCode(productSkuDraft.getSkuCode());
+                item.setProductSkuName(productSkuDraft.getSkuName());
+                item.setCreateBy(productSkuDraft.getCreateBy());
+                item.setUpdateBy(productSkuDraft.getUpdateBy());
+                item.setCreateTime(productSkuDraft.getCreateTime());
+                item.setUpdateTime(productSkuDraft.getUpdateTime());
+            });
+            productSkuBoxPackingService.insertDraftList(productSkuBoxPackingDrafts);
+        }
+    }
+
+    public void saveInvoicing(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        //初始化销项税率
+        List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos = addSkuInfoReqVO.getPurchaseSaleStockReqVos();
+        //获取库存信息
+        List<PurchaseSaleStockReqVo>  stockList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.STOCK.getStatus(),item.getType())).collect(Collectors.toList());
+        //查库存信息
+        List<PurchaseSaleStockRespVo> list = productSkuStockInfoService.getList(productSkuDraft.getSkuCode());
+        if (CollectionUtils.isEmpty(list) || list.size() != 1) {
+            throw new BizException(ResultCode.PURCHASE_SALE_STOCK_EMPTY);
+        }
+        PurchaseSaleStockRespVo purchaseSaleStockRespVo = list.get(0);
+        PurchaseSaleStockReqVo copy = BeanCopyUtils.copy(purchaseSaleStockRespVo, PurchaseSaleStockReqVo.class);
+        PurchaseSaleStockReqVo stockReqVo = stockList.get(0);
+        BeanCopyUtils.copyValueWithoutNull(stockReqVo, copy);
+        try {
+            ProductSkuStockInfoDraft productSkuStockInfoDraft =  BeanCopyUtils.copy(copy,ProductSkuStockInfoDraft.class);
+            productSkuStockInfoDraft.setId(null);
+            productSkuStockInfoDraft.setProductSkuCode(productSkuDraft.getSkuCode());
+            productSkuStockInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
+            productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
+            productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
+            productSkuStockInfoDraft.setBaseProductContent(1);
+            productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
+            productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+            productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+            productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+            productSkuStockInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
+            productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
+        } catch (Exception e) {
+            log.error("error", e);
+            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+        }
+        //获取采购信息
+        List<PurchaseSaleStockReqVo>  purchaseList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.PURCHASE.getStatus(),item.getType())).collect(Collectors.toList());
+        List<PurchaseSaleStockRespVo> list1 = productSkuPurchaseInfoService.getList(productSkuDraft.getSkuCode());
+        if (CollectionUtils.isEmpty(list1) || list1.size() != 1) {
+            throw new BizException(ResultCode.PURCHASE_SALE_STOCK_EMPTY);
+        }
+        PurchaseSaleStockRespVo purchaseSaleStockRespVo1 = list1.get(0);
+        PurchaseSaleStockReqVo copy1 = BeanCopyUtils.copy(purchaseSaleStockRespVo1, PurchaseSaleStockReqVo.class);
+        PurchaseSaleStockReqVo stockReqVo1 = purchaseList.get(0);
+        BeanCopyUtils.copyValueWithoutNull(stockReqVo1, copy1);
+        try {
+            ProductSkuPurchaseInfoDraft productSkuPurchaseInfoDraft =  BeanCopyUtils.copy(copy1,ProductSkuPurchaseInfoDraft.class);
+            productSkuPurchaseInfoDraft.setId(null);
+            productSkuPurchaseInfoDraft.setProductSkuCode(productSkuDraft.getSkuCode());
+            productSkuPurchaseInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
+            productSkuPurchaseInfoDraft.setProductCode(productSkuDraft.getProductCode());
+            productSkuPurchaseInfoDraft.setProductName(productSkuDraft.getProductName());
+            productSkuPurchaseInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+            productSkuPurchaseInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+            productSkuPurchaseInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+            productSkuPurchaseInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
+            productSkuPurchaseInfoService.insertDraft(productSkuPurchaseInfoDraft);
+        } catch (Exception e) {
+            log.error("error", e);
+            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+        }
+
+        //获取分销信息
+        List<PurchaseSaleStockReqVo> saleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.SALE.getStatus(),item.getType())).collect(Collectors.toList());
+            List<PurchaseSaleStockRespVo> list2 = productSkuPurchaseInfoService.getList(productSkuDraft.getSkuCode());
+            if (CollectionUtils.isEmpty(list2) || list2.size() != 1) {
+                throw new BizException(ResultCode.PURCHASE_SALE_STOCK_EMPTY);
+            }
+            PurchaseSaleStockRespVo purchaseSaleStockRespVo2 = list2.get(0);
+            PurchaseSaleStockReqVo copy2 = BeanCopyUtils.copy(purchaseSaleStockRespVo2, PurchaseSaleStockReqVo.class);
+            PurchaseSaleStockReqVo stockReqVo2 = saleList.get(0);
+            BeanCopyUtils.copyValueWithoutNull(stockReqVo2, copy2);
+            try {
+                ProductSkuDisInfoDraft productSkuDisInfoDraft = BeanCopyUtils.copy(copy2, ProductSkuDisInfoDraft.class);
+                productSkuDisInfoDraft.setId(null);
+                productSkuDisInfoDraft.setProductSkuCode(productSkuDraft.getSkuCode());
+                productSkuDisInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
+                productSkuDisInfoDraft.setProductCode(productSkuDraft.getProductCode());
+                productSkuDisInfoDraft.setProductName(productSkuDraft.getProductName());
+                productSkuDisInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+                productSkuDisInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+                productSkuDisInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+                productSkuDisInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
+                productSkuDisInfoService.insertDraft(productSkuDisInfoDraft);
+            } catch (Exception e) {
+                log.error("error", e);
+                throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+            }
+
+        //获取门店销售信息
+        List<PurchaseSaleStockReqVo> storeSaleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.STORE_SALE.getStatus(),item.getType())).collect(Collectors.toList());
+        if(CollectionUtils.isNotEmpty(storeSaleList)){
+            //验证输入的条形码是否重复
+            List<String> salesCodes = storeSaleList.stream().map(item -> item.getSalesCode()).distinct().collect(Collectors.toList());
+            if (storeSaleList.size() != salesCodes.size()) {
+                throw new BizException(MessageId.create(Project.SCMP_API, 69, "门店销售的条形码有重复,请重新输入"));
+            }
+            //验证输入的条形码是否在数据库中存在
+            List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(salesCodes,productSkuDraft.getSkuCode());
+            if(CollectionUtils.isNotEmpty(salesCodeTmps)){
+                throw new BizException(MessageId.create(Project.SCMP_API, 69,  "条形码["+ StringUtils.join(salesCodeTmps, ",")+"],在数据库中存在相同条形码"));
+            }
+        }
+        //查
+        List<PurchaseSaleStockRespVo> list3 = productSkuSalesInfoService.getList(productSkuDraft.getSkuCode());
+        List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos1 = BeanCopyUtils.copyList(list3, PurchaseSaleStockReqVo.class);
+        PurchaseSaleStockReqVo purchaseSaleStockRespVo3 = purchaseSaleStockReqVos1.stream().filter(o->o.getIsDefault() == 1).findFirst().orElse(null);
+        if (Objects.isNull(purchaseSaleStockRespVo3)) {
+            throw new BizException(ResultCode.PURCHASE_SALE_STOCK_EMPTY);
+        }
+        BeanCopyUtils.copyValueWithoutNull(storeSaleList.get(0),purchaseSaleStockRespVo3);
+        try {
+            List<ProductSkuSalesInfoDraft> productSkuSalesInfoDrafts = BeanCopyUtils.copyList(purchaseSaleStockReqVos1,ProductSkuSalesInfoDraft.class);
+            productSkuSalesInfoDrafts.forEach(item->{
+                item.setId(null);
+                item.setProductSkuCode(productSkuDraft.getSkuCode());
+                item.setProductSkuName(productSkuDraft.getSkuName());
+                item.setProductName(productSkuDraft.getProductName());
+                item.setProductCode(productSkuDraft.getProductCode());
+                item.setCreateBy(productSkuDraft.getCreateBy());
+                item.setUpdateBy(productSkuDraft.getUpdateBy());
+                item.setCreateTime(productSkuDraft.getCreateTime());
+                item.setUpdateTime(productSkuDraft.getUpdateTime());
+                item.setBaseProductContent(1);
+                item.setZeroRemovalCoefficient(1L);
+                item.setUsageStatus(StatusTypeCode.USE.getStatus());
+            });
+            productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
+        } catch (Exception e) {
+            log.error("error", e);
+            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+        }
+    }
+
+    public void saveUseTagRecord(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        List<SaveUseTagRecordItemReqVo> tagInfoList = addSkuInfoReqVO.getTagInfoList();
+        //查询标签
+        if (CollectionUtils.isNotEmpty(tagInfoList)) {
+            List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
+            tagInfoList.forEach(item -> {
+                ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
+                applyUseTagRecord.setApplyUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setTagCode(item.getTagCode());
+                applyUseTagRecord.setTagName(item.getTagName());
+                applyUseTagRecord.setUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
+                applyUseTagRecord.setTagTypeCode(TagTypeCode.SKU.getStatus());
+                applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
+                applyUseTagRecord.setCreateBy(productSkuDraft.getCreateBy());
+                applyUseTagRecord.setUpdateBy(productSkuDraft.getUpdateBy());
+                applyUseTagRecord.setCreateTime(productSkuDraft.getCreateTime());
+                applyUseTagRecord.setUpdateTime(productSkuDraft.getUpdateTime());
+                applyUseTagRecords.add(applyUseTagRecord);
+            });
+            applyUseTagRecordService.saveBatch(applyUseTagRecords);
+        }
+    }
+
+    @Override
+    public void saveProductSkuChannelDraft(AddSkuInfoReqVO addSkuInfoReqVO, ProductSkuDraft productSkuDraft) {
+        List<ProductSkuChannelDraft> productSkuChannelDrafts = addSkuInfoReqVO.getProductSkuChannelDrafts();
+        //查数据
+        List<ProductSkuChannelRespVo> draftList = productSkuChannelService.getList(productSkuDraft.getSkuCode());
+        List<ProductSkuChannelDraft> oldChannelList = BeanCopyUtils.copyList(draftList, ProductSkuChannelDraft.class);
+        Map<String, ProductSkuChannelDraft> collect = oldChannelList.stream().collect(Collectors.toMap(ProductSkuChannelDraft::getPriceChannelCode, Function.identity()));
+        if(CollectionUtils.isNotEmpty(productSkuChannelDrafts)){
+            productSkuChannelDrafts.forEach(o->{
+                if(Objects.isNull(collect.get(o.getPriceChannelCode()))){
+                    oldChannelList.add(o);
+                }
+            });
+        }
+        for (ProductSkuChannelDraft item : oldChannelList) {
+            item.setSkuCode(productSkuDraft.getSkuCode());
+            item.setSkuName(productSkuDraft.getSkuName());
+            item.setCreateBy(productSkuDraft.getCreateBy());
+            item.setUpdateBy(productSkuDraft.getUpdateBy());
+            item.setCreateTime(productSkuDraft.getCreateTime());
+            item.setUpdateTime(productSkuDraft.getUpdateTime());
+        }
+        if(!oldChannelList.isEmpty()){
+            productSkuChannelService.insertDraftList(oldChannelList);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveProductSkuDraft(ProductSkuDraft productSkuDraft, String skuCode) {
+        //查正式表数据
+        ProductSkuDraft copy = productSkuDraftMapper.getOfficialBySkuCode(skuCode);
+        BeanCopyUtils.copyValueWithoutNull(productSkuDraft, copy);
+        copy.setId(null);
+
+        productSkuDraft.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+        productSkuDraft.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
+        //判断临时表中是否存在
+        ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
+        if(null != skuRespVo){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+        }
+        //判断申请表中是否存在申请中的数据
+        ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
+        if(null != applyProductSku){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+        }
+        ((SkuInfoService) AopContext.currentProxy()).insertDraft(copy);
+        productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
+    }
+
     /**
      * 更新sku所有信息
      *
@@ -691,6 +1001,27 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraft(skuCodes);
         return  ((SkuInfoService)AopContext.currentProxy()).saveDraftSkuInfo(addSkuInfoReqVO);
     }
+
+    /**
+     * 更新sku所有信息
+     *
+     * @param addSkuInfoReqVO
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int updateDraftSkuInfoForImport(AddSkuInfoReqVO addSkuInfoReqVO) {
+        if(Objects.isNull(addSkuInfoReqVO.getProductSkuDraft().getSkuCode())){
+            throw new BizException(ResultCode.SKU_CODE_EMPTY);
+        }
+        addSkuInfoReqVO.getProductSkuDraft().setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+        addSkuInfoReqVO.getProductSkuDraft().setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
+        List<String> skuCodes = Lists.newArrayList();
+        skuCodes.add(addSkuInfoReqVO.getProductSkuDraft().getSkuCode());
+        ((SkuInfoService)AopContext.currentProxy()).deleteProductSkuDraft(skuCodes);
+        return  ((SkuInfoService)AopContext.currentProxy()).importSaveDraftSkuInfo(addSkuInfoReqVO);
+    }
+
 
     @Override
     @Transactional(rollbackFor = BizException.class)
@@ -1173,7 +1504,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuInfo.setAuditorBy(vo.getApprovalUserName());
             productSkuInfo.setAuditorTime(auditorTime);
             //是否预约生效时间
-            boolean flag = applyProductSkus.get(i).getSelectionEffectiveTime() == 0 ? true : false;
+            boolean flag = applyProductSkus.get(i).getSelectionEffectiveTime() == 0;
             //判断不生效生效
             boolean beEffective = flag && applyProductSkus.get(i).getSelectionEffectiveStartTime().after(auditorTime);
             productSkuInfo.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
@@ -1406,9 +1737,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Transactional(rollbackFor = Exception.class)
     public Integer deleteProductSkuDraft(List<String> skuCodes) {
         int deleteNum = productSkuDao.deleteSkuDraftByCodes(skuCodes);
-        if (deleteNum == 0 ) {
-            throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
-        }
+//        if (deleteNum == 0 ) {
+//            throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
+//        }
         productSkuChannelService.deleteDrafts(skuCodes);
         productSkuPurchaseInfoService.deleteDrafts(skuCodes);
         productSkuStockInfoService.deleteDrafts(skuCodes);
@@ -2056,7 +2387,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public Boolean importSkuNewUpdate(SkuImportReq reqVOs) {
         HashMap<String, String> spuMap = Maps.newHashMap();
         for (AddSkuInfoReqVO reqVO : reqVOs.getAddSkuList()) {
-            if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
+            if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())&&StringUtils.isNotBlank(reqVO.getProductSkuDraft().getProductName())) {
                 //判断是否新增了
                 String s1 = spuMap.get(reqVO.getProductSkuDraft().getProductName());
                 if (StringUtils.isNotBlank(s1)) {
@@ -2077,7 +2408,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             reqVO.setBoxFlag(false);
             reqVO.getProductSkuDraft().setProcurementSectionCode(reqVOs.getPurchaseGroupCode());
             reqVO.getProductSkuDraft().setProcurementSectionName(reqVOs.getPurchaseGroupName());
-            updateDraftSkuInfo(reqVO);
+            updateDraftSkuInfoForImport(reqVO);
         }
         return Boolean.TRUE;
     }
@@ -2227,9 +2558,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(skuInfoImports)) {
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
-//        if (skuInfoImports.size()<3) {
-//            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
-//        }
+        if (skuInfoImports.size()<3) {
+            throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
+        }
         String  head = SkuInfoImportUpdate.HEAD;
         boolean equals = skuInfoImports.get(1).toString().equals(head);
         if(!equals){

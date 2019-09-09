@@ -217,13 +217,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Integer saveOutBoundInfo(OutboundReqVo stockReqVO) {
-        String outboundOderCode = null;
         try {
             //编码生成
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
-            outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+            String outboundOderCode = String.valueOf(numberingType.getNumberingValue());
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
@@ -232,11 +231,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             log.info("出库主表保存结果:{}", i);
             int j = outboundProductDao.insertBatch(outboundProducts);
             log.info("出库商品保存结果:{}", j);
-
+            List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
+            if(CollectionUtils.isNotEmpty(batchList)){
+                batchList.stream().forEach(outBoundBatch->outBoundBatch.setOutboundOderCode(outboundOderCode));
+                //添加供应商对应的商品信息
+                Integer count = outboundBatchDao.insertList(batchList);
+                LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
+            }
             if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
-                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
-
+                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(outboundOderCode));
                 int m = outboundBatchDao.insertInfo(outboundBatches);
                 log.info("出库商品批次保存结果:{}", m);
             }
