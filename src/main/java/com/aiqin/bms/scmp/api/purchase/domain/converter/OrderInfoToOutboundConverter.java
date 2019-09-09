@@ -114,8 +114,8 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
             outboundBatch = new OutboundBatch();
             outboundBatch.setSkuName(batch.getSkuName());
             outboundBatch.setSkuCode(batch.getSkuCode());
-            outboundBatch.setSupplyCode(batch.getSupplierCode());
-            outboundBatch.setSupplyName(batch.getSupplierName());
+            outboundBatch.setSupplierCode(batch.getSupplierCode());
+            outboundBatch.setSupplierName(batch.getSupplierName());
             outboundBatch.setPraQty(batch.getActualDeliverNum());
             outboundBatch.setCreateBy(orderInfo.getCreateByName());
             outboundBatch.setUpdateBy(orderInfo.getUpdateByName());

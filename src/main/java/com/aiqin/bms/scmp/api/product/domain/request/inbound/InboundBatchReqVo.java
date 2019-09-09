@@ -60,10 +60,10 @@ public class InboundBatchReqVo extends PagesRequest{
     private Long linenum;
 
     @ApiModelProperty("供应商Code")
-    private String supplyCode;
+    private String supplierCode;
 
     @ApiModelProperty("供应商名称")
-    private String supplyName;
+    private String supplierName;
 
     public InboundBatchReqVo(String inboundOderCode, Integer pageSize, Integer pageNo) {
         this.inboundOderCode = inboundOderCode;

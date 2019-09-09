@@ -812,8 +812,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             outboundBatch = new OutboundBatch();
             outboundBatch.setSkuName(batch.getSkuName());
             outboundBatch.setSkuCode(batch.getSkuCode());
-            outboundBatch.setSupplyCode(batch.getSupplierCode());
-            outboundBatch.setSupplyName(batch.getSupplierName());
+            outboundBatch.setSupplierCode(batch.getSupplierCode());
+            outboundBatch.setSupplierName(batch.getSupplierName());
             outboundBatch.setPraQty(batch.getQuantity());
             outboundBatch.setCreateBy(allocation.getCreateBy());
             outboundBatch.setUpdateBy(allocation.getUpdateBy());
@@ -911,8 +911,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             inboundBatchReqVo = new InboundBatchReqVo();
             inboundBatchReqVo.setSkuName(batch.getSkuName());
             inboundBatchReqVo.setSkuCode(batch.getSkuCode());
-            inboundBatchReqVo.setSupplyCode(batch.getSupplierCode());
-            inboundBatchReqVo.setSupplyName(batch.getSupplierName());
+            inboundBatchReqVo.setSupplierCode(batch.getSupplierCode());
+            inboundBatchReqVo.setSupplierName(batch.getSupplierName());
             inboundBatchReqVo.setPraQty(batch.getQuantity());
             inboundBatchReqVo.setCreateBy(allocation.getCreateBy());
             inboundBatchReqVo.setUpdateBy(allocation.getUpdateBy());

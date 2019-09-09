@@ -118,8 +118,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 inboundBatchReqVo = new InboundBatchReqVo();
                 inboundBatchReqVo.setSkuName(returnOrderInfoItem.getSkuName());
                 inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
-                inboundBatchReqVo.setSupplyCode(returnOrderInfoItem.getSupplyCode());
-                inboundBatchReqVo.setSupplyName(returnOrderInfoItem.getSupplyName());
+                inboundBatchReqVo.setSupplierCode(returnOrderInfoItem.getSupplyCode());
+                inboundBatchReqVo.setSupplierName(returnOrderInfoItem.getSupplyName());
                 inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
                 inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
                 inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
