@@ -87,9 +87,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     @Resource
     private InboundProductDao inboundProductDao;
     @Resource
+    private InboundBatchDao inboundBatchDao;
+    @Resource
     private OutboundDao outboundDao;
     @Resource
     private OutboundProductDao outboundProductDao;
+    @Resource
+    private OutboundBatchDao outboundBatchDao;
     @Resource
     private ProductSkuDao productSkuDao;
 
@@ -463,6 +467,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             List<String> orderCodes = returnList.stream().map(ReturnOrderInfo::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             List<ReturnOrderInfoItem> orderInfoItems = returnOrderInfoItemMapper.listDetailForSap(sapOrderRequest);
+            List<InboundBatch> batchList = inboundBatchDao.listBySourceCodes(orderCodes);
+            Map<String,InboundBatch> batchMap = batchList.stream().collect(Collectors.toMap(inBoundBatch->{return inBoundBatch.getInboundOderCode()+inBoundBatch.getSkuCode();},Function.identity()));
+            InboundBatch batch;
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
             Map<String, List<OrderDetail>> orderDetailMap = new HashMap<>();
@@ -478,6 +485,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setGiftFlag(0);
                 orderDetail.setSingleCount(returnOrderInfoItem.getNum().intValue());
                 orderDetail.setDeliveryCount(returnOrderInfoItem.getActualInboundNum());
+                //供应商信息
+                batch = batchMap.get(returnOrderInfoItem.getReturnOrderCode()+returnOrderInfoItem.getSkuCode());
+                orderDetail.setSupplierName(batch.getSupplierName());
+                orderDetail.setSupplierCode(batch.getSupplierCode());
                 if (orderDetailMap.containsKey(returnOrderInfoItem.getReturnOrderCode())) {
                     orderDetails = orderDetailMap.get(returnOrderInfoItem.getReturnOrderCode());
                     orderDetails.add(orderDetail);
@@ -485,6 +496,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 } else {
                     orderDetailMap.put(returnOrderInfoItem.getReturnOrderCode(), Collections.singletonList(orderDetail));
                 }
+
             }
             for (ReturnOrderInfo returnOrderInfo : returnList) {
                 order = new Order();

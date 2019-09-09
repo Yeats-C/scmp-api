@@ -23,4 +23,5 @@ public interface InboundBatchDao {
 
     Integer updateBatchInfoByInboundOderCodeAndLineNum(InboundBatch inboundBatch);
 
+    List<InboundBatch> listBySourceCodes(@Param("list") List<String> orderCodes);
 }
