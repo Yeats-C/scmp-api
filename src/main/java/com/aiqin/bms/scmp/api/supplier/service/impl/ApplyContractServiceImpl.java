@@ -262,7 +262,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(categories);
             }
         }
-        workFlow(k);
+        if (!Byte.valueOf("1").equals(applyContractReqVo.getSource())) {
+             workFlow(k);
+        }
         return 0;
     }
     @Override
