@@ -13,17 +13,13 @@ import lombok.Data;
 @Api(tags = "统计报表共用属性")
 public class ShareResponse {
 
-    @ApiModelProperty(value="年月日")
-    @JsonProperty("stat_date")
-    private String statDate;
-
-    @ApiModelProperty(value = "sku编号")
-    @JsonProperty("sku_code")
-    private String skuCode;
-
-    @ApiModelProperty(value = "sku名称")
-    @JsonProperty("sku_name")
-    private String skuName;
+//    @ApiModelProperty(value = "sku编号")
+//    @JsonProperty("sku_code")
+//    private String skuCode;
+//
+//    @ApiModelProperty(value = "sku名称")
+//    @JsonProperty("sku_name")
+//    private String skuName;
 
     @ApiModelProperty(value = "供应商编码")
     @JsonProperty("supplier_code")

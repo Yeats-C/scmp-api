@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.statistics.web;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.SupplierDeliveryResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
+import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,17 +34,8 @@ public class StatisticsController {
     private StatisticsService statisticsService;
     @Resource
     private SalesStatisticsService salesStatisticsService;
-
-    @GetMapping("/supplier/delivery/rate")
-    @ApiOperation("供应商到货率统计-部门")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "form_type", value = "供应商到货率统计类型: 0 年报 1 月报", type = "Integer") })
-    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(@RequestParam("date") String date,
-                                                                   @RequestParam("form_type") Integer formType) {
-        return statisticsService.supplierDelivery(formType, date);
-    }
-
+    @Resource
+    private SupplierStatisticsService supplierStatisticsService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
@@ -114,11 +107,23 @@ public class StatisticsController {
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
             @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
-    public HttpResponse categoryPromotion(
+    public HttpResponse<CategoryResponse> categoryPromotion(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
         SaleRequest saleRequest = new SaleRequest(date, type, productSortCode);
         return salesStatisticsService.categoryPromotion(saleRequest);
+    }
+
+    @GetMapping("/supplier/delivery/rate")
+    @ApiOperation("供应商到货率统计-部门")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(@RequestParam("date") String date,
+                                                                   @RequestParam("report_type") Integer reportType,
+                                                                   @RequestParam("product_sort_code") String productSortCode) {
+        return supplierStatisticsService.supplierDelivery(date, reportType, productSortCode);
     }
 
 }
