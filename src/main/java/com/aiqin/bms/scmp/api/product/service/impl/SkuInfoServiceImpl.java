@@ -2488,7 +2488,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
+    public BasePage<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             reqVO.setCompanyCode(authToken.getCompanyCode());
@@ -2504,7 +2504,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 log.info("不做处理,让程序继续执行下去");
             }
         }
-        return productSkuDraftMapper.getProductSkuDraft(reqVO);
+        return PageUtil.getPageList(reqVO.getPageNo(),productSkuDraftMapper.getProductSkuDraft(reqVO));
     }
 
     @Override

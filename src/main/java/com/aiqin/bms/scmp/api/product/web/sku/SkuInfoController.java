@@ -99,7 +99,7 @@ public class SkuInfoController {
 
     @PostMapping("/draft/list")
     @ApiOperation("待提交sku列表")
-    public HttpResponse<List<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
+    public HttpResponse<BasePage<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
         return HttpResponse.success(skuInfoService.getProductSkuDraftList(reqVO));
     }
 
