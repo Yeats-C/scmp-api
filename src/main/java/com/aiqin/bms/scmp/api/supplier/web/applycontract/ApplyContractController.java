@@ -153,6 +153,7 @@ public class ApplyContractController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
+            e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
