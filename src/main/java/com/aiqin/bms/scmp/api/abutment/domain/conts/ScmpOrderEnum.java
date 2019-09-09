@@ -15,9 +15,9 @@ public enum ScmpOrderEnum {
      */
     PURCHASE("0", "采购"),
     PURCHASE_BACK("5", "退供"),
-    ORDER("10", "订单"),
-//    ORDER_ZS("15", "直送订单"),
-//    ORDER_ASSIST("20", "辅采订单"),
+    ORDER("10", "配送订单"),
+    ORDER_ZS("15", "直送订单"),
+    ORDER_ASSIST("20", "辅采订单"),
     ORDER_BACK("25", "售后退货"),
     STORAGE_CHANGE("30", "出入库"),
     ;

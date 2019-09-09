@@ -72,4 +72,6 @@ public interface OrderInfoMapper {
     List<OrderInfo> listForSap(SapOrderRequest sapOrderRequest);
 
     int updateByOrderCodes(@Param(value = "list") List<String> orderCodes);
+
+    List<OrderInfo> listByIds(@Param(value = "list")List<String> orderIds);
 }

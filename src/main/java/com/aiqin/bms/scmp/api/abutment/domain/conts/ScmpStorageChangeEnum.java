@@ -18,9 +18,9 @@ public enum ScmpStorageChangeEnum {
      */
     PURCHASE_IN("0", "采购入库"),
     PURCHASE_BACK_OUT("5", "退供出库"),
-    ORDER_OUT("10", "订单出库"),
-//    ORDER_ZS_OUT("15", "直送订单出库"),
-//    ORDER_ASSIST_OUT("20", "辅采订单出库"),
+    ORDER_OUT("10", "配送订单出库"),
+    ORDER_ZS_OUT("15", "直送订单出库"),
+    ORDER_ASSIST_OUT("20", "辅采订单出库"),
     ORDER_BACK_IN("25", "售后退货入库"),
     CHANGE_STORAGE_IN("30", "移库入库"),
     CHANGE_STORAGE_OUT("31", "移库出库"),

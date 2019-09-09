@@ -88,28 +88,6 @@ public class StringConvertUtil {
      * @param type
      * @return
      */
-    public static InnerValue outboundSourceTypeConvert(byte type) {
-        //OutboundTypeEnum 对应类型
-        InnerValue innerValue = new InnerValue();
-        switch (type) {
-            case 1:
-                innerValue.setName(Objects.requireNonNull(ScmpOrderEnum.getByCode("5")).getDesc());
-                innerValue.setValue("5");
-                break;
-            case 3:
-                innerValue.setName(Objects.requireNonNull(ScmpOrderEnum.getByCode("10")).getDesc());
-                innerValue.setValue("10");
-                break;
-            default:
-                throw new GroundRuntimeException("未查询到对应的类型");
-        }
-        return innerValue;
-    }
-
-    /**
-     * @param type
-     * @return
-     */
     public static InnerValue inboundSourceTypeConvert(byte type) {
         //OutboundTypeEnum 对应类型
         InnerValue innerValue = new InnerValue();
@@ -151,6 +129,33 @@ public class StringConvertUtil {
             case 4:
                 innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("30")).getDesc());
                 innerValue.setValue("30");
+                break;
+            default:
+                throw new GroundRuntimeException("未查询到对应的类型");
+        }
+        return innerValue;
+    }
+
+
+    /**
+     * @param type
+     * @return
+     */
+    public static InnerValue orderInfoConvert(Integer type) {
+        //OutboundTypeEnum 对应类型
+        InnerValue innerValue = new InnerValue();
+        switch (type) {
+            case 2:
+                innerValue.setName(Objects.requireNonNull(ScmpOrderEnum.getByCode("10")).getDesc());
+                innerValue.setValue("10");
+                break;
+            case 1:
+                innerValue.setName(Objects.requireNonNull(ScmpOrderEnum.getByCode("15")).getDesc());
+                innerValue.setValue("15");
+                break;
+            case 3:
+                innerValue.setName(Objects.requireNonNull(ScmpOrderEnum.getByCode("20")).getDesc());
+                innerValue.setValue("20");
                 break;
             default:
                 throw new GroundRuntimeException("未查询到对应的类型");

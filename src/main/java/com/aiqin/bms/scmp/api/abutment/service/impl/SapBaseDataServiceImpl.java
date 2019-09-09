@@ -60,6 +60,8 @@ import java.util.stream.Collectors;
 @Service
 public class SapBaseDataServiceImpl implements SapBaseDataService {
 
+    private static Logger LOGGER = LoggerFactory.getLogger(SapBaseDataServiceImpl.class);
+    private static Integer SAP_API_COUNT = 100;
     @Value("${sap.order}")
     private String ORDER_URL;
     @Value("${sap.product}")
@@ -70,9 +72,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private String PURCHASE_URL;
     @Value("${sap.storage}")
     private String STORAGE_URL;
-
-    private static Logger LOGGER = LoggerFactory.getLogger(SapBaseDataServiceImpl.class);
-    private static Integer SAP_API_COUNT = 100;
     @Resource
     private OrderInfoMapper orderInfoMapper;
     @Resource
@@ -116,16 +115,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     public void stockSynchronization(SapOrderRequest sapOrderRequest) {
 
         List<Storage> storageList = Lists.newArrayList();
-        this.outboundToStock(storageList,sapOrderRequest);
-        this.inboundToStock(storageList,sapOrderRequest);
+        this.outboundToStock(storageList, sapOrderRequest);
+        this.inboundToStock(storageList, sapOrderRequest);
 
     }
 
     /**
      * 出库单转结算sap对接
+     *
      * @param sapOrderRequest
      */
-    private void inboundToStock(List<Storage> storageList,SapOrderRequest sapOrderRequest){
+    private void inboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Inbound> inboundList = inboundDao.listForSap(sapOrderRequest);
         List<String> orderCodes = inboundList.stream().map(Inbound::getInboundOderCode).collect(Collectors.toList());
@@ -133,10 +133,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         List<InboundProduct> inboundProducts = inboundProductDao.listDetailForSap(sapOrderRequest);
         List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
         List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-        Map<String,Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode,ProductSkuInfo::getManufacturerGuidePrice));
+        Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
         StorageDetail storageDetail;
         List<StorageDetail> storageDetailList;
-        Map<String, List<StorageDetail> > storageDetailMap = new HashMap<>();
+        Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
         for (InboundProduct inboundProduct : inboundProducts) {
             storageDetail = new StorageDetail();
             storageDetail.setSkuCode(inboundProduct.getSkuCode());
@@ -154,7 +154,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storageDetail.setMinUnitCount(inboundProduct.getPraInboundNum().intValue());
             storageDetail.setTaxRate(inboundProduct.getPraTaxPurchaseAmount().intValue());
             //厂商指导价
-            storageDetail.setMinUnitCount(productMap.containsKey(inboundProduct.getSkuCode())?productMap.get(inboundProduct.getSkuCode()).intValue():0);
+            storageDetail.setMinUnitCount(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).intValue() : 0);
             if (storageDetailMap.containsKey(inboundProduct.getInboundOderCode())) {
                 storageDetailList = storageDetailMap.get(inboundProduct.getInboundOderCode());
                 storageDetailList.add(storageDetail);
@@ -172,8 +172,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setSubOrderType(innerValue.getValue());
             storage.setSubOrderTypeName(innerValue.getName());
             //采购和退货订单才传来源类型
-            if(inbound.getInboundTypeCode().equals(3)||inbound.getInboundTypeCode().equals(1)){
-                innerValueType= StringConvertUtil.inboundSourceTypeConvert(inbound.getInboundTypeCode());
+            if (inbound.getInboundTypeCode().equals(3) || inbound.getInboundTypeCode().equals(1)) {
+                innerValueType = StringConvertUtil.inboundSourceTypeConvert(inbound.getInboundTypeCode());
                 storage.setSourceOrderId(String.format("%s-%s", inbound.getSourceOderCode(), innerValueType.getName()));
                 storage.setSourceOrderCode(inbound.getSourceOderCode());
                 storage.setSourceOrderType(innerValueType.getValue());
@@ -200,9 +200,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 
     /**
      * 入库单转结算sap对接
+     *
      * @param sapOrderRequest
      */
-    private void outboundToStock(List<Storage> storageList,SapOrderRequest sapOrderRequest){
+    private void outboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Outbound> outboundList = outboundDao.listForSap(sapOrderRequest);
         List<String> orderCodes = outboundList.stream().map(Outbound::getOutboundOderCode).collect(Collectors.toList());
@@ -210,10 +211,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         List<OutboundProduct> outboundProducts = outboundProductDao.listDetailForSap(sapOrderRequest);
         List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
         List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-        Map<String,Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode,ProductSkuInfo::getManufacturerGuidePrice));
+        Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
         StorageDetail storageDetail;
         List<StorageDetail> storageDetailList;
-        Map<String, List<StorageDetail> > storageDetailMap = new HashMap<>();
+        Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
         for (OutboundProduct outboundProduct : outboundProducts) {
             storageDetail = new StorageDetail();
             storageDetail.setSkuCode(outboundProduct.getSkuCode());
@@ -231,7 +232,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
             storageDetail.setTaxRate(outboundProduct.getPraTaxPurchaseAmount().intValue());
             //厂商指导价
-            storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode())?productMap.get(outboundProduct.getSkuCode()).intValue():0);
+            storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).intValue() : 0);
             if (storageDetailMap.containsKey(outboundProduct.getOutboundOderCode())) {
                 storageDetailList = storageDetailMap.get(outboundProduct.getOutboundOderCode());
                 storageDetailList.add(storageDetail);
@@ -242,15 +243,27 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
         InnerValue innerValue;
         InnerValue innerValueType;
+        //销售单的id
+        List<String> orderIds = outboundList.stream().filter((Outbound)->Outbound.getOutboundTypeCode().equals(3)).map(Outbound::getSourceOderCode).collect(Collectors.toList());
+        List<OrderInfo> orderInfoList = orderInfoMapper.listByIds(orderIds);
+        Map<String,OrderInfo> orderInfoMap = orderInfoList.stream().collect(Collectors.toMap(OrderInfo::getOrderCode,Function.identity()));
+        OrderInfo orderInfo;
         for (Outbound outbound : outboundList) {
             storage = new Storage();
             innerValue = StringConvertUtil.outboundTypeConvert(outbound.getOutboundTypeCode());
             storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getName()));
             storage.setSubOrderType(innerValue.getValue());
             storage.setSubOrderTypeName(innerValue.getName());
-            //订单退供才传来源类型
-            if(outbound.getOutboundTypeCode().equals(3)||outbound.getOutboundTypeCode().equals(1)){
-                innerValueType= StringConvertUtil.outboundSourceTypeConvert(outbound.getOutboundTypeCode());
+            //订单/退供才传来源类型
+            if (outbound.getOutboundTypeCode().equals(1)) {
+                storage.setSourceOrderId(String.format("%s-%d", outbound.getSourceOderCode(), 5));
+                storage.setSourceOrderCode(outbound.getSourceOderCode());
+                storage.setSourceOrderType("5");
+                storage.setSourceOrderTypeName("退供");
+            }
+            if(outbound.getOutboundTypeCode().equals(3)){
+                orderInfo = orderInfoMap.get(outbound.getSourceOderCode());
+                innerValueType = StringConvertUtil.orderInfoConvert(Integer.valueOf(orderInfo.getOrderType()));
                 storage.setSourceOrderId(String.format("%s-%s", outbound.getSourceOderCode(), innerValueType.getName()));
                 storage.setSourceOrderCode(outbound.getSourceOderCode());
                 storage.setSourceOrderType(innerValueType.getValue());
@@ -293,19 +306,20 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     public void saleSynchronization(SapOrderRequest sapOrderRequest) {
         //销售单list
         List<Order> orderList = Lists.newArrayList();
-        orderInfoToOrder(orderList, sapOrderRequest);
-        sapOrderAbutment(orderList,1);
-        orderList.clear();
-//        returnInfoToOrder(orderList, sapOrderRequest);
-//        sapOrderAbutment(orderList,2);
+//        orderInfoToOrder(orderList, sapOrderRequest);
+//        sapOrderAbutment(orderList, 1);
+//        orderList.clear();
+        returnInfoToOrder(orderList, sapOrderRequest);
+        sapOrderAbutment(orderList,2);
     }
 
-    private void sapOrderAbutment( List<Order> orderList,Integer type){
-        LOGGER.info("调用结算sap销售单据参数:{},type:{}", JsonUtil.toJson(orderList),type);
+    private void sapOrderAbutment(List<Order> orderList, Integer type) {
+        LOGGER.info("调用结算sap销售单据参数:{} ", JsonUtil.toJson(orderList));
+        LOGGER.info("type:{}", type);
         int total = (int) Math.ceil(orderList.size() / (SAP_API_COUNT * 1.0));
         int endIndex;
-        List<Order> subLists ;
-        List<String> orderCodes ;
+        List<Order> subLists;
+        List<String> orderCodes;
         for (int i = 0; i < total; i++) {
             endIndex = SAP_API_COUNT * (i + 1);
             if (SAP_API_COUNT * (i + 1) >= orderList.size()) {
@@ -318,9 +332,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 LOGGER.info("调用结算sap销售单据成功:{}", httpResponse.getMessage());
                 //1 销售出库单 2 销售退货 更新同步状态
                 orderCodes = subLists.stream().map(Order::getOrderCode).collect(Collectors.toList());
-                if(type.equals(1)){
+                if (type.equals(1)) {
                     orderInfoMapper.updateByOrderCodes(orderCodes);
-                }else if(type.equals(2)){
+                } else if (type.equals(2)) {
                     returnOrderInfoMapper.updateByOrderCodes(orderCodes);
                 }
             } else {
@@ -343,7 +357,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             List<String> orderCodes = orderInfoList.stream().map(OrderInfo::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             List<OrderInfoItem> orderInfoItems = orderInfoItemMapper.listDetailForSap(sapOrderRequest);
-            Map<String,OrderInfoItem> orderInfoItemMap = orderInfoItems.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode,Function.identity()));
+            Map<String, OrderInfoItem> orderInfoItemMap = orderInfoItems.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode, Function.identity()));
             List<OrderInfoItemProductBatch> batchList = orderInfoItemProductBatchMapper.listDetailForSap(sapOrderRequest);
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
@@ -351,7 +365,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Map<String, List<OrderDetail>> orderDetailMap = new HashMap<>();
             for (OrderInfoItemProductBatch itemProductBatch : batchList) {
                 orderInfoItem = orderInfoItemMap.get(itemProductBatch.getSkuCode());
-                if(orderInfoItem==null){
+                if (orderInfoItem == null) {
                     throw new GroundRuntimeException("未查询到对应的商品信息");
                 }
                 orderDetail = new OrderDetail();
@@ -364,26 +378,35 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setGiftFlag(orderInfoItem.getGivePromotion());
                 orderDetail.setSingleCount(orderInfoItem.getNum().intValue());
                 orderDetail.setDeliveryCount(orderInfoItem.getActualDeliverNum().intValue());
+                //取供应商对应商品的表中数据
+                orderDetail.setSupplierCode(itemProductBatch.getSupplierCode());
+                orderDetail.setSupplierName(itemProductBatch.getSupplierName());
+                orderDetail.setSingleCount(itemProductBatch.getNum().intValue());
+                orderDetail.setDeliveryCount(itemProductBatch.getActualDeliverNum().intValue());
                 if (orderDetailMap.containsKey(orderInfoItem.getOrderCode())) {
                     orderDetails = orderDetailMap.get(orderInfoItem.getOrderCode());
                     orderDetails.add(orderDetail);
                     orderDetailMap.put(orderInfoItem.getOrderCode(), orderDetails);
                 } else {
-                    orderDetails= new ArrayList<>();
+                    orderDetails = new ArrayList<>();
                     orderDetails.add(orderDetail);
-                    orderDetailMap.put(orderInfoItem.getOrderCode(),  orderDetails );
+                    orderDetailMap.put(orderInfoItem.getOrderCode(), orderDetails);
                 }
             }
+            InnerValue innerValue;
             for (OrderInfo orderInfo : orderInfoList) {
                 order = new Order();
                 order.setOrderId(String.format("%s-%s", orderInfo.getOrderCode(), orderInfo.getOrderTypeCode()));
                 order.setOrderCode(orderInfo.getOrderCode());
+                innerValue = StringConvertUtil.orderInfoConvert(orderInfo.getOrderTypeCode());
                 //单据类型
-                order.setOrderType(orderInfo.getOrderTypeCode());
-                order.setOrderTypeDesc(orderInfo.getOrderType());
+                order.setOrderType(Integer.valueOf(innerValue.getValue()));
+                order.setOrderTypeDesc(innerValue.getName());
                 //支付方式
                 order.setPayType(orderInfo.getPaymentTypeCode());
                 order.setPayTypeDesc(orderInfo.getPaymentType());
+                //1 是未支付 2 是已支付
+                order.setPayStatus(2);
                 //支付时间
                 order.setPayTime(orderInfo.getPaymentTime());
                 //订单类别
@@ -416,7 +439,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setCreateTime(orderInfo.getCreateTime());
                 order.setCreateById(orderInfo.getCreateById());
                 order.setCreateByName(orderInfo.getCreateByName());
-                order.setOrderStatusDesc(orderInfo.getOrderStatus().toString());
+                order.setOrderStatus(orderInfo.getOrderStatus().toString());
                 //目前只是完成订单先固定
                 order.setOrderStatusDesc("完成");
                 //详情信息
@@ -468,11 +491,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setOrderId(String.format("%s-%s", returnOrderInfo.getReturnOrderCode(), returnOrderInfo.getOrderTypeCode()));
                 order.setOrderCode(returnOrderInfo.getReturnOrderCode());
                 //单据类型
-                order.setOrderType(returnOrderInfo.getOrderTypeCode());
-                order.setOrderTypeDesc(returnOrderInfo.getOrderType());
+                order.setOrderType(25);
+                order.setOrderTypeDesc("售后退货");
                 //支付方式
                 order.setPayType(returnOrderInfo.getPaymentTypeCode());
                 order.setPayTypeDesc(returnOrderInfo.getPaymentType());
+                //1 是未支付 2 是已支付
+                order.setPayStatus(2);
                 //支付时间
                 order.setPayTime(returnOrderInfo.getOperatorTime());
                 //订单类别
