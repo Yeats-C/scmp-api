@@ -1,27 +1,24 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
-import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.VerifyReturnSupplyReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -32,7 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**

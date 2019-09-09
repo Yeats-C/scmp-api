@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.util.BrowserUtils;
 import com.aiqin.bms.scmp.api.util.ExcelUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -60,7 +61,7 @@ public class SupplierBaseController {
             fOut = response.getOutputStream();
             workbook.write(fOut);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new RuntimeException("导出失败！");
         } finally {
             try {
@@ -69,7 +70,7 @@ public class SupplierBaseController {
                     fOut.close();
                 }
             } catch (IOException e) {
-                log.error("error", e);
+                log.error(Global.ERROR, e);
             }
         }
     }
@@ -107,7 +108,7 @@ public class SupplierBaseController {
 //                default: return "false";
 //            }
 //        } catch (Exception e) {
-//            log.error("error", e);
+//            log.error(Global.ERROR, e);
 //            return "false";
 //        }
 //    }

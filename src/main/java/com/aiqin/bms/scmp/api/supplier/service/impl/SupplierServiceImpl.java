@@ -1,15 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 
-import com.aiqin.bms.scmp.api.util.UploadFileUtil;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
-import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
@@ -20,10 +16,13 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierListRespVO;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper;
-import com.aiqin.bms.scmp.api.supplier.service.*;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierService;
+import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -90,12 +89,13 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public SupplierDetailRespVO getSupplierDetail(Long id) {
-        try {
+
             SupplierDetailRespVO supplierDetailRespVO = new SupplierDetailRespVO();
             Supplier supplier = supplierMapper.selectByPrimaryKey(id);
-            if (null != supplier){
-                BeanCopyUtils.copy(supplier,supplierDetailRespVO);
+            if (null  == supplier){
+                throw new GroundRuntimeException("没有找到对应的信息");
             }
+            BeanCopyUtils.copy(supplier,supplierDetailRespVO);
             //获取操作日志
             OperationLogVo operationLogVo = new OperationLogVo();
             operationLogVo.setPageNo(1);
@@ -104,14 +104,12 @@ public class SupplierServiceImpl implements SupplierService {
             operationLogVo.setObjectId(supplier.getSupplierCode());
             BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo,62);
             List<LogData> logDataList = new ArrayList<>();
-            if (null != pageList.getDataList() && pageList.getDataList().size() > 0){
+            if (CollectionUtils.isEmptyCollection(pageList.getDataList())){
                 logDataList = pageList.getDataList();
             }
             supplierDetailRespVO.setLogDataList(logDataList);
             return supplierDetailRespVO;
-        } catch (GroundRuntimeException e) {
-            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
-        }
+
     }
 
     @Override
@@ -146,7 +144,6 @@ public class SupplierServiceImpl implements SupplierService {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             querySupplierReqVO.setCompanyCode(authToken.getCompanyCode());
-            //querySupplierReqVO.setApplyBy(authToken.getPersonName());
         }
         return supplierDao.queryApplyList(querySupplierReqVO);
     }

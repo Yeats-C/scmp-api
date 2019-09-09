@@ -1,17 +1,10 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.product.mapper.PriceChannelItemMapper;
-import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannel;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.AddPriceChannelReqVo;
@@ -20,10 +13,17 @@ import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceChanne
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.UpdatePriceChannelReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceChannelRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.PriceChannelItemMapper;
+import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
 import com.aiqin.bms.scmp.api.product.service.PriceChannelService;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;

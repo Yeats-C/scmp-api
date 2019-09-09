@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.http.AbstractHttpClient;
 import com.aiqin.ground.util.http.HttpClient;
 import org.apache.commons.lang.StringUtils;
@@ -15,10 +16,10 @@ public class HttpClientHelper {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(Objects.nonNull(authToken)){
             if(StringUtils.isNotBlank(authToken.getTicket())){
-                client.addParameter("ticket",authToken.getTicket());
+                client.addParameter(Global.TICKET,authToken.getTicket());
             }
             if(StringUtils.isNotBlank(authToken.getPersonId())){
-                client.addParameter("ticket_person_id",authToken.getPersonId());
+                client.addParameter(Global.TICKET_PERSON_ID,authToken.getPersonId());
             }
             if(StringUtils.isNotBlank(authToken.getAccountId())){
                 client.addParameter("account_id",authToken.getAccountId());
@@ -44,10 +45,10 @@ public class HttpClientHelper {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(Objects.nonNull(authToken)){
             if(StringUtils.isNotBlank(authToken.getPersonId())){
-                client.addParameter("ticket_person_id",authToken.getPersonId());
+                client.addParameter(Global.TICKET_PERSON_ID,authToken.getPersonId());
             }
             if(StringUtils.isNotBlank(authToken.getTicket())){
-                client.addParameter("ticket",authToken.getTicket());
+                client.addParameter(Global.TICKET,authToken.getTicket());
             }
             if(StringUtils.isNotBlank(authToken.getAccountId())){
                 client.addParameter("account_id",authToken.getAccountId());

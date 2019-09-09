@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.account.domain.response.AccountResponse;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Role;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -83,8 +84,8 @@ public class AccountController {
     @ApiOperation(value = "新增供应商账号")
     public HttpResponse addAccount(@RequestBody AccountRequest request, HttpServletRequest httpServletRequest) {
         LOGGER.info("新增供应商账号参数:{}", request.toString());
-        String ticket = httpServletRequest.getParameter("ticket");
-        String personId = httpServletRequest.getParameter("ticket_person_id");
+        String ticket = httpServletRequest.getParameter(Global.TICKET);
+        String personId = httpServletRequest.getParameter(Global.TICKET_PERSON_ID);
         return accountInfoService.addAccount(request, ticket, personId);
     }
 
@@ -102,16 +103,16 @@ public class AccountController {
     public HttpResponse updateAccount(@PathVariable String username, @RequestBody AccountRequest request, HttpServletRequest httpServletRequest) {
         request.setUsername(username);
         LOGGER.info("修改供应商账号:{}", request.toString());
-        String ticket = httpServletRequest.getParameter("ticket");
-        String personId = httpServletRequest.getParameter("ticket_person_id");
+        String ticket = httpServletRequest.getParameter(Global.TICKET);
+        String personId = httpServletRequest.getParameter(Global.TICKET_PERSON_ID);
         return accountInfoService.updateAccount(request, ticket, personId);
     }
 
     @GetMapping("/role")
     @ApiOperation(value = "查询角色")
     public HttpResponse<List<Role>> selectRole(HttpServletRequest request) {
-        String personId = request.getParameter("ticket_person_id");
-        String ticket = request.getParameter("ticket");
+        String personId = request.getParameter(Global.TICKET_PERSON_ID);
+        String ticket = request.getParameter(Global.TICKET);
         LOGGER.info("查询角色,ticket:{},personId:{}", ticket, personId);
         if (StringUtils.isBlank(ticket) || StringUtils.isBlank(personId)) {
             return HttpResponse.failureGenerics(ResultCode.REQUIRED_PARAMETER, null);

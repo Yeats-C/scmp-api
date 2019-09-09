@@ -1,9 +1,7 @@
 package com.aiqin.bms.scmp.api.bireport.dao;
 
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.ProReplenishmentOutStockRespVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

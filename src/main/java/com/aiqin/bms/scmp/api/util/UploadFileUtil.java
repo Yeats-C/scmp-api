@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
@@ -58,7 +59,7 @@ public class UploadFileUtil {
             ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(bytes1));
             ossClient.shutdown();
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
         //返回文件路径
@@ -109,7 +110,7 @@ public class UploadFileUtil {
             log.info("上传成功：url=[{}]",url1.toString());
             url = url1.toString();
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             log.info("上传文件失败");
         } finally {
             // 关闭OSSClient。
@@ -154,9 +155,9 @@ public class UploadFileUtil {
             contentType = objectMetadata.getContentType();
             base64 = getBase64FromInputStream(inputStream);
         } catch (MalformedURLException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         } finally {
             ossClient.shutdown();
         }
@@ -175,13 +176,13 @@ public class UploadFileUtil {
             }
             data = swapStream.toByteArray();
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         } finally {
             if (in != null) {
                 try {
                     in.close();
                 } catch (IOException e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                 }
             }
         }

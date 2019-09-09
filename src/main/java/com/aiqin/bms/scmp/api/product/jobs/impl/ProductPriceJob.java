@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.jobs.impl;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.TaxCostLogDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.pojo.TaxCostLogStock;
@@ -43,7 +44,8 @@ public class ProductPriceJob {
                 PriceThreadDo.doExecutor(doPrice);
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
-                log.error("error", e);
+                log.error(Global.ERROR, e);
+                Thread.currentThread().interrupt();
             }
         }
         skuCost();

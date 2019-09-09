@@ -5,13 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @ApiModel("赠品进销存respVo")
 @Data
-public class GiftsBuySalesRespVo  implements Serializable {
+public class GiftsBuySalesRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")

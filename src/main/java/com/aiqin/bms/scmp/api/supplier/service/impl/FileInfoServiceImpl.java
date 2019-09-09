@@ -1,12 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             }
             url = uploadFileUtil.upload(file);
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return url;
     }
@@ -63,7 +64,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             }
             url = uploadFileUtil.upload(file);
         } catch (IOException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return url;
     }
@@ -92,7 +93,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         try {
             return uploadFileUtil.downImage(filePath);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException(ResultCode.FILE_DOWN_ERROR);
         }
     }

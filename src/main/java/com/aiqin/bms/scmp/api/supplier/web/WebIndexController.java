@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.client.service.TicketService;
 import io.swagger.annotations.Api;
@@ -34,15 +35,15 @@ public class WebIndexController  {
 
     @GetMapping("/logout")
     @ApiOperation(value = "退出登录", notes = "退出登录")
-    public HttpResponse logout(@RequestParam(value = "ticket_person_id")String ticketPersonId,
-                               @RequestParam(value = "ticket") String ticket, HttpServletRequest request) {
+    public HttpResponse logout(@RequestParam(value = Global.TICKET_PERSON_ID)String ticketPersonId,
+                               @RequestParam(value = Global.TICKET) String ticket, HttpServletRequest request) {
         return ticketService.logout(ticket,ticketPersonId, request);
     }
 
     @GetMapping("/account/info")
     @ApiOperation(value = "根据员工编号获取员工信息", notes = "根据员工编号获取员工信息")
-    public HttpResponse accountInfo(@RequestParam(value = "ticket_person_id",required = false)String ticketPersonId,
-                                    @RequestParam(value = "ticket",required = false) String ticket,HttpServletRequest request) {
+    public HttpResponse accountInfo(@RequestParam(value = Global.TICKET_PERSON_ID,required = false)String ticketPersonId,
+                                    @RequestParam(value = Global.TICKET,required = false) String ticket,HttpServletRequest request) {
         if("0".equals(request.getParameter("authority"))){
             return HttpResponse.success(true);
         }

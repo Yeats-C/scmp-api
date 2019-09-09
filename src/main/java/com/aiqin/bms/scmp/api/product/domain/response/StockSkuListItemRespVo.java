@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.List;
-
 @ApiModel("查询库房管理商品sku返回VO")
 @Data
 public class StockSkuListItemRespVo {

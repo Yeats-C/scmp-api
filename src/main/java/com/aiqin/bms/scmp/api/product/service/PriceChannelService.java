@@ -3,7 +3,9 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannel;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem;
-import com.aiqin.bms.scmp.api.product.domain.request.basicprice.*;
+import com.aiqin.bms.scmp.api.product.domain.request.basicprice.AddPriceChannelReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceChannelReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.basicprice.UpdatePriceChannelReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceChannelRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
 

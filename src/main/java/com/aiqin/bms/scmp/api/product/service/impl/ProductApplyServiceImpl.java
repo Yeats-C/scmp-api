@@ -1,13 +1,8 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
-import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.CancelReqVO;
@@ -15,7 +10,12 @@ import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProduct
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

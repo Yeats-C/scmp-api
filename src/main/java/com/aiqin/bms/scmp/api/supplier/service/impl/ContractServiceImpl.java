@@ -163,73 +163,70 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
     @Override
     public ContractResVo findContractDetail(Long id) {
         ContractResVo contractResVo = new ContractResVo();
-        if (id != null) {
-            ContractDTO entity = contractDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(entity, contractResVo);
-            List<String> dicNameList = Lists.newArrayList();
-            dicNameList.add("结算方式");
-            Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
-            dicMap.forEach((k,v)->{
-                if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
-                    contractResVo.setSettlementMethodName(v.getSupplierContent());
-                }
-            });
-            List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
-            List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
-            List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
-            List<ContractBrand> contractBrands = contractBrandMapper.selectByContractCode(contractResVo.getContractCode());
-            List<ContractCategory> contractCategories = contractCategoryMapper.selectByContractCode(contractResVo.getContractCode());
-            List<ContractPlanType> planTypeList = contractPlanTypeMapper.selectByCode(contractResVo.getContractCode());
-            try {
-                if (CollectionUtils.isNotEmptyCollection(purchaseVolume)) {
-                    List<ContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ContractPurchaseVolumeResVo.class);
-                    contractResVo.setPurchaseVolumeReqVos(list);
-                }
-                if (CollectionUtils.isNotEmptyCollection(planTypeList)) {
-                    List<PlanTypeReqVO> copyList = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
-                    contractResVo.setPlanTypeList(copyList);
-                } else {
-                    contractResVo.setPlanTypeList(Lists.newArrayList());
-                }
-                if (CollectionUtils.isNotEmptyCollection(contractFiles)) {
-                    List<ContractFileResVo> fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
-                    contractResVo.setFileResVos(fileResVos);
-                }
-                if (CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)) {
-                    List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
-                    contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
-                }
-
-                if (CollectionUtils.isNotEmptyCollection(contractBrands)) {
-                    List<ContractBrandResVo> contractBrandResVos = BeanCopyUtils.copyList(contractBrands, ContractBrandResVo.class);
-                    contractResVo.setBrandResVos(contractBrandResVos);
-                }
-                if (CollectionUtils.isNotEmptyCollection(contractCategories)) {
-                    List<ContractCategoryResVo> contractCategoryResVos = BeanCopyUtils.copyList(contractCategories, ContractCategoryResVo.class);
-                    contractResVo.setCategoryResVos(contractCategoryResVos);
-                }
-                if (null != contractResVo) {
-                    //获取操作日志
-                    OperationLogVo operationLogVo = new OperationLogVo();
-                    operationLogVo.setPageNo(1);
-                    operationLogVo.setPageSize(100);
-                    operationLogVo.setObjectType(ObjectTypeCode.CONTRACT.getStatus());
-                    operationLogVo.setObjectId(contractResVo.getContractCode());
-                    BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
-                    List<LogData> logDataList = new ArrayList<>();
-                    if (null != pageList.getDataList() && pageList.getDataList().size() > 0) {
-                        logDataList = pageList.getDataList();
-                    }
-                    contractResVo.setLogDataList(logDataList);
-                    return contractResVo;
-                } else {
-                    return null;
-                }
-            } catch (Exception e) {
-                throw new GroundRuntimeException("实体转化失败");
-            }
+        ContractDTO entity = contractDao.selectByPrimaryKey(id);
+        if (null == entity) {
+            throw new GroundRuntimeException("没有找到对应的信息");
         }
-        return contractResVo;
+        BeanCopyUtils.copy(entity, contractResVo);
+        List<String> dicNameList = Lists.newArrayList();
+        dicNameList.add("结算方式");
+        Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+        dicMap.forEach((k, v) -> {
+            if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
+                contractResVo.setSettlementMethodName(v.getSupplierContent());
+            }
+        });
+        List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
+        List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
+        List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
+        List<ContractBrand> contractBrands = contractBrandMapper.selectByContractCode(contractResVo.getContractCode());
+        List<ContractCategory> contractCategories = contractCategoryMapper.selectByContractCode(contractResVo.getContractCode());
+        List<ContractPlanType> planTypeList = contractPlanTypeMapper.selectByCode(contractResVo.getContractCode());
+        try {
+            if (CollectionUtils.isNotEmptyCollection(purchaseVolume)) {
+                List<ContractPurchaseVolumeResVo> list = BeanCopyUtils.copyList(purchaseVolume, ContractPurchaseVolumeResVo.class);
+                contractResVo.setPurchaseVolumeReqVos(list);
+            }
+            if (CollectionUtils.isNotEmptyCollection(planTypeList)) {
+                List<PlanTypeReqVO> copyList = BeanCopyUtils.copyList(planTypeList, PlanTypeReqVO.class);
+                contractResVo.setPlanTypeList(copyList);
+            } else {
+                contractResVo.setPlanTypeList(Lists.newArrayList());
+            }
+            if (CollectionUtils.isNotEmptyCollection(contractFiles)) {
+                List<ContractFileResVo> fileResVos = BeanCopyUtils.copyList(contractFiles, ContractFileResVo.class);
+                contractResVo.setFileResVos(fileResVos);
+            }
+            if (CollectionUtils.isNotEmptyCollection(contractPurchaseGroups)) {
+                List<ContractPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(contractPurchaseGroups, ContractPurchaseGroupResVo.class);
+                contractResVo.setPurchaseGroupResVos(purchaseGroupResVos);
+            }
+
+            if (CollectionUtils.isNotEmptyCollection(contractBrands)) {
+                List<ContractBrandResVo> contractBrandResVos = BeanCopyUtils.copyList(contractBrands, ContractBrandResVo.class);
+                contractResVo.setBrandResVos(contractBrandResVos);
+            }
+            if (CollectionUtils.isNotEmptyCollection(contractCategories)) {
+                List<ContractCategoryResVo> contractCategoryResVos = BeanCopyUtils.copyList(contractCategories, ContractCategoryResVo.class);
+                contractResVo.setCategoryResVos(contractCategoryResVos);
+            }
+            //获取操作日志
+            OperationLogVo operationLogVo = new OperationLogVo();
+            operationLogVo.setPageNo(1);
+            operationLogVo.setPageSize(100);
+            operationLogVo.setObjectType(ObjectTypeCode.CONTRACT.getStatus());
+            operationLogVo.setObjectId(contractResVo.getContractCode());
+            BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
+            List<LogData> logDataList = new ArrayList<>();
+            if (null != pageList.getDataList() && pageList.getDataList().size() > 0) {
+                logDataList = pageList.getDataList();
+            }
+            contractResVo.setLogDataList(logDataList);
+            return contractResVo;
+
+        } catch (Exception e) {
+            throw new GroundRuntimeException("实体转化错误");
+        }
     }
 
     /**
@@ -426,7 +423,7 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void deletePlanTypeList(String contractCode) {
-        int i = contractPlanTypeMapper.deletePlanTypeList(contractCode);
+         contractPlanTypeMapper.deletePlanTypeList(contractCode);
     }
 
 
