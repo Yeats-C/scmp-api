@@ -101,4 +101,10 @@ public class InboundProductReqVo {
 
     @ApiModelProperty("进销税率")
     private Integer taxRate;
+
+    @ApiModelProperty("供应商code")
+    private String supplyCode;
+
+    @ApiModelProperty("供应商name")
+    private String supplyName;
 }

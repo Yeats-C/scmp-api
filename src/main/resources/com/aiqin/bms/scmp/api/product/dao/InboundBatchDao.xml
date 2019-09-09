@@ -97,6 +97,23 @@
       )
     </foreach>
   </insert>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, pre_qty, pra_qty,
+    create_by, create_time, update_by, update_time)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.inboundOderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.preQty,jdbcType=BIGINT},
+      #{item.praQty,jdbcType=BIGINT},
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}
+      )
+    </foreach>
+  </insert>
 
   <select id="selectWmsStockByInboundOderCode" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO" resultMap="WmsReq">
     select

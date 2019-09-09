@@ -62,6 +62,12 @@ public class InboundBatch extends PagesRequest{
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("供应商code")
+    private String supplyCode;
+
+    @ApiModelProperty("供应商name")
+    private String supplyName;
+
     public InboundBatch(String inboundOderCode, Integer pageSize, Integer pageNo) {
         this.inboundOderCode = inboundOderCode;
         super.setPageSize(pageSize);

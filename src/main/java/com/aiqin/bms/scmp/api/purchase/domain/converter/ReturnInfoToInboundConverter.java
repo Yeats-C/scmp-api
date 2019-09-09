@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.converter;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
@@ -11,7 +12,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoIt
 import com.google.common.collect.Lists;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -62,7 +62,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
         InboundReqSave inbound;
         InboundProductReqVo product;
         List<InboundProductReqVo> products;
-
+        List<InboundBatchReqVo> batchList;
+        InboundBatchReqVo inboundBatchReqVo;
         Map<String, List<ReturnOrderInfoItem>> detailMap = reqVo.getDetailList().stream().collect(Collectors.groupingBy(ReturnOrderInfoItem::getWarehouseCode));
         for (String warehouseCode : detailMap.keySet()) {
             //实际含税金额
@@ -78,6 +79,7 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
             //预计入库主数量
             Long preMainUnitNum = 0L;
             products = Lists.newArrayList();
+            batchList = Lists.newArrayList();
             inbound = new InboundReqSave();
             BeanUtils.copyProperties(reqVo, inbound);
             //入库类型
@@ -113,19 +115,27 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
             inbound.setUpdateBy(reqVo.getUpdateByName());
             for (ReturnOrderInfoItem returnOrderInfoItem : detailMap.get(warehouseCode)) {
                 product = new InboundProductReqVo();
+                inboundBatchReqVo = new InboundBatchReqVo();
+                inboundBatchReqVo.setSkuName(returnOrderInfoItem.getSkuName());
+                inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
+                inboundBatchReqVo.setSupplyCode(returnOrderInfoItem.getSupplyCode());
+                inboundBatchReqVo.setSupplyName(returnOrderInfoItem.getSupplyName());
+                inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
+                inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
+                inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());
-                product.setPreTaxAmount(returnOrderInfoItem.getPrice()*product.getPreInboundNum());
+                product.setPreTaxAmount(returnOrderInfoItem.getPrice() * product.getPreInboundNum());
                 product.setPraInboundMainNum(returnOrderInfoItem.getActualInboundNum().longValue());
                 product.setPraInboundNum(returnOrderInfoItem.getActualInboundNum().longValue());
-                product.setPraTaxAmount(returnOrderInfoItem.getPrice()*product.getPraInboundNum());
-                praInboundNum+=returnOrderInfoItem.getActualInboundNum();
-                praMainUnitNum+=returnOrderInfoItem.getActualInboundNum();
-                praTaxAmount+=returnOrderInfoItem.getPrice()*praInboundNum;
-                preInboundNum+=returnOrderInfoItem.getNum();
-                preMainUnitNum+=returnOrderInfoItem.getNum();
-                preTaxAmount+=returnOrderInfoItem.getPrice()*preInboundNum;
+                product.setPraTaxAmount(returnOrderInfoItem.getPrice() * product.getPraInboundNum());
+                praInboundNum += returnOrderInfoItem.getActualInboundNum();
+                praMainUnitNum += returnOrderInfoItem.getActualInboundNum();
+                praTaxAmount += returnOrderInfoItem.getPrice() * praInboundNum;
+                preInboundNum += returnOrderInfoItem.getNum();
+                preMainUnitNum += returnOrderInfoItem.getNum();
+                preTaxAmount += returnOrderInfoItem.getPrice() * preInboundNum;
                 inbound.setWarehouseCode(returnOrderInfoItem.getWarehouseCode());
                 inbound.setWarehouseName(returnOrderInfoItem.getWarehouseName());
                 //规格.
@@ -135,8 +145,12 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 product.setCreateTime(reqVo.getCreateDate());
                 product.setInboundBaseContent("1");
                 product.setInboundBaseUnit("1");
+                product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
+                product.setSupplyName(returnOrderInfoItem.getSupplyName());
                 products.add(product);
+                batchList.add(inboundBatchReqVo);
                 inbound.setList(products);
+                inbound.setInboundBatchReqVos(batchList);
             }
             //实际含税总金额
             inbound.setPraTaxAmount(praTaxAmount);
