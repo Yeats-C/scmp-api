@@ -458,7 +458,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
     }
 
     @Override
-    public HttpResponse categoryPromotion(SaleRequest saleRequest){
+    public HttpResponse<CategoryResponse> categoryPromotion(SaleRequest saleRequest){
         if(saleRequest == null || StringUtils.isBlank(saleRequest.getDate()) || saleRequest.getType() == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }

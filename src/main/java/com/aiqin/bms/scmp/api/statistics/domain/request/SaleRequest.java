@@ -75,4 +75,10 @@ public class SaleRequest {
         this.type = type;
         this.productSortCode = productSortCode;
     }
+
+    public SaleRequest(String date, String productSortCode, Integer reportType) {
+        this.date = date;
+        this.productSortCode = productSortCode;
+        this.reportType = reportType;
+    }
 }

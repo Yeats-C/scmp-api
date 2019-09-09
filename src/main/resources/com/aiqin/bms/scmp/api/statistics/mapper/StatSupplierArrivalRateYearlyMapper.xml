@@ -3,9 +3,11 @@
 <mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatSupplierArrivalRateYearlyDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatSupplierArrivalRateYearly">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="stat_year" jdbcType="INTEGER" property="statYear" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
     <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
     <result column="lv1" jdbcType="VARCHAR" property="lv1" />
@@ -21,10 +23,9 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, stat_year, supplier_code, supplier_name, responsible_person_code, responsible_person_name, 
-    lv1, lv1_category_name, logistics_center_code, logistics_center_name, pre_inbound_num, 
-    pra_inbound_num, pre_tax_amount, pra_tax_amount, inbound_amount_fill_rate, arrival_rate, 
-    create_time
+    id, stat_year, supplier_code, supplier_name, product_sort_code, product_sort_name, 
+    responsible_person_code, responsible_person_name, lv1, lv1_category_name, logistics_center_code, 
+    logistics_center_name, pre_inbound_num, pra_inbound_num, pre_tax_amount, pra_tax_amount, 
+    inbound_amount_fill_rate, arrival_rate, create_time
   </sql>
-
 </mapper>

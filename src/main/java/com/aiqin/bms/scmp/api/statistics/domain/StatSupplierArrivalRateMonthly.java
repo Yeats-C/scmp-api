@@ -17,11 +17,11 @@ public class StatSupplierArrivalRateMonthly {
 
     @ApiModelProperty(value="年")
     @JsonProperty("stat_year")
-    private Integer statYear;
+    private Long statYear;
 
     @ApiModelProperty(value="月")
     @JsonProperty("stat_month")
-    private Integer statMonth;
+    private Long statMonth;
 
     @ApiModelProperty(value="供应商code")
     @JsonProperty("supplier_code")

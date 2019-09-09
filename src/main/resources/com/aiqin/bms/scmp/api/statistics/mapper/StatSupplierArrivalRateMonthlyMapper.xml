@@ -3,8 +3,8 @@
 <mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatSupplierArrivalRateMonthlyDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatSupplierArrivalRateMonthly">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="stat_year" jdbcType="INTEGER" property="statYear" />
-    <result column="stat_month" jdbcType="INTEGER" property="statMonth" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />

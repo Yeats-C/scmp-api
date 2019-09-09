@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 /**
@@ -30,10 +29,6 @@ public class StatisticsServiceImpl implements StatisticsService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsServiceImpl.class);
 
-    @Resource
-    private StatSupplierArrivalRateMonthlyDao statSupplierArrivalRateMonthlyDao;
-    @Resource
-    private StatSupplierArrivalRateYearlyDao statSupplierArrivalRateYearlyDao;
     @Resource
     private StatDeptStoreRepurchaseRateDao statDeptStoreRepurchaseRateDao;
     @Resource
@@ -52,77 +47,8 @@ public class StatisticsServiceImpl implements StatisticsService {
     private StatDeptNegativeMarginMonthlyDao statDeptNegativeMarginMonthlyDao;
 
     private final static int YEAR = 0;
-    private final static int QUARTERLYQ = 1;
+    private final static int QUARTER = 1;
     private final static int MONTH = 2;
-
-    private void currency(Integer type, String date){
-        if(type == null && StringUtils.isEmpty(date)){
-            type = 0;
-            Calendar cale = null;
-            cale = Calendar.getInstance();
-            date = Integer.toString(cale.get(Calendar.YEAR));
-        }
-    }
-
-    @Override
-    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(Integer type, String date){
-       this.currency(type, date);
-       // 查询年报信息
-       List<SupplierDeliveryResponse> deliveryList;
-       List<SupplierDeliveryRateResponse> rateList;
-       if(type == 0){
-           deliveryList = statSupplierArrivalRateYearlyDao.supplyArrivalYearByGroup(date);
-           if(CollectionUtils.isNotEmptyCollection(deliveryList)){
-               for(SupplierDeliveryResponse response:deliveryList){
-                   rateList = statSupplierArrivalRateYearlyDao.supplyArrivalYearList(date, response.getSupplierCode(), response.getResponsiblePersonCode());
-               }
-           }
-       }else {
-           String year = date.substring(0, 4);
-           String month = date.substring(5, date.length());
-           deliveryList = statSupplierArrivalRateMonthlyDao.supplyArrivalMonthByGroup(year, month);
-           if(CollectionUtils.isNotEmptyCollection(deliveryList)){
-               for(SupplierDeliveryResponse response:deliveryList){
-                   rateList = statSupplierArrivalRateMonthlyDao.supplyArrivalMonthList(year, month, response.getSupplierCode(), response.getResponsiblePersonCode());
-               }
-           }
-       }
-       return HttpResponse.success();
-    }
-
-    private void supplyArrivalRate(List<SupplierDeliveryRateResponse> list){
-        if(CollectionUtils.isNotEmptyCollection(list)){
-            SupplierDeliveryResponse delivery = new SupplierDeliveryResponse();
-            Long hbSubtotalGoodsCount  = 0L, hbSubtotalGoodsAmount = 0L, hbSubtotalWarehouseCount = 0L, hbSubtotalWarehouseAmount = 0L;
-            Long num = 0L;
-            BigDecimal big = new BigDecimal(0);
-            for(SupplierDeliveryRateResponse response:list){
-                Long preInboundNum = response.getPreInboundNum() == null ? num : response.getPreInboundNum();
-                Long preTaxAmount = response.getPreTaxAmount() == null ? num : response.getPreTaxAmount();
-                Long praInboundNum = response.getPraInboundNum() == null ? num : response.getPraInboundNum();
-                Long praTaxAmount = response.getPraTaxAmount() == null ? num : response.getPraTaxAmount();
-                BigDecimal amountRate = response.getInboundAmountFillRate() == null ? big : response.getInboundAmountFillRate();
-                BigDecimal goodsRate = response.getArrivalRate() == null ? big : response.getArrivalRate();
-               if(response.getLogisticsCenterCode().equals(Global.HB_CODE)){
-                   delivery.setHbGoodsCount(preInboundNum);
-                   delivery.setHbGoodsAmount(preTaxAmount);
-                   delivery.setHbAmountRate(amountRate);
-                   delivery.setHbWarehouseCount(praInboundNum);
-                   delivery.setHbWarehouseAmount(praTaxAmount);
-                   delivery.setHbGoodsRate(goodsRate);
-                   hbSubtotalGoodsCount += preInboundNum;
-                   hbSubtotalGoodsAmount += preTaxAmount;
-                   hbSubtotalWarehouseCount += praInboundNum;
-                   hbSubtotalWarehouseAmount += praTaxAmount;
-               }
-            }
-            delivery.setHbSubtotalGoodsCount(hbSubtotalGoodsCount);
-            delivery.setHbSubtotalGoodsAmount(hbSubtotalGoodsAmount);
-            delivery.setHbSubtotalWarehouseCount(hbSubtotalWarehouseCount);
-            delivery.setHbSubtotalWarehouseAmount(hbSubtotalWarehouseAmount);
-            delivery.setHbSubtotalAmountRate(new BigDecimal(hbSubtotalGoodsAmount).divide(new BigDecimal(hbSubtotalWarehouseAmount)));
-        }
-    }
 
     @Override
     public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type, String productSortCode){
@@ -208,7 +134,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                     return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
                 }
                 Long year = Long.valueOf(date);
-                sumResponse = this.companyNegative(year, seasonType, sumResponse, QUARTERLYQ);
+                sumResponse = this.companyNegative(year, seasonType, sumResponse, QUARTER);
             }else if(reportType.equals(Global.MONTHLY_REPORT)){
                 // 计算公司的负毛利统计- 月报
                 Long year = Long.valueOf(date.substring(0, 4));
@@ -232,7 +158,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                     return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
                 }
                 Long year = Long.valueOf(date);
-                deptResponse = this.departmentNegative(year, seasonType, productSortCode, deptResponse, QUARTERLYQ);
+                deptResponse = this.departmentNegative(year, seasonType, productSortCode, deptResponse, QUARTER);
             }else if(reportType.equals(Global.MONTHLY_REPORT)){
                 // 计算部门的负毛利统计- 月报
                 Long year = Long.valueOf(date.substring(0, 4));
@@ -254,7 +180,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         NegativeRateResponse rateResponse;
         if(i == YEAR){
             sumResponse = statComNegativeMarginYearlyDao.negativeSum(year);
-        }else if(i == QUARTERLYQ){
+        }else if(i == QUARTER){
             sumResponse = statComNegativeMarginQuarterlyDao.negativeSum(year, data);
         }else{
             sumResponse = statComNegativeMarginMonthlyDao.negativeSum(year, data);
@@ -262,7 +188,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         if(sumResponse != null){
             if(i == YEAR){
                 departments = statComNegativeMarginYearlyDao.negativeByDept(year);
-            }else if(i == QUARTERLYQ){
+            }else if(i == QUARTER){
                 departments = statComNegativeMarginQuarterlyDao.negativeByDept(year, data);
             }else {
                 departments = statComNegativeMarginMonthlyDao.negativeByDept(year, data);
@@ -272,7 +198,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                     if(i == YEAR){
                         deptResponse = statComNegativeMarginYearlyDao.negativeDeptSum(year, dept.getProductSortCode());
                         companys = statComNegativeMarginYearlyDao.negativeByCompany(year, dept.getProductSortCode());
-                    }else if(i == QUARTERLYQ){
+                    }else if(i == QUARTER){
                         deptResponse = statComNegativeMarginQuarterlyDao.negativeDeptSum(year, data, dept.getProductSortCode());
                         companys = statComNegativeMarginQuarterlyDao.negativeByCompany(year, data, dept.getProductSortCode());
                     }else {
@@ -285,7 +211,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                             if(i == YEAR){
                                 companyResponse = statComNegativeMarginYearlyDao.negativeCompanySum(year, company.getPriceChannelCode(),
                                         company.getProductSortCode());
-                            }else if(i == QUARTERLYQ){
+                            }else if(i == QUARTER){
                                 companyResponse = statComNegativeMarginQuarterlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
                                         company.getProductSortCode());
                             } else{
@@ -296,7 +222,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                                 if(i == YEAR) {
                                     categoryList = statComNegativeMarginYearlyDao.negativeCategoryList(year, company.getPriceChannelCode(),
                                             company.getProductSortCode());
-                                }else if(i == QUARTERLYQ){
+                                }else if(i == QUARTER){
                                         categoryList = statComNegativeMarginQuarterlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
                                                 company.getProductSortCode());
                                 }else {
@@ -338,7 +264,7 @@ public class StatisticsServiceImpl implements StatisticsService {
         if (i == YEAR) {
             deptResponse = statDeptNegativeMarginYearlyDao.negativeDeptSum(year, productSortCode);
             companys = statDeptNegativeMarginYearlyDao.negativeByCompany(year, productSortCode);
-        } else if (i == QUARTERLYQ) {
+        } else if (i == QUARTER) {
             deptResponse = statDeptNegativeMarginQuarterlyDao.negativeDeptSum(year, data, productSortCode);
             companys = statDeptNegativeMarginQuarterlyDao.negativeByCompany(year, data, productSortCode);
         } else {
@@ -351,7 +277,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                 if (i == YEAR) {
                     companyResponse = statDeptNegativeMarginYearlyDao.negativeCompanySum(year, company.getPriceChannelCode(),
                             productSortCode);
-                } else if (i == QUARTERLYQ) {
+                } else if (i == QUARTER) {
                     companyResponse = statDeptNegativeMarginQuarterlyDao.negativeCompanySum(year, data, company.getPriceChannelCode(),
                             productSortCode);
                 } else {
@@ -362,7 +288,7 @@ public class StatisticsServiceImpl implements StatisticsService {
                     if (i == YEAR) {
                         categoryList = statDeptNegativeMarginYearlyDao.negativeCategoryList(year, company.getPriceChannelCode(),
                                 productSortCode);
-                    } else if (i == QUARTERLYQ) {
+                    } else if (i == QUARTER) {
                         categoryList = statDeptNegativeMarginQuarterlyDao.negativeCategoryList(year, data, company.getPriceChannelCode(),
                                 company.getProductSortCode());
                     } else {

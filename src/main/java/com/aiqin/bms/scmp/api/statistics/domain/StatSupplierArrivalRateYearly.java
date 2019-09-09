@@ -17,7 +17,7 @@ public class StatSupplierArrivalRateYearly {
 
     @ApiModelProperty(value="年")
     @JsonProperty("stat_year")
-    private Integer statYear;
+    private Long statYear;
 
     @ApiModelProperty(value="供应商code")
     @JsonProperty("supplier_code")
@@ -26,6 +26,14 @@ public class StatSupplierArrivalRateYearly {
     @ApiModelProperty(value="供应商")
     @JsonProperty("supplier_name")
     private String supplierName;
+
+    @ApiModelProperty(value="所属部门code")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty(value="所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty(value="采购负责人code")
     @JsonProperty("responsible_person_code")

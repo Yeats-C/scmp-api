@@ -15,4 +15,5 @@ public interface StatSupplierArrivalRateMonthlyDao {
                                                               @Param("supplierCode") String supplierCode,
                                                               @Param("responsiblePersonCode") String responsiblePersonCode);
 
+
 }
