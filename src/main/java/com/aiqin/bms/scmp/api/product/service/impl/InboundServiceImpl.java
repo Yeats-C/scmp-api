@@ -276,7 +276,12 @@ public class InboundServiceImpl implements InboundService {
             //插入入库单商品表
             int insertProducts=inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
-
+            List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
+            if(CollectionUtils.isNotEmpty(batchList)){
+                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+                Integer count = inboundBatchDao.insertList(batchList);
+                log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
+            }
             //更新编码表
             encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
 
