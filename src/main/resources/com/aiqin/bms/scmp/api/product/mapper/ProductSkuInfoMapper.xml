@@ -125,7 +125,13 @@
       #{item}
     </foreach>
   </select>
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+  <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku
+    where sku_code = #{skuCode,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku
     where id = #{id,jdbcType=BIGINT}
   </delete>

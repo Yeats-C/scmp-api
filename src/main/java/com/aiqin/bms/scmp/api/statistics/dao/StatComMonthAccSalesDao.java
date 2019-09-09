@@ -9,7 +9,7 @@ import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 
 import java.util.List;
 
-public interface StatComSalesYearlyDao {
+public interface StatComMonthAccSalesDao {
 
     SaleSumResponse saleSum(SaleRequest saleRequest);
 

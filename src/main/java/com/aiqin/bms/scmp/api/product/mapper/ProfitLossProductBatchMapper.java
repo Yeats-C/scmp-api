@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface ProfitLossProductBatchMapper {
     int updateByPrimaryKey(ProfitLossProductBatch record);
 
     List<ProfitLossProductBatch> getListByOrderCode(String orderCode);
+
+    void insertList(@Param(value = "list") List<ProfitLossProductBatch> batchList);
 }

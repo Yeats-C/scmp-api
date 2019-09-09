@@ -7,8 +7,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 public interface StatisticsService {
 
-    HttpResponse<SupplierDeliveryResponse> supplierDelivery(Integer formType, String date);
-
     HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(String date, Integer type, String productSortCode);
 
     HttpResponse<NegativeSumResponse> negativeGross(String date, Integer type, Integer reportType, Long seasonType, String productSortCode);
