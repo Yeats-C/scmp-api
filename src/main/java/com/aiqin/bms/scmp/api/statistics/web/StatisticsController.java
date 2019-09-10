@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryRespon
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierReturnResponse;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
@@ -126,6 +127,19 @@ public class StatisticsController {
                                                                    @RequestParam("product_sort_code") String productSortCode) {
         SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
         return supplierStatisticsService.supplierDelivery(supplierRequest);
+    }
+
+    @GetMapping("/supplier/retreat/rate")
+    @ApiOperation("供应商退供率统计-部门")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SupplierReturnResponse> supplierRetreat(@RequestParam("date") String date,
+                                                                @RequestParam("report_type") Integer reportType,
+                                                                @RequestParam("product_sort_code") String productSortCode) {
+        SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
+        return supplierStatisticsService.supplierRetreat(supplierRequest);
     }
 
 }
