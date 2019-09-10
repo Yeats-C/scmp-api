@@ -252,6 +252,7 @@ public class OrderInfo {
 
     @ApiModelProperty("运输单号")
     private String transportNumber;
+
     /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
 
     @ApiModelProperty("预计商品数量")

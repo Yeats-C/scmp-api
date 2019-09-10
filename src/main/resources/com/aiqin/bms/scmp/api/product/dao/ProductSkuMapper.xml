@@ -2078,8 +2078,10 @@
           AND ps.product_name LIKE CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
         </if>
   </select>
-  <select id="getSkuInfoByCodeList" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
-    SELECT * FROM product_sku where sku_code in
+  <select id="getSkuInfoByCodeList" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
+    SELECT
+      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice
+     FROM product_sku where sku_code in
     <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
       #{item, jdbcType=VARCHAR}
     </foreach>
