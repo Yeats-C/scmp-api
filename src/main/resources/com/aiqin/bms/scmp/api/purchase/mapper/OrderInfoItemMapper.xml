@@ -603,4 +603,15 @@
       )
     </foreach>
   </insert>
+  <select id="listDetailForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_info_item
+    where
+    order_code in(
+    <foreach collection="orderCodeList" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
 </mapper>

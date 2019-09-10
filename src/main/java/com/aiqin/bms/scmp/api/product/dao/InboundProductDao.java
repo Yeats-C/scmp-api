@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
@@ -58,4 +59,5 @@ public interface InboundProductDao {
 
     List<ReturnInboundProduct> selectTax(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode);
 
+    List<InboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
 }

@@ -5,7 +5,7 @@ import lombok.Getter;
 /**
  * @author knight.xie
  * @version 1.0
- * @className InboundTypeEnum
+ * @className In+boundTypeEnum
  * @date 2019/1/8 19:52
  * @description 入库类型
  */

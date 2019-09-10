@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.DeliveryReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
@@ -54,4 +55,6 @@ public interface OrderInfoItemMapper {
     int updateBatchNumById(List<DeliveryReqVO> reqVO);
 
     Integer insertList(List<OrderInfoItem> list);
+
+    List<OrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 }

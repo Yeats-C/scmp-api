@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
@@ -118,4 +119,8 @@ public interface ReturnOrderInfoMapper {
      * @return int
      */
     int updateByReturnOrderCodeSelective(ReturnOrderInfo returnOrderInfo);
+
+    List<ReturnOrderInfo> listForSap(SapOrderRequest sapOrderRequest);
+
+    int updateByOrderCodes(@Param(value = "list")List<String> orderCodes);
 }

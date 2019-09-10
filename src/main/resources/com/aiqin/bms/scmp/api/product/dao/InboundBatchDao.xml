@@ -180,6 +180,16 @@
     where line_num = #{linenum,jdbcType=BIGINT}
     and  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </update>
-
+  <select id="listBySourceCodes" resultMap="BaseResultMap">
+    select
+        CONCAT(i.source_oder_code,ib.sku_code) as inbound_oder_code , ib.supplier_code , ib.supplier_name
+    from
+    inbound_batch as ib
+    LEFT JOIN inbound as i on ib.inbound_oder_code = i.inbound_oder_code
+    where i.source_oder_code in
+    <foreach collection="list"  item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 
 </mapper>
