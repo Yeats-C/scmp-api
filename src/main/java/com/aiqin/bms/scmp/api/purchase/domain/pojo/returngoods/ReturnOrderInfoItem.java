@@ -114,4 +114,10 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("仓库编码")
     private String warehouseCode;
 
+    @ApiModelProperty("供应商code")
+    private String supplyCode;
+
+    @ApiModelProperty("供应商name")
+    private String supplyName;
+
 }

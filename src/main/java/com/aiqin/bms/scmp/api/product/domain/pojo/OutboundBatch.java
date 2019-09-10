@@ -59,6 +59,12 @@ public class OutboundBatch extends PagesRequest {
     @ApiModelProperty("行号")
     private Long lineNum;
 
+    @ApiModelProperty("供应商code")
+    private String supplierCode;
+
+    @ApiModelProperty("供应商name")
+    private String supplierName;
+
     public OutboundBatch(String outboundOderCode, Integer pageSize, Integer pageNo) {
         this.outboundOderCode = outboundOderCode;
         this.setPageSize(pageSize);

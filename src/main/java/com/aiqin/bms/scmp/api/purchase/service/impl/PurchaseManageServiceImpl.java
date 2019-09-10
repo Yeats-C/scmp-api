@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
@@ -719,8 +720,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         InboundProductReqVo reqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
+        List<InboundBatchReqVo> batchReqVoList = Lists.newArrayList();
         // 查询是否有商品可以入库
         if(CollectionUtils.isNotEmptyCollection(productList)){
+            InboundBatchReqVo inboundBatchReqVo;
             for(PurchaseOrderProduct product:productList){
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
@@ -767,6 +770,16 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 preTaxAmount += totalAmount.longValue();
                 preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount.longValue(), product.getTaxRate().longValue());
                 list.add(reqVo);
+                //出库加入供应商与商品关系
+                inboundBatchReqVo = new InboundBatchReqVo();
+                inboundBatchReqVo.setSkuName(product.getSkuName());
+                inboundBatchReqVo.setSkuCode(product.getSkuCode());
+                inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
+                inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
+                inboundBatchReqVo.setPraQty(product.getActualSingleCount().longValue());
+                inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
+                inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
+                batchReqVoList.add(inboundBatchReqVo);
             }
         }
         save.setPreInboundNum(preInboundNum);
@@ -776,6 +789,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
+        save.setInboundBatchReqVos(batchReqVoList);
         return save;
     }
 
