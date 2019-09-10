@@ -123,6 +123,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
                 inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
                 inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
+                //税率
+                inboundBatchReqVo.setTax(returnOrderInfoItem.getTax());
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());

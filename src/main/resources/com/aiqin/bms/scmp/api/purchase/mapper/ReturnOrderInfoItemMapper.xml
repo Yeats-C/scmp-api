@@ -35,6 +35,7 @@
     <result column="actual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
     <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
     <result column="actual_price" jdbcType="BIGINT" property="actualPrice" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
@@ -42,7 +43,7 @@
     give_promotion, batch_number, price, num, amount, activity_code, product_line_num,
     promotion_line_num, product_status, actual_inbound_num, company_name, company_code,
     channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
-    actual_amount, actual_price
+    actual_amount, actual_price,tax
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -90,7 +91,7 @@
       num, amount, activity_code,
       product_line_num, promotion_line_num, product_status,
       actual_inbound_num, company_name, company_code,  channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
-      actual_amount, actual_price
+      actual_amount, actual_price,tax
       )
     values
     <foreach collection="list" item="item"   separator=",">
@@ -126,7 +127,8 @@
       #{item.actualChannelUnitPrice,jdbcType=VARCHAR},
       #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
       #{item.actualAmount,jdbcType=VARCHAR},
-      #{item.actualPrice,jdbcType=VARCHAR}
+      #{item.actualPrice,jdbcType=VARCHAR},
+      #{item.tax,jdbcType=VARCHAR}
       )
     </foreach>
 

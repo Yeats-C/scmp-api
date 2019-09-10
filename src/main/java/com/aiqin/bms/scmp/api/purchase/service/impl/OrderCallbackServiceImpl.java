@@ -243,6 +243,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             } else {
                 throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", outboundDetailRequest.getSkuCode()));
             }
+            orderInfoItem.setTax(productSku.getTax());
             orderInfoItem.setNum(outboundDetailRequest.getNum());
             orderInfoItem.setPictureUrl(picturesMap.containsKey(outboundDetailRequest.getSkuCode()) ? picturesMap.get(outboundDetailRequest.getSkuCode()).get(0).getProductPicturePath() : "");
             orderInfoItem.setActualDeliverNum(outboundDetailRequest.getActualDeliverNum());
@@ -379,13 +380,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         outbound.setOutboundOderCode(outboundOderCode);
 
         List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-        outboundProducts.stream().forEach(outboundProduct ->outboundProduct.setOutboundOderCode(outboundOderCode));
+        outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(outboundOderCode));
         int i = outboundDao.insertSelective(outbound);
         LOGGER.info("出库主表保存结果:{}", i);
         int j = outboundProductDao.insertBatch(outboundProducts);
         LOGGER.info("出库商品保存结果:{}", j);
         List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
-        batchList.stream().forEach(outBoundBatch->outBoundBatch.setOutboundOderCode(outboundOderCode));
+        batchList.stream().forEach(outBoundBatch -> outBoundBatch.setOutboundOderCode(outboundOderCode));
         //添加供应商对应的商品信息
         Integer count = outboundBatchDao.insertList(batchList);
         LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
@@ -480,7 +481,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     sumBoxGrossWeight += new BigDecimal(returnDetailRequest.getNum())
                             .multiply(productSku.getBoxGrossWeight())
                             .multiply(orderWeightCoefficient).longValue();
+                } else {
+                    throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", returnOrderInfoItem.getSkuCode()));
                 }
+                returnOrderInfoItem.setTax(productSku.getTax());
                 returnOrderInfoItem.setPictureUrl(picturesMap.containsKey(returnDetailRequest.getSkuCode()) ? picturesMap.get(returnDetailRequest.getSkuCode()).get(0).getProductPicturePath() : "");
                 returnOrderInfoItem.setReturnOrderCode(request.getReturnOrderCode());
                 returnOrderInfoItem.setNum(returnDetailRequest.getNum());
@@ -670,7 +674,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuList = allocation.getDetailList().stream().map(AllocationProduct::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
             Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
-            allocationHandler(request,productSkuMap,allocation);
+            allocationHandler(request, productSkuMap, allocation);
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(allocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
@@ -714,9 +718,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     }
 
     /**
-     *  供应商与商品关系
+     * 供应商与商品关系
      */
-    private void allocationHandler(TransfersRequest requests,Map<String, OrderProductSkuResponse> productSkuMap,Allocation allocation){
+    private void allocationHandler(TransfersRequest requests, Map<String, OrderProductSkuResponse> productSkuMap, Allocation allocation) {
         OrderProductSkuResponse orderProductSkuResponse;
         List<AllocationProduct> allocationProductList = Lists.newArrayList();
         for (AllocationProduct allocationProduct : allocation.getDetailList()) {
@@ -731,7 +735,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 allocationProduct.setUnit(orderProductSkuResponse.getUnitName());
                 allocationProduct.setBrand(orderProductSkuResponse.getBrandName());
                 allocationProduct.setType(productTypeList.get(orderProductSkuResponse.getProductType()));
-                allocationProduct.setTax(orderProductSkuResponse.getTaxRate().longValue());
+                allocationProduct.setTax(orderProductSkuResponse.getTax());
 
             }
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
@@ -771,6 +775,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         allocation.setDetailBatchList(allocationProductBatchList);
     }
+
     /**
      * 调拨出库单参数处理
      *
@@ -819,22 +824,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             outboundBatch.setUpdateBy(allocation.getUpdateBy());
             batchList.add(outboundBatch);
         }
+        OrderProductSkuResponse orderProductSkuResponse;
         for (AllocationProduct item : allocation.getDetailList()) {
             outboundProduct = new OutboundProductReqVo();
             //sku
             outboundProduct.setSkuCode(item.getSkuCode());
             outboundProduct.setSkuName(item.getSkuName());
-            if (productSkuMap.get(item.getSkuCode()) != null) {
+            orderProductSkuResponse = productSkuMap.get(item.getSkuCode());
+            if (orderProductSkuResponse != null) {
                 //图片
-                outboundProduct.setPictureUrl(productSkuMap.get(item.getSkuCode()).getPictureUrl());
+                outboundProduct.setPictureUrl(orderProductSkuResponse.getPictureUrl());
                 //规格
-                outboundProduct.setNorms(productSkuMap.get(item.getSkuCode()).getSpec());
-                outboundProduct.setUnitCode(productSkuMap.get(item.getSkuCode()).getUnitCode());
+                outboundProduct.setNorms(orderProductSkuResponse.getSpec());
+                outboundProduct.setUnitCode(orderProductSkuResponse.getUnitCode());
                 //单位
-                outboundProduct.setUnitName(productSkuMap.get(item.getSkuCode()).getUnitName());
-                outboundProduct.setOutboundNorms(productSkuMap.get(item.getSkuCode()).getSpec());
-                outboundProduct.setColorCode(productSkuMap.get(item.getSkuCode()).getColorCode());
-                outboundProduct.setColorName(productSkuMap.get(item.getSkuCode()).getColorName());
+                outboundProduct.setUnitName(orderProductSkuResponse.getUnitName());
+                outboundProduct.setOutboundNorms(orderProductSkuResponse.getSpec());
+                outboundProduct.setColorCode(orderProductSkuResponse.getColorCode());
+                outboundProduct.setColorName(orderProductSkuResponse.getColorName());
+                outboundProduct.setTax(orderProductSkuResponse.getTax());
+            }else{
+                throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", item.getSkuCode()));
             }
             //预计出库数量
             outboundProduct.setPreOutboundNum(item.getQuantity());
@@ -938,6 +948,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 product.setUnitCode(orderProductSkuResponse.getUnitCode());
                 product.setUnitName(orderProductSkuResponse.getUnitName());
                 product.setInboundNorms(orderProductSkuResponse.getSpec());
+                product.setTaxRate(orderProductSkuResponse.getTax().intValue());
+            }else{
+                throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", allocationProduct.getSkuCode()));
             }
             product.setCreateBy(allocation.getCreateBy());
             product.setCreateTime(allocation.getCreateTime());
@@ -978,7 +991,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     /**
      * 调拨单添加
      */
-    private void allocationInsert(Allocation allocation, byte type, String typeName ) {
+    private void allocationInsert(Allocation allocation, byte type, String typeName) {
         // 获取编码
         String content = HandleTypeCoce.ADD_ALLOCATION.getName();
         //保存日志
@@ -1066,7 +1079,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     profitLossDetail.setType(productTypeList.get(productSkuResponse.getProductType()));
                     profitLossDetail.setModel(productSkuResponse.getModel());
                     profitLossDetail.setUnit(productSkuResponse.getUnitName());
-                    profitLossDetail.setTax(productSkuResponse.getTaxRate().longValue());
+                    profitLossDetail.setTax(productSkuResponse.getTax());
                     profitLossDetail.setPictureUrl(productSkuResponse.getPictureUrl());
                     profitLossDetail.setOrderCode(profitLoss.getOrderCode());
                     if (StringUtils.isBlank(profitLoss.getWarehouseCode())) {
