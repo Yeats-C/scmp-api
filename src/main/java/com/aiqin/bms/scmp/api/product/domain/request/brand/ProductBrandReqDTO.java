@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.brand;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 

@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.converter;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.SupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -118,7 +119,7 @@ public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo
                     product.setPreInboundMainNum(vo.getNum()*vo.getConvertNum());
                     product.setInboundBaseContent(vo.getConvertNum().toString());
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     throw new BizException("sku编码:"+vo.getSkuCode()+",对应的转换单位系数不存在");
                 }
                 product.setCreateTime(new Date());
@@ -140,7 +141,7 @@ public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo
             inbound.setList(products);
             return inbound;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if(e instanceof BizException){
                 throw new BizException(e.getMessage());
             }else {

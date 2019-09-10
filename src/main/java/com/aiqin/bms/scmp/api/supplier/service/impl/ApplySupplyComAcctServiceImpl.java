@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.ApplySupplyCompanyAcctDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
@@ -119,7 +120,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         applySupplyCompanyAcctReqDTO.setApplyStatus((byte) 0);
         ((ApplySupplyComAcctService) AopContext.currentProxy()).insert(applySupplyCompanyAcctReqDTO);
         encodingRuleService.updateNumberValue(rule.getNumberingValue(), rule.getId());
-        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyAcctReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+        String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplyCompanyAcctReqDTO.getCreateBy()).replace(Global.APPLY_TYPE, "新增");
         return supplierCommonService.getInstance(rule.getNumberingValue() + 1 + "", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
 
     }
@@ -186,7 +187,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
 
-                String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompanyAcctReqDTO.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
+                String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplyCompanyAcctReqDTO.getUpdateBy()).replace(Global.APPLY_TYPE, applyTypeTitle);
                 //存日志
                 supplierCommonService.getInstance(applySupplyCompanyAcctReqDTO.getApplyCode(), HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.APPROVAL.getName());
             } else {
@@ -250,7 +251,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         encodingRuleService.updateNumberValue(rule.getNumberingValue(), rule.getId());
 //        ((ApplySupplyComAcctService) AopContext.currentProxy()).updateApplyData(s);
         //存日志
-        String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", s.getUpdateBy()).replace("APPLYTYPE", "修改");
+        String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, s.getUpdateBy()).replace(Global.APPLY_TYPE, "修改");
         supplierCommonService.getInstance(s.getApplyCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, HandleTypeCoce.PENDING.getName());
         //申请表状态更新完成后，再更新正式表
         supplyCompanyAccount.setApplyStatus((byte) 1);
@@ -283,7 +284,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             //调用审批
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -303,7 +304,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -325,7 +326,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("修改供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("修改供应单位账户失败");
         }
         return temp;
@@ -349,7 +350,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             supplierCommonService.getInstance(applySupplyCompanyAccount.getApplyCompanyAccountCode(), HandleTypeCoce.DELETE.getStatus(), ObjectTypeCode.SUPPLY_COMPANY_ACCOUNT.getStatus(), HandleTypeCoce.APPLY_DELETE_SUPPLY_COMPANY_ACCOUNT.getName(),null, HandleTypeCoce.DELETE.getName());
         } catch (Exception e) {
             log.error("删除供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("删除供应单位账户失败");
         }
         return temp;
@@ -447,7 +448,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             t.setLogData(log);
             return t;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("数据异常!");
         }
     }
@@ -487,7 +488,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("通过id查询供货单位账户详情失败，传入id={}", id);
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("数据异常!");
         }
     }
@@ -554,7 +555,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("取消申请供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("取消申请供应单位账户失败");
         }
         return temp;
@@ -577,7 +578,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             }
         } catch (Exception e) {
             log.error("取消供应单位账户失败,传入的对象是：{}", JSONObject.toJSONString(s1));
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("取消供应单位账户失败");
         }
         return temp;
@@ -771,7 +772,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
             applyStatus = ApplyStatus.APPROVAL_SUCCESS;
         }
-        String content = applyStatus.getContent().replace("CREATEBY", account.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+        String content = applyStatus.getContent().replace(Global.CREATE_BY, account.getUpdateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(account.getApplyCompanyAccountCode(), typeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY_ACCOUNT.getStatus(), content,null, typeCoce.getName(),vo.getApprovalUserName());
         return "success";
     }

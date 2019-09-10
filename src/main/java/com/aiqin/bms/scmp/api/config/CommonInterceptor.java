@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.config;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -30,7 +31,7 @@ public class CommonInterceptor {
                 map.put("userName", "爱亲张昀童");
             }
             if(StringUtils.isNotBlank(authToken.getTicket())){
-                map.put("ticket",authToken.getTicket());
+                map.put(Global.TICKET,authToken.getTicket());
             }
             if(StringUtils.isNotBlank(authToken.getPersonId())){
                 map.put("ticketPersonId",authToken.getPersonId());

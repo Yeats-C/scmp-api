@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.purchase.domain.request.purchase.QueryPurchaseOrderArrivalSubscribeVo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.purchase.SavePurchaseOrderArrivalSubscribeVo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.purchase.QueryPurchaseOrderArrivalSubscribeRespVo;
@@ -37,7 +38,7 @@ public class PurchaseOrderArrivalSubscribeController {
         try {
             return HttpResponse.success(purchaseOrderArrivalSubscribeService.findPage(reqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +49,7 @@ public class PurchaseOrderArrivalSubscribeController {
         try {
             return HttpResponse.success(purchaseOrderArrivalSubscribeService.save(reqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

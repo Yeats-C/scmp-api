@@ -1,14 +1,16 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryInspectionReportReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 /**

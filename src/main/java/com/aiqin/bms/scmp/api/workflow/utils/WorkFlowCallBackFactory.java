@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.workflow.utils;
 
 import com.aiqin.bms.scmp.api.util.SpringContextUtil;
-import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
+import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.google.common.collect.Maps;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
@@ -231,7 +232,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_CANCEL.getName());
             ((AllocationService) AopContext.currentProxy()).updateByPrimaryKeySelective(allocation);
             // 打印撤销的日志
-            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY",  getUser().getPersonName());
+            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace(Global.CREATE_BY, allocation.getUpdateBy()).replace(Global.AUDITOR_BY,  getUser().getPersonName());
             supplierCommonService.getInstance(
                     allocation.getAllocationCode()+"",
                     HandleTypeCoce.REVOKED.getStatus(),
@@ -296,23 +297,14 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Save
     public Long insertSelective(Allocation record) {
-       try{
-//           record.setCompanyCode(getUser().getCompanyCode());
-//           record.setCompanyName(getUser().getCompanyName());
-           record.setCompanyCode("04");
-           record.setCompanyName("爱亲");
-            long k = allocationMapper.insertSelective(record);
-            if(k>0){
-                return record.getId();
-            }else{
-                log.error("调拨单主体保存失败");
-                throw new GroundRuntimeException("调拨单主体保存失败");
-            }
-       }catch ( Exception e){
-           log.error(e.getMessage());
-           log.error("调拨单主体保存失败");
-           throw new GroundRuntimeException(e.getMessage());
-       }
+        record.setCompanyCode(getUser().getCompanyCode());
+        record.setCompanyName(getUser().getCompanyName());
+        long k = allocationMapper.insertSelective(record);
+        if (k > 0) {
+            return record.getId();
+        } else {
+            throw new GroundRuntimeException("调拨单主体保存失败");
+        }
     }
 
 
@@ -415,7 +407,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 } else {
                     applyTypeTitle = "报废";
                 }
-                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", allocation1.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
+                String content = ApplyStatus.APPROVAL.getContent().replace(Global.CREATE_BY, allocation1.getUpdateBy()).replace(Global.APPLY_TYPE, applyTypeTitle);
                 supplierCommonService.getInstance(
                         allocation1.getAllocationCode()+"",
                         HandleTypeCoce.APPROVAL.getStatus(),
@@ -483,7 +475,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
               return  outboundService.save(convert);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw  new GroundRuntimeException("保存出库单失败");
         }
     }
@@ -567,7 +559,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         oldAllocation.setUpdateBy(vo.getApprovalUserName());
         oldAllocation.setUpdateTime(new Date());
         if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-            String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+            String content = ApplyStatus.APPROVAL_SUCCESS.getContent().replace(Global.CREATE_BY, allocation.getUpdateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
             supplierCommonService.getInstance(
                     allocation.getAllocationCode()+"",
                     HandleTypeCoce.APPROVAL_SUCCESS.getStatus(),
@@ -622,7 +614,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
 
-            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace(Global.CREATE_BY, allocation.getUpdateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
             supplierCommonService.getInstance(
                     allocation.getAllocationCode()+"",
                     HandleTypeCoce.APPROVAL_FAILED.getStatus(),
@@ -650,7 +642,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             oldAllocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_CANCEL.getName());
             ((AllocationService) AopContext.currentProxy()).updateByPrimaryKeySelective(oldAllocation);
             // 打印撤销的日志
-            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace("CREATEBY", allocation.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+            String content = ApplyStatus.APPROVAL_FAILED.getContent().replace(Global.CREATE_BY, allocation.getUpdateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
             supplierCommonService.getInstance(
                     allocation.getAllocationCode()+"",
                     HandleTypeCoce.REVOKED.getStatus(),
@@ -723,7 +715,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         num = Long.valueOf(s);
                     }
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     list.add(new AllocationItemRespVo(skuCode,skuName, "数量数据格式错误"));
                     continue;
                 }
@@ -767,7 +759,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             return list;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("导入异常");
         }
     }

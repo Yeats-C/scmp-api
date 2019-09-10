@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.form.service.FormApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier;
@@ -124,7 +125,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             applySupplierReqDTO.setFormNo(getFormNO());
             applySupplierReqDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
             resultNum = ((ApplySupplierService) AopContext.currentProxy()).insert(applySupplierReqDTO);
-            String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplierReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+            String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplierReqDTO.getCreateBy()).replace(Global.APPLY_TYPE, "新增");
             supplierCommonService.getInstance(applySupplierReqDTO.getApplySupplierCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content,null,HandleTypeCoce.PENDING.getName());
             encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
             //调用审批接口
@@ -186,7 +187,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             //修改供应商集团申请状态
             supplierDao.updatetSupplierApplyStatusByCode(supplierUpdateReqVO.getSupplierCode(),String.valueOf(encodingRule.getNumberingValue()+1));
 
-            String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("APPLYTYPE", "修改");
+            String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplier.getUpdateBy()).replace(Global.APPLY_TYPE, "修改");
             supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content,null,HandleTypeCoce.PENDING.getName());
 
             ApplySupplierReqDTO applySupplierReqDTO = new ApplySupplierReqDTO();
@@ -289,7 +290,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                     throw new BizException("审核状态修改失败");
                 }
                 //存日志
-                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplierReqDTO.getUpdateBy()).replace("APPLYTYPE", applyTypeTitle);
+                String content = ApplyStatus.APPROVAL.getContent().replace(Global.CREATE_BY, applySupplierReqDTO.getUpdateBy()).replace(Global.APPLY_TYPE, applyTypeTitle);
                 supplierCommonService.getInstance(
                         applySupplierReqDTO.getApplySupplierCode()+"",
                         HandleTypeCoce.APPROVAL.getStatus(),
@@ -519,7 +520,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
             applyStatus = ApplyStatus.APPROVAL_SUCCESS;
         }
-        String content = applyStatus.getContent().replace("CREATEBY", applySupplier.getUpdateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+        String content = applyStatus.getContent().replace(Global.CREATE_BY, applySupplier.getUpdateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
 
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;

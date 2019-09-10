@@ -5,13 +5,12 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
 @ApiModel("供应商到货率respVo")
 @Data
-public class SupplierArrivalRateRespVo implements Serializable {
+public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
@@ -23,7 +22,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
-    private String supplierCode;
+    private String supplierGiftsBuySalesRespVoCode;
 
     @ApiModelProperty("供应商name")
     @JsonProperty(value = "supplier_name")

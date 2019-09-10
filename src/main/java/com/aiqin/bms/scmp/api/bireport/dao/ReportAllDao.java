@@ -5,7 +5,6 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ReportAllDao {
 

@@ -216,7 +216,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                         stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupName).collect(Collectors.toList()),","));
             }
             num = ((ApplySupplyComService)AopContext.currentProxy()).insert(applySupplyCompany);
-            String content = ApplyStatus.PENDING.getContent().replace("CREATEBY", applySupplyCompany.getUpdateBy()).replace("APPLYTYPE", "修改");
+            String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplyCompany.getUpdateBy()).replace(Global.APPLY_TYPE, "修改");
             //存日志
             supplierCommonService.getInstance(applySupplyCompany.getApplyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.PENDING.getName());
             //修改编码
@@ -273,7 +273,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 workFlow(applySupplyCompany);
             }
         } catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return num;
@@ -454,7 +454,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 if(i<=0){
                     throw new GroundRuntimeException("审核状态修改失败");
                 }
-                String content = ApplyStatus.APPROVAL.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getUpdateBy()).replace("APPLYTYPE", title);
+                String content = ApplyStatus.APPROVAL.getContent().replace(Global.CREATE_BY, applySupplyCompanyReqDTO.getUpdateBy()).replace(Global.APPLY_TYPE, title);
                 //存日志
                 supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.APPROVAL.getName());
             }else {
@@ -601,7 +601,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         //新增供货单位申请
         resultNum = ((ApplySupplyComService)AopContext.currentProxy()).insert(applySupplyCompanyReqDTO);
         ApplyStatus applyStatus = ApplyStatus.getApplyStatusByNumber(applySupplyCompanyReqDTO.getApplyStatus());
-        String content =applyStatus.getContent().replace("CREATEBY", applySupplyCompanyReqDTO.getCreateBy()).replace("APPLYTYPE", "新增");
+        String content =applyStatus.getContent().replace(Global.CREATE_BY, applySupplyCompanyReqDTO.getCreateBy()).replace(Global.APPLY_TYPE, "新增");
         HandleTypeCoce handleTypeCoce = HandleTypeCoce.PENDING;
         if(Objects.equals(applyStatus,ApplyStatus.PENDING_SUBMISSION)){
             handleTypeCoce = HandleTypeCoce.PENDING_SUBMISSION;
@@ -632,7 +632,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             });
             resultNum = applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                     "系统错误"));
         }
@@ -810,7 +810,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         if(Objects.equals(ApplyStatus.APPROVAL,applyStatus)){
             applyStatus = ApplyStatus.APPROVAL_SUCCESS;
         }
-        String content = applyStatus.getContent().replace("CREATEBY", applySupplyCompany.getCreateBy()).replace("AUDITORBY", vo.getApprovalUserName());
+        String content = applyStatus.getContent().replace(Global.CREATE_BY, applySupplyCompany.getCreateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
@@ -1037,7 +1037,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return supplyComDetailRespVO;
     }
@@ -1107,7 +1107,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     });
                     applyDeliveryService.insideSaveBatchApply(deliveryDTOS);
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                             "系统错误"));
                 }
@@ -1146,7 +1146,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 workFlow(applySupplyCompanyReqDTO);
             }
         } catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         }
         return Boolean.TRUE;

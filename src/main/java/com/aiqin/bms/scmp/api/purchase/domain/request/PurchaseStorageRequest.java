@@ -1,7 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.config;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Account;
 import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -66,10 +67,10 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
             filterThreadLocal.set(current);
             return true;
         }
-        String ticket = httpServletRequest.getParameter("ticket");
+        String ticket = httpServletRequest.getParameter(Global.TICKET);
         String accountId = httpServletRequest.getParameter("account_id");
         log.info("ticket{}",ticket);
-        String personId = httpServletRequest.getParameter("ticket_person_id");
+        String personId = httpServletRequest.getParameter(Global.TICKET_PERSON_ID);
         log.info("ticket_person_id{}",ticket);
         if(httpServletRequest.getRequestURL().indexOf(".jpg")!=-1||
                 httpServletRequest.getRequestURL().indexOf(".bmp")!=-1||

@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku;
 
+import com.aiqin.bms.scmp.api.base.PageReq;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,7 +16,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("sku待申请列表请求条件")
-public class QuerySkuDraftListReqVO  {
+public class QuerySkuDraftListReqVO  extends PageReq {
 
     @ApiModelProperty("商品(SPU)名称")
     private String productName;
@@ -51,7 +54,21 @@ public class QuerySkuDraftListReqVO  {
     @ApiModelProperty(value = "当前登录人",hidden = true)
     private String personId;
 
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTimeStart;
 
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTimeEnd;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTimeStart;
+
+    @ApiModelProperty("修改时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTimeEnd;
 
 
 }

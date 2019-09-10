@@ -167,7 +167,6 @@ public class DashboardServiceImpl implements DashboardService {
                 dashboardHomePageTitle.setContributionRate(contributionRate);
             }
         }
-
         return dashboardHomePageTitle;
     }
 

@@ -67,8 +67,6 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             PurchaseOrder purchaseOrder = new PurchaseOrder();
             purchaseOrder.setPurchaseOrderCode(vo1.getFormNo());
             PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-            order.setUpdateById(vo1.getApprovalUserCode());
-            order.setUpdateByName(vo1.getApprovalUserName());
             if(order == null){
                 LOGGER.info("采购单为空");
                 return WorkFlowReturn.FALSE;
@@ -77,7 +75,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 // 采购单不是待审核状态
                 return WorkFlowReturn.SUCCESS;
             }
-
+            order.setUpdateById(vo1.getApprovalUserCode());
+            order.setUpdateByName(vo1.getApprovalUserName());
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
                 //审批失败
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_10);
@@ -147,7 +146,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
-            LOGGER.info("创建采购单审批成功:{}",workFlowRespVO.toString());
+            LOGGER.info("创建采购单审批成功:{}",workFlowRespVO);
         } else {
             throw new BizException(ResultCode.PURCHASE_ERROR);
         }
@@ -162,7 +161,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         log.setOperationContent(name);
         log.setRemark(remark);
         Integer count = operationLogDao.insert(log);
-        LOGGER.info("操作日志", count);
+        LOGGER.info("操作日志{}", count);
     }
 
     // 修改库存在途数
