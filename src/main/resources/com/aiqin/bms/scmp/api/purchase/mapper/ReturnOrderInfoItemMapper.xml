@@ -513,4 +513,15 @@
             where id = #{item.id,jdbcType=BIGINT}
         </foreach>
     </update>
+    <select id="listDetailForSap" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List" />
+        from return_order_info_item
+        where
+            return_order_code in
+            <foreach collection="orderCodeList" separator="," item="item" open="(" close=")">
+                #{item}
+            </foreach>
+
+    </select>
 </mapper>

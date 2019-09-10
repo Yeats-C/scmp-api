@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,4 +63,15 @@ public interface OrderInfoMapper {
      * @return int
      */
     int updateByOrderCode(OrderInfo order);
+
+    /**
+     * 查询销售订单用于sap对接
+     * @param sapOrderRequest
+     * @return
+     */
+    List<OrderInfo> listForSap(SapOrderRequest sapOrderRequest);
+
+    int updateByOrderCodes(@Param(value = "list") List<String> orderCodes);
+
+    List<OrderInfo> listByIds(@Param(value = "list")List<String> orderIds);
 }

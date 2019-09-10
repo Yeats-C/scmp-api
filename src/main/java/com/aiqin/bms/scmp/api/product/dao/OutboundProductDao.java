@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutboundProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundProduct;
@@ -65,4 +66,5 @@ public interface OutboundProductDao {
 
     List<ReturnOutboundProduct> selectBySkuCode(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
 
+    List<OutboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
 }
