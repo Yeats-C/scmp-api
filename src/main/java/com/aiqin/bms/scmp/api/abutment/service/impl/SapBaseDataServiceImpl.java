@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpOrderEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
@@ -464,11 +465,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         Order order;
         List<ReturnOrderInfo> returnList = returnOrderInfoMapper.listForSap(sapOrderRequest);
         if (CollectionUtils.isNotEmpty(returnList)) {
-            List<String> orderCodes = returnList.stream().map(ReturnOrderInfo::getOrderCode).collect(Collectors.toList());
+            List<String> orderCodes = returnList.stream().map(ReturnOrderInfo::getReturnOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             List<ReturnOrderInfoItem> orderInfoItems = returnOrderInfoItemMapper.listDetailForSap(sapOrderRequest);
             List<InboundBatch> batchList = inboundBatchDao.listBySourceCodes(orderCodes);
-            Map<String,InboundBatch> batchMap = batchList.stream().collect(Collectors.toMap(inBoundBatch->{return inBoundBatch.getInboundOderCode()+inBoundBatch.getSkuCode();},Function.identity()));
+            Map<String,InboundBatch> batchMap = batchList.stream().collect(Collectors.toMap(InboundBatch::getInboundOderCode,Function.identity()));
             InboundBatch batch;
             OrderDetail orderDetail;
             List<OrderDetail> orderDetails;
@@ -500,11 +501,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             }
             for (ReturnOrderInfo returnOrderInfo : returnList) {
                 order = new Order();
-                order.setOrderId(String.format("%s-%s", returnOrderInfo.getReturnOrderCode(), returnOrderInfo.getOrderTypeCode()));
+                order.setOrderId(String.format("%s-%s", returnOrderInfo.getReturnOrderCode(), ScmpOrderEnum.ORDER_BACK.getCode()));
                 order.setOrderCode(returnOrderInfo.getReturnOrderCode());
                 //单据类型
-                order.setOrderType(25);
-                order.setOrderTypeDesc("售后退货");
+                order.setOrderType(Integer.valueOf(ScmpOrderEnum.ORDER_BACK.getCode()));
+                order.setOrderTypeDesc(ScmpOrderEnum.ORDER_BACK.getDesc());
                 //支付方式
                 order.setPayType(returnOrderInfo.getPaymentTypeCode());
                 order.setPayTypeDesc(returnOrderInfo.getPaymentType());
@@ -548,7 +549,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //目前只是完成订单先固定
                 order.setOrderStatusDesc("完成");
                 //详情信息
-                order.setDetails(orderDetailMap.get(returnOrderInfo.getOrderCode()));
+                order.setDetails(orderDetailMap.get(returnOrderInfo.getReturnOrderCode()));
                 orderList.add(order);
             }
 
