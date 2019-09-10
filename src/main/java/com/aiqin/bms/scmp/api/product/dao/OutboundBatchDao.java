@@ -33,4 +33,6 @@ public interface OutboundBatchDao {
     ReturnOutboundBatch selectBatchInfoByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     Integer updateBatchInfoByOutboundOderCodeAndLineNum(OutboundBatch outboundBatch);
+
+    Integer insertList(List<OutboundBatch> list);
 }

@@ -103,4 +103,6 @@ public class Allocation extends CommonBean {
     /** 以下是dl回调需要用的字段*/
 
     private List<AllocationProduct> detailList;
+
+    private List<AllocationProductBatch> detailBatchList;
 }

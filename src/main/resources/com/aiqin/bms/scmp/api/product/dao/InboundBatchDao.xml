@@ -17,6 +17,8 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
   </resultMap>
 
   <resultMap id="WmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO">
@@ -51,7 +53,7 @@
 
   <sql id="Base_Column_List">
     id, inbound_oder_code, sku_code, sku_name, inbound_batch_code, manufacture_time, batch_remark, pre_qty, pra_qty, store_house_code,
-    create_by, create_time, update_by, update_time,line_num
+    create_by, create_time, update_by, update_time,line_num,supplier_name,supplier_code
   </sql>
 
   <sql id="Batch_Wms_Response_List">
@@ -94,6 +96,25 @@
       #{item.updateBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.linenum,jdbcType=BIGINT}
+      )
+    </foreach>
+  </insert>
+  <insert id="insertList" parameterType="java.util.List">
+    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, pre_qty, pra_qty,supplier_name,supplier_code,
+    create_by, create_time, update_by, update_time)
+    values
+    <foreach collection="list" index="index" item="item" separator=",">
+      (#{item.inboundOderCode,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.preQty,jdbcType=BIGINT},
+      #{item.praQty,jdbcType=BIGINT},
+      #{item.supplierName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR},
+      #{item.createBy,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR},
+      #{item.updateTime,jdbcType=TIMESTAMP}
       )
     </foreach>
   </insert>
