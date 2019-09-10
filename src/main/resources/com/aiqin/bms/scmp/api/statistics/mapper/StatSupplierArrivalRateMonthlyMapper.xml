@@ -7,12 +7,14 @@
     <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
     <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
     <result column="lv1" jdbcType="VARCHAR" property="lv1" />
     <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
-    <result column="logistics_center_code" jdbcType="VARCHAR" property="logisticsCenterCode" />
-    <result column="logistics_center_name" jdbcType="VARCHAR" property="logisticsCenterName" />
+    <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
+    <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
     <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
     <result column="pra_inbound_num" jdbcType="BIGINT" property="praInboundNum" />
     <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
@@ -27,4 +29,46 @@
     pre_inbound_num, pra_inbound_num, pre_tax_amount, pra_tax_amount, inbound_amount_fill_rate, 
     arrival_rate, create_time
   </sql>
+  <select id="supplierArrivalSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.supplier.StatSupplierArrivalRateResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName,
+      transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+      supplier_code as supplierCode, supplier_name as supplierName,
+      sum(ifnull(pre_inbound_num,0)) as preInboundNum, sum(ifnull(pra_inbound_num,0)) as praInboundNum,
+      sum(ifnull(pre_tax_amount,0)) as preTaxAmount, sum(ifnull(pra_tax_amount,0)) as praTaxAmount
+    from stat_supplier_arrival_rate_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="supplierCode != null">
+      and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
+    <if test="lv1 != null">
+      and lv1 = #{lv1,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="supplierList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierResponse">
+    select
+      supplier_code as supplierCode, supplier_name as supplierName
+    from stat_supplier_arrival_rate_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by supplier_code
+    order by supplier_code
+  </select>
+  <select id="categoryList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierResponse">
+    select
+      supplier_code as supplierCode, supplier_name as supplierName, lv1, lv1_category_name as lv1CategoryName,
+      responsible_person_code as responsiblePersonCode, responsible_person_name as responsiblePersonName
+    from stat_supplier_arrival_rate_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    group by lv1
+    order by lv1
+  </select>
 </mapper>

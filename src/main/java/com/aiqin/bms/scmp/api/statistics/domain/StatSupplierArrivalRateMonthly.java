@@ -31,6 +31,14 @@ public class StatSupplierArrivalRateMonthly {
     @JsonProperty("supplier_name")
     private String supplierName;
 
+    @ApiModelProperty(value="所属部门code")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty(value="所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty(value="采购负责人code")
     @JsonProperty("responsible_person_code")
     private String responsiblePersonCode;
@@ -48,12 +56,12 @@ public class StatSupplierArrivalRateMonthly {
     private String lv1CategoryName;
 
     @ApiModelProperty(value="仓库code")
-    @JsonProperty("logistics_center_code")
-    private String logisticsCenterCode;
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
 
-    @ApiModelProperty(value="仓库名")
-    @JsonProperty("logistics_center_name")
-    private String logisticsCenterName;
+    @ApiModelProperty(value="仓库")
+    @JsonProperty("transport_center_name")
+    private String transportCenterName;
 
     @ApiModelProperty(value="预计入库数量")
     @JsonProperty("pre_inbound_num")

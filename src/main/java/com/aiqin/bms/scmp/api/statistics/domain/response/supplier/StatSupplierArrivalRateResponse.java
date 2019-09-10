@@ -1,7 +1,7 @@
-package com.aiqin.bms.scmp.api.statistics.domain.response;
+package com.aiqin.bms.scmp.api.statistics.domain.response.supplier;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -10,11 +10,10 @@ import java.util.Date;
 
 /**
  * @author: zhao shuai
- * @create: 2019-08-19
+ * @create: 2019-09-09
  **/
 @Data
-@Api(tags = "供应商到货率统计")
-public class SupplierDeliveryRateResponse{
+public class StatSupplierArrivalRateResponse {
 
     @ApiModelProperty(value="供应商code")
     @JsonProperty("supplier_code")
@@ -23,6 +22,14 @@ public class SupplierDeliveryRateResponse{
     @ApiModelProperty(value="供应商")
     @JsonProperty("supplier_name")
     private String supplierName;
+
+    @ApiModelProperty(value="所属部门code")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty(value="所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
 
     @ApiModelProperty(value="采购负责人code")
     @JsonProperty("responsible_person_code")
@@ -41,12 +48,12 @@ public class SupplierDeliveryRateResponse{
     private String lv1CategoryName;
 
     @ApiModelProperty(value="仓库code")
-    @JsonProperty("logistics_center_code")
-    private String logisticsCenterCode;
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
 
-    @ApiModelProperty(value="仓库名")
-    @JsonProperty("logistics_center_name")
-    private String logisticsCenterName;
+    @ApiModelProperty(value="仓库")
+    @JsonProperty("transport_center_name")
+    private String transportCenterName;
 
     @ApiModelProperty(value="预计入库数量")
     @JsonProperty("pre_inbound_num")
@@ -74,6 +81,6 @@ public class SupplierDeliveryRateResponse{
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
-
 }

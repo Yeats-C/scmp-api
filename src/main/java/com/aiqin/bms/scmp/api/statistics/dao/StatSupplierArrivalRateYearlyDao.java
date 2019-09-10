@@ -1,12 +1,17 @@
 package com.aiqin.bms.scmp.api.statistics.dao;
 
-import com.aiqin.bms.scmp.api.statistics.domain.response.SupplierDeliveryResponse;
-import org.apache.ibatis.annotations.Param;
+import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.StatSupplierArrivalRateResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierResponse;
 
 import java.util.List;
 
 public interface StatSupplierArrivalRateYearlyDao {
 
-    List<SupplierDeliveryResponse> supplierArrivalSum(@Param("year") Long year, @Param("productSortCode") String productSortCode);
+    List<StatSupplierArrivalRateResponse> supplierArrivalSum(SupplierRequest request);
+
+    List<SupplierResponse>  supplierList(SupplierRequest request);
+
+    List<SupplierResponse>  categoryList(SupplierRequest request);
 
 }

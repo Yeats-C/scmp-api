@@ -1,11 +1,12 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
 import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
-import com.aiqin.bms.scmp.api.statistics.domain.response.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
@@ -123,7 +124,8 @@ public class StatisticsController {
     public HttpResponse<SupplierDeliveryResponse> supplierDelivery(@RequestParam("date") String date,
                                                                    @RequestParam("report_type") Integer reportType,
                                                                    @RequestParam("product_sort_code") String productSortCode) {
-        return supplierStatisticsService.supplierDelivery(date, reportType, productSortCode);
+        SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
+        return supplierStatisticsService.supplierDelivery(supplierRequest);
     }
 
 }
