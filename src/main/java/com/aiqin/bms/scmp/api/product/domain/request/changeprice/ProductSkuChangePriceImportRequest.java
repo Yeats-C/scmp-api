@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.domain.request.changeprice;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 

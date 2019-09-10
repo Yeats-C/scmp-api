@@ -194,6 +194,18 @@
     <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
     </if>
+    <if test="createTimeStart != null ">
+      AND a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createTimeEnd != null">
+      AND a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeStart != null ">
+      AND a.update_time &gt;=#{updateTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeEnd != null">
+      AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+    </if>
     order by a.update_time desc
   </select>
   <select id="getProductSkuDraftByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">

@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

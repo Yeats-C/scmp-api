@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.PriceChannelItem;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.*;
@@ -45,7 +46,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/project/list", JSON.toJSON(reqVo));
             return HttpResponse.success(priceProjectService.getList(reqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -57,7 +58,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/project/all", "无参数");
             return HttpResponse.success(priceProjectService.getAll());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -69,7 +70,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/project/all", "{}",type);
             return HttpResponse.success(priceProjectService.getByTypeCode(type));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -81,7 +82,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/project", "无参数");
             return HttpResponse.success(priceProjectService.queryProjectGroupPriceType());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -96,7 +97,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -110,7 +111,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -124,7 +125,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -136,7 +137,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/channel/list", JSON.toJSON(reqVo));
             return HttpResponse.success(priceChannelService.getList(reqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -148,7 +149,7 @@ public class PriceProjectController {
             log.info("request uri:{},参数信息:{}","/basic/price/channel/all","无参数");
             return HttpResponse.success(priceChannelService.getAll());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -162,7 +163,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -176,7 +177,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -189,7 +190,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -203,7 +204,7 @@ public class PriceProjectController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

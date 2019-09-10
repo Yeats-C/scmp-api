@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.domain.pojo;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @ApiModel("返利时间范围表")

@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web.Stocktaking;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.Stocktaking.StocktakingInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.SelectStocktakingRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.SelectStocktakingWholeRequest;
@@ -8,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.StocktakingWhol
 import com.aiqin.bms.scmp.api.product.domain.request.dictionary.ProductDistributorQuVoPage;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.ProductDistributorReVoPage;
 import com.aiqin.bms.scmp.api.product.service.Stocktaking.StocktakingService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

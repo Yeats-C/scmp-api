@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
@@ -37,7 +38,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReports(reportReqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +49,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.saveProductSkuInspReport(reportReqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -59,7 +60,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.getList(reportReqVo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -70,7 +71,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.deleteById(id));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -80,7 +81,7 @@ public class ProductSkuInspReportController {
         try {
             return HttpResponse.success(productSkuInspReportService.deleteBySkuCode(skuCode));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

@@ -61,7 +61,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -385,7 +384,7 @@ public class StockServiceImpl implements StockService {
 //                httpResponse.setData(errorRespVos);
 //            }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -436,7 +435,7 @@ public class StockServiceImpl implements StockService {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -466,7 +465,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return false;
     }
@@ -491,7 +490,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供加锁接口失败", e);
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -515,7 +514,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return false;
     }
@@ -540,7 +539,7 @@ public class StockServiceImpl implements StockService {
             }
         } catch (Exception e) {
             LOGGER.error("调用退供解锁接口失败", e);
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException(e.getMessage());
         }
         return false;
@@ -571,7 +570,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVO);
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -601,7 +600,7 @@ public class StockServiceImpl implements StockService {
                 outboundService.updateOutBoundInfo(reqVo);
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw e;
             } else {
@@ -917,7 +916,7 @@ public class StockServiceImpl implements StockService {
             }
             return vo;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -944,7 +943,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return false;
     }
@@ -992,7 +991,7 @@ public class StockServiceImpl implements StockService {
             }
             return Integer.valueOf(1);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
@@ -1049,7 +1048,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException("采购单数据转换为 [新增] 库存数据集合失败");
         }
     }
@@ -1068,7 +1067,7 @@ public class StockServiceImpl implements StockService {
             }
             return list;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new BizException("采购单数据转换为 [更新] 库存数据集合失败");
         }
     }
@@ -1134,7 +1133,7 @@ public class StockServiceImpl implements StockService {
             stockFlowDao.insertOne(stockFlow);
             return lockCode;
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             if (reqVo.getLockType() == 0) {
                 throw new BizException(ResultCode.STOCK_LOCK_ERROR);
             } else {
@@ -1353,7 +1352,7 @@ public class StockServiceImpl implements StockService {
                 stockDao.insertBatch(adds);
             }
         }catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             LOGGER.error("操作库存失败", e);
             throw new BizException("操作库存失败");
         }
@@ -1479,15 +1478,15 @@ public class StockServiceImpl implements StockService {
     public boolean changeWayNum(StockWayNumRequest stockWayNumRequest) throws Exception {
         StockFlowRequest stockFlowRequest = BeanCopyUtils.copy(stockWayNumRequest, StockFlowRequest.class);
         Stock stock = stockFlowDao.selectOneStockInfoByStockFlow(stockFlowRequest);
+        if (null == stock) {
+            throw new BizException(ResultCode.STOCK_CHANGE_ERROR);
+        }
         StockFlow stockFlow = BeanCopyUtils.copy(stockWayNumRequest, StockFlow.class);
 //        stockFlow.setBeforeAuthenticNum(stock.getAuthenticNum());
         stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
         stockFlow.setBeforeLockNum(stock.getLockNum());
         stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
 //        stockFlow.setBeforeSpareNum(stock.getSpareNum());
-        if (null == stock) {
-            throw new BizException(ResultCode.STOCK_CHANGE_ERROR);
-        }
 //        stock.setWayNum(stock.getWayNum()-stockWayNumRequest.getChangeNum());
         if (stockWayNumRequest.getChangeType() == 0) {//正品
             stock.setAvailableNum(stock.getAvailableNum() + stockWayNumRequest.getChangeNum());
@@ -1924,7 +1923,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return false;
     }
@@ -1952,7 +1951,7 @@ public class StockServiceImpl implements StockService {
                 return true;
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return false;
     }
@@ -2030,6 +2029,12 @@ public class StockServiceImpl implements StockService {
                 stockBatchFlow.setBeforeLockNum(0l);
                 stockBatchFlow.setBeforeAvailableNum(0l);
                 stockBatch = stockBatchVoRequestToStockBatch(stockBatch, stockBatchVoRequest, stockChangeRequest.getOperationType());
+                if (stockBatch != null) {
+                    adds.add(stockBatch);
+                } else {
+                    flage = true;
+                    break;
+                }
                 ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stockBatch.getSkuCode());
                 if (productSkuInfo == null) {
                     flage = true;
@@ -2037,12 +2042,7 @@ public class StockServiceImpl implements StockService {
                 }
                 stockBatch.setUnitCode(productSkuInfo.getUnitCode());
                 stockBatch.setUnitName(productSkuInfo.getUnitName());
-                if (stockBatch != null) {
-                    adds.add(stockBatch);
-                } else {
-                    flage = true;
-                    break;
-                }
+
                 //设置库存流水修改后的值
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
                 stockBatchFlow.setLockStatus(stockChangeRequest.getOperationType());

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -56,10 +57,10 @@ public class ExcelUtil {
 					row.createCell(columnNum).setCellValue(field.get(obj) == null ? "" : field.get(obj).toString());
 				}
 				catch (IllegalArgumentException e){
-					log.error("error", e);
+					log.error(Global.ERROR, e);
 				}
 				catch (IllegalAccessException e){
-					log.error("error", e);
+					log.error(Global.ERROR, e);
 				}
 				columnNum++;
 			}
@@ -226,7 +227,7 @@ public class ExcelUtil {
 				}
 			}
 		} catch (Exception e){
-			log.error("error", e);
+			log.error(Global.ERROR, e);
 			throw new GroundRuntimeException("表格解析异常");
 		}
 		return list;

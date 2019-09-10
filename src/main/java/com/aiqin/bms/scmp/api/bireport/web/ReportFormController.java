@@ -1,12 +1,9 @@
 package com.aiqin.bms.scmp.api.bireport.web;
 
 import com.aiqin.bms.scmp.api.bireport.domain.BiGoodsSalesReport;
-import com.aiqin.bms.scmp.api.bireport.domain.BiStockTurnoverReport;
-import com.aiqin.bms.scmp.api.bireport.domain.BiStockWayTurnoverReport;
 import com.aiqin.bms.scmp.api.bireport.domain.request.ProductAndStockRequest;
 import com.aiqin.bms.scmp.api.bireport.domain.response.ProductAndStockResponse;
 import com.aiqin.bms.scmp.api.bireport.service.ReportFormService;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;

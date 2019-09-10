@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.converter;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -34,11 +35,6 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSupplyToOutBoundReqVo, OutboundReqVo> {
-//    private SkuService skuService;
-
-    //    public ReturnSupply2outboundSaveConverter(SkuService skuService) {
-//        this.skuService=skuService;
-//    }
     private SkuService skuService;
 
     private SupplyCompanyDao supplyCompanyDao;
@@ -177,8 +173,8 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 return outbound;
             }
         } catch (Exception e) {
-            log.error("error", e);
-            if (e instanceof BizException) {
+            log.error(Global.ERROR, e);
+            if(e instanceof BizException){
                 throw new BizException(e.getMessage());
             } else {
                 throw new BizException("出库单保存请求reqVo转换Po异常");

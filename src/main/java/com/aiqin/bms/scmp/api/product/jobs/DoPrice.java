@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.jobs;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.service.PriceJobService;
 import com.aiqin.bms.scmp.api.util.PriceThreadDo;
@@ -22,7 +23,7 @@ public class DoPrice implements Runnable{
         try {
             service.price(stock);
         }catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }finally {
             PriceThreadDo.subThreadNum();
         }

@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
 import com.aiqin.bms.scmp.api.base.PageImportResData;
-import com.aiqin.bms.scmp.api.base.PageReportResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 

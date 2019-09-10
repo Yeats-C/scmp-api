@@ -1,12 +1,12 @@
 package com.aiqin.bms.scmp.api.product.web.sku;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.variableprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.variableprice.*;
 import com.aiqin.bms.scmp.api.product.service.VariablePriceService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;

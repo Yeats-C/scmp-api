@@ -2,13 +2,17 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.dao.MovementDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
@@ -51,7 +55,10 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * @Classname: InboundServiceImpl
@@ -627,7 +634,7 @@ public class InboundServiceImpl implements InboundService {
                    purchaseManageService.addLog(operationLog);
                }
            }catch (Exception e){
-               log.error("error", e);
+               log.error(Global.ERROR, e);
                log.error(e.getMessage());
                throw new GroundRuntimeException("回传采购单失败失败");
            }
@@ -650,7 +657,7 @@ public class InboundServiceImpl implements InboundService {
                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
                int k = inboundDao.updateByPrimaryKeySelective(inbound);
            } catch (Exception e) {
-               log.error("error", e);
+               log.error(Global.ERROR, e);
            }
 
        }// 如果是调拨
@@ -709,7 +716,7 @@ public class InboundServiceImpl implements InboundService {
                 log.error("入库单回传给采购接口失败");
             }
         } catch (GroundRuntimeException e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             log.error("入库单回传给采购接口失败+回传实体为：[{}]",storageResultReqVo);
         }
 
@@ -732,7 +739,7 @@ public class InboundServiceImpl implements InboundService {
                 //跟新调拨单状态
                 int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("调拨单更改入库状态失败");
         }
     }
@@ -754,7 +761,7 @@ public class InboundServiceImpl implements InboundService {
 //                throw  new GroundRuntimeException("调用采购服务失败");
 //            }
 //        } catch (GroundRuntimeException e) {
-//            log.error("error", e);
+//            log.error(Global.ERROR, e);
 //            log.error("入库单回传给退货接口失败+回传实体为：[{}]",storageResultItemReqVo);
 //        }
 
@@ -778,7 +785,7 @@ public class InboundServiceImpl implements InboundService {
             //跟新调拨单状态
             int k = allocationMapper.updateByPrimaryKeySelective(allocation);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }

@@ -1,11 +1,11 @@
 package com.aiqin.bms.scmp.api.product.service.Stocktaking;
 
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.SelectStocktakingRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.SelectStocktakingWholeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.Stocktaking.StocktakingWhole;
 import com.aiqin.bms.scmp.api.product.domain.request.dictionary.ProductDistributorQuVoPage;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import javax.validation.Valid;
 

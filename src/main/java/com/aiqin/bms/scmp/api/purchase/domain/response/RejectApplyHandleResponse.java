@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

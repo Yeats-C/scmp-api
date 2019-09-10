@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
-import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 

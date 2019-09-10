@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.supplier.applysupplycom;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplyComReqVO;
@@ -54,7 +55,7 @@ public class ApplySupplyComController {
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
     }

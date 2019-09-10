@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ProductSkuPromoteSales;
 import com.aiqin.bms.scmp.api.supplier.domain.request.promotesales.QueryPromoteSalesReqVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.ProductSkuPromoteSalesMapper;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSalesService {
 
-    private final static String IMPORT_TITLE="sku编码,sku名称";
+    private static final String IMPORT_TITLE="sku编码,sku名称";
     @Autowired
     private ProductSkuPromoteSalesMapper mapper;
 
@@ -49,8 +50,7 @@ public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSales
     public BasePage<ProductSkuPromoteSales> getList(QueryPromoteSalesReqVo reqVo) {
         PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
         List<ProductSkuPromoteSales> list = mapper.getList(reqVo);
-        BasePage<ProductSkuPromoteSales> pages = PageUtil.getPageList(reqVo.getPageNo(),list);
-        return pages;
+        return PageUtil.getPageList(reqVo.getPageNo(),list);
     }
 
     /**
@@ -117,6 +117,7 @@ public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSales
      * @date 2019/7/3 12:49
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int fileUpload(MultipartFile efile) {
         List<Object[]> excelAll = ExcelUtil.getExcelAll(efile);
         if(CollectionUtils.isEmptyCollection(excelAll) || excelAll.size() == 1){
@@ -126,7 +127,7 @@ public class ProductSkuPromoteSalesServiceImpl implements ProductSkuPromoteSales
         try {
             records = ExcelUtil.validValue(excelAll, IMPORT_TITLE, ProductSkuPromoteSales.class);
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
         return saveList(records);

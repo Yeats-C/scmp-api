@@ -1,11 +1,10 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.ProductDistributor;
-import com.aiqin.bms.scmp.api.product.domain.request.ProductSearchRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UnsoldDistributorProductRequest;
 import com.aiqin.bms.scmp.api.product.service.ProductService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

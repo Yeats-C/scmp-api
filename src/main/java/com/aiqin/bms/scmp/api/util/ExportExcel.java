@@ -15,8 +15,8 @@ import java.util.List;
 
 public class ExportExcel {
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     public static HSSFWorkbook exportData(List<NewProductResponseVO>list) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
         // 创建工作空间
         HSSFWorkbook wb = new HSSFWorkbook();
         // 创建表

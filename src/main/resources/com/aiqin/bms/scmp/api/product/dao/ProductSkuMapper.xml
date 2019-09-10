@@ -952,6 +952,18 @@
       <if test="personId != null and personId != '' ">
         and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
       </if>
+      <if test="createTimeStart != null ">
+        AND a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTimeEnd != null">
+        AND a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTimeStart != null ">
+        AND a.update_time &gt;=#{updateTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTimeEnd != null">
+        AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+      </if>
     order by create_time desc
   </select>
   <select id="getProductDraftList" resultMap="ProductDraftListMap">

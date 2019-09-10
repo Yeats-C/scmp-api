@@ -2,9 +2,7 @@ package com.aiqin.bms.scmp.api.util;
 
 
 import com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -13,13 +11,11 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExportExcelReportHigh {
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     public static XSSFWorkbook exportData(List<HighInventoryRespVo>list) {
         // 创建工作空间
         XSSFWorkbook workbook = new XSSFWorkbook();

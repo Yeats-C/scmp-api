@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

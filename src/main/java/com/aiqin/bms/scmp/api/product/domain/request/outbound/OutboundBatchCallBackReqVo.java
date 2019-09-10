@@ -4,8 +4,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
-
 /**
  * @Classname: OutboundProductCallBackReqVo
  * 描述: 出库单skuWMS回调申请实体

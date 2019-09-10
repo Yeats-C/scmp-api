@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.Map;
 import java.util.Set;

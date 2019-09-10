@@ -1,14 +1,14 @@
 package com.aiqin.bms.scmp.api.product.web.product;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.ApplyDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryApplyProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductDetailsResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.ApplyProductResponseVO;
 import com.aiqin.bms.scmp.api.product.service.ApplyProductService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;

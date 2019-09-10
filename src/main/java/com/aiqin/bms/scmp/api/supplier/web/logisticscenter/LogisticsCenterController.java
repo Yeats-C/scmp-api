@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.web.logisticscenter;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -10,6 +9,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.UpdateL
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.QueryLogisticsCenterResVo;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

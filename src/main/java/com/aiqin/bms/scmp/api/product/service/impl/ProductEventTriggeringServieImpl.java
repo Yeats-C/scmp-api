@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.DataBaseType;
 import com.aiqin.bms.scmp.api.product.domain.event.ProductEvent;
 import com.aiqin.bms.scmp.api.product.service.ProductEventTriggeringServie;
 import org.springframework.beans.factory.annotation.Autowired;

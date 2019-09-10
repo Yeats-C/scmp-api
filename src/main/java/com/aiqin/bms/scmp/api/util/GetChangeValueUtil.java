@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -109,7 +110,7 @@ public class GetChangeValueUtil<T> {
                 }
             }
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return changeMap;
     }

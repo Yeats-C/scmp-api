@@ -1,11 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.Update;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.rule.SaveReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;

@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuFile;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFileDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileRespVO;
 import org.apache.ibatis.annotations.Param;
 

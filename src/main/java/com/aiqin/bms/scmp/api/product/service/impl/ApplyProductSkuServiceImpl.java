@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.HandlingExceptionCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
@@ -88,7 +89,7 @@ public class ApplyProductSkuServiceImpl extends BaseServiceImpl implements Apply
                 try {
                    productSkus = BeanCopyUtils.copyList(applyProductSkus, ProductSkuInfo.class);
                 } catch (Exception e) {
-                    log.error("error", e);
+                    log.error(Global.ERROR, e);
                     log.info("转化数据SKU数据失败");
                 }
 

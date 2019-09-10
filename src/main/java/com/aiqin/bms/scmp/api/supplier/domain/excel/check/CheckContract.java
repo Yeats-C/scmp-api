@@ -110,8 +110,12 @@ public class CheckContract {
             if (startTime > endTime) {
                 error.add("合同开始时间不能晚于合同结束时间");
             } else {
-                reqVo.setStartTime(Date.from(LocalDate.parse(contractImportNew.getStartTime().trim()).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
-                reqVo.setEndTime(Date.from(LocalDate.parse(contractImportNew.getEndTime().trim()).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+                try {
+                    reqVo.setStartTime(Date.from(LocalDate.parse(contractImportNew.getStartTime().trim()).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+                    reqVo.setEndTime(Date.from(LocalDate.parse(contractImportNew.getEndTime().trim()).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant()));
+                } catch (Exception e) {
+                    error.add("时间格式不正确");
+                }
             }
         }
         //最低起订金额
