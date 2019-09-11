@@ -536,7 +536,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             returnOrderInfo.setDetailList(detailList);
             //入库单生成
             String inboundOderCode;
-            List<InboundReqSave> convert = new ReturnInfoToInboundConverter(skuService).convert(returnOrderInfo);
+            List<InboundReqSave> convert = new ReturnInfoToInboundConverter().convert(returnOrderInfo);
             for (InboundReqSave inboundReqSave : convert) {
                 inboundOderCode = inboundRecord(inboundReqSave);
                 //直接加库存
@@ -949,7 +949,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 product.setUnitCode(orderProductSkuResponse.getUnitCode());
                 product.setUnitName(orderProductSkuResponse.getUnitName());
                 product.setInboundNorms(orderProductSkuResponse.getSpec());
-                product.setTax(orderProductSkuResponse.getTax().intValue());
+                product.setTax(orderProductSkuResponse.getTax());
             }else{
                 throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", allocationProduct.getSkuCode()));
             }
