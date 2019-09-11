@@ -251,5 +251,30 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @GetMapping("/exportAddSku")
+    public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp){
+        log.info("SkuInfoController---exportSku---入参：[{}]");
+        try {
+            return HttpResponse.success(skuInfoService.exportAddSku(resp));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @GetMapping("/exportEditSku")
+    public HttpResponse<Boolean> exportEditSku(HttpServletResponse resp){
+        log.info("SkuInfoController---exportSku---入参：[{}]");
+        try {
+            return HttpResponse.success(skuInfoService.exportEditSku(resp));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

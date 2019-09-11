@@ -295,4 +295,11 @@ public interface SkuInfoService{
      * @return
      */
     List<ApplyProductSku> selectUnSynData();
+
+    /**
+     * 导出新增的sku
+     */
+    Boolean exportAddSku(HttpServletResponse resp);
+
+    Boolean exportEditSku(HttpServletResponse resp);
 }
