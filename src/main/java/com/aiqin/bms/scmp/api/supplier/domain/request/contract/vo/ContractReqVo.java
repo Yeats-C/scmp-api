@@ -88,7 +88,7 @@ public class ContractReqVo {
     private Date endTime;
 
     @ApiModelProperty("进货价格生效标准(下单日价格,收获日价格)")
-    @NotNull(message = "进货价格生效标准不能为空")
+//    @NotNull(message = "进货价格生效标准不能为空")
     private Byte purchasePriceStandard;
 
     @ApiModelProperty("关联申请合同")

@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuAddExport;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuEditExport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import org.apache.ibatis.annotations.MapKey;
@@ -73,4 +75,16 @@ public interface ProductSkuInfoMapper {
      * @return
      */
     ProductSkuInfo selectBySkuCode(String skuCode);
+
+    /**
+     * 导出新增
+     * @return
+     */
+    List<SkuAddExport> exportAddSku();
+
+    /**
+     * 导出修改
+     * @return
+     */
+    List<SkuEditExport> exportEditSku();
 }

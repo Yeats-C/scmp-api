@@ -2514,6 +2514,30 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
+    public Boolean exportAddSku(HttpServletResponse resp) {
+        try {
+            List<SkuAddExport> list = productSkuInfoMapper.exportAddSku();
+            ExcelUtil.writeExcel(resp,list,"商品DL新增导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuAddExport.class);
+            return Boolean.TRUE;
+        } catch (ExcelException e) {
+            log.error(e.getMessage(),e);
+            throw new BizException(ResultCode.EXPORT_FAILED);
+        }
+    }
+
+    @Override
+    public Boolean exportEditSku(HttpServletResponse resp) {
+        try {
+            List<SkuEditExport> list = productSkuInfoMapper.exportEditSku();
+            ExcelUtil.writeExcel(resp,list,"商品DL修改导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuEditExport.class);
+            return Boolean.TRUE;
+        } catch (ExcelException e) {
+            log.error(e.getMessage(),e);
+            throw new BizException(ResultCode.EXPORT_FAILED);
+        }
+    }
+
+    @Override
     public DetailRequestRespVo getInfoByForm(String formNo) {
         DetailRequestRespVo respVo = new DetailRequestRespVo();
         List<ApplyProductSku> applyProductSkus = productSkuDao.getApplySkuByFormNo(formNo);
@@ -3354,7 +3378,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //销售描述
             if (Objects.isNull(importVo.getDescription())) {
-                error.add("销售描述不能为空");
+//                error.add("销售描述不能为空");
             } else {
                 sale.setDescription(importVo.getDescription().trim());
             }
