@@ -154,7 +154,8 @@ public class DashboardServiceImpl implements DashboardService {
             dashboardHomePageTitle.setAchieveRate(dashboardDepartAnnualSalesStatiRespVo.getAchieveRate());
             dashboardHomePageTitle.setChannelMargin(dashboardDepartAnnualSalesStatiRespVo.getChannelMargin());
             if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
-                BigDecimal marginRate = new BigDecimal(dashboardDepartAnnualSalesStatiRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount());
+                double mr = dashboardDepartAnnualSalesStatiRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                BigDecimal marginRate = new BigDecimal(mr);
                 dashboardHomePageTitle.setMarginRate(marginRate);
             }
         }
@@ -164,7 +165,8 @@ public class DashboardServiceImpl implements DashboardService {
         if(dashboardDepCateProperSalesAmountRespVo != null){
             dashboardHomePageTitle.setChannelSalesAmount(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount());
             if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
-                BigDecimal contributionRate = new BigDecimal(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue());
+                double cr = dashboardDepCateProperSalesAmountRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                BigDecimal contributionRate = new BigDecimal(cr);
                 dashboardHomePageTitle.setContributionRate(contributionRate);
             }
         }
