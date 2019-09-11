@@ -724,6 +724,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 查询是否有商品可以入库
         if(CollectionUtils.isNotEmptyCollection(productList)){
             InboundBatchReqVo inboundBatchReqVo;
+            ProductSkuPictures productSkuPicture;
+            ProductSkuPurchaseInfo skuPurchaseInfo;
             for(PurchaseOrderProduct product:productList){
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
@@ -733,7 +735,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo = new InboundProductReqVo();
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
-                ProductSkuPictures productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
+                productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
                 if(productSkuPicture != null && StringUtils.isNotBlank(productSkuPicture.getProductPicturePath())){
                     reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
                 }
@@ -742,7 +744,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setColorCode(null);
                 reqVo.setModel(product.getModelNumber());
                 reqVo.setInboundNorms(product.getProductSpec());
-                ProductSkuPurchaseInfo skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
                 if(skuPurchaseInfo != null){
                     reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
                     reqVo.setUnitName(skuPurchaseInfo.getUnitName());
@@ -763,7 +765,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setLinenum(product.getId());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
-                reqVo.setTaxRate(product.getTaxRate());
+                reqVo.setTax(product.getTaxRate());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
                 Integer totalAmount = amount * (singleCount - actualSingleCount);
