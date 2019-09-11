@@ -4,6 +4,7 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
@@ -214,7 +215,7 @@ public class SupplyComServiceImpl implements SupplyComService {
         } catch (GroundRuntimeException e) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return supplyComDetailRespVO;
     }

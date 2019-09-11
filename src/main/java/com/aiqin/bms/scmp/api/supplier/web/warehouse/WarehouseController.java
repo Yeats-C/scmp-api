@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.web.warehouse;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
@@ -11,6 +10,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.Logistics
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

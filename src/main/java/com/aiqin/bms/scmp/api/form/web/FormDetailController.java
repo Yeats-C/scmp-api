@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.form.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.platform.flows.client.domain.FormDetailRequest;
 import com.aiqin.platform.flows.client.service.FormDetailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

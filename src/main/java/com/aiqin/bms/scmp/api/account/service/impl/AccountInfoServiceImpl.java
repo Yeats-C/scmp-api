@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.account.domain.response.ExternalAccountResponse;
 import com.aiqin.bms.scmp.api.account.service.AccountInfoService;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.purchase.dao.OperationLogDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Role;
@@ -64,15 +65,16 @@ import java.util.stream.Collectors;
 @Service
 public class AccountInfoServiceImpl implements AccountInfoService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(AccountInfoServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AccountInfoServiceImpl.class);
     /**
      * 公司编码
      */
-    private static String COMPANY_CODE = "15";
+    private static final String COMPANY_CODE = "15";
     /**
      * 公司名称
      */
-    private static String COMPANY_NAME = "熙耘供应链供应商集合";
+    private static final String COMPANY_NAME = "熙耘供应链供应商集合";
+    private static final String CONTROL_ERROR = "调用主控查询异常";
     @Resource
     private AccountDao accountDao;
     @Resource
@@ -160,8 +162,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
     public HttpResponse<List<Role>> selectRole(String personId, String ticket) {
         try {
             HttpClient client = HttpClient.get(CONTROL_ROLE_LIST + "?system_code=smps-system&page_size=1000")
-                    .addParameter("ticket", ticket)
-                    .addParameter("ticket_person_id", personId);
+                    .addParameter(Global.TICKET, ticket)
+                    .addParameter(Global.TICKET_PERSON_ID, personId);
             HttpResponse response = client.action().result(HttpResponse.class);
             if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
                 PageResData resData = JsonUtil.fromJson(JsonUtil.toJson(response.getData()), PageResData.class);
@@ -172,8 +174,8 @@ public class AccountInfoServiceImpl implements AccountInfoService {
                 }
                 return HttpResponse.successGenerics(new ArrayList<>());
             } else {
-                LOGGER.error("调用主控查询异常", response.getMessage());
-                throw new GroundRuntimeException("调用主控查询异常");
+                LOGGER.error(CONTROL_ERROR, response.getMessage());
+                throw new GroundRuntimeException(CONTROL_ERROR);
             }
         } catch (Exception e) {
             LOGGER.error("查询角色异常:{}", e);
@@ -215,14 +217,14 @@ public class AccountInfoServiceImpl implements AccountInfoService {
                 HttpClient roleClient = HttpClient.post(String.format("%s/%s?ticket=%s&ticket_person_id=%s", CONTROL_ROLE_ADD, response.getAccountId(), ticket, personId)).json(roleRequest);
                 HttpResponse roleResponse = roleClient.action().result(HttpResponse.class);
                 if (!roleResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    LOGGER.error("调用主控查询异常", httpResponse.getMessage());
-                    throw new GroundRuntimeException("调用主控查询异常");
+                    LOGGER.error(CONTROL_ERROR, httpResponse.getMessage());
+                    throw new GroundRuntimeException(CONTROL_ERROR);
                 }
             }
 
         } else {
-            LOGGER.error("调用主控查询异常", httpResponse.getMessage());
-            throw new GroundRuntimeException("调用主控查询异常");
+            LOGGER.error(CONTROL_ERROR, httpResponse.getMessage());
+            throw new GroundRuntimeException(CONTROL_ERROR);
         }
         // 修改供应链关联表
         Integer count = accountDao.updateByPrimaryKeySelective(account);

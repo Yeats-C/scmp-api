@@ -36,6 +36,7 @@
     <result column="actual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
     <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
     <result column="actual_price" jdbcType="BIGINT" property="actualPrice" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code, 
@@ -43,7 +44,7 @@
     batch_number, price, num, amount, activity_apportionment, preferential_allocation, 
     actual_deliver_num, activity_code, product_line_num, promotion_line_num, return_num,
     company_name, company_code, channel_unit_price, total_channel_price, actual_channel_unit_price,
-    actual_total_channel_price, actual_amount, actual_price
+    actual_total_channel_price, actual_amount, actual_price,tax
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -586,7 +587,7 @@
     sku_name, picture_url, spec,color_name, color_code,model,  unit_code,
     unit_name, zero_disassembly_coefficient, num,product_line_num,
     channel_unit_price,total_channel_price, company_name,company_code,   actual_channel_unit_price,
-    actual_total_channel_price, actual_amount, actual_price,actual_deliver_num,give_promotion)
+    actual_total_channel_price, actual_amount, actual_price,actual_deliver_num,give_promotion,tax)
     values
     <foreach collection="list" item="item" separator="," close="" open="">
       (
@@ -598,8 +599,8 @@
       #{item.productLineNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.actualChannelUnitPrice,jdbcType=VARCHAR}, #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
-      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}, #{item.actualDeliverNum,jdbcType=BIGINT}
-      , #{item.givePromotion,jdbcType=BIGINT}
+      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}, #{item.actualDeliverNum,jdbcType=BIGINT},
+      #{item.givePromotion,jdbcType=BIGINT},#{item.tax,jdbcType=BIGINT}
       )
     </foreach>
   </insert>

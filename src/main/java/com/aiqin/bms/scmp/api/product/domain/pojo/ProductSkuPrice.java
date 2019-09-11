@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 

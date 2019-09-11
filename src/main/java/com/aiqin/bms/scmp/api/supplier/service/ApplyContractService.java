@@ -210,4 +210,13 @@ public interface ApplyContractService{
      * @date 2019/9/3 19:31
      */
     void saveImportData(ContractImportResp req);
+
+    Boolean saveUpdateApply(UpdateApplyContractReqVo updateApplyContractReqVo);
+
+    /**
+     * 通过申请编码更新数据
+     * @param applyContractDTO
+     * @return
+     */
+    Integer updateByApplyId(ApplyContractDTO applyContractDTO);
 }

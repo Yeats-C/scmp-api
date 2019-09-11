@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.supervisory.SaveSupervisoryWarehouseOrderReqVo;
 import com.aiqin.bms.scmp.api.product.service.SupervisoryWarehouseOrderService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -35,7 +36,7 @@ public class SupervisoryWarehouseOrderController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -48,7 +49,7 @@ public class SupervisoryWarehouseOrderController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

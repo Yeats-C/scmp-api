@@ -1,13 +1,12 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.TagInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.*;
@@ -20,6 +19,8 @@ import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -250,7 +251,7 @@ public class TagInfoServiceImpl implements TagInfoService {
                 });
                 checkUseTagRecord(record.getUseObjectCode(),record.getTagTypeCode(),reqVos,addList,updateList,delList);
             } catch (Exception e) {
-                log.error("error", e);
+                log.error(Global.ERROR, e);
                 throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
                         "系统错误"));
             }

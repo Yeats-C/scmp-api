@@ -6,7 +6,10 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
-import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.PriceMeasurementReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.ProductSkuChangePriceReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuChangePriceReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
@@ -232,10 +235,7 @@ public interface ProductSkuChangePriceService {
      * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO>
      */
     BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO);
-    /**
-     * 采购变价批量导入
-     */
-    List<ProductSkuChangePriceImportRespVO> importProductSkuChangePrice(ProductSkuChangePriceImportReqVo reqVo);
+
 
     /**
      * 获得2年内的价格数据

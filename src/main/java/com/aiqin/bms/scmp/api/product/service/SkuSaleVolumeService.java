@@ -1,8 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.product.domain.request.SkuSaleVolumeVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -18,10 +17,10 @@ public interface SkuSaleVolumeService {
     /**
      *
      * 功能描述: 批量插入sku销量
-     * @param SkuSaleVolumes
+     * @param skuSaleVolumes
      * @auther knight.xie
      * @date 2019/1/3 11:35
      */
-    HttpResponse saveBatch(List<SkuSaleVolumeVo> skuSaleVolumes) throws BizException;
+    HttpResponse saveBatch(List<SkuSaleVolumeVo> skuSaleVolumes);
 
 }

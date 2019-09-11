@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.product.dao.ProductBrandDistributionDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductBrandTypeDao;
 import com.aiqin.bms.scmp.api.product.service.BrandService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

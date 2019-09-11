@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
@@ -51,9 +52,6 @@ public class ProductSkuChangePriceController {
         log.info("ProductSkuChangePriceController---view---入参：[{}]", code);
         try {
             return HttpResponse.success(productSkuChangePriceService.view(code));
-        } catch (BizException e) {
-            log.error(e.getMessageId().getMessage());
-            return HttpResponse.failure(e.getMessageId());
         } catch (Exception ex) {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
@@ -145,7 +143,7 @@ public class ProductSkuChangePriceController {
         try {
             return HttpResponse.success(productSkuChangePriceService.getSkuListByQueryVO(reqVO));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -157,7 +155,7 @@ public class ProductSkuChangePriceController {
         try {
             return HttpResponse.success(productSkuChangePriceService.querySkuBatchList(reqVO));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
         }
     }
@@ -192,12 +190,6 @@ public class ProductSkuChangePriceController {
 
     }
 
-    @ApiOperation("导入商品信息")
-    @PostMapping("/importProductSkuChangePrice")
-    public HttpResponse<List<ProductSkuChangePriceImportRespVO>> importProductSkuChangePrice(MultipartFile file, String purchaseGroupCode, String companyCode, Integer changePriceType){
-        ProductSkuChangePriceImportReqVo productSkuChangePriceImportReqVo = new ProductSkuChangePriceImportReqVo(file,purchaseGroupCode,companyCode, changePriceType);
-        return HttpResponse.success(productSkuChangePriceService.importProductSkuChangePrice(productSkuChangePriceImportReqVo));
-    }
 
     @ApiOperation("2年内价格波动数据")
     @GetMapping("/getPriceJog")
@@ -207,7 +199,7 @@ public class ProductSkuChangePriceController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -221,7 +213,7 @@ public class ProductSkuChangePriceController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e){
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

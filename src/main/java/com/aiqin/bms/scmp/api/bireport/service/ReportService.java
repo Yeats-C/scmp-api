@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.bireport.service;
 
 import com.aiqin.bms.scmp.api.base.PageReportResData;
-import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
-import com.aiqin.bms.scmp.api.bireport.domain.response.*;
+import com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.LowInventoryRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo;
 
 import java.util.List;
 

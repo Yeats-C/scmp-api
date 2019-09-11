@@ -4,7 +4,6 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;

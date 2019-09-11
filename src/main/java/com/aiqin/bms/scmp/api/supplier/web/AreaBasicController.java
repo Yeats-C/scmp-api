@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.web;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.supplier.service.AreaBasicInfoService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;

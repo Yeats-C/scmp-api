@@ -5,6 +5,7 @@
  */
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.binary.Hex;
 
@@ -106,7 +107,7 @@ public class MD5Utils {
             md5str = bytesToHex(buff);
 
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
         }
         return md5str;
     }

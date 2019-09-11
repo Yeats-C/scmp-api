@@ -952,6 +952,18 @@
       <if test="personId != null and personId != '' ">
         and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
       </if>
+      <if test="createTimeStart != null ">
+        AND a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="createTimeEnd != null">
+        AND a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTimeStart != null ">
+        AND a.update_time &gt;=#{updateTimeStart,jdbcType=TIMESTAMP}
+      </if>
+      <if test="updateTimeEnd != null">
+        AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+      </if>
     order by create_time desc
   </select>
   <select id="getProductDraftList" resultMap="ProductDraftListMap">
@@ -2285,7 +2297,7 @@
   </select>
   <resultMap id="ORDER_PRODUCT_RESULTMAP" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse">
     <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent" />
-    <result column="Input_tax_rate" jdbcType="VARCHAR" property="taxRate" />
+    <result column="tax" jdbcType="VARCHAR" property="tax" />
     <result column="product_brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="product_brand_code" jdbcType="VARCHAR" property="brandCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="categoryName" />
@@ -2307,11 +2319,12 @@
 
   <select id="selectSkuInfo" resultMap="ORDER_PRODUCT_RESULTMAP">
      select
-         distinct <include refid="SELECT_SKU_SQL"/>,ifnull(psbp.box_volume,'0') as box_volume,ifnull(psbp.box_gross_weight,'0') as box_gross_weight
+         distinct <include refid="SELECT_SKU_SQL"/>,ifnull(psbp.box_volume,'0') as box_volume,ifnull(psbp.box_gross_weight,'0') as box_gross_weight,psc.output_tax_rate as tax
       from
       product_sku as ps
       left JOIN product_sku_distribution_info  as psdi on psdi.product_sku_code = ps.sku_code
       left JOIN product_sku_box_packing  as psbp on psbp.product_sku_code = ps.sku_code and psbp.unit_code = psdi.unit_code
+      left join product_sku_checkout psc on ps.sku_code = psc.sku_code
       where  ps.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <sql id="SELECT_SKU_SQL">
@@ -2321,7 +2334,7 @@
   </sql>
   <select id="selectStockSkuInfoList" resultMap="ORDER_PRODUCT_RESULTMAP">
     select
-      <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate
+      <include refid="SELECT_SKU_SQL"/> ,psc.Input_tax_rate as tax
    from
     product_sku as ps
     left JOIN product_sku_stock_info    as psdi on psdi.product_sku_code = ps.sku_code

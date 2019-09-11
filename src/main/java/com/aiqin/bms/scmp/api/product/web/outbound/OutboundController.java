@@ -1,14 +1,13 @@
 package com.aiqin.bms.scmp.api.product.web.outbound;
 
-import com.aiqin.bms.scmp.api.product.dao.OutboundBatchDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -16,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.QueryOutboundResVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -133,7 +133,7 @@ public class OutboundController {
             return HttpResponse.success();
         } catch (Exception e) {
             log.error("入库单回调接口错误实体是:[{}]", code);
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
         }
     }

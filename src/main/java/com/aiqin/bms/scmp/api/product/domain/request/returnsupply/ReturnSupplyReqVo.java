@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.request.returnsupply;
 
-import com.aiqin.bms.scmp.api.common.*;
-import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

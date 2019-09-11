@@ -288,11 +288,18 @@ public interface SkuInfoService{
 
     DetailRequestRespVo getInfoByForm(String formNo);
 
-    List<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
+    BasePage<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
 
     /**
      * 查未同步的
      * @return
      */
     List<ApplyProductSku> selectUnSynData();
+
+    /**
+     * 导出新增的sku
+     */
+    Boolean exportAddSku(HttpServletResponse resp);
+
+    Boolean exportEditSku(HttpServletResponse resp);
 }

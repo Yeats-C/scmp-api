@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.bireport.domain.request;
 
-import com.aiqin.bms.scmp.api.base.PageReq;
 import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;

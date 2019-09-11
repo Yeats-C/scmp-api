@@ -1,7 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.converter;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchItemReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.ILockStockBatchReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.StockBatchVoRequest;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 

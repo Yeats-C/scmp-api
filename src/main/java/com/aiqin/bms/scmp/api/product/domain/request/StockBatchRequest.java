@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 @ApiModel("批量库存request")
 @Data
 public class StockBatchRequest extends PagesRequest {

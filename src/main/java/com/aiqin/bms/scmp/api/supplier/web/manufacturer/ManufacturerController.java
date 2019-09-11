@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.web.manufacturer;
 
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.supplier.domain.request.manufacturer.vo.ManufacturerReqVo;
@@ -9,6 +8,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.manufacturer.vo.QueryManuf
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.ManufacturerResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.manufacturer.QueryManufacturerResVo;
 import com.aiqin.bms.scmp.api.supplier.service.ManufacturerService;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;

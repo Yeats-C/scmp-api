@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web.movement;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
@@ -44,7 +45,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.getList(vo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -59,7 +60,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.save(vo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -74,7 +75,7 @@ public class MovementController {
         try {
             return HttpResponse.success(movementService.view(id));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

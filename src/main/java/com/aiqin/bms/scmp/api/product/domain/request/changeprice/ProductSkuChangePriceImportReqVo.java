@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 /**
  * Created by 爱亲 on 2019/7/19.
  */

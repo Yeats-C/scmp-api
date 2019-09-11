@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.form.web;
 
-import com.aiqin.bms.scmp.api.form.base.FormProcessKey;
 import com.aiqin.bms.scmp.api.form.domain.FormApplyRequest;
 import com.aiqin.bms.scmp.api.form.service.FormApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.platform.flows.client.domain.vo.FormCallBackVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +25,5 @@ public class FormApplyController {
     HttpResponse apply(@RequestBody FormApplyRequest request) {
         return formApplyService.submitActBaseProcess(request);
     }
-
-    @PostMapping("/callback")
-    @ApiOperation("测试回调")
-    String callback(@RequestBody FormCallBackVo vo) {
-        return formApplyService.callback(vo);
-    }
-
 
 }

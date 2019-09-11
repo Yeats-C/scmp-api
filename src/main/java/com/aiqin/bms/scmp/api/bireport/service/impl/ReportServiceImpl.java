@@ -1,14 +1,11 @@
 package com.aiqin.bms.scmp.api.bireport.service.impl;
 
 import com.aiqin.bms.scmp.api.base.PageReportResData;
-import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.bireport.dao.ReportDao;
 import com.aiqin.bms.scmp.api.bireport.domain.request.*;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
 import com.aiqin.bms.scmp.api.bireport.service.ReportService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

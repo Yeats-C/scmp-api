@@ -69,7 +69,7 @@ public class ApplyContractController {
      * @return
      */
     @ApiOperation("查看合同申请详情")
-    @PostMapping("/getApplyContract")
+    @GetMapping("/getApplyContract")
     public HttpResponse<ApplyContractViewResVo> findApplyContractDetail(@RequestParam("id")  @ApiParam(value = "传入主键id",required = true) Long id) {
         try {
             return HttpResponse.success(applyContractService.findApplyContractDetail(id));
@@ -116,6 +116,21 @@ public class ApplyContractController {
     }
 
     /**
+     * 待申请修改合同保存
+     * @param updateApplyContractReqVo
+     * @return
+     */
+    @ApiOperation("待申请修改合同保存")
+    @PutMapping("/saveUpdateApply")
+    public HttpResponse<Boolean> saveUpdateApply(@RequestBody @Valid UpdateApplyContractReqVo updateApplyContractReqVo){
+        try{
+            return HttpResponse.success(applyContractService.saveUpdateApply(updateApplyContractReqVo));
+        }catch (Exception ex){
+            return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, ex.getMessage()));
+        }
+    }
+
+    /**
      * 撤销申请合同
      * @param id
      * @return
@@ -138,6 +153,7 @@ public class ApplyContractController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
+            e.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
