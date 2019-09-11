@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.statistics.domain.response;
+package com.aiqin.bms.scmp.api.statistics.domain.response.supplier;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.Api;
@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -13,7 +14,19 @@ import java.math.BigDecimal;
  **/
 @Data
 @Api(tags = "供应商到货率统计")
-public class SupplierDeliveryResponse extends ShareResponse{
+public class SupplierDeliveryResponse{
+
+    @ApiModelProperty(value="到货率的子集")
+    @JsonProperty("subset_list")
+    private List<SupplierDeliveryResponse> subsetList;
+
+    @ApiModelProperty(value = "供应商编码")
+    @JsonProperty("supplier_code")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
 
     @ApiModelProperty(value="采购组负责人编码")
     @JsonProperty("responsible_person_code")
@@ -22,6 +35,14 @@ public class SupplierDeliveryResponse extends ShareResponse{
     @ApiModelProperty(value="采购组负责人名称")
     @JsonProperty("responsible_person_name")
     private String responsiblePersonName;
+
+    @ApiModelProperty(value="一级品类code")
+    @JsonProperty("lv1")
+    private String lv1;
+
+    @ApiModelProperty(value="一级品类name")
+    @JsonProperty("lv1_category_name")
+    private String lv1CategoryName;
 
     @ApiModelProperty(value="华北仓订货数量")
     @JsonProperty("hb_goods_count")

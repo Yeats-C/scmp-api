@@ -31,6 +31,14 @@ public class StatSupplierReturnRateMonthly {
     @JsonProperty("supplier_name")
     private String supplierName;
 
+    @ApiModelProperty(value="所属部门code")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty(value="所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty(value="采购负责人code")
     @JsonProperty("responsible_person_code")
     private String responsiblePersonCode;
@@ -54,6 +62,10 @@ public class StatSupplierReturnRateMonthly {
     @ApiModelProperty(value="退货金额")
     @JsonProperty("amt")
     private Long amt;
+
+    @ApiModelProperty(value="销售金额")
+    @JsonProperty("sales_amount")
+    private Long salesAmount;
 
     @ApiModelProperty(value="退货率")
     @JsonProperty("return_rate")
