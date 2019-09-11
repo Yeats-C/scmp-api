@@ -30,7 +30,6 @@ public class PurchaseApplyController {
     private PurchaseApplyService purchaseApplyService;
     @Resource
     private AutomaticPurchaseService automaticPurchaseService;
-    private PurchaseApplyRequest purchaseApplyRequest;
 
     @GetMapping("/list")
     @ApiOperation("采购申请单列表")

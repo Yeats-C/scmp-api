@@ -21,7 +21,7 @@
     <result column="case_three" jdbcType="INTEGER" property="caseThree" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
-    <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
+    <result column="create_date" jdbcType="DATE" property="createDate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
