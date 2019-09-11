@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+
 import java.util.Date;
 
 @ApiModel("订单商品批次表")
@@ -59,6 +60,28 @@ public class OrderInfoItemProductBatch {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty("供应商code")
+    private String supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
+    public String getSupplierName() {
+        return supplierName;
+    }
+
+    public void setSupplierName(String supplierName) {
+        this.supplierName = supplierName;
+    }
+
+    public String getSupplierCode() {
+        return supplierCode;
+    }
+
+    public void setSupplierCode(String supplierCode) {
+        this.supplierCode = supplierCode;
+    }
 
     public Long getId() {
         return id;

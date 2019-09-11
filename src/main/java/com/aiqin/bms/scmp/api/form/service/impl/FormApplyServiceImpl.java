@@ -8,7 +8,6 @@ import com.aiqin.platform.flows.client.constant.FormUpdateUrlType;
 import com.aiqin.platform.flows.client.constant.Indicator;
 import com.aiqin.platform.flows.client.constant.IndicatorStr;
 import com.aiqin.platform.flows.client.constant.TpmBpmUtils;
-import com.aiqin.platform.flows.client.domain.vo.ActBaseProcessEntity;
 import com.aiqin.platform.flows.client.domain.vo.FormCallBackVo;
 import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
 import com.aiqin.platform.flows.client.service.FormApplyCommonService;
@@ -56,28 +55,5 @@ public class FormApplyServiceImpl implements FormApplyService {
         HttpResponse response = formApplyCommonService.submitActBaseProcessScmp(paramVO);
         log.info("调用审批流发起申请返回结果,result={}", response);
         return response;
-    }
-
-    @Override
-    public String callback(FormCallBackVo formCallBackVo) {
-        log.info("进入回调,request={}", formCallBackVo);
-        if (formCallBackVo.getUpdateFormStatus().equals(Indicator.COST_FORM_STATUS_APPROVED.getCode())) {
-            //审核通过
-        } else if (TpmBpmUtils.isPass(formCallBackVo.getUpdateFormStatus(), formCallBackVo.getOptBtn())) {
-            //审核中
-        } else {
-            if (formCallBackVo.getOptBtn().equals(IndicatorStr.PROCESS_BTN_REJECT_FIRST.getCode())) {
-                //驳回发起人
-            } else if (formCallBackVo.getOptBtn().equals(IndicatorStr.PROCESS_BTN_REJECT_END.getCode())) {
-                //驳回并结束
-            } else if (formCallBackVo.getOptBtn().equals(IndicatorStr.PROCESS_BTN_CANCEL.getCode())) {
-                //撤销
-            } else if (formCallBackVo.getOptBtn().equals(IndicatorStr.PROCESS_BTN_KILL.getCode())) {
-                //终止
-            } else {
-                //终止
-            }
-        }
-        return "success";
     }
 }

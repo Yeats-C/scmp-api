@@ -1,10 +1,10 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.supplier.service.BankService;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

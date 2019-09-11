@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("近三月平均日销量")
     @JsonProperty("sales_avg_3_month_num")
-    private Double salesAvg3MonthNum;
+    private Long salesAvg3MonthNum;
 
     @ApiModelProperty("可用库存数量")
     @JsonProperty("available_num")
@@ -74,7 +75,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("周转天数")
     @JsonProperty("days_turnover")
-    private Double daysTurnover;
+    private Long daysTurnover;
 
     @ApiModelProperty("连续缺货天数")
     @JsonProperty("stockout_days")

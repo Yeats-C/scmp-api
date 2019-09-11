@@ -61,7 +61,7 @@ public interface ApplyDeliveryService {
      * @param deliveryDTOList
      * @return
      */
-    Long insideSaveBatchApply(List<ApplyDeliveryDTO> deliveryDTOList);
+    Long  insideSaveBatchApply(List<ApplyDeliveryDTO> deliveryDTOList);
 
     /**
      * 发货信息审批流

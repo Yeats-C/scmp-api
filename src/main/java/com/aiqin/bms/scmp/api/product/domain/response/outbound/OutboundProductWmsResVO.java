@@ -5,8 +5,6 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Objects;
-
 /**
  * @Classname: InboundProductWmsReqVO
  * 描述:WMS传入入库单sku实体

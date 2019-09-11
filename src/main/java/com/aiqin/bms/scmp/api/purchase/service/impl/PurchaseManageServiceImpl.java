@@ -9,9 +9,13 @@ import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
@@ -19,11 +23,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDao;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderDetailsDao;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyPurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
-import com.aiqin.bms.scmp.api.purchase.domain.ApplyPurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
@@ -52,7 +52,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Calendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * @author: zhao shuai
@@ -443,10 +446,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String createById = purchaseOrder.getCreateById();
         String createByName = purchaseOrder.getCreateByName();
         PurchaseOrder order = purchaseOrderDao.purchaseOrder(purchaseOrderId);
+        if(null == order){
+            return HttpResponse.failure(ResultCode.OBJECT_NOT_FOUND);
+        }
         purchaseOrder.setUpdateByName(createByName);
         purchaseOrder.setUpdateById(createById);
         if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
-            if(order != null && order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
                 WorkFlowVO w = new WorkFlowVO();
                 w.setFormNo(order.getPurchaseOrderCode());
@@ -572,7 +578,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 priceSum += purchaseWhole;
                 // 实际
                 Integer actualSingleCount = order.getActualSingleCount() == null ? 0: order.getActualSingleCount();
-                Integer actualWhole = actualSingleCount / packNumber;
+                Integer actualWhole = 0;
+                if (packNumber != 0 ) {
+                    actualWhole = actualSingleCount / packNumber;
+                }
                 actualPriceSum += actualWhole;
                 actualSingleSum += actualSingleCount;
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
@@ -639,7 +648,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         order.setPurchaseOrderCode(purchaseOrderCode);
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder == null){
-            LOGGER.info("未查询到采购单的信息" + purchaseOrderCode);
+            LOGGER.info("未查询到采购单的信息{}", purchaseOrderCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }
         // 变更采购单的状态（开始备货）
@@ -711,8 +720,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         InboundProductReqVo reqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
+        List<InboundBatchReqVo> batchReqVoList = Lists.newArrayList();
         // 查询是否有商品可以入库
         if(CollectionUtils.isNotEmptyCollection(productList)){
+            InboundBatchReqVo inboundBatchReqVo;
+            ProductSkuPictures productSkuPicture;
+            ProductSkuPurchaseInfo skuPurchaseInfo;
             for(PurchaseOrderProduct product:productList){
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
@@ -722,7 +735,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo = new InboundProductReqVo();
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
-                ProductSkuPictures productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
+                productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
                 if(productSkuPicture != null && StringUtils.isNotBlank(productSkuPicture.getProductPicturePath())){
                     reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
                 }
@@ -731,7 +744,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setColorCode(null);
                 reqVo.setModel(product.getModelNumber());
                 reqVo.setInboundNorms(product.getProductSpec());
-                ProductSkuPurchaseInfo skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
                 if(skuPurchaseInfo != null){
                     reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
                     reqVo.setUnitName(skuPurchaseInfo.getUnitName());
@@ -752,13 +765,23 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setLinenum(product.getId());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
-                reqVo.setTaxRate(product.getTaxRate());
+                reqVo.setTax(product.getTaxRate().longValue());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
                 Integer totalAmount = amount * (singleCount - actualSingleCount);
                 preTaxAmount += totalAmount.longValue();
                 preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount.longValue(), product.getTaxRate().longValue());
                 list.add(reqVo);
+                //出库加入供应商与商品关系
+                inboundBatchReqVo = new InboundBatchReqVo();
+                inboundBatchReqVo.setSkuName(product.getSkuName());
+                inboundBatchReqVo.setSkuCode(product.getSkuCode());
+                inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
+                inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
+                inboundBatchReqVo.setPraQty(product.getSingleCount().longValue());
+                inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
+                inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
+                batchReqVoList.add(inboundBatchReqVo);
             }
         }
         save.setPreInboundNum(preInboundNum);
@@ -768,6 +791,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount-preNoTaxAmount);
         save.setRemark(null);
         save.setList(list);
+        save.setInboundBatchReqVos(batchReqVoList);
         return save;
     }
 

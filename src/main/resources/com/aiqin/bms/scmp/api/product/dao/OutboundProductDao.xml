@@ -29,6 +29,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
   </resultMap>
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
 
@@ -42,7 +43,7 @@
     model, unit_code, unit_name, outbound_norms, outbound_base_unit, outbound_base_content, pre_outbound_num,
     pre_outbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_outbound_num, 
     pra_outbound_main_num, pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, 
-    update_by, update_time,linenum
+    update_by, update_time,linenum,tax
   </sql>
 
   <resultMap id="BaseResultReturnOutboundProductMap" type="com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundProduct">
@@ -397,7 +398,7 @@
     model, unit_code, unit_name, outbound_norms, outbound_base_unit, outbound_base_content, pre_outbound_num,
     pre_outbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_outbound_num,
     pra_outbound_main_num, pra_tax_purchase_amount, pra_tax_amount, create_by, create_time,
-    update_by, update_time,linenum)
+    update_by, update_time,linenum,tax)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.outboundOderCode,jdbcType=VARCHAR},
@@ -417,17 +418,16 @@
       #{item.preOutboundMainNum,jdbcType=BIGINT},
       #{item.preTaxPurchaseAmount,jdbcType=BIGINT},
       #{item.preTaxAmount,jdbcType=BIGINT},
-
       #{item.praOutboundNum,jdbcType=BIGINT},
       #{item.praOutboundMainNum,jdbcType=BIGINT},
       #{item.praTaxPurchaseAmount,jdbcType=BIGINT},
       #{item.praTaxAmount,jdbcType=BIGINT},
-
       #{item.createBy,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},
-      #{item.linenum,jdbcType=BIGINT}
+      #{item.linenum,jdbcType=BIGINT},
+      #{item.tax,jdbcType=BIGINT}
       )
     </foreach>
   </insert>
@@ -531,4 +531,15 @@
       </if>
     </where>
   </update>
+  <select id="listDetailForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound_product
+    where
+    outbound_oder_code in(
+    <foreach collection="orderCodeList" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
 </mapper>

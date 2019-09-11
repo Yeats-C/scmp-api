@@ -1,12 +1,10 @@
 package com.aiqin.bms.scmp.api.base;
 
 
-import com.aiqin.bms.scmp.api.bireport.domain.response.SupplierArrivalRateRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.util.List;
-import java.util.Map;
 
 @ApiModel("分页报表数据")
 public class PageReportResData<T> {

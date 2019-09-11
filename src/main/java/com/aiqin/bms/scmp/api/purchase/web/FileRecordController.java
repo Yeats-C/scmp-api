@@ -1,9 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
-import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.aiqin.bms.scmp.api.purchase.service.FileRecordService;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -18,7 +16,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
+import java.io.OutputStream;
 import java.net.URLEncoder;
 
 /**

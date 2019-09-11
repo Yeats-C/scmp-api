@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser.Feature;
@@ -124,7 +125,7 @@ public class JsonMapper extends ObjectMapper {
             return this.writeValueAsString(object);
         } catch (IOException e) {
             logger.warn("write to json string error:" + object, e);
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return null;
         }
     }

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("上周全国合计_高库存占比")
     @JsonProperty("szqg_rate")
-    private Double szqgRate;
+    private BigDecimal szqgRate;
 
     @ApiModelProperty("本周全国合计_高库存金额")
     @JsonProperty("bzqg_high_inventory_amount")
@@ -62,7 +63,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("本周全国合计_高库存占比")
     @JsonProperty("bzqg_rate")
-    private Double bzqgRate;
+    private BigDecimal bzqgRate;
 
     @ApiModelProperty("华北仓_高库存金额")
     @JsonProperty("hb_high_inventory_amount")
@@ -74,7 +75,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华北仓_高库存占比")
     @JsonProperty("hb_rate")
-    private Double hbRate;
+    private BigDecimal hbRate;
 
     @ApiModelProperty("华南仓_高库存金额")
     @JsonProperty("hn_high_inventory_amount")
@@ -86,7 +87,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华南仓_高库存占比")
     @JsonProperty("hn_rate")
-    private Double hnRate;
+    private BigDecimal hnRate;
 
     @ApiModelProperty("西南仓_高库存金额")
     @JsonProperty("xn_high_inventory_amount")
@@ -98,7 +99,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("西南仓_高库存占比")
     @JsonProperty("xn_rate")
-    private Double xnRate;
+    private BigDecimal xnRate;
 
     @ApiModelProperty("华东仓_高库存金额")
     @JsonProperty("hd_high_inventory_amount")
@@ -110,7 +111,7 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华东仓_高库存占比")
     @JsonProperty("hd_rate")
-    private Double hdRate;
+    private BigDecimal hdRate;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

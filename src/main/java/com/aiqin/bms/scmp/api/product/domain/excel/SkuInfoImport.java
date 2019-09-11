@@ -125,6 +125,10 @@ public class SkuInfoImport{
     @ExcelProperty(index = 25, value = "商品备注")
     private String remark;
 
+    @ApiModelProperty("商品介绍")
+    @ExcelProperty(index = 22, value = "商品介绍")
+    private String productDesc;
+
     @ApiModelProperty("规格")
     @ExcelProperty(index = 26, value = "库存规格")
     private String stockSpec;

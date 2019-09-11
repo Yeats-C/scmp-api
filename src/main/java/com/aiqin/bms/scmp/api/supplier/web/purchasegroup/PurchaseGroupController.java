@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.web.purchasegroup;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.request.dictionary.EnabledSave;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.BatchOperatePurchaseGroupReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.vo.PurchaseGroupReqVo;
@@ -106,6 +107,20 @@ public class PurchaseGroupController {
     }
 
     /**
+     * 提供未禁用的采购组
+     * @return
+     */
+    @ApiOperation("采购组外部提供接口")
+    @PostMapping("/getPurchaseGroupForAll")
+    public HttpResponse<List<PurchaseGroupVo>> getPurchaseGroupForAll(){
+        try{
+            return HttpResponse.success(purchaseGroupService.getPurchaseGroupForAll());
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+    }
+
+    /**
      * 获取外购专员
      * @param
      * @return
@@ -122,7 +137,7 @@ public class PurchaseGroupController {
         try {
             return HttpResponse.success(purchaseGroupService.enabled(enabledSave));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

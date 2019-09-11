@@ -12,13 +12,14 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
-import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.domain.*;
-import com.aiqin.bms.scmp.api.purchase.domain.BiAClassification;
-import com.aiqin.bms.scmp.api.purchase.domain.BiClassification;
-import com.aiqin.bms.scmp.api.purchase.domain.BiGrossProfitMargin;
-import com.aiqin.bms.scmp.api.purchase.domain.BiStockoutRate;
-import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
@@ -37,10 +38,8 @@ import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -49,12 +48,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.math.BigDecimal.ROUND_HALF_DOWN;
 
 /**
  * @author: zhao shuai
@@ -92,16 +88,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private ProductSkuDao productSkuDao;
-    @Resource
-    private BiAClassificationDao biAClassificationDao;
-    @Resource
-    private BiClassificationDao biClassificationDao;
-    @Resource
-    private BiGrossProfitMarginDao biGrossProfitMarginDao;
-    @Resource
-    private BiStockoutDetailDao biStockoutDetailDao;
-    @Resource
-    private BiStockoutRateDao biStockoutRateDao;
     @Resource
     private StockDao stockDao;
 
@@ -705,197 +691,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
         }
         return HttpResponse.success(flow);
-    }
-
-    @Override
-    public HttpResponse<PurchaseContrastResponse> contrast(List<PurchaseApplyDetailResponse> list){
-        if(CollectionUtils.isEmptyCollection(list)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
-        String data = dateTime.toString("yyyy-MM-dd");
-        String beginTime = data + " 00:00:00";
-        String finishTime = data + " 23:59:59";
-        BigDecimal bigMum = new BigDecimal("0");
-        PurchaseContrastResponse contrast = new PurchaseContrastResponse();
-        contrast.setBeginTime(beginTime);
-        contrast.setFinishTime(finishTime);
-        contrast.setBigMum(bigMum);
-        // 获取采购前总营业额/总利润
-        BiGrossProfitMargin biGrossProfitMargin = biGrossProfitMarginDao.grossProfitMargin(beginTime, finishTime);
-        if(biGrossProfitMargin != null){
-            contrast.setFrontSumTurnover(biGrossProfitMargin.getTotalTurnover());
-            contrast.setFrontSumProfit(biGrossProfitMargin.getGrossProfitMargin());
-        }else {
-            contrast.setFrontSumTurnover(bigMum);
-            contrast.setFrontSumProfit(bigMum);
-        }
-        // 查询采购后的总营业额/总利润
-        List<String> listSku = Lists.newArrayList();
-        if(CollectionUtils.isNotEmptyCollection(list)){
-            for (PurchaseApplyDetailResponse product:list){
-                listSku.add(product.getSkuCode());
-            }
-            Integer afterSumTurnover = 0, afterSumProfit = 0;
-            for(PurchaseApplyDetailResponse product:list){
-                // 计算采购的总营业额
-                Integer totalAmount = product.getProductPurchaseSum()== null ? 0 : product.getProductPurchaseSum();
-                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
-                Integer priceMax = product.getPurchaseMax() == null ? 0 : product.getPurchaseMax();
-                afterSumTurnover += totalAmount;
-                afterSumProfit += singleCount * priceMax - totalAmount;
-            }
-            contrast.setAfterSumTurnover(new BigDecimal(afterSumTurnover));
-            contrast.setAfterSumProfit(new BigDecimal(afterSumProfit));
-        }else {
-            contrast.setAfterSumTurnover(bigMum);
-            contrast.setAfterSumProfit(bigMum);
-        }
-        // 缺货占比
-        this.stockOut(contrast, listSku);
-        // A品占比
-        this.aCategory(contrast, list);
-        // 分类占比
-        this.category(contrast, list);
-        return HttpResponse.success(contrast);
-    }
-
-    // 计算采购前后的缺货占比
-    private void stockOut(PurchaseContrastResponse contrast, List<String> listSku){
-        // 获取采购前缺货占比
-        BiStockoutRate biStockoutRate = biStockoutRateDao.stockOutRateInfo(contrast.getBeginTime(), contrast.getFinishTime());
-        if(biStockoutRate == null){
-            contrast.setFrontShortageRatio(contrast.getBigMum());
-        }else {
-            contrast.setFrontShortageRatio(biStockoutRate.getOutStockRate());
-        }
-        // 计算采购后的缺货占比
-        // 获取所有的缺货sku
-        List<String> detailSku = biStockoutDetailDao.stockOutDetail(contrast.getBeginTime(), contrast.getFinishTime());
-        long count1 = detailSku.size();
-        if(CollectionUtils.isNotEmptyCollection(detailSku)){
-            detailSku.removeAll(listSku);
-            long count2 = count1 - detailSku.size();
-            Long totalStockNum  = biStockoutRate.getTotalStockNum() == null ? 0 : biStockoutRate.getTotalStockNum();
-            Long outStockNum  = biStockoutRate.getOutStockNum() == null ? 0 : biStockoutRate.getOutStockNum();
-            BigDecimal bigNum1 = new BigDecimal(totalStockNum + listSku.size());
-            BigDecimal bigNum2 = new BigDecimal(outStockNum - count2);
-            contrast.setAfterShortageRatio(bigNum2.divide(bigNum1, 4 , ROUND_HALF_DOWN));
-        }else {
-            contrast.setAfterShortageRatio(contrast.getFrontShortageRatio());
-        }
-    }
-
-    // 计算采购前后的A品占比
-    private void aCategory(PurchaseContrastResponse contrast, List<PurchaseApplyDetailResponse> list){
-        // 查询采购前的A 品占比
-        BiAClassification aCategoryInfo = biAClassificationDao.aCategoryInfo(contrast.getBeginTime(), contrast.getFinishTime());
-        contrast.setFrontACategory(aCategoryInfo);
-        // 计算采购后的A 品占比
-        if(CollectionUtils.isEmptyCollection(list)){
-            contrast.setAfterACategory(aCategoryInfo);
-        }else {
-            BiAClassification aClassification = contrast.getFrontACategory();
-            for(PurchaseApplyDetailResponse detail:list){
-                if(detail == null || StringUtils.isBlank(detail.getProductPropertyCode()) || !detail.getProductPropertyCode().equals(1)){
-                    continue;
-                }
-                aClassification = this.productCategory(detail, aClassification);
-            }
-            contrast.setAfterACategory(aClassification);
-        }
-    }
-
-    private BiAClassification productCategory(PurchaseApplyDetailResponse detail, BiAClassification aClassification){
-        // 获取商品类别
-        if(StringUtils.isNotBlank(detail.getCategoryId())){
-            Integer count = Integer.valueOf(detail.getCategoryId().substring(0, 2));
-            switch (count){
-                case 1:
-                    aClassification.setMilkNum(aClassification.getMilkNum()== null ? 0 :
-                            aClassification.getMilkNum() + 1);
-                    break;
-                case 2:
-                    aClassification.setSideDishNum(aClassification.getSideDishNum() == null ?0 :
-                            aClassification.getSideDishNum() + 1);
-                    break;
-                case 3:
-                    aClassification.setHealthCareProductsNum(aClassification.getHealthCareProductsNum() == null ? 0 :
-                            aClassification.getHealthCareProductsNum() + 1);
-                    break;
-                case 4:
-                    aClassification.setDiaperNum(aClassification.getDiaperNum() == null ? 0 :
-                            aClassification.getDiaperNum() + 1);
-                    break;
-                case 5:
-                    aClassification.setProductsNum(aClassification.getProductsNum() == null ? 0 :
-                            aClassification.getProductsNum() + 1);
-                    break;
-                case 6:
-                    aClassification.setOccupyHomeNum(aClassification.getOccupyHomeNum() == null ? 0 :
-                            aClassification.getOccupyHomeNum() + 1);
-                    break;
-                case 7:
-                    aClassification.setFeedProductsNum(aClassification.getFeedProductsNum() == null ? 0 :
-                            aClassification.getOccupyHomeNum() + 1);
-                    break;
-                case 8:
-                    aClassification.setLatheChairNum(aClassification.getLatheChairNum() == null ? 0 :
-                            aClassification.getOccupyHomeNum() + 1);
-                    break;
-                case 9:
-                    aClassification.setToyNum(aClassification.getToyNum() == null ? 0 :
-                            aClassification.getToyNum() + 1);
-                    break;
-                case 10:
-                    aClassification.setBooksVideoSouvenirsNum(aClassification.getBooksVideoSouvenirsNum() == null ? 0 :
-                            aClassification.getBooksVideoSouvenirsNum() + 1);
-                    break;
-                case 11:
-                    aClassification.setCottonGoodsNum(aClassification.getCottonGoodsNum() == null ? 0 :
-                            aClassification.getCottonGoodsNum() + 1);
-                    break;
-                case 12:
-                    aClassification.setGiftsNum(aClassification.getGiftsNum() == null ? 0:
-                            aClassification.getGiftsNum() + 1);
-                    break;
-                case 13:
-                    aClassification.setMaterialNum(aClassification.getMaterialNum() == null ? 0 :
-                            aClassification.getMaterialNum() + 1);
-                    break;
-                case 14:
-                    aClassification.setDeMingJuNum(aClassification.getDeMingJuNum() == null ? 0 :
-                            aClassification.getDeMingJuNum());
-                    break;
-                default:
-                    aClassification.setOtherNum(aClassification.getOtherNum() == null ? 0 :
-                            aClassification.getOtherNum());
-                    break;
-            }
-        }
-        return aClassification;
-    }
-
-    // 计算采购前后的分类占比
-    private void category(PurchaseContrastResponse contrast, List<PurchaseApplyDetailResponse> list){
-        // 查询采购前的分类占比
-        BiClassification categoryInfo = biClassificationDao.categoryInfo(contrast.getBeginTime(), contrast.getFinishTime());
-        contrast.setFrontCategory(categoryInfo);
-        // 计算采购后的分类占比
-        if(CollectionUtils.isEmptyCollection(list)){
-            contrast.setAfterCategory(categoryInfo);
-        }else {
-            BiAClassification aClassification = contrast.getFrontACategory();
-            for(PurchaseApplyDetailResponse detail:list){
-                if(detail == null){
-                    continue;
-                }
-                aClassification = this.productCategory(detail, aClassification);
-            }
-            BiClassification aClass = new BiClassification();
-            BeanUtils.copyProperties(aClassification, aClass);
-            contrast.setAfterCategory(aClass);
-        }
     }
 
     @Override

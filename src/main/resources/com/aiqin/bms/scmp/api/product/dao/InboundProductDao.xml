@@ -401,7 +401,7 @@
     insert into inbound_product(inbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code,
     model, unit_code, unit_name, inbound_norms, inbound_base_unit, inbound_base_content, pre_inbound_num,
     pre_inbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_inbound_num, pra_inbound_main_num,
-    pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, update_by, update_time,linenum)
+    pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, update_by, update_time,linenum,tax)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       ( #{item.inboundOderCode,jdbcType=VARCHAR},
@@ -429,7 +429,8 @@
       #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},
-      #{item.linenum,jdbcType=BIGINT}
+      #{item.linenum,jdbcType=BIGINT},
+      #{item.tax,jdbcType=BIGINT}
       )
     </foreach>
   </insert>

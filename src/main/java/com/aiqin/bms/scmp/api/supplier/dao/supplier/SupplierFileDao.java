@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.dao.supplier;
 
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplierFileReqDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO;
 
 import java.util.List;
 
@@ -47,5 +48,10 @@ public interface SupplierFileDao {
 
     int insertFileList(List<SupplierFile> supplierFiles);
 
-
+    /**
+     * 查文件信息
+     * @param oldApplyCode
+     * @return
+     */
+    List<SupplierFileReqVO> selectByApplyCode(String oldApplyCode);
 }

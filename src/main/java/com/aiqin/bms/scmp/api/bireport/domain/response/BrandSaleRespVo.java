@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -90,11 +91,11 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("渠道销售(出库)金额环比增长%")
     @JsonProperty("channel_sales_sequential_add")
-    private Double channelSalesSequentialAdd;
+    private BigDecimal channelSalesSequentialAdd;
 
     @ApiModelProperty("渠道销售毛利额环比增长%")
     @JsonProperty("channel_maori_sequential_add")
-    private Double channelMaoriSequentialAdd;
+    private BigDecimal channelMaoriSequentialAdd;
 
     @ApiModelProperty("当前分销销售(出库)金额")
     @JsonProperty("distribution_amount_daily")
@@ -114,11 +115,11 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("分销销售(出库)金额环比增长%")
     @JsonProperty("distribution_sales_sequential_add")
-    private Double distributionSalesSequentialAdd;
+    private BigDecimal distributionSalesSequentialAdd;
 
     @ApiModelProperty("分销销售毛利额环比增长%")
     @JsonProperty("distribution_maori_sequential_add")
-    private Double distributionMaoriSequentialAdd;
+    private BigDecimal distributionMaoriSequentialAdd;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")
@@ -147,11 +148,11 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("渠道销售额环比增长%合计")
     @JsonProperty("channel_sale_link_ratios")
-    private Double channelSaleLinkRatios;
+    private BigDecimal channelSaleLinkRatios;
 
     @ApiModelProperty("渠道毛利额环比增长%合计")
     @JsonProperty("channel_gross_margin_link_ratios")
-    private Double channelGrossMarginLinkRatios;
+    private BigDecimal channelGrossMarginLinkRatios;
 
     @ApiModelProperty("当期分销销售金额合计")
     @JsonProperty("distribution_current_sale_amounts")
@@ -171,11 +172,11 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("分销销售额环比增长%合计")
     @JsonProperty("distribution_sale_link_ratios")
-    private Double distributionSaleLinkRatios;
+    private BigDecimal distributionSaleLinkRatios;
 
     @ApiModelProperty("分销毛利额环比增长%合计")
     @JsonProperty("distribution_gross_margin_link_ratios")
-    private Double distributionGrossMarginLinkRatios;
+    private BigDecimal distributionGrossMarginLinkRatios;
 
 
 

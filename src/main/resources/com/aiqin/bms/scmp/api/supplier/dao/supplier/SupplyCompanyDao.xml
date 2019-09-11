@@ -165,7 +165,7 @@
       and (supply_name LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%') or supply_abbreviation LIKE concat('%',#{supplyComNameOrShort,jdbcType=VARCHAR},'%'))
     </if>
     <if test="purchasingGroupCode!=null and purchasingGroupCode!=''">
-      and exists (select 1 from supply_company_purchase_group a where a.supply_code = b.supply_company_code and a.purchasing_group_code = #{purchasingGroupCode})
+      and exists (select 1 from supply_company_purchase_group  where supply_code = supply_company_code and purchasing_group_code = #{purchasingGroupCode})
     </if>
     <if test="provinceId!=null and provinceId!=''">
       and province_id =#{provinceId,jdbcType=VARCHAR}
@@ -183,7 +183,10 @@
       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
     <if test="personId != null and personId != '' ">
-      and purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      and exists (select 1 from supply_company_purchase_group where supply_code = supply_company_code
+        and purchasing_group_code in
+          (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      )
     </if>
     ORDER by create_time desc
   </select>
@@ -316,13 +319,24 @@
     <select id="selectByCompanyNameList"
             resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
       SELECT
-      apply_supply_name as supply_name
+      apply_supply_name as supply_name,
       from apply_supply_company where apply_supply_name in
       <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}
       </foreach>
         and company_code = #{companyCode,jdbcType=VARCHAR}
     </select>
+
+  <select id="selectOfficialByCompanyNameList"
+          resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>
+    from supply_company where supply_name in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+    and company_code = #{companyCode,jdbcType=VARCHAR}
+  </select>
 
   <select id="selectByCompanyCodeList"
           resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">

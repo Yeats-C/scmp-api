@@ -1,12 +1,11 @@
 package com.aiqin.bms.scmp.api.product.domain.converter.allocation;
 
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
-import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuStockInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationCallbackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductCallbackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -15,13 +14,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
-import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Description:

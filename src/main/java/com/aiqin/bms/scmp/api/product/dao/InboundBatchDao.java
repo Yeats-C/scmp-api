@@ -2,7 +2,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchPurchaseReq;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO;
 import org.apache.ibatis.annotations.Param;
@@ -23,4 +23,7 @@ public interface InboundBatchDao {
 
     Integer updateBatchInfoByInboundOderCodeAndLineNum(InboundBatch inboundBatch);
 
+    List<InboundBatch> listBySourceCodes(@Param("list") List<String> orderCodes);
+
+    Integer insertList(List<InboundBatchReqVo> batchList);
 }

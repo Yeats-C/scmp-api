@@ -33,7 +33,7 @@ public class ApplyContractFileResVo {
     @ApiModelProperty("文件编号")
     private String fileCode;
 
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;
 

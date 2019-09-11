@@ -103,7 +103,7 @@ transport_company_code,
 transport_number
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from order_info
     where id = #{id,jdbcType=BIGINT}
@@ -418,8 +418,7 @@ transport_number
       update_time, actual_product_channel_total_amount,
       actual_order_amount, actual_product_num, order_original_name,
       actual_weight, actual_volume, actual_product_total_amount,transport_company,
-transport_company_code,
-transport_number
+      transport_company_code,transport_number
       )
     values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
       #{orderTypeCode,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR},
@@ -1422,4 +1421,26 @@ update order_info
       transport_number = #{transportNumber,jdbcType=VARCHAR}
     where order_code = #{orderCode,jdbcType=BIGINT}
   </update>
+   <select id="listForSap" resultMap="BaseResultMap">
+       select
+       <include refid="Base_Column_List" />
+       from order_info
+       <where>
+           synchr_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+          and synchr_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+          and order_status = 12
+          and synchr_status = 0
+       </where>
+   </select>
+    <update id="updateByOrderCodes">
+        update
+          order_info
+        set
+           synchr_status=1
+        where
+        order_code in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

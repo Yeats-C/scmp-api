@@ -59,6 +59,12 @@ public class InboundBatchReqVo extends PagesRequest{
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("供应商Code")
+    private String supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
     public InboundBatchReqVo(String inboundOderCode, Integer pageSize, Integer pageNo) {
         this.inboundOderCode = inboundOderCode;
         super.setPageSize(pageSize);

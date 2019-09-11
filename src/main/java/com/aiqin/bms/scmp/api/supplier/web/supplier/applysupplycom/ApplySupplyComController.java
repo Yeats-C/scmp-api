@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.supplier.applysupplycom;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.CancelApplySupplyComReqVO;
@@ -11,7 +12,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.ApplySupplyComApplyListRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
-import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComServcie;
+import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,13 +34,13 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ApplySupplyComController {
     @Autowired
-    private ApplySupplyComServcie applySupplyComServcie;
+    private ApplySupplyComService applySupplyComService;
 
     @PostMapping("/list")
     @ApiOperation("供货单位申请管理")
     public HttpResponse<BasePage<ApplySupplyComListRespVO>> listApplySupplyCompany(@RequestBody @Validated QueryApplySupplyComReqVO queryApplySupplyComReqVO){
         try {
-            BasePage<ApplySupplyComListRespVO> result = applySupplyComServcie.getApplyList(queryApplySupplyComReqVO);
+            BasePage<ApplySupplyComListRespVO> result = applySupplyComService.getApplyList(queryApplySupplyComReqVO);
             return HttpResponse.success(result);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
@@ -50,11 +51,11 @@ public class ApplySupplyComController {
     @ApiOperation("修改供应商")
     public HttpResponse<Boolean> editApply(@RequestBody @Validated ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
         try {
-            return HttpResponse.success(applySupplyComServcie.editApply(applySupplyCompanyReqVO));
+            return HttpResponse.success(applySupplyComService.editApply(applySupplyCompanyReqVO));
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
     }
@@ -63,7 +64,7 @@ public class ApplySupplyComController {
     @ApiOperation("供货单位申请管理")
     public HttpResponse<BasePage<ApplySupplyComApplyListRespVO>> applyList(@RequestBody @Validated QueryApplySupplyListComReqVO queryApplySupplyComReqVO){
         try {
-            BasePage<ApplySupplyComApplyListRespVO> result = applySupplyComServcie.applyList(queryApplySupplyComReqVO);
+            BasePage<ApplySupplyComApplyListRespVO> result = applySupplyComService.applyList(queryApplySupplyComReqVO);
             return HttpResponse.success(result);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
@@ -74,7 +75,7 @@ public class ApplySupplyComController {
     public HttpResponse<ApplyComDetailRespVO> applyView(@RequestParam Long id){
         try {
             String statusTypeCode = "1";
-            ApplyComDetailRespVO result = applySupplyComServcie.applyView(id,statusTypeCode);
+            ApplyComDetailRespVO result = applySupplyComService.applyView(id,statusTypeCode);
             return HttpResponse.success(result);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
@@ -85,7 +86,7 @@ public class ApplySupplyComController {
     @ApiOperation(value = "查看详情")
     public HttpResponse<ApplySupplyComDetailRespVO> getApplySupplyComDetail(@RequestParam @ApiParam("供货单位申请编码,必传") String applyCode){
         try {
-            ApplySupplyComDetailRespVO applySupplyComDetailRespVO = applySupplyComServcie.getApplySupplyComDetail(applyCode);
+            ApplySupplyComDetailRespVO applySupplyComDetailRespVO = applySupplyComService.getApplySupplyComDetail(applyCode);
             return HttpResponse.success(applySupplyComDetailRespVO);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
@@ -96,7 +97,7 @@ public class ApplySupplyComController {
     @ApiOperation("撤销")
     public HttpResponse cancelApplySupplyCom(@RequestBody @Validated CancelApplySupplyComReqVO cancelApplySupplyComReqVO){
         try {
-            applySupplyComServcie.cancelApply(cancelApplySupplyComReqVO);
+            applySupplyComService.cancelApply(cancelApplySupplyComReqVO);
             return HttpResponse.success();
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.CANCEL_ERROR);

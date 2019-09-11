@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
@@ -9,10 +10,8 @@ import org.springframework.cglib.beans.BeanCopier;
 import org.springframework.util.CollectionUtils;
 
 import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.lang.reflect.Field;
+import java.util.*;
 
 /**
  * @author 刘
@@ -20,6 +19,7 @@ import java.util.Set;
  * @Description Bean对象拷贝 使用Cgilb 性能最好
  * @Version 1.0
  */
+@Slf4j
 public class BeanCopyUtils {
 
     /**
@@ -90,6 +90,25 @@ public class BeanCopyUtils {
         return list;
     }
 
-
+    public static <T> T copyValueWithoutNull(T source, T target){
+        assert Objects.nonNull(source)||Objects.nonNull(target);
+        Class<?> aClass = target.getClass();
+        Field[] declaredFields = aClass.getDeclaredFields();
+        for (Field declaredField : declaredFields) {
+            try {
+                Field sourceField = source.getClass().getDeclaredField(declaredField.getName());
+                Field targetField = target.getClass().getDeclaredField(declaredField.getName());
+                sourceField.setAccessible(true);
+                targetField.setAccessible(true);
+                Object o = sourceField.get(source);
+                if(Objects.nonNull(o)){
+                    targetField.set(target,o);
+                }
+            } catch (Exception e) {
+                log.error("设置非空转换错误",e);
+            }
+        }
+        return target;
+    }
 }
 

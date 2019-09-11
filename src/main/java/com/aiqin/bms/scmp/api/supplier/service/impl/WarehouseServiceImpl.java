@@ -1,16 +1,13 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
-import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.Update;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
@@ -25,7 +22,10 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -268,12 +268,10 @@ public class WarehouseServiceImpl implements WarehouseService {
      * @return
      */
     @Override
-    public WarehouseResVo getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
+    public List<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode, warehouseTypeCode);
-        if(CollectionUtils.isEmptyCollection(dtoList)){
-            WarehouseResVo warehouseResVo = new WarehouseResVo();
-            BeanCopyUtils.copy(dtoList.get(0),warehouseResVo);
-            return warehouseResVo;
+        if(CollectionUtils.isNotEmptyCollection(dtoList)){
+            return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
         }
         return null;
     }

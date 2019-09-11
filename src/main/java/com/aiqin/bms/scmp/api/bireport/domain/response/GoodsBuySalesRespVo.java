@@ -6,12 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 @ApiModel("批次商品进销存respVo")
 @Data
-public class GoodsBuySalesRespVo  implements Serializable {
+public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
@@ -107,47 +108,47 @@ public class GoodsBuySalesRespVo  implements Serializable {
 
     @ApiModelProperty("厂商指导价")
     @JsonProperty("manufacturer_guide_price")
-    private Integer manufacturerGuidePrice;
+    private Long manufacturerGuidePrice;
 
     @ApiModelProperty("可用库存数量")
     @JsonProperty("available_num")
-    private Integer availableNum;
+    private Long availableNum;
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
-    private Integer taxCost;
+    private Long taxCost;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
-    private Integer salesNumOneMonth;
+    private Long salesNumOneMonth;
 
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_cost_one_month")
-    private Integer salesCostOneMonth;
+    private Long salesCostOneMonth;
 
     @ApiModelProperty("近一个月分销销售金额")
     @JsonProperty("distribution_sales_money_one_month")
-    private Integer distributionSalesMoneyOneMonth;
+    private Long distributionSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月分销毛利额")
     @JsonProperty("distribution_sales_maori_one_month")
-    private Integer distributionSalesMaoriOneMonth;
+    private Long distributionSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月分销毛利率")
     @JsonProperty("distribution_sales_maori_one_month_rate")
-    private Double distributionSalesMaoriOneMonthRate;
+    private BigDecimal distributionSalesMaoriOneMonthRate;
 
     @ApiModelProperty("近一个月渠道销售金额")
     @JsonProperty("channel_sales_money_one_month")
-    private Integer channelSalesMoneyOneMonth;
+    private Long channelSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利额")
     @JsonProperty("channel_sales_maori_one_month")
-    private Integer channelSalesMaoriOneMonth;
+    private Long channelSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利率")
     @JsonProperty("channel_sales_maori_one_month_rate")
-    private Double channelSalesMaoriOneMonthRate;
+    private BigDecimal channelSalesMaoriOneMonthRate;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -214,6 +215,7 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty(value = "来源 0供应链1供应商平台",hidden = true)
     private Integer originalCode = 0;
 
-
+    @ApiModelProperty("商品描述")
+    private String productDesc;
 
 }

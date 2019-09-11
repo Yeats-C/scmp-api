@@ -6,12 +6,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
 @ApiModel("供应商到货率respVo")
 @Data
-public class SupplierArrivalRateRespVo implements Serializable {
+public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("主键")
     @JsonProperty("id")
@@ -23,7 +24,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
-    private String supplierCode;
+    private String supplierGiftsBuySalesRespVoCode;
 
     @ApiModelProperty("供应商name")
     @JsonProperty(value = "supplier_name")
@@ -63,7 +64,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("入库金额满足率")
     @JsonProperty("pra_tax_amount_rate")
-    private Double praTaxAmountRate;
+    private BigDecimal praTaxAmountRate;
 
     @ApiModelProperty("采购组负责人")
     @JsonProperty("responsible_person_name")
@@ -79,7 +80,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("订货数量合计")
     @JsonProperty("pre_inbound_nums")
-    private String preInboundNums;
+    private Long preInboundNums;
 
     @ApiModelProperty("订货金额合计")
     @JsonProperty("pre_tax_amounts")
@@ -95,7 +96,7 @@ public class SupplierArrivalRateRespVo implements Serializable {
 
     @ApiModelProperty("入库金额满足率合计")
     @JsonProperty("pra_tax_amount_rates")
-    private Double praTaxAmountRates;
+    private BigDecimal praTaxAmountRates;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

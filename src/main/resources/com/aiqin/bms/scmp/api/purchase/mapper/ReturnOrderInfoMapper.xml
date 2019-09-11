@@ -2216,4 +2216,25 @@
         </set>
         where return_order_code = #{return_order_code,jdbcType=VARCHAR}
     </update>
+    <select id="listForSap" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List" />
+        from return_order_info
+        <where>
+            synchr_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+            and synchr_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+            and synchr_status = 0
+        </where>
+    </select>
+    <update id="updateByOrderCodes">
+        update
+          return_order_info
+        set
+        synchr_status=1
+        where
+        return_order_code in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

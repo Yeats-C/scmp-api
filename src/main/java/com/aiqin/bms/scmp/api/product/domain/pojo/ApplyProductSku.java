@@ -220,4 +220,6 @@ public class ApplyProductSku extends CommonBean {
     @ApiModelProperty(value = "改变内容",hidden = true)
     private String changeContent;
 
+    @ApiModelProperty("商品描述")
+    private String productDesc;
 }

@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.advice;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -72,7 +73,7 @@ public class SupplierValidationHandler {
     @ResponseBody
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public HttpResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(e.getParameterName());
         sb.append("不能为空");
         return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
@@ -103,7 +104,7 @@ public class SupplierValidationHandler {
     public HttpResponse handleRException(HttpServletResponse response, Exception e) {
         response.setStatus(500);
         logger.error(e.getMessage());
-        log.error("error", e);
+        log.error(Global.ERROR, e);
         return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
     }
 

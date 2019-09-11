@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.form.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.platform.flows.client.domain.SaveMsgRequest;
 import com.aiqin.platform.flows.client.service.FormDetailService;
@@ -11,7 +10,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import sun.rmi.runtime.Log;
 
 import javax.annotation.Resource;
 

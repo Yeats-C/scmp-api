@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseProductSearchRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
@@ -18,8 +17,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import java.util.List;
-
 /**
  * @author: zhao shuai
  * @create: 2019-06-13
@@ -33,7 +30,6 @@ public class PurchaseApplyController {
     private PurchaseApplyService purchaseApplyService;
     @Resource
     private AutomaticPurchaseService automaticPurchaseService;
-    private PurchaseApplyRequest purchaseApplyRequest;
 
     @GetMapping("/list")
     @ApiOperation("采购申请单列表")
@@ -119,12 +115,6 @@ public class PurchaseApplyController {
                                                            @RequestParam("product_count") Integer productCount) {
         return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
     }
-
-//    @PostMapping("/product/contrast")
-//    @ApiOperation("查询采购对比信息")
-//    public HttpResponse<PurchaseContrastResponse> contrast(@RequestBody List<PurchaseApplyDetailResponse> list) {
-//        return purchaseApplyService.contrast(list);
-//    }
 
     @PostMapping("/automatic/purchase")
     @ApiOperation("生成自动采购单")

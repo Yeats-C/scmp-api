@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.config;
 
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.supplier.domain.response.account.Account;
 import com.aiqin.bms.scmp.api.supplier.service.AccountService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -48,8 +49,8 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     @Value("${evn}")
     private String evn;
 
-  @Override
-  public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
+    @Override
+    public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String referer = httpServletRequest.getHeader("referer");
         boolean fromSwagger = false;
         if(null != referer){
@@ -57,19 +58,19 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         }
         if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
             AuthToken current = new AuthToken();
-            current.setPersonId("12211");
-            current.setPositionCode("GW0137");
-            current.setPersonName("张昀童");
-            current.setCompanyCode("04");
-            current.setCompanyName("北京爱亲技术股份有限公司");
-            current.setAccountId("b05d34ae4cf442458e141affcdf54532");
+            current.setPersonId("12449");
+            current.setPositionCode(null);
+            current.setPersonName("余红梅");
+            current.setCompanyCode("09");
+            current.setCompanyName("宁波熙耘科技有限公司");
+            current.setAccountId("a553b0f542c846dd98ec5026f947f1c5");
             filterThreadLocal.set(current);
             return true;
         }
-        String ticket = httpServletRequest.getParameter("ticket");
+        String ticket = httpServletRequest.getParameter(Global.TICKET);
         String accountId = httpServletRequest.getParameter("account_id");
         log.info("ticket{}",ticket);
-        String personId = httpServletRequest.getParameter("ticket_person_id");
+        String personId = httpServletRequest.getParameter(Global.TICKET_PERSON_ID);
         log.info("ticket_person_id{}",ticket);
         if(httpServletRequest.getRequestURL().indexOf(".jpg")!=-1||
                 httpServletRequest.getRequestURL().indexOf(".bmp")!=-1||

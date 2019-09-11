@@ -211,6 +211,7 @@ public interface ResultCode {
     MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
     MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API,99,"锁定批次库存失败");
+    MessageId ORDER_INFO_IS_HAVE = MessageId.create(Project.PURCHASE_API,99,"单据已存在");
 
     //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
@@ -283,4 +284,5 @@ public interface ResultCode {
 
     MessageId OBJECT_EMPTY_BY_FORMNO = MessageId.create(Project.SCMP_API, 1000, "根据formNo未找到对应的信息");
     MessageId OPERATION_TYPE_ERROR = MessageId.create(Project.SCMP_API,10001,"采购组操作类型错误");
+    MessageId FIND_CONTRACT_ERROR = MessageId.create(Project.SCMP_API,10002,"无法找到合同信息");
 }

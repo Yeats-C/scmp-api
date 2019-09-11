@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
@@ -57,7 +58,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService.getList(vo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -97,7 +98,7 @@ public class AllocationController {
         } catch (GroundRuntimeException e) {
             return HttpResponse.failure(MessageId.create(Project.PRODUCT_API,52,e.getMessage()));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
         }
     }
@@ -113,7 +114,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService. view(id));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
@@ -132,7 +133,7 @@ public class AllocationController {
         try {
             return HttpResponse.success(allocationService. updateSubmit(status,formNo));
         } catch (Exception e) {
-            log.error("error", e);
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
         }
     }

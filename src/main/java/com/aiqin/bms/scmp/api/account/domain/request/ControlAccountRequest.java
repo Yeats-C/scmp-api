@@ -1,10 +1,7 @@
 package com.aiqin.bms.scmp.api.account.domain.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-import java.util.Date;
 
 /**
  * <p>

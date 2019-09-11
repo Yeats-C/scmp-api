@@ -1,8 +1,19 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
+import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
-import com.aiqin.bms.scmp.api.statistics.domain.response.SupplierDeliveryResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierReturnResponse;
+import com.aiqin.bms.scmp.api.statistics.service.ProductStatisticsService;
+import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
+import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -26,23 +37,18 @@ public class StatisticsController {
 
     @Resource
     private StatisticsService statisticsService;
-
-    @GetMapping("/supplier/delivery/rate")
-    @ApiOperation("供应商到货率统计-部门")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "form_type", value = "供应商到货率统计类型: 0 年报 1 月报", type = "Integer") })
-    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(@RequestParam("date") String date,
-                                                                   @RequestParam("form_type") Integer formType) {
-        return statisticsService.supplierDelivery(formType, date);
-    }
-
+    @Resource
+    private SalesStatisticsService salesStatisticsService;
+    @Resource
+    private SupplierStatisticsService supplierStatisticsService;
+    @Resource
+    private ProductStatisticsService productStatisticsService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "type", value = "部门类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
     public HttpResponse<StoreRepurchaseRateResponse> storeRepurchaseRate(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
@@ -54,14 +60,104 @@ public class StatisticsController {
     @ApiOperation("负毛利统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
-            @ApiImplicitParam(name = "type", value = "部门类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
             @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "season_type", value = "季节: 1 第一季节 2 第二季节 3 第三季节  4 第四季节", type = "Long"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
-    public HttpResponse negativeGross(
+    public HttpResponse<NegativeSumResponse> negativeGross(
             @RequestParam("date") String date,  @RequestParam("type") Integer type,
             @RequestParam(value = "report_type") Integer reportType,
+            @RequestParam(value = "season_type", required = false) Long seasonType,
             @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
-        return statisticsService.negativeGross(date, type, reportType, productSortCode);
+        return statisticsService.negativeGross(date, type, reportType, seasonType, productSortCode);
+    }
+
+    @GetMapping("/sale")
+    @ApiOperation("销售统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "data_type_code", value = "数据类型 0 经营数据,1 部门数据", type = "Integer"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性 1 A品，2 B品，3 C品，5 D品，6 其他", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SaleSumResponse> saleInfo(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "report_type") Integer reportType,
+            @RequestParam(value = "data_type_code", required = false) Integer dataTypeCode,
+            @RequestParam(value = "product_property_code", required = false) Integer productPropertyCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, reportType, dataTypeCode, productPropertyCode, productSortCode);
+        return salesStatisticsService.saleInfo(saleRequest);
+    }
+
+    @GetMapping("/month/sale")
+    @ApiOperation("月累计销售统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "data_type_code", value = "数据类型 0 经营数据,1 部门数据", type = "Integer"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性 1 A品，2 B品，3 C品，5 D品，6 其他", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SaleSumResponse> monthSaleInfo(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "data_type_code", required = false) Integer dataTypeCode,
+            @RequestParam(value = "product_property_code", required = false) Integer productPropertyCode,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, dataTypeCode, productPropertyCode, productSortCode);
+        return salesStatisticsService.monthSaleInfo(saleRequest);
+    }
+
+    @GetMapping("/category/promotion")
+    @ApiOperation("品类促销统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<CategoryResponse> categoryPromotion(
+            @RequestParam("date") String date,  @RequestParam("type") Integer type,
+            @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        SaleRequest saleRequest = new SaleRequest(date, type, productSortCode);
+        return salesStatisticsService.categoryPromotion(saleRequest);
+    }
+
+    @GetMapping("/supplier/delivery/rate")
+    @ApiOperation("供应商到货率统计-部门")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SupplierDeliveryResponse> supplierDelivery(@RequestParam("date") String date,
+                                                                   @RequestParam("report_type") Integer reportType,
+                                                                   @RequestParam("product_sort_code") String productSortCode) {
+        SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
+        return supplierStatisticsService.supplierDelivery(supplierRequest);
+    }
+
+    @GetMapping("/supplier/retreat/rate")
+    @ApiOperation("供应商退供率统计-部门")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 2 月报", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<SupplierReturnResponse> supplierRetreat(@RequestParam("date") String date,
+                                                                @RequestParam("report_type") Integer reportType,
+                                                                @RequestParam("product_sort_code") String productSortCode) {
+        SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
+        return supplierStatisticsService.supplierRetreat(supplierRequest);
+    }
+
+    @GetMapping("/product/movable/pin")
+    @ApiOperation("新品动销率统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<ProductMovableResponse> productMovable(@RequestParam("date") String date,
+                                                             @RequestParam("type") Integer type,
+                                                             @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        ProductRequest request = new ProductRequest(date, type, productSortCode);
+        return productStatisticsService.productMovable(request);
     }
 
 }

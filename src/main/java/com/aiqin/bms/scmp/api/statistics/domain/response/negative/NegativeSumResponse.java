@@ -59,4 +59,20 @@ public class NegativeSumResponse {
     @ApiModelProperty(value="分销毛利同比")
     @JsonProperty("distribution_margin_yearonyear")
     private BigDecimal distributionMarginYearonyear;
+
+    @ApiModelProperty(value="同期渠道销售额")
+    @JsonProperty("pre_channel_sales_amount")
+    private Long preChannelSalesAmount;
+
+    @ApiModelProperty(value="同期渠道毛利")
+    @JsonProperty("pre_channel_margin")
+    private Long preChannelMargin;
+
+    @ApiModelProperty(value="同期分销销售额")
+    @JsonProperty("pre_distribution_sales_amount")
+    private Long preDistributionSalesAmount;
+
+    @ApiModelProperty(value="同期分销毛利额")
+    @JsonProperty("pre_distribution_margin")
+    private Long preDistributionMargin;
 }

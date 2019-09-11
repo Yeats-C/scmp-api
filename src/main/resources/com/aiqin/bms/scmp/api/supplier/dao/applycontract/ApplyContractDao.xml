@@ -27,6 +27,7 @@
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="apply_contract_code" jdbcType="VARCHAR" property="applyContractCode" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
     <result column="apply_type" jdbcType="TINYINT" property="applyType" />
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
@@ -71,7 +72,6 @@
     max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
     categories_supply_channels_code,categories_supply_channels_name,remark
   </sql>
-
   <select id="selectBySelectApplyContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -87,11 +87,20 @@
     <if test="applyContractCode != null and applyContractCode != '' ">
       AND apply_contract_code  =  #{applyContractCode}
     </if>
+    <if test="contractCode != null and contractCode != '' ">
+      AND contract_code  =  #{contractCode}
+    </if>
     <if test="supplierCode != null  and supplierCode != ''">
       AND supplier_code = #{supplierCode}
     </if>
     <if test="supplierName != null and supplierName != ''">
       AND supplier_name LIKE  CONCAT('%',#{supplierName},'%')
+    </if>
+    <if test="purchasingGroupCode != null  and purchasingGroupCode != ''">
+      AND purchasing_group_code = #{purchasingGroupCode}
+    </if>
+    <if test="purchasingGroupName != null and purchasingGroupName != ''">
+      AND purchasing_group_name LIKE  CONCAT('%',#{purchasingGroupName},'%')
     </if>
     <if test="applyStatus != null  ">
       AND apply_status = #{applyStatus}
@@ -129,7 +138,7 @@
       direct_supervisor_code,direct_supervisor_name,contract_type_code,
       contract_type_name,checkout_date,min_amount,max_amount,delivery_cycle,
       tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-      categories_supply_channels_code,categories_supply_channels_name,remark)
+      categories_supply_channels_code,categories_supply_channels_name,remark,comment,contract_code)
     values ( #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
       #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
@@ -146,7 +155,7 @@
       #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
       #{contractTypeCode,jdbcType=VARCHAR},#{contractTypeName,jdbcType=VARCHAR},#{checkoutDate,jdbcType=VARCHAR},#{minAmount},
       #{maxAmount},#{deliveryCycle},#{taxRate},#{discount},#{returnGuarantee},#{returnGuaranteeDay},
-      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark}
+      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark},#{comment},#{contractCode}
       )
   </insert>
 
@@ -231,6 +240,9 @@
       </if>
       <if test="applyContractCode != null">
         apply_contract_code = #{applyContractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
       </if>
       <if test="applyStatus != null">
         apply_status = #{applyStatus,jdbcType=TINYINT},

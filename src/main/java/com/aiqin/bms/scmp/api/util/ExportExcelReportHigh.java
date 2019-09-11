@@ -2,9 +2,7 @@ package com.aiqin.bms.scmp.api.util;
 
 
 import com.aiqin.bms.scmp.api.bireport.domain.response.HighInventoryRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -13,13 +11,11 @@ import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.*;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ExportExcelReportHigh {
 
-    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy年MM月dd日 HH:mm:ss");
     public static XSSFWorkbook exportData(List<HighInventoryRespVo>list) {
         // 创建工作空间
         XSSFWorkbook workbook = new XSSFWorkbook();
@@ -200,7 +196,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(4).setCellValue("");
             }
             if (highInventoryRespVo.getSzqgRate() != null) {
-                row03.createCell(5).setCellValue(highInventoryRespVo.getSzqgRate());
+                row03.createCell(5).setCellValue(highInventoryRespVo.getSzqgRate().doubleValue());
             } else {
                 row03.createCell(5).setCellValue("");
             }
@@ -218,7 +214,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(7).setCellValue("");
             }
             if (highInventoryRespVo.getBzqgRate() != null) {
-                row03.createCell(8).setCellValue(highInventoryRespVo.getBzqgRate());
+                row03.createCell(8).setCellValue(highInventoryRespVo.getBzqgRate().doubleValue());
             } else {
                 row03.createCell(8).setCellValue("");
             }
@@ -235,7 +231,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(10).setCellValue("");
             }
             if (highInventoryRespVo.getHbRate() != null) {
-                row03.createCell(11).setCellValue(highInventoryRespVo.getHbRate());
+                row03.createCell(11).setCellValue(highInventoryRespVo.getHbRate().doubleValue());
             } else {
                 row03.createCell(11).setCellValue("");
             }
@@ -252,7 +248,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(13).setCellValue("");
             }
             if (highInventoryRespVo.getHnRate() != null) {
-                row03.createCell(14).setCellValue(highInventoryRespVo.getHnRate());
+                row03.createCell(14).setCellValue(highInventoryRespVo.getHnRate().doubleValue());
             } else {
                 row03.createCell(14).setCellValue("");
             }
@@ -269,7 +265,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(16).setCellValue("");
             }
             if (highInventoryRespVo.getXnRate() != null) {
-                row03.createCell(17).setCellValue(highInventoryRespVo.getXnRate());
+                row03.createCell(17).setCellValue(highInventoryRespVo.getXnRate().doubleValue());
             } else {
                 row03.createCell(17).setCellValue("");
             }
@@ -286,7 +282,7 @@ public class ExportExcelReportHigh {
                 row03.createCell(19).setCellValue("");
             }
             if (highInventoryRespVo.getHdRate() != null) {
-                row03.createCell(20).setCellValue(highInventoryRespVo.getHdRate());
+                row03.createCell(20).setCellValue(highInventoryRespVo.getHdRate().doubleValue());
             } else {
                 row03.createCell(20).setCellValue("");
             }

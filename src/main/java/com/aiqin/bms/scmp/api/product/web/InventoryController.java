@@ -1,8 +1,5 @@
 package com.aiqin.bms.scmp.api.product.web;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.*;
@@ -13,6 +10,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.dictionary.ProductDistribut
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.ProductDistributorReVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.ProductDistributorReVoPage;
 import com.aiqin.bms.scmp.api.product.service.InventoryService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

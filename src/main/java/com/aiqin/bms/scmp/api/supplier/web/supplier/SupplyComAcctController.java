@@ -1,8 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.web.supplier;
 
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
-import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyAcctReqVO;
@@ -14,6 +11,9 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierCom
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComAcctMainRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComAcctService;
 import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
