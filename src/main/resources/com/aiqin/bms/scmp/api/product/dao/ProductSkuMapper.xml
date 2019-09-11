@@ -837,7 +837,8 @@
     SELECT
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
-      apply_type_name
+      apply_type_name,
+      product_desc
     from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -852,7 +853,8 @@
     SELECT
     <include refid="Product_Sku_Resp_Column"/>,
     apply_type,
-    apply_type_name
+    apply_type_name,
+    product_desc
     from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
@@ -1046,7 +1048,7 @@
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    price_model,inventory_allocation,sku_status,change_content,pic_folder_code)
+    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1073,7 +1075,7 @@
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
       #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT},#{item.skuStatus,jdbcType=TINYINT},
-      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR}
+      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -1597,6 +1599,7 @@
     <result column="on_sale" jdbcType="TINYINT" property="onSale" />
     <result column="apply_type" jdbcType="TINYINT" property="applyType" />
     <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,

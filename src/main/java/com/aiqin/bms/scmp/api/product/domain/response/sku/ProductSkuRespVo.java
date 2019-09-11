@@ -122,6 +122,9 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("是否结构性商品(0:是 1:否)")
     private Byte structuralGoods;
 
+    @ApiModelProperty(value = "商品描述")
+    private String productDesc;
+
     @ApiModelProperty(value = "是否爱亲主推(0:否，1:是)",hidden = true)
     private Byte isMainPush;
 
