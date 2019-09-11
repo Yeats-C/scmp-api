@@ -108,4 +108,7 @@ public class OrderInfoItem {
 
     @ApiModelProperty("实际分销单价")
     private Long actualPrice;
+
+    @ApiModelProperty("税率")
+    private Long tax;
 }

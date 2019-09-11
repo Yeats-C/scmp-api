@@ -124,6 +124,8 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
         OutboundProductReqVo outboundProduct;
         for (OrderInfoItem item : items) {
             outboundProduct = new OutboundProductReqVo();
+            //税率
+            outboundProduct.setTax(item.getTax());
             //sku
             outboundProduct.setSkuCode(item.getSkuCode());
             outboundProduct.setSkuName(item.getSkuName());
