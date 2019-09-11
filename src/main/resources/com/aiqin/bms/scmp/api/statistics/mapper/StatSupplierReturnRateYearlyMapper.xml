@@ -6,17 +6,44 @@
     <result column="stat_year" jdbcType="BIGINT" property="statYear" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
     <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="single_count" jdbcType="BIGINT" property="singleCount" />
     <result column="amt" jdbcType="BIGINT" property="amt" />
+    <result column="sales_amount" jdbcType="BIGINT" property="salesAmount" />
     <result column="return_rate" jdbcType="DECIMAL" property="returnRate" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, stat_year, supplier_code, supplier_name, responsible_person_code, responsible_person_name, 
-    transport_center_code, transport_center_name, single_count, amt, return_rate, create_time
+    id, stat_year, supplier_code, supplier_name, product_sort_code, product_sort_name, 
+    responsible_person_code, responsible_person_name, transport_center_code, transport_center_name, 
+    single_count, amt, sales_amount, return_rate, create_time
   </sql>
+  <select id="supplierReturnSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.supplier.StatSupplierReturnRateResponse">
+    select
+     transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+     sum(ifnull(single_count,0)) as singleCount, sum(ifnull(amt,0)) as amt, sum(ifnull(sales_amount,0)) as salesAmount
+    from stat_supplier_return_rate_yearly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="supplierCode != null">
+      and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="supplierList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierResponse">
+    select
+      supplier_code as supplierCode, supplier_name as supplierName,
+      responsible_person_code as responsiblePersonCode, responsible_person_name as responsiblePersonName
+    from stat_supplier_return_rate_yearly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by supplier_code
+    order by supplier_code
+  </select>
 </mapper>

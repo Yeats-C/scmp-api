@@ -708,7 +708,7 @@ public class CheckSkuNew {
         }
         //销售描述
         if (Objects.isNull(importVo.getDescription())) {
-            error.add("销售描述不能为空");
+//            error.add("销售描述不能为空");
         } else {
             sale.setDescription(importVo.getDescription().trim());
         }

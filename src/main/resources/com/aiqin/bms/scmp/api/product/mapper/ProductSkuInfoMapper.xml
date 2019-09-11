@@ -131,7 +131,124 @@
     from product_sku
     where sku_code = #{skuCode,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="exportAddSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuAddExport">
+        select a.sku_code                                 skuCode,
+       a.sku_name                                 skuName,
+       a.sku_abbreviation                         skuAbbreviation,
+       a.mnemonic_code                            mnemonicCode,
+       c.spec                                     spec,
+       c.unit_name                                unitName,
+       0 as                                       decimalPlaces,
+       a.applicable_month_age                     applicableMonthAge,
+       case
+           when a.quality_assurance_management = 0
+               then '是'
+           when a.quality_assurance_management = 1
+               then '否'
+           end                                    qualityAssuranceManagement,
+       a.quality_date                             qualityDate,
+       case
+           when a.quality_number = 1
+               then '天'
+           when a.quality_number = 2
+               then '月'
+           when a.quality_number = 3
+               then '年'
+           end                                    qualityNumber,
+       d.box_gross_weight                         boxGrossWeight,
+       a.product_brand_name                       productBrandName,
+       a.product_category_code                    productCategoryCode,
+       a.product_category_name                    productCategoryName,
+       a.management_style_name                    managementStyleName,
+       e.sales_code                               salesCode,
+       f.zero_removal_coefficient                 zeroRemovalCoefficient,
+       g.output_tax_rate                          outputTaxRate,
+       g.Input_tax_rate                           inputTaxRate,
+       g.settlement_method_name                   settlementMethodName,
+       a.procurement_section_name                 procurementSectionName,
+       a.product_sort_name                        productSortName,
+       g.Integral_coefficient                     integralCoefficient,
+       a.manufacturer_guide_price                 manufacturerGuidePrice,
+       h.price_tax                                salePrice,
+       i.price_tax                                memberPrice,
+       j.categories_supply_channels_name          categoriesSupplyChannelsName,
+       j.tax_included_price                       basePrice,
+       i2.price_tax                               addPoints2,
+       i3.price_tax                               addPoints3,
+       i4.price_tax                               addPoints4,
+       i5.price_tax                               addPoints5,
+       i6.price_tax                               addPoints6,
+       i7.price_tax                               addPoints7,
+       i8.price_tax                               addPoints8,
+       k.manufacturer_name                        manufacturerName,
+       k.factory_product_number                   factoryProductNumber,
+       k.address                                  address,
+       concat(a.sku_code, l.base_product_content) inProductSkuCode,
+       l.spec                                     inSpec,
+       l.unit_name                                inUnitName,
+       l.purchase_code                            inPurchaseCode,
+       l.base_product_content                     inBaseProductContent,
+       concat(a.sku_code, l.base_product_content) outProductSkuCode,
+       l.spec                                     outSpec,
+       l.unit_name                                outUnitName,
+       l.purchase_code                            outPurchaseCode,
+       l.base_product_content                     outBaseProductContent,
+       a.sku_code                                 saleSkuCode,
+       e.spec                                     saleSpec,
+       e.small_unit                               saleUnit,
+       e.sales_code                               salesCode2,
+       e.base_product_content                     saleBaseProductContent,
+       d.box_length                               saleBoxLength,
+       d.box_width                                saleBoxWidth,
+       d.box_height                               saleBoxHeight,
+       j.supply_unit_code                         supplyUnitCode,
+       j.supply_unit_name                         supplyUnitName,
+       j.tax_included_price                       taxIncludedPrice,
+       j.joint_franchise_rate                     jointFranchiseRate,
+       j.point                                    point,
+       a.sku_status                               skuStatus,
+       a.remark                                   remark,
+       a.warehouse_type_name                      warehouseTypeName,
+       a.color_name                               colorName,
+       case
+           when a.unique_code = 0
+               then '是'
+           when a.unique_code = 1
+               then '否'
+           end                                    uniqueCode
+from product_sku a
+         inner join
+     (select sku_code
+      from apply_product_sku
+      where not exists(select sku_code
+                       from apply_product_sku
+                       where apply_type = 2
+                         and apply_status = 2
+                       order by create_time desc)
+        and apply_status = 2) b
+     on a.sku_code = b.sku_code
+         left join product_sku_stock_info c on a.sku_code = c.product_sku_code
+         left join product_sku_box_packing d on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
+         left join product_sku_sales_info e on e.product_sku_code = a.sku_code and e.is_default = 1
+         left join product_sku_distribution_info f on a.sku_code = f.product_sku_code
+         left join product_sku_checkout g on g.sku_code = a.sku_code
+         left join product_sku_price_info h on h.sku_code = a.sku_code and h.price_item_code = '1013' #售价
+         left join product_sku_price_info i on i.sku_code = a.sku_code and i.price_item_code = '1014' #会员价
+         left join product_sku_supply_unit j on j.product_sku_code = a.sku_code and j.is_default = 1
+         left join product_sku_price_info i2 on i2.sku_code = a.sku_code and i2.price_item_code = '1007' #爱亲分销价
+         left join product_sku_price_info i3 on i3.sku_code = a.sku_code and i3.price_item_code = '1008' #萌贝树分销价
+         left join product_sku_price_info i4 on i4.sku_code = a.sku_code and i4.price_item_code = '1007' #爱亲分销价
+         left join product_sku_price_info i5 on i5.sku_code = a.sku_code and i5.price_item_code = '1001' #爱亲渠道价
+         left join product_sku_price_info i6 on i6.sku_code = a.sku_code and i6.price_item_code = '1002' #萌贝树渠道价
+         left join product_sku_price_info i7 on i7.sku_code = a.sku_code and i7.price_item_code = '1003' #小红马渠道价
+         left join product_sku_price_info i8 on i8.sku_code = a.sku_code and i8.price_item_code = '1009' #小红马分销价
+         left join product_sku_manufacturer k on a.sku_code = k.product_sku_code and k.is_default = 1
+         left join product_sku_purchase_info l on l.product_sku_code = a.sku_code;
+    </select>
+    <select id="exportEditSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuEditExport">
+
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku
     where id = #{id,jdbcType=BIGINT}
   </delete>

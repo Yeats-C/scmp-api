@@ -10,8 +10,8 @@ public interface StatSupplierArrivalRateYearlyDao {
 
     List<StatSupplierArrivalRateResponse> supplierArrivalSum(SupplierRequest request);
 
-    List<SupplierResponse>  supplierList(SupplierRequest request);
+    List<SupplierResponse> supplierList(SupplierRequest request);
 
-    List<SupplierResponse>  categoryList(SupplierRequest request);
+    List<SupplierResponse> categoryList(SupplierRequest request);
 
 }
