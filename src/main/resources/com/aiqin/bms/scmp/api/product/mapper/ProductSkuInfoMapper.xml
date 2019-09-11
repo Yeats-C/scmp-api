@@ -224,6 +224,7 @@ from product_sku a
                        from apply_product_sku
                        where apply_type = 2
                          and apply_status = 2
+                         and apply_code = #{applyCode}
                        order by create_time desc)
         and apply_status = 2) b
      on a.sku_code = b.sku_code
@@ -272,6 +273,7 @@ from product_sku a
                            from apply_product_sku
                            where apply_type = 2
                              and apply_status = 2
+                             and apply_code = #{applyCode}
                            order by create_time desc)
                 and apply_status = 2) b
              on a.sku_code = b.sku_code

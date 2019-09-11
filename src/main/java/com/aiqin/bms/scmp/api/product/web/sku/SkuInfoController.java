@@ -252,10 +252,10 @@ public class SkuInfoController {
         }
     }
     @GetMapping("/exportAddSku")
-    public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp){
-        log.info("SkuInfoController---exportSku---入参：[{}]");
+    public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
+        log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {
-            return HttpResponse.success(skuInfoService.exportAddSku(resp));
+            return HttpResponse.success(skuInfoService.exportAddSku(resp,code));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -265,10 +265,10 @@ public class SkuInfoController {
     }
 
     @GetMapping("/exportEditSku")
-    public HttpResponse<Boolean> exportEditSku(HttpServletResponse resp){
-        log.info("SkuInfoController---exportSku---入参：[{}]");
+    public HttpResponse<Boolean> exportEditSku(HttpServletResponse resp,String code){
+        log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {
-            return HttpResponse.success(skuInfoService.exportEditSku(resp));
+            return HttpResponse.success(skuInfoService.exportEditSku(resp,code));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
