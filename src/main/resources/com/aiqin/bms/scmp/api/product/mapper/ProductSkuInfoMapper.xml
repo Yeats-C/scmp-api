@@ -246,7 +246,38 @@ from product_sku a
          left join product_sku_purchase_info l on l.product_sku_code = a.sku_code;
     </select>
     <select id="exportEditSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuEditExport">
-
+        select a.sku_code                                 skuCode,
+               a.sku_name                                 skuName,
+               a.sku_abbreviation                         skuAbbreviation,
+               c.spec                                     spec,
+               c.unit_name                                unitName,
+               a.applicable_month_age                     applicableMonthAge,
+               f.zero_removal_coefficient                 zeroRemovalCoefficient,
+               a.product_sort_name                        productSortName,
+               a.manufacturer_guide_price                 manufacturerGuidePrice,
+               a.sku_status                               skuStatus,
+               a.warehouse_type_name                      warehouseTypeName,
+               a.color_name                               colorName,
+               case
+                   when a.unique_code = 0
+                       then '是'
+                   when a.unique_code = 1
+                       then '否'
+                   end                                    uniqueCode
+        from product_sku a
+                 inner join
+             (select sku_code
+              from apply_product_sku
+              where exists(select sku_code
+                           from apply_product_sku
+                           where apply_type = 2
+                             and apply_status = 2
+                           order by create_time desc)
+                and apply_status = 2) b
+             on a.sku_code = b.sku_code
+                 left join product_sku_stock_info c on a.sku_code = c.product_sku_code
+                 left join product_sku_box_packing d on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
+                 left join product_sku_distribution_info f on a.sku_code = f.product_sku_code
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku
