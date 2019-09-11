@@ -778,7 +778,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 inboundBatchReqVo.setSkuCode(product.getSkuCode());
                 inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
                 inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
-                inboundBatchReqVo.setPraQty(product.getActualSingleCount().longValue());
+                inboundBatchReqVo.setPraQty(product.getSingleCount().longValue());
                 inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
                 inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
                 batchReqVoList.add(inboundBatchReqVo);
