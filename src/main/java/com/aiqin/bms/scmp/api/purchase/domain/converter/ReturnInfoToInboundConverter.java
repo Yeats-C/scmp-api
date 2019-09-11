@@ -123,8 +123,7 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
                 inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
                 inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
-                //税率
-                inboundBatchReqVo.setTax(returnOrderInfoItem.getTax());
+
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());
@@ -149,6 +148,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 product.setInboundBaseUnit("1");
                 product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
                 product.setSupplyName(returnOrderInfoItem.getSupplyName());
+                //税率
+                product.setTax(returnOrderInfoItem.getTax().intValue());
                 products.add(product);
                 batchList.add(inboundBatchReqVo);
                 inbound.setList(products);

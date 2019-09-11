@@ -949,7 +949,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 product.setUnitCode(orderProductSkuResponse.getUnitCode());
                 product.setUnitName(orderProductSkuResponse.getUnitName());
                 product.setInboundNorms(orderProductSkuResponse.getSpec());
-                product.setTaxRate(orderProductSkuResponse.getTax().intValue());
+                product.setTax(orderProductSkuResponse.getTax().intValue());
             }else{
                 throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", allocationProduct.getSkuCode()));
             }
