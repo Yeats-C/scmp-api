@@ -46,18 +46,14 @@ import java.util.stream.Collectors;
  */
 public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, List<InboundReqSave>> {
 
-    private SkuService skuService;
 
 
-    public ReturnInfoToInboundConverter(SkuService skuService) {
-        this.skuService = skuService;
+    public ReturnInfoToInboundConverter() {
+
     }
 
     @Override
     public List<InboundReqSave> convert(ReturnOrderInfo reqVo) {
-        List<String> skuCodes = reqVo.getDetailList().stream().map(ReturnOrderInfoItem::getSkuCode).collect(Collectors.toList());
-//            Map<String, Long> map = skuService.getSkuConvertNumBySkuCodes(skuCodes);
-        Map<String, PurchaseItemRespVo> map = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
         List<InboundReqSave> list = Lists.newArrayList();
         InboundReqSave inbound;
         InboundProductReqVo product;
@@ -127,9 +123,11 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());
+                product.setPreTaxPurchaseAmount(returnOrderInfoItem.getPrice());
                 product.setPreTaxAmount(returnOrderInfoItem.getPrice() * product.getPreInboundNum());
                 product.setPraInboundMainNum(returnOrderInfoItem.getActualInboundNum().longValue());
                 product.setPraInboundNum(returnOrderInfoItem.getActualInboundNum().longValue());
+                product.setPraTaxPurchaseAmount(returnOrderInfoItem.getPrice());
                 product.setPraTaxAmount(returnOrderInfoItem.getPrice() * product.getPraInboundNum());
                 praInboundNum += returnOrderInfoItem.getActualInboundNum();
                 praMainUnitNum += returnOrderInfoItem.getActualInboundNum();
@@ -140,8 +138,8 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 inbound.setWarehouseCode(returnOrderInfoItem.getWarehouseCode());
                 inbound.setWarehouseName(returnOrderInfoItem.getWarehouseName());
                 //规格.
-                product.setNorms(map.get(returnOrderInfoItem.getSkuCode()).getSpec());
                 product.setInboundNorms(returnOrderInfoItem.getSpec());
+                product.setNorms(returnOrderInfoItem.getSpec());
                 product.setCreateBy(reqVo.getCreateByName());
                 product.setCreateTime(reqVo.getCreateDate());
                 product.setInboundBaseContent("1");
@@ -149,7 +147,7 @@ public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, 
                 product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
                 product.setSupplyName(returnOrderInfoItem.getSupplyName());
                 //税率
-                product.setTax(returnOrderInfoItem.getTax().intValue());
+                product.setTax(returnOrderInfoItem.getTax());
                 products.add(product);
                 batchList.add(inboundBatchReqVo);
                 inbound.setList(products);

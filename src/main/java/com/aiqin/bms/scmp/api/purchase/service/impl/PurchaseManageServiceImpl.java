@@ -765,7 +765,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setLinenum(product.getId());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
-                reqVo.setTax(product.getTaxRate());
+                reqVo.setTax(product.getTaxRate().longValue());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
                 Integer totalAmount = amount * (singleCount - actualSingleCount);
