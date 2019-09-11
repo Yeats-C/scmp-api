@@ -45,4 +45,11 @@ public class SapAbutment extends SpringBootTestContext {
         sapOrderRequest.setFinishTime("2019-09-010 00:00:00");
         sapBaseDataService.saleSynchronization(sapOrderRequest);
     }
+    @Test
+    public void stockSynchronization() {
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime("2019-09-08 00:00:00");
+        sapOrderRequest.setFinishTime("2019-09-010 00:00:00");
+        sapBaseDataService.stockSynchronization(sapOrderRequest);
+    }
 }

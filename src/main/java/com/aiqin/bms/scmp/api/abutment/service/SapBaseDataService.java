@@ -30,4 +30,5 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
  */
 public interface SapBaseDataService {
     void saleSynchronization(SapOrderRequest sapOrderRequest);
+    void stockSynchronization(SapOrderRequest sapOrderRequest);
 }

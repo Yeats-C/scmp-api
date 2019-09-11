@@ -500,4 +500,13 @@
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
     and a.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
+  <select id="listDetailForSap" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from inbound_product
+    where inbound_oder_code in
+    <foreach collection="orderCodeList" separator="," item="item" open="(" close=")">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

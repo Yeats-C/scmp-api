@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.abutment.jobs.SapScheduledService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.abutment.service.impl.SapBaseDataServiceImpl;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -42,19 +43,24 @@ import java.util.Date;
 public class SapScheduledServiceImpl implements SapScheduledService {
     private static Logger LOGGER = LoggerFactory.getLogger(SapScheduledServiceImpl.class);
 
+    private static final String STANDARD_FORMAT = "yyyy-MM-dd HH:mm:ss";
+
     @Resource
     private SapBaseDataService sapBaseDataService;
 
+    @Scheduled(cron = "0 0 * * * ?")
     public void orderInfoAbutment(){
-        orderInfoAbutmentSchedule("","");
+        DateTime now = new DateTime();
+        orderInfoAbutmentSchedule(now.toString(STANDARD_FORMAT),"");
     }
+
 
     /**
      *  同步订单数据
      * @param beginTime
      * @param finishTime
      */
-//    @Scheduled(cron = "0 0 * * * ?")
+
     public void orderInfoAbutmentSchedule(String beginTime,String finishTime){
         LOGGER.info("同步销售/退货的订单数据,beginTime:{},finishTime:{}",beginTime,finishTime);
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
