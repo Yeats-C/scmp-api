@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -78,23 +79,23 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
-    private Double channelMaoriRate;
+    private BigDecimal channelMaoriRate;
 
     @ApiModelProperty("上期毛利率")
     @JsonProperty("channel_last_maori_rate")
-    private Double channelLastMaoriRate;
+    private BigDecimal channelLastMaoriRate;
 
     @ApiModelProperty("去年渠道毛利率")
     @JsonProperty("last_year_channel_maori_rate")
-    private Double lastYearChannelMaoriRate;
+    private BigDecimal lastYearChannelMaoriRate;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
-    private Double channelComparedSame;
+    private BigDecimal channelComparedSame;
 
     @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
-    private Double channelSequential;
+    private BigDecimal channelSequential;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
@@ -106,23 +107,23 @@ public class MonthCumulativeGrossProfitMarginRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
-    private Double distributionMaoriRate;
+    private BigDecimal distributionMaoriRate;
 
     @ApiModelProperty("上期分销毛利率")
     @JsonProperty("distribution_last_maori_rate")
-    private Double distributionLastMaoriRate;
+    private BigDecimal distributionLastMaoriRate;
 
     @ApiModelProperty("去年分销毛利率")
     @JsonProperty("last_year_distribution_maori_rate")
-    private Double lastYearDistributionMaoriRate;
+    private BigDecimal lastYearDistributionMaoriRate;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
-    private Double distributionComparedSame;
+    private BigDecimal distributionComparedSame;
 
     @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
-    private Double distributionSequential;
+    private BigDecimal distributionSequential;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

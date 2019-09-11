@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +71,7 @@ public class StoreRepurchaseRateRespVo {
 
     @ApiModelProperty("复购率")
     @JsonProperty("after_buy_rate")
-    private Double afterBuyRate;
+    private BigDecimal afterBuyRate;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

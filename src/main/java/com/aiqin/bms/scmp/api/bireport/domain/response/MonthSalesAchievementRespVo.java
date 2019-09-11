@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -74,11 +75,11 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("渠道预算额")
     @JsonProperty("channel_budget")
-    private Long channelBudget;
+    private BigDecimal channelBudget;
 
     @ApiModelProperty("渠道达成率")
     @JsonProperty("channel_yield_rate")
-    private Double channelYieldRate;
+    private BigDecimal channelYieldRate;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
@@ -86,11 +87,11 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("分销预算额")
     @JsonProperty("distribution_budget")
-    private Long distributionbBudget;
+    private BigDecimal distributionbBudget;
 
     @ApiModelProperty("分销达成率")
     @JsonProperty("distribution_yield_rate")
-    private Double distributionYieldRate;
+    private BigDecimal distributionYieldRate;
 
 
     @ApiModelProperty("返回列名")

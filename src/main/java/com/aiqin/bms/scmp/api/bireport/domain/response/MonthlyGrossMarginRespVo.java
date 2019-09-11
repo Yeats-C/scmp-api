@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -70,19 +71,19 @@ public class MonthlyGrossMarginRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
-    private Double channelMaoriRate;
+    private BigDecimal channelMaoriRate;
 
     @ApiModelProperty("去年渠道毛利率")
     @JsonProperty("channel_last_year_maori_rate")
-    private Double channelLastYearMaoriRate;
+    private BigDecimal channelLastYearMaoriRate;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
-    private Double channelComparedSame;
+    private BigDecimal channelComparedSame;
 
     @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
-    private Double channelSequential;
+    private BigDecimal channelSequential;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
@@ -94,19 +95,19 @@ public class MonthlyGrossMarginRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
-    private Double distributionMaoriRate;
+    private BigDecimal distributionMaoriRate;
 
     @ApiModelProperty("去年分销毛利率")
     @JsonProperty("distribution_last_year_maori_rate")
-    private Double distributionLastYearMaoriRate;
+    private BigDecimal distributionLastYearMaoriRate;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
-    private Double distributionComparedSame;
+    private BigDecimal distributionComparedSame;
 
     @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
-    private Double distributionSequential;
+    private BigDecimal distributionSequential;
 
 
     @ApiModelProperty("返回列名")
