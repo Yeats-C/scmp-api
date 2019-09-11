@@ -120,4 +120,6 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("供应商name")
     private String supplyName;
 
+    @ApiModelProperty("税率")
+    private Long tax;
 }
