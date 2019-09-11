@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -126,7 +127,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
-    private Double channelMaoriRate;
+    private BigDecimal channelMaoriRate;
 
     @ApiModelProperty("分销销售成本")
     @JsonProperty("distribution_sales_costs")
@@ -138,11 +139,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
-    private Double distributionMaoriRate;
+    private BigDecimal distributionMaoriRate;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
-    private Integer salesNumOneMonth;
+    private Long salesNumOneMonth;
 
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_coses_one_month")

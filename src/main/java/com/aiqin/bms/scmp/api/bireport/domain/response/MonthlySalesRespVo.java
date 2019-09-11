@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -70,11 +71,11 @@ public class MonthlySalesRespVo {
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
-    private Double channelComparedSame;
+    private BigDecimal channelComparedSame;
 
     @ApiModelProperty("渠道环比")
     @JsonProperty("channel_sequential")
-    private Double channelSequential;
+    private BigDecimal channelSequential;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_order_amount")
@@ -90,75 +91,75 @@ public class MonthlySalesRespVo {
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")
-    private Double distributionComparedSame;
+    private BigDecimal distributionComparedSame;
 
     @ApiModelProperty("分销环比")
     @JsonProperty("distribution_sequential")
-    private Double distributionSequential;
+    private BigDecimal distributionSequential;
 
     @ApiModelProperty("渠道毛利")
     @JsonProperty("channel_margin")
-    private Double channelMargin;
+    private BigDecimal channelMargin;
 
     @ApiModelProperty("分销毛利")
     @JsonProperty("distribution_margin")
-    private Double distributionMargin;
+    private BigDecimal distributionMargin;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_margin_rate")
-    private Double channelMarginRate;
+    private BigDecimal channelMarginRate;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_margin_rate")
-    private Double distributionMarginRate;
+    private BigDecimal distributionMarginRate;
 
     @ApiModelProperty("渠道毛利环比")
     @JsonProperty("channel_margin_sequential")
-    private Double channelMarginSequential;
+    private BigDecimal channelMarginSequential;
 
     @ApiModelProperty("分销毛利环比")
     @JsonProperty("distribution_margin_sequential")
-    private Double distributionMarginSequential;
+    private BigDecimal distributionMarginSequential;
 
     @ApiModelProperty("渠道毛利同比")
     @JsonProperty("channel_margin_compared_same")
-    private Double channelMarginComparedSame;
+    private BigDecimal channelMarginComparedSame;
 
     @ApiModelProperty("分销毛利同比")
     @JsonProperty("distribution_margin_compared_same")
-    private Double distributionMarginComparedSame;
+    private BigDecimal distributionMarginComparedSame;
 
     @ApiModelProperty("渠道毛利率环比")
     @JsonProperty("channel_margin_rate_sequential")
-    private Double channelMarginRateSequential;
+    private BigDecimal channelMarginRateSequential;
 
     @ApiModelProperty("渠道毛利率同比")
     @JsonProperty("channel_margin_rate_compared_same")
-    private Double channelMarginRateComparedSame;
+    private BigDecimal channelMarginRateComparedSame;
 
     @ApiModelProperty("分销毛利率同比")
     @JsonProperty("distribution_margin_rate_compared_same")
-    private Double distributionMarginRateComparedSame;
+    private BigDecimal distributionMarginRateComparedSame;
 
     @ApiModelProperty("分销毛利率环比")
     @JsonProperty("distribution_margin_rate_sequential")
-    private Double distributionMarginRateSequential;
+    private BigDecimal distributionMarginRateSequential;
 
     @ApiModelProperty("渠道预算")
     @JsonProperty("channel_budget")
-    private Double channelBudget;
+    private BigDecimal channelBudget;
 
     @ApiModelProperty("渠道达成率")
     @JsonProperty("channel_achievement")
-    private Double channelAchievement;
+    private BigDecimal channelAchievement;
 
     @ApiModelProperty("分销预算")
     @JsonProperty("distribution_budget")
-    private Double distributionBudget;
+    private BigDecimal distributionBudget;
 
     @ApiModelProperty("分销达成率")
     @JsonProperty("distribution_achievement")
-    private Double distributionAchievement;
+    private BigDecimal distributionAchievement;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

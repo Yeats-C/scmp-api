@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("上周全国合计_低库存占比")
     @JsonProperty("szqg_low_inventory_ratio")
-    private Double szqgLowInventoryRatio;
+    private BigDecimal szqgLowInventoryRatio;
 
     @ApiModelProperty("本周全国合计_总SKU数量")
     @JsonProperty("bzqg_total_sku_num")
@@ -62,7 +63,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("本周全国合计_低库存占比")
     @JsonProperty("bzqg_low_inventory_ratio")
-    private Double bzqgLowInventoryRatio;
+    private BigDecimal bzqgLowInventoryRatio;
 
     @ApiModelProperty("华北仓_总SKU数量")
     @JsonProperty("hb_total_sku_num")
@@ -74,7 +75,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("华北仓_低库存占比")
     @JsonProperty("hb_low_inventory_ratio")
-    private Double hbLowInventoryRatio;
+    private BigDecimal hbLowInventoryRatio;
 
     @ApiModelProperty("华南仓_总SKU数量")
     @JsonProperty("hn_total_sku_num")
@@ -86,7 +87,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("华南仓_低库存占比")
     @JsonProperty("hn_low_inventory_ratio")
-    private Double hnLowInventoryRatio;
+    private BigDecimal hnLowInventoryRatio;
 
     @ApiModelProperty("西南仓_总SKU数量")
     @JsonProperty("xn_total_sku_num")
@@ -98,7 +99,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("西南仓_低库存占比")
     @JsonProperty("xn_low_inventory_ratio")
-    private Double xnLowInventoryRatio;
+    private BigDecimal xnLowInventoryRatio;
 
     @ApiModelProperty("华东仓_总SKU数量")
     @JsonProperty("hd_total_sku_num")
@@ -110,7 +111,7 @@ public class LowInventoryRespVo {
 
     @ApiModelProperty("华东仓_低库存占比")
     @JsonProperty("hd_low_inventory_ratio")
-    private Double hdLowInventoryRatio;
+    private BigDecimal hdLowInventoryRatio;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

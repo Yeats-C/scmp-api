@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("年销售情况(部门)respVo")
 @Data
 public class DashboardDepartAnnualSalesStatiRespVo {
@@ -39,10 +41,10 @@ public class DashboardDepartAnnualSalesStatiRespVo {
 
     @ApiModelProperty("销售预算")
     @JsonProperty("sales_budget")
-    private Long salesBudget;
+    private BigDecimal salesBudget;
 
     @ApiModelProperty("销售达成率")
     @JsonProperty("achieve_rate")
-    private Double achieveRate;
+    private BigDecimal achieveRate;
 
 }

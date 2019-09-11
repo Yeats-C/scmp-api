@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("今年各亏损占比respVo")
 @Data
 public class DashboardAllKindsLossRatioRespVo {
@@ -27,9 +29,9 @@ public class DashboardAllKindsLossRatioRespVo {
 
     @ApiModelProperty("残次品金额占比")
     @JsonProperty("defective_effect_ratio")
-    private Double defectiveEffectRatio;
+    private BigDecimal defectiveEffectRatio;
 
     @ApiModelProperty("缺货金额占比")
     @JsonProperty("stockout_ratio")
-    private Double stockoutRatio;
+    private BigDecimal stockoutRatio;
 }

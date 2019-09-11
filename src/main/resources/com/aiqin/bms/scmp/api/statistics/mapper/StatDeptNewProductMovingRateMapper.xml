@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatDeptNewProductMovingRateDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatDeptNewProductMovingRate">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="lv1" jdbcType="VARCHAR" property="lv1" />
+    <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="ini_stock_sku_num" jdbcType="BIGINT" property="iniStockSkuNum" />
+    <result column="ini_stock_sku_cost" jdbcType="BIGINT" property="iniStockSkuCost" />
+    <result column="mid_purchase_sku_num" jdbcType="BIGINT" property="midPurchaseSkuNum" />
+    <result column="mid_sales_sku_num" jdbcType="BIGINT" property="midSalesSkuNum" />
+    <result column="channel_sales_amount" jdbcType="BIGINT" property="channelSalesAmount" />
+    <result column="distributionsales_amount" jdbcType="BIGINT" property="distributionsalesAmount" />
+    <result column="new_pro_moving_sales_rate" jdbcType="DECIMAL" property="newProMovingSalesRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, stat_month, product_sort_code, product_sort_name, lv1, lv1_category_name, 
+    price_channel_code, price_channel_name, transport_center_code, transport_center_name, 
+    ini_stock_sku_num, ini_stock_sku_cost, mid_purchase_sku_num, mid_sales_sku_num, channel_sales_amount, 
+    distributionsales_amount, new_pro_moving_sales_rate, create_time
+  </sql>
+</mapper>
