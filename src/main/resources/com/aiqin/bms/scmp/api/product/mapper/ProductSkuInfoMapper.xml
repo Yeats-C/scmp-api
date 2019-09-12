@@ -221,13 +221,12 @@ from product_sku a
          inner join
      (select sku_code
       from apply_product_sku
-      where not exists(select sku_code
+      where sku_code not in(select sku_code
                        from apply_product_sku
                        where apply_type = 2
                          and apply_status = 2
-                         and apply_code = #{applyCode}
                        order by create_time desc)
-        and apply_status = 2) b
+        and apply_status = 2 and apply_code = #{applyCode}) b
      on a.sku_code = b.sku_code
          left join product_sku_stock_info c on a.sku_code = c.product_sku_code
          left join product_sku_box_packing d on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
@@ -270,13 +269,12 @@ from product_sku a
                  inner join
              (select sku_code
               from apply_product_sku
-              where exists(select sku_code
+              where sku_code in (select sku_code
                            from apply_product_sku
                            where apply_type = 2
                              and apply_status = 2
-                             and apply_code = #{applyCode}
                            order by create_time desc)
-                and apply_status = 2) b
+                and apply_status = 2 and apply_code = #{applyCode}) b
              on a.sku_code = b.sku_code
                  left join product_sku_stock_info c on a.sku_code = c.product_sku_code
                  left join product_sku_box_packing d on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
