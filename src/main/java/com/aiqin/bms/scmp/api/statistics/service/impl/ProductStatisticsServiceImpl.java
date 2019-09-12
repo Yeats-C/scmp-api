@@ -40,23 +40,34 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
         Long month = Long.valueOf(request.getDate().substring(5));
         request.setYear(year);
         request.setMonth(month);
+        ProductMovableResponse response = new ProductMovableResponse();
         if(request.getType().equals(Global.COMPANY)){
             // 计算新品动销率统计 - 公司
-
+            response = this.companyMovable(request);
         }else {
             // 计算新品动销率统计 - 部门
-            this.deptMovable(request);
+            response = this.deptMovable(request);
         }
-        return HttpResponse.success();
+        return HttpResponse.success(response);
+    }
+
+    private ProductMovableResponse companyMovable(ProductRequest request){
+        ProductMovableResponse sumResponse = new ProductMovableResponse();
+
+        return sumResponse;
     }
 
     private ProductMovableResponse deptMovable(ProductRequest request){
         ProductMovableResponse deptResponse = new ProductMovableResponse();
         List<ProductMovableResponse> categorySum = Lists.newArrayList();
+        List<ProductMovableResponse> channelSum;
         List<NewProductMovingRateResponse> deptList;
         List<NewProductMovingRateResponse> categoryList;
+        List<NewProductMovingRateResponse> channelList;
         List<MovableResponse> categorys;
+        List<MovableResponse> channels;
         ProductMovableResponse categoryResponse;
+        ProductMovableResponse channelResponse;
         deptList = statDeptNewProductMovingRateDao.productMovingSum(request);
         if(CollectionUtils.isNotEmpty(deptList)){
             deptResponse = this.movablePin(deptList);
@@ -67,9 +78,22 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     request.setPriceChannelCode(null);
                     categoryList = statDeptNewProductMovingRateDao.productMovingSum(request);
                     if(CollectionUtils.isNotEmpty(categoryList)){
-
-
                         categoryResponse = this.movablePin(categoryList);
+                        channels = statDeptNewProductMovingRateDao.channelList(request);
+                        channelSum = Lists.newArrayList();
+                        if(CollectionUtils.isNotEmpty(channels)){
+                            for(MovableResponse channel:channels){
+                                request.setPriceChannelCode(channel.getPriceChannelCode());
+                                channelList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                                channelResponse = this.movablePin(channelList);
+                                channelResponse.setLv1(channel.getLv1());
+                                channelResponse.setLv1CategoryName(channel.getLv1CategoryName());
+                                channelResponse.setPriceChannelCode(channel.getPriceChannelCode());
+                                channelResponse.setPriceChannelName(channel.getPriceChannelName());
+                                channelSum.add(channelResponse);
+                            }
+                        }
+                        categoryResponse.setSubsetList(channelSum);
                         categoryResponse.setLv1(category.getLv1());
                         categoryResponse.setLv1CategoryName(category.getLv1CategoryName());
                         categorySum.add(categoryResponse);
