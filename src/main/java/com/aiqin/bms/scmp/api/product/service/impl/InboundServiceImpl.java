@@ -445,7 +445,7 @@ public class InboundServiceImpl implements InboundService {
 //    @Async("myTaskAsyncPool")
     public void workFlowCallBack(InboundCallBackReqVo reqVo) {
 
-        log.error("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
+        log.info("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
         //根据编码，查询入库单主体
 //        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
         Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
