@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -86,35 +87,35 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("渠道销售额累计同比")
     @JsonProperty("total_channel_amount_daily_compared_same")
-    private Double totalChannelAmountDailyComparedSame;
+    private BigDecimal totalChannelAmountDailyComparedSame;
 
     @ApiModelProperty("渠道销售额累计环比")
     @JsonProperty("total_channel_amount_daily_sequential")
-    private Double totalChannelAmountDailySequential;
+    private BigDecimal totalChannelAmountDailySequential;
 
     @ApiModelProperty("渠道毛利额累计")
     @JsonProperty("total_channel_maori")
-    private Double totalChannelMaori;
+    private Long totalChannelMaori;
 
     @ApiModelProperty("渠道毛利率累计")
     @JsonProperty("total_channel_maori_rate")
-    private Double totalChannelMaoriRate;
+    private BigDecimal totalChannelMaoriRate;
 
     @ApiModelProperty("去年同期渠道毛利率累计")
     @JsonProperty("total_last_year_channel_maori_rate")
-    private Double totalLastYearChannelMaoriRate;
+    private BigDecimal totalLastYearChannelMaoriRate;
 
     @ApiModelProperty("上期渠道毛利率累计")
     @JsonProperty("total_last_month_channel_maori_rate")
-    private Double totalLastMonthChannelMaoriRate;
+    private BigDecimal totalLastMonthChannelMaoriRate;
 
     @ApiModelProperty("渠道毛利率累计同比")
     @JsonProperty("total_channel_gross_margin_compared_same")
-    private Double totalChannelGrossMarginComparedSame;
+    private BigDecimal totalChannelGrossMarginComparedSame;
 
     @ApiModelProperty("渠道毛利率累计环比")
     @JsonProperty("total_channel_gross_margin_rate_sequential")
-    private Double totalChannelGrossMarginRateSequential;
+    private BigDecimal totalChannelGrossMarginRateSequential;
 
     @ApiModelProperty("分销销售额累计")
     @JsonProperty("total_distribution_amount_daily")
@@ -130,35 +131,35 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("分销销售额累计同比")
     @JsonProperty("total_distribution_amount_daily_compared_same")
-    private Double totalDistributionAmountDailyComparedSame;
+    private BigDecimal totalDistributionAmountDailyComparedSame;
 
     @ApiModelProperty("分销销售额累计环比")
     @JsonProperty("total_distribution_amount_daily_sequential")
-    private Double totalDistributionAmountDailySequential;
+    private BigDecimal totalDistributionAmountDailySequential;
 
     @ApiModelProperty("分销毛利额累计")
     @JsonProperty("total_distribution_amount")
-    private Double totalDistributionAmount;
+    private Long totalDistributionAmount;
 
     @ApiModelProperty("分销毛利率累计")
     @JsonProperty("total_distribution_maori_rate")
-    private Double totalDistributionMaoriRate;
+    private BigDecimal totalDistributionMaoriRate;
 
     @ApiModelProperty("去年同期分销毛利率累计")
     @JsonProperty("total_last_year_distribution_maori_rate")
-    private Double totalLastYearDistributionMaoriRate;
+    private BigDecimal totalLastYearDistributionMaoriRate;
 
     @ApiModelProperty("上期分销毛利率累计")
     @JsonProperty("total_last_month_distribution_maori_rate")
-    private Double totalLastMonthDistributionMaoriRate;
+    private BigDecimal totalLastMonthDistributionMaoriRate;
 
     @ApiModelProperty("分销毛利率累计环比")
     @JsonProperty("total_distribution_margin_rate_sequential")
-    private Double totalDistributionMarginRateSequential;
+    private BigDecimal totalDistributionMarginRateSequential;
 
     @ApiModelProperty("分销毛利率累计同比")
     @JsonProperty("total_distribution_gross_margin_compared_same")
-    private Double totalDistributionGrossMarginComparedSame;
+    private BigDecimal totalDistributionGrossMarginComparedSame;
 
     @ApiModelProperty("计算时间")
     @JsonProperty("create_time")

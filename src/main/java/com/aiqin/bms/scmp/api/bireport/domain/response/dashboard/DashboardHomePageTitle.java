@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("首页头字段respVo")
 @Data
 public class DashboardHomePageTitle {
@@ -15,7 +17,7 @@ public class DashboardHomePageTitle {
 
     @ApiModelProperty("总目标达成率")
     @JsonProperty("achieve_rate")
-    private Double achieveRate;
+    private BigDecimal achieveRate;
 
     @ApiModelProperty("年毛利额（万元）")
     @JsonProperty("channel_margin")
@@ -23,7 +25,7 @@ public class DashboardHomePageTitle {
 
     @ApiModelProperty("年毛利率")
     @JsonProperty("margin_rate")
-    private Double marginRate;
+    private BigDecimal marginRate;
 
     @ApiModelProperty("缺货/残次品/大效期影响金额")
     @JsonProperty("monthly_loss_amount")
@@ -35,5 +37,5 @@ public class DashboardHomePageTitle {
 
     @ApiModelProperty("A 品贡献率")
     @JsonProperty("contribution_rate")
-    private Double contributionRate;
+    private BigDecimal contributionRate;
 }

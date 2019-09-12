@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -153,7 +154,8 @@ public class DashboardServiceImpl implements DashboardService {
             dashboardHomePageTitle.setAchieveRate(dashboardDepartAnnualSalesStatiRespVo.getAchieveRate());
             dashboardHomePageTitle.setChannelMargin(dashboardDepartAnnualSalesStatiRespVo.getChannelMargin());
             if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
-                Double marginRate = dashboardDepartAnnualSalesStatiRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                double mr = dashboardDepartAnnualSalesStatiRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                BigDecimal marginRate = new BigDecimal(mr);
                 dashboardHomePageTitle.setMarginRate(marginRate);
             }
         }
@@ -162,8 +164,9 @@ public class DashboardServiceImpl implements DashboardService {
         }
         if(dashboardDepCateProperSalesAmountRespVo != null){
             dashboardHomePageTitle.setChannelSalesAmount(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount());
-            if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
-                Double contributionRate = dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+            if(dashboardDepCateProperSalesAmountRespVo.getChannelMargin() != null && dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
+                double cr = dashboardDepCateProperSalesAmountRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
+                BigDecimal contributionRate = new BigDecimal(cr);
                 dashboardHomePageTitle.setContributionRate(contributionRate);
             }
         }

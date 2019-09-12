@@ -69,6 +69,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
         List<StatSupplierArrivalRateResponse> categoryList;
         SupplierDeliveryResponse supplierResponse;
         SupplierDeliveryResponse categoryResponse;
+        List<SupplierResponse> categorys;
         List<StatSupplierArrivalRateResponse> sumList = i == YEAR ?
                 statSupplierArrivalRateYearlyDao.supplierArrivalSum(request) : statSupplierArrivalRateMonthlyDao.supplierArrivalSum(request);
         if(CollectionUtils.isNotEmptyCollection(sumList)){
@@ -84,7 +85,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                             statSupplierArrivalRateYearlyDao.supplierArrivalSum(request) : statSupplierArrivalRateMonthlyDao.supplierArrivalSum(request);
                     if(CollectionUtils.isNotEmptyCollection(supplierList)){
                         // 查询品类
-                        List<SupplierResponse> categorys = i == YEAR ?
+                        categorys = i == YEAR ?
                                 statSupplierArrivalRateYearlyDao.categoryList(request): statSupplierArrivalRateMonthlyDao.categoryList(request);
                         cateList = Lists.newArrayList();
                         if(CollectionUtils.isNotEmptyCollection(categorys)){

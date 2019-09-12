@@ -9,7 +9,6 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -42,7 +41,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemRe
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
-import com.aiqin.bms.scmp.api.supplier.mapper.UseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
@@ -67,7 +65,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.aspectj.apache.bcel.classfile.Code;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,6 +72,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -1180,7 +1179,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //SKU结算信息
             detailResp.setProductSkuCheckout(productSkuCheckoutService.getDraft(skuCode));
             //供应商信息
-            detailResp.setProductSkuSupplyUnits(productSkuSupplyUnitService.getDraftList(skuCode));
+            List<ProductSkuSupplyUnitRespVo> draftList = productSkuSupplyUnitService.getDraftList(skuCode);
+            if (CollectionUtils.isEmpty(draftList)) {
+                draftList = productSkuSupplyUnitService.getList(skuCode);
+            }
+            detailResp.setProductSkuSupplyUnits(draftList);
             //关联商品信息
             detailResp.setProductAssociatedGoods(productSkuAssociatedGoodsService.getDraftList(skuCode));
             //sku生产厂家信息
@@ -1194,21 +1197,40 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         purchaseSaleStocks.addAll(productSkuDisInfoService.getDraftList(skuCode));
         detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
-        detailResp.setProductSkuPictures(productSkuPicturesService.getDraftList(skuCode));
+        List<ProductSkuPicturesRespVo> draftList1 = productSkuPicturesService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList1)) {
+            draftList1 = productSkuPicturesService.getList(skuCode);
+        }
+        detailResp.setProductSkuPictures(draftList1);
         //sku商品说明
-        detailResp.setProductSkuPicDescs(productSkuPicDescService.getDraftList(skuCode));
+        List<ProductSkuPicDescRespVo> draftList2 = productSkuPicDescService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList2)) {
+            draftList2 = productSkuPicDescService.getList(skuCode);
+        }
+        detailResp.setProductSkuPicDescs(draftList2);
         //sku文件管理
-        detailResp.setProductSkuFiles(productSkuFileService.getDraftList(skuCode));
+        List<ProductSkuFileRespVO> draftList3 = productSkuFileService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList3)) {
+            draftList3 = productSkuFileService.getList(skuCode);
+        }
+        detailResp.setProductSkuFiles(draftList3);
         //价格信息
         List<ProductSkuPriceRespVo> draftTemps =
                 productSkuPriceInfoService.getSkuPriceBySkuCodeForDraft(skuCode);
+        if (CollectionUtils.isEmpty(draftTemps)) {
+            draftTemps = productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);
+        }
         List<ProductSkuPriceRespVo> priceDraftRespVos =
                 draftTemps.stream().filter(item ->
                         !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
                         collect(Collectors.toList());
         detailResp.setProductSkuPrices(priceDraftRespVos);
         //配置信息
-        detailResp.setProductSkuConfigs(productSkuConfigService.draftDetail(skuCode));
+        List<SkuConfigsRepsVo> draftList = productSkuConfigService.draftDetail(skuCode);
+        if (CollectionUtils.isEmpty(draftList)) {
+            draftList = productSkuConfigService.getList(skuCode);
+        }
+        detailResp.setProductSkuConfigs(draftList);
         return detailResp;
     }
 
@@ -1972,8 +1994,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 skuNameList.add(o.getSkuName());
                 brandNameList.add(o.getProductBrandName());
                 supplierList.add(o.getSupplyUnitName());
+                //2019年9月12日10:25:06 品类名称改编码
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
-                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split("-")));
+                    categoryNameList.add(o.getProductCategoryName().trim());
                 }
                 if (StringUtils.isNotBlank(o.getPriceChannelName())) {
                     channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
@@ -2016,8 +2039,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //品类
             if (CollectionUtils.isNotEmpty(categoryNameList)) {
-                categoryList = productCategoryService.selectByCategoryNames(categoryNameList, getUser().getCompanyCode());
-                categoryMap = categoryList.stream().collect(Collectors.toMap(o->o.getCategoryName()+","+o.getCategoryLevel(), Function.identity()));
+                categoryList = productCategoryService.selectByCategoryCodes(categoryNameList, getUser().getCompanyCode());
+                categoryMap = categoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryId, Function.identity()));
             }
             //制造商
             if (CollectionUtils.isNotEmpty(manufactureList)) {
@@ -2249,7 +2272,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 skuNameList.add(o.getSkuCode());
                 brandNameList.add(o.getProductBrandName());
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
-                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split("-")));
+                    categoryNameList.add(o.getProductCategoryName().trim());
                 }
                 if (StringUtils.isNotBlank(o.getPriceChannelName())) {
                     channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
@@ -2292,8 +2315,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //品类
             if (CollectionUtils.isNotEmpty(categoryNameList)) {
-                categoryList = productCategoryService.selectByCategoryNames(categoryNameList, getUser().getCompanyCode());
-                categoryMap = categoryList.stream().collect(Collectors.toMap(o->o.getCategoryName()+","+o.getCategoryLevel(), Function.identity()));
+                categoryList = productCategoryService.selectByCategoryCodes(categoryNameList, getUser().getCompanyCode());
+                categoryMap = categoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryId, Function.identity()));
             }
             //制造商
             if (CollectionUtils.isNotEmpty(manufactureList)) {
@@ -2514,9 +2537,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public Boolean exportAddSku(HttpServletResponse resp) {
+    public Boolean exportAddSku(HttpServletResponse resp, @Valid @NotNull(message = "申请编码不能为空") String applyCode) {
         try {
-            List<SkuAddExport> list = productSkuInfoMapper.exportAddSku();
+            List<SkuAddExport> list = productSkuInfoMapper.exportAddSku(applyCode);
             ExcelUtil.writeExcel(resp,list,"商品DL新增导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuAddExport.class);
             return Boolean.TRUE;
         } catch (ExcelException e) {
@@ -2526,9 +2549,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public Boolean exportEditSku(HttpServletResponse resp) {
+    public Boolean exportEditSku(HttpServletResponse resp, @Valid @NotNull(message = "申请编码不能为空") String applyCode) {
         try {
-            List<SkuEditExport> list = productSkuInfoMapper.exportEditSku();
+            List<SkuEditExport> list = productSkuInfoMapper.exportEditSku(applyCode);
             ExcelUtil.writeExcel(resp,list,"商品DL修改导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuEditExport.class);
             return Boolean.TRUE;
         } catch (ExcelException e) {

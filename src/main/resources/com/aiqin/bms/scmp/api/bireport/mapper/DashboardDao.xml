@@ -230,13 +230,13 @@
         SELECT
         ddass.id as id,
         ddass.stat_year as statYear,
-        ddass.channel_costs as channelCosts,
-        ddass.channel_amount as channelAmount,
-        ddass.channel_margin as channelMargin,
-        ddass.distribution_amount as distributionAmount,
-        ddass.distribution_margin as distributionMargin,
-        ddass.sales_budget as salesBudget,
-        ddass.achieve_rate as achieveRate
+        ifNULL(ddass.channel_costs,0) as channelCosts,
+        ifNULL(ddass.channel_amount,0) as channelAmount,
+        ifNULL(ddass.channel_margin,0) as channelMargin,
+        ifNULL(ddass.distribution_amount,0) as distributionAmount,
+        ifNULL(ddass.distribution_margin,0) as distributionMargin,
+        ifNULL(ddass.sales_budget,0) as salesBudget,
+        ifNULL(ddass.achieve_rate,0) as achieveRate
         FROM dashboard_depart_annual_sales_stati ddass
         WHERE  ddass.stat_year like concat('%',#{oneYearStr},'%')
     </select>
@@ -244,13 +244,13 @@
         SELECT
           dmla.id as id,
           dmla.stat_year as statYear,
-          sum(dmla.monthly_loss_amount) as monthlyLossAmount
+          ifNULL(sum(dmla.monthly_loss_amount),0) as monthlyLossAmount
           FROM dashboard_monthly_loss_amount dmla
           where dmla.stat_year = #{oneYearStr}
     </select>
     <select id="selectPropertyAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
         SELECT
-        SUM(ddcpsa.channel_sales_amount) channelSalesAmount
+        ifNULL(SUM(ddcpsa.channel_sales_amount),0) channelSalesAmount
         FROM
         dashboard_dep_cate_proper_sales_amount ddcpsa
         WHERE
@@ -258,7 +258,7 @@
     </select>
     <select id="selectSalesContributionRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
-          sum(ddmhr.channel_sales_amount) as channelSalesAmount
+        ifNULL(sum(ddmhr.channel_sales_amount),0) as channelSalesAmount
         FROM
           dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1
@@ -274,7 +274,7 @@
     </select>
     <select id="selectSalesContributionRateAll" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
-        sum(ddmhr.channel_sales_amount) as channelSalesAmount
+        ifNULL(sum(ddmhr.channel_sales_amount),0) as channelSalesAmount
         FROM
         dashboard_dep_monthly_homocyclic_ratio ddmhr
         where 1=1

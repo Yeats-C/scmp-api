@@ -456,7 +456,6 @@
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
-
     <select id="selectStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
@@ -492,7 +491,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -558,7 +557,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -925,7 +924,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1000,7 +999,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1162,7 +1161,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1244,7 +1243,7 @@
             AND ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
+            AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1671,7 +1670,7 @@
             and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code = #{productCategoryText}
+            and ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1741,7 +1740,7 @@
             and ps.product_brand_code = #{brandText}
         </if>
         <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code = #{productCategoryText}
+            and ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
             and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
@@ -1888,7 +1887,7 @@
                 and ps.product_brand_code= #{brandId,jdbcType=VARCHAR}
             </if>
             <if test="categoryId != null">
-                and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
+                and ps.product_category_code like CONCAT( #{categoryId,jdbcType=VARCHAR},"%")
             </if>
         </where>
     </sql>

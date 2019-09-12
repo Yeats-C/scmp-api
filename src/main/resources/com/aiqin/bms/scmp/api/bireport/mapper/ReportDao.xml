@@ -1143,9 +1143,9 @@
         sum(bnm.sales_cost) as salesCosts,
         sum(bnm.channel_order_amount) as channelOrderAmounts,
         sum(bnm.channel_order_amount) - sum(bnm.sales_cost) as channelMaoris,
-        sum(bnm.channel_order_amount) - sum(bnm.sales_cost) / sum(bnm.channel_order_amount) as channelMaoriRates,
+        (sum(bnm.channel_order_amount) - sum(bnm.sales_cost)) / sum(bnm.channel_order_amount) as channelMaoriRates,
         sum(bnm.distribution_order_amount) as distributionOrderAmounts,
-        (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) as distributionMaoris,
+        sum(bnm.distribution_order_amount) - sum(bnm.sales_cost) as distributionMaoris,
         (sum(bnm.distribution_order_amount) - sum(bnm.sales_cost)) / sum(bnm.distribution_order_amount) as distributionMaoriRates
         from bi_negative_margin bnm
         <include refid="select_negative_margin"/>

@@ -79,12 +79,14 @@ public interface ProductSkuInfoMapper {
     /**
      * 导出新增
      * @return
+     * @param applyCode
      */
-    List<SkuAddExport> exportAddSku();
+    List<SkuAddExport> exportAddSku(String applyCode);
 
     /**
      * 导出修改
      * @return
+     * @param applyCode
      */
-    List<SkuEditExport> exportEditSku();
+    List<SkuEditExport> exportEditSku(String applyCode);
 }

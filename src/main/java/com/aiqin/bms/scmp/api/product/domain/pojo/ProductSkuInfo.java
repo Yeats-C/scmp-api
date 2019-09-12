@@ -222,4 +222,7 @@ public class ProductSkuInfo extends CommonBean {
 
     @ApiModelProperty("申请类型名称")
     private String applyTypeName;
+
+    @ApiModelProperty("商品描述")
+    private String productDesc;
 }

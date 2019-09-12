@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +67,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
-    private Double channelMaoriRate;
+    private BigDecimal channelMaoriRate;
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("distribution_order_amount")
@@ -78,7 +79,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
-    private Double distributionMaoriRate;
+    private BigDecimal distributionMaoriRate;
 
     @ApiModelProperty("所属部门编码")
     @JsonProperty("product_sort_code")
@@ -114,7 +115,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("渠道毛利率合计")
     @JsonProperty("channel_maori_rates")
-    private Double channelMaoriRates;
+    private BigDecimal channelMaoriRates;
 
     @ApiModelProperty("分销销售金额合计")
     @JsonProperty("distribution_order_amounts")
@@ -126,7 +127,7 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销毛利率合计")
     @JsonProperty("distribution_maori_rates")
-    private Double distributionMaoriRates;
+    private BigDecimal distributionMaoriRates;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")
