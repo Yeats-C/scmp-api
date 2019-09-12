@@ -164,7 +164,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
         if(dashboardDepCateProperSalesAmountRespVo != null){
             dashboardHomePageTitle.setChannelSalesAmount(dashboardDepCateProperSalesAmountRespVo.getChannelSalesAmount());
-            if(dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
+            if(dashboardDepCateProperSalesAmountRespVo.getChannelMargin() != null && dashboardDepartAnnualSalesStatiRespVo.getChannelAmount() != null){
                 double cr = dashboardDepCateProperSalesAmountRespVo.getChannelMargin().doubleValue() / dashboardDepartAnnualSalesStatiRespVo.getChannelAmount().doubleValue();
                 BigDecimal contributionRate = new BigDecimal(cr);
                 dashboardHomePageTitle.setContributionRate(contributionRate);
