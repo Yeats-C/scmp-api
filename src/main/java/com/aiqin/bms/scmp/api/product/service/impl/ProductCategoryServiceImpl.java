@@ -405,6 +405,11 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         return productCategoryDao.selectByCategoryNames(brandNameList, companyCode);
     }
 
+    @Override
+    public List<ProductCategory> selectByCategoryCodes(Set<String> brandCodeList, String companyCode) {
+        return productCategoryDao.selectByCategoryCodes(brandCodeList, companyCode);
+    }
+
     private List<ProductCategory> getChildCategory(List<ProductCategory> productCategories, String categoryId, String companyCode) {
         List<ProductCategory> productCategoryList = productCategoryDao.selectCategoryByParentId(categoryId, companyCode);
         if (CollectionUtils.isNotEmpty(productCategoryList)) {

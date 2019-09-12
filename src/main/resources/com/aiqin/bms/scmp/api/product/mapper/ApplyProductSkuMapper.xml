@@ -246,7 +246,7 @@
   <select id="checkName" resultType="java.lang.Integer">
     select count(*) from
     apply_product_sku
-    where 1=1
+    where 1=1 and apply_status = 1
     <if test="skuCode != null and skuCode != '' ">
       and sku_code != #{skuCode}
     </if>

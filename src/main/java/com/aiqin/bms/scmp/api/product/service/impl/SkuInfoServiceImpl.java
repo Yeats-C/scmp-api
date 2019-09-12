@@ -1971,8 +1971,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 skuNameList.add(o.getSkuName());
                 brandNameList.add(o.getProductBrandName());
                 supplierList.add(o.getSupplyUnitName());
+                //2019年9月12日10:25:06 品类名称改编码
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
-                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split("-")));
+                    categoryNameList.add(o.getProductCategoryName().trim());
                 }
                 if (StringUtils.isNotBlank(o.getPriceChannelName())) {
                     channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
@@ -2015,8 +2016,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //品类
             if (CollectionUtils.isNotEmpty(categoryNameList)) {
-                categoryList = productCategoryService.selectByCategoryNames(categoryNameList, getUser().getCompanyCode());
-                categoryMap = categoryList.stream().collect(Collectors.toMap(o->o.getCategoryName()+","+o.getCategoryLevel(), Function.identity()));
+                categoryList = productCategoryService.selectByCategoryCodes(categoryNameList, getUser().getCompanyCode());
+                categoryMap = categoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryId, Function.identity()));
             }
             //制造商
             if (CollectionUtils.isNotEmpty(manufactureList)) {
@@ -2248,7 +2249,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 skuNameList.add(o.getSkuCode());
                 brandNameList.add(o.getProductBrandName());
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
-                    categoryNameList.addAll(Arrays.asList(o.getProductCategoryName().split("-")));
+                    categoryNameList.add(o.getProductCategoryName().trim());
                 }
                 if (StringUtils.isNotBlank(o.getPriceChannelName())) {
                     channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
@@ -2291,8 +2292,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //品类
             if (CollectionUtils.isNotEmpty(categoryNameList)) {
-                categoryList = productCategoryService.selectByCategoryNames(categoryNameList, getUser().getCompanyCode());
-                categoryMap = categoryList.stream().collect(Collectors.toMap(o->o.getCategoryName()+","+o.getCategoryLevel(), Function.identity()));
+                categoryList = productCategoryService.selectByCategoryCodes(categoryNameList, getUser().getCompanyCode());
+                categoryMap = categoryList.stream().collect(Collectors.toMap(ProductCategory::getCategoryId, Function.identity()));
             }
             //制造商
             if (CollectionUtils.isNotEmpty(manufactureList)) {

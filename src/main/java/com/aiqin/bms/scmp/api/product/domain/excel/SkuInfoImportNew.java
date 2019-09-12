@@ -28,7 +28,7 @@ public class SkuInfoImportNew extends BaseRowModel {
     private String productSortName;
 
     @ApiModelProperty("商品品类名称")
-    @ExcelProperty(index = 2, value = "品类")
+    @ExcelProperty(index = 2, value = "品类编码")
     private String productCategoryName;
 
     @ApiModelProperty("sku名称")
