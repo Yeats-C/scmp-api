@@ -35,8 +35,6 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
     @Resource
     private StatDeptMonthAccSalesDao statDeptMonthAccSalesDao;
     @Resource
-    private StatComCategorySalesDao statComCategorySalesDao;
-    @Resource
     private StatDeptCategorySalesDao statDeptCategorySalesDao;
 
     private final static int YEAR = 0;
@@ -405,73 +403,41 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             response = this.deptCategory(saleRequest);
+            if(response != null){
+                response.setRate(new BigDecimal(1));
+            }
         }
         return HttpResponse.success(response);
     }
 
-    private CategoryResponse companyCategory(SaleRequest saleRequest){
+    private CategoryResponse companyCategory(SaleRequest saleRequest) {
         List<CompanyAndDeptResponse> departments;
-        List<CompanyAndDeptResponse> companys;
         List<CategoryResponse> deptList = Lists.newArrayList();
-        List<CategoryResponse> companyList;
-        List<CategoryResponse> categoryList;
         CategoryResponse deptSum;
-        CategoryResponse companySum;
-        CategoryResponse sum = statComCategorySalesDao.categorySum(saleRequest);
-        if(sum != null){
-            departments = statComCategorySalesDao.categoryByDept(saleRequest);
-            if(CollectionUtils.isNotEmptyCollection(departments)) {
+        CategoryResponse sum = statDeptCategorySalesDao.categorySum(saleRequest);
+        if (sum != null) {
+            departments = statDeptCategorySalesDao.categoryByDept(saleRequest);
+            if (CollectionUtils.isNotEmptyCollection(departments)) {
                 for (CompanyAndDeptResponse dept : departments) {
                     saleRequest.setProductSortCode(dept.getProductSortCode());
                     saleRequest.setPriceChannelCode(null);
                     saleRequest.setStoreTypeCode(null);
-                    deptSum = statComCategorySalesDao.categorySum(saleRequest);
-                    companys = statComCategorySalesDao.categoryByCompany(saleRequest);
-                    if (CollectionUtils.isNotEmptyCollection(companys)) {
-                        companyList = Lists.newArrayList();
-                        for (CompanyAndDeptResponse company : companys) {
-                            saleRequest.setPriceChannelCode(company.getPriceChannelCode());
-                            saleRequest.setStoreTypeCode(null);
-                            companySum = statComCategorySalesDao.categorySum(saleRequest);
-                            if (companySum != null) {
-                                categoryList = statComCategorySalesDao.categoryList(saleRequest);
-                                if(CollectionUtils.isNotEmptyCollection(categoryList)){
-                                    for(CategoryResponse category:categoryList){
-                                        BigDecimal ratio = this.categoryRatio(category.getCurrSalesAmount(), category.getPreSalesAmount());
-                                        category.setSalesAmountLinkRelaGrowthRate(ratio);
-                                        category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin(), category.getPreMargin()));
-                                        category.setRate(new BigDecimal(category.getCurrSalesAmount()).
-                                                divide(new BigDecimal(companySum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
-                                    }
-                                }
-                                companySum.setCategoryList(categoryList);
-                                companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount(), companySum.getPreSalesAmount()));
-                                companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin(), companySum.getPreMargin()));
-                                companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
-                                        divide(new BigDecimal(deptSum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
-                                companyList.add(companySum);
-                            }
-                        }
-                        deptSum.setCategoryList(companyList);
-                        deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount(), deptSum.getPreSalesAmount()));
-                        deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin(), deptSum.getPreMargin()));
-                        deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
-                                divide(new BigDecimal(sum.getCurrSalesAmount()),4, BigDecimal.ROUND_HALF_UP));
-                        deptList.add(deptSum);
-                    }
+                    deptSum = this.deptCategory(saleRequest);
+                    deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
+                            divide(new BigDecimal(sum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    deptList.add(deptSum);
                 }
-                sum.setCategoryList(deptList);
-                sum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(sum.getCurrSalesAmount(), sum.getPreSalesAmount()));
-                sum.setMarginLinkRelaGrowthRate(this.categoryRatio(sum.getCurrMargin(), sum.getPreMargin()));
-                sum.setRate(new BigDecimal(1));
             }
+            sum.setCategoryList(deptList);
+            sum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(sum.getCurrSalesAmount(), sum.getPreSalesAmount()));
+            sum.setMarginLinkRelaGrowthRate(this.categoryRatio(sum.getCurrMargin(), sum.getPreMargin()));
+            sum.setRate(new BigDecimal(1));
         }
         return sum;
     }
 
     private CategoryResponse deptCategory(SaleRequest saleRequest) {
         List<CompanyAndDeptResponse> companys;
-        List<CategoryResponse> deptList = Lists.newArrayList();
         List<CategoryResponse> companyList;
         List<CategoryResponse> categoryList;
         CategoryResponse deptSum;
@@ -505,8 +471,6 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             deptSum.setCategoryList(companyList);
             deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount(), deptSum.getPreSalesAmount()));
             deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin(), deptSum.getPreMargin()));
-            deptSum.setRate(new BigDecimal(1));
-            deptList.add(deptSum);
         }
         return deptSum;
     }
