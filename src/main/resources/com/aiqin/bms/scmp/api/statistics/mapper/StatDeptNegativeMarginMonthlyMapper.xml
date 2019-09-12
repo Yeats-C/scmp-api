@@ -35,6 +35,26 @@
     distribution_sales_amount_yearonyear, distribution_margin, pre_distribution_margin, 
     distribution_margin_yearonyear, create_time
   </sql>
+  <select id="negativeSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse">
+    select
+      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+      sum(ifnull(channel_sales_cost,0)) as channelSalesCost, sum(ifnull(channel_margin,0)) as channelMargin,
+      sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(distribution_margin,0)) as distributionMargin,
+      sum(ifnull(pre_channel_sales_amount,0)) as preChannelSalesAmount, sum(ifnull(pre_channel_margin,0)) as preChannelMargin,
+      sum(ifnull(pre_distribution_sales_amount,0)) as preDistributionSalesAmount, sum(ifnull(pre_distribution_margin,0)) as preDistributionMargin
+    from stat_dept_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+  </select>
+  <select id="negativeByDept" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+     product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_negative_margin_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
   <select id="negativeDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeDeptResponse">
     select
       product_sort_code as productSortCode, product_sort_name as productSortName,
