@@ -2137,7 +2137,7 @@
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
       <if test="categoryId != null and categoryId != ''">
-        and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
+        and ps.product_category_code like CONCAT('', #{categoryId,jdbcType=VARCHAR},"%")
       </if>
       <if test="categoryName != null and categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
@@ -2212,7 +2212,7 @@
         and ps.product_brand_name like CONCAT('', #{brandName,jdbcType=VARCHAR},"%")
       </if>
       <if test="categoryId != null and categoryId != ''">
-        and ps.product_category_code = #{categoryId,jdbcType=VARCHAR}
+        and ps.product_category_code like CONCAT('', #{categoryId,jdbcType=VARCHAR},"%")
       </if>
       <if test="categoryName != null and  categoryName != ''">
         and ps.product_category_name like CONCAT('', #{categoryName,jdbcType=VARCHAR},"%")
