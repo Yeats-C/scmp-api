@@ -10,5 +10,9 @@ public interface StatDeptNewProductMovingRateDao {
 
     List<NewProductMovingRateResponse> productMovingSum(ProductRequest request);
 
+    List<MovableResponse> deptList(ProductRequest request);
+
     List<MovableResponse> categoryList(ProductRequest request);
+
+    List<MovableResponse> channelList(ProductRequest request);
 }

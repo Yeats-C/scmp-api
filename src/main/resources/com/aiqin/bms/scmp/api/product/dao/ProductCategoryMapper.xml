@@ -292,4 +292,16 @@
     and category_name  = #{categoryName}
     and category_id != #{categoryId}
   </select>
+  <select id="selectByCategoryCodes" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_category
+    where company_code = #{companyCode}
+    and
+    category_status = 0
+    and category_id  in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

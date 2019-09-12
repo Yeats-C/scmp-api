@@ -130,36 +130,43 @@ public class CheckSkuUpdate {
         if (Objects.isNull(importVo.getProductCategoryName())) {
 //            error.add("品类不能为空");
         } else {
-            String[] split = importVo.getProductCategoryName().split("-");
-            if (split.length != 4) {
-                error.add("品类应为四级用\"-\"分割");
-            } else {
-                boolean flag = true;
-                ProductCategory current = null;
-                for (int i = split.length - 1; i >= 0; i--) {
-                    ProductCategory productCategory = categoryMap.get(split[i] + "," + (i + 1));
-                    if (Objects.isNull(productCategory)) {
-                        error.add("无对应名称为" + split[i] + "的品牌信息");
-                        flag = false;
-                        break;
-                    } else {
-                        if (split.length - 1 == i) {
-                            current = productCategory;
-                        } else {
-                            if (!productCategory.getCategoryId().equals(current.getParentId())) {
-                                error.add("品牌名为" + current.getCategoryName() + "的上级名称不为" + split[i]);
-                                flag = false;
-                                break;
-                            } else {
-                                current = productCategory;
-                            }
-                        }
-                    }
-                }
-                if (flag) {
-                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length - 1] + "," + 4).getCategoryId());
-                    productSkuDraft.setProductCategoryName(categoryMap.get(split[split.length - 1] + "," + 4).getCategoryName());
-                }
+//            String[] split = importVo.getProductCategoryName().split("-");
+//            if (split.length != 4) {
+//                error.add("品类应为四级用\"-\"分割");
+//            } else {
+//                boolean flag = true;
+//                ProductCategory current = null;
+//                for (int i = split.length - 1; i >= 0; i--) {
+//                    ProductCategory productCategory = categoryMap.get(split[i] + "," + (i + 1));
+//                    if (Objects.isNull(productCategory)) {
+//                        error.add("无对应名称为" + split[i] + "的品牌信息");
+//                        flag = false;
+//                        break;
+//                    } else {
+//                        if (split.length - 1 == i) {
+//                            current = productCategory;
+//                        } else {
+//                            if (!productCategory.getCategoryId().equals(current.getParentId())) {
+//                                error.add("品牌名为" + current.getCategoryName() + "的上级名称不为" + split[i]);
+//                                flag = false;
+//                                break;
+//                            } else {
+//                                current = productCategory;
+//                            }
+//                        }
+//                    }
+//                }
+//                if (flag) {
+//                    productSkuDraft.setProductCategoryCode(categoryMap.get(split[split.length - 1] + "," + 4).getCategoryId());
+//                    productSkuDraft.setProductCategoryName(categoryMap.get(split[split.length - 1] + "," + 4).getCategoryName());
+//                }
+//            }
+            ProductCategory productCategory = categoryMap.get(importVo.getProductCategoryName());
+            if (Objects.isNull(productCategory)) {
+                error.add("无对应编码为" + importVo.getProductCategoryName() + "的品类信息");
+            }else {
+                productSkuDraft.setProductCategoryCode(productCategory.getCategoryId());
+                productSkuDraft.setProductCategoryName(productCategory.getCategoryName());
             }
         }
 

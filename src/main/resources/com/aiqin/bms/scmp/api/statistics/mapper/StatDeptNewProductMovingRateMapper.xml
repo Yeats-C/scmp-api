@@ -28,4 +28,55 @@
     ini_stock_sku_num, ini_stock_sku_cost, mid_purchase_sku_num, mid_sales_sku_num, channel_sales_amount, 
     distributionsales_amount, new_pro_moving_sales_rate, create_time
   </sql>
+  <select id="productMovingSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.NewProductMovingRateResponse">
+    select
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+    sum(ifnull(ini_stock_sku_num,0)) as iniStockSkuNum, sum(ifnull(ini_stock_sku_cost,0)) as iniStockSkuCost,
+    sum(ifnull(mid_purchase_sku_num,0)) as midPurchaseSkuNum, sum(ifnull(mid_sales_sku_num,0)) as midSalesSkuNum,
+    sum(ifnull(channel_sales_amount,0)) as channelSalesAmount, sum(ifnull(distributionsales_amount,0)) as distributionsalesAmount
+    from stat_dept_new_product_moving_rate
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
+    <if test="lv1 != null">
+      and lv1 = #{lv1,jdbcType=VARCHAR}
+    </if>
+    <if test="priceChannelCode != null">
+      and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="deptList"  resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse">
+     select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_new_product_moving_rate
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
+  <select id="categoryList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse">
+    select
+      lv1, lv1_category_name as lv1CategoryName
+    from stat_dept_new_product_moving_rate
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by lv1
+    order by lv1
+  </select>
+  <select id="channelList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse">
+    select
+      lv1, lv1_category_name as lv1CategoryName, price_channel_code as priceChannelCode, price_channel_name as priceChannelName
+    from stat_dept_new_product_moving_rate
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    and lv1 = #{lv1,jdbcType=VARCHAR}
+    group by price_channel_code
+    order by price_channel_code
+  </select>
 </mapper>

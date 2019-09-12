@@ -83,4 +83,6 @@ public interface ProductSkuSupplyUnitService {
      * @date 2019/7/6 22:59
      */
     List<ProductSkuSupplyUnitRespVo> getApply(String skuCode, String applyCode);
+
+    List<ProductSkuSupplyUnitRespVo> getList(String skuCode);
 }

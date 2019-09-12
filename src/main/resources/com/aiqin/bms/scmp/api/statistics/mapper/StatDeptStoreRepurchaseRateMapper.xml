@@ -22,12 +22,12 @@
     stat_year, stat_month, product_sort_code, product_sort_name, province_code, province_name, sales_num, channel_sales_amount,
     distribution_sales_amount, shopping_frequency, repurchase_num, purchase_num, repurchase_rate, create_time
   </sql>
-  <select id="storeRepurchaseList" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate">
+  <select id="storeRepurchaseList" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStoreRepurchaseRate">
     select
     stat_year as statYear, stat_month as statMonth, product_sort_code as productSortCode, product_sort_name as productSortName,
-    province_code as provinceCode, province_name as provinceName, sales_num as salesNum, channel_sales_amount as channelSalesAmount,
-    distribution_sales_amount as distributionSalesAmount, shopping_frequency as shoppingFrequency, repurchase_rate as repurchaseRate,
-    create_time as createTime
+    province_code as provinceCode, province_name as provinceName, ifnull(sales_num,0) as salesNum,
+    ifnull(channel_sales_amount,0) as channelSalesAmount, ifnull(distribution_sales_amount,0) as distributionSalesAmount,
+    ifnull(shopping_frequency,0) as shoppingFrequency, repurchase_rate as repurchaseRate, create_time as createTime
     from stat_dept_store_repurchase_rate
     <where>
       stat_year = #{year,jdbcType=BIGINT}
@@ -36,9 +36,29 @@
       order by province_code
     </where>
   </select>
-  <select id="storeRepurchaseSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateSubtotalResponse">
+  <select id="storeRepurchaseSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse">
     select
-    product_sort_code as productSortCode, product_sort_name as productSortName,
+    sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
+    sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency,
+    sum(ifnull(repurchase_num,0)) as repurchaseNum, sum(ifnull(purchase_num,0)) as purchaseNum
+    from stat_dept_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+    </where>
+  </select>
+  <select id="storeRepurchaseBySort" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStoreRepurchaseRate">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_store_repurchase_rate
+    <where>
+      stat_year = #{year,jdbcType=BIGINT}
+      and stat_month = #{month,jdbcType=BIGINT}
+      group by product_sort_code
+    </where>
+  </select>
+  <select id="storeRepurchaseByDeptSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateSubtotalResponse">
+    select
     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(channel_sales_amount,0)) as channelSalesAmount,
     sum(ifnull(distribution_sales_amount,0)) as distributionSalesAmount, sum(ifnull(shopping_frequency,0)) as shoppingFrequency,
     sum(ifnull(repurchase_num,0)) as repurchaseNum, sum(ifnull(purchase_num,0)) as purchaseNum
