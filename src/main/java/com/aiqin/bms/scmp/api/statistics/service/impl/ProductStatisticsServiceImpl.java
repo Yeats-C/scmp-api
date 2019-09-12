@@ -40,7 +40,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
         Long month = Long.valueOf(request.getDate().substring(5));
         request.setYear(year);
         request.setMonth(month);
-        ProductMovableResponse response = new ProductMovableResponse();
+        ProductMovableResponse response;
         if(request.getType().equals(Global.COMPANY)){
             // 计算新品动销率统计 - 公司
             response = this.companyMovable(request);
@@ -53,7 +53,31 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
 
     private ProductMovableResponse companyMovable(ProductRequest request){
         ProductMovableResponse sumResponse = new ProductMovableResponse();
-
+        List<ProductMovableResponse> deptSum = Lists.newArrayList();
+        List<NewProductMovingRateResponse> sumList;
+        List<MovableResponse> depts;
+        List<NewProductMovingRateResponse> deptList;
+        ProductMovableResponse deptResponse;
+        sumList = statComNewProductMovingRateDao.productMovingSum(request);
+        if(CollectionUtils.isNotEmpty(sumList)){
+            sumResponse = this.movablePin(sumList);
+            depts = statComNewProductMovingRateDao.deptList(request);
+            if(CollectionUtils.isNotEmpty(depts)){
+                for(MovableResponse dept:depts){
+                    request.setProductSortCode(dept.getProductSortCode());
+                    request.setLv1(null);
+                    request.setPriceChannelCode(null);
+                    deptList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                    if(CollectionUtils.isNotEmpty(deptList)){
+                        deptResponse = this.deptMovable(request);
+                        deptResponse.setProductSortCode(dept.getProductSortCode());
+                        deptResponse.setProductSortName(dept.getProductSortName());
+                        deptSum.add(deptResponse);
+                    }
+                }
+                sumResponse.setSubsetList(deptSum);
+            }
+        }
         return sumResponse;
     }
 
