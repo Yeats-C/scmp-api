@@ -60,5 +60,6 @@ public class PriceAndWarehouseMap {
         warehouse.put("华东仓",new SaveSkuConfigReqVo("1083","华东仓"));
         warehouse.put("华南仓",new SaveSkuConfigReqVo("1084","华南仓"));
         warehouse.put("华中仓",new SaveSkuConfigReqVo("1085","华中仓"));
+
     }
 }
