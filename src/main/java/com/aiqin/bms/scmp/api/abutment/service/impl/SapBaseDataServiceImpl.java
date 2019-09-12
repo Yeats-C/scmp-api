@@ -1,11 +1,15 @@
 package com.aiqin.bms.scmp.api.abutment.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpOrderEnum;
+import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpStorageChangeEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
@@ -20,6 +24,7 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +102,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private OutboundBatchDao outboundBatchDao;
     @Resource
     private ProductSkuDao productSkuDao;
-
+    @Resource
+    private AllocationMapper allocationMapper;
     /**
      * 商品数据同步
      */
@@ -120,11 +126,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     public void stockSynchronization(SapOrderRequest sapOrderRequest) {
 
         List<Storage> storageList = Lists.newArrayList();
-        this.inboundToStock(storageList, sapOrderRequest);
-        sapStorageAbutment(storageList,1);
-
-//        this.outboundToStock(storageList, sapOrderRequest);
-//        sapStorageAbutment(storageList,2);
+//        this.inboundToStock(storageList, sapOrderRequest);
+//        sapStorageAbutment(storageList,1);
+//        storageList.clear();
+        this.outboundToStock(storageList, sapOrderRequest);
+        sapStorageAbutment(storageList,2);
     }
     private void sapStorageAbutment(List<Storage> storageList, Integer type) {
         LOGGER.info("调用结算sap出入库单据参数:{} ", JsonUtil.toJson(storageList));
@@ -162,83 +168,114 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      *
      * @param sapOrderRequest
      */
-    private void inboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
+    private void  inboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Inbound> inboundList = inboundDao.listForSap(sapOrderRequest);
-        List<String> orderCodes = inboundList.stream().map(Inbound::getInboundOderCode).collect(Collectors.toList());
-        sapOrderRequest.setOrderCodeList(orderCodes);
-        List<InboundProduct> inboundProducts = inboundProductDao.listDetailForSap(sapOrderRequest);
-        List<InboundBatch> batchList = inboundBatchDao.listByOrderCode(sapOrderRequest);
-        List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
-        List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-        Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
-        StorageDetail storageDetail;
-        List<StorageDetail> storageDetailList;
-        InboundProduct inboundProduct;
-        Map<String, InboundProduct> inboundProductMap = inboundProducts.stream().collect(Collectors.toMap(inboundProduct1 -> inboundProduct1.getInboundOderCode() + inboundProduct1.getSkuCode(), Function.identity()));
-        Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
-        for (InboundBatch batch : batchList) {
-            inboundProduct = inboundProductMap.get(batch.getInboundOderCode() + batch.getSkuCode());
-            storageDetail = new StorageDetail();
-            //供应商
-            storageDetail.setSupplierCode(batch.getSupplierCode());
-            storageDetail.setSupplierName(batch.getSupplierName());
-            storageDetail.setSkuCode(inboundProduct.getSkuCode());
-            storageDetail.setSkuName(inboundProduct.getSkuName());
-            storageDetail.setSkuDesc(StringConvertUtil.productDesc(inboundProduct.getColorName(), inboundProduct.getNorms(), inboundProduct.getModel()));
-            storageDetail.setUnit(inboundProduct.getUnitName());
-            //固定为1
-            storageDetail.setUnitCount(1);
-            storageDetail.setTradeExponent(1);
-            storageDetail.setTaxRate(inboundProduct.getTax().intValue());
-            storageDetail.setExpectCount(inboundProduct.getPreInboundNum().intValue());
-            storageDetail.setExpectMinUnitCount(inboundProduct.getPreInboundNum().intValue());
-            storageDetail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().intValue());
-            storageDetail.setSingleCount(inboundProduct.getPraInboundNum().intValue());
-            storageDetail.setMinUnitCount(inboundProduct.getPraInboundNum().intValue());
-            storageDetail.setTaxRate(inboundProduct.getPraTaxPurchaseAmount().intValue());
-            //厂商指导价
-            storageDetail.setMinUnitCount(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).intValue() : 0);
-            if (storageDetailMap.containsKey(inboundProduct.getInboundOderCode())) {
-                storageDetailList = storageDetailMap.get(inboundProduct.getInboundOderCode());
-                storageDetailList.add(storageDetail);
-                storageDetailMap.put(inboundProduct.getInboundOderCode(), storageDetailList);
-            } else {
-                storageDetailMap.put(inboundProduct.getInboundOderCode(), Collections.singletonList(storageDetail));
+        if(CollectionUtils.isNotEmpty(inboundList)) {
+            Map<String, Inbound> inboundMap = inboundList.stream().collect(Collectors.toMap(Inbound::getInboundOderCode, Function.identity()));
+            List<String> orderCodes = inboundList.stream().map(Inbound::getInboundOderCode).collect(Collectors.toList());
+            List<String> inboundCodes = inboundList.stream().filter(inbound -> inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode()) || inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())).map(Inbound::getInboundOderCode).collect(Collectors.toList());
+            sapOrderRequest.setOrderCodeList(orderCodes);
+            //调拨出入库单据使用
+            Map<String, Allocation> allocationMap = Maps.newHashMap();
+            if (CollectionUtils.isNotEmpty(inboundCodes)) {
+                List<Allocation> allocations = allocationMapper.listByInboundCodes(inboundCodes);
+                allocationMap = allocations.stream().collect(Collectors.toMap(Allocation::getInboundOderCode, Function.identity()));
+            }
+            List<InboundProduct> inboundProducts = inboundProductDao.listDetailForSap(sapOrderRequest);
+            List<InboundBatch> batchList = inboundBatchDao.listByOrderCode(sapOrderRequest);
+            List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
+            List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            StorageDetail storageDetail;
+            List<StorageDetail> storageDetailList;
+            InboundProduct inboundProduct;
+            Inbound inbounds;
+            Map<String, InboundProduct> inboundProductMap = inboundProducts.stream().collect(Collectors.toMap(inboundProduct1 -> inboundProduct1.getInboundOderCode() + inboundProduct1.getSkuCode(), Function.identity()));
+            Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
+            for (InboundBatch batch : batchList) {
+                inboundProduct = inboundProductMap.get(batch.getInboundOderCode() + batch.getSkuCode());
+                storageDetail = new StorageDetail();
+                //供应商
+                storageDetail.setSupplierCode(batch.getSupplierCode());
+                storageDetail.setSupplierName(batch.getSupplierName());
+                storageDetail.setSkuCode(inboundProduct.getSkuCode());
+                storageDetail.setSkuName(inboundProduct.getSkuName());
+                storageDetail.setSkuDesc(StringConvertUtil.productDesc(inboundProduct.getColorName(), inboundProduct.getNorms(), inboundProduct.getModel()));
+                storageDetail.setUnit(inboundProduct.getUnitName());
+                //固定为1
+                storageDetail.setUnitCount(1);
+                storageDetail.setTradeExponent(1);
+                storageDetail.setTaxRate(inboundProduct.getTax().intValue());
+                storageDetail.setExpectCount(inboundProduct.getPreInboundNum().intValue());
+                storageDetail.setExpectMinUnitCount(inboundProduct.getPreInboundNum().intValue());
+                storageDetail.setSingleCount(inboundProduct.getPraInboundNum().intValue());
+                storageDetail.setMinUnitCount(inboundProduct.getPraInboundNum().intValue());
+                //退货和采购才有金额
+                inbounds = inboundMap.get(batch.getInboundOderCode());
+                if ((null != inbounds) && (inbounds.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || inbounds.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))) {
+                    storageDetail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().intValue());
+                    storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
+                }
+                //厂商指导价
+                storageDetail.setMinUnitCount(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).intValue() : 0);
+                if (storageDetailMap.containsKey(inboundProduct.getInboundOderCode())) {
+                    storageDetailList = storageDetailMap.get(inboundProduct.getInboundOderCode());
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(inboundProduct.getInboundOderCode(), storageDetailList);
+                } else {
+                    storageDetailList = Lists.newArrayList();
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(inboundProduct.getInboundOderCode(), storageDetailList);
+                }
+            }
+            InnerValue innerValue;
+            InnerValue innerValueType;
+            Allocation allocation;
+            for (Inbound inbound : inboundList) {
+                storage = new Storage();
+                innerValue = StringConvertUtil.inboundTypeConvert(inbound.getInboundTypeCode());
+                storage.setOrderId(String.format("%s-%s", inbound.getInboundOderCode(), innerValue.getValue()));
+                storage.setSubOrderType(innerValue.getValue());
+                storage.setSubOrderTypeName(innerValue.getName());
+                storage.setOrderCode(inbound.getInboundOderCode());
+                storage.setOrderCount(inbound.getPraInboundNum().intValue());
+                storage.setDiscountPrice("0");
+                storage.setOptTime(inbound.getInboundTime());
+                storage.setCreateTime(inbound.getCreateTime());
+                storage.setCreateByName(inbound.getCreateBy());
+                //采购和退货订单才传来源类型 才有金额
+                if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
+                    innerValueType = StringConvertUtil.inboundSourceTypeConvert(inbound.getInboundTypeCode());
+                    storage.setSourceOrderId(String.format("%s-%s", inbound.getSourceOderCode(), innerValueType.getValue()));
+                    storage.setSourceOrderCode(inbound.getSourceOderCode());
+                    storage.setSourceOrderType(innerValueType.getValue());
+                    storage.setSourceOrderTypeName(innerValueType.getValue());
+                    storage.setAmount(inbound.getPraTaxAmount().toString());
+                    storage.setTransportCode(inbound.getLogisticsCenterCode());
+                    storage.setTransportName(inbound.getLogisticsCenterName());
+                    storage.setStorageCode(inbound.getWarehouseCode());
+                    storage.setStorageName(inbound.getWarehouseName());
+                } else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode()) || inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
+                    // 调拨单据 传调出调入仓库
+                    allocation = allocationMap.get(inbound.getInboundOderCode());
+                    if (null != allocation) {
+                        //调出
+                        storage.setTransportCode(allocation.getCallOutLogisticsCenterCode());
+                        storage.setTransportName(allocation.getCallOutLogisticsCenterName());
+                        storage.setStorageCode(allocation.getCallOutWarehouseCode());
+                        storage.setStorageName(allocation.getCallOutWarehouseName());
+                        //调入
+                        storage.setTransportCode1(allocation.getCallInLogisticsCenterCode());
+                        storage.setTransportName1(allocation.getCallInLogisticsCenterName());
+                        storage.setStorageName1(allocation.getCallInWarehouseName());
+                        storage.setStorageCode1(allocation.getCallInWarehouseCode());
+                    }
+                }
+                storage.setDetails(storageDetailMap.get(inbound.getInboundOderCode()));
+                storageList.add(storage);
             }
         }
-        InnerValue innerValue;
-        InnerValue innerValueType;
-        for (Inbound inbound : inboundList) {
-            storage = new Storage();
-            innerValue = StringConvertUtil.inboundTypeConvert(inbound.getInboundTypeCode());
-            storage.setOrderId(String.format("%s-%s", inbound.getInboundOderCode(), innerValue.getName()));
-            storage.setSubOrderType(innerValue.getValue());
-            storage.setSubOrderTypeName(innerValue.getName());
-            //采购和退货订单才传来源类型
-            if (inbound.getInboundTypeCode().equals(3) || inbound.getInboundTypeCode().equals(1)) {
-                innerValueType = StringConvertUtil.inboundSourceTypeConvert(inbound.getInboundTypeCode());
-                storage.setSourceOrderId(String.format("%s-%s", inbound.getSourceOderCode(), innerValueType.getName()));
-                storage.setSourceOrderCode(inbound.getSourceOderCode());
-                storage.setSourceOrderType(innerValueType.getValue());
-                storage.setSourceOrderTypeName(innerValueType.getValue());
-            }
-            storage.setOrderCode(inbound.getInboundOderCode());
-            storage.setTransportCode(inbound.getLogisticsCenterCode());
-            storage.setTransportName(inbound.getLogisticsCenterName());
-            storage.setStorageCode(inbound.getWarehouseCode());
-            storage.setStorageName(inbound.getWarehouseName());
-
-            storage.setOrderCount(inbound.getPraInboundNum().intValue());
-            storage.setAmount(inbound.getPraTaxAmount().toString());
-            storage.setDiscountPrice("0");
-            storage.setOptTime(inbound.getInboundTime());
-            storage.setCreateTime(inbound.getCreateTime());
-            storage.setCreateByName(inbound.getCreateBy());
-            storage.setDetails(storageDetailMap.get(inbound.getInboundOderCode()));
-            storageList.add(storage);
-        }
-
     }
 
     /**
@@ -249,84 +286,129 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private void outboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Outbound> outboundList = outboundDao.listForSap(sapOrderRequest);
-        List<String> orderCodes = outboundList.stream().map(Outbound::getOutboundOderCode).collect(Collectors.toList());
-        sapOrderRequest.setOrderCodeList(orderCodes);
-        List<OutboundProduct> outboundProducts = outboundProductDao.listDetailForSap(sapOrderRequest);
-        List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
-        List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-        Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
-        StorageDetail storageDetail;
-        List<StorageDetail> storageDetailList;
-        Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
-        for (OutboundProduct outboundProduct : outboundProducts) {
-            storageDetail = new StorageDetail();
-            storageDetail.setSkuCode(outboundProduct.getSkuCode());
-            storageDetail.setSkuName(outboundProduct.getSkuName());
-            storageDetail.setSkuDesc(StringConvertUtil.productDesc(outboundProduct.getColorName(), outboundProduct.getNorms(), outboundProduct.getModel()));
-            storageDetail.setUnit(outboundProduct.getUnitName());
-            //固定为1
-            storageDetail.setUnitCount(1);
-            storageDetail.setTradeExponent(1);
-            storageDetail.setTaxRate(outboundProduct.getTax().intValue());
-            storageDetail.setExpectCount(outboundProduct.getPreOutboundNum().intValue());
-            storageDetail.setExpectMinUnitCount(outboundProduct.getPreOutboundNum().intValue());
-            storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
-            storageDetail.setSingleCount(outboundProduct.getPraOutboundNum().intValue());
-            storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
-            storageDetail.setTaxRate(outboundProduct.getPraTaxPurchaseAmount().intValue());
-            //厂商指导价
-            storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).intValue() : 0);
-            if (storageDetailMap.containsKey(outboundProduct.getOutboundOderCode())) {
-                storageDetailList = storageDetailMap.get(outboundProduct.getOutboundOderCode());
-                storageDetailList.add(storageDetail);
-                storageDetailMap.put(outboundProduct.getOutboundOderCode(), storageDetailList);
-            } else {
-                storageDetailMap.put(outboundProduct.getOutboundOderCode(), Collections.singletonList(storageDetail));
+        if(CollectionUtils.isNotEmpty(outboundList)){
+            Map<String, Outbound> outboundMap = outboundList.stream().collect(Collectors.toMap(Outbound::getOutboundOderCode,Function.identity()));
+            List<String> orderCodes = outboundList.stream().map(Outbound::getOutboundOderCode).collect(Collectors.toList());
+            List<String> outBoundCodes = outboundList.stream().filter(outbound -> outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())||outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())).map(Outbound::getOutboundOderCode).collect(Collectors.toList());
+            sapOrderRequest.setOrderCodeList(orderCodes);
+            //调拨出入库单据使用出库和入库的信息  其他出入库单据统一传第一个中
+            Map<String,Allocation> allocationMap = Maps.newHashMap();
+            if(CollectionUtils.isNotEmpty(outBoundCodes)){
+                List<Allocation> allocations =  allocationMapper.listByOutboundCodes(outBoundCodes);
+                allocationMap  = allocations.stream().collect(Collectors.toMap(Allocation::getOutboundOderCode,Function.identity()));
             }
-        }
-        InnerValue innerValue;
-        InnerValue innerValueType;
-        //销售单的id
-        List<String> orderIds = outboundList.stream().filter((Outbound) -> Outbound.getOutboundTypeCode().equals(3)).map(Outbound::getSourceOderCode).collect(Collectors.toList());
-        List<OrderInfo> orderInfoList = orderInfoMapper.listByIds(orderIds);
-        Map<String, OrderInfo> orderInfoMap = orderInfoList.stream().collect(Collectors.toMap(OrderInfo::getOrderCode, Function.identity()));
-        OrderInfo orderInfo;
-        for (Outbound outbound : outboundList) {
-            storage = new Storage();
-            innerValue = StringConvertUtil.outboundTypeConvert(outbound.getOutboundTypeCode());
-            storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getName()));
-            storage.setSubOrderType(innerValue.getValue());
-            storage.setSubOrderTypeName(innerValue.getName());
-            //订单/退供才传来源类型
-            if (outbound.getOutboundTypeCode().equals(1)) {
-                storage.setSourceOrderId(String.format("%s-%d", outbound.getSourceOderCode(), 5));
-                storage.setSourceOrderCode(outbound.getSourceOderCode());
-                storage.setSourceOrderType("5");
-                storage.setSourceOrderTypeName("退供");
+            List<OutboundBatch> batchList = outboundBatchDao.listByOrderCode(sapOrderRequest);
+            List<OutboundProduct> outboundProducts = outboundProductDao.listDetailForSap(sapOrderRequest);
+            Map<String, OutboundProduct> outboundProductMap = outboundProducts.stream().collect(Collectors.toMap(outboundProduct -> outboundProduct.getOutboundOderCode() + outboundProduct.getSkuCode(), Function.identity()));
+            List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
+            List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            StorageDetail storageDetail;
+            List<StorageDetail> storageDetailList;
+            Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
+            Outbound outbounds;
+            OutboundProduct outboundProduct;
+            for (OutboundBatch batch : batchList) {
+                outboundProduct = outboundProductMap.get(batch.getOutboundOderCode()+batch.getSkuCode());
+                if(outboundProduct==null){
+                    throw new GroundRuntimeException(String.format("未查询到商品信息!,sku_code:%s",batch.getSkuCode()));
+                }
+                storageDetail = new StorageDetail();
+                storageDetail.setSkuCode(outboundProduct.getSkuCode());
+                storageDetail.setSkuName(outboundProduct.getSkuName());
+                storageDetail.setSkuDesc(StringConvertUtil.productDesc(outboundProduct.getColorName(), outboundProduct.getNorms(), outboundProduct.getModel()));
+                storageDetail.setUnit(outboundProduct.getUnitName());
+                storageDetail.setSupplierCode(batch.getSupplierCode());
+                storageDetail.setSupplierName(batch.getSupplierName());
+                //固定为1
+                storageDetail.setUnitCount(1);
+                storageDetail.setTradeExponent(1);
+                storageDetail.setTaxRate(outboundProduct.getTax().intValue());
+                storageDetail.setExpectCount(outboundProduct.getPreOutboundNum().intValue());
+                storageDetail.setExpectMinUnitCount(outboundProduct.getPreOutboundNum().intValue());
+                storageDetail.setSingleCount(outboundProduct.getPraOutboundNum().intValue());
+                storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
+                //销售和退供才有金额
+                outbounds = outboundMap.get(outboundProduct.getOutboundOderCode());
+                if((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))){
+                    storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
+                    storageDetail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().intValue());
+                }
+                //厂商指导价
+                storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).intValue() : 0);
+                if (storageDetailMap.containsKey(outboundProduct.getOutboundOderCode())) {
+                    storageDetailList = storageDetailMap.get(outboundProduct.getOutboundOderCode());
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(outboundProduct.getOutboundOderCode(), storageDetailList);
+                } else {
+                    storageDetailList = Lists.newArrayList();
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(outboundProduct.getOutboundOderCode(), storageDetailList);
+                }
             }
-            if (outbound.getOutboundTypeCode().equals(3)) {
-                orderInfo = orderInfoMap.get(outbound.getSourceOderCode());
-                innerValueType = StringConvertUtil.orderInfoConvert(Integer.valueOf(orderInfo.getOrderType()));
-                storage.setSourceOrderId(String.format("%s-%s", outbound.getSourceOderCode(), innerValueType.getName()));
-                storage.setSourceOrderCode(outbound.getSourceOderCode());
-                storage.setSourceOrderType(innerValueType.getValue());
-                storage.setSourceOrderTypeName(innerValueType.getValue());
+            InnerValue innerValue;
+            InnerValue innerValueType;
+            Allocation allocation;
+            //销售单的id  出库单中没有上级销售单据的具体类型  所以筛选重新查询
+            List<String> orderIds = outboundList.stream().filter((Outbound) -> Outbound.getOutboundTypeCode().equals((byte)3)).map(Outbound::getSourceOderCode).collect(Collectors.toList());
+            Map<String, OrderInfo> orderInfoMap = Maps.newHashMap();
+            if(CollectionUtils.isNotEmpty(orderIds)){
+                List<OrderInfo> orderInfoList = orderInfoMapper.listByIds(orderIds);
+                orderInfoMap = orderInfoList.stream().collect(Collectors.toMap(OrderInfo::getOrderCode, Function.identity()));
             }
-            storage.setOrderCode(outbound.getOutboundOderCode());
-            storage.setTransportCode(outbound.getLogisticsCenterCode());
-            storage.setTransportName(outbound.getLogisticsCenterName());
-            storage.setStorageCode(outbound.getWarehouseCode());
-            storage.setStorageName(outbound.getWarehouseName());
-//            storage.setSupplierCode(outbound.getSupplierCode());
-//            storage.setSupplierName(outbound.getSupplierName());
-            storage.setOrderCount(outbound.getPraOutboundNum().intValue());
-            storage.setAmount(outbound.getPraTaxAmount().toString());
-            storage.setDiscountPrice("0");
-            storage.setOptTime(outbound.getOutboundTime());
-            storage.setCreateTime(outbound.getCreateTime());
-            storage.setCreateByName(outbound.getCreateBy());
-            storage.setDetails(storageDetailMap.get(outbound.getOutboundOderCode()));
-            storageList.add(storage);
+            OrderInfo orderInfo;
+            Integer type;
+            for (Outbound outbound : outboundList) {
+                storage = new Storage();
+                innerValue = StringConvertUtil.outboundTypeConvert(outbound.getOutboundTypeCode());
+                storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getValue()));
+                storage.setSubOrderType(innerValue.getValue());
+                storage.setSubOrderTypeName(innerValue.getName());
+                //销售订单/退供才传来源类型
+                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
+                    if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) ){
+                        orderInfo = orderInfoMap.get(outbound.getSourceOderCode());
+                        type = orderInfo.getOrderTypeCode();
+                        innerValueType = StringConvertUtil.outboundSourceTypeConvert(type);
+                        storage.setSourceOrderType(innerValueType.getValue());
+                        storage.setSourceOrderTypeName(innerValueType.getName());
+                    }else{
+                        storage.setSourceOrderType(ScmpStorageChangeEnum.getByCode("5").getCode());
+                        storage.setSourceOrderTypeName(ScmpStorageChangeEnum.getByCode("5").getDesc());
+                    }
+                    storage.setSourceOrderId(String.format("%s-%d", outbound.getSourceOderCode(), 5));
+                    storage.setSourceOrderCode(outbound.getSourceOderCode());
+                    storage.setAmount(outbound.getPraTaxAmount().toString());
+                    storage.setTransportCode(outbound.getLogisticsCenterCode());
+                    storage.setTransportName(outbound.getLogisticsCenterName());
+                    storage.setStorageCode(outbound.getWarehouseCode());
+                    storage.setStorageName(outbound.getWarehouseName());
+                }
+                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())||outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())) {
+                    // 调拨单据 传调出调入仓库
+                    allocation = allocationMap.get(outbound.getOutboundOderCode());
+                    if(null != allocation){
+                        //调出
+                        storage.setTransportCode(allocation.getCallOutLogisticsCenterCode());
+                        storage.setStorageCode(allocation.getCallOutWarehouseCode());
+                        storage.setTransportName(allocation.getCallOutLogisticsCenterName());
+                        storage.setStorageName(allocation.getCallOutWarehouseName());
+                        //调入
+                        storage.setTransportCode1(allocation.getCallInLogisticsCenterCode());
+                        storage.setStorageCode1(allocation.getCallInWarehouseCode());
+                        storage.setTransportName1(allocation.getCallInLogisticsCenterName());
+                        storage.setStorageName1(allocation.getCallInWarehouseName());
+                    }
+                }
+                storage.setOrderCode(outbound.getOutboundOderCode());
+                storage.setOrderCount(outbound.getPraOutboundNum().intValue());
+                storage.setDiscountPrice("0");
+                storage.setOptTime(outbound.getOutboundTime());
+                storage.setCreateTime(outbound.getCreateTime());
+                storage.setCreateByName(outbound.getCreateBy());
+                storage.setDetails(storageDetailMap.get(outbound.getOutboundOderCode()));
+                storageList.add(storage);
+            }
         }
     }
 
@@ -356,6 +438,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         sapOrderAbutment(orderList, 2);
     }
 
+    /**
+     * sap订单对接
+     * @param orderList
+     * @param type
+     */
     private void sapOrderAbutment(List<Order> orderList, Integer type) {
         LOGGER.info("调用结算sap销售单据参数:{} ", JsonUtil.toJson(orderList));
         LOGGER.info("type:{}", type);

@@ -1443,4 +1443,15 @@ update order_info
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <select id="listByIds" resultMap="BaseResultMap">
+        select
+          <include refid="Base_Column_List" />
+        from
+          order_info
+        where
+        order_code in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

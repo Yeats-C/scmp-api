@@ -109,4 +109,8 @@ public interface AllocationMapper {
     List<QueryScrapResVo> getScrapList(QueryScrapReqVo vo);
 
     AllocationDTO selectById(Long id);
+
+    List<Allocation> listByInboundCodes(List<String> list);
+
+    List<Allocation> listByOutboundCodes(List<String> list);
 }

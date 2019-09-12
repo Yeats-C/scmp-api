@@ -375,4 +375,14 @@
     where line_num = #{linenum,jdbcType=BIGINT}
     and  outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </update>
+  <select id="listByOrderCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    outbound_batch
+    where outbound_oder_code in
+    <foreach collection="orderCodeList"  item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

@@ -84,7 +84,7 @@ public class StringConvertUtil {
         return innerValue;
     }
 
-    /**
+    /** 入库来源单据类型
      * @param type
      * @return
      */
@@ -99,6 +99,31 @@ public class StringConvertUtil {
             case 3:
                 innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("25")).getDesc());
                 innerValue.setValue("25");
+                break;
+            default:
+                throw new GroundRuntimeException("未查询到对应的类型");
+        }
+        return innerValue;
+    }
+    /** 出库来源单据类型
+     * @param type
+     * @return
+     */
+    public static InnerValue outboundSourceTypeConvert(Integer type) {
+        //OutboundTypeEnum 对应类型 订单类型 1直送 2配送 3辅采直送
+        InnerValue innerValue = new InnerValue();
+        switch (type) {
+            case 1:
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("15")).getDesc());
+                innerValue.setValue("15");
+                break;
+            case 2:
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("10")).getDesc());
+                innerValue.setValue("10");
+                break;
+            case 3:
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("20")).getDesc());
+                innerValue.setValue("20");
                 break;
             default:
                 throw new GroundRuntimeException("未查询到对应的类型");
