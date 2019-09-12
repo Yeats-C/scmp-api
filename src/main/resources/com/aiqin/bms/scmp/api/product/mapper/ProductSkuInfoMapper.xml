@@ -71,6 +71,7 @@
     <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
     <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
   </resultMap>
   <sql id="Base_Column_List">
     id, sku_code, sku_name, sku_abbreviation, product_code, product_name, product_brand_code,
@@ -85,7 +86,7 @@
     company_code, company_name, apply_code, apply_status, auditor_by, auditor_time, del_flag,
     create_time, create_by, update_time, update_by, spec, unit_name, unit_code, box_gauge,
     point, spu_code, bar_code, logo, images, itro_images, zero_removal_coefficient, use_time,
-    unique_code, inventory_model, inventory_allocation, price_model
+    unique_code, inventory_model, inventory_allocation, price_model,product_desc
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -162,24 +163,24 @@
        a.management_style_name                    managementStyleName,
        e.sales_code                               salesCode,
        f.zero_removal_coefficient                 zeroRemovalCoefficient,
-       g.output_tax_rate                          outputTaxRate,
-       g.Input_tax_rate                           inputTaxRate,
+       ROUND(g.output_tax_rate/100,2)             outputTaxRate,
+       ROUND(g.Input_tax_rate/100,2)              inputTaxRate,
        g.settlement_method_name                   settlementMethodName,
        a.procurement_section_name                 procurementSectionName,
        a.product_sort_name                        productSortName,
        g.Integral_coefficient                     integralCoefficient,
-       a.manufacturer_guide_price                 manufacturerGuidePrice,
-       h.price_tax                                salePrice,
-       i.price_tax                                memberPrice,
+       ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
+       ROUND(h.price_tax/100,2)                   salePrice,
+       ROUND(i.price_tax/100,2)                   memberPrice,
        j.categories_supply_channels_name          categoriesSupplyChannelsName,
-       j.tax_included_price                       basePrice,
-       i2.price_tax                               addPoints2,
-       i3.price_tax                               addPoints3,
-       i4.price_tax                               addPoints4,
-       i5.price_tax                               addPoints5,
-       i6.price_tax                               addPoints6,
-       i7.price_tax                               addPoints7,
-       i8.price_tax                               addPoints8,
+       ROUND(j.tax_included_price/100,2)                       basePrice,
+       ROUND(((j.tax_included_price-i2.price_tax)/j.tax_included_price)*100,4)                               addPoints2,
+       ROUND(((j.tax_included_price-i3.price_tax)/j.tax_included_price)*100,4)                               addPoints3,
+       ROUND(((j.tax_included_price-i4.price_tax)/j.tax_included_price)*100,4)                               addPoints4,
+       ROUND(((j.tax_included_price-i5.price_tax)/j.tax_included_price)*100,4)                               addPoints5,
+       ROUND(((j.tax_included_price-i6.price_tax)/j.tax_included_price)*100,4)                               addPoints6,
+       ROUND(((j.tax_included_price-i7.price_tax)/j.tax_included_price)*100,4)                               addPoints7,
+       ROUND(((j.tax_included_price-i8.price_tax)/j.tax_included_price)*100,4)                               addPoints8,
        k.manufacturer_name                        manufacturerName,
        k.factory_product_number                   factoryProductNumber,
        k.address                                  address,
@@ -198,14 +199,14 @@
        e.small_unit                               saleUnit,
        e.sales_code                               salesCode2,
        e.base_product_content                     saleBaseProductContent,
-       d.box_length                               saleBoxLength,
-       d.box_width                                saleBoxWidth,
-       d.box_height                               saleBoxHeight,
+       ROUND(d.box_length/100,2)                  saleBoxLength,
+       ROUND(d.box_width/100,2)                   saleBoxWidth,
+       ROUND(d.box_height/100,2)                  saleBoxHeight,
        j.supply_unit_code                         supplyUnitCode,
        j.supply_unit_name                         supplyUnitName,
-       j.tax_included_price                       taxIncludedPrice,
-       j.joint_franchise_rate                     jointFranchiseRate,
-       j.point                                    point,
+       ROUND(j.tax_included_price/100,2)                  taxIncludedPrice,
+       ROUND(j.joint_franchise_rate/100,2)                     jointFranchiseRate,
+       ROUND(j.point/100,2)                                    point,
        a.sku_status                               skuStatus,
        a.remark                                   remark,
        a.warehouse_type_name                      warehouseTypeName,
@@ -310,7 +311,7 @@ from product_sku a
       point, spu_code, bar_code,
       logo, images, itro_images,
       zero_removal_coefficient, use_time, unique_code,
-      inventory_model, inventory_allocation, price_model
+      inventory_model, inventory_allocation, price_model,product_desc
       )
     values (#{id,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR},
       #{skuAbbreviation,jdbcType=VARCHAR}, #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
@@ -336,7 +337,7 @@ from product_sku a
       #{point,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, #{barCode,jdbcType=VARCHAR},
       #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR},
       #{zeroRemovalCoefficient,jdbcType=BIGINT}, #{useTime,jdbcType=INTEGER}, #{uniqueCode,jdbcType=TINYINT},
-      #{inventoryModel,jdbcType=TINYINT}, #{inventoryAllocation,jdbcType=TINYINT}, #{priceModel,jdbcType=TINYINT}
+      #{inventoryModel,jdbcType=TINYINT}, #{inventoryAllocation,jdbcType=TINYINT}, #{priceModel,jdbcType=TINYINT}, #{productDesc,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -365,7 +366,7 @@ from product_sku a
       point, spu_code, bar_code,
       logo, images, itro_images,
       zero_removal_coefficient, use_time, unique_code,
-      inventory_model, inventory_allocation, price_model
+      inventory_model, inventory_allocation, price_model,product_desc
       )
     values
 
@@ -394,7 +395,7 @@ from product_sku a
       #{item.point,jdbcType=VARCHAR}, #{item.spuCode,jdbcType=VARCHAR}, #{item.barCode,jdbcType=VARCHAR},
       #{item.logo,jdbcType=VARCHAR}, #{item.images,jdbcType=VARCHAR}, #{item.itroImages,jdbcType=VARCHAR},
       #{item.zeroRemovalCoefficient,jdbcType=BIGINT}, #{item.useTime,jdbcType=INTEGER}, #{item.uniqueCode,jdbcType=TINYINT},
-      #{item.inventoryModel,jdbcType=TINYINT}, #{item.inventoryAllocation,jdbcType=TINYINT}, #{item.priceModel,jdbcType=TINYINT}
+      #{item.inventoryModel,jdbcType=TINYINT}, #{item.inventoryAllocation,jdbcType=TINYINT}, #{item.priceModel,jdbcType=TINYINT}, #{item.productDesc,jdbcType=VARCHAR}
       )
     </foreach>
 
@@ -609,6 +610,9 @@ from product_sku a
       <if test="priceModel != null">
         price_model,
       </if>
+     <if test="productDesc != null">
+        product_desc,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -817,6 +821,9 @@ from product_sku a
       </if>
       <if test="priceModel != null">
         #{priceModel,jdbcType=TINYINT},
+      </if>
+        <if test="productDesc != null">
+        #{productDesc,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -1027,6 +1034,9 @@ from product_sku a
       <if test="priceModel != null">
         price_model = #{priceModel,jdbcType=TINYINT},
       </if>
+        <if test="productDesc != null">
+            product_desc = #{productDesc,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -1099,7 +1109,8 @@ from product_sku a
       unique_code = #{uniqueCode,jdbcType=TINYINT},
       inventory_model = #{inventoryModel,jdbcType=TINYINT},
       inventory_allocation = #{inventoryAllocation,jdbcType=TINYINT},
-      price_model = #{priceModel,jdbcType=TINYINT}
+      price_model = #{priceModel,jdbcType=TINYINT},
+      product_desc = #{productDesc,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <update id="updateStatus" parameterType="java.util.List">
