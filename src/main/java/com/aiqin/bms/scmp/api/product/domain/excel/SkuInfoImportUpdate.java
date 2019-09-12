@@ -13,7 +13,7 @@ import lombok.Data;
 @ApiModel("sku修改导入实体")
 public class SkuInfoImportUpdate extends BaseRowModel {
 
-    public static final String HEAD = "SkuInfoImportUpdate(skuCode=SKU编号, goodsGiftsDesc=类型, productSortName=所属部门, productCategoryName=品类, skuName=SKU名称, skuAbbreviation=SKU简称, productName=所属SPU, productBrandName=品牌, productPropertyName=商品属性, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityNumber=保质期单位, qualityDate=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, productDesc=商品介绍, manufacturerGuidePrice=厂商指导价, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购单位含量, purchaseBarCode=采购条形码, distributionZeroRemovalCoefficient=分销交易倍数, maxOrderNum=最大订购数量, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
+    public static final String HEAD = "SkuInfoImportUpdate(skuCode=SKU编号, goodsGiftsDesc=类型, productSortName=所属部门, productCategoryName=品类编码, skuName=SKU名称, skuAbbreviation=SKU简称, productName=所属SPU, productBrandName=品牌, productPropertyName=商品属性, colorName=颜色, modelNumber=型号, qualityAssuranceManagementDesc=是否管理保质期, qualityNumber=保质期单位, qualityDate=保质天数, categoriesSupplyChannelsName=供货渠道类别, mnemonicCode=助记码, applicableMonthAge=适用起始月龄, seasonalGoodsDesc=是否季节商品, warehouseTypeName=仓位类型, structuralGoodsDesc=结构性商品, useTime=使用时长, uniqueCodeDesc=唯一码管理, priceChannelName=覆盖渠道, tagName=商品标签, remark=商品备注, productDesc=商品介绍, manufacturerGuidePrice=厂商指导价, stockSpec=库存规格, stockUnitName=库存单位, stockBoxLength=库存长, stockBoxWidth=库存宽, stockBoxHeight=库存高, stockBoxGrossWeight=库存毛重, stockNetWeight=库存净重, purchaseSpec=采购规格, purchaseUnitName=采购单位, purchaseBoxLength=采购长, purchaseBoxWidth=采购宽, purchaseBoxHeight=采购高, purchaseBoxGrossWeight=采购毛重, purchaseNetWeight=采购净重, purchaseBaseProductContent=采购单位含量, purchaseBarCode=采购条形码, distributionZeroRemovalCoefficient=分销交易倍数, maxOrderNum=最大订购数量, saleBarCode=销售条形码, description=销售描述, settlementMethodName=结算方式, inputTaxRate=进项税率, outputTaxRate=销项税率, integralCoefficient=积分系数, logisticsFeeAwardRatio=物流费奖励比例, manufacturerName=生产厂家, factoryProductNumber=厂方商品编号, address=保修地址, picFolderCode=图片文件夹编号)";
 
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = "SKU编码")
@@ -28,7 +28,7 @@ public class SkuInfoImportUpdate extends BaseRowModel {
     private String productSortName;
 
     @ApiModelProperty("商品品类名称")
-    @ExcelProperty(index = 3, value = "品类")
+    @ExcelProperty(index = 3, value = "品类编码")
     private String productCategoryName;
 
     @ApiModelProperty("sku名称")

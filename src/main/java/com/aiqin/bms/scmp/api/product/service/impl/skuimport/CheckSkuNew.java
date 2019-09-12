@@ -1034,10 +1034,10 @@ public class CheckSkuNew {
             }
         }
         //华中仓
-        if (Objects.isNull(importVo.getReadyCol79())) {
+        if (Objects.isNull(importVo.getReadyCol80())) {
             error.add("华中仓状态不能为空");
         } else {
-            SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol79());
+            SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol80());
             if (Objects.isNull(statusEnum)) {
                 error.add("无法找到华中仓状态的状态");
             } else {

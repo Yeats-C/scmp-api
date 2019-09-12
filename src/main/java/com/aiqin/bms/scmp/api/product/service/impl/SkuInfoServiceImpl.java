@@ -1179,7 +1179,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //SKU结算信息
             detailResp.setProductSkuCheckout(productSkuCheckoutService.getDraft(skuCode));
             //供应商信息
-            detailResp.setProductSkuSupplyUnits(productSkuSupplyUnitService.getDraftList(skuCode));
+            List<ProductSkuSupplyUnitRespVo> draftList = productSkuSupplyUnitService.getDraftList(skuCode);
+            if (CollectionUtils.isEmpty(draftList)) {
+                draftList = productSkuSupplyUnitService.getList(skuCode);
+            }
+            detailResp.setProductSkuSupplyUnits(draftList);
             //关联商品信息
             detailResp.setProductAssociatedGoods(productSkuAssociatedGoodsService.getDraftList(skuCode));
             //sku生产厂家信息
@@ -1193,21 +1197,40 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         purchaseSaleStocks.addAll(productSkuDisInfoService.getDraftList(skuCode));
         detailResp.setPurchaseSaleStocks(purchaseSaleStocks.stream().sorted(Comparator.comparing(PurchaseSaleStockRespVo :: getType)).collect(Collectors.toList()));
         //sku图片及介绍
-        detailResp.setProductSkuPictures(productSkuPicturesService.getDraftList(skuCode));
+        List<ProductSkuPicturesRespVo> draftList1 = productSkuPicturesService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList1)) {
+            draftList1 = productSkuPicturesService.getList(skuCode);
+        }
+        detailResp.setProductSkuPictures(draftList1);
         //sku商品说明
-        detailResp.setProductSkuPicDescs(productSkuPicDescService.getDraftList(skuCode));
+        List<ProductSkuPicDescRespVo> draftList2 = productSkuPicDescService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList2)) {
+            draftList2 = productSkuPicDescService.getList(skuCode);
+        }
+        detailResp.setProductSkuPicDescs(draftList2);
         //sku文件管理
-        detailResp.setProductSkuFiles(productSkuFileService.getDraftList(skuCode));
+        List<ProductSkuFileRespVO> draftList3 = productSkuFileService.getDraftList(skuCode);
+        if (CollectionUtils.isEmpty(draftList3)) {
+            draftList3 = productSkuFileService.getList(skuCode);
+        }
+        detailResp.setProductSkuFiles(draftList3);
         //价格信息
         List<ProductSkuPriceRespVo> draftTemps =
                 productSkuPriceInfoService.getSkuPriceBySkuCodeForDraft(skuCode);
+        if (CollectionUtils.isEmpty(draftTemps)) {
+            draftTemps = productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);
+        }
         List<ProductSkuPriceRespVo> priceDraftRespVos =
                 draftTemps.stream().filter(item ->
                         !Objects.equals(item.getPriceTypeCode(), PriceTypeEnum.PURCHASE.getTypeCode())).
                         collect(Collectors.toList());
         detailResp.setProductSkuPrices(priceDraftRespVos);
         //配置信息
-        detailResp.setProductSkuConfigs(productSkuConfigService.draftDetail(skuCode));
+        List<SkuConfigsRepsVo> draftList = productSkuConfigService.draftDetail(skuCode);
+        if (CollectionUtils.isEmpty(draftList)) {
+            draftList = productSkuConfigService.getList(skuCode);
+        }
+        detailResp.setProductSkuConfigs(draftList);
         return detailResp;
     }
 

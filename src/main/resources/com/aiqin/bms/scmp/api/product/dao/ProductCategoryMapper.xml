@@ -292,7 +292,7 @@
     and category_name  = #{categoryName}
     and category_id != #{categoryId}
   </select>
-  <select id="selectByCategoryCodes" resultType="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
+  <select id="selectByCategoryCodes" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from product_category

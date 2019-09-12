@@ -68,6 +68,7 @@
     <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
     <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
 
 
   </resultMap>
@@ -83,7 +84,7 @@
     apply_status, auditor_by, auditor_time, is_main_push, new_product, manufacturer_guide_price, 
     zero_removal_coefficient, procurement_section_code, procurement_section_name, form_no,
     company_code,company_name,warehouse_type_code,warehouse_type_name,remark,apply_type,apply_type_name,
-    use_time,unique_code,inventory_model,inventory_allocation,price_model,sku_status
+    use_time,unique_code,inventory_model,inventory_allocation,price_model,sku_status,product_desc
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
