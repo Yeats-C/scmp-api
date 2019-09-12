@@ -48,10 +48,16 @@ public class SapScheduledServiceImpl implements SapScheduledService {
     @Resource
     private SapBaseDataService sapBaseDataService;
 
-    @Scheduled(cron = "0 0 * * * ?")
+//    @Scheduled(cron = "0 0 * * * ?")
     public void orderInfoAbutment(){
         DateTime now = new DateTime();
         orderInfoAbutmentSchedule(now.toString(STANDARD_FORMAT),"");
+    }
+
+//    @Scheduled(cron = "0 0 * * * ?")
+    public void stockAbutment(){
+        DateTime now = new DateTime();
+        stockSynchronizationSchedule(now.toString(STANDARD_FORMAT),"");
     }
 
 
@@ -67,6 +73,19 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
         sapBaseDataService.saleSynchronization(sapOrderRequest);
+    }
+  /**
+     *  同步出入库数据
+     * @param beginTime
+     * @param finishTime
+     */
+
+    public void stockSynchronizationSchedule(String beginTime,String finishTime){
+        LOGGER.info("同步销售/退货的订单数据,beginTime:{},finishTime:{}",beginTime,finishTime);
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime(beginTime);
+        sapOrderRequest.setFinishTime(finishTime);
+        sapBaseDataService.stockSynchronization(sapOrderRequest);
     }
 
 

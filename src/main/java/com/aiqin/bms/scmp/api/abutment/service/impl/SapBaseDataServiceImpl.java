@@ -126,12 +126,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     public void stockSynchronization(SapOrderRequest sapOrderRequest) {
 
         List<Storage> storageList = Lists.newArrayList();
-//        this.inboundToStock(storageList, sapOrderRequest);
-//        sapStorageAbutment(storageList,1);
-//        storageList.clear();
+        this.inboundToStock(storageList, sapOrderRequest);
+        sapStorageAbutment(storageList,1);
+        storageList.clear();
         this.outboundToStock(storageList, sapOrderRequest);
         sapStorageAbutment(storageList,2);
     }
+
     private void sapStorageAbutment(List<Storage> storageList, Integer type) {
         LOGGER.info("调用结算sap出入库单据参数:{} ", JsonUtil.toJson(storageList));
         LOGGER.info("type:{}", type);
@@ -416,12 +417,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      * 采购/退供数据同步
      */
     public void purchaseSynchronization() {
-        //退供list
-        List<RejectRecord> rejectRecords = Lists.newArrayList();
         List<Purchase> purchases = Lists.newArrayList();
-        for (Purchase purchase : purchases) {
 
-        }
     }
 
     /**
