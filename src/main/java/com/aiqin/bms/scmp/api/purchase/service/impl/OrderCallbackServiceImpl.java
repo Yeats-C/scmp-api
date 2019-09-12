@@ -48,6 +48,8 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -712,9 +714,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //生成调拨单
             allocationInsert(allocation, type, typeName);
             return HttpResponse.success();
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, e.getMessage()));
         }
     }
 

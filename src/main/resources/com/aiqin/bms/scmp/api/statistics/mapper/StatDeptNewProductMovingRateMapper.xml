@@ -37,7 +37,9 @@
     from stat_dept_new_product_moving_rate
     where stat_year = #{year,jdbcType=BIGINT}
     and stat_month = #{month,jdbcType=BIGINT}
-    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
     <if test="lv1 != null">
       and lv1 = #{lv1,jdbcType=VARCHAR}
     </if>
@@ -46,6 +48,15 @@
     </if>
     group by transport_center_code
     order by transport_center_code
+  </select>
+  <select id="deptList"  resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse">
+     select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_new_product_moving_rate
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
   </select>
   <select id="categoryList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse">
     select

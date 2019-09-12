@@ -3,7 +3,7 @@ package com.aiqin.bms.scmp.api.statistics.service.impl;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.statistics.dao.*;
-import com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate;
+import com.aiqin.bms.scmp.api.statistics.domain.StatDeptStoreRepurchaseRate;
 import com.aiqin.bms.scmp.api.statistics.domain.response.*;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.*;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
@@ -32,8 +32,6 @@ public class StatisticsServiceImpl implements StatisticsService {
     @Resource
     private StatDeptStoreRepurchaseRateDao statDeptStoreRepurchaseRateDao;
     @Resource
-    private StatComStoreRepurchaseRateDao statComStoreRepurchaseRateDao;
-    @Resource
     private StatComNegativeMarginYearlyDao statComNegativeMarginYearlyDao;
     @Resource
     private StatComNegativeMarginQuarterlyDao statComNegativeMarginQuarterlyDao;
@@ -55,7 +53,6 @@ public class StatisticsServiceImpl implements StatisticsService {
         if(StringUtils.isEmpty(date) || type == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<StatComStoreRepurchaseRate> repurchaseRateList;
         StoreRepurchaseRateResponse comRepurchase;
         List<StoreRepurchaseRateSubtotalResponse> deptList = new ArrayList<>();
         StoreRepurchaseRateSubtotalResponse deptRepurchase;
@@ -63,23 +60,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         Long month = Long.valueOf(date.substring(5));
         if(type.equals(Global.COMPANY)){
             // 计算公司合计
-            comRepurchase = statComStoreRepurchaseRateDao.storeRepurchaseSum(year, month);
+            comRepurchase = statDeptStoreRepurchaseRateDao.storeRepurchaseSum(year, month);
             if(comRepurchase != null){
                 // 查询该公司部门
-                List<StatComStoreRepurchaseRate> sortList = statComStoreRepurchaseRateDao.storeRepurchaseBySort(year, month);
-                for(StatComStoreRepurchaseRate sort:sortList){
+                List<StatDeptStoreRepurchaseRate> sortList = statDeptStoreRepurchaseRateDao.storeRepurchaseBySort(year, month);
+                for(StatDeptStoreRepurchaseRate sort:sortList){
                     // 计算各部门的小计
-                    deptRepurchase = statComStoreRepurchaseRateDao.storeRepurchaseByDeptSum(year, month, sort.getProductSortCode());
-                    repurchaseRateList = statComStoreRepurchaseRateDao.storeRepurchaseList(year, month, sort.getProductSortCode());
-                    if(CollectionUtils.isNotEmptyCollection(repurchaseRateList)){
-                        deptRepurchase.setSubtotalList(repurchaseRateList);
-                    }
-                    if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
-                        deptRepurchase.setRepurchaseRate(new BigDecimal(0));
-                    }else {
-                        deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).
-                                divide(new BigDecimal(deptRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
-                    }
+                    deptRepurchase = this.deptStoreRate(year, month, sort.getProductSortCode());
                     deptRepurchase.setProductSortCode(sort.getProductSortCode());
                     deptRepurchase.setProductSortName(sort.getProductSortName());
                     deptList.add(deptRepurchase);
@@ -97,22 +84,29 @@ public class StatisticsServiceImpl implements StatisticsService {
             if(StringUtils.isEmpty(productSortCode)){
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
-            deptRepurchase = statDeptStoreRepurchaseRateDao.storeRepurchaseSum(year, month, productSortCode);
-            if(deptRepurchase != null){
-                // 计算部门各省
-                repurchaseRateList = statDeptStoreRepurchaseRateDao.storeRepurchaseList(year, month, productSortCode);
-                if(CollectionUtils.isNotEmptyCollection(repurchaseRateList)){
-                    deptRepurchase.setSubtotalList(repurchaseRateList);
-                }
-                if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
-                    deptRepurchase.setRepurchaseRate(new BigDecimal(0));
-                }else {
-                    deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).
-                            divide(new BigDecimal(deptRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
-                }
-            }
+            deptRepurchase = this.deptStoreRate(year, month, productSortCode);
             return HttpResponse.success(deptRepurchase);
         }
+    }
+
+    private StoreRepurchaseRateSubtotalResponse deptStoreRate(Long year, Long month, String productSortCode){
+        StoreRepurchaseRateSubtotalResponse deptRepurchase;
+        List<StatDeptStoreRepurchaseRate> repurchaseRateList;
+        deptRepurchase = statDeptStoreRepurchaseRateDao.storeRepurchaseByDeptSum(year, month, productSortCode);
+        if(deptRepurchase != null){
+            // 计算部门各省
+            repurchaseRateList = statDeptStoreRepurchaseRateDao.storeRepurchaseList(year, month, productSortCode);
+            if(CollectionUtils.isNotEmptyCollection(repurchaseRateList)){
+                deptRepurchase.setSubtotalList(repurchaseRateList);
+            }
+            if(deptRepurchase.getRepurchaseNum() == null || deptRepurchase.getRepurchaseNum() == 0){
+                deptRepurchase.setRepurchaseRate(new BigDecimal(0));
+            }else {
+                deptRepurchase.setRepurchaseRate(new BigDecimal(deptRepurchase.getRepurchaseNum()).
+                        divide(new BigDecimal(deptRepurchase.getPurchaseNum()), 4, BigDecimal.ROUND_HALF_UP));
+            }
+        }
+        return deptRepurchase;
     }
 
     @Override

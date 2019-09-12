@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.statistics.domain.response;
 
-import com.aiqin.bms.scmp.api.statistics.domain.StatComStoreRepurchaseRate;
+import com.aiqin.bms.scmp.api.statistics.domain.StatDeptStoreRepurchaseRate;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,7 +17,7 @@ public class StoreRepurchaseRateSubtotalResponse {
 
     @ApiModelProperty(value="各省的复购率")
     @JsonProperty("subtotal_list")
-    private List<StatComStoreRepurchaseRate> subtotalList;
+    private List<StatDeptStoreRepurchaseRate> subtotalList;
 
     @ApiModelProperty(value="部门code")
     @JsonProperty("product_sort_code")
