@@ -122,8 +122,17 @@ public class FileRecordServiceImpl implements FileRecordService {
                 url = fileInfoService.upload(multipartFile);
                 LOGGER.info("fileName:{},folderName:{},url:{}", fileName, folderName, url);
                 if (fileName.contains("sm_")) {
+                    productSkuPicDescDraft = new ProductSkuPicDescDraft();
+                    productSkuPicDescDraft.setSortingNumber((long) productSkuPicDescDraftList.size()+1);
+                    productSkuPicDescDraft.setPicDescPath(url);
+                    productSkuPicDescDraft.setSkuCode(productSkuDraft.getSkuCode());
+                    productSkuPicDescDraft.setSkuName(productSkuDraft.getSkuName());
+                    productSkuPicDescDraft.setCreateBy(create_by_name);
+                    productSkuPicDescDraft.setUpdateBy(create_by_name);
+                    productSkuPicDescDraftList.add(productSkuPicDescDraft);
+                }else{
                     productSkuPicturesDraft = new ProductSkuPicturesDraft();
-                    if(fileName.equals("sm_1")){
+                    if(fileName.equals("1")){
                         //默认设置1主图
                         productSkuPicturesDraft.setMainPicture((byte)1);
                     }else{
@@ -135,15 +144,6 @@ public class FileRecordServiceImpl implements FileRecordService {
                     productSkuPicturesDraft.setProductSkuName(productSkuDraft.getSkuName());
                     productSkuPicturesDraft.setCreateBy(create_by_name);
                     productSkuPicturesDraftList.add(productSkuPicturesDraft);
-                }else{
-                    productSkuPicDescDraft = new ProductSkuPicDescDraft();
-                    productSkuPicDescDraft.setSortingNumber((long) productSkuPicDescDraftList.size()+1);
-                    productSkuPicDescDraft.setPicDescPath(url);
-                    productSkuPicDescDraft.setSkuCode(productSkuDraft.getSkuCode());
-                    productSkuPicDescDraft.setSkuName(productSkuDraft.getSkuName());
-                    productSkuPicDescDraft.setCreateBy(create_by_name);
-                    productSkuPicDescDraft.setUpdateBy(create_by_name);
-                    productSkuPicDescDraftList.add(productSkuPicDescDraft);
                 }
             }
             if(CollectionUtils.isNotEmpty(productSkuPicturesDraftList)){
@@ -159,7 +159,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 LOGGER.info("1.png对应图片及介绍,添加条数:{}",picCount);
             }
             return HttpResponse.successGenerics(fileId);
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("导入商品图片信息异常:{}", e.getMessage());
             throw new GroundRuntimeException(String.format("导入商品图片信息异常:%s", e.getMessage()));
         }
