@@ -4,11 +4,16 @@ import com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeCompanyResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeDeptResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface StatDeptNegativeMarginYearlyDao {
+
+    NegativeSumResponse negativeSum(Long year);
+
+    List<CompanyAndDeptResponse> negativeByDept(Long year);
 
     List<CompanyAndDeptResponse> negativeByCompany(@Param("year") Long year,
                                                    @Param("productSortCode") String productSortCode);

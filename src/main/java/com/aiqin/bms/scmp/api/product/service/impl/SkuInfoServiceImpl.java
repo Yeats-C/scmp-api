@@ -3633,7 +3633,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol67())) {
                 error.add("爱亲渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinChannel = price.get("爱亲渠道价");
+                SkuPriceDraftReqVO aiqinChannel1 = price.get("爱亲渠道价");
+                SkuPriceDraftReqVO aiqinChannel = BeanCopyUtils.copy(aiqinChannel1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol67()));
                 } catch (Exception e) {
@@ -3645,7 +3646,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol68())) {
                 error.add("萌贝树渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuChannel = price.get("萌贝树渠道价");
+                SkuPriceDraftReqVO mengbeishuChannel1 = price.get("萌贝树渠道价");
+                SkuPriceDraftReqVO mengbeishuChannel = BeanCopyUtils.copy(mengbeishuChannel1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol68()));
                 } catch (Exception e) {
@@ -3657,7 +3659,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol69())) {
                 error.add("小红马渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaChannel = price.get("小红马渠道价");
+                SkuPriceDraftReqVO xiaohongmaChannel1 = price.get("小红马渠道价");
+                SkuPriceDraftReqVO xiaohongmaChannel = BeanCopyUtils.copy(xiaohongmaChannel1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol69()));
                 } catch (Exception e) {
@@ -3669,7 +3672,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol70())) {
                 error.add("爱亲分销价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinDistribution = price.get("爱亲分销价");
+                SkuPriceDraftReqVO aiqinDistribution1 = price.get("爱亲分销价");
+                SkuPriceDraftReqVO aiqinDistribution = BeanCopyUtils.copy(aiqinDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol70()));
                 } catch (Exception e) {
@@ -3681,7 +3685,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol71())) {
                 error.add("萌贝树分销价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuDistribution = price.get("萌贝树分销价");
+                SkuPriceDraftReqVO mengbeishuDistribution1 = price.get("萌贝树分销价");
+                SkuPriceDraftReqVO mengbeishuDistribution = BeanCopyUtils.copy(mengbeishuDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol71()));
                 } catch (Exception e) {
@@ -3693,7 +3698,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol72())) {
                 error.add("小红马分销价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaDistribution = price.get("小红马分销价");
+                SkuPriceDraftReqVO xiaohongmaDistribution1 = price.get("小红马分销价");
+                SkuPriceDraftReqVO xiaohongmaDistribution = BeanCopyUtils.copy(xiaohongmaDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol72()));
                 } catch (Exception e) {
@@ -3705,7 +3711,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol73())) {
                 error.add("爱亲售价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinSale = price.get("爱亲售价");
+                SkuPriceDraftReqVO aiqinSale1 = price.get("爱亲售价");
+                SkuPriceDraftReqVO aiqinSale = BeanCopyUtils.copy(aiqinSale1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
                 } catch (Exception e) {
@@ -3717,7 +3724,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol74())) {
                 error.add("萌贝树售价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuSale = price.get("萌贝树售价");
+                SkuPriceDraftReqVO mengbeishuSale1 = price.get("萌贝树售价");
+                SkuPriceDraftReqVO mengbeishuSale = BeanCopyUtils.copy(mengbeishuSale1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
                 } catch (Exception e) {
@@ -3729,7 +3737,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol75())) {
                 error.add("小红马售价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaSale = price.get("小红马售价");
+                SkuPriceDraftReqVO xiaohongmaSale1 = price.get("小红马售价");
+                SkuPriceDraftReqVO xiaohongmaSale = BeanCopyUtils.copy(xiaohongmaSale1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
                 } catch (Exception e) {
@@ -3753,7 +3762,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华北仓的状态类型");
                 } else {
-                    SaveSkuConfigReqVo huabei = warehouse.get("华北仓");
+                    SaveSkuConfigReqVo huabei1 = warehouse.get("华北仓");
+                    SaveSkuConfigReqVo huabei = BeanCopyUtils.copy(huabei1, SaveSkuConfigReqVo.class);
                     huabei.setConfigStatus(statusEnum.getStatus());
                     huabei.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huabei);
@@ -3767,7 +3777,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华东仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huadong = warehouse.get("华东仓");
+                    SaveSkuConfigReqVo huadong1 = warehouse.get("华东仓");
+                    SaveSkuConfigReqVo huadong = BeanCopyUtils.copy(huadong1, SaveSkuConfigReqVo.class);
                     huadong.setConfigStatus(statusEnum.getStatus());
                     huadong.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huadong);
@@ -3781,7 +3792,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华南仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huanan = warehouse.get("华南仓");
+                    SaveSkuConfigReqVo huanan1 = warehouse.get("华南仓");
+                    SaveSkuConfigReqVo huanan = BeanCopyUtils.copy(huanan1, SaveSkuConfigReqVo.class);
                     huanan.setConfigStatus(statusEnum.getStatus());
                     huanan.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huanan);
@@ -3795,21 +3807,23 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到西南仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo xinan = warehouse.get("西南仓");
+                    SaveSkuConfigReqVo xinan1 = warehouse.get("西南仓");
+                    SaveSkuConfigReqVo xinan = BeanCopyUtils.copy(xinan1, SaveSkuConfigReqVo.class);
                     xinan.setConfigStatus(statusEnum.getStatus());
                     xinan.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(xinan);
                 }
             }
             //华中仓
-            if (Objects.isNull(importVo.getReadyCol79())) {
+            if (Objects.isNull(importVo.getReadyCol80())) {
                 error.add("华中仓状态不能为空");
             } else {
-                SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol79());
+                SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol80());
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华中仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huazhong = warehouse.get("华中仓");
+                    SaveSkuConfigReqVo huazhong1 = warehouse.get("华中仓");
+                    SaveSkuConfigReqVo huazhong = BeanCopyUtils.copy(huazhong1, SaveSkuConfigReqVo.class);
                     huazhong.setConfigStatus(statusEnum.getStatus());
                     huazhong.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huazhong);
