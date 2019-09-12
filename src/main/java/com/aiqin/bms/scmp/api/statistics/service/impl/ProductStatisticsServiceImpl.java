@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.statistics.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.statistics.dao.StatComNewProductMovingRateDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptNewProductMovingRateDao;
 import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse;
@@ -26,8 +25,6 @@ import java.util.List;
 @Service
 public class ProductStatisticsServiceImpl implements ProductStatisticsService {
 
-    @Resource
-    private StatComNewProductMovingRateDao statComNewProductMovingRateDao;
     @Resource
     private StatDeptNewProductMovingRateDao statDeptNewProductMovingRateDao;
 
@@ -58,10 +55,10 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
         List<MovableResponse> depts;
         List<NewProductMovingRateResponse> deptList;
         ProductMovableResponse deptResponse;
-        sumList = statComNewProductMovingRateDao.productMovingSum(request);
+        sumList = statDeptNewProductMovingRateDao.productMovingSum(request);
         if(CollectionUtils.isNotEmpty(sumList)){
             sumResponse = this.movablePin(sumList);
-            depts = statComNewProductMovingRateDao.deptList(request);
+            depts = statDeptNewProductMovingRateDao.deptList(request);
             if(CollectionUtils.isNotEmpty(depts)){
                 for(MovableResponse dept:depts){
                     request.setProductSortCode(dept.getProductSortCode());
