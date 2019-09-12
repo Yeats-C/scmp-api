@@ -9,6 +9,8 @@ import java.util.List;
 public interface StatDeptCategorySalesDao {
     CategoryResponse categorySum(SaleRequest saleRequest);
 
+    List<CompanyAndDeptResponse> categoryByDept(SaleRequest saleRequest);
+
     List<CompanyAndDeptResponse> categoryByCompany(SaleRequest saleRequest);
 
     List<CategoryResponse> categoryList(SaleRequest saleRequest);
