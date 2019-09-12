@@ -7,8 +7,6 @@ import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.*;
-import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesMonthlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatComSalesYearlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesMonthlyDao;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptSalesYearlyDao;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
@@ -31,10 +29,6 @@ import java.util.List;
 public class SalesStatisticsServiceImpl implements SalesStatisticsService {
 
     @Resource
-    private StatComSalesYearlyDao statComSalesYearlyDao;
-    @Resource
-    private StatComSalesMonthlyDao statComSalesMonthlyDao;
-    @Resource
     private StatDeptSalesYearlyDao statDeptSalesYearlyDao;
     @Resource
     private StatDeptSalesMonthlyDao statDeptSalesMonthlyDao;
@@ -51,20 +45,20 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
     private final static int MONTH = 2;
 
     @Override
-    public HttpResponse<SaleSumResponse> saleInfo(SaleRequest saleRequest){
-        if(saleRequest == null || StringUtils.isBlank(saleRequest.getDate()) || saleRequest.getType() == null ||
-                saleRequest.getReportType() == null){
+    public HttpResponse<SaleSumResponse> saleInfo(SaleRequest saleRequest) {
+        if (saleRequest == null || StringUtils.isBlank(saleRequest.getDate()) || saleRequest.getType() == null ||
+                saleRequest.getReportType() == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        if(saleRequest.getType().equals(Global.COMPANY)){
+        if (saleRequest.getType().equals(Global.COMPANY)) {
             SaleSumResponse sumResponse = new SaleSumResponse();
             // 销售统计 - 公司
-            if(saleRequest.getReportType().equals(Global.ANNUAL_REPORT)){
+            if (saleRequest.getReportType().equals(Global.ANNUAL_REPORT)) {
                 // 公司 - 年报
                 Long year = Long.valueOf(saleRequest.getDate());
                 saleRequest.setYear(year);
                 sumResponse = this.companySale(saleRequest, YEAR);
-            }else if(saleRequest.getReportType().equals(Global.MONTHLY_REPORT)){
+            } else if (saleRequest.getReportType().equals(Global.MONTHLY_REPORT)) {
                 // 公司 - 月报
                 Long year = Long.valueOf(saleRequest.getDate().substring(0, 4));
                 Long month = Long.valueOf(saleRequest.getDate().substring(5));
@@ -73,110 +67,71 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 sumResponse = this.companySale(saleRequest, MONTH);
             }
             return HttpResponse.success(sumResponse);
-        }else if(saleRequest.getType().equals(Global.DEPARTMENT)){
-            if(StringUtils.isBlank(saleRequest.getProductSortCode())){
+        } else if (saleRequest.getType().equals(Global.DEPARTMENT)) {
+            if (StringUtils.isBlank(saleRequest.getProductSortCode())) {
                 return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
             }
             SaleDeptResponse deptResponse = new SaleDeptResponse();
             // 销售统计 - 部门
-            if(saleRequest.getReportType().equals(Global.ANNUAL_REPORT)){
+            if (saleRequest.getReportType().equals(Global.ANNUAL_REPORT)) {
                 // 部门 - 年报
                 Long year = Long.valueOf(saleRequest.getDate());
                 saleRequest.setYear(year);
                 deptResponse = this.deptSale(saleRequest, YEAR);
-            }else if(saleRequest.getReportType().equals(Global.MONTHLY_REPORT)){
+            } else if (saleRequest.getReportType().equals(Global.MONTHLY_REPORT)) {
                 // 部门 - 月报
                 Long year = Long.valueOf(saleRequest.getDate().substring(0, 4));
                 Long month = Long.valueOf(saleRequest.getDate().substring(5));
                 saleRequest.setYear(year);
                 saleRequest.setMonth(month);
                 deptResponse = this.deptSale(saleRequest, MONTH);
+                if(deptResponse != null){
+                    deptResponse.setChanneRate(new BigDecimal(1));
+                    deptResponse.setDistributionRate(new BigDecimal(1));
+                }
             }
             return HttpResponse.success(deptResponse);
         }
         return HttpResponse.success();
     }
 
-    private SaleSumResponse companySale(SaleRequest saleRequest, int i){
+    private SaleSumResponse companySale(SaleRequest saleRequest, int i) {
         SaleSumResponse sumResponse;
         List<SaleDeptResponse> deptList = Lists.newArrayList();
         List<CompanyAndDeptResponse> departments;
-        List<CompanyAndDeptResponse> companys;
-        List<SaleCompanyResponse> companyList;
-        List<SaleStoreResponse> saleList;
         SaleDeptResponse deptResponse;
-        SaleCompanyResponse companyResponse;
         SaleResponse saleResponse;
-        if(i == YEAR){
-            sumResponse = statComSalesYearlyDao.saleSum(saleRequest);
-        }else {
-            sumResponse = statComSalesMonthlyDao.saleSum(saleRequest);
+        if (i == YEAR) {
+            sumResponse = statDeptSalesYearlyDao.saleSum(saleRequest);
+        } else {
+            sumResponse = statDeptSalesYearlyDao.saleSum(saleRequest);
         }
-        if(sumResponse != null){
-            if(i == YEAR){
-                departments = statComSalesYearlyDao.saleByDept(saleRequest);
-            }else {
-                departments = statComSalesMonthlyDao.saleByDept(saleRequest);
+        if (sumResponse != null) {
+            if (i == YEAR) {
+                departments = statDeptSalesYearlyDao.saleByDept(saleRequest);
+            } else {
+                departments = statDeptSalesYearlyDao.saleByDept(saleRequest);
             }
-            if(CollectionUtils.isNotEmptyCollection(departments)){
-                for(CompanyAndDeptResponse dept:departments){
+            if (CollectionUtils.isNotEmptyCollection(departments)) {
+                for (CompanyAndDeptResponse dept : departments) {
                     saleRequest.setProductSortCode(dept.getProductSortCode());
-                    if(i == YEAR){
-                        deptResponse = statComSalesYearlyDao.saleSumDept(saleRequest);
-                        companys = statComSalesYearlyDao.saleByCompany(saleRequest);
-                    }else {
-                        deptResponse = statComSalesMonthlyDao.saleSumDept(saleRequest);
-                        companys = statComSalesMonthlyDao.saleByCompany(saleRequest);
+                    deptResponse = this.deptSale(saleRequest, i);
+                    if(deptResponse != null){
+                        deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
+                                divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
+                                divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    if(CollectionUtils.isNotEmptyCollection(companys)){
-                       companyList = Lists.newArrayList();
-                       for (CompanyAndDeptResponse company:companys){
-                           saleRequest.setPriceChannelCode(company.getPriceChannelCode());
-                           if(i == YEAR){
-                               companyResponse = statComSalesYearlyDao.saleSumCompany(saleRequest);
-                           }else {
-                               companyResponse = statComSalesMonthlyDao.saleSumCompany(saleRequest);
-                           }
-                           if(companyResponse != null){
-                               if(i == 0){
-                                   saleList = statComSalesYearlyDao.saleStoreList(saleRequest);
-                               }else {
-                                   saleList = statComSalesMonthlyDao.saleStoreList(saleRequest);
-                               }
-                               saleResponse = new SaleResponse();
-                               this.saleList(saleList, saleResponse, companyResponse);
-                               companyResponse.setStoreList(saleList);
-                               saleResponse = new SaleResponse();
-                               BeanUtils.copyProperties(companyResponse, saleResponse);
-                               SaleResponse rate = this.saleRate(saleResponse, 0);
-                               BeanUtils.copyProperties(rate, companyResponse);
-                               companyResponse.setChanneRate(new BigDecimal(companyResponse.getChannelSalesAmount()).
-                                       divide(new BigDecimal(deptResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                               companyResponse.setDistributionRate(new BigDecimal(companyResponse.getDistributionSalesAmount()).
-                                       divide(new BigDecimal(deptResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                               companyList.add(companyResponse);
-                           }
-                       }
-                       deptResponse.setCompanyList(companyList);
-                       saleResponse = new SaleResponse();
-                       BeanUtils.copyProperties(deptResponse, saleResponse);
-                       SaleResponse rate = this.saleRate(saleResponse, 1);
-                       BeanUtils.copyProperties(rate, deptResponse);
-                       deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
-                               divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                       deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
-                               divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                       deptList.add(deptResponse);
-                    }
+                    deptList.add(deptResponse);
                 }
-                saleResponse = new SaleResponse();
-                BeanUtils.copyProperties(sumResponse, saleResponse);
-                SaleResponse rate = this.saleRate(saleResponse, 1);
-                BeanUtils.copyProperties(rate, sumResponse);
-                sumResponse.setDeptList(deptList);
-                sumResponse.setChanneRate(new BigDecimal(1));
-                sumResponse.setDistributionRate(new BigDecimal(1));
             }
+            saleResponse = new SaleResponse();
+            BeanUtils.copyProperties(sumResponse, saleResponse);
+            SaleResponse rate = this.saleRate(saleResponse, 1);
+            BeanUtils.copyProperties(rate, sumResponse);
+            sumResponse.setDeptList(deptList);
+            sumResponse.setChanneRate(new BigDecimal(1));
+            sumResponse.setDistributionRate(new BigDecimal(1));
         }
         return sumResponse;
     }
@@ -243,8 +198,6 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             BeanUtils.copyProperties(deptResponse, saleResponse);
             SaleResponse rate = this.saleRate(saleResponse, 1);
             BeanUtils.copyProperties(rate, deptResponse);
-            deptResponse.setChanneRate(new BigDecimal(1));
-            deptResponse.setDistributionRate(new BigDecimal(1));
         }
         return deptResponse;
     }
