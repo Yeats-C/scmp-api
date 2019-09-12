@@ -179,4 +179,9 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         }
         return list;
     }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getList(String skuCode) {
+        return productSkuSupplyUnitDao.getList(skuCode);
+    }
 }
