@@ -54,4 +54,6 @@ public interface ProductSkuSupplyUnitDao {
     String getFactorySkuCode(@Param("skuCode") String skuCode, @Param("supplyUnitCode")String supplyUnitCode);
 
     List<PurchaseFormResponse> supplyList(String skuCode);
+
+    List<ProductSkuSupplyUnitRespVo> getList(String skuCode);
 }

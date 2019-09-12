@@ -100,6 +100,7 @@ public interface ProductCategoryService {
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.ProductCategory>
      */
     List<ProductCategory> selectByCategoryNames(Set<String> brandNameList, String companyCode);
+    List<ProductCategory> selectByCategoryCodes(Set<String> brandNameList, String companyCode);
 
 
 

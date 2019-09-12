@@ -90,4 +90,6 @@ public interface ProductCategoryDao {
     List<String> checkName(@Param("list") List<String> sameLevelNameList, @Param("companyCode") String companyCode);
 
     int checkNameByNameAndCode(@Param("categoryName") String categoryName, @Param("categoryId") String categoryId, @Param("companyCode") String companyCode);
+
+    List<ProductCategory> selectByCategoryCodes(@Param("list") Set<String> brandCodeList, @Param("companyCode") String companyCode);
 }
