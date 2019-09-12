@@ -299,7 +299,7 @@ public interface SkuInfoService{
     /**
      * 导出新增的sku
      */
-    Boolean exportAddSku(HttpServletResponse resp);
+    Boolean exportAddSku(HttpServletResponse resp, String applyCode);
 
-    Boolean exportEditSku(HttpServletResponse resp);
+    Boolean exportEditSku(HttpServletResponse resp, String applyCode);
 }

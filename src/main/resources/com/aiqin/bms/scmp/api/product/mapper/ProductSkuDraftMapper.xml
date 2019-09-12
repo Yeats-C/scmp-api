@@ -70,6 +70,7 @@
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="change_content" jdbcType="VARCHAR" property="changeContent" />
     <result column="pic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
+    <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, product_name, product_category_code, product_category_name, sku_code, 
@@ -83,7 +84,7 @@
     spu_code, logo, images, itro_images, sku_name, is_main_push, new_product, manufacturer_guide_price, 
     zero_removal_coefficient, procurement_section_code, procurement_section_name,company_code,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    apply_type,apply_type_name,use_time,unique_code,inventory_model,price_model,inventory_allocation
+    apply_type,apply_type_name,use_time,unique_code,inventory_model,price_model,inventory_allocation,product_desc
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -253,7 +254,7 @@
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
       apply_type,apply_type_name,inventory_model,use_time,unique_code,
-      inventory_allocation,price_model,change_content,pic_folder_code
+      inventory_allocation,price_model,change_content,pic_folder_code,product_desc
       )
     values ( #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -280,7 +281,7 @@
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
       #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
-      #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR}
+      #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR},#{productDesc,jdbcType=VARCHAR}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
@@ -451,6 +452,9 @@
       <if test="priceModel != null">
         price_model,
       </if>
+     <if test="productDesc != null">
+          product_desc,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -617,6 +621,9 @@
       </if>
       <if test="priceModel != null">
         #{priceModel,jdbcType=TINYINT},
+      </if>
+      <if test="productDesc != null">
+        #{productDesc,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -785,6 +792,9 @@
       <if test="priceModel != null">
         price_model = #{priceModel,jdbcType=TINYINT},
       </if>
+       <if test="productDesc != null">
+         product_desc = #{productDesc,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -843,7 +853,8 @@
       procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
       procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
       inventory_allocation = #{inventoryAllocation,jdbcType=TINYINT},
-      price_model = #{priceModel,jdbcType=TINYINT}
+      price_model = #{priceModel,jdbcType=TINYINT},
+      product_desc = #{productDesc,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectProductByFolderCode" resultMap="BaseResultMap">
@@ -1066,6 +1077,7 @@
     <result column="aprice_model" jdbcType="TINYINT" property="priceModel" />
     <result column="achange_content" jdbcType="VARCHAR" property="changeContent" />
     <result column="apic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
+    <result column="aproduct_desc" jdbcType="VARCHAR" property="productDesc" />
     <collection property="supplyList" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft">
       <id column="bid" jdbcType="BIGINT" property="id" />
       <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
@@ -1160,6 +1172,7 @@
                a.change_content achange_content,
                a.pic_folder_code apic_folder_code,
                a.original_code aoriginal_code,
+               a.product_desc aproduct_desc,
                b.id bid,
                b.supply_unit_code bsupply_unit_code,
                b.supply_unit_name bsupply_unit_name,

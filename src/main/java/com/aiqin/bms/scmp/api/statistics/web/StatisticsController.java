@@ -1,13 +1,16 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
+import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierReturnResponse;
+import com.aiqin.bms.scmp.api.statistics.service.ProductStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
 import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
@@ -38,6 +41,8 @@ public class StatisticsController {
     private SalesStatisticsService salesStatisticsService;
     @Resource
     private SupplierStatisticsService supplierStatisticsService;
+    @Resource
+    private ProductStatisticsService productStatisticsService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
@@ -140,6 +145,19 @@ public class StatisticsController {
                                                                 @RequestParam("product_sort_code") String productSortCode) {
         SupplierRequest supplierRequest = new SupplierRequest(date, reportType, productSortCode);
         return supplierStatisticsService.supplierRetreat(supplierRequest);
+    }
+
+    @GetMapping("/product/movable/pin")
+    @ApiOperation("新品动销率统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<ProductMovableResponse> productMovable(@RequestParam("date") String date,
+                                                             @RequestParam("type") Integer type,
+                                                             @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        ProductRequest request = new ProductRequest(date, type, productSortCode);
+        return productStatisticsService.productMovable(request);
     }
 
 }

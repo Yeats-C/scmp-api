@@ -319,7 +319,7 @@
     <select id="selectByCompanyNameList"
             resultMap="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.BaseResultMap">
       SELECT
-      apply_supply_name as supply_name,
+      apply_supply_name as supply_name
       from apply_supply_company where apply_supply_name in
       <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}

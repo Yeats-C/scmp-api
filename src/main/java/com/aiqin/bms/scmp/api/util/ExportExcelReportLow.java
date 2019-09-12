@@ -193,7 +193,7 @@ public class ExportExcelReportLow {
                 row03.createCell(4).setCellValue("");
             }
             if (lowInventoryRespVo.getSzqgLowInventoryRatio() != null) {
-                row03.createCell(5).setCellValue(lowInventoryRespVo.getSzqgLowInventoryRatio());
+                row03.createCell(5).setCellValue(lowInventoryRespVo.getSzqgLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(5).setCellValue("");
             }
@@ -210,7 +210,7 @@ public class ExportExcelReportLow {
                 row03.createCell(7).setCellValue("");
             }
             if (lowInventoryRespVo.getBzqgLowInventoryRatio() != null) {
-                row03.createCell(8).setCellValue(lowInventoryRespVo.getBzqgLowInventoryRatio());
+                row03.createCell(8).setCellValue(lowInventoryRespVo.getBzqgLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(8).setCellValue("");
             }
@@ -227,7 +227,7 @@ public class ExportExcelReportLow {
                 row03.createCell(10).setCellValue("");
             }
             if (lowInventoryRespVo.getHbLowInventoryRatio() != null) {
-                row03.createCell(11).setCellValue(lowInventoryRespVo.getHbLowInventoryRatio());
+                row03.createCell(11).setCellValue(lowInventoryRespVo.getHbLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(11).setCellValue("");
             }
@@ -244,7 +244,7 @@ public class ExportExcelReportLow {
                 row03.createCell(13).setCellValue("");
             }
             if (lowInventoryRespVo.getHnLowInventoryRatio() != null) {
-                row03.createCell(14).setCellValue(lowInventoryRespVo.getHnLowInventoryRatio());
+                row03.createCell(14).setCellValue(lowInventoryRespVo.getHnLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(14).setCellValue("");
             }
@@ -261,7 +261,7 @@ public class ExportExcelReportLow {
                 row03.createCell(16).setCellValue("");
             }
             if (lowInventoryRespVo.getXnLowInventoryRatio() != null) {
-                row03.createCell(17).setCellValue(lowInventoryRespVo.getXnLowInventoryRatio());
+                row03.createCell(17).setCellValue(lowInventoryRespVo.getXnLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(17).setCellValue("");
             }
@@ -278,7 +278,7 @@ public class ExportExcelReportLow {
                 row03.createCell(19).setCellValue("");
             }
             if (lowInventoryRespVo.getHdLowInventoryRatio() != null) {
-                row03.createCell(20).setCellValue(lowInventoryRespVo.getHdLowInventoryRatio());
+                row03.createCell(20).setCellValue(lowInventoryRespVo.getHdLowInventoryRatio().doubleValue());
             } else {
                 row03.createCell(20).setCellValue("");
             }
