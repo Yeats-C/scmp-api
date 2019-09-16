@@ -50,6 +50,9 @@ public class ProductApplyInfoRespVO<T> {
     @ApiModelProperty("备注")
     private String approvalRemark;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @ApiModelProperty("状态")
     private Integer applyStatus;
 

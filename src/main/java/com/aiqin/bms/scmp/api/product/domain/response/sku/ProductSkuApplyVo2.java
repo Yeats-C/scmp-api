@@ -83,6 +83,9 @@ public class ProductSkuApplyVo2 {
     @ApiModelProperty("审批备注")
     private String approvalRemark;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;

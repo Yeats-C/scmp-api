@@ -2654,6 +2654,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         resp.setFormNo(applyVO.getFormNo());
         resp.setPurchaseGroupName(applyVO.getPurchaseGroupName());
         resp.setApprovalRemark(applyVO.getApprovalRemark());
+        resp.setApprovalName(applyVO.getApprovalName());
         //统计sku数量
         List<String> skuCodes = list.stream().map(ProductSkuApplyVo2::getSkuCode).distinct().collect(Collectors.toList());
         resp.setSkuNum(skuCodes.size());

@@ -27,6 +27,9 @@ public class QueryProductApplyRespVO {
     @ApiModelProperty("审批类型")
     private Integer approvalType;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @ApiModelProperty("申请类型")
     private Integer applyType;
 
