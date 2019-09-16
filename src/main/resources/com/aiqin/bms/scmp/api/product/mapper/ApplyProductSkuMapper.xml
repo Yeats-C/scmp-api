@@ -298,6 +298,7 @@ select case
        e.sales_code                     salesCode,
        a.change_content                 changeContent,
        a.approval_remark                approvalRemark,
+       a.approval_name                  approvalName,
        a.create_by                      createBy,
        a.create_time                    createTime,
        a.update_time                    updateTime,
