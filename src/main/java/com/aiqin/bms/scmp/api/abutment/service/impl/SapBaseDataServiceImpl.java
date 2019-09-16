@@ -230,15 +230,15 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     public void supplySynchronization(SapOrderRequest sapOrderRequest) {
         List<SupplyCompany> supplierList  = supplyCompanyDao.listForSap(sapOrderRequest);
-        if(CollectionUtils.isNotEmpty(supplierList)){
+        if(CollectionUtils.isNotEmpty(supplierList)) {
             List<SapSupplier> sapSupplierList = Lists.newArrayList();
             SapSupplier sapSupplier;
             for (SupplyCompany supplyCompany : supplierList) {
                 sapSupplier = new SapSupplier();
 
                 sapSupplierList.add(sapSupplier);
+            }
         }
-
 
     }
 
