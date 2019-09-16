@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpOrderEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpStorageChangeEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
+import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
@@ -11,10 +12,7 @@ import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
@@ -22,6 +20,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -118,19 +118,127 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private RejectRecordDao rejectRecordDao;
     @Resource
     private RejectRecordDetailDao rejectRecordDetailDao;
+    @Resource
+    private StockDao stockDao;
+    @Resource
+    private SupplyCompanyDao supplyCompanyDao;
 
     /**
      * 商品数据同步
      */
-    public void productSynchronization() {
-        SapProductSku sapProductSku = new SapProductSku();
-        sapProductSku.setSapSkuCode("sku");
+    public void productSynchronization(SapOrderRequest sapOrderRequest) {
+        List<ProductSkuInfo> productSkuInfoList = productSkuDao.listForSap(sapOrderRequest);
+
+        if (CollectionUtils.isNotEmpty(productSkuInfoList)) {
+            int total = (int) Math.ceil(productSkuInfoList.size() / (SAP_API_COUNT * 1.0));
+            int endIndex;
+            List<ProductSkuInfo> subLists;
+            List<SapSkuSale> baseInfo2;
+            SapProductSku sapProductSku;
+            SapProductSkuBase baseInfo;
+            SapSkuStorageFinancial sapSkuStorageFinancial;
+            List<SapSkuStorageFinancial> sapSkuStorageFinancialList;
+            List<String> skuCodes;
+            List<StockResponse> stockList;
+            List<SapProductSku> productSkuList = Lists.newArrayList();
+            for (int i = 0; i < total; i++) {
+                endIndex = SAP_API_COUNT * (i + 1);
+                if (SAP_API_COUNT * (i + 1) >= productSkuInfoList.size()) {
+                    endIndex = productSkuInfoList.size();
+                }
+                baseInfo2 = Lists.newArrayList();
+                subLists = productSkuInfoList.subList(SAP_API_COUNT * i, endIndex);
+                skuCodes = subLists.stream().map(ProductSkuInfo::getSkuCode).collect(Collectors.toList());
+                stockList= stockDao.listBySkuCodes(skuCodes);
+                Map<String, List<SapSkuStorageFinancial>> SapSkuStorageFinancialMap = Maps.newHashMap();
+                for (StockResponse stock : stockList) {
+                    sapSkuStorageFinancial = new SapSkuStorageFinancial();
+                    sapSkuStorageFinancial.setPriceControlTag("V");
+                    sapSkuStorageFinancial.setEvaluateCategory(stock.getProductCategoryCode().substring(0, 2));
+                    sapSkuStorageFinancial.setDynamicAvgPrice(stock.getTaxCost().toString());
+                    sapSkuStorageFinancial.setCheckGroup("KP");
+                    sapSkuStorageFinancial.setFactoryCode(stock.getTransportCenterCode());
+                    sapSkuStorageFinancial.setStorageLocationCode(stock.getWarehouseCode());
+                    sapSkuStorageFinancial.setPriceUnit("1");
+                    sapSkuStorageFinancial.setPurchaseGroupCode(stock.getProcurementSectionCode());
+                    //存入map中
+                    if (SapSkuStorageFinancialMap.containsKey(stock.getSkuCode())) {
+                        sapSkuStorageFinancialList = SapSkuStorageFinancialMap.get(stock.getSkuCode());
+                        sapSkuStorageFinancialList.add(sapSkuStorageFinancial);
+                        SapSkuStorageFinancialMap.put(stock.getSkuCode(), sapSkuStorageFinancialList);
+                    } else {
+                        sapSkuStorageFinancialList = Lists.newArrayList();
+                        sapSkuStorageFinancialList.add(sapSkuStorageFinancial);
+                        SapSkuStorageFinancialMap.put(stock.getSkuCode(), sapSkuStorageFinancialList);
+                    }
+                }
+                for (ProductSkuInfo productSkuInfo : productSkuInfoList) {
+                    sapProductSku = new SapProductSku();
+                    sapProductSku.setSapSkuCode(productSkuInfo.getSkuCode());
+                    sapProductSku.setIndustryDepartmentCode("A");
+                    //取一级品类
+                    sapProductSku.setCategoryCode(productSkuInfo.getProductCategoryCode().substring(0, 2));
+                    sapProductSku.setSkuName(productSkuInfo.getSkuName());
+                    //基本视图
+                    baseInfo = new SapProductSkuBase();
+                    baseInfo.setUnit("EA");
+                    baseInfo.setProductGroupCode(productSkuInfo.getProductCategoryCode().substring(0, 2));
+                    baseInfo.setGroupCode(productSkuInfo.getProductCategoryCode());
+                    baseInfo.setWeight("KG");
+                    baseInfo.setStandard(productSkuInfo.getSpec());
+                    sapProductSku.setBaseInfo(baseInfo);
+                    sapProductSku.setBaseInfo1(SapSkuStorageFinancialMap.get(productSkuInfo.getSkuCode()));
+                    sapProductSku.setBaseInfo2(baseInfo2);
+                    productSkuList.add(sapProductSku);
+                }
+                sapStorageAbutment(productSkuList);
+                productSkuList.clear();
+            }
+        }
     }
+
+    /**
+     * sap商品对接
+     *
+     * @param productSkuList
+     */
+    private void sapStorageAbutment(List<SapProductSku> productSkuList) {
+        LOGGER.info("调用sap商品对接参数:{} ", JsonUtil.toJson(productSkuList));
+        int total = (int) Math.ceil(productSkuList.size() / (SAP_API_COUNT * 1.0));
+        int endIndex;
+        List<SapProductSku> subLists;
+        for (int i = 0; i < total; i++) {
+            endIndex = SAP_API_COUNT * (i + 1);
+            if (SAP_API_COUNT * (i + 1) >= productSkuList.size()) {
+                endIndex = productSkuList.size();
+            }
+            subLists = productSkuList.subList(SAP_API_COUNT * i, endIndex);
+            HttpClient client = HttpClient.post(PRODUCT_URL).json(subLists).timeout(1000);
+            HttpResponse httpResponse = client.action().result(HttpResponse.class);
+            if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用sap商品对接成功:{}", httpResponse.getMessage());
+            } else {
+                LOGGER.error("调用sap商品对接异常:{}", httpResponse.getMessage());
+                throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
+            }
+        }
+    }
+
 
     /**
      * 供应商数据同步
      */
-    public void supplySynchronization() {
+    public void supplySynchronization(SapOrderRequest sapOrderRequest) {
+        List<SupplyCompany> supplierList  = supplyCompanyDao.listForSap(sapOrderRequest);
+        if(CollectionUtils.isNotEmpty(supplierList)){
+            List<SapSupplier> sapSupplierList = Lists.newArrayList();
+            SapSupplier sapSupplier;
+            for (SupplyCompany supplyCompany : supplierList) {
+                sapSupplier = new SapSupplier();
+
+                sapSupplierList.add(sapSupplier);
+        }
+
 
     }
 
@@ -433,11 +541,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     public void purchaseSynchronization(SapOrderRequest sapOrderRequest) {
         List<Purchase> purchases = Lists.newArrayList();
-        purchaseOrder(sapOrderRequest, purchases);
-        sapPurchaseAbutment(purchases, 1);
-        purchases.clear();
-//        rejectOrder(sapOrderRequest,purchases);
-//        sapPurchaseAbutment(purchases,2);
+//        purchaseOrder(sapOrderRequest, purchases);
+//        sapPurchaseAbutment(purchases, 1);
+//        purchases.clear();
+        rejectOrder(sapOrderRequest, purchases);
+        sapPurchaseAbutment(purchases, 2);
 
     }
 
@@ -491,8 +599,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Map<String, PurchaseOrderDetails> orderDetailsMap = orderDetailsList.stream().collect(Collectors.toMap(PurchaseOrderDetails::getPurchaseOrderId, Function.identity()));
             List<PurchaseOrderProduct> purchaseOrderProductList = purchaseOrderProductDao.listForSap(sapOrderRequest);
             List<String> skuCodes = purchaseOrderProductList.stream().map(PurchaseOrderProduct::getSkuCode).collect(Collectors.toList());
-            List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-            Map<String, ProductSkuInfo> productSkuInfoMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, Function.identity()));
+            //查询商品的厂商指导价和属性
+            Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
             PurchaseDetail purchaseDetail;
             ProductSkuInfo productSkuInfo;
             PurchaseOrderDetails purchaseOrderDetails;
@@ -573,12 +681,94 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
     }
 
+    private Map<String, ProductSkuInfo> productInfoBySkuCode(List<String> skuCodes) {
+        List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+        if (CollectionUtils.isEmpty(productSkuList)) {
+            throw new GroundRuntimeException(String.format("商品sku:%s,未查询到信息", JsonUtil.toJson(skuCodes)));
+        }
+        return productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, Function.identity()));
+    }
+
     /**
      * 退供订单
      */
     private void rejectOrder(SapOrderRequest sapOrderRequest, List<Purchase> purchases) {
         List<RejectRecord> rejectRecordList = rejectRecordDao.listForSap(sapOrderRequest);
+        if (CollectionUtils.isNotEmpty(rejectRecordList)) {
+            List<String> rejectIds = rejectRecordList.stream().map(RejectRecord::getRejectRecordId).collect(Collectors.toList());
+            List<RejectRecordDetail> rejectRecordDetailList = rejectRecordDetailDao.listByRejectIds(rejectIds);
+            List<String> skuCodes = rejectRecordDetailList.stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
+            //查询商品的厂商指导价和属性
+            Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+            Map<String, List<PurchaseDetail>> detailMap = Maps.newHashMap();
+            PurchaseDetail purchaseDetail;
+            ProductSkuInfo productSkuInfo;
+            List<PurchaseDetail> purchaseDetailList;
+            for (RejectRecordDetail recordDetail : rejectRecordDetailList) {
+                purchaseDetail = new PurchaseDetail();
+                purchaseDetail.setOrderId(recordDetail.getRejectRecordId());
+                purchaseDetail.setSkuCode(recordDetail.getSkuCode());
+                purchaseDetail.setSkuName(recordDetail.getSkuName());
+                purchaseDetail.setSkuDesc(StringConvertUtil.productDesc(recordDetail.getColorName(), recordDetail.getProductSpec(), recordDetail.getModelNumber()));
+                purchaseDetail.setPrice(recordDetail.getProductAmount().toString());
+                purchaseDetail.setSingleCount(recordDetail.getSingleCount());
+                purchaseDetail.setProductType(recordDetail.getProductType());
+                purchaseDetail.setUnit(recordDetail.getUnitName());
+                purchaseDetail.setInputRate(recordDetail.getTaxRate());
+                purchaseDetail.setStorageCount(recordDetail.getSingleCount());
+                purchaseDetail.setUniteCount("1");
+                purchaseDetail.setCategoryCode(recordDetail.getCategoryId());
+                purchaseDetail.setCategoryName(recordDetail.getCategoryName());
+                purchaseDetail.setBrandCode(recordDetail.getBrandId());
+                purchaseDetail.setBrandName(recordDetail.getBrandName());
+                //厂商指导价
+                productSkuInfo = productSkuInfoMap.get(recordDetail.getSkuCode());
+                if (productSkuInfo != null) {
+                    purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+                    purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
+                } else {
+                    throw new GroundRuntimeException(String.format("商品sku:%s,未查询到信息", recordDetail.getSkuCode()));
+                }
+                if (detailMap.containsKey(recordDetail.getRejectRecordId())) {
+                    purchaseDetailList = detailMap.get(recordDetail.getRejectRecordId());
+                    purchaseDetailList.add(purchaseDetail);
+                    detailMap.put(recordDetail.getRejectRecordId(), purchaseDetailList);
+                } else {
+                    purchaseDetailList = Lists.newArrayList();
+                    purchaseDetailList.add(purchaseDetail);
+                    detailMap.put(recordDetail.getRejectRecordId(), purchaseDetailList);
+                }
+            }
+            Purchase purchase;
+            for (RejectRecord rejectRecord : rejectRecordList) {
+                purchase = new Purchase();
+                purchase.setOrderId(rejectRecord.getRejectRecordId());
+                purchase.setOrderCode(rejectRecord.getRejectRecordCode());
+                purchase.setSupplierCode(rejectRecord.getSupplierCode());
+                purchase.setSupplierName(rejectRecord.getSupplierName());
+                purchase.setOrderType(Integer.valueOf(ScmpOrderEnum.PURCHASE.getCode()));
+                purchase.setOrderTypeDesc(ScmpOrderEnum.PURCHASE.getDesc());
+                purchase.setTransportCode(rejectRecord.getTransportCenterCode());
+                purchase.setTransportName(rejectRecord.getTransportCenterName());
+                purchase.setWarehouseCode(rejectRecord.getWarehouseCode());
+                purchase.setWarehouseName(rejectRecord.getWarehouseName());
+                purchase.setSkuCount(rejectRecord.getSingleCount());
+                //总金额,三者实际金额加一起
+                purchase.setAmount((rejectRecord.getActualGiftAmount() + rejectRecord.getActualProductAmount() + rejectRecord.getActualReturnAmount().toString()));
+                purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
+                purchase.setGroupName(rejectRecord.getPurchaseGroupName());
+                purchase.setCompanyCode(rejectRecord.getCompanyCode());
+                purchase.setCompanyName(rejectRecord.getCompanyName());
+                purchase.setSettlementType(rejectRecord.getSettlementMethodCode());
+                purchase.setSettlementTypeDesc(rejectRecord.getSettlementMethodName());
+                purchase.setCreateTime(rejectRecord.getCreateTime());
+                purchase.setCreateById(rejectRecord.getUpdateById());
+                purchase.setCreateByName(rejectRecord.getUpdateByName());
+                purchase.setDetails(detailMap.get(rejectRecord.getRejectRecordId()));
+                purchases.add(purchase);
+            }
 
+        }
     }
 
     /**

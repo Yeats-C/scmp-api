@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
@@ -304,4 +305,6 @@ public interface ProductSkuDao {
      * @return
      */
     List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
+
+    List<ProductSkuInfo> listForSap(SapOrderRequest sapOrderRequest);
 }

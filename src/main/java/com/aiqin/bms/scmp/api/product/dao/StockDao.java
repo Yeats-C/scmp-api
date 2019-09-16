@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
@@ -197,4 +198,6 @@ public interface StockDao {
     List<Stock> selectSkuCost();
 
     Stock selectStockSum(Stock stock);
+
+    List<StockResponse> listBySkuCodes(List<String> list);
 }

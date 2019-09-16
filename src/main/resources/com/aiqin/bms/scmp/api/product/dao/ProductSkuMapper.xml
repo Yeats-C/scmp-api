@@ -2348,4 +2348,15 @@
     </foreach>
     )
   </select>
+  <select id="listForSap" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
+    select
+      ps.product_code as productCode,ps.product_name as productCode,ps.product_category_code as productCategoryCode,
+      psdi.spec as spec
+    from
+      product_sku as ps
+    left JOIN product_sku_stock_info  as psdi on psdi.product_sku_code = ps.sku_code
+     where
+         ps.update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+          and ps.update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+  </select>
 </mapper>
