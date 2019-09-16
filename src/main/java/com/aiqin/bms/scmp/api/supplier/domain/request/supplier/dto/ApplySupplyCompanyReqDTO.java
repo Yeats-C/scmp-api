@@ -163,4 +163,20 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+
+    @ApiModelProperty("结款方式")
+    private String paymentMethod;
+
+    @ApiModelProperty("品牌")
+    private String brand;
+
+    @ApiModelProperty("供货区域")
+    private String deliveryArea;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
 }

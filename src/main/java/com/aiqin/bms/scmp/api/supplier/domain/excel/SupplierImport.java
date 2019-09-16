@@ -158,6 +158,26 @@ public class SupplierImport {
     @ExcelProperty(index = 31 , value = "最高付款金额")
     private String maxPaymentAmount;
 
+    @ApiModelProperty("品牌")
+    @ExcelProperty(index = 32 , value = "品牌")
+    private String brand;
+
+    @ApiModelProperty("结款方式")
+    @ExcelProperty(index = 33 , value = "结款方式")
+    private String paymentMethod;
+
+    @ApiModelProperty("供货区域")
+    @ExcelProperty(index = 34 , value = "供货区域")
+    private String deliveryArea;
+
+    @ApiModelProperty("备注")
+    @ExcelProperty(index = 35 , value = "备注")
+    private String remark;
+
+    @ApiModelProperty("审批名称")
+    @ExcelProperty(index = 36 , value = "审批名称")
+    private String approvalName;
+
     @ApiModelProperty("错误信息")
     private String error;
 }
