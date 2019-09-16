@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableR
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductStockOutResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierReturnResponse;
@@ -158,6 +159,19 @@ public class StatisticsController {
                                                              @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
         ProductRequest request = new ProductRequest(date, type, productSortCode);
         return productStatisticsService.productMovable(request);
+    }
+
+    @GetMapping("/stock/out")
+    @ApiOperation("缺货统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<ProductStockOutResponse> productShortage(@RequestParam("date") String date,
+                                                                 @RequestParam("type") Integer type,
+                                                                 @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        ProductRequest request = new ProductRequest(date, type, productSortCode);
+        return productStatisticsService.productStockOut(request);
     }
 
 }
