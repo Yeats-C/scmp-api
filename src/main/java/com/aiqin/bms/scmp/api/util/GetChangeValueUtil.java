@@ -50,6 +50,7 @@ public class GetChangeValueUtil<T> {
         skuHeadMap.put("inventoryModel","库存模式");
         skuHeadMap.put("uniqueCode","唯一码管理");
         skuHeadMap.put("remark","备注");
+        skuHeadMap.put("productDesc","商品介绍");
 
         headMap.put("id","主键ID");
         headMap.put("supplierName","供应商集团名称");
