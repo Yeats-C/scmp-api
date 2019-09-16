@@ -45,9 +45,9 @@ public class StringConvertUtil {
      */
     public static String productDesc(String color, String spec, String model) {
         StringBuilder stringBuilder = new StringBuilder();
-        if (StringUtils.isNotBlank(color)) {
+        if (StringUtils.isNotBlank(color)&&StringUtils.isBlank(model)) {
             return stringBuilder.append(color).append("-").append(spec).toString();
-        } else if (StringUtils.isNotBlank(model)) {
+        } else if (StringUtils.isNotBlank(model)&&StringUtils.isBlank(color)) {
             return stringBuilder.append(spec).append("-").append(model).toString();
         } else {
             return spec;

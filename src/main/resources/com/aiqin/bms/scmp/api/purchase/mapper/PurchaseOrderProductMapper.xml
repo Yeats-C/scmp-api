@@ -243,4 +243,16 @@
 	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
     where p.purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
   </select>
+  <select id="listForSap" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      purchase_order_product
+    where
+    purchase_order_id in(
+    <foreach collection="orderCodeList" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
 </mapper>

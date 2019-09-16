@@ -2083,7 +2083,7 @@
   </select>
   <select id="getSkuInfoByCodeList" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
     SELECT
-      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice
+      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice, product_property_name as productPropertyName
      FROM product_sku where sku_code in
     <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
       #{item, jdbcType=VARCHAR}

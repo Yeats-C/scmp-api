@@ -10,6 +10,10 @@ import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
@@ -104,6 +108,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private ProductSkuDao productSkuDao;
     @Resource
     private AllocationMapper allocationMapper;
+    @Resource
+    private PurchaseOrderDao purchaseOrderDao;
+    @Resource
+    private PurchaseOrderProductDao purchaseOrderProductDao;
+    @Resource
+    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
+    @Resource
+    private RejectRecordDao rejectRecordDao;
+    @Resource
+    private RejectRecordDetailDao rejectRecordDetailDao;
+
     /**
      * 商品数据同步
      */
@@ -127,10 +142,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 
         List<Storage> storageList = Lists.newArrayList();
         this.inboundToStock(storageList, sapOrderRequest);
-        sapStorageAbutment(storageList,1);
+        sapStorageAbutment(storageList, 1);
         storageList.clear();
         this.outboundToStock(storageList, sapOrderRequest);
-        sapStorageAbutment(storageList,2);
+        sapStorageAbutment(storageList, 2);
     }
 
     private void sapStorageAbutment(List<Storage> storageList, Integer type) {
@@ -169,10 +184,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      *
      * @param sapOrderRequest
      */
-    private void  inboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
+    private void inboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Inbound> inboundList = inboundDao.listForSap(sapOrderRequest);
-        if(CollectionUtils.isNotEmpty(inboundList)) {
+        if (CollectionUtils.isNotEmpty(inboundList)) {
             Map<String, Inbound> inboundMap = inboundList.stream().collect(Collectors.toMap(Inbound::getInboundOderCode, Function.identity()));
             List<String> orderCodes = inboundList.stream().map(Inbound::getInboundOderCode).collect(Collectors.toList());
             List<String> inboundCodes = inboundList.stream().filter(inbound -> inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode()) || inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())).map(Inbound::getInboundOderCode).collect(Collectors.toList());
@@ -219,7 +234,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
                 }
                 //厂商指导价
-                storageDetail.setMinUnitCount(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).intValue() : 0);
+                storageDetail.setGuidePrice(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).toString() : "0");
                 if (storageDetailMap.containsKey(inboundProduct.getInboundOderCode())) {
                     storageDetailList = storageDetailMap.get(inboundProduct.getInboundOderCode());
                     storageDetailList.add(storageDetail);
@@ -287,16 +302,16 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private void outboundToStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         Storage storage;
         List<Outbound> outboundList = outboundDao.listForSap(sapOrderRequest);
-        if(CollectionUtils.isNotEmpty(outboundList)){
-            Map<String, Outbound> outboundMap = outboundList.stream().collect(Collectors.toMap(Outbound::getOutboundOderCode,Function.identity()));
+        if (CollectionUtils.isNotEmpty(outboundList)) {
+            Map<String, Outbound> outboundMap = outboundList.stream().collect(Collectors.toMap(Outbound::getOutboundOderCode, Function.identity()));
             List<String> orderCodes = outboundList.stream().map(Outbound::getOutboundOderCode).collect(Collectors.toList());
-            List<String> outBoundCodes = outboundList.stream().filter(outbound -> outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())||outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())).map(Outbound::getOutboundOderCode).collect(Collectors.toList());
+            List<String> outBoundCodes = outboundList.stream().filter(outbound -> outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode()) || outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())).map(Outbound::getOutboundOderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             //调拨出入库单据使用出库和入库的信息  其他出入库单据统一传第一个中
-            Map<String,Allocation> allocationMap = Maps.newHashMap();
-            if(CollectionUtils.isNotEmpty(outBoundCodes)){
-                List<Allocation> allocations =  allocationMapper.listByOutboundCodes(outBoundCodes);
-                allocationMap  = allocations.stream().collect(Collectors.toMap(Allocation::getOutboundOderCode,Function.identity()));
+            Map<String, Allocation> allocationMap = Maps.newHashMap();
+            if (CollectionUtils.isNotEmpty(outBoundCodes)) {
+                List<Allocation> allocations = allocationMapper.listByOutboundCodes(outBoundCodes);
+                allocationMap = allocations.stream().collect(Collectors.toMap(Allocation::getOutboundOderCode, Function.identity()));
             }
             List<OutboundBatch> batchList = outboundBatchDao.listByOrderCode(sapOrderRequest);
             List<OutboundProduct> outboundProducts = outboundProductDao.listDetailForSap(sapOrderRequest);
@@ -310,9 +325,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Outbound outbounds;
             OutboundProduct outboundProduct;
             for (OutboundBatch batch : batchList) {
-                outboundProduct = outboundProductMap.get(batch.getOutboundOderCode()+batch.getSkuCode());
-                if(outboundProduct==null){
-                    throw new GroundRuntimeException(String.format("未查询到商品信息!,sku_code:%s",batch.getSkuCode()));
+                outboundProduct = outboundProductMap.get(batch.getOutboundOderCode() + batch.getSkuCode());
+                if (outboundProduct == null) {
+                    throw new GroundRuntimeException(String.format("未查询到商品信息!,sku_code:%s", batch.getSkuCode()));
                 }
                 storageDetail = new StorageDetail();
                 storageDetail.setSkuCode(outboundProduct.getSkuCode());
@@ -331,12 +346,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
                 //销售和退供才有金额
                 outbounds = outboundMap.get(outboundProduct.getOutboundOderCode());
-                if((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))){
+                if ((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))) {
                     storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
                     storageDetail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().intValue());
                 }
                 //厂商指导价
-                storageDetail.setMinUnitCount(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).intValue() : 0);
+                storageDetail.setGuidePrice(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).toString() : "0");
                 if (storageDetailMap.containsKey(outboundProduct.getOutboundOderCode())) {
                     storageDetailList = storageDetailMap.get(outboundProduct.getOutboundOderCode());
                     storageDetailList.add(storageDetail);
@@ -351,9 +366,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             InnerValue innerValueType;
             Allocation allocation;
             //销售单的id  出库单中没有上级销售单据的具体类型  所以筛选重新查询
-            List<String> orderIds = outboundList.stream().filter((Outbound) -> Outbound.getOutboundTypeCode().equals((byte)3)).map(Outbound::getSourceOderCode).collect(Collectors.toList());
+            List<String> orderIds = outboundList.stream().filter((Outbound) -> Outbound.getOutboundTypeCode().equals((byte) 3)).map(Outbound::getSourceOderCode).collect(Collectors.toList());
             Map<String, OrderInfo> orderInfoMap = Maps.newHashMap();
-            if(CollectionUtils.isNotEmpty(orderIds)){
+            if (CollectionUtils.isNotEmpty(orderIds)) {
                 List<OrderInfo> orderInfoList = orderInfoMapper.listByIds(orderIds);
                 orderInfoMap = orderInfoList.stream().collect(Collectors.toMap(OrderInfo::getOrderCode, Function.identity()));
             }
@@ -367,13 +382,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 storage.setSubOrderTypeName(innerValue.getName());
                 //销售订单/退供才传来源类型
                 if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
-                    if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) ){
+                    if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode())) {
                         orderInfo = orderInfoMap.get(outbound.getSourceOderCode());
                         type = orderInfo.getOrderTypeCode();
                         innerValueType = StringConvertUtil.outboundSourceTypeConvert(type);
                         storage.setSourceOrderType(innerValueType.getValue());
                         storage.setSourceOrderTypeName(innerValueType.getName());
-                    }else{
+                    } else {
                         storage.setSourceOrderType(ScmpStorageChangeEnum.getByCode("5").getCode());
                         storage.setSourceOrderTypeName(ScmpStorageChangeEnum.getByCode("5").getDesc());
                     }
@@ -385,10 +400,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     storage.setStorageCode(outbound.getWarehouseCode());
                     storage.setStorageName(outbound.getWarehouseName());
                 }
-                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())||outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())) {
+                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode()) || outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())) {
                     // 调拨单据 传调出调入仓库
                     allocation = allocationMap.get(outbound.getOutboundOderCode());
-                    if(null != allocation){
+                    if (null != allocation) {
                         //调出
                         storage.setTransportCode(allocation.getCallOutLogisticsCenterCode());
                         storage.setStorageCode(allocation.getCallOutWarehouseCode());
@@ -416,8 +431,153 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     /**
      * 采购/退供数据同步
      */
-    public void purchaseSynchronization() {
+    public void purchaseSynchronization(SapOrderRequest sapOrderRequest) {
         List<Purchase> purchases = Lists.newArrayList();
+        purchaseOrder(sapOrderRequest, purchases);
+        sapPurchaseAbutment(purchases, 1);
+        purchases.clear();
+//        rejectOrder(sapOrderRequest,purchases);
+//        sapPurchaseAbutment(purchases,2);
+
+    }
+
+    /**
+     * 采购/退供单据对接
+     *
+     * @param orderList
+     * @param type
+     */
+    private void sapPurchaseAbutment(List<Purchase> orderList, Integer type) {
+        LOGGER.info("调用退供单据对接单据参数:{} ", JsonUtil.toJson(orderList));
+        LOGGER.info("type:{}", type);
+        int total = (int) Math.ceil(orderList.size() / (SAP_API_COUNT * 1.0));
+        int endIndex;
+        List<Purchase> subLists;
+        List<String> orderCodes;
+        for (int i = 0; i < total; i++) {
+            endIndex = SAP_API_COUNT * (i + 1);
+            if (SAP_API_COUNT * (i + 1) >= orderList.size()) {
+                endIndex = orderList.size();
+            }
+            subLists = orderList.subList(SAP_API_COUNT * i, endIndex);
+            orderCodes = subLists.stream().map(Purchase::getOrderId).collect(Collectors.toList());
+            HttpClient client = HttpClient.post(PURCHASE_URL).json(subLists).timeout(10000);
+            HttpResponse httpResponse = client.action().result(HttpResponse.class);
+            if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用结算sap销售单据成功:{}", httpResponse.getMessage());
+                //1 采购 2 退供 更新同步状态
+                if (type.equals(1)) {
+                    purchaseOrderDao.updateByOrderCodes(orderCodes);
+                } else if (type.equals(2)) {
+                    rejectRecordDao.updateByOrderCodes(orderCodes);
+                }
+            } else {
+                LOGGER.error("调用结算sap销售单据异常:{}", httpResponse.getMessage());
+                throw new GroundRuntimeException(String.format("调用结算sap销售单据异常:%s", httpResponse.getMessage()));
+            }
+        }
+    }
+
+
+    /**
+     * 采购订单
+     */
+    private void purchaseOrder(SapOrderRequest sapOrderRequest, List<Purchase> purchases) {
+        List<PurchaseOrder> purchaseList = purchaseOrderDao.listForSap(sapOrderRequest);
+        if (CollectionUtils.isNotEmpty(purchaseList)) {
+            List<String> purchaseIds = purchaseList.stream().map(PurchaseOrder::getPurchaseOrderId).collect(Collectors.toList());
+            sapOrderRequest.setOrderCodeList(purchaseIds);
+            List<PurchaseOrderDetails> orderDetailsList = purchaseOrderDetailsDao.listByCodes(purchaseIds);
+            Map<String, PurchaseOrderDetails> orderDetailsMap = orderDetailsList.stream().collect(Collectors.toMap(PurchaseOrderDetails::getPurchaseOrderId, Function.identity()));
+            List<PurchaseOrderProduct> purchaseOrderProductList = purchaseOrderProductDao.listForSap(sapOrderRequest);
+            List<String> skuCodes = purchaseOrderProductList.stream().map(PurchaseOrderProduct::getSkuCode).collect(Collectors.toList());
+            List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+            Map<String, ProductSkuInfo> productSkuInfoMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, Function.identity()));
+            PurchaseDetail purchaseDetail;
+            ProductSkuInfo productSkuInfo;
+            PurchaseOrderDetails purchaseOrderDetails;
+            Map<String, List<PurchaseDetail>> purchaseProductMap = Maps.newHashMap();
+            List<PurchaseDetail> purchaseDetailList;
+            for (PurchaseOrderProduct purchaseOrderProduct : purchaseOrderProductList) {
+                purchaseDetail = new PurchaseDetail();
+                purchaseDetail.setOrderId(purchaseOrderProduct.getPurchaseOrderId());
+                purchaseDetail.setSkuCode(purchaseOrderProduct.getSkuCode());
+                purchaseDetail.setSkuName(purchaseOrderProduct.getSkuName());
+                purchaseDetail.setSkuDesc(StringConvertUtil.productDesc(purchaseOrderProduct.getColorName(), purchaseOrderProduct.getProductSpec(), purchaseOrderProduct.getModelNumber()));
+                purchaseDetail.setPrice(purchaseOrderProduct.getProductAmount().toString());
+                purchaseDetail.setSingleCount(purchaseOrderProduct.getSingleCount());
+                purchaseDetail.setProductType(purchaseOrderProduct.getProductType());
+                purchaseDetail.setUnit(purchaseOrderProduct.getBoxGauge());
+                purchaseDetail.setInputRate(purchaseOrderProduct.getTaxRate());
+                purchaseDetail.setStorageCount(purchaseOrderProduct.getSingleCount());
+                purchaseDetail.setUniteCount("1");
+                purchaseDetail.setCategoryCode(purchaseOrderProduct.getCategoryId());
+                purchaseDetail.setCategoryName(purchaseOrderProduct.getCategoryName());
+                purchaseDetail.setBrandCode(purchaseOrderProduct.getBrandId());
+                purchaseDetail.setBrandName(purchaseOrderProduct.getBrandName());
+                //厂商指导价
+                productSkuInfo = productSkuInfoMap.get(purchaseOrderProduct.getSkuCode());
+                if (productSkuInfo != null) {
+                    purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+                    purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
+                } else {
+                    throw new GroundRuntimeException(String.format("商品sku:%s,未查询到信息", purchaseOrderProduct.getSkuCode()));
+                }
+                if (purchaseProductMap.containsKey(purchaseOrderProduct.getPurchaseOrderId())) {
+                    purchaseDetailList = purchaseProductMap.get(purchaseOrderProduct.getPurchaseOrderId());
+                    purchaseDetailList.add(purchaseDetail);
+                    purchaseProductMap.put(purchaseOrderProduct.getPurchaseOrderId(), purchaseDetailList);
+                } else {
+                    purchaseDetailList = Lists.newArrayList();
+                    purchaseDetailList.add(purchaseDetail);
+                    purchaseProductMap.put(purchaseOrderProduct.getPurchaseOrderId(), purchaseDetailList);
+                }
+            }
+            Purchase purchase;
+            for (PurchaseOrder purchaseOrder : purchaseList) {
+                purchase = new Purchase();
+                purchase.setOrderId(purchaseOrder.getPurchaseOrderId());
+                purchase.setOrderCode(purchaseOrder.getPurchaseOrderCode());
+                purchase.setSupplierCode(purchaseOrder.getSupplierCode());
+                purchase.setSupplierName(purchaseOrder.getSupplierName());
+                purchase.setOrderType(Integer.valueOf(ScmpOrderEnum.PURCHASE.getCode()));
+                purchase.setOrderTypeDesc(ScmpOrderEnum.PURCHASE.getDesc());
+                purchase.setTransportCode(purchaseOrder.getTransportCenterCode());
+                purchase.setTransportName(purchaseOrder.getTransportCenterName());
+                purchase.setWarehouseCode(purchaseOrder.getWarehouseCode());
+                purchase.setWarehouseName(purchaseOrder.getWarehouseName());
+                purchase.setSkuCount(purchaseOrder.getSingleCount());
+                purchase.setAmount(purchaseOrder.getProductTotalAmount().toString());
+                purchase.setGroupCode(purchaseOrder.getPurchaseGroupCode());
+                purchase.setGroupName(purchaseOrder.getPurchaseGroupName());
+                purchase.setCompanyCode(purchaseOrder.getCompanyCode());
+                purchase.setCompanyName(purchaseOrder.getCompanyName());
+                purchase.setSettlementType(purchaseOrder.getSettlementMethodCode());
+                purchase.setSettlementTypeDesc(purchaseOrder.getSettlementMethodName());
+                purchase.setCreateTime(purchaseOrder.getCreateTime());
+                purchase.setCreateById(purchaseOrder.getUpdateById());
+                purchase.setCreateByName(purchaseOrder.getUpdateByName());
+                //合同编码 等信息查询详情表
+                purchaseOrderDetails = orderDetailsMap.get(purchaseOrder.getPurchaseOrderId());
+                if (purchaseOrderDetails == null) {
+                    throw new GroundRuntimeException(String.format("未查询到采购详情数据id:%s", purchaseOrder.getPurchaseOrderId()));
+                }
+                purchase.setContractNo(purchaseOrderDetails.getContractCode());
+                purchase.setAccountName(purchaseOrderDetails.getAccountName());
+                purchase.setPayType(purchaseOrderDetails.getPaymentCode());
+                purchase.setPayTypeDesc(purchaseOrderDetails.getPaymentName());
+                purchase.setPayDate(purchaseOrderDetails.getPayableTime() == null ? 0 : purchaseOrderDetails.getPayableTime());
+                purchase.setDetails(purchaseProductMap.get(purchaseOrder.getPurchaseOrderId()));
+                purchases.add(purchase);
+            }
+        }
+    }
+
+    /**
+     * 退供订单
+     */
+    private void rejectOrder(SapOrderRequest sapOrderRequest, List<Purchase> purchases) {
+        List<RejectRecord> rejectRecordList = rejectRecordDao.listForSap(sapOrderRequest);
 
     }
 
@@ -437,6 +597,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 
     /**
      * sap订单对接
+     *
      * @param orderList
      * @param type
      */

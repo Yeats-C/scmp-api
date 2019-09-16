@@ -42,7 +42,7 @@
     supplier_name, info_status, purchase_order_status, storage_status, single_count, 
     product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
     cancel_reason, cancel_remark, create_time, create_by_id, create_by_name, apply_type_form, approval_code,
-    gift_tax_sum, company_code, company_name
+    gift_tax_sum, company_code, company_name, update_by_id, update_by_name
   </sql>
   <insert id="insert">
     insert into purchase_order (purchase_order_id, purchase_order_code, transport_center_code, transport_center_name,
@@ -238,6 +238,27 @@
     inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
     where o.purchase_order_status in(3, 4, 5, 6)
     and d.valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
-    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
+    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}listForSap
   </select>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+      purchase_order
+    <where>
+         purchase_order_status = 8
+      and synchr_status = 0
+    </where>
+  </select>
+  <update id="updateByOrderCodes">
+    update
+      purchase_order
+    set
+    synchr_status=1
+    where
+    purchase_order_id in
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </update>
 </mapper>
