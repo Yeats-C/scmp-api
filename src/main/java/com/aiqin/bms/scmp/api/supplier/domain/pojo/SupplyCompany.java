@@ -166,4 +166,19 @@ public class SupplyCompany extends CommonBean {
 
     @ApiModelProperty("发送地址")
     private String sendingAddress;
+
+    @ApiModelProperty("结款方式")
+    private String paymentMethod;
+
+    @ApiModelProperty("品牌")
+    private String brand;
+
+    @ApiModelProperty("供货区域")
+    private String deliveryArea;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
 }

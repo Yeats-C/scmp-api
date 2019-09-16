@@ -527,8 +527,6 @@
       a.id
     from
     product_sku_config a
-    left join product_sku_config_spare_warehouse b
-    on a.config_code = b.config_code
     left join product_sku c
     on a.sku_code = c.sku_code
     where a.del_flag = 0
@@ -554,9 +552,9 @@
       and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
     </if>
     <if test="personId != null and personId != '' ">
-      and c.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      and exists (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
     </if>
-    group by a.id order by a.create_time desc
+    order by a.id desc
   </select>
     <select id="selectByVo" resultMap="BaseResultMap">
       select

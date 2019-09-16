@@ -65,6 +65,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.poifs.common.POIFSBigBlockSize;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1043,7 +1044,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO) {
+    public int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark) {
         //验证重复 如果有审核中的数据，不能提交流程
         StringBuilder sb = new StringBuilder();
         if(CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
@@ -1068,6 +1069,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
         Date currentDate = new Date();
         String applyBy = getUser().getPersonName();
+        Set<String> isRepeatSet = Sets.newHashSet();
         applyProductSkus.forEach(item->{
             item.setApplyCode(String.valueOf(code));
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
@@ -1076,7 +1078,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             item.setUpdateBy(applyBy);
             item.setUpdateTime(currentDate);
             item.setFormNo(formNo);
+            item.setApprovalName(approvalName);
+            item.setApprovalRemark(approvalRemark);
+            isRepeatSet.add(item.getProcurementSectionCode());
         });
+        if(isRepeatSet.size()>1){
+            throw  new BizException(ResultCode.PURCHASE_GROUP_REPEAT);
+        }
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //批量新增sku申请信息
             productSkuDao.insertApplySkuList(applyProductSkus);
@@ -1139,7 +1147,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //调用审批接口
-            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode());
+            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
         }
         return 1;
     }
@@ -1362,8 +1370,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode) {
-        List<ProductSkuApplyVo> list = applyProductSkuMapper.selectByApplyCode(applyCode);
+    public ProductApplyInfoRespVO<ProductSkuApplyVo2> getSkuApplyDetail(String applyCode) {
+        List<ProductSkuApplyVo2> list = applyProductSkuMapper.selectByApplyCode2(applyCode);
         if(CollectionUtils.isEmpty(list)){
             throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
         }
@@ -1468,7 +1476,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode) {
+    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
@@ -1478,7 +1486,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
         String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
-        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
+//        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
+        String title = approvalName;
         workFlowVO.setTitle(title);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
@@ -2630,10 +2639,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
-    private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {
-        ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
+    private ProductApplyInfoRespVO<ProductSkuApplyVo2> dealApplyViewData(List<ProductSkuApplyVo2> list) {
+        ProductApplyInfoRespVO<ProductSkuApplyVo2> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
-        ProductSkuApplyVo applyVO = list.get(0);
+        ProductSkuApplyVo2 applyVO = list.get(0);
         resp.setApplyBy(applyVO.getUpdateBy());
         resp.setApplyTime(applyVO.getUpdateTime());
         resp.setApplyStatus(applyVO.getApplyStatus());
@@ -2643,11 +2652,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         resp.setSelectionEffectiveTime(applyVO.getSelectionEffectiveTime());
         resp.setCode(applyVO.getApplyCode());
         resp.setFormNo(applyVO.getFormNo());
+        resp.setPurchaseGroupName(applyVO.getPurchaseGroupName());
+        resp.setApprovalRemark(applyVO.getApprovalRemark());
         //统计sku数量
-        List<String> skuCodes = list.stream().map(ProductSkuApplyVo::getCode).distinct().collect(Collectors.toList());
+        List<String> skuCodes = list.stream().map(ProductSkuApplyVo2::getSkuCode).distinct().collect(Collectors.toList());
         resp.setSkuNum(skuCodes.size());
         //统计SPU数量吗
-        List<String> spuCodes = list.stream().map(ProductSkuApplyVo::getProductCode).distinct().collect(Collectors.toList());
+        List<String> spuCodes = list.stream().map(ProductSkuApplyVo2::getProductName).distinct().collect(Collectors.toList());
         resp.setSpuNum(spuCodes.size());
         resp.setData(list);
         return resp;

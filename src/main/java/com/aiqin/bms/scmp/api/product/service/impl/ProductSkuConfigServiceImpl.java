@@ -439,6 +439,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (null == currentAuthToken) {
             throw new BizException(ResultCode.LOGIN_ERROR);
         }
+        //验证是否有供应商信息
+        if (CollectionUtils.isEmpty(reqVo.getSkuConfigs())) {
+            throw new BizException(ResultCode.AT_LEAST_ONE_DATA);
+        }
         //通过编码查询出配置信息数据
         List<ProductSkuConfigDraft> configDrafts = draftMapper.selectByCodes(reqVo.getSkuConfigs());
         if (CollectionUtils.isEmpty(configDrafts)) {

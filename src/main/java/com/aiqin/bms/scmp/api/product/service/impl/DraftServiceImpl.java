@@ -176,7 +176,7 @@ public class DraftServiceImpl implements DraftService {
             BeanCopyUtils.copy(reqVo,saveSkuApplyInfoReqVO);
             List<String> skuCodes = (List<String>) reqVo.getData();
             saveSkuApplyInfoReqVO.setSkuCodes(skuCodes);
-            skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO);
+            skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO,reqVo.getApprovalName(),reqVo.getApprovalRemark());
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
             BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
