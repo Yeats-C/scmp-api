@@ -78,9 +78,11 @@ public interface SkuInfoService{
     /**
      * 根据传入的商品编码集合或者sku编码集合新增申请
      * @param saveSkuApplyInfoReqVO
+     * @param approvalName
+     * @param approvalRemark
      * @return
      */
-    int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO);
+    int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark);
     /**
      * 根据skucode获取sku相关所有草稿信息
      * @param skuCode
@@ -125,7 +127,7 @@ public interface SkuInfoService{
      * @param applyCode
      * @return
      */
-    ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode);
+    ProductApplyInfoRespVO<ProductSkuApplyVo2> getSkuApplyDetail(String applyCode);
 
     /**
      * 单个sku申请详情
@@ -139,7 +141,7 @@ public interface SkuInfoService{
     int cancelApply(ApplyProductSku applyProductSku);
 
 
-    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus,String directSupervisorCode);
+    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName);
 
     String skuWorkFlowCallback(WorkFlowCallbackVO vo1);
 

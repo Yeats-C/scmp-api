@@ -107,7 +107,7 @@ public class SkuInfoController {
     @ApiOperation("新增sku申请")
     public HttpResponse addSkuApply(@RequestBody SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO){
         try {
-            return HttpResponse.success(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO));
+            return HttpResponse.success(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, null, null));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, 400, e.getMessage()));

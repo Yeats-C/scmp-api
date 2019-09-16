@@ -44,6 +44,12 @@ public class ProductApplyInfoRespVO<T> {
     @ApiModelProperty("sku数量")
     private Integer skuNum;
 
+    @ApiModelProperty("采购组")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
     @ApiModelProperty("状态")
     private Integer applyStatus;
 

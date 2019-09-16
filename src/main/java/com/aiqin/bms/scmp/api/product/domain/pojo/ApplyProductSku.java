@@ -222,4 +222,10 @@ public class ApplyProductSku extends CommonBean {
 
     @ApiModelProperty("商品描述")
     private String productDesc;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
 }
