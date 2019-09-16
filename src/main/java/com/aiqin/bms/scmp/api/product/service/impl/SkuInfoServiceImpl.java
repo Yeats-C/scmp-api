@@ -1044,7 +1044,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark) {
+    public String saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark) {
         //验证重复 如果有审核中的数据，不能提交流程
         StringBuilder sb = new StringBuilder();
         if(CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
@@ -1149,7 +1149,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //调用审批接口
             workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
         }
-        return 1;
+        return formNo;
     }
 
     @Override
