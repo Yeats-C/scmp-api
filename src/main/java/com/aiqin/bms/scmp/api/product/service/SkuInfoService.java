@@ -82,7 +82,7 @@ public interface SkuInfoService{
      * @param approvalRemark
      * @return
      */
-    int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark);
+    String saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark);
     /**
      * 根据skucode获取sku相关所有草稿信息
      * @param skuCode

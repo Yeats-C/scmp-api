@@ -171,12 +171,13 @@ public class DraftServiceImpl implements DraftService {
         if(null == reqVo.getData()){
             throw new BizException(ResultCode.APPLY_DATA_EMPTY);
         }
+        String s = "";
         if (Objects.equals(ApprovalTypeEnum.PRODUCT_SKU,approvalTypeEnum)) {
             SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO = new SaveSkuApplyInfoReqVO();
             BeanCopyUtils.copy(reqVo,saveSkuApplyInfoReqVO);
             List<String> skuCodes = (List<String>) reqVo.getData();
             saveSkuApplyInfoReqVO.setSkuCodes(skuCodes);
-            skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO,reqVo.getApprovalName(),reqVo.getApprovalRemark());
+            s = skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, reqVo.getApprovalName(), reqVo.getApprovalRemark());
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
             BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
@@ -191,7 +192,7 @@ public class DraftServiceImpl implements DraftService {
             saleAreaReqVO.setAreaCodes(areaCodes);
             productSaleAreaService.addSaleAreaApply(saleAreaReqVO);
         }
-        return HttpResponse.success(1);
+        return HttpResponse.success(s);
     }
 
     @Override
