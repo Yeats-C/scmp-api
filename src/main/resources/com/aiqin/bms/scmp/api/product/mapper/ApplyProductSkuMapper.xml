@@ -345,6 +345,7 @@ from apply_product_sku a
          left join apply_product_sku_channel m
                    on m.sku_code = a.sku_code and a.apply_code = m.apply_code
 where a.apply_code = #{applyCode}
+group by a.sku_code
   </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select
