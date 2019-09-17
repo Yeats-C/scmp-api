@@ -6,10 +6,10 @@ import lombok.Data;
 
 /**
  * @author: zhao shuai
- * @create: 2019-09-09
+ * @create: 2019-09-16
  **/
 @Data
-public class ProductRequest {
+public class InventoryStatisticsRequest {
 
     @ApiModelProperty(value="日期")
     @JsonProperty("date")
@@ -27,25 +27,22 @@ public class ProductRequest {
     @JsonProperty("type")
     private Integer type;
 
+    @ApiModelProperty(value="报表类型: 0 年报 2 月报")
+    @JsonProperty("report_type")
+    private Integer reportType;
+
     @ApiModelProperty(value = "所属部门")
     @JsonProperty("product_sort_code")
     private String productSortCode;
-
-    @ApiModelProperty(value="品类code")
-    @JsonProperty("lv1")
-    private String lv1;
-
-    @ApiModelProperty(value="渠道code")
-    @JsonProperty("price_channel_code")
-    private String priceChannelCode;
 
     @ApiModelProperty(value="采购组code")
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
 
-    public ProductRequest(String date, Integer type, String productSortCode) {
+    public InventoryStatisticsRequest(String date, Integer type, Integer reportType, String productSortCode) {
         this.date = date;
         this.type = type;
+        this.reportType = reportType;
         this.productSortCode = productSortCode;
     }
 }

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatDeptStockoutDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStockout">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
+    <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="sku_num_total" jdbcType="BIGINT" property="skuNumTotal" />
+    <result column="stockout_sku_num" jdbcType="BIGINT" property="stockoutSkuNum" />
+    <result column="stockout_rate" jdbcType="DECIMAL" property="stockoutRate" />
+    <result column="stockout_effect_amount" jdbcType="BIGINT" property="stockoutEffectAmount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, stat_month, product_sort_code, product_sort_name, purchase_group_code, 
+    purchase_group_name, responsible_person_code, responsible_person_name, transport_center_code, 
+    transport_center_name, sku_num_total, stockout_sku_num, stockout_rate, stockout_effect_amount, 
+    create_time
+  </sql>
+  <select id="stockOutSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStockout">
+    select
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+    sum(ifnull(sku_num_total,0)) as skuNumTotal, sum(ifnull(stockout_sku_num,0)) as stockoutSkuNum,
+    sum(ifnull(stockout_effect_amount,0)) as stockoutEffectAmount
+    from stat_dept_stockout
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupCode != null">
+      and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="purchaseGroupList" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStockout">
+    select
+    purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+    responsible_person_code as responsiblePersonCode, responsible_person_name as responsiblePersonName
+    from stat_dept_stockout
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by purchase_group_code
+    order by purchase_group_code
+  </select>
+  <select id="deptList" resultType="com.aiqin.bms.scmp.api.statistics.domain.StatDeptStockout">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_stockout
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
+</mapper>
