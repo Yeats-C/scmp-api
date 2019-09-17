@@ -104,7 +104,7 @@
       auditor_time, apply_status, supplier_name, 
       purchasing_group_code, zip_code,purchasing_group_name,tax_id,
       corporate_representative,registered_capital,enable,
-      company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name)
+      company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,payment_method,brand,delivery_area,remark,approval_name)
     values (#{id,jdbcType=BIGINT}, #{supplyName,jdbcType=VARCHAR}, #{supplyType,jdbcType=VARCHAR}, 
       #{supplyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -119,7 +119,7 @@
       #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=DECIMAL},
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount,jdbcType=BIGINT}, #{minOrderAmount,jdbcType=BIGINT},#{businessLicense, jdbcType=VARCHAR},
-      #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR})
+      #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     insert into supply_company
@@ -545,7 +545,12 @@
       business_license = #{businessLicense, jdbcType=VARCHAR},
       star_score = #{starScore, jdbcType=DECIMAL},
       direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
-      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR}
+      direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+      payment_method = #{paymentMethod,jdbcType=VARCHAR},
+      brand = #{brand,jdbcType=VARCHAR},
+      delivery_area = #{deliveryArea,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      approval_name = #{approvalName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateStarScore">

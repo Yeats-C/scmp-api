@@ -41,4 +41,10 @@ public class SaveReqVo<T> {
     @NotEmpty(message = "提交的数据不能为空！")
     private T data;
 
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
 }
