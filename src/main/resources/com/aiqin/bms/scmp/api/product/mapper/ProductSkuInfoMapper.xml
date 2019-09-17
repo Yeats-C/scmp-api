@@ -207,7 +207,16 @@
        ROUND(j.tax_included_price/100,2)                  taxIncludedPrice,
        ROUND(j.joint_franchise_rate/100,2)                     jointFranchiseRate,
        ROUND(j.point/100,2)                                    point,
-       a.sku_status                               skuStatus,
+       case
+           when a.sku_status = 0
+               then '再用'
+           when a.sku_status = 1
+               then '停止进货'
+           when a.sku_status = 2
+               then '停止配送'
+           when a.sku_status = 3
+               then '停止销售'
+           end                                    skuStatus,
        a.remark                                   remark,
        a.warehouse_type_name                      warehouseTypeName,
        a.color_name                               colorName,
@@ -255,8 +264,17 @@ from product_sku a
                a.applicable_month_age                     applicableMonthAge,
                f.zero_removal_coefficient                 zeroRemovalCoefficient,
                a.product_sort_name                        productSortName,
-               a.manufacturer_guide_price                 manufacturerGuidePrice,
-               a.sku_status                               skuStatus,
+               ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
+               case
+                    when a.sku_status = 0
+                        then '再用'
+                    when a.sku_status = 1
+                        then '停止进货'
+                    when a.sku_status = 2
+                        then '停止配送'
+                    when a.sku_status = 3
+                        then '停止销售'
+                end                                       skuStatus,
                a.warehouse_type_name                      warehouseTypeName,
                a.color_name                               colorName,
                case

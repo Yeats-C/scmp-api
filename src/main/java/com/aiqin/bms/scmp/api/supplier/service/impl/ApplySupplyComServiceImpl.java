@@ -1024,6 +1024,11 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     });
                     supplyComDetailRespVO.setFileReqVOList(list);
                 }
+                List<ApplySupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(supplyCompanyDetailDTO.getSupplyCode());
+                if(CollectionUtils.isNotEmptyCollection(supplyCompanyPurchaseGroups)){
+                    List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos = BeanCopyUtils.copyList(supplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
+                    supplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupVos);
+                }
 //                if (Objects.equals(StatusTypeCode.SHOW_ACCOUNT_SKU,statusTypeCode)) {
 //                    QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
 //                    vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());

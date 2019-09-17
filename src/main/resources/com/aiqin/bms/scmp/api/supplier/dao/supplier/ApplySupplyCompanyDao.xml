@@ -393,12 +393,21 @@
     WHERE a.id=#{applyId,jdbcType=BIGINT}
   </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
-    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0
+    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0 and apply_status in (1,2,5)
     <if test="name != null and name != '' ">
       AND apply_supply_name =#{name,jdbcType=VARCHAR}
     </if>
     <if test="code != null and code != ''">
       and supply_company_code !=#{code,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="checkName2" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0 and apply_status = 1
+    <if test="name != null and name != '' ">
+      AND apply_supply_name =#{name,jdbcType=VARCHAR}
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}

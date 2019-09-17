@@ -34,7 +34,7 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("申请供应商类型名称（导入后返给前端，只做展示）")
     private String applySupplyTypeName;
 
-    @NotEmpty(message = "简称不能为空")
+//    @NotEmpty(message = "简称不能为空")
     @ApiModelProperty("简称")
     private String applyAbbreviation;
 
