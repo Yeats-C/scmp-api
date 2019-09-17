@@ -761,7 +761,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             skuInfoService.updateStatus(respVos);
         }
         //设置状态为同步完成
-        applyMapper.updateBySynStatus(list);
+        if (CollectionUtils.isNotEmpty(list)) {
+            applyMapper.updateBySynStatus(list);
+        }
     }
 
     /**

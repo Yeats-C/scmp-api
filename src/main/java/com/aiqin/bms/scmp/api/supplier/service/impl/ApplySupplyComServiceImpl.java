@@ -130,7 +130,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         map.put("companyCode",companyCode);
         int nameCount = applySupplyCompanyDao.checkName(map);
         if (nameCount > 0){
-          throw new GroundRuntimeException("名字重复无法添加");
+          throw new GroundRuntimeException("名字在申请表中存在,无法添加");
+        }
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+        map1.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
+        map1.put("companyCode",companyCode);
+        int nameCount1 = supplyCompanyDao.checkName2(map1);
+        if (nameCount1 > 0){
+            throw new GroundRuntimeException("名字在正式表中存在,无法添加");
         }
         try {
             //复制对象
@@ -182,6 +190,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             map.put("companyCode",companyCode);
             int nameCount = supplyCompanyDao.checkName(map);
             if (nameCount > 0){
+                throw new BizException(ResultCode.NAME_REPEAT);
+            }
+            //查申请表
+            Map<String,Object> map1 = new HashMap<>();
+            map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+            map1.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
+            map1.put("companyCode",companyCode);
+            int nameCount1 = applySupplyCompanyDao.checkName(map1);
+            if (nameCount1 > 0){
                 throw new BizException(ResultCode.NAME_REPEAT);
             }
             //复制对象
@@ -1024,6 +1041,11 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     });
                     supplyComDetailRespVO.setFileReqVOList(list);
                 }
+                List<ApplySupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(supplyCompanyDetailDTO.getSupplyCode());
+                if(CollectionUtils.isNotEmptyCollection(supplyCompanyPurchaseGroups)){
+                    List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos = BeanCopyUtils.copyList(supplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
+                    supplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupVos);
+                }
 //                if (Objects.equals(StatusTypeCode.SHOW_ACCOUNT_SKU,statusTypeCode)) {
 //                    QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
 //                    vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
@@ -1066,7 +1088,14 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 throw new BizException(ResultCode.NAME_REPEAT);
             }
             //通过编码查询
-
+            Map<String,Object> map1 = new HashMap<>();
+            map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+            map1.put("code",s.getSupplyCompanyCode());
+            map1.put("companyCode",companyCode);
+            int nameCount1 = applySupplyCompanyDao.checkName(map1);
+            if (nameCount1 > 0){
+                throw new BizException(ResultCode.NAME_REPEAT);
+            }
             //复制对象
             ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);

@@ -17,7 +17,7 @@ public class ApplySupplierReqVO{
     @ApiModelProperty("供应商名称")
     private String supplierName;
 
-    @NotEmpty(message = "简称不能为空")
+//    @NotEmpty(message = "简称不能为空")
     @ApiModelProperty("简称")
     private String supplierAbbreviation;
 

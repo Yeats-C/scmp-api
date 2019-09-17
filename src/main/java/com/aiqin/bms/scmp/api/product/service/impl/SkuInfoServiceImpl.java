@@ -1602,7 +1602,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuSubService.saveList(skuCode, applyCode);
             }
             //价格
-            List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
+//            List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
+            List<String> skuCodes = Lists.newArrayList();
+            skuCodes.add(skuCode);
             List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
             if (CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)) {
                 List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode, ProductSkuPriceInfo.class);
