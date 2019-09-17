@@ -35,19 +35,30 @@
     lv1_category_name as lv1CategoryName,
     sum(ifnull(curr_sales_amount,0)) as currSalesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
     sum(ifnull(curr_margin,0)) as currMargin, sum(ifnull(pre_margin,0)) as preMargin
-    from stat_com_category_sales
+    from stat_dept_category_sales
     where stat_year = #{year,jdbcType=BIGINT}
     and stat_month = #{month,jdbcType=BIGINT}
-    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
     <if test="priceChannelCode != null">
       and price_channel_code = #{priceChannelCode,jdbcType=VARCHAR}
     </if>
+  </select>
+  <select id="categoryByDept" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
+    select
+    product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_category_sales
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
   </select>
   <select id="categoryByCompany" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.CompanyAndDeptResponse">
     select
     product_sort_code as productSortCode, product_sort_name as productSortName,
     price_channel_code as priceChannelCode, price_channel_name as priceChannelName
-    from stat_com_category_sales
+    from stat_dept_category_sales
     where stat_year = #{year,jdbcType=BIGINT}
     and stat_month = #{month,jdbcType=BIGINT}
     and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
@@ -61,7 +72,7 @@
       lv1_category_name as lv1CategoryName, create_time as createTime, ifnull(curr_sales_amount,0) as currSalesAmount,
       ifnull(pre_sales_amount,0) as preSalesAmount, ifnull(curr_margin,0) as currMargin,
       ifnull(pre_margin,0) as preMargin
-    from stat_com_category_sales
+    from stat_dept_category_sales
     where stat_year = #{year,jdbcType=BIGINT}
     and stat_month = #{month,jdbcType=BIGINT}
     and product_sort_code = #{productSortCode,jdbcType=VARCHAR}

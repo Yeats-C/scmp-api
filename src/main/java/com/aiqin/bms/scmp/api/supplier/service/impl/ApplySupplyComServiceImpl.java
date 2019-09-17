@@ -39,10 +39,12 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
@@ -1607,6 +1609,30 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //            }
             sendVO.setDeliveryType((byte) 0);
             returnVO.setDeliveryType((byte) 1);
+
+            //"品牌"
+            if (StringUtils.isNotBlank(supplierImport.getBrand())) {
+                reqVO.setBrand(supplierImport.getBrand().trim());
+            }
+            //"结款方式")
+            if (StringUtils.isNotBlank(supplierImport.getPaymentMethod())) {
+                reqVO.setPaymentMethod(supplierImport.getPaymentMethod().trim());
+            }
+
+            //"供货区域")
+            if (StringUtils.isNotBlank(supplierImport.getDeliveryArea())) {
+                reqVO.setDeliveryArea(supplierImport.getDeliveryArea().trim());
+            }
+            //"备注")
+            if (StringUtils.isNotBlank(supplierImport.getRemark())) {
+                reqVO.setRemark(supplierImport.getRemark().trim());
+            }
+            //"审批名称")
+            if (StringUtils.isBlank(supplierImport.getApprovalName())) {
+                error.add("审批名称不能为空");
+            }else{
+                reqVO.setApprovalName(supplierImport.getApprovalName().trim());
+            }
             return this;
         }
         private CheckSupply checkAccount(){

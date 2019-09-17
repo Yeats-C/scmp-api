@@ -86,4 +86,7 @@ public class ProductSkuApplyVo {
 
     @ApiModelProperty(value = "改变内容",hidden = true)
     private String changeContent;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
 }

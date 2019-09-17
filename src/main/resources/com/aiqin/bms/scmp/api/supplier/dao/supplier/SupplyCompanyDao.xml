@@ -70,6 +70,11 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+    <result column="payment_method" jdbcType="VARCHAR" property="paymentMethod"/>
+    <result column="brand" jdbcType="VARCHAR" property="brand"/>
+    <result column="delivery_area" jdbcType="VARCHAR" property="deliveryArea"/>
+    <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
   </resultMap>
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -229,7 +234,12 @@
       sc.create_time,
       sc.create_by,
       sc.update_time,
-      sc.update_by
+      sc.update_by,
+      sc.payment_method,
+      sc.brand,
+      sc.delivery_area,
+      sc.remark,
+      sc.approval_name
     FROM supply_company sc
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
@@ -270,7 +280,12 @@
       sc.business_license,
       sc.star_score,
       sc.direct_supervisor_code,
-      sc.direct_supervisor_name
+      sc.direct_supervisor_name,
+      sc.payment_method,
+      sc.brand,
+      sc.delivery_area,
+      sc.remark,
+      sc.approval_name
     FROM apply_supply_company sc
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.apply_supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}

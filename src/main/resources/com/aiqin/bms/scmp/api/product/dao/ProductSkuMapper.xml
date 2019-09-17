@@ -1048,7 +1048,7 @@
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc)
+    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc,approval_remark,approval_name)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1075,7 +1075,7 @@
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
       #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT},#{item.skuStatus,jdbcType=TINYINT},
-      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR}
+      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR},#{item.approvalName,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

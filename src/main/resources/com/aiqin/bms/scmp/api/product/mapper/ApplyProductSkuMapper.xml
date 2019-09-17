@@ -143,6 +143,8 @@
       auditor_by,
       auditor_time,
       form_no,
+      approval_name approvalName,
+      approval_remark approvalRemark,
       1 as approval_type,
       apply_type
       from apply_product_sku
@@ -190,6 +192,7 @@
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus"/>
     <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy"/>
     <result column="change_content" jdbcType="VARCHAR" property="changeContent"/>
+    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark"/>
     <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime"/>
     <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime"/>
     <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime"/>
@@ -217,7 +220,8 @@
     a.auditor_time,
     a.selection_effective_time,
     a.selection_effective_start_time,
-    a.change_content
+    a.change_content,
+    a.approval_remark
     from apply_product_sku a
     LEFT JOIN product_category lv4
     on lv4.category_id = a.product_category_code
@@ -228,6 +232,121 @@
     LEFT JOIN product_category lv1
     on lv1.category_id = lv2.parent_id
     where a.apply_code = #{applyCode}
+  </select>
+
+  <select id="selectByApplyCode2" resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuApplyVo2">
+select case
+           when a.apply_type = 1
+               then '新增'
+           when a.apply_type = 2
+               then '修改'
+           end                          applyType,
+       case
+           when a.goods_gifts = 0
+               then '商品'
+           when a.goods_gifts = 1
+               then '赠品'
+           end                          goodsGifts,
+       a.sku_code                       skuCode,
+       a.sku_name                       skuName,
+       a.product_name                   productName,
+       a.product_category_name          productCategoryName,
+       a.product_brand_name             productBrandName,
+       a.product_property_name          productPropertyName,
+       g.settlement_method_name         settlementMethodName,
+       a.manufacturer_guide_price       manufacturerGuidePrice,
+       j.tax_included_price             taxIncludedPrice,
+       i2.price_tax                     aiqinDistributionPrice,
+       i3.price_tax                     mengbeishuDistributionPrice,
+       i8.price_tax                     xiaohongmaDistributionPrice,
+       i5.price_tax                     aiqinChannelPrice,
+       i6.price_tax                     mengbeishuChannelPrice,
+       i7.price_tax                     xiaohongmaChannelPrice,
+       h.price_tax                      salePrice,
+       i.price_tax                      memberPrice,
+       g.output_tax_rate                outputTaxRate,
+       g.Input_tax_rate                 inputTaxRate,
+       a.color_name                     colorName,
+       a.model_number                   modelNumber,
+       case
+           when a.quality_assurance_management = 0
+               then '是'
+           when a.quality_assurance_management = 1
+               then '否'
+           end                          qualityAssuranceManagement,
+       a.quality_date                   qualityDate,
+       case
+           when a.quality_number = 1
+               then '天'
+           when a.quality_number = 2
+               then '月'
+           when a.quality_number = 3
+               then '年'
+           end                          qualityNumber,
+       a.applicable_month_age           applicableMonthAge,
+       case
+           when a.unique_code = 0
+               then '是'
+           when a.unique_code = 1
+               then '否'
+           end                          uniqueCode,
+       j.supply_unit_name               supplyUnitName,
+       c.spec                           spec,
+       c.unit_name                      unitName,
+       l.base_product_content           inBaseProductContent,
+       f.zero_removal_coefficient       zeroRemovalCoefficient,
+       e.sales_code                     salesCode,
+       a.change_content                 changeContent,
+       a.approval_remark                approvalRemark,
+       a.approval_name                  approvalName,
+       a.create_by                      createBy,
+       a.create_time                    createTime,
+       a.update_time                    updateTime,
+       a.update_by                      updateBy,
+       a.apply_status                   applyStatus,
+       a.form_no                        formNo,
+       a.apply_code                     applyCode,
+       a.auditor_by                     auditorBy,
+       a.auditor_time                   auditorTime,
+       a.selection_effective_end_time   selectionEffectiveEndTime,
+       a.selection_effective_start_time selectionEffectiveStartTime,
+       group_concat(m.price_channel_name) coverage,
+       a.procurement_section_name       purchaseGroupName
+from apply_product_sku a
+         left join apply_product_sku_stock_info c on a.sku_code = c.product_sku_code and a.apply_code = c.apply_code
+         left join apply_product_sku_box_packing d
+                   on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code and a.apply_code = d.apply_code
+         left join apply_product_sku_sales_info e
+                   on e.product_sku_code = a.sku_code and e.is_default = 1 and a.apply_code = e.apply_code
+         left join apply_product_sku_distribution_info f
+                   on a.sku_code = f.product_sku_code and a.apply_code = f.apply_code
+         left join apply_product_sku_checkout g on g.sku_code = a.sku_code and a.apply_code = g.apply_code
+         left join apply_product_sku_price_info h
+                   on h.sku_code = a.sku_code and h.price_item_code = '1013' and a.apply_code = h.apply_code #售价
+         left join apply_product_sku_price_info i
+                   on i.sku_code = a.sku_code and i.price_item_code = '1014' and a.apply_code = i.apply_code #会员价
+         left join apply_product_sku_supply_unit j
+                   on j.product_sku_code = a.sku_code and j.is_default = 1 and a.apply_code = j.apply_code
+         left join apply_product_sku_price_info i2
+                   on i2.sku_code = a.sku_code and i2.price_item_code = '1007' and a.apply_code = i2.apply_code #爱亲分销价
+         left join apply_product_sku_price_info i3
+                   on i3.sku_code = a.sku_code and i3.price_item_code = '1008' and a.apply_code = i3.apply_code #萌贝树分销价
+         left join apply_product_sku_price_info i5
+                   on i5.sku_code = a.sku_code and i5.price_item_code = '1001' and a.apply_code = i5.apply_code #爱亲渠道价
+         left join apply_product_sku_price_info i6
+                   on i6.sku_code = a.sku_code and i6.price_item_code = '1002' and a.apply_code = i6.apply_code #萌贝树渠道价
+         left join apply_product_sku_price_info i7
+                   on i7.sku_code = a.sku_code and i7.price_item_code = '1003' and a.apply_code = i7.apply_code #小红马渠道价
+         left join apply_product_sku_price_info i8
+                   on i8.sku_code = a.sku_code and i8.price_item_code = '1009' and a.apply_code = i8.apply_code #小红马分销价
+         left join apply_product_sku_manufacturer k
+                   on a.sku_code = k.product_sku_code and k.is_default = 1 and a.apply_code = k.apply_code
+         left join apply_product_sku_purchase_info l
+                   on l.product_sku_code = a.sku_code and a.apply_code = l.apply_code
+         left join apply_product_sku_channel m
+                   on m.sku_code = a.sku_code and a.apply_code = m.apply_code
+where a.apply_code = #{applyCode}
+group by a.sku_code
   </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select

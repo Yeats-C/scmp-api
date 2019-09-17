@@ -65,6 +65,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.poi.poifs.common.POIFSBigBlockSize;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -1043,7 +1044,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public int saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO) {
+    public String saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark) {
         //验证重复 如果有审核中的数据，不能提交流程
         StringBuilder sb = new StringBuilder();
         if(CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
@@ -1068,6 +1069,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
         Date currentDate = new Date();
         String applyBy = getUser().getPersonName();
+        Set<String> isRepeatSet = Sets.newHashSet();
         applyProductSkus.forEach(item->{
             item.setApplyCode(String.valueOf(code));
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
@@ -1076,7 +1078,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             item.setUpdateBy(applyBy);
             item.setUpdateTime(currentDate);
             item.setFormNo(formNo);
+            item.setApprovalName(approvalName);
+            item.setApprovalRemark(approvalRemark);
+            isRepeatSet.add(item.getProcurementSectionCode());
         });
+        if(isRepeatSet.size()>1){
+            throw  new BizException(ResultCode.PURCHASE_GROUP_REPEAT);
+        }
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //批量新增sku申请信息
             productSkuDao.insertApplySkuList(applyProductSkus);
@@ -1139,9 +1147,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //调用审批接口
-            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode());
+            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
         }
-        return 1;
+        return formNo;
     }
 
     @Override
@@ -1362,8 +1370,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public ProductApplyInfoRespVO<ProductSkuApplyVo> getSkuApplyDetail(String applyCode) {
-        List<ProductSkuApplyVo> list = applyProductSkuMapper.selectByApplyCode(applyCode);
+    public ProductApplyInfoRespVO<ProductSkuApplyVo2> getSkuApplyDetail(String applyCode) {
+        List<ProductSkuApplyVo2> list = applyProductSkuMapper.selectByApplyCode2(applyCode);
         if(CollectionUtils.isEmpty(list)){
             throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
         }
@@ -1468,7 +1476,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = BizException.class)
-    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode) {
+    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
@@ -1478,7 +1486,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
         String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
-        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
+//        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
+        String title = approvalName;
         workFlowVO.setTitle(title);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
@@ -2630,10 +2639,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
-    private ProductApplyInfoRespVO<ProductSkuApplyVo> dealApplyViewData(List<ProductSkuApplyVo> list) {
-        ProductApplyInfoRespVO<ProductSkuApplyVo> resp = new ProductApplyInfoRespVO<>();
+    private ProductApplyInfoRespVO<ProductSkuApplyVo2> dealApplyViewData(List<ProductSkuApplyVo2> list) {
+        ProductApplyInfoRespVO<ProductSkuApplyVo2> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
-        ProductSkuApplyVo applyVO = list.get(0);
+        ProductSkuApplyVo2 applyVO = list.get(0);
         resp.setApplyBy(applyVO.getUpdateBy());
         resp.setApplyTime(applyVO.getUpdateTime());
         resp.setApplyStatus(applyVO.getApplyStatus());
@@ -2643,11 +2652,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         resp.setSelectionEffectiveTime(applyVO.getSelectionEffectiveTime());
         resp.setCode(applyVO.getApplyCode());
         resp.setFormNo(applyVO.getFormNo());
+        resp.setPurchaseGroupName(applyVO.getPurchaseGroupName());
+        resp.setApprovalRemark(applyVO.getApprovalRemark());
+        resp.setApprovalName(applyVO.getApprovalName());
         //统计sku数量
-        List<String> skuCodes = list.stream().map(ProductSkuApplyVo::getCode).distinct().collect(Collectors.toList());
+        List<String> skuCodes = list.stream().map(ProductSkuApplyVo2::getSkuCode).distinct().collect(Collectors.toList());
         resp.setSkuNum(skuCodes.size());
         //统计SPU数量吗
-        List<String> spuCodes = list.stream().map(ProductSkuApplyVo::getProductCode).distinct().collect(Collectors.toList());
+        List<String> spuCodes = list.stream().map(ProductSkuApplyVo2::getProductName).distinct().collect(Collectors.toList());
         resp.setSpuNum(spuCodes.size());
         resp.setData(list);
         return resp;
@@ -3633,7 +3645,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol67())) {
                 error.add("爱亲渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinChannel = price.get("爱亲渠道价");
+                SkuPriceDraftReqVO aiqinChannel1 = price.get("爱亲渠道价");
+                SkuPriceDraftReqVO aiqinChannel = BeanCopyUtils.copy(aiqinChannel1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol67()));
                 } catch (Exception e) {
@@ -3645,7 +3658,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol68())) {
                 error.add("萌贝树渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuChannel = price.get("萌贝树渠道价");
+                SkuPriceDraftReqVO mengbeishuChannel1 = price.get("萌贝树渠道价");
+                SkuPriceDraftReqVO mengbeishuChannel = BeanCopyUtils.copy(mengbeishuChannel1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol68()));
                 } catch (Exception e) {
@@ -3657,7 +3671,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol69())) {
                 error.add("小红马渠道价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaChannel = price.get("小红马渠道价");
+                SkuPriceDraftReqVO xiaohongmaChannel1 = price.get("小红马渠道价");
+                SkuPriceDraftReqVO xiaohongmaChannel = BeanCopyUtils.copy(xiaohongmaChannel1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol69()));
                 } catch (Exception e) {
@@ -3669,7 +3684,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol70())) {
                 error.add("爱亲分销价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinDistribution = price.get("爱亲分销价");
+                SkuPriceDraftReqVO aiqinDistribution1 = price.get("爱亲分销价");
+                SkuPriceDraftReqVO aiqinDistribution = BeanCopyUtils.copy(aiqinDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol70()));
                 } catch (Exception e) {
@@ -3681,7 +3697,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol71())) {
                 error.add("萌贝树分销价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuDistribution = price.get("萌贝树分销价");
+                SkuPriceDraftReqVO mengbeishuDistribution1 = price.get("萌贝树分销价");
+                SkuPriceDraftReqVO mengbeishuDistribution = BeanCopyUtils.copy(mengbeishuDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol71()));
                 } catch (Exception e) {
@@ -3693,7 +3710,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol72())) {
                 error.add("小红马分销价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaDistribution = price.get("小红马分销价");
+                SkuPriceDraftReqVO xiaohongmaDistribution1 = price.get("小红马分销价");
+                SkuPriceDraftReqVO xiaohongmaDistribution = BeanCopyUtils.copy(xiaohongmaDistribution1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol72()));
                 } catch (Exception e) {
@@ -3705,7 +3723,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol73())) {
                 error.add("爱亲售价不能为空");
             } else {
-                SkuPriceDraftReqVO aiqinSale = price.get("爱亲售价");
+                SkuPriceDraftReqVO aiqinSale1 = price.get("爱亲售价");
+                SkuPriceDraftReqVO aiqinSale = BeanCopyUtils.copy(aiqinSale1, SkuPriceDraftReqVO.class);
                 try {
                     aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
                 } catch (Exception e) {
@@ -3717,7 +3736,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol74())) {
                 error.add("萌贝树售价不能为空");
             } else {
-                SkuPriceDraftReqVO mengbeishuSale = price.get("萌贝树售价");
+                SkuPriceDraftReqVO mengbeishuSale1 = price.get("萌贝树售价");
+                SkuPriceDraftReqVO mengbeishuSale = BeanCopyUtils.copy(mengbeishuSale1, SkuPriceDraftReqVO.class);
                 try {
                     mengbeishuSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
                 } catch (Exception e) {
@@ -3729,7 +3749,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getReadyCol75())) {
                 error.add("小红马售价不能为空");
             } else {
-                SkuPriceDraftReqVO xiaohongmaSale = price.get("小红马售价");
+                SkuPriceDraftReqVO xiaohongmaSale1 = price.get("小红马售价");
+                SkuPriceDraftReqVO xiaohongmaSale = BeanCopyUtils.copy(xiaohongmaSale1, SkuPriceDraftReqVO.class);
                 try {
                     xiaohongmaSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
                 } catch (Exception e) {
@@ -3753,7 +3774,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华北仓的状态类型");
                 } else {
-                    SaveSkuConfigReqVo huabei = warehouse.get("华北仓");
+                    SaveSkuConfigReqVo huabei1 = warehouse.get("华北仓");
+                    SaveSkuConfigReqVo huabei = BeanCopyUtils.copy(huabei1, SaveSkuConfigReqVo.class);
                     huabei.setConfigStatus(statusEnum.getStatus());
                     huabei.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huabei);
@@ -3767,7 +3789,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华东仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huadong = warehouse.get("华东仓");
+                    SaveSkuConfigReqVo huadong1 = warehouse.get("华东仓");
+                    SaveSkuConfigReqVo huadong = BeanCopyUtils.copy(huadong1, SaveSkuConfigReqVo.class);
                     huadong.setConfigStatus(statusEnum.getStatus());
                     huadong.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huadong);
@@ -3781,7 +3804,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华南仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huanan = warehouse.get("华南仓");
+                    SaveSkuConfigReqVo huanan1 = warehouse.get("华南仓");
+                    SaveSkuConfigReqVo huanan = BeanCopyUtils.copy(huanan1, SaveSkuConfigReqVo.class);
                     huanan.setConfigStatus(statusEnum.getStatus());
                     huanan.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huanan);
@@ -3795,21 +3819,23 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到西南仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo xinan = warehouse.get("西南仓");
+                    SaveSkuConfigReqVo xinan1 = warehouse.get("西南仓");
+                    SaveSkuConfigReqVo xinan = BeanCopyUtils.copy(xinan1, SaveSkuConfigReqVo.class);
                     xinan.setConfigStatus(statusEnum.getStatus());
                     xinan.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(xinan);
                 }
             }
             //华中仓
-            if (Objects.isNull(importVo.getReadyCol79())) {
+            if (Objects.isNull(importVo.getReadyCol80())) {
                 error.add("华中仓状态不能为空");
             } else {
-                SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol79());
+                SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(importVo.getReadyCol80());
                 if (Objects.isNull(statusEnum)) {
                     error.add("无法找到华中仓状态的状态");
                 } else {
-                    SaveSkuConfigReqVo huazhong = warehouse.get("华中仓");
+                    SaveSkuConfigReqVo huazhong1 = warehouse.get("华中仓");
+                    SaveSkuConfigReqVo huazhong = BeanCopyUtils.copy(huazhong1, SaveSkuConfigReqVo.class);
                     huazhong.setConfigStatus(statusEnum.getStatus());
                     huazhong.setConfigStatusName(statusEnum.getName());
                     configReqVos.add(huazhong);
