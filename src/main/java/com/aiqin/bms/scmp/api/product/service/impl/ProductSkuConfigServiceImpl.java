@@ -639,7 +639,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             //判断是否预约时间
             boolean b = list.get(0).getSelectionEffectiveTime() == 0 ? true : false;
             //判断是否不立即生效
-            boolean b1 = b&list.get(0).getSelectionEffectiveStartTime().after(new Date());
+            boolean b1 = b&&list.get(0).getSelectionEffectiveStartTime().after(new Date());
             try {
                 updateApplyInfoByVO(newVO,applyCode);
                 if(!b1) {
