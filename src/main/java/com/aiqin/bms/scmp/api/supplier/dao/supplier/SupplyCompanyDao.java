@@ -42,6 +42,7 @@ public interface SupplyCompanyDao {
      * @return
      */
     int checkName(Map<String, Object> map);
+    int checkName2(Map<String, Object> map);
 
     /**
      * 根据申请编码获取正式数据
