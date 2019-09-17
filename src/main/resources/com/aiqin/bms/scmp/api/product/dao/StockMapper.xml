@@ -2516,7 +2516,7 @@
         </if>
     </select>
     <select id="selectWarehouseTypeBycode" resultType="com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest">
-        select warehouse_type_name as warehouseType
+        select warehouse_type_code as warehouseType
         FROM warehouse
         where 1=1
         <if test="warehouseCode!=null and warehouseCode!=''">
