@@ -45,6 +45,7 @@ public class SapAbutment extends SpringBootTestContext {
         sapOrderRequest.setFinishTime("2019-09-010 00:00:00");
         sapBaseDataService.saleSynchronization(sapOrderRequest);
     }
+
     @Test
     public void stockSynchronization() {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
@@ -52,6 +53,7 @@ public class SapAbutment extends SpringBootTestContext {
         sapOrderRequest.setFinishTime("2019-09-15 00:00:00");
         sapBaseDataService.stockSynchronization(sapOrderRequest);
     }
+
     @Test
     public void purchaseSynchronization() {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
@@ -59,11 +61,20 @@ public class SapAbutment extends SpringBootTestContext {
         sapOrderRequest.setFinishTime("2019-09-17 00:00:00");
         sapBaseDataService.purchaseSynchronization(sapOrderRequest);
     }
+
     @Test
     public void productSynchronization() {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
-        sapOrderRequest.setBeginTime("2019-09-10 00:00:00");
-        sapOrderRequest.setFinishTime("2019-09-17 00:00:00");
+        sapOrderRequest.setBeginTime("2019-09-12 00:00:00");
+        sapOrderRequest.setFinishTime("2019-09-13 00:00:00");
         sapBaseDataService.productSynchronization(sapOrderRequest);
+    }
+
+    @Test
+    public void supplySynchronization() {
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime("2019-09-19 00:00:00");
+        sapOrderRequest.setFinishTime("2019-09-20 00:00:00");
+        sapBaseDataService.supplySynchronization(sapOrderRequest);
     }
 }

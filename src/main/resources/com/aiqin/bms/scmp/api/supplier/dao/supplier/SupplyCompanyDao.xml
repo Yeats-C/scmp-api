@@ -365,4 +365,13 @@
     left join delivery_information b on a.supply_code = b.supply_company_code
     where a.supply_code = #{supplyCode, jdbcType=VARCHAR} and b.delivery_type = 0
   </select>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+      supply_code,supply_name,tax_id
+    from
+     supply_company
+    where
+     update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+    and  update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+  </select>
 </mapper>

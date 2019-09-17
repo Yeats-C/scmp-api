@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 
 import java.util.List;
 
@@ -19,4 +20,5 @@ public interface ProductSkuCheckoutMapper {
 
     Integer delete(List<String> skuCodes);
 
+    List<ProductSkuCheckout> listForSap(List<String> list);
 }

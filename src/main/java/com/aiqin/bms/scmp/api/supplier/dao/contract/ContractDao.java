@@ -1,5 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.dao.contract;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Contract;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
@@ -74,4 +77,6 @@ public interface ContractDao {
 
 
     List<ContractPurchaseResVo> getContractByMap(Map<String,String> map);
+
+    List<ContractDTO> listForSap(SapOrderRequest sapOrderRequest);
 }

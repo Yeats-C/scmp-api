@@ -10,7 +10,9 @@ import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
+import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceChannelReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -20,8 +22,12 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
+import com.aiqin.bms.scmp.api.supplier.dao.contract.ContractDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
+import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyAccountMapper;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -122,6 +128,18 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     private StockDao stockDao;
     @Resource
     private SupplyCompanyDao supplyCompanyDao;
+    @Resource
+    private ProfitLossMapper profitLossMapper;
+    @Resource
+    private ProfitLossProductMapper profitLossProductMapper;
+    @Resource
+    private PriceChannelMapper priceChannelMapper;
+    @Resource
+    private ProductSkuCheckoutMapper productSkuCheckoutMapper;
+    @Resource
+    private SupplyCompanyAccountMapper supplyCompanyAccountMapper;
+    @Resource
+    private ContractDao contractDao;
 
     /**
      * 商品数据同步
@@ -140,16 +158,22 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             List<SapSkuStorageFinancial> sapSkuStorageFinancialList;
             List<String> skuCodes;
             List<StockResponse> stockList;
+            //查询所有渠道
+            List<ProductSkuCheckout> skuCheckoutList;
+            Map<String, ProductSkuCheckout> skuCheckoutMap;
+            ProductSkuCheckout productSkuCheckout;
+            List<QueryPriceChannelRespVo> priceChannels = priceChannelMapper.getList(new QueryPriceChannelReqVo());
             List<SapProductSku> productSkuList = Lists.newArrayList();
             for (int i = 0; i < total; i++) {
                 endIndex = SAP_API_COUNT * (i + 1);
                 if (SAP_API_COUNT * (i + 1) >= productSkuInfoList.size()) {
                     endIndex = productSkuInfoList.size();
                 }
-                baseInfo2 = Lists.newArrayList();
                 subLists = productSkuInfoList.subList(SAP_API_COUNT * i, endIndex);
-                skuCodes = subLists.stream().map(ProductSkuInfo::getSkuCode).collect(Collectors.toList());
-                stockList= stockDao.listBySkuCodes(skuCodes);
+                skuCodes = subLists.stream().map(ProductSkuInfo::getProductCode).collect(Collectors.toList());
+                skuCheckoutList = productSkuCheckoutMapper.listForSap(skuCodes);
+                skuCheckoutMap = skuCheckoutList.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, Function.identity()));
+                stockList = stockDao.listBySkuCodes(skuCodes);
                 Map<String, List<SapSkuStorageFinancial>> SapSkuStorageFinancialMap = Maps.newHashMap();
                 for (StockResponse stock : stockList) {
                     sapSkuStorageFinancial = new SapSkuStorageFinancial();
@@ -173,12 +197,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     }
                 }
                 for (ProductSkuInfo productSkuInfo : productSkuInfoList) {
+                    baseInfo2 = Lists.newArrayList();
                     sapProductSku = new SapProductSku();
-                    sapProductSku.setSapSkuCode(productSkuInfo.getSkuCode());
+                    sapProductSku.setSapSkuCode(productSkuInfo.getProductCode());
                     sapProductSku.setIndustryDepartmentCode("A");
                     //取一级品类
                     sapProductSku.setCategoryCode(productSkuInfo.getProductCategoryCode().substring(0, 2));
-                    sapProductSku.setSkuName(productSkuInfo.getSkuName());
+                    sapProductSku.setSkuName(productSkuInfo.getProductName());
                     //基本视图
                     baseInfo = new SapProductSkuBase();
                     baseInfo.setUnit("EA");
@@ -188,13 +213,29 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     baseInfo.setStandard(productSkuInfo.getSpec());
                     sapProductSku.setBaseInfo(baseInfo);
                     sapProductSku.setBaseInfo1(SapSkuStorageFinancialMap.get(productSkuInfo.getSkuCode()));
-                    sapProductSku.setBaseInfo2(baseInfo2);
+                    productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
+                    sapProductSku.setBaseInfo2(sapSkuSaleListHandler(productSkuCheckout, baseInfo2, priceChannels));
                     productSkuList.add(sapProductSku);
                 }
                 sapStorageAbutment(productSkuList);
                 productSkuList.clear();
             }
         }
+    }
+
+
+    private List<SapSkuSale> sapSkuSaleListHandler(ProductSkuCheckout productSkuCheckout, List<SapSkuSale> baseInfo2, List<QueryPriceChannelRespVo> priceChannels) {
+        SapSkuSale sapSkuSale;
+        for (QueryPriceChannelRespVo priceChannel : priceChannels) {
+            sapSkuSale = new SapSkuSale();
+            sapSkuSale.setSaleOrg(priceChannel.getPriceChannelCode());
+            sapSkuSale.setSubjectGroupCode("14");
+            sapSkuSale.setMainCategoryCode("NORM");
+            sapSkuSale.setTaxCategoryCode(productSkuCheckout.getInputTaxRate().toString());
+            sapSkuSale.setDistributionChannelCode("00");
+            baseInfo2.add(sapSkuSale);
+        }
+        return baseInfo2;
     }
 
     /**
@@ -204,23 +245,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private void sapStorageAbutment(List<SapProductSku> productSkuList) {
         LOGGER.info("调用sap商品对接参数:{} ", JsonUtil.toJson(productSkuList));
-        int total = (int) Math.ceil(productSkuList.size() / (SAP_API_COUNT * 1.0));
-        int endIndex;
-        List<SapProductSku> subLists;
-        for (int i = 0; i < total; i++) {
-            endIndex = SAP_API_COUNT * (i + 1);
-            if (SAP_API_COUNT * (i + 1) >= productSkuList.size()) {
-                endIndex = productSkuList.size();
-            }
-            subLists = productSkuList.subList(SAP_API_COUNT * i, endIndex);
-            HttpClient client = HttpClient.post(PRODUCT_URL).json(subLists).timeout(1000);
-            HttpResponse httpResponse = client.action().result(HttpResponse.class);
-            if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用sap商品对接成功:{}", httpResponse.getMessage());
-            } else {
-                LOGGER.error("调用sap商品对接异常:{}", httpResponse.getMessage());
-                throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
-            }
+        HttpClient client = HttpClient.post(PRODUCT_URL).json(productSkuList).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("调用sap商品对接成功:{}", httpResponse.getMessage());
+        } else {
+            LOGGER.error("调用sap商品对接异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
         }
     }
 
@@ -228,17 +259,123 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     /**
      * 供应商数据同步
      */
+    @Override
     public void supplySynchronization(SapOrderRequest sapOrderRequest) {
-        List<SupplyCompany> supplierList  = supplyCompanyDao.listForSap(sapOrderRequest);
-        if(CollectionUtils.isNotEmpty(supplierList)) {
-            List<SapSupplier> sapSupplierList = Lists.newArrayList();
+        List<SupplyCompany> supplierList = supplyCompanyDao.listForSap(sapOrderRequest);
+        if (CollectionUtils.isNotEmpty(supplierList)) {
+            int total = (int) Math.ceil(supplierList.size() / (SAP_API_COUNT * 1.0));
+            int endIndex;
+            List<SapSupplier> sapSupplierList;
+            List<String> supplyCodes;
+            List<ContractDTO> contracts;
+            List<SupplyCompany> subLists;
+            List<ContractDTO> contractList;
+            List<SupplierCompany> companyList;
+            List<SupplierBank> supplierBankList;
+            List<SupplyCompanyAccount> accountList;
+            List<SupplyCompanyAccount> supplyCompanyAccount;
+            SupplierBank supplierBank;
+            SupplierCompany supplierCompany;
             SapSupplier sapSupplier;
-            for (SupplyCompany supplyCompany : supplierList) {
-                sapSupplier = new SapSupplier();
+            SupplierPurchase supplierPurchase;
+            Map<String, List<SupplyCompanyAccount>> accountMap = Maps.newHashMap();
+            List<SupplierPurchase> supplierPurchases;
+            for (int i = 0; i < total; i++) {
+                endIndex = SAP_API_COUNT * (i + 1);
+                if (SAP_API_COUNT * (i + 1) >= supplierList.size()) {
+                    endIndex = supplierList.size();
+                }
+                sapSupplierList = Lists.newArrayList();
+                subLists = supplierList.subList(SAP_API_COUNT * i, endIndex);
+                supplyCodes = subLists.stream().map(SupplyCompany::getSupplyCode).collect(Collectors.toList());
+                sapOrderRequest.setOrderCodeList(supplyCodes);
+                accountList = supplyCompanyAccountMapper.listForSap(sapOrderRequest);
+                if (CollectionUtils.isNotEmpty(accountList)) {
+                    accountMap = accountList.stream().collect(Collectors.groupingBy(SupplyCompanyAccount::getSupplyCompanyAccountCode));
+                }
+                Map<String, List<ContractDTO>> contractMap = Maps.newHashMap();
+                contractList = contractDao.listForSap(sapOrderRequest);
+                if (CollectionUtils.isNotEmpty(contractList)) {
+                    contractMap = contractList.stream().collect(Collectors.groupingBy(ContractDTO::getSupplierCode));
+                }
 
-                sapSupplierList.add(sapSupplier);
+                for (SupplyCompany supplyCompany : supplierList) {
+                    sapSupplier = new SapSupplier();
+                    sapSupplier.setFlag("M");
+                    sapSupplier.setSupplierCode(supplyCompany.getSupplyCode());
+                    sapSupplier.setSupplierName(supplyCompany.getSupplyName());
+                    sapSupplier.setSupplierGroupCode("Z001");
+                    sapSupplier.setTaxNo(supplyCompany.getTaxId());
+                    supplyCompanyAccount = accountMap.get(supplyCompany.getSupplyCode());
+                    if (CollectionUtils.isNotEmpty(supplyCompanyAccount)) {
+                        supplierBankList = Lists.newArrayList();
+                        for (SupplyCompanyAccount companyAccount : supplyCompanyAccount) {
+                            //供应商银行数据
+                            supplierBank = new SupplierBank();
+                            supplierBank.setFlag("M");
+                            supplierBank.setBankName(companyAccount.getBankAccount());
+                            supplierBank.setBankCountryNo("CN");
+                            supplierBank.setBankNo(companyAccount.getAccount());
+                            supplierBankList.add(supplierBank);
+                        }
+                        sapSupplier.setBanks(supplierBankList);
+                    }
+                    contracts = contractMap.get(supplyCompany.getSupplyCode());
+                    if (CollectionUtils.isNotEmpty(contracts)) {
+                        companyList = Lists.newArrayList();
+                        supplierPurchases = Lists.newArrayList();
+                        for (ContractDTO contract : contracts) {
+                            //供应商公司数据
+                            supplierCompany = new SupplierCompany();
+                            supplierPurchase = new SupplierPurchase();
+                            supplierCompany.setCompanyCode("1000");
+                            supplierCompany.setFlag("M");
+                            //合同里的供应商付款条件
+                            supplierCompany.setPayConditionCode(contract.getSettlementMethod().toString());
+                            companyList.add(supplierCompany);
+                            //供应商采购数据
+                            supplierPurchase.setFlag("M");
+                            supplierPurchase.setPurchaseOrg("1000");
+                            supplierPurchase.setPayConditionCode(contract.getSettlementMethod().toString());
+                            supplierPurchase.setCurrencyCode("CNY");
+                            supplierPurchase.setReceiptTag("X");
+                            supplierPurchases.add(supplierPurchase);
+                        }
+                        sapSupplier.setCompanyList(companyList);
+                        sapSupplier.setPurchaseList(supplierPurchases);
+                    }
+                    sapSupplierList.add(sapSupplier);
+                }
+                sapSupplyAbutment(sapSupplierList);
             }
         }
+    }
+
+    /**
+     * sap供应商对接
+     *
+     * @param sapSupplierList
+     */
+    private void sapSupplyAbutment(List<SapSupplier> sapSupplierList) {
+        LOGGER.info("调用sap供应商对接参数:{} ", JsonUtil.toJson(sapSupplierList));
+        LOGGER.info("对接条数:{} ", sapSupplierList.size());
+        HttpClient client = HttpClient.post(SUPPLY_URL).json(sapSupplierList).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("调用sap供应商对接成功:{}", httpResponse.getMessage());
+        } else {
+            LOGGER.error("调用sap供应商对接异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用sap供应商对接异常:%s", httpResponse.getMessage()));
+        }
+    }
+
+    /**
+     * sap对接报损单转换为出入库单
+     *
+     * @param sapOrderRequest
+     */
+    private void sapProfitLossStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
+        List<ProfitLoss> profitLosseList = profitLossMapper.listForSap(sapOrderRequest);
 
     }
 

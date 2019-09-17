@@ -37,4 +37,6 @@ public interface SapBaseDataService {
     void purchaseSynchronization(SapOrderRequest sapOrderRequest);
 
     void productSynchronization(SapOrderRequest sapOrderRequest);
+
+    void supplySynchronization(SapOrderRequest sapOrderRequest);
 }

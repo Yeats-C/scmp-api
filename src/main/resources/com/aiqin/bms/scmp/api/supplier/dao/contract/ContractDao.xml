@@ -714,4 +714,14 @@
     </set>
     where apply_contract_code = #{applyContractCode,jdbcType=VARCHAR}
   </update>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+    contract
+    where supplier_code in
+    <foreach collection="orderCodeList" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 </mapper>
