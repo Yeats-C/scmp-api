@@ -34,4 +34,43 @@
     pre_low_inventory_amount, pre_low_inventory_amount_rate, total_sku, low_sku, low_sku_rate, 
     stock_amount_total, low_inventory_amount, low_inventory_amount_rate, create_time
   </sql>
+  <select id="inventorySum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.inventoryInfoResponse">
+    select
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+    sum(ifnull(pre_total_sku,0)) as preTotalSku, sum(ifnull(pre_low_sku,0)) as preSkuCount,
+    sum(ifnull(pre_stock_amount_total,0)) as preStockAmountTotal, sum(ifnull(pre_low_inventory_amount,0)) as preStockAmount,
+    sum(ifnull(total_sku,0)) as totalSku, sum(ifnull(low_sku,0)) as skuCount,
+    sum(ifnull(stock_amount_total,0)) as stockAmountTotal, sum(ifnull(low_inventory_amount,0)) as stockAmount
+    from stat_dept_low_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupCode != null">
+      and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="groupList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventorySortResponse">
+    select
+      purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+      responsible_person_code as responsiblePersonCode, responsible_person_name as responsiblePersonName
+    from stat_dept_low_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by purchase_group_code
+    order by purchase_group_code
+  </select>
+  <select id="deptList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventorySortResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_low_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
 </mapper>

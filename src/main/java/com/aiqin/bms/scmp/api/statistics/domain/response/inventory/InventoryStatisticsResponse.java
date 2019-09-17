@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -12,6 +13,10 @@ import java.math.BigDecimal;
  **/
 @Data
 public class InventoryStatisticsResponse {
+
+    @ApiModelProperty(value="库存的子集")
+    @JsonProperty("subset_list")
+    private List<InventoryStatisticsResponse> subsetList;
 
     @ApiModelProperty(value="部门code")
     @JsonProperty("product_sort_code")
