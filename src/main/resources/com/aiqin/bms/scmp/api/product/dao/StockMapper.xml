@@ -1853,6 +1853,7 @@
     <sql id="REJECT_QUERY_SQL">
         <where>
             ps.del_flag = 0
+            and warehouseType = 3
             <if test="supplierCode != null">
                 and su.supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
             </if>
