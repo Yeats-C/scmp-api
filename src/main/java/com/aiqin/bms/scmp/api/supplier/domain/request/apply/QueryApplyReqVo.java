@@ -34,6 +34,9 @@ public class QueryApplyReqVo extends PageReq {
     @ApiModelProperty("申请编号")
     private String applyCode;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @ApiModelProperty("流程编码")
     private String formNo;
 

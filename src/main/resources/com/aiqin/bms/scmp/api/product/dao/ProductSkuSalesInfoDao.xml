@@ -113,13 +113,14 @@
     select
     distinct
     sales_code
-    from apply_product_sku_sales_info
-    where sales_code in
+    from apply_product_sku_sales_info a
+    left join apply_product_sku b on a.product_sku_code = b.sku_code
+    where b.apply_status = 1 and a.sales_code in
     <foreach collection="list" item="salesCode" separator="," close=")" open="(">
       #{salesCode}
     </foreach>
     <if test="skuCode != null and skuCode != '' ">
-      and product_sku_code != #{skuCode}
+      and a.product_sku_code != #{skuCode}
     </if>
   </select>
 </mapper>

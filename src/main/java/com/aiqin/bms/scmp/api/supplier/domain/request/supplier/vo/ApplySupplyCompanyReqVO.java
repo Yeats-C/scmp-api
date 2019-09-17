@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo;
 
+import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -150,4 +151,22 @@ public class ApplySupplyCompanyReqVO {
 
     @ApiModelProperty("采购组")
     private List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos;
+
+    @ApiModelProperty("结款方式")
+    private String paymentMethod;
+
+    @ApiModelProperty("品牌")
+    private String brand;
+
+    @ApiModelProperty("供货区域")
+    private String deliveryArea;
+
+    @ApiModelProperty("备注")
+    private String remark;
+
+    @ApiModelProperty("审批名称")
+    @NotNull(message = "审批名称不能为空")
+    private String approvalName;
+
+
 }
