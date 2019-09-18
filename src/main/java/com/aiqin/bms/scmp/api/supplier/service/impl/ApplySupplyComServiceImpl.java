@@ -1088,13 +1088,28 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 throw new BizException(ResultCode.NAME_REPEAT);
             }
             //通过编码查询
-            Map<String,Object> map1 = new HashMap<>();
-            map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
-            map1.put("code",s.getSupplyCompanyCode());
-            map1.put("companyCode",companyCode);
-            int nameCount1 = applySupplyCompanyDao.checkName(map1);
-            if (nameCount1 > 0){
-                throw new BizException(ResultCode.NAME_REPEAT);
+            if (Objects.equals(s.getApplyType().intValue(),1)) {
+                //新增
+                String applySupplyName = s.getApplySupplyName();
+                if (!applySupplyName.equals(applySupplyCompanyReqVO.getApplySupplyName())) {
+                    Map<String,Object> map1 = new HashMap<>();
+                    map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+                    map1.put("code",s.getSupplyCompanyCode());
+                    map1.put("companyCode",companyCode);
+                    int nameCount1 = applySupplyCompanyDao.checkName(map1);
+                    if (nameCount1 > 0){
+                        throw new BizException(ResultCode.NAME_REPEAT);
+                    }
+                }
+            }else {
+                Map<String,Object> map1 = new HashMap<>();
+                map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+                map1.put("code",s.getSupplyCompanyCode());
+                map1.put("companyCode",companyCode);
+                int nameCount1 = applySupplyCompanyDao.checkName(map1);
+                if (nameCount1 > 0){
+                    throw new BizException(ResultCode.NAME_REPEAT);
+                }
             }
             //复制对象
             ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();

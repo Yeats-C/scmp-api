@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.excel;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
+import org.apache.ibatis.annotations.Case;
 
 @Data
 public class SkuAddExport extends BaseRowModel {
@@ -49,7 +50,7 @@ public class SkuAddExport extends BaseRowModel {
     private String boxGrossWeight;
 
     @ExcelProperty(index = 14, value = "毛重单位")
-    private String boxGrossWeightUnit;
+    private String boxGrossWeightUnit  = "千克";
 
     @ExcelProperty(index = 15, value = "品牌")
     private String productBrandName;
@@ -85,7 +86,7 @@ public class SkuAddExport extends BaseRowModel {
     private String procurementSectionName;
 
     @ExcelProperty(index = 26, value = "商品属性")
-    private String productSortName;
+    private String productPropertyName;
 
     @ExcelProperty(index = 27, value = "积分系数")
     private String integralCoefficient;
@@ -102,11 +103,19 @@ public class SkuAddExport extends BaseRowModel {
     @ExcelProperty(index = 31, value = "售价3")
     private String salePrice3;
 
+    public String getSalePrice3() {
+        return salePrice;
+    }
+
+    public String getSalePrice4() {
+        return salePrice;
+    }
+
     @ExcelProperty(index = 32, value = "售价4")
     private String salePrice4;
 
     @ExcelProperty(index = 33, value = "分销机构可自管")
-    private String distributionAgencyCanSelfManage;
+    private String distributionAgencyCanSelfManage = "否";
 
     @ExcelProperty(index = 34, value = "供货渠道类别")
     private String categoriesSupplyChannelsName;
@@ -116,6 +125,10 @@ public class SkuAddExport extends BaseRowModel {
 
     @ExcelProperty(index = 36, value = "加点数1")
     private String addPoints1;
+
+    public String getAddPoints1() {
+        return addPoints2;
+    }
 
     @ExcelProperty(index = 37, value = "加点数2")
     private String addPoints2;
@@ -228,11 +241,19 @@ public class SkuAddExport extends BaseRowModel {
     @ExcelProperty(index = 73, value = "特征")
     private String warehouseTypeName;
 
+    public String getWarehouseTypeName() {
+        if(this.productPropertyName.contains("A"))
+        return "通货";
+        if (this.productPropertyName.contains("B"))
+        return "普货";
+        return "大货";
+    }
+
     @ExcelProperty(index = 74, value = "颜色")
     private String colorName;
 
     @ExcelProperty(index = 75, value = "波段")
-    private String waveBand;
+    private String waveBand = "-";
 
     @ExcelProperty(index = 76, value = "是否记录唯一码")
     private String uniqueCode;
