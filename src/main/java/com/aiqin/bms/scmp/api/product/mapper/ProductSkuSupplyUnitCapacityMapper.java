@@ -20,6 +20,7 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int updateByPrimaryKey(ProductSkuSupplyUnitCapacity record);
 
     int deleteBySkuCode(String skuCode);
+    int deleteBySkuCode2(List<String> list);
 
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 

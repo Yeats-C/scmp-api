@@ -85,4 +85,8 @@ public interface ProductSkuSupplyUnitService {
     List<ProductSkuSupplyUnitRespVo> getApply(String skuCode, String applyCode);
 
     List<ProductSkuSupplyUnitRespVo> getList(String skuCode);
+
+    Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList);
+
+    void tobeEffective(List<ApplyProductSkuSupplyUnit> list);
 }

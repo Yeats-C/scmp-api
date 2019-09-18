@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetail
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -114,6 +115,9 @@ public interface ProductSkuConfigService {
      */
     void updateApplyInfoByVO(WorkFlowCallbackVO newVO,String applyCode);
 
+    @Transactional(rollbackFor = Exception.class)
+    void updateApplyInfoByVO2(WorkFlowCallbackVO newVO, String applyCode);
+
     /**
      * 审批流-审批通过
      * @param newVO
@@ -142,6 +146,9 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer updateApplyInfoByVO(ApplyProductSkuConfigReqVo req);
+
+    @Transactional(rollbackFor = Exception.class)
+    Integer updateApplyInfoByVO2(ApplyProductSkuConfigReqVo req);
 
     /**
      *
