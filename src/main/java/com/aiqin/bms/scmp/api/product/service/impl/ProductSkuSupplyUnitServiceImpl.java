@@ -229,4 +229,14 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         }
         return list;
     }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCode(String skuCode) {
+        return productSkuSupplyUnitDao.selectApplyBySkuCode(skuCode);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> collect) {
+        return productSkuSupplyUnitDao.selectApplyBySkuCodes(collect);
+    }
 }

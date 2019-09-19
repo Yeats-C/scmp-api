@@ -84,6 +84,20 @@ public class DraftController {
         }
     }
 
+    @DeleteMapping("/deleteSupply")
+    @ApiOperation("删除")
+    public HttpResponse<Integer> deleteSupply(Long id){
+        log.info("删除商品申请单详情接口,接口参数{}", id);
+        try {
+            return HttpResponse.success(draftService.deleteSupply(id));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
+        }
+    }
+
     @PostMapping("/save")
     @ApiOperation("保存")
     public HttpResponse save(@RequestBody SaveReqVo reqVo){

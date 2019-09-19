@@ -33,10 +33,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.Logist
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
@@ -111,6 +108,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
     @Autowired
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
+    @Autowired
+    private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityMapper;
 
     /**
      * 批量保存临时配置信息
@@ -210,7 +209,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         if (CollectionUtils.isNotEmpty(error)) {
             error.add("有在审批中的数据。请删除数据，重新提交,或者在审批申请页面将重复的数据删除。");
-            throw new BizException(MessageId.create(Project.SCMP_API, -1, StringUtils.strip(error.toString(), "[]")));
+            throw new BizException(MessageId.create(Project.SCMP_API, 100, StringUtils.strip(error.toString(), "[]")));
         }else {
             //删除草稿变数据
             deleteByIds(ids);
@@ -311,9 +310,25 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //供应商更新
         if(CollectionUtils.isNotEmpty(reqVo.getUpdateProductSkuSupplyUnitReqVos())) {
             List<UpdateProductSkuSupplyUnitReqVo> supplyUnitReqVos = reqVo.getUpdateProductSkuSupplyUnitReqVos();
+            //查申请表的数据
+            List<ProductSkuSupplyUnitRespVo> list2 = productSkuSupplyUnitService.selectApplyBySkuCode(reqVo.getSkuCode());
+            Map<String, ProductSkuSupplyUnitRespVo> collect2 = list2.stream().collect(Collectors.toMap(ProductSkuSupplyUnitRespVo::getSupplyUnitCode, Function.identity(), (k1, k2) -> k2));
+            List<String> error = Lists.newArrayList();
+            //查临时表的数据
+            List<ProductSkuSupplyUnitDraft> list = productSkuSupplyUnitDraftMapper.selectDraftBySkuCode(reqVo.getSkuCode());
+            Map<String, ProductSkuSupplyUnitDraft> collect = list.stream().collect(Collectors.toMap(ProductSkuSupplyUnitDraft::getSupplyUnitCode, Function.identity(), (k1, k2) -> k2));
+            List<Long> deleteIds = Lists.newArrayList();
+            List<String> supplierCode = Lists.newArrayList();
             List<ProductSkuSupplyUnitDraft> skuSupplyUnitDrafts = BeanCopyUtils.copyList(supplyUnitReqVos, ProductSkuSupplyUnitDraft.class);
             List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
             skuSupplyUnitDrafts.forEach(item -> {
+                if (collect.containsKey(item.getSupplyUnitCode())) {
+                    deleteIds.add(collect.get(item.getSupplyUnitCode()).getId());
+                    supplierCode.add(item.getSupplyUnitCode());
+                }
+                if (collect2.containsKey(item.getSupplyUnitCode())) {
+                    error.add("供应商编号为:"+item.getSupplyUnitCode()+"已有在审批中的数据");
+                }
                 item.setProductSkuCode(reqVo.getSkuCode());
                 item.setProductSkuName(reqVo.getSkuCode());
                 item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
@@ -331,6 +346,15 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     productSkuSupplyUnitCapacityDrafts.addAll(item.getProductSkuSupplyUnitCapacityDrafts());
                 }
             });
+            if (CollectionUtils.isNotEmpty(error)) {
+                throw new BizException(MessageId.create(Project.SCMP_API, -1, StringUtils.strip(error.toString(), "[]")));
+            }
+            if (CollectionUtils.isNotEmpty(deleteIds)) {
+                productSkuSupplyUnitDraftMapper.deleteDraftByIds(deleteIds);
+                if (CollectionUtils.isNotEmpty(supplierCode)) {
+                    productSkuSupplyUnitCapacityMapper.deleteByUintCode(supplierCode);
+                }
+            }
             productSkuSupplyUnitService.insertDraftList(skuSupplyUnitDrafts);
             //供应商产能
             if (CollectionUtils.isNotEmpty(productSkuSupplyUnitCapacityDrafts)) {
@@ -495,7 +519,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         synchronized (ProductSkuConfigServiceImpl.class) {
             //获取编码
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
-            code = numberingType.getNumberingValue().toString();
+            code = "CF"+numberingType.getNumberingValue().toString();
             formNo = "SC" + IdSequenceUtils.getInstance().nextId();
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
@@ -1227,6 +1251,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Override
     public Boolean saveImportSupply(List<ProductSkuSupplyUnitDraft> reqVo) {
+        //查申请表数据
+        List<ProductSkuSupplyUnitRespVo> list2 = productSkuSupplyUnitService.selectApplyBySkuCodes(reqVo.stream().map(ProductSkuSupplyUnitDraft::getProductSkuCode).distinct().collect(Collectors.toList()));
+        Map<String, ProductSkuSupplyUnitRespVo> collect = list2.stream().collect(Collectors.toMap(o -> o.getProductSkuCode() + o.getSupplyUnitCode(), Function.identity(), (k1, k2) -> k2));
+        List<String> error = Lists.newArrayList();
         //校验临时表是否含有该数据
         List<ProductSkuSupplyUnitDraft> list = productSkuSupplyUnitDraftMapper.selectByVo(reqVo);
         //k:skuCode+供应商编码
@@ -1238,6 +1266,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             draft.setApplyType((byte) 2);
             draft.setCompanyCode(getUser().getCompanyCode());
             draft.setCompanyName(getUser().getCompanyName());
+            if (collect.containsKey(draft.getProductSkuCode() + draft.getSupplyUnitCode())) {
+                error.add("sku编码为"+draft.getProductSkuCode()+"下的供应商编码为"+draft.getSupplyUnitCode()+"已存在审批中的数据");
+            }
             ProductSkuSupplyUnitDraft supplyUnitDraft = draftMap.get(draft.getProductSkuCode() + draft.getSupplyUnitCode());
             if (Objects.nonNull(supplyUnitDraft)) {
                 ids.add(supplyUnitDraft.getId());
@@ -1246,6 +1277,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 capacityDraft.setSupplyUnitCode(supplyUnitDraft.getSupplyUnitCode());
                 capacityDrafts.add(capacityDraft);
             }
+        }
+        if (CollectionUtils.isNotEmpty(error)) {
+            throw new BizException(MessageId.create(Project.SCMP_API, 100, StringUtils.strip(error.toString(), "[]")));
         }
         if (CollectionUtils.isNotEmpty(ids)) {
             //删除数据
@@ -1318,23 +1352,13 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("联营扣点(%)不能为空");
         }else {
             try {
-                String[] split = skuSupplierImport.getJointFranchiseRate().split(".");
-                long i;
-                if (split.length >= 2) {
-                    errorList.add("联营扣点(%)格式不正确");
-                }else {
-                    if (split.length == 0) {
-                        i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
-                    }else {
-                        i = Long.parseLong(split[0]+split[1]);
-                    }
-                    if (i < 0 || i > 100) {
-                        errorList.add("联营扣点(%)应在0-100之间");
-                    }else {
-                        copy.setJointFranchiseRate(i);
-                    }
-                }
-            } catch (NumberFormatException e) {
+              Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getJointFranchiseRate());
+              if (i < 0 || i > 10000) {
+                  errorList.add("联营扣点(%)应在0-100之间");
+              }else {
+                  copy.setJointFranchiseRate(i);
+              }
+            } catch (Exception e) {
                 errorList.add("联营扣点(%)格式不正确");
             }
         }
@@ -1343,23 +1367,13 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("返点(%)不能为空");
         }else {
             try {
-                String[] split = skuSupplierImport.getPoint().split(".");
-                long i;
-                if (split.length >= 2) {
-                    errorList.add("返点(%)格式不正确");
+                Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getPoint());
+                if (i < 0 || i > 10000) {
+                    errorList.add("联营扣点(%)应在0-100之间");
                 }else {
-                    if (split.length == 0) {
-                        i = Long.parseLong(skuSupplierImport.getJointFranchiseRate());
-                    }else {
-                        i = Long.parseLong(split[0]+split[1]);
-                    }
-                    if (i < 0 || i > 100) {
-                        errorList.add("返点(%)应在0-100之间");
-                    }else {
-                        copy.setPoint(i);
-                    }
+                    copy.setPoint(i);
                 }
-            } catch (NumberFormatException e) {
+            } catch (Exception e) {
                 errorList.add("返点(%)格式不正确");
             }
         }

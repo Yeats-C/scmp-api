@@ -69,4 +69,8 @@ public interface ProductSkuSupplyUnitDao {
     List<ProductSkuSupplyUnitRespVo> getSupplyList(@Param("vo") ConfigSearchVo vo);
 
     List<ProductSkuSupplyUnitRespVo> getApplyByCode(String code);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCode(String skuCode);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> list);
 }
