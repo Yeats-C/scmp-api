@@ -48,7 +48,14 @@
          #{item}
     </foreach>
     </delete>
-    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
+  <delete id="deleteByUintCode" parameterType="java.util.List">
+    delete from product_sku_supply_unit_capacity
+    where supply_unit_code in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+      #{item}
+    </foreach>
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity">
     insert into product_sku_supply_unit_capacity (id, supply_unit_code, supply_unit_name, 
       product_sku_code, product_sku_name, out_put, 
       need_days, apply_code, del_flag, 

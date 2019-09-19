@@ -27,4 +27,6 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
 
     List<ProductSkuSupplyUnitCapacity> selectSupplyCapacityInfo(@Param("supplierCode") String supplierCode, @Param("skuCode")String skuCode);
+
+    int deleteByUintCode(List<String> supplierCode);
 }

@@ -21,4 +21,6 @@ public interface ProductSkuSupplyUnitDraftMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft>
      */
     List<ProductSkuSupplyUnitDraft> selectByVo(List<ProductSkuSupplyUnitDraft> reqVo);
+
+    List<ProductSkuSupplyUnitDraft> selectDraftBySkuCode(String skuCode);
 }

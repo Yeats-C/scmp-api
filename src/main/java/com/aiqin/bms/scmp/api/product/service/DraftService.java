@@ -52,4 +52,6 @@ public interface DraftService {
      * @return
      */
     Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode);
+
+    Integer deleteSupply(Long id);
 }

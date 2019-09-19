@@ -94,4 +94,8 @@ public interface ProductSkuSupplyUnitService {
     List<ProductSkuSupplyUnitRespVo> getSupplyList(ConfigSearchVo vo);
 
     List<ProductSkuSupplyUnitRespVo> getApplyCode(String code);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCode(String skuCode);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> collect);
 }

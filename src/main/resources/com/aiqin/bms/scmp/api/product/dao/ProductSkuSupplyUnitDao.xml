@@ -464,4 +464,72 @@
     on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code and a.apply_code = b.apply_code
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
     </select>
+    <select id="selectApplyBySkuCode"
+            resultMap="selectBySkuCode">
+        select a.id aid,
+           a.supply_unit_code asupply_unit_code,
+           a.supply_unit_name asupply_unit_name,
+           a.no_tax_purchase_price ano_tax_purchase_price,
+           a.tax_included_price atax_included_price,
+           a.joint_franchise_rate ajoint_franchise_rate,
+           a.point apoint,
+           a.tax_rate atax_rate,
+           a.factory_sku_code afactory_sku_code,
+           a.is_default ais_default,
+           a.product_sku_code aproduct_sku_code,
+           a.product_sku_name aproduct_sku_name,
+           a.usage_status ausage_status,
+           a.apply_code aapply_code,
+           a.del_flag adel_flag,
+           a.create_time acreate_time,
+           a.create_by acreate_by,
+           a.update_time aupdate_time,
+           a.update_by aupdate_by,
+           a.categories_supply_channels_code acategories_supply_channels_code,
+           a.categories_supply_channels_name acategories_supply_channels_name,
+           a.auditor_status aauditor_status,
+           a.selection_effective_start_time aselection_effective_start_time,
+           a.selection_effective_time aselection_effective_time,
+           a.apply_code aapply_code,
+           a.form_no aform_no,
+           a.be_effective abe_effective
+    from apply_product_sku_supply_unit a
+    where a.product_sku_code = #{skuCode,jdbcType=VARCHAR} and a.auditor_status = 1 and a.apply_show = 0
+    </select>
+    <select id="selectApplyBySkuCodes"
+            resultMap="selectBySkuCode" parameterType="java.util.List">
+        select a.id aid,
+           a.supply_unit_code asupply_unit_code,
+           a.supply_unit_name asupply_unit_name,
+           a.no_tax_purchase_price ano_tax_purchase_price,
+           a.tax_included_price atax_included_price,
+           a.joint_franchise_rate ajoint_franchise_rate,
+           a.point apoint,
+           a.tax_rate atax_rate,
+           a.factory_sku_code afactory_sku_code,
+           a.is_default ais_default,
+           a.product_sku_code aproduct_sku_code,
+           a.product_sku_name aproduct_sku_name,
+           a.usage_status ausage_status,
+           a.apply_code aapply_code,
+           a.del_flag adel_flag,
+           a.create_time acreate_time,
+           a.create_by acreate_by,
+           a.update_time aupdate_time,
+           a.update_by aupdate_by,
+           a.categories_supply_channels_code acategories_supply_channels_code,
+           a.categories_supply_channels_name acategories_supply_channels_name,
+           a.auditor_status aauditor_status,
+           a.selection_effective_start_time aselection_effective_start_time,
+           a.selection_effective_time aselection_effective_time,
+           a.apply_code aapply_code,
+           a.form_no aform_no,
+           a.be_effective abe_effective
+    from apply_product_sku_supply_unit a
+    where a.product_sku_code in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
+     and a.auditor_status = 1 and a.apply_show = 0
+    </select>
 </mapper>
