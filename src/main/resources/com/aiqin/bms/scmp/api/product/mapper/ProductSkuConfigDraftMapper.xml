@@ -103,7 +103,7 @@
     from product_sku_config_draft
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <select id="getList" resultMap="ListResultMap">
+  <select id="getList" resultMap="ListResultMap" parameterType="java.util.List">
     select
     <include refid="List_Column"/>
     from product_sku_config_draft a
@@ -111,9 +111,62 @@
     on a.config_code = b.config_code
     left join product_sku c
     on a.sku_code = c.sku_code
+    where a.id in
+    <foreach collection="list" open="(" close=")" item="item" separator=",">
+         #{item}
+    </foreach>
+  </select>
+  <select id="getListCount" resultType="java.lang.Long" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo">
+    select
+    a.id
+    from product_sku_config_draft a
+    left join product_sku_config_spare_warehouse_draft b
+    on a.config_code = b.config_code
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    LEFT JOIN product_category lv4
+    on lv4.category_id = c.product_category_code
+    LEFT JOIN product_category lv3
+    on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2
+    on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1
+    on lv1.category_id = lv2.parent_id
     where a.del_flag = 0
     and a.apply_show = 0
-    and a.company_code = #{companyCode,jdbcType=VARCHAR}
+    and a.company_code = #{vo.companyCode,jdbcType=VARCHAR}
+    <if test="vo.skuName!=null and vo.skuName!=''">
+      AND a.sku_name LIKE CONCAT('%',#{vo.skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="vo.productCategoryLv1Code != null and  vo.productCategoryLv1Code != '' ">
+      and lv1.category_id = #{vo.productCategoryLv1Code,jdbcType=VARCHAR}
+    </if>
+    <if test="vo.productCategoryLv2Code != null and  vo.productCategoryLv2Code != '' ">
+      and lv2.category_id = #{vo.productCategoryLv2Code,jdbcType=VARCHAR}
+    </if>
+    <if test="vo.productCategoryLv3Code != null and  vo.productCategoryLv3Code != '' ">
+      and lv3.category_id = #{vo.productCategoryLv3Code,jdbcType=VARCHAR}
+    </if>
+    <if test="vo.productCategoryLv4Code != null and  vo.productCategoryLv4Code != '' ">
+      and lv4.category_id = #{vo.productCategoryLv4Code,jdbcType=VARCHAR}
+    </if>
+    <if test="vo.productBrandCode!=null and vo.productBrandCode!=''">
+      AND c.product_brand_code = #{vo.productBrandCode,jdbcType=VARCHAR}
+    </if>
+    <if test="vo.productBrandName!=null and vo.productBrandName!=''">
+      AND c.product_brand_name like CONCAT('%',#{vo.productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="vo.warehouseCode!=null and vo.warehouseCode!=''">
+      AND a.transport_center_code like CONCAT('%',#{vo.warehouseCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="vo.warehouseName!=null and vo.warehouseName!=''">
+      AND a.transport_center_name like CONCAT('%',#{vo.warehouseName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="vo.personId != null and vo.personId != '' ">
+      and exists (select purchase_group_code from purchase_group_buyer where buyer_code =#{vo.personId,jdbcType=VARCHAR})
+    </if>
+    group by a.id
+    order by id desc
   </select>
   <select id="selectByCodes" parameterType="java.util.List" resultMap="BaseResultMap">
     select

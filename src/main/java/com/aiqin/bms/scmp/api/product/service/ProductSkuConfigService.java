@@ -4,8 +4,10 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
@@ -69,6 +71,10 @@ public interface ProductSkuConfigService {
      * @return
      */
     DetailConfigSupplierRespVo findDraftList(String companyCode);
+
+    BasePage<SkuConfigsRepsVo> findConfigsList(ConfigSearchVo vo);
+
+    BasePage<ProductSkuSupplyUnitRespVo> findSupplierList(ConfigSearchVo vo);
 
     /**
      * 删除临时表配置信息

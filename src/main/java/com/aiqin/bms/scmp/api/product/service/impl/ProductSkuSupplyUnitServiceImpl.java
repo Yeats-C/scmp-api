@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
@@ -70,7 +71,6 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertApplyList(List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits) {
         int num = productSkuSupplyUnitDao.insertApplyList(applyProductSkuSupplyUnits);
@@ -214,5 +214,19 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
         productSkuSupplyUnitCapacityService.saveListForChange(list);
         //设置状态为同步完成
         productSkuSupplyUnitDao.updateBySynStatus(list);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getSupplyList(ConfigSearchVo vo) {
+        return productSkuSupplyUnitDao.getSupplyList(vo);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getApplyCode(String code) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.getApplyByCode(code);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
     }
 }

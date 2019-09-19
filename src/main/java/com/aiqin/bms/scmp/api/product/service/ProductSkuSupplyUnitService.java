@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 
 import java.util.List;
@@ -89,4 +90,8 @@ public interface ProductSkuSupplyUnitService {
     Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList);
 
     void tobeEffective(List<ApplyProductSkuSupplyUnit> list);
+
+    List<ProductSkuSupplyUnitRespVo> getSupplyList(ConfigSearchVo vo);
+
+    List<ProductSkuSupplyUnitRespVo> getApplyCode(String code);
 }

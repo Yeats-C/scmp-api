@@ -95,7 +95,6 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @SaveList
     public int insertApplyList(List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities) {
         return applyMapper.insertBatch(applyProductSkuSupplyUnitCapacities);
     }

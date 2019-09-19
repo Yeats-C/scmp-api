@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
@@ -64,4 +65,8 @@ public interface ProductSkuSupplyUnitDao {
     List<ApplyProductSkuSupplyUnit> selectUnSynData();
 
     Integer updateBySynStatus(List<ApplyProductSkuSupplyUnit> list);
+
+    List<ProductSkuSupplyUnitRespVo> getSupplyList(@Param("vo") ConfigSearchVo vo);
+
+    List<ProductSkuSupplyUnitRespVo> getApplyByCode(String code);
 }
