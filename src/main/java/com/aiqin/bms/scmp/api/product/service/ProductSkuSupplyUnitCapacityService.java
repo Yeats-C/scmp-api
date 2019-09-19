@@ -95,4 +95,6 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @return int
      */
     int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
+
+    Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList);
 }

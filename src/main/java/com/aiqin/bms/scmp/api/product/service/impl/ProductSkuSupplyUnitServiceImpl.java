@@ -7,11 +7,14 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @功能说明:
@@ -33,6 +37,10 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
 
     @Autowired
     private ProductSkuSupplyUnitDraftMapper draftMapper;
+
+    @Autowired
+    private ProductSkuSupplyUnitCapacityService productSkuSupplyUnitCapacityService;
+
     @Override
     @SaveList
     @Transactional(rollbackFor = BizException.class)
@@ -63,7 +71,6 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = BizException.class)
     public int insertApplyList(List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits) {
         int num = productSkuSupplyUnitDao.insertApplyList(applyProductSkuSupplyUnits);
@@ -183,5 +190,43 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     @Override
     public List<ProductSkuSupplyUnitRespVo> getList(String skuCode) {
         return productSkuSupplyUnitDao.getList(skuCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList) {
+        //通过申请编码查询供应商信息
+        if (CollectionUtils.isNotEmptyCollection(unitList)){
+            List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(unitList,ProductSkuSupplyUnit.class);
+            productSkuSupplyUnitDao.deleteList2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
+            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+        } else {
+            return 0;
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void tobeEffective(List<ApplyProductSkuSupplyUnit> list) {
+        //保存供应商数据
+        saveListForChange(list);
+        //保存产能数据
+        productSkuSupplyUnitCapacityService.saveListForChange(list);
+        //设置状态为同步完成
+        productSkuSupplyUnitDao.updateBySynStatus(list);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getSupplyList(ConfigSearchVo vo) {
+        return productSkuSupplyUnitDao.getSupplyList(vo);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitRespVo> getApplyCode(String code) {
+        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitDao.getApplyByCode(code);
+        if(CollectionUtils.isEmptyCollection(list)){
+            return Lists.newArrayList();
+        }
+        return list;
     }
 }
