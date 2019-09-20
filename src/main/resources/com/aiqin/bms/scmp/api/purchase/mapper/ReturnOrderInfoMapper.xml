@@ -1022,6 +1022,8 @@
             <result column="bnum" property="num"/>
             <result column="bamount" property="amount"/>
             <result column="bproductStatus" property="productStatus"/>
+            <result column="bsupplier_name" property="supplierName"/>
+            <result column="bsupplier_code" property="supplierCode"/>
         </collection>
     </resultMap>
     <select id="selectInbound" resultMap="selectInbound">
@@ -1033,7 +1035,9 @@
                    b.sku_code bskuCode,
                    b.sku_name bskuName,
                    b.inbound_batch_code bbatchNumber,
-                   b.pre_qty bnum
+                   b.pre_qty bnum,
+                   b.supplier_name bsupplier_name,
+                   b.supplier_code bsupplier_code
               from inbound a
                      left join inbound_batch b
                                on a.inbound_oder_code = b.inbound_oder_code
