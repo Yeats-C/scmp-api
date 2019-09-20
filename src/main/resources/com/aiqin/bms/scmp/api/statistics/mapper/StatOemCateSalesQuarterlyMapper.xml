@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatOemCateSalesQuarterlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatOemCateSalesQuarterly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="quarter" jdbcType="BIGINT" property="quarter" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="lv1" jdbcType="VARCHAR" property="lv1" />
+    <result column="lv1_category_name" jdbcType="VARCHAR" property="lv1CategoryName" />
+    <result column="lv2" jdbcType="VARCHAR" property="lv2" />
+    <result column="lv2_category_name" jdbcType="VARCHAR" property="lv2CategoryName" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="pre_sales_num" jdbcType="BIGINT" property="preSalesNum" />
+    <result column="com_sales_num" jdbcType="BIGINT" property="comSalesNum" />
+    <result column="pre_com_sales_num" jdbcType="BIGINT" property="preComSalesNum" />
+    <result column="sales_num_wow" jdbcType="DECIMAL" property="salesNumWow" />
+    <result column="sales_amount" jdbcType="BIGINT" property="salesAmount" />
+    <result column="pre_sales_amount" jdbcType="BIGINT" property="preSalesAmount" />
+    <result column="com_sales_amount" jdbcType="BIGINT" property="comSalesAmount" />
+    <result column="pre_com_sales_amount" jdbcType="BIGINT" property="preComSalesAmount" />
+    <result column="sales_amount_vs" jdbcType="DECIMAL" property="salesAmountVs" />
+    <result column="sales_amount_wow" jdbcType="DECIMAL" property="salesAmountWow" />
+    <result column="cate_sales_rate" jdbcType="DECIMAL" property="cateSalesRate" />
+    <result column="pre_cate_sales_rate" jdbcType="DECIMAL" property="preCateSalesRate" />
+    <result column="cate_sales_rate_wow" jdbcType="DECIMAL" property="cateSalesRateWow" />
+    <result column="sales_margin" jdbcType="BIGINT" property="salesMargin" />
+    <result column="pre_sales_margin" jdbcType="BIGINT" property="preSalesMargin" />
+    <result column="com_sales_margin" jdbcType="BIGINT" property="comSalesMargin" />
+    <result column="pre_com_sales_margin" jdbcType="BIGINT" property="preComSalesMargin" />
+    <result column="sales_margin_wow" jdbcType="DECIMAL" property="salesMarginWow" />
+    <result column="cate_sales_margin_rate" jdbcType="DECIMAL" property="cateSalesMarginRate" />
+    <result column="pre_cate_sales_margin_rate" jdbcType="DECIMAL" property="preCateSalesMarginRate" />
+    <result column="cate_sales_margin_rate_wow" jdbcType="DECIMAL" property="cateSalesMarginRateWow" />
+    <result column="sales_margin_rate" jdbcType="DECIMAL" property="salesMarginRate" />
+    <result column="pre_sales_margin_rate" jdbcType="DECIMAL" property="preSalesMarginRate" />
+    <result column="sales_margin_rate_wow" jdbcType="DECIMAL" property="salesMarginRateWow" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, quarter, price_channel_code, price_channel_name, lv1, lv1_category_name, 
+    lv2, lv2_category_name, sales_num, pre_sales_num, com_sales_num, pre_com_sales_num, 
+    sales_num_wow, sales_amount, pre_sales_amount, com_sales_amount, pre_com_sales_amount, 
+    sales_amount_vs, sales_amount_wow, cate_sales_rate, pre_cate_sales_rate, cate_sales_rate_wow, 
+    sales_margin, pre_sales_margin, com_sales_margin, pre_com_sales_margin, sales_margin_wow, 
+    cate_sales_margin_rate, pre_cate_sales_margin_rate, cate_sales_margin_rate_wow, sales_margin_rate, 
+    pre_sales_margin_rate, sales_margin_rate_wow, create_time
+  </sql>
+  <select id="oemSaleCateSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_cate_sales_quarterly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and quarter = #{month,jdbcType=BIGINT}
+  </select>
+  <select id="oemSaleCategory" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     lv1, lv1_category_name as lv1CategoryName,
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_cate_sales_quarterly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and quarter = #{month,jdbcType=BIGINT}
+    group by lv1
+    order by lv1
+  </select>
+  <select id="oemSaleCategory2" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     lv2, lv2_category_name as lv2CategoryName,
+     ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
+     ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
+     ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
+     ifnull(sales_margin,0) as salesMargin, ifnull(pre_sales_margin,0) as preSalesMargin,
+     ifnull(com_sales_margin,0) as comSalesMargin, ifnull(pre_com_sales_margin,0) as preComSalesMargin,
+     ifnull(sales_num_wow,0) as salesNumWow, ifnull(sales_amount_vs,0) as salesAmountVs,
+     ifnull(sales_amount_wow,0) as salesAmountWow, ifnull(cate_sales_rate,0) as salesRate,
+     ifnull(pre_cate_sales_rate,0) as preSalesRate, ifnull(cate_sales_rate_wow,0) as salesRateWow,
+     ifnull(sales_margin_wow,0) as salesMarginWow, ifnull(cate_sales_margin_rate,0) as salesMarginRatio,
+     ifnull(pre_cate_sales_margin_rate,0) as preSalesMarginRatio, ifnull(cate_sales_margin_rate_wow,0) as salesMarginRatioWow,
+     ifnull(sales_margin_rate,0) as salesMarginRate, ifnull(pre_sales_margin_rate,0) as preSalesMarginRate,
+     ifnull(sales_margin_rate_wow,0) as salesMarginRateWow
+    from stat_oem_cate_sales_quarterly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and quarter = #{month,jdbcType=BIGINT}
+    and lv1 = #{lv1,jdbcType=VARCHAR}
+    and lv2 is not null
+    and lv2 != ''
+  </select>
+  <select id="companySaleCateSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     sum(ifnull(com_sales_num,0)) as salesNum, sum(ifnull(pre_com_sales_num,0)) as preSalesNum,
+     sum(ifnull(com_sales_num,0)) as salesAmount, sum(ifnull(pre_com_sales_num,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(com_sales_margin,0)) as salesMargin, sum(ifnull(pre_com_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_cate_sales_quarterly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and quarter = #{month,jdbcType=BIGINT}
+  </select>
+</mapper>

@@ -84,7 +84,7 @@ public class FileRecordServiceImpl implements FileRecordService {
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public HttpResponse<String> uploadImageFolder(MultipartFile[] folders, String create_by_id, String create_by_name,String fileId) {
-        List<String> fileNames = Arrays.asList("1", "2", "3", "4", "5", "sm_1", "sm_2", "sm_3", "sm_4", "sm_5");
+        List<String> fileNames = Arrays.asList("1", "2", "3", "4", "5","6", "7", "8", "9", "10", "sm_1", "sm_2", "sm_3", "sm_4", "sm_5");
         try {
             if(folders==null||folders.length==0){
                 LOGGER.error("上传文件为空");
