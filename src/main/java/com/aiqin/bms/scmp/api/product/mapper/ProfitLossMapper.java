@@ -26,4 +26,6 @@ public interface ProfitLossMapper {
     void insertList(@Param(value = "list") List<ProfitLoss> profitLossList);
 
     List<ProfitLoss> listForSap(SapOrderRequest sapOrderRequest);
+
+    void updateByOrderCodes(List<String> list);
 }

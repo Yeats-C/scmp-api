@@ -160,6 +160,27 @@ public class StringConvertUtil {
         }
         return innerValue;
     }
+    /**
+     * @param type
+     * @return
+     */
+    public static InnerValue profitLossStockTypeConvert(Integer type) {
+        //OutboundTypeEnum 对应类型
+        InnerValue innerValue = new InnerValue();
+        switch (type) {
+            case 0:
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("45")).getDesc());
+                innerValue.setValue("45");
+                break;
+            case 1:
+                innerValue.setName(Objects.requireNonNull(ScmpStorageChangeEnum.getByCode("50")).getDesc());
+                innerValue.setValue("50");
+                break;
+            default:
+                throw new GroundRuntimeException("未查询到对应的类型");
+        }
+        return innerValue;
+    }
 
 
     /**

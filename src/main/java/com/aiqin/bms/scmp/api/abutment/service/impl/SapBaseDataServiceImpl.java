@@ -133,6 +133,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     @Resource
     private ProfitLossProductMapper profitLossProductMapper;
     @Resource
+    private ProfitLossProductBatchMapper profitLossProductBatchMapper;
+    @Resource
     private PriceChannelMapper priceChannelMapper;
     @Resource
     private ProductSkuCheckoutMapper productSkuCheckoutMapper;
@@ -369,14 +371,90 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
     }
 
+
     /**
      * sap对接报损单转换为出入库单
      *
      * @param sapOrderRequest
      */
     private void sapProfitLossStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
-        List<ProfitLoss> profitLosseList = profitLossMapper.listForSap(sapOrderRequest);
+        List<ProfitLoss> profitLossList = profitLossMapper.listForSap(sapOrderRequest);
+        if(CollectionUtils.isNotEmpty(profitLossList)){
+            List<String> orderCodes = profitLossList.stream().map(ProfitLoss::getOrderCode).collect(Collectors.toList());
+            sapOrderRequest.setOrderCodeList(orderCodes);
+            List<ProfitLossProduct> profitLossProductList = profitLossProductMapper.listForSap(sapOrderRequest);
+            Map<String,ProfitLossProduct> profitLossProductMap = profitLossProductList.stream().collect(Collectors.toMap(profitLossProduct -> profitLossProduct.getOrderCode() + profitLossProduct.getSkuCode(),Function.identity()));
+            List<String> skuCodes = profitLossProductList.stream().map(ProfitLossProduct::getSkuCode).collect(Collectors.toList());
+            ProfitLossProduct profitLossProduct;
+            List<ProfitLossProductBatch> profitLossProductBatches = profitLossProductBatchMapper.listForSap(sapOrderRequest);
+            StorageDetail storageDetail;
+            List<StorageDetail> storageDetailList;
+            List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
+            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
+            Storage storage;
+            for (ProfitLossProductBatch profitLossProductBatch : profitLossProductBatches) {
+                profitLossProduct = profitLossProductMap.get(profitLossProductBatch.getOrderCode() + profitLossProductBatch.getSkuCode());
+                storageDetail = new StorageDetail();
+                //供应商
+                storageDetail.setSupplierCode(profitLossProductBatch.getSupplierCode());
+                storageDetail.setSupplierName(profitLossProductBatch.getSupplierName());
+                storageDetail.setSkuCode(profitLossProduct.getSkuCode());
+                storageDetail.setSkuName(profitLossProduct.getSkuName());
+                storageDetail.setSkuDesc(StringConvertUtil.productDesc(profitLossProduct.getColor(), profitLossProduct.getSpecification(), profitLossProduct.getModel()));
+                storageDetail.setUnit(profitLossProduct.getUnit());
+                //固定为1
+                storageDetail.setUnitCount(1);
+                storageDetail.setTradeExponent(1);
+                storageDetail.setTaxRate(profitLossProduct.getTax().intValue());
+                storageDetail.setExpectCount(profitLossProduct.getQuantity().intValue());
+                storageDetail.setExpectMinUnitCount(profitLossProduct.getQuantity().intValue());
+                storageDetail.setSingleCount(profitLossProduct.getQuantity().intValue());
+                storageDetail.setMinUnitCount(profitLossProduct.getQuantity().intValue());
+                //厂商指导价
+                storageDetail.setGuidePrice(productMap.containsKey(profitLossProduct.getSkuCode()) ? productMap.get(profitLossProduct.getSkuCode()).toString() : "0");
+                if (storageDetailMap.containsKey(profitLossProduct.getOrderCode())) {
+                    storageDetailList = storageDetailMap.get(profitLossProduct.getOrderCode());
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(profitLossProduct.getOrderCode(), storageDetailList);
+                } else {
+                    storageDetailList = Lists.newArrayList();
+                    storageDetailList.add(storageDetail);
+                    storageDetailMap.put(profitLossProduct.getOrderCode(), storageDetailList);
+                }
+            }
+            InnerValue innerValue;
+            Long quantity;
+            for (ProfitLoss profitLoss : profitLossList) {
+                storage = new Storage();
+                innerValue = StringConvertUtil.profitLossStockTypeConvert(profitLoss.getOrderType());
+                storage.setOrderId(String.format("%s-%s", profitLoss.getOrderCode(), innerValue.getValue()));
+                storage.setSubOrderType(innerValue.getValue());
+                storage.setSubOrderTypeName(innerValue.getName());
+                storage.setOrderCode(profitLoss.getOrderCode());
+                //0:报损 1:报溢
+                if(0==profitLoss.getOrderType()){
+                    quantity = profitLoss.getLossQuantity();
+                }else if(1==profitLoss.getOrderType()){
+                    quantity = profitLoss.getProfitQuantity();
+                }else{
+                    quantity = 0L;
+                }
+                storage.setOrderCount(quantity.intValue());
+                storage.setDiscountPrice("0");
+                storage.setOptTime(profitLoss.getCreateTime());
+                storage.setCreateTime(profitLoss.getCreateTime());
+                storage.setCreateByName(profitLoss.getCreateBy());
+                //调拨没有来源没有金额
+                storage.setTransportCode(profitLoss.getLogisticsCenterCode());
+                storage.setTransportName(profitLoss.getLogisticsCenterName());
+                storage.setStorageCode(profitLoss.getWarehouseCode());
+                storage.setStorageName(profitLoss.getWarehouseName());
+                storage.setDetails(storageDetailMap.get(profitLoss.getOrderCode()));
+                storageList.add(storage);
+            }
 
+        }
     }
 
 
@@ -384,13 +462,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      * 出入库数据同步
      */
     public void stockSynchronization(SapOrderRequest sapOrderRequest) {
-
         List<Storage> storageList = Lists.newArrayList();
-        this.inboundToStock(storageList, sapOrderRequest);
-        sapStorageAbutment(storageList, 1);
-        storageList.clear();
-        this.outboundToStock(storageList, sapOrderRequest);
-        sapStorageAbutment(storageList, 2);
+//        this.inboundToStock(storageList, sapOrderRequest);
+//        sapStorageAbutment(storageList, 1);
+//        storageList.clear();
+//        this.outboundToStock(storageList, sapOrderRequest);
+//        sapStorageAbutment(storageList, 2);
+        this.sapProfitLossStock(storageList,sapOrderRequest);
+        sapStorageAbutment(storageList, 3);
     }
 
     private void sapStorageAbutment(List<Storage> storageList, Integer type) {
@@ -416,6 +495,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     inboundDao.updateByOrderCodes(orderCodes);
                 } else if (type.equals(2)) {
                     outboundDao.updateByOrderCodes(orderCodes);
+                } else if (type.equals(3)) {
+                    profitLossMapper.updateByOrderCodes(orderCodes);
                 }
             } else {
                 LOGGER.error("调用结算sap出入库单据异常:{}", httpResponse.getMessage());
