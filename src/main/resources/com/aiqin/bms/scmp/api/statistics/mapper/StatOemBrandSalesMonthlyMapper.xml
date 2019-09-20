@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatOemBrandSalesMonthlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatOemBrandSalesMonthly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
+    <result column="price_channel_code" jdbcType="VARCHAR" property="priceChannelCode" />
+    <result column="price_channel_name" jdbcType="VARCHAR" property="priceChannelName" />
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="lv2" jdbcType="VARCHAR" property="lv2" />
+    <result column="lv2_category_name" jdbcType="VARCHAR" property="lv2CategoryName" />
+    <result column="sales_num" jdbcType="BIGINT" property="salesNum" />
+    <result column="pre_sales_num" jdbcType="BIGINT" property="preSalesNum" />
+    <result column="com_sales_num" jdbcType="BIGINT" property="comSalesNum" />
+    <result column="pre_com_sales_num" jdbcType="BIGINT" property="preComSalesNum" />
+    <result column="sales_num_wow" jdbcType="DECIMAL" property="salesNumWow" />
+    <result column="sales_amount" jdbcType="BIGINT" property="salesAmount" />
+    <result column="pre_sales_amount" jdbcType="BIGINT" property="preSalesAmount" />
+    <result column="com_sales_amount" jdbcType="BIGINT" property="comSalesAmount" />
+    <result column="pre_com_sales_amount" jdbcType="BIGINT" property="preComSalesAmount" />
+    <result column="sales_amount_vs" jdbcType="DECIMAL" property="salesAmountVs" />
+    <result column="sales_amount_wow" jdbcType="DECIMAL" property="salesAmountWow" />
+    <result column="brand_sales_rate" jdbcType="DECIMAL" property="brandSalesRate" />
+    <result column="pre_brand_sales_rate" jdbcType="DECIMAL" property="preBrandSalesRate" />
+    <result column="brand_sales_rate_wow" jdbcType="DECIMAL" property="brandSalesRateWow" />
+    <result column="sales_margin" jdbcType="BIGINT" property="salesMargin" />
+    <result column="pre_sales_margin" jdbcType="BIGINT" property="preSalesMargin" />
+    <result column="com_sales_margin" jdbcType="BIGINT" property="comSalesMargin" />
+    <result column="pre_com_sales_margin" jdbcType="BIGINT" property="preComSalesMargin" />
+    <result column="sales_margin_wow" jdbcType="DECIMAL" property="salesMarginWow" />
+    <result column="brand_sales_margin_rate" jdbcType="DECIMAL" property="brandSalesMarginRate" />
+    <result column="pre_brand_sales_margin_rate" jdbcType="DECIMAL" property="preBrandSalesMarginRate" />
+    <result column="brand_sales_margin_rate_wow" jdbcType="DECIMAL" property="brandSalesMarginRateWow" />
+    <result column="sales_margin_rate" jdbcType="DECIMAL" property="salesMarginRate" />
+    <result column="pre_sales_margin_rate" jdbcType="DECIMAL" property="preSalesMarginRate" />
+    <result column="sales_margin_rate_wow" jdbcType="DECIMAL" property="salesMarginRateWow" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, stat_month, price_channel_code, price_channel_name, product_brand_code, 
+    product_brand_name, lv2, lv2_category_name, sales_num, pre_sales_num, com_sales_num, 
+    pre_com_sales_num, sales_num_wow, sales_amount, pre_sales_amount, com_sales_amount, 
+    pre_com_sales_amount, sales_amount_vs, sales_amount_wow, brand_sales_rate, pre_brand_sales_rate, 
+    brand_sales_rate_wow, sales_margin, pre_sales_margin, com_sales_margin, pre_com_sales_margin, 
+    sales_margin_wow, brand_sales_margin_rate, pre_brand_sales_margin_rate, brand_sales_margin_rate_wow, 
+    sales_margin_rate, pre_sales_margin_rate, sales_margin_rate_wow, create_time
+  </sql>
+  <select id="oemSaleBrandSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_brand_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+  </select>
+  <select id="oemBrandeCategory" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     product_brand_code as lv1, product_brand_name as lv1CategoryName,
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_brand_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_brand_code
+    order by product_brand_code
+  </select>
+  <select id="oemBrandCategory2" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     lv2, lv2_category_name as lv2CategoryName,
+     ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
+     ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
+     ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
+     ifnull(sales_margin,0) as salesMargin, ifnull(pre_sales_margin,0) as preSalesMargin,
+     ifnull(com_sales_margin,0) as comSalesMargin, ifnull(pre_com_sales_margin,0) as preComSalesMargin,
+     ifnull(sales_num_wow,0) as salesNumWow, ifnull(sales_amount_vs,0) as salesAmountVs,
+     ifnull(sales_amount_wow,0) as salesAmountWow, ifnull(brand_sales_rate,0) as salesRate,
+     ifnull(pre_brand_sales_rate,0) as preSalesRate, ifnull(brand_sales_rate_wow,0) as salesRateWow,
+     ifnull(sales_margin_wow,0) as salesMarginWow, ifnull(brand_sales_margin_rate,0) as salesMarginRatio,
+     ifnull(pre_brand_sales_margin_rate,0) as preSalesMarginRatio, ifnull(brand_sales_margin_rate_wow,0) as salesMarginRatioWow,
+     ifnull(sales_margin_rate,0) as salesMarginRate, ifnull(pre_sales_margin_rate,0) as preSalesMarginRate,
+     ifnull(sales_margin_rate_wow,0) as salesMarginRateWow
+    from stat_oem_brand_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_brand_code = #{lv1,jdbcType=VARCHAR}
+    and lv2  is not null
+    and lv2 != ''
+  </select>
+  <select id="companySaleBrandSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
+    select
+     sum(ifnull(com_sales_num,0)) as salesNum, sum(ifnull(pre_com_sales_num,0)) as preSalesNum,
+     sum(ifnull(com_sales_num,0)) as salesAmount, sum(ifnull(pre_com_sales_num,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(com_sales_margin,0)) as salesMargin, sum(ifnull(pre_com_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin
+    from stat_oem_brand_sales_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+  </select>
+</mapper>

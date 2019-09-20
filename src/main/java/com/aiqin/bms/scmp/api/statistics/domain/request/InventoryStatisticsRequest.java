@@ -27,7 +27,7 @@ public class InventoryStatisticsRequest {
     @JsonProperty("type")
     private Integer type;
 
-    @ApiModelProperty(value="报表类型: 0 年报 2 月报")
+    @ApiModelProperty(value="报表类型: 0 年报 1 季报 2 月报 3 周报")
     @JsonProperty("report_type")
     private Integer reportType;
 
