@@ -24,7 +24,24 @@
     from supplier_file
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByCode"
+            resultType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.SupplierFileReqVO">
+      SELECT
+        id,
+        apply_type applyType,
+        file_path filePath,
+        file_code fileCode,
+        del_flag delFlag,
+        supplier_name applySupplierName,
+        file_name fileName,
+        create_time createTime,
+        create_by createBy,
+        update_time updateTime,
+        update_by updateBy,
+        supplier_code applySupplierCode
+      from supplier_file  where supplier_code=#{oldApplyCode,jdbcType=VARCHAR}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from supplier_file
     where id = #{id,jdbcType=BIGINT}
   </delete>

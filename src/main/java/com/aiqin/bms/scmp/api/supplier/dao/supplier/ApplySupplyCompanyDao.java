@@ -109,4 +109,7 @@ public interface ApplySupplyCompanyDao {
      * @return
      */
     ApplySupplyCompany selectBySupplyCodeForNewest(@Param("companyCode") String companyCode, @Param("applySupplyCode") String applySupplyCode,@Param("applyStatus")Integer applyStatus);
+
+    List<ApplySupplyCompany> selectByCode(String oldCode);
+    List<ApplySupplyCompany> selectByCode2(String oldCode);
 }
