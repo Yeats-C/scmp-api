@@ -75,6 +75,7 @@
     <result column="delivery_area" jdbcType="VARCHAR" property="deliveryArea"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
+    <result column="apply_type" property="applyType"/>
   </resultMap>
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -285,7 +286,8 @@
       sc.brand,
       sc.delivery_area,
       sc.remark,
-      sc.approval_name
+      sc.approval_name,
+      sc.apply_type
     FROM apply_supply_company sc
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.apply_supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
@@ -331,14 +333,6 @@
       supply_company
     where
       supply_name = #{supplyName,jdbcType=VARCHAR}
-  </select>
-  <select id="selectBySupplierCode" resultMap="BaseResultMap" >
-   select
-      supply_code , supply_name
-    from
-      supply_company
-    where
-      supply_code = #{supplyCode,jdbcType=VARCHAR}
   </select>
   <select id="selectBySupplierCode" resultMap="BaseResultMap" >
    select
