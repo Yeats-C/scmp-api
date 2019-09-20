@@ -887,6 +887,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             Map<String, AreaInfo> areaTree = getAreaTree();
             Map<String, SupplyCompany> supplyCompanies = supplyCompanyDao.selectByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            Map<String, SupplyCompany> stringSupplyCompanyMap = supplyCompanyDao.selectOfficialByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            supplyCompanies.putAll(stringSupplyCompanyMap);
             List<String> dicName = Lists.newArrayList();
             dicName.add("供应商类型");
             dicName.add("发送至");
@@ -935,6 +937,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
             Map<String, AreaInfo> areaTree = getAreaTree();
             Map<String, SupplyCompany> supplyCompanies = supplyCompanyDao.selectByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            Map<String, SupplyCompany> supplyCompanies2 = supplyCompanyDao.selectOfficialByCompanyNameList(companyNameList, getUser().getCompanyCode());
+            supplyCompanies.putAll(supplyCompanies2);
             Map<String, SupplyCompany> codeList = supplyCompanyDao.selectByCompanyCodeList(companyCodeList, getUser().getCompanyCode());
             List<String> dicName = Lists.newArrayList();
             dicName.add("供应商类型");
@@ -1074,10 +1078,10 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos = BeanCopyUtils.copyList(supplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
                     supplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupVos);
                 }
-//                QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
-//                vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
-//                List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = applySupplyCompanyAccountMapper.selectListByQueryVO(vo);
-//                supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
+                QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
+                vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
+                List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = applySupplyCompanyAccountMapper.selectListByQueryVO(vo);
+                supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
             } else {
                 throw new BizException(MessageId.create(Project.SUPPLIER_API,41,"未查询信息"));
             }
@@ -1211,6 +1215,21 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     throw new BizException(ResultCode.UPDATE_ERROR);
                 }
             }
+            //判断是否需要新增供货单位账户申请
+            //判断是否需要新增账户信息
+            Boolean addAccount = null != applySupplyCompanyReqVO.getAddAccount() && applySupplyCompanyReqVO.getAddAccount().equals(StatusTypeCode.ADD_ACCOUNT.getStatus());
+            if(addAccount && Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),s.getApplyType())){
+                ApplySupplyCompanyAcctReqVO applySupplyCompanyAcctReqVO = applySupplyCompanyReqVO.getApplySupplyCompanyAccountReq();
+                ApplySupplyComAcctDTO applySupplyComAcctDTO = new ApplySupplyComAcctDTO();
+                BeanCopyUtils.copy(applySupplyCompanyAcctReqVO, applySupplyComAcctDTO);
+                applySupplyComAcctDTO.setApplySupplyCompanyCode(applySupplyCompanyReqDTO.getApplyCode());
+                applySupplyComAcctDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
+                applySupplyComAcctDTO.setApplyShow((byte)1);
+                applySupplyComAcctService.insideSaveApply(applySupplyComAcctDTO);
+            }
+            //删除旧的
+            applySupplyCompanyAccountMapper.deleteByPrimaryKey(applySupplyCompanyReqVO.getApplySupplyCompanyAccountReq().getId());
+
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 applySupplyCompanyReqDTO.setDirectSupervisorCode(applySupplyCompanyReqVO.getDirectSupervisorCode());
                 applySupplyCompanyReqDTO.setDirectSupervisorName(applySupplyCompanyReqVO.getDirectSupervisorName());
@@ -1723,6 +1742,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         }
         private CheckSupply checkAccount(){
             //
+            this.reqVO.setAddAccount((byte) 1);
             boolean b = StringUtils.isNotBlank(supplierImport.getBankAccount()) || StringUtils.isNotBlank(supplierImport.getAccount())
                     || StringUtils.isNotBlank(supplierImport.getAccountName()) || StringUtils.isNotBlank(supplierImport.getMaxPaymentAmount());
             //有一个填写了都那么都必填
