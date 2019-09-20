@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.SpecialArea;
@@ -1073,15 +1074,10 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     List<SupplyCompanyPurchaseGroupResVo> purchaseGroupVos = BeanCopyUtils.copyList(supplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
                     supplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupVos);
                 }
-//                if (Objects.equals(StatusTypeCode.SHOW_ACCOUNT_SKU,statusTypeCode)) {
-//                    QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
-//                    vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
-//                    List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = supplyCompanyAccountDao.selectListByQueryVO(vo);
-//                    supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
-//                    List<QueryProductSkuListResp> queryProductSkuListResps = null;
-//                    queryProductSkuListResps = skuInfoService.querySkuListBySupplyUnitCode(supplyComDetailRespVO.getApplySupplyCode());
-//                    supplyComDetailRespVO.setSkuListRespVos(queryProductSkuListResps);
-//                }
+//                QuerySupplierComAcctReqVo vo = new QuerySupplierComAcctReqVo();
+//                vo.setSupplyCompanyCode(supplyComDetailRespVO.getApplySupplyCode());
+//                List<QuerySupplierComAcctRespVo> querySupplierComAcctRespVos = applySupplyCompanyAccountMapper.selectListByQueryVO(vo);
+//                supplyComDetailRespVO.setSupplierComAcctRespVos(querySupplierComAcctRespVos);
             } else {
                 throw new BizException(MessageId.create(Project.SUPPLIER_API,41,"未查询信息"));
             }
