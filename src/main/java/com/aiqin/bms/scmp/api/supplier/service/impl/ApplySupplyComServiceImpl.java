@@ -1251,6 +1251,21 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     }
 
     @Override
+    public Boolean deleteApply(Long id) {
+        ApplySupplyCompany applySupplyCompany = applySupplyCompanyMapper.selectByPrimaryKey(id);
+        if (Objects.isNull(applySupplyCompany)) {
+            return Boolean.TRUE;
+        }
+        //删除主表
+        int i = applySupplyCompanyMapper.delectById(id);
+        //删除采购组附表
+        applySupplyCompanyPurchaseGroupMapper.deleteByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+        //删除发货配置
+        applyDeliveryInformationMapper.deleteByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+        return i==1;
+    }
+
+    @Override
     @Transactional(rollbackFor = BizException.class)
     public String workFlowCallback(WorkFlowCallbackVO workFlowCallbackVO){
         //通过编码查询实体

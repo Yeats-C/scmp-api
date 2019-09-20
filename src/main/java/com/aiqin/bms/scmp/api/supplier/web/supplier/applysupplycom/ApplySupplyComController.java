@@ -104,4 +104,14 @@ public class ApplySupplyComController {
         }
     }
 
+    @DeleteMapping("/deleteApply")
+    @ApiOperation("待申请删除")
+    public HttpResponse deleteApply(@RequestParam Long id){
+        log.error("待申请删除 - /deleteApply 参数：[{}]",id);
+        try {
+            return HttpResponse.success(applySupplyComService.deleteApply(id));
+        } catch (Exception e) {
+            return HttpResponse.failure(ResultCode.CANCEL_ERROR);
+        }
+    }
 }

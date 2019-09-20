@@ -192,4 +192,6 @@ public interface ApplySupplyComService {
      * @date 2019/8/23 10:52
      */
     int saveApplyPurchaseGroupList(List<ApplySupplyCompanyPurchaseGroup> purchaseGroups);
+
+    Boolean deleteApply(Long id);
 }
