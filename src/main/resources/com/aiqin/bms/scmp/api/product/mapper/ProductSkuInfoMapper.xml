@@ -156,6 +156,13 @@
            when a.quality_number = 3
                then '年'
            end                                    qualityNumber,
+       case
+       when left(a.product_category_code, 2) in ('01','02','03','04','05')
+           then '是'
+       else
+                '否'
+       end                                        qualityAssuranceManagement2,
+       a.quality_date                             qualityDate,
        d.box_gross_weight                         boxGrossWeight,
        a.product_brand_name                       productBrandName,
        a.product_category_code                    productCategoryCode,
@@ -167,20 +174,25 @@
        ROUND(g.Input_tax_rate/100,2)              inputTaxRate,
        g.settlement_method_name                   settlementMethodName,
        a.procurement_section_name                 procurementSectionName,
-       a.product_sort_name                        productSortName,
+       case
+        when a.product_property_name = 'A+品'
+           then 'A品'
+       else
+             a.product_property_name
+       end                                        productPropertyName,
        g.Integral_coefficient                     integralCoefficient,
        ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
        ROUND(h.price_tax/100,2)                   salePrice,
        ROUND(i.price_tax/100,2)                   memberPrice,
        j.categories_supply_channels_name          categoriesSupplyChannelsName,
        ROUND(j.tax_included_price/100,2)                       basePrice,
-       ROUND(((j.tax_included_price-i2.price_tax)/j.tax_included_price)*100,4)                               addPoints2,
-       ROUND(((j.tax_included_price-i3.price_tax)/j.tax_included_price)*100,4)                               addPoints3,
-       ROUND(((j.tax_included_price-i4.price_tax)/j.tax_included_price)*100,4)                               addPoints4,
-       ROUND(((j.tax_included_price-i5.price_tax)/j.tax_included_price)*100,4)                               addPoints5,
-       ROUND(((j.tax_included_price-i6.price_tax)/j.tax_included_price)*100,4)                               addPoints6,
-       ROUND(((j.tax_included_price-i7.price_tax)/j.tax_included_price)*100,4)                               addPoints7,
-       ROUND(((j.tax_included_price-i8.price_tax)/j.tax_included_price)*100,4)                               addPoints8,
+       ROUND(((i2.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints2,
+       ROUND(((i3.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints3,
+       ROUND(((i4.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints4,
+       ROUND(((i5.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints5,
+       ROUND(((i6.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints6,
+       ROUND(((i7.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints7,
+       ROUND(((i8.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints8,
        k.manufacturer_name                        manufacturerName,
        k.factory_product_number                   factoryProductNumber,
        k.address                                  address,
@@ -207,8 +219,17 @@
        ROUND(j.tax_included_price/100,2)                  taxIncludedPrice,
        ROUND(j.joint_franchise_rate/100,2)                     jointFranchiseRate,
        ROUND(j.point/100,2)                                    point,
-       a.sku_status                               skuStatus,
-       a.remark                                   remark,
+       case
+           when a.sku_status = 0
+               then '在用'
+           when a.sku_status = 1
+               then '停止进货'
+           when a.sku_status = 2
+               then '停止配送'
+           when a.sku_status = 3
+               then '停止销售'
+           end                                    skuStatus,
+       a.product_desc                             remark,
        a.warehouse_type_name                      warehouseTypeName,
        a.color_name                               colorName,
        case
@@ -254,9 +275,23 @@ from product_sku a
                c.unit_name                                unitName,
                a.applicable_month_age                     applicableMonthAge,
                f.zero_removal_coefficient                 zeroRemovalCoefficient,
-               a.product_sort_name                        productSortName,
-               a.manufacturer_guide_price                 manufacturerGuidePrice,
-               a.sku_status                               skuStatus,
+                case
+                when a.product_property_name = 'A+品'
+                   then 'A品'
+                else
+                     a.product_property_name
+                end                                        productPropertyName,
+               ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
+               case
+                    when a.sku_status = 0
+                        then '在用'
+                    when a.sku_status = 1
+                        then '停止进货'
+                    when a.sku_status = 2
+                        then '停止配送'
+                    when a.sku_status = 3
+                        then '停止销售'
+                end                                       skuStatus,
                a.warehouse_type_name                      warehouseTypeName,
                a.color_name                               colorName,
                case

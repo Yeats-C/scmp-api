@@ -41,7 +41,7 @@ public class SkuEditExport extends BaseRowModel {
     private String skuStatus;
 
     @ExcelProperty(index = 10, value = "商品属性")
-    private String productSortName;
+    private String productPropertyName;
 
     @ExcelProperty(index = 11, value = "特征")
     private String warehouseTypeName;
@@ -50,7 +50,7 @@ public class SkuEditExport extends BaseRowModel {
     private String colorName;
 
     @ExcelProperty(index = 13, value = "波段")
-    private String waveBand;
+    private String waveBand = "-";
 
     @ExcelProperty(index = 14, value = "是否记录唯一码")
     private String uniqueCode;

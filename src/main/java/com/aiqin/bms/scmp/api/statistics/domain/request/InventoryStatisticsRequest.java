@@ -27,7 +27,7 @@ public class InventoryStatisticsRequest {
     @JsonProperty("type")
     private Integer type;
 
-    @ApiModelProperty(value="报表类型: 0 年报 2 月报")
+    @ApiModelProperty(value="报表类型: 0 年报 1 季报 2 月报 3 周报")
     @JsonProperty("report_type")
     private Integer reportType;
 
@@ -39,9 +39,14 @@ public class InventoryStatisticsRequest {
     @JsonProperty("purchase_group_code")
     private String purchaseGroupCode;
 
-    public InventoryStatisticsRequest(String date, Integer type, Integer reportType, String productSortCode) {
+    @ApiModelProperty(value="库存类型 0 低库存 1 高库存")
+    @JsonProperty("stock_type")
+    private Integer stockType;
+
+    public InventoryStatisticsRequest(String date, Integer type, Integer stockType, Integer reportType, String productSortCode) {
         this.date = date;
         this.type = type;
+        this.stockType = stockType;
         this.reportType = reportType;
         this.productSortCode = productSortCode;
     }

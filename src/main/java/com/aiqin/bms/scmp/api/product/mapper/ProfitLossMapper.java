@@ -28,4 +28,6 @@ public interface ProfitLossMapper {
     List<ProfitLoss> listForSap(SapOrderRequest sapOrderRequest);
 
     void updateByOrderCodes(List<String> list);
+
+    ProfitLoss selectByOrderCode(String orderCode);
 }

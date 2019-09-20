@@ -2,10 +2,7 @@ package com.aiqin.bms.scmp.api.statistics.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptLowInventoryMonthlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptLowInventoryQuarterlyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptLowInventoryWeeklyDao;
-import com.aiqin.bms.scmp.api.statistics.dao.StatDeptLowInventoryYearlyDao;
+import com.aiqin.bms.scmp.api.statistics.dao.*;
 import com.aiqin.bms.scmp.api.statistics.domain.request.InventoryStatisticsRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventorySortResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventoryStatisticsResponse;
@@ -36,18 +33,30 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
     private StatDeptLowInventoryQuarterlyDao statDeptLowInventoryQuarterlyDao;
     @Resource
     private StatDeptLowInventoryYearlyDao statDeptLowInventoryYearlyDao;
+    @Resource
+    private StatDeptHighInventoryWeeklyDao statDeptHighInventoryWeeklyDao;
+    @Resource
+    private StatDeptHighInventoryMonthlyDao statDeptHighInventoryMonthlyDao;
+    @Resource
+    private StatDeptHighInventoryQuarterlyDao statDeptHighInventoryQuarterlyDao;
+    @Resource
+    private StatDeptHighInventoryYearlyDao statDeptHighInventoryYearlyDao;
 
     private final static int YEAR = 0;
     private final static int QUARTER = 1;
     private final static int MONTH = 2;
     private final static int WEEK = 3;
 
+    private final static int LOW = 0;
+    private final static int HIGH = 1;
+
     @Override
-    public HttpResponse<InventoryStatisticsResponse> lowInventory(InventoryStatisticsRequest request){
-        if(request == null || StringUtils.isBlank(request.getDate()) || request.getType() == null || request.getReportType() == null){
+    public HttpResponse<InventoryStatisticsResponse> inventory(InventoryStatisticsRequest request){
+        if(request == null || StringUtils.isBlank(request.getDate()) || request.getType() == null ||
+                request.getReportType() == null || request.getStockType() == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        InventoryStatisticsResponse response = new InventoryStatisticsResponse();
+        InventoryStatisticsResponse response;
         if(request.getType().equals(Global.COMPANY)){
             // 公司低库存统计
             if(request.getReportType().equals(Global.ANNUAL_REPORT)){
@@ -111,18 +120,34 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
         List<inventoryInfoResponse> sumList;
         List<InventorySortResponse> depts;
         InventoryStatisticsResponse deptResponse;
-        sumList = this.inventoryLowList(request, i);
+        if(request.getStockType().equals(LOW)){
+            sumList = this.inventoryLowList(request, i);
+        }else {
+            sumList = this.inventoryHighList(request, i);
+        }
         if (CollectionUtils.isNotEmpty(sumList)) {
             sumResponse = this.inventoryRate(sumList);
             // 查询所属部门
-            if(i == YEAR){
-                depts = statDeptLowInventoryYearlyDao.deptList(request);
-            }else if (i == QUARTER){
-                depts = statDeptLowInventoryQuarterlyDao.deptList(request);
-            }else if (i == MONTH){
-                depts = statDeptLowInventoryMonthlyDao.deptList(request);
+            if(request.getStockType().equals(LOW)){
+                if(i == YEAR){
+                    depts = statDeptLowInventoryYearlyDao.deptList(request);
+                }else if (i == QUARTER){
+                    depts = statDeptLowInventoryQuarterlyDao.deptList(request);
+                }else if (i == MONTH){
+                    depts = statDeptLowInventoryMonthlyDao.deptList(request);
+                }else {
+                    depts = statDeptLowInventoryWeeklyDao.deptList(request);
+                }
             }else {
-                depts = statDeptLowInventoryWeeklyDao.deptList(request);
+                if(i == YEAR){
+                    depts = statDeptHighInventoryYearlyDao.deptHighList(request);
+                }else if (i == QUARTER){
+                    depts = statDeptHighInventoryQuarterlyDao.deptHighList(request);
+                }else if (i == MONTH){
+                    depts = statDeptHighInventoryMonthlyDao.deptHighList(request);
+                }else {
+                    depts = statDeptHighInventoryWeeklyDao.deptHighList(request);
+                }
             }
             if(CollectionUtils.isNotEmpty(depts)){
                 for(InventorySortResponse dept:depts){
@@ -148,23 +173,43 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
         List<inventoryInfoResponse> deptList;
         List<InventorySortResponse> groups;
         List<inventoryInfoResponse> groupList;
-        deptList = this.inventoryLowList(request, i);
+        if(request.getStockType().equals(LOW)){
+            deptList = this.inventoryLowList(request, i);
+        }else {
+            deptList = this.inventoryHighList(request, i);
+        }
         if(CollectionUtils.isNotEmpty(deptList)){
             deptResponse = this.inventoryRate(deptList);
             // 查询采购组
-            if(i == YEAR){
-                groups = statDeptLowInventoryYearlyDao.groupList(request);
-            }else if (i == QUARTER){
-                groups = statDeptLowInventoryQuarterlyDao.groupList(request);
-            }else if (i == MONTH){
-                groups = statDeptLowInventoryMonthlyDao.groupList(request);
+            if(request.getStockType().equals(LOW)){
+                if(i == YEAR){
+                    groups = statDeptLowInventoryYearlyDao.groupList(request);
+                }else if (i == QUARTER){
+                    groups = statDeptLowInventoryQuarterlyDao.groupList(request);
+                }else if (i == MONTH){
+                    groups = statDeptLowInventoryMonthlyDao.groupList(request);
+                }else {
+                    groups = statDeptLowInventoryWeeklyDao.groupList(request);
+                }
             }else {
-                groups = statDeptLowInventoryWeeklyDao.groupList(request);
+                if(i == YEAR){
+                    groups = statDeptHighInventoryYearlyDao.groupHighList(request);
+                }else if (i == QUARTER){
+                    groups = statDeptHighInventoryQuarterlyDao.groupHighList(request);
+                }else if (i == MONTH){
+                    groups = statDeptHighInventoryMonthlyDao.groupHighList(request);
+                }else {
+                    groups = statDeptHighInventoryWeeklyDao.groupHighList(request);
+                }
             }
             if(CollectionUtils.isNotEmpty(groups)){
                 for(InventorySortResponse group:groups){
                     request.setPurchaseGroupCode(group.getPurchaseGroupCode());
-                    groupList = this.inventoryLowList(request, i);
+                    if(request.getStockType().equals(LOW)){
+                        groupList = this.inventoryLowList(request, i);
+                    }else {
+                        groupList = this.inventoryHighList(request, i);
+                    }
                     if(CollectionUtils.isNotEmpty(groupList)){
                         groupResponse = this.inventoryRate(groupList);
                         groupResponse.setPurchaseGroupCode(group.getPurchaseGroupCode());
@@ -180,16 +225,30 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
         return deptResponse;
     }
 
-    private List<inventoryInfoResponse> inventoryLowList(InventoryStatisticsRequest request, int i){
+    private List<inventoryInfoResponse> inventoryLowList(InventoryStatisticsRequest request, int i) {
+        List<inventoryInfoResponse> list;
+        if (i == YEAR) {
+            list = statDeptLowInventoryYearlyDao.inventorySum(request);
+        } else if (i == QUARTER) {
+            list = statDeptLowInventoryQuarterlyDao.inventorySum(request);
+        } else if (i == MONTH) {
+            list = statDeptLowInventoryMonthlyDao.inventorySum(request);
+        } else {
+            list = statDeptLowInventoryWeeklyDao.inventorySum(request);
+        }
+        return list;
+    }
+
+    private List<inventoryInfoResponse> inventoryHighList(InventoryStatisticsRequest request, int i) {
         List<inventoryInfoResponse> list;
         if(i == YEAR){
-            list = statDeptLowInventoryYearlyDao.inventorySum(request);
+            list = statDeptHighInventoryYearlyDao.inventoryHighSum(request);
         }else if (i == QUARTER){
-            list = statDeptLowInventoryQuarterlyDao.inventorySum(request);
+            list = statDeptHighInventoryQuarterlyDao.inventoryHighSum(request);
         }else if (i == MONTH){
-            list = statDeptLowInventoryMonthlyDao.inventorySum(request);
+            list = statDeptHighInventoryMonthlyDao.inventoryHighSum(request);
         }else {
-            list = statDeptLowInventoryWeeklyDao.inventorySum(request);
+            list = statDeptHighInventoryWeeklyDao.inventoryHighSum(request);
         }
         return list;
     }

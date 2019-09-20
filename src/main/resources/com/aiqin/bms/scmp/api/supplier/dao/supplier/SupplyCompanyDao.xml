@@ -302,6 +302,15 @@
       and company_code = #{companyCode,jdbcType=VARCHAR}
     </if>
   </select>
+  <select id="checkName2" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) from supply_company WHERE del_flag=0
+    <if test="name != null">
+      AND supply_name =#{name,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
   <select id="getSupplyComByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
       <include refid="com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyMapper.Base_Column_List"/>

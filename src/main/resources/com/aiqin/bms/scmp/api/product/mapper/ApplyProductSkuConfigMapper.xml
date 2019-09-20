@@ -91,6 +91,35 @@
       from apply_product_sku_config
       where company_code = #{companyCode}
       and apply_show = 0
+    <if test="createTimeStart != null">
+      and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createTimeEnd != null">
+      and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="applyStatus != null">
+      and auditor_status = #{applyStatus}
+    </if>
+    <if test="code != null and  code != '' ">
+      and apply_code like CONCAT('%',#{code},'%')
+    </if>
+    <if test="skuName != null and skuName!= '' ">
+      and sku_name like CONCAT('%',#{skuName},'%')
+    </if>
+       union
+       select
+       distinct apply_code,
+       create_by,
+       create_time,
+       auditor_status,
+       update_by auditor_by,
+       update_time auditor_time,
+       form_no,
+       2 as approval_type,
+       apply_type
+       from apply_product_sku_supply_unit
+       where company_code = 09
+        and apply_show = 0
       <if test="createTimeStart != null">
         and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
       </if>

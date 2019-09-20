@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
-import com.aiqin.bms.scmp.api.statistics.domain.request.InventoryStatisticsRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.request.*;
 import com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventoryStatisticsResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
@@ -45,6 +43,8 @@ public class StatisticsController {
     private ProductStatisticsService productStatisticsService;
     @Resource
     private InventoryStatisticsService inventoryStatisticsService;
+    @Resource
+    private OemSaleService oemSaleService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
@@ -175,19 +175,34 @@ public class StatisticsController {
         return productStatisticsService.productStockOut(request);
     }
 
-    @GetMapping("/low/inventory")
-    @ApiOperation("低库存统计")
+    @GetMapping("/inventory")
+    @ApiOperation("库存统计")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "date", value = "日期", type = "String"),
             @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "stock_type", value = "库存类型 0 低库存 1 高库存门", type = "Integer"),
             @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报 3 周报", type = "Integer"),
             @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
-    public HttpResponse<InventoryStatisticsResponse> lowInventory(@RequestParam("date") String date,
+    public HttpResponse<InventoryStatisticsResponse> inventory(@RequestParam("date") String date,
                                                                   @RequestParam("type") Integer type,
+                                                                  @RequestParam("stock_type") Integer stockType,
                                                                   @RequestParam("report_type") Integer reportType,
                                                                   @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
-        InventoryStatisticsRequest request = new InventoryStatisticsRequest(date, type, reportType, productSortCode);
-        return inventoryStatisticsService.lowInventory(request);
+        InventoryStatisticsRequest request = new InventoryStatisticsRequest(date, type, stockType, reportType, productSortCode);
+        return inventoryStatisticsService.inventory(request);
     }
 
+    @GetMapping("/oem/sale")
+    @ApiOperation("OEM销售月报表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "sale_type", value = "销售类型 0 分类 1 品牌", type = "Integer"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报 3 周报", type = "Integer")})
+    public HttpResponse<OemSaleResponse> oemSale(@RequestParam("date") String date,
+                                                 @RequestParam("sale_type") Integer saleType,
+                                                 @RequestParam("report_type") Integer reportType) {
+        OemSaleRequest request = new OemSaleRequest(date, saleType, reportType);
+        OemSaleResponse response = oemSaleService.oemSale(request);
+        return HttpResponse.success(response);
+    }
 }
