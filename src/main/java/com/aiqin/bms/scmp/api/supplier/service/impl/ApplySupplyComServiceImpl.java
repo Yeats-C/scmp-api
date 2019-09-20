@@ -113,6 +113,10 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private SupplyCompanyPurchaseGroupMapper supplyCompanyPurchaseGroupMapper;
     @Autowired
     private ApplyDeliveryInformationMapper applyDeliveryInformationMapper;
+    @Autowired
+    private DeliveryInformationMapper deliveryInformationMapper;
+    @Autowired
+    private SupplierFileMapper supplierFileMapper;
 
 
     @Override
@@ -210,7 +214,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             List<String> codes = Lists.newArrayList();
             codes.add(applySupplyCompanyReqVO.getApplySupplyCode());
             List<ApplySupplyCompany> applySupplyCompanies = applySupplyCompanyMapper.selectBySupplyCode(codes, getUser().getCompanyCode(),ApplyStatus.APPROVAL.getNumber());
-            List<ApplySupplyCompany> forImportList = applySupplyCompanyMapper.selectBySupplyCode(codes, getUser().getCompanyCode(),ApplyStatus.PENDING_SUBMISSION.getNumber());
+//            List<ApplySupplyCompany> forImportList = applySupplyCompanyMapper.selectBySupplyCode(codes, getUser().getCompanyCode(),ApplyStatus.PENDING_SUBMISSION.getNumber());
             if (CollectionUtils.isNotEmptyCollection(applySupplyCompanies)) {
                //如果有审批中的数据  直接报错
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 998, "供应商编号为"+applySupplyCompany.getSupplyCompanyCode()+"已有在审核中的数据,无法提交"));
@@ -282,12 +286,12 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 });
                 ((ApplySupplyComService) AopContext.currentProxy()).saveApplyPurchaseGroupList(applySupplyCompanyPurchaseGroups);
             }
-            if (CollectionUtils.isNotEmptyCollection(forImportList)) {
-                applyDeliveryInfoDao.deleteBatch(forImportList.get(0).getApplySupplyCompanyCode());
-                applySupplierFileDao.deleteApplySupplierFileByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
-                applySupplyCompanyPurchaseGroupMapper.deleteByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
-                applySupplyCompanyMapper.delectByIds(forImportList.stream().map(ApplySupplyCompany::getId).collect(Collectors.toList()));
-            }
+//            if (CollectionUtils.isNotEmptyCollection(forImportList)) {
+//                applyDeliveryInfoDao.deleteBatch(forImportList.get(0).getApplySupplyCompanyCode());
+//                applySupplierFileDao.deleteApplySupplierFileByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
+//                applySupplyCompanyPurchaseGroupMapper.deleteByApplyCode(forImportList.get(0).getApplySupplyCompanyCode());
+//                applySupplyCompanyMapper.delectByIds(forImportList.stream().map(ApplySupplyCompany::getId).collect(Collectors.toList()));
+//            }
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 workFlow(applySupplyCompany);
             }
@@ -302,19 +306,31 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     public void saveImport(ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
         //验证名称
         validateName(applySupplyCompanyReqVO);
-
+        //检验重复
         ApplySupplyCompany copy = BeanCopyUtils.copy(applySupplyCompanyReqVO, ApplySupplyCompany.class);
-        //查询是否有申请中的数据
-        //TODO
         //查询最近审批通过的一条数据
-        ApplySupplyCompany newest = applySupplyCompanyDao.selectBySupplyCodeForNewest(getUser().getCompanyCode(),applySupplyCompanyReqVO.getApplySupplyCode(),2);
-        String oldApplyCode = newest.getApplySupplyCompanyCode();
+//        ApplySupplyCompany newest = applySupplyCompanyDao.selectBySupplyCodeForNewest(getUser().getCompanyCode(),applySupplyCompanyReqVO.getApplySupplyCode(),2);
+        ApplySupplyCompany newest = supplyCompanyDao.selectBySupplierCode2(applySupplyCompanyReqVO.getApplySupplyCode());
+        String oldCode = newest.getSupplyCompanyCode();
+        List<ApplySupplyCompany> repeatList = applySupplyCompanyDao.selectByCode2(oldCode);
+        if (CollectionUtils.isNotEmptyCollection(repeatList)) {
+            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
+        }
         //供货单位申请编码
         if (Objects.isNull(newest)) {
             log.error("数据异常，无法找到已审核通过的数据");
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
-        String code = getCode("", EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+        String code = null;
+        synchronized (ApplySupplyComServiceImpl.class){
+            //供货单位申请编码
+            EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+            code= String.valueOf(encodingRule.getNumberingValue()+1);
+            //修改编码
+            encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        }
+//        String code = getCode("", EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+
         //非空复制主表信息
         ApplySupplyCompany saveVO = BeanCopyUtils.copyValueWithoutNull(copy, newest);
         //补充数据
@@ -324,16 +340,19 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         saveVO.setApplyStatus((byte) 5);
         saveVO.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
         //补充发货信息
-        List<ApplyDeliveryInformation> deliverys = applyDeliveryInformationMapper.selectByApplyCode(oldApplyCode);
+//        List<ApplyDeliveryInformation> deliverys = applyDeliveryInformationMapper.selectByApplyCode(oldCode);
+        List<ApplyDeliveryInformation> deliverys = deliveryInformationMapper.selectByCode(oldCode);
         //对比
         List<ApplyDeliveryInformation> list = compareValue(applySupplyCompanyReqVO.getDeliveryInfoList(),deliverys);
-        list.forEach(o->{o.setApplySupplyCompanyCode(code);o.setApplyCode(code);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());o.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());o.setApplyStatus((byte) 0);});
+        String finalCode = code;
+        list.forEach(o->{o.setApplySupplyCompanyCode(finalCode);o.setApplyCode(finalCode);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());o.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());o.setApplyStatus((byte) 0);});
         //补充采购组
         List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos = applySupplyCompanyReqVO.getPurchaseGroupVos();
         List<ApplySupplyCompanyPurchaseGroup> saveGroup = BeanCopyUtils.copyList(purchaseGroupVos, ApplySupplyCompanyPurchaseGroup.class);
-        saveGroup.forEach(o->{o.setApplySupplyCompanyCode(code);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());});
+        saveGroup.forEach(o->{o.setApplySupplyCompanyCode(finalCode);o.setApplySupplyCompanyName(saveVO.getApplySupplyName());});
         //补充文件信息
-        List<SupplierFileReqVO> fileReqVOList = applySupplierFileService.selectByApplyCode(oldApplyCode);
+//        List<SupplierFileReqVO> fileReqVOList = applySupplierFileService.selectByApplyCode(oldCode);
+        List<SupplierFileReqVO> fileReqVOList = supplierFileMapper.selectByCode(oldCode);
         if(CollectionUtils.isNotEmptyCollection(fileReqVOList)){
             fileReqVOList.forEach(item->{
                 item.setApplySupplierCode(saveVO.getApplySupplyCompanyCode());
@@ -369,8 +388,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 deliverys = deliverys.stream().filter(o1 -> !o.getDeliveryType().equals(o1.getDeliveryType())).collect(Collectors.toList());
                 list.add(BeanCopyUtils.copy(o, ApplyDeliveryInformation.class));
             }
-            list.addAll(deliverys);
         }
+        list.addAll(deliverys);
         return list;
 
     }
@@ -382,6 +401,14 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         map.put("companyCode",getUser().getCompanyCode());
         int nameCount = supplyCompanyDao.checkName(map);
         if (nameCount > 0){
+            throw new BizException(ResultCode.NAME_REPEAT);
+        }
+        Map<String,Object> map1 = new HashMap<>();
+        map1.put("name",applySupplyCompanyReqVO.getApplySupplyName());
+        map1.put("code",applySupplyCompanyReqVO.getApplySupplyCode());
+        map1.put("companyCode",getUser().getCompanyCode());
+        int nameCount1 = applySupplyCompanyDao.checkName(map1);
+        if (nameCount1 > 0){
             throw new BizException(ResultCode.NAME_REPEAT);
         }
     }
@@ -983,7 +1010,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             reqVO.setSource(Byte.valueOf("1"));
             reqVO.setPurchasingGroupCode(req.getPurchaseGroupCode());
             reqVO.setPurchasingGroupName(req.getPurchaseGroupName());
-            ((ApplySupplyComService)AopContext.currentProxy()).updateApply(reqVO);
+            ((ApplySupplyComService)AopContext.currentProxy()).saveImport(reqVO);
         }
         return Boolean.TRUE;
     }
@@ -1109,6 +1136,10 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 int nameCount1 = applySupplyCompanyDao.checkName(map1);
                 if (nameCount1 > 0){
                     throw new BizException(ResultCode.NAME_REPEAT);
+                }
+                List<ApplySupplyCompany> repeatList = applySupplyCompanyDao.selectByCode2(s.getSupplyCompanyCode());
+                if (CollectionUtils.isNotEmptyCollection(repeatList)) {
+                    throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
                 }
             }
             //复制对象
