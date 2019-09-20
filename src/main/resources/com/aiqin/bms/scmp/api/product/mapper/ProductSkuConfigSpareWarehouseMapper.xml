@@ -23,7 +23,18 @@
     from product_sku_config_spare_warehouse
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByConfigCode" parameterType="java.util.List" resultMap="BaseResultMap">
+      select
+      a.config_code,
+      group_concat(a.transport_center_name) as transport_center_name
+      from product_sku_config_spare_warehouse a
+      where config_code in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+      group by a.config_code
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config_spare_warehouse
     where id = #{id,jdbcType=BIGINT}
   </delete>

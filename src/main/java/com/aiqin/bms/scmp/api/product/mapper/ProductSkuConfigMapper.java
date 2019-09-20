@@ -30,6 +30,7 @@ public interface ProductSkuConfigMapper {
     int updateBatch(List<ProductSkuConfig> configs);
 
     List<SkuConfigsRepsVo> getList(List<Long> ids);
+    List<SkuConfigsRepsVo> getList3(QuerySkuConfigReqVo reqVo);
 
     List<SkuConfigsRepsVo> getList2(QuerySkuConfigReqVo reqVo);
 
