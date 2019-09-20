@@ -1,10 +1,8 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
-import com.aiqin.bms.scmp.api.statistics.domain.request.InventoryStatisticsRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
-import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.request.*;
 import com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventoryStatisticsResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
@@ -45,6 +43,8 @@ public class StatisticsController {
     private ProductStatisticsService productStatisticsService;
     @Resource
     private InventoryStatisticsService inventoryStatisticsService;
+    @Resource
+    private OemSaleService oemSaleService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
@@ -192,4 +192,17 @@ public class StatisticsController {
         return inventoryStatisticsService.inventory(request);
     }
 
+    @GetMapping("/oem/sale")
+    @ApiOperation("OEM销售月报表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "sale_type", value = "销售类型 0 分类 1 品牌", type = "Integer"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报 3 周报", type = "Integer")})
+    public HttpResponse<OemSaleResponse> oemSale(@RequestParam("date") String date,
+                                                 @RequestParam("sale_type") Integer saleType,
+                                                 @RequestParam("report_type") Integer reportType) {
+        OemSaleRequest request = new OemSaleRequest(date, saleType, reportType);
+        OemSaleResponse response = oemSaleService.oemSale(request);
+        return HttpResponse.success(response);
+    }
 }
