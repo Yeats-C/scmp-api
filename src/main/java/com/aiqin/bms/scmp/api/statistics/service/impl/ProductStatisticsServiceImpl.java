@@ -3,10 +3,13 @@ package com.aiqin.bms.scmp.api.statistics.service.impl;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.statistics.dao.StatDeptNewProductMovingRateDao;
+import com.aiqin.bms.scmp.api.statistics.dao.StatDeptStockoutDao;
+import com.aiqin.bms.scmp.api.statistics.domain.StatDeptStockout;
 import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.MovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.NewProductMovingRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductStockOutResponse;
 import com.aiqin.bms.scmp.api.statistics.service.ProductStatisticsService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
@@ -27,6 +30,8 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
 
     @Resource
     private StatDeptNewProductMovingRateDao statDeptNewProductMovingRateDao;
+    @Resource
+    private StatDeptStockoutDao statDeptStockoutDao;
 
     @Override
     public HttpResponse<ProductMovableResponse> productMovable(ProductRequest request){
@@ -159,8 +164,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     }else {
                         response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                }
-                if(mov.getTransportCenterCode().equals(Global.HD_CODE)){
+                }else if(mov.getTransportCenterCode().equals(Global.HD_CODE)){
                     response.setHdIniStockSkuNum(iniStockSkuNum);
                     response.setHdIniStockSkuCost(iniStockSkuCost);
                     response.setHdMidPurchaseSkuNum(midPurchaseSkuNum);
@@ -172,8 +176,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     }else {
                         response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                }
-                if(mov.getTransportCenterCode().equals(Global.HN_CODE)){
+                }else if(mov.getTransportCenterCode().equals(Global.HN_CODE)){
                     response.setHnIniStockSkuNum(iniStockSkuNum);
                     response.setHnIniStockSkuCost(iniStockSkuCost);
                     response.setHnMidPurchaseSkuNum(midPurchaseSkuNum);
@@ -185,8 +188,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     }else {
                         response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                }
-                if(mov.getTransportCenterCode().equals(Global.XN_CODE)){
+                }else if(mov.getTransportCenterCode().equals(Global.XN_CODE)){
                     response.setXnIniStockSkuNum(iniStockSkuNum);
                     response.setXnIniStockSkuCost(iniStockSkuCost);
                     response.setXnMidPurchaseSkuNum(midPurchaseSkuNum);
@@ -198,8 +200,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     }else {
                         response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                }
-                if(mov.getTransportCenterCode().equals(Global.HZ_CODE)){
+                }else if(mov.getTransportCenterCode().equals(Global.HZ_CODE)){
                     response.setHzIniStockSkuNum(iniStockSkuNum);
                     response.setHzIniStockSkuCost(iniStockSkuCost);
                     response.setHzMidPurchaseSkuNum(midPurchaseSkuNum);
@@ -224,6 +225,164 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 response.setSumNewProMovingSalesRate(big);
             }else {
                 response.setSumNewProMovingSalesRate(new BigDecimal(sumMidSalesSkuNum).divide(new BigDecimal(sumNewSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+            }
+        }
+        return response;
+    }
+
+    @Override
+    public HttpResponse<ProductStockOutResponse> productStockOut(ProductRequest request){
+        if(request == null || StringUtils.isBlank(request.getDate()) || request.getType() == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Long year = Long.valueOf(request.getDate().substring(0, 4));
+        Long month = Long.valueOf(request.getDate().substring(5));
+        request.setYear(year);
+        request.setMonth(month);
+        ProductStockOutResponse response;
+        if(request.getType().equals(Global.COMPANY)){
+            // 缺货统计 - 公司
+            response = this.companyStockOut(request);
+        }else {
+            // 缺货统计 - 部门
+            if(StringUtils.isBlank(request.getProductSortCode())){
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            response = this.deptStockOut(request);
+        }
+        return HttpResponse.success(response);
+    }
+
+    private ProductStockOutResponse companyStockOut(ProductRequest request){
+        ProductStockOutResponse sumResponse = new ProductStockOutResponse();
+        List<StatDeptStockout> sumList;
+        List<StatDeptStockout> depts;
+        ProductStockOutResponse deptResponse;
+        List<ProductStockOutResponse> deptSumList = Lists.newArrayList();
+        sumList = statDeptStockoutDao.stockOutSum(request);
+        if(CollectionUtils.isNotEmpty(sumList)){
+            sumResponse = this.stockOutRate(sumList);
+            // 查询部门
+            depts = statDeptStockoutDao.deptList(request);
+            if(CollectionUtils.isNotEmpty(depts)){
+                for(StatDeptStockout dept:depts){
+                    request.setProductSortCode(dept.getProductSortCode());
+                    request.setPurchaseGroupCode(null);
+                    deptResponse = this.deptStockOut(request);
+                    deptResponse.setProductSortCode(dept.getProductSortCode());
+                    deptResponse.setProductSortName(dept.getProductSortName());
+                    deptSumList.add(deptResponse);
+                }
+                sumResponse.setSubsetList(deptSumList);
+            }
+        }
+        return sumResponse;
+    }
+
+    private ProductStockOutResponse deptStockOut(ProductRequest request){
+        ProductStockOutResponse deptResponse = new ProductStockOutResponse();
+        List<StatDeptStockout> deptList;
+        List<StatDeptStockout> groupList;
+        List<StatDeptStockout> purchaseGroupList;
+        ProductStockOutResponse groupResponse;
+        List<ProductStockOutResponse> groupSumList = Lists.newArrayList();
+        deptList = statDeptStockoutDao.stockOutSum(request);
+        if(CollectionUtils.isNotEmpty(deptList)){
+            deptResponse = this.stockOutRate(deptList);
+            // 查询采购组
+            purchaseGroupList = statDeptStockoutDao.purchaseGroupList(request);
+            if(CollectionUtils.isNotEmpty(purchaseGroupList)){
+                for (StatDeptStockout group:purchaseGroupList){
+                    request.setPurchaseGroupCode(group.getPurchaseGroupCode());
+                    groupList = statDeptStockoutDao.stockOutSum(request);
+                    if (CollectionUtils.isNotEmpty(groupList)) {
+                        groupResponse = this.stockOutRate(groupList);
+                        groupResponse.setPurchaseGroupCode(group.getPurchaseGroupCode());
+                        groupResponse.setPurchaseGroupName(group.getPurchaseGroupName());
+                        groupResponse.setResponsiblePersonCode(group.getResponsiblePersonCode());
+                        groupResponse.setResponsiblePersonName(group.getResponsiblePersonName());
+                        groupSumList.add(groupResponse);
+                    }
+                }
+                deptResponse.setSubsetList(groupSumList);
+            }
+        }
+        return deptResponse;
+    }
+
+    private ProductStockOutResponse stockOutRate(List<StatDeptStockout> stockList){
+        ProductStockOutResponse response = new ProductStockOutResponse();
+        if(CollectionUtils.isNotEmpty(stockList)){
+            Long num = 0L;
+            BigDecimal big = new BigDecimal(0);
+            Long sumSkuNumTotal = 0L, sumStockoutSkuNum = 0L, sumStockoutEffectAmount = 0L;
+            for(StatDeptStockout stock:stockList){
+                Long stockoutSkuNum = stock.getStockoutSkuNum() == null ? num : stock.getStockoutSkuNum();
+                Long skuNumTotal = stock.getSkuNumTotal() == null ? num : stock.getSkuNumTotal();
+                Long stockoutEffectAmount = stock.getStockoutEffectAmount() == null ? num : stock.getStockoutEffectAmount();
+                sumSkuNumTotal += skuNumTotal;
+                sumStockoutSkuNum += stockoutSkuNum;
+                sumStockoutEffectAmount += stockoutEffectAmount;
+                if(stock.getTransportCenterCode().equals(Global.HB_CODE)){
+                    response.setHbSkuNumTotal(skuNumTotal);
+                    response.setHbStockoutSkuNum(stockoutSkuNum);
+                    response.setHbStockoutEffectAmount(stockoutEffectAmount);
+                    if(stockoutSkuNum == 0 || skuNumTotal == 0){
+                        response.setHbStockoutRate(big);
+                    }else {
+                        response.setHbStockoutRate(new BigDecimal(stockoutSkuNum).
+                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }else if(stock.getTransportCenterCode().equals(Global.HD_CODE)){
+                    response.setHdSkuNumTotal(skuNumTotal);
+                    response.setHdStockoutSkuNum(stockoutSkuNum);
+                    response.setHdStockoutEffectAmount(stockoutEffectAmount);
+                    if(stockoutSkuNum == 0 || skuNumTotal == 0){
+                        response.setHdStockoutRate(big);
+                    }else {
+                        response.setHdStockoutRate(new BigDecimal(stockoutSkuNum).
+                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }else if(stock.getTransportCenterCode().equals(Global.HN_CODE)){
+                    response.setHnSkuNumTotal(skuNumTotal);
+                    response.setHnStockoutSkuNum(stockoutSkuNum);
+                    response.setHnStockoutEffectAmount(stockoutEffectAmount);
+                    if(stockoutSkuNum == 0 || skuNumTotal == 0){
+                        response.setHnStockoutRate(big);
+                    }else {
+                        response.setHnStockoutRate(new BigDecimal(stockoutSkuNum).
+                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }else if(stock.getTransportCenterCode().equals(Global.XN_CODE)){
+                    response.setXnSkuNumTotal(skuNumTotal);
+                    response.setXnStockoutSkuNum(stockoutSkuNum);
+                    response.setXnStockoutEffectAmount(stockoutEffectAmount);
+                    if(stockoutSkuNum == 0 || skuNumTotal == 0){
+                        response.setXnStockoutRate(big);
+                    }else {
+                        response.setXnStockoutRate(new BigDecimal(stockoutSkuNum).
+                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }else if(stock.getTransportCenterCode().equals(Global.HZ_CODE)){
+                    response.setHzSkuNumTotal(skuNumTotal);
+                    response.setHzStockoutSkuNum(stockoutSkuNum);
+                    response.setHzStockoutEffectAmount(stockoutEffectAmount);
+                    if(stockoutSkuNum == 0 || skuNumTotal == 0){
+                        response.setHzStockoutRate(big);
+                    }else {
+                        response.setHzStockoutRate(new BigDecimal(stockoutSkuNum).
+                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }
+            }
+            response.setSumSkuNumTotal(sumSkuNumTotal);
+            response.setSumStockoutSkuNum(sumStockoutSkuNum);
+            response.setSumStockoutEffectAmount(sumStockoutEffectAmount);
+            if(sumSkuNumTotal == 0 || sumStockoutSkuNum == 0){
+                response.setSumStockoutRate(big);
+            }else {
+                response.setSumStockoutRate(new BigDecimal(sumStockoutSkuNum).
+                        divide(new BigDecimal(sumSkuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
             }
         }
         return response;

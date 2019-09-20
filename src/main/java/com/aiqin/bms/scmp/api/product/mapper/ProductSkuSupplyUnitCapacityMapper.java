@@ -20,10 +20,13 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int updateByPrimaryKey(ProductSkuSupplyUnitCapacity record);
 
     int deleteBySkuCode(String skuCode);
+    int deleteBySkuCode2(List<String> list);
 
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 
     int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
 
     List<ProductSkuSupplyUnitCapacity> selectSupplyCapacityInfo(@Param("supplierCode") String supplierCode, @Param("skuCode")String skuCode);
+
+    int deleteByUintCode(List<String> supplierCode);
 }

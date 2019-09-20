@@ -39,6 +39,10 @@ public class ProductRequest {
     @JsonProperty("price_channel_code")
     private String priceChannelCode;
 
+    @ApiModelProperty(value="采购组code")
+    @JsonProperty("purchase_group_code")
+    private String purchaseGroupCode;
+
     public ProductRequest(String date, Integer type, String productSortCode) {
         this.date = date;
         this.type = type;

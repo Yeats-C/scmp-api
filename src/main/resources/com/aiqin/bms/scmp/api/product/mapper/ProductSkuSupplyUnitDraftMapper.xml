@@ -22,12 +22,16 @@
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="apply_type"  property="applyType" />
+    <result column="apply_show"  property="applyShow" />
+    <result column="company_code"  property="companyCode" />
+    <result column="company_name"  property="companyName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price, 
     joint_franchise_rate, point, is_default, del_flag, create_time, create_by, update_time, 
     update_by, product_sku_code, usage_status, product_sku_name,tax_rate,
-    categories_supply_channels_code,categories_supply_channels_name,factory_sku_code
+    categories_supply_channels_code,categories_supply_channels_name,factory_sku_code,apply_type,apply_show,company_code,company_name
   </sql>
 
   <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
@@ -47,6 +51,13 @@
       <foreach collection="list" item="item" separator="," open="(" close=")">
         #{item.productSkuCode,jdbcType=BIGINT}
       </foreach>
+    </select>
+    <select id="selectDraftBySkuCode"
+            resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_sku_supply_unit_draft
+      where product_sku_code = #{skuCode}
     </select>
     <delete id="delete" parameterType="java.util.List">
     delete from product_sku_supply_unit_draft where product_sku_code in

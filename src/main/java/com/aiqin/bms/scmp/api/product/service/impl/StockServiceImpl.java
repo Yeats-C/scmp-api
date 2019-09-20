@@ -1369,8 +1369,8 @@ public class StockServiceImpl implements StockService {
      */
     private Stock stockVoRequestToStock(Stock stock, StockVoRequest stockVoRequest, Integer operationType) {
         if (stockVoRequest.getWarehouseCode() != null){
-            StockVoRequest warehouseTypeName = stockDao.selectWarehouseTypeBycode(stockVoRequest.getWarehouseCode());
-            stockVoRequest.setWarehouseType(warehouseTypeName.getWarehouseType());
+            StockVoRequest warehouseTypeCode = stockDao.selectWarehouseTypeBycode(stockVoRequest.getWarehouseCode());
+            stockVoRequest.setWarehouseType(warehouseTypeCode.getWarehouseType());
         }
         if (null == stock.getId()) {
             BeanCopyUtils.copy(stockVoRequest, stock);

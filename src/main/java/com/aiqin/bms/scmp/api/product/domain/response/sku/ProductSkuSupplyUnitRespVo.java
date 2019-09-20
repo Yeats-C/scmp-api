@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -60,6 +61,24 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
 
     @ApiModelProperty(value ="供货渠道类别名称")
     private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty("是否生效(0未生效1已生效）")
+    private Integer beEffective;
+
+    @ApiModelProperty("是否使用生效时间(0:是1:否)")
+    private Byte selectionEffectiveTime;
+
+    @ApiModelProperty("生效开始时间")
+    private Date selectionEffectiveStartTime;
+
+    @ApiModelProperty("申请状态(0:待审 1:审核中 2:审核通过 3:审核未通过 4:已撤销)")
+    private Byte auditorStatus;
+
+    @ApiModelProperty("表单号")
+    private String formNo;
+
+    @ApiModelProperty("申请编码")
+    private String applyCode;
 
     @ApiModelProperty(value = "供应商产能信息",position = 7)
     private List<ProductSkuSupplyUnitCapacityRespVo> productSkuSupplyUnitCapacities;

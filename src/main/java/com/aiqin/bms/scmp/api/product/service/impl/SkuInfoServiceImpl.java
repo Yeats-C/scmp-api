@@ -1602,7 +1602,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuSubService.saveList(skuCode, applyCode);
             }
             //价格
-            List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
+//            List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
+            List<String> skuCodes = Lists.newArrayList();
+            skuCodes.add(skuCode);
             List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
             if (CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)) {
                 List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode, ProductSkuPriceInfo.class);
@@ -2549,7 +2551,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public Boolean exportAddSku(HttpServletResponse resp, @Valid @NotNull(message = "申请编码不能为空") String applyCode) {
         try {
             List<SkuAddExport> list = productSkuInfoMapper.exportAddSku(applyCode);
-            ExcelUtil.writeExcel(resp,list,"商品DL新增导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuAddExport.class);
+            ExcelUtil.writeExcel(resp,list,"商品DL新增导出","商品DL格式导出模板",ExcelTypeEnum.XLS,SkuAddExport.class);
             return Boolean.TRUE;
         } catch (ExcelException e) {
             log.error(e.getMessage(),e);
@@ -2561,7 +2563,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public Boolean exportEditSku(HttpServletResponse resp, @Valid @NotNull(message = "申请编码不能为空") String applyCode) {
         try {
             List<SkuEditExport> list = productSkuInfoMapper.exportEditSku(applyCode);
-            ExcelUtil.writeExcel(resp,list,"商品DL修改导出","商品DL格式导出模板",ExcelTypeEnum.XLSX,SkuEditExport.class);
+            ExcelUtil.writeExcel(resp,list,"商品DL修改导出","商品DL格式导出模板",ExcelTypeEnum.XLS,SkuEditExport.class);
             return Boolean.TRUE;
         } catch (ExcelException e) {
             log.error(e.getMessage(),e);

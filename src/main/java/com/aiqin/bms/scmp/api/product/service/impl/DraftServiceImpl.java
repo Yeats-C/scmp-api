@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespV
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -56,6 +57,8 @@ public class DraftServiceImpl implements DraftService {
     private ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired
     private ProductSkuSupplyUnitService productSkuSupplyUnitService;
+    @Autowired
+    private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
 
 
     /**
@@ -198,5 +201,10 @@ public class DraftServiceImpl implements DraftService {
     @Override
     public Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode) {
         return productSkuDraftMapper.selectBySkuCode(skuNameList,companyCode);
+    }
+
+    @Override
+    public Integer deleteSupply(Long id) {
+        return productSkuSupplyUnitDraftMapper.deleteDraftById(id);
     }
 }

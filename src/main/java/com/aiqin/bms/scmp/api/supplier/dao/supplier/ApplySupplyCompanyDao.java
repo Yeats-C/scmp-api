@@ -72,6 +72,7 @@ public interface ApplySupplyCompanyDao {
      * @return
      */
     int checkName(Map<String, Object> map);
+    int checkName2(Map<String, Object> map);
 
     /**
      * 根据申请供应商编码获取申请供货单位信息

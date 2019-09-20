@@ -1,19 +1,19 @@
 package com.aiqin.bms.scmp.api.statistics.web;
 
+import com.aiqin.bms.scmp.api.statistics.domain.request.InventoryStatisticsRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.request.ProductRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SaleRequest;
 import com.aiqin.bms.scmp.api.statistics.domain.request.SupplierRequest;
+import com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventoryStatisticsResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductMovableResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.StoreRepurchaseRateResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.category.CategoryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.negative.NegativeSumResponse;
+import com.aiqin.bms.scmp.api.statistics.domain.response.product.ProductStockOutResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.sale.SaleSumResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierDeliveryResponse;
 import com.aiqin.bms.scmp.api.statistics.domain.response.supplier.SupplierReturnResponse;
-import com.aiqin.bms.scmp.api.statistics.service.ProductStatisticsService;
-import com.aiqin.bms.scmp.api.statistics.service.SalesStatisticsService;
-import com.aiqin.bms.scmp.api.statistics.service.StatisticsService;
-import com.aiqin.bms.scmp.api.statistics.service.SupplierStatisticsService;
+import com.aiqin.bms.scmp.api.statistics.service.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -43,6 +43,8 @@ public class StatisticsController {
     private SupplierStatisticsService supplierStatisticsService;
     @Resource
     private ProductStatisticsService productStatisticsService;
+    @Resource
+    private InventoryStatisticsService inventoryStatisticsService;
 
     @GetMapping("/store/repurchase/rate")
     @ApiOperation("门店复购率统计")
@@ -158,6 +160,36 @@ public class StatisticsController {
                                                              @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
         ProductRequest request = new ProductRequest(date, type, productSortCode);
         return productStatisticsService.productMovable(request);
+    }
+
+    @GetMapping("/stock/out")
+    @ApiOperation("缺货统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<ProductStockOutResponse> productShortage(@RequestParam("date") String date,
+                                                                 @RequestParam("type") Integer type,
+                                                                 @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        ProductRequest request = new ProductRequest(date, type, productSortCode);
+        return productStatisticsService.productStockOut(request);
+    }
+
+    @GetMapping("/inventory")
+    @ApiOperation("库存统计")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "date", value = "日期", type = "String"),
+            @ApiImplicitParam(name = "type", value = "组织类型: 0 公司 1 部门", type = "Integer"),
+            @ApiImplicitParam(name = "stock_type", value = "库存类型 0 低库存 1 高库存门", type = "Integer"),
+            @ApiImplicitParam(name = "report_type", value = "报表类型: 0 年报 1 季报 2 月报 3 周报", type = "Integer"),
+            @ApiImplicitParam(name = "product_sort_code", value = "所属部门", type = "String")})
+    public HttpResponse<InventoryStatisticsResponse> inventory(@RequestParam("date") String date,
+                                                                  @RequestParam("type") Integer type,
+                                                                  @RequestParam("stock_type") Integer stockType,
+                                                                  @RequestParam("report_type") Integer reportType,
+                                                                  @RequestParam(value = "product_sort_code", required = false) String productSortCode) {
+        InventoryStatisticsRequest request = new InventoryStatisticsRequest(date, type, stockType, reportType, productSortCode);
+        return inventoryStatisticsService.inventory(request);
     }
 
 }
