@@ -95,7 +95,6 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    @SaveList
     public int insertApplyList(List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities) {
         return applyMapper.insertBatch(applyProductSkuSupplyUnitCapacities);
     }
@@ -166,5 +165,19 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
     @Override
     public int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts) {
         return mapper.deleteDraftsByVos(capacityDrafts);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList) {
+        //根据申请编码查询供应商产能
+        List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities =
+                applyMapper.selectByApplyCode(unitList.get(0).getApplyCode());
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnitCapacities)){
+            List<ProductSkuSupplyUnitCapacity> productSkuSupplyUnitCapacities = BeanCopyUtils.copyList(applyProductSkuSupplyUnitCapacities,ProductSkuSupplyUnitCapacity.class);
+            mapper.deleteBySkuCode2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
+            return ((ProductSkuSupplyUnitCapacityService)AopContext.currentProxy()).insertList(productSkuSupplyUnitCapacities);
+        }
+        return 0;
     }
 }

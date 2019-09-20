@@ -1,9 +1,8 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import org.apache.ibatis.annotations.Param;
@@ -56,4 +55,22 @@ public interface ProductSkuSupplyUnitDao {
     List<PurchaseFormResponse> supplyList(String skuCode);
 
     List<ProductSkuSupplyUnitRespVo> getList(String skuCode);
+
+    List<ApplyProductSkuSupplyUnit> selectByFormNo(String formNo);
+
+    Integer updateApplyInfo(ApplyProductSkuConfigReqVo req);
+
+    Integer deleteList2(List<String> list);
+
+    List<ApplyProductSkuSupplyUnit> selectUnSynData();
+
+    Integer updateBySynStatus(List<ApplyProductSkuSupplyUnit> list);
+
+    List<ProductSkuSupplyUnitRespVo> getSupplyList(@Param("vo") ConfigSearchVo vo);
+
+    List<ProductSkuSupplyUnitRespVo> getApplyByCode(String code);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCode(String skuCode);
+
+    List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> list);
 }
