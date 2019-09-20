@@ -23,4 +23,6 @@ public interface ProfitLossMapper {
     List<QueryProfitLossRespVo> getList(QueryProfitLossVo vo);
 
     void insertList(@Param(value = "list") List<ProfitLoss> profitLossList);
+
+    ProfitLoss selectByOrderCode(String orderCode);
 }

@@ -1149,7 +1149,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse profitLossOrder(ProfitLossRequest request) {
         try {
-
             //根据详情信息 分为两个报损报溢单
             Map<String, List<ProfitLossDetailRequest>> detailMap = request.getDetailList().stream().collect(Collectors.groupingBy(ProfitLossDetailRequest::getWarehouseCode));
             ProfitLoss profitLoss;
@@ -1169,11 +1168,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             SupplyCompany supplyCompany;
             List<ProfitLossProductBatch> batchList = Lists.newArrayList();
             ProfitLossProductBatch profitLossProductBatch;
+            ProfitLoss result;
             for (String warehouseCode : detailMap.keySet()) {
                 profitLoss = new ProfitLoss();
                 profitQuantity = 0L;
                 lossQuantity = 0L;
                 profitLoss.setOrderCode(String.format("%s_%s", request.getOrderCode(), warehouseCode));
+                result = profitLossMapper.selectByOrderCode(profitLoss.getOrderCode());
+                if(result!=null){
+                    throw new GroundRuntimeException("单据已存在");
+                }
                 //损溢类型:0 指定损益  1 盘点损益
                 profitLoss.setOrderType(request.getOrderType());
                 profitLoss.setLogisticsCenterCode(request.getLogisticsCenterCode());
@@ -1276,9 +1280,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 }
             }
             return HttpResponse.success();
-        } catch (Exception e) {
+        } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, e.getMessage()));
         }
     }
 
