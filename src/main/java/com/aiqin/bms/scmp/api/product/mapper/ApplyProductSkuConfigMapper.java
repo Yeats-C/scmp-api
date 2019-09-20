@@ -39,4 +39,6 @@ public interface ApplyProductSkuConfigMapper {
     int updateBySynStatus(@Param("list") List<ApplyProductSkuConfig> list);
 
     List<ApplyProductSkuConfig> selectUnSynData();
+
+    List<ApplyProductSkuConfig> selectbyConfigCode(List<String> list);
 }

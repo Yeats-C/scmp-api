@@ -167,6 +167,16 @@
         from apply_product_sku_config
         where  be_effective = 0  and auditor_status = 2 and selection_effective_time = 0 and <![CDATA[selection_effective_start_time <= now() ]]>
   </select>
+    <select id="selectbyConfigCode" resultMap="BaseResultMap" parameterType="java.util.List">
+      select
+      <include refid="Base_Column_List" />
+      from apply_product_sku_config a
+      where a.config_code in
+      <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+      </foreach>
+      and a.apply_show  = 0 and a.auditor_status = 1
+    </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_config
     where id = #{id,jdbcType=BIGINT}
