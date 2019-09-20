@@ -110,6 +110,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
     @Autowired
     private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityMapper;
+    @Autowired
+    private ApplyProductSkuConfigMapper applyProductSkuConfigMapper;
+
+    @Autowired
+    private ProductSkuConfigDraftMapper productSkuConfigDraftMapper;
 
     /**
      * 批量保存临时配置信息
@@ -260,9 +265,17 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         String configCode = configReqVos.get(0).getConfigCode();
         ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
-        if(Objects.equals(productSkuConfig.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
+//        if(Objects.equals(productSkuConfig.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
+//            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
+//        }
+        //查询申请中的数据
+        List<ApplyProductSkuConfig> config = applyProductSkuConfigMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
+        if (CollectionUtils.isNotEmpty(config)) {
             throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
         }
+        //查临时
+        List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
+        Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
         Integer num = 0;
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
@@ -279,7 +292,13 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         } catch (Exception e) {
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
+        List<Long> ids = Lists.newArrayList();
+        List<String> spareWarehouseConfigCodes = Lists.newArrayList();
         drafts.forEach(item->{
+            if (collect1.containsKey(item.getConfigCode())) {
+                ids.add(collect1.get(item.getConfigCode()).getId());
+                spareWarehouseConfigCodes.add(item.getConfigCode());
+            }
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
             item.setCompanyCode(authToken.getCompanyCode());
@@ -289,13 +308,20 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             item.setSkuCode(reqVo.getSkuCode());
             item.setSkuName(reqVo.getSkuName());
         });
+        //删除未提交的
+        if (CollectionUtils.isNotEmpty(ids)) {
+            productSkuConfigDraftMapper.deleteByIds(ids);
+            if (CollectionUtils.isNotEmpty(spareWarehouseConfigCodes)) {
+                spareWarehouseDraftMapper.deleteByConfigCodes(spareWarehouseConfigCodes);
+            }
+        }
         //插入临时表
         num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
         //更新正式表申请状态
-        ApplyProductSkuConfigReqVo req = new ApplyProductSkuConfigReqVo();
-        req.setApplyCode(productSkuConfig.getApplyCode());
-        req.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
-        mapper.updateApplyStatusByApplyCode(req);
+//        ApplyProductSkuConfigReqVo req = new ApplyProductSkuConfigReqVo();
+//        req.setApplyCode(productSkuConfig.getApplyCode());
+//        req.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
+//        mapper.updateApplyStatusByApplyCode(req);
         if(CollectionUtils.isNotEmpty(spareWarehouseReqVos)){
             List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
             try {
@@ -347,7 +373,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 }
             });
             if (CollectionUtils.isNotEmpty(error)) {
-                throw new BizException(MessageId.create(Project.SCMP_API, -1, StringUtils.strip(error.toString(), "[]")));
+                throw new BizException(MessageId.create(Project.SCMP_API, 100, StringUtils.strip(error.toString(), "[]")));
             }
             if (CollectionUtils.isNotEmpty(deleteIds)) {
                 productSkuSupplyUnitDraftMapper.deleteDraftByIds(deleteIds);
@@ -942,12 +968,23 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             reqVo.setCompanyCode(token.getCompanyCode());
             reqVo.setPersonId(token.getPersonId());
         }
-        List<Long> longs = mapper.selectSkuListForSaleAreaCount(reqVo);
-        if(CollectionUtils.isEmpty(longs)){
-            return PageUtil.getPageList(reqVo.getPageNo(), Lists.newArrayList());
+        PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
+//        List<Long> longs = mapper.selectSkuListForSaleAreaCount(reqVo);
+//        if(CollectionUtils.isEmpty(longs)){
+//            return PageUtil.getPageList(reqVo.getPageNo(), Lists.newArrayList());
+//        }
+//        List<SkuConfigsRepsVo> list = mapper.getList(PageUtil.myPage(longs, reqVo));
+        List<SkuConfigsRepsVo> list3 = mapper.getList3(reqVo);
+        List<String> collect = list3.stream().map(SkuConfigsRepsVo::getConfigCode).distinct().collect(Collectors.toList());
+        //查询备用仓
+        Map<String,ProductSkuConfigSpareWarehouse> spareWarehouseMap =  spareWarehouseMapper.selectByConfigCode(collect);
+        for (SkuConfigsRepsVo spareWarehouse : list3) {
+            ProductSkuConfigSpareWarehouse productSkuConfigSpareWarehouse = spareWarehouseMap.get(spareWarehouse.getConfigCode());
+            if (Objects.nonNull(productSkuConfigSpareWarehouse)) {
+                spareWarehouse.setSpareWarehouse2(productSkuConfigSpareWarehouse.getTransportCenterName());
+            }
         }
-        List<SkuConfigsRepsVo> list = mapper.getList(PageUtil.myPage(longs, reqVo));
-        return PageUtil.getPageList(reqVo.getPageNo(),reqVo.getPageSize(),longs.size(),list);
+        return PageUtil.getPageList(reqVo.getPageNo(),list3);
     }
 
     /**

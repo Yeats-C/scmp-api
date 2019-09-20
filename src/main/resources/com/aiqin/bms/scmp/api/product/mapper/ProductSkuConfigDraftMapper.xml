@@ -211,6 +211,16 @@
       #{item.skuCode,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="selectbyConfigCode"
+          parameterType="java.util.List" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_config_draft
+    where config_code in
+    <foreach collection="list" open="(" close=")" separator="," item="item">
+      #{item}
+    </foreach>
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config_draft
     where id = #{id,jdbcType=BIGINT}
