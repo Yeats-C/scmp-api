@@ -350,7 +350,7 @@
       <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}
       </foreach>
-        and company_code = #{companyCode,jdbcType=VARCHAR} and apply_status = 1
+        and company_code = #{companyCode,jdbcType=VARCHAR} and apply_status in (1,5)
     </select>
 
   <select id="selectOfficialByCompanyNameList"
