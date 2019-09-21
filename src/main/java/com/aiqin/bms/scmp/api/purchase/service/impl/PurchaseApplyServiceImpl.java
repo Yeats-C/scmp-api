@@ -610,7 +610,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isNotBlank(record[6] )){
             response.setProductPurchaseAmount(Integer.valueOf(record[6]));
         }
-        response.setErrorInfo("第" + i + "行  " + errorReason);
+        response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
 
     @Override

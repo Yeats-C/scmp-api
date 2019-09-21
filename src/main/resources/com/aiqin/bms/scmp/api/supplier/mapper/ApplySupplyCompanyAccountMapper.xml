@@ -51,8 +51,23 @@
     where form_no = #{formNo,jdbcType=VARCHAR}
   </select>
     <select id="selectListByQueryVO"
-            resultType="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo">
-
+            resultType="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierComAcctReqVo">
+            select
+               a.id,
+               a.bank_account bankAccount,
+               a.account account,
+               a.account_name accountName,
+               a.account_opening_branch accountOpeningBranch,
+               a.apply_supply_company_code applySupplyCompanyCode,
+               a.apply_supply_company_name applySupplyCompanyName,
+               a.max_payment_amount maxPaymentAmount,
+               a.bank_number bankNumber,
+               a.del_flag,
+               a.direct_supervisor_code directSupervisorCode,
+               a.direct_supervisor_name directSupervisorName,
+               a.unionPay_number unionPayNumber
+               from apply_supply_company_account a
+               where a.apply_supply_company_code = #{supplyCompanyCode}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_supply_company_account

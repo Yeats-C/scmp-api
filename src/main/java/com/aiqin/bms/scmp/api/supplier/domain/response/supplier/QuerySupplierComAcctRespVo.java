@@ -85,4 +85,19 @@ public class QuerySupplierComAcctRespVo {
 
     @ApiModelProperty("采购组名称")
     private String purchasingGroupName;
+
+ @ApiModelProperty("采购组名称")
+    private String accountOpeningBranch;
+ @ApiModelProperty("采购组名称")
+    private String applySupplyCompanyCode;
+ @ApiModelProperty("采购组名称")
+    private String applySupplyCompanyName;
+ @ApiModelProperty("采购组名称")
+    private String bankNumber;
+ @ApiModelProperty("采购组名称")
+    private String directSupervisorCode;
+ @ApiModelProperty("采购组名称")
+    private String directSupervisorName;
+ @ApiModelProperty("采购组名称")
+    private String unionPayNumber;
 }
