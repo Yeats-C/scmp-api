@@ -60,4 +60,6 @@ public interface ProductSkuConfigDraftMapper {
      * @return int
      */
     int deleteByIds(List<Long> ids);
+
+    List<ProductSkuConfigDraft> selectbyConfigCode(List<String> list);
 }

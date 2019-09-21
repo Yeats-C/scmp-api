@@ -271,6 +271,8 @@ transport_number
           <result column="dbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
           <result column="dbatch_number" jdbcType="VARCHAR" property="batchNumber" />
           <result column="dlock_type" jdbcType="INTEGER" property="lockType" />
+          <result column="dsupplier_code" jdbcType="VARCHAR" property="supplierCode" />
+          <result column="dsupplier_name" jdbcType="VARCHAR" property="supplierName" />
       </collection>
   </resultMap>
   <select id="selectByOrderCode" resultMap="selectByOrderCode">
@@ -373,7 +375,9 @@ transport_number
              d.product_time dproduct_time,
              d.batch_remark dbatch_remark,
              d.batch_number dbatch_number,
-             d.lock_type dlock_type
+             d.lock_type dlock_type,
+             d.supplier_code dsupplier_code,
+             d.supplier_name dsupplier_name
       from order_info a
       left join order_info_item b on a.order_code = b.order_code
       left join order_info_log c on c.order_code = a.order_code

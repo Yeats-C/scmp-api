@@ -40,6 +40,9 @@
     (#{item.sendTo,jdbcType=VARCHAR},#{item.sendProvinceId,jdbcType=VARCHAR},#{item.sendProvinceName,jdbcType=VARCHAR},#{item.sendCityId,jdbcType=VARCHAR},#{item.sendCityName,jdbcType=VARCHAR},#{item.sendDistrictId,jdbcType=VARCHAR},#{item.sendDistrictName,jdbcType=VARCHAR},#{item.sendingAddress,jdbcType=VARCHAR},#{item.delFlag,jdbcType=TINYINT},#{item.createTime,jdbcType=TIMESTAMP},#{item.createBy,jdbcType=VARCHAR},#{item.updateTime,jdbcType=TIMESTAMP},#{item.updateBy,jdbcType=VARCHAR},#{item.applyStatus,jdbcType=TINYINT},#{item.applyType,jdbcType=TINYINT},#{item.auditorBy,jdbcType=VARCHAR},#{item.auditorTime,jdbcType=TIMESTAMP},#{item.applyCode,jdbcType=VARCHAR},#{item.deliveryDays,jdbcType=BIGINT},#{item.deliveryType,jdbcType=TINYINT},#{item.applySupplyCompanyCode,jdbcType=VARCHAR},#{item.applySupplyCompanyName,jdbcType=VARCHAR})
     </foreach>
   </insert>
+    <delete id="deleteByApplyCode">
+      delete from apply_delivery_information where apply_supply_company_code = #{applySupplyCompanyCode}
+    </delete>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />

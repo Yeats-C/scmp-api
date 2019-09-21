@@ -88,6 +88,9 @@ public class SkuConfigsRepsVo {
     @ApiModelProperty("备用仓库名称")
     private String spareWarehouse;
 
+    @ApiModelProperty("备用仓库名称")
+    private String spareWarehouse2;
+
     @ApiModelProperty("采购组编码")
     private String purchasingGroupCode;
 

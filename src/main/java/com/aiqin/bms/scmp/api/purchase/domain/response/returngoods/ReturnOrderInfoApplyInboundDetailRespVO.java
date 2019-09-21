@@ -45,6 +45,12 @@ public class ReturnOrderInfoApplyInboundDetailRespVO {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
+    @ApiModelProperty("批次号")
+    private String supplierName;
+
+    @ApiModelProperty("批次号")
+    private String supplierCode;
+
     @ApiModelProperty("单价")
     private Long price;
 

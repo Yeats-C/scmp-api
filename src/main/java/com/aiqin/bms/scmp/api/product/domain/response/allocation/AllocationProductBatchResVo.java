@@ -59,4 +59,10 @@ public class AllocationProductBatchResVo {
     @ApiModelProperty("调入批次号")
     private String callInBatchNumber;
 
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
 }

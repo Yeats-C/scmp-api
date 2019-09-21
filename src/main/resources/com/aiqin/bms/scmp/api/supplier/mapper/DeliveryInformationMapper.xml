@@ -36,7 +36,18 @@
     from delivery_information
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectByCode"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplyDeliveryInformationMapper.BaseResultMap">
+      select
+      id,del_flag, create_time, create_by, update_time, update_by,
+    apply_status, auditor_by, auditor_time,
+    supply_company_code apply_supply_company_code, supply_company_name apply_supply_company_name,
+    send_to, send_province_id, send_province_name, send_city_id, send_city_name, send_district_id,
+    send_district_name, sending_address, delivery_days, delivery_type
+      from delivery_information
+      where supply_company_code = #{oldCode}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from delivery_information
     where id = #{id,jdbcType=BIGINT}
   </delete>
