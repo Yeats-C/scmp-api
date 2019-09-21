@@ -48,16 +48,34 @@ public class SapScheduledServiceImpl implements SapScheduledService {
     @Resource
     private SapBaseDataService sapBaseDataService;
 
-//    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void orderInfoAbutment(){
         DateTime now = new DateTime();
-        orderInfoAbutmentSchedule(now.toString(STANDARD_FORMAT),"");
+        orderInfoAbutmentSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
-//    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void stockAbutment(){
         DateTime now = new DateTime();
-        stockSynchronizationSchedule(now.toString(STANDARD_FORMAT),"");
+        stockSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
+    }
+
+    @Scheduled(cron = "0 0 * * * ?")
+    public void purchaseAbutment(){
+        DateTime now = new DateTime();
+        purchaseSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
+    }
+
+    @Scheduled(cron = "0 0 * * * ?")
+    public void productAbutment(){
+        DateTime now = new DateTime();
+        productSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
+    }
+
+    @Scheduled(cron = "0 0 * * * ?")
+    public void supplyAbutment(){
+        DateTime now = new DateTime();
+        supplySynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
 
@@ -86,6 +104,46 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
         sapBaseDataService.stockSynchronization(sapOrderRequest);
+    }
+
+    /**
+     *  同步采购数据
+     * @param beginTime
+     * @param finishTime
+     */
+
+    public void purchaseSynchronizationSchedule(String beginTime,String finishTime){
+        LOGGER.info("同步销售/退货的订单数据,beginTime:{},finishTime:{}",beginTime,finishTime);
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime(beginTime);
+        sapOrderRequest.setFinishTime(finishTime);
+        sapBaseDataService.purchaseSynchronization(sapOrderRequest);
+    }
+    /**
+     *  同步商品数据
+     * @param beginTime
+     * @param finishTime
+     */
+
+    public void productSynchronizationSchedule(String beginTime,String finishTime){
+        LOGGER.info("同步销售/退货的订单数据,beginTime:{},finishTime:{}",beginTime,finishTime);
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime(beginTime);
+        sapOrderRequest.setFinishTime(finishTime);
+        sapBaseDataService.productSynchronization(sapOrderRequest);
+    }
+    /**
+     *  同步供应商数据
+     * @param beginTime
+     * @param finishTime
+     */
+
+    public void supplySynchronizationSchedule(String beginTime,String finishTime){
+        LOGGER.info("同步销售/退货的订单数据,beginTime:{},finishTime:{}",beginTime,finishTime);
+        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+        sapOrderRequest.setBeginTime(beginTime);
+        sapOrderRequest.setFinishTime(finishTime);
+        sapBaseDataService.supplySynchronization(sapOrderRequest);
     }
 
 
