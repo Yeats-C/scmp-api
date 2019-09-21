@@ -101,6 +101,9 @@ public class SupplyCompanyDetailDTO {
     @ApiModelProperty("是否禁用")
     private Byte enable;
 
+    @ApiModelProperty("申请类型")
+    private Byte applyType;
+
     @ApiModelProperty("最低订货金额")
     private Long minOrderAmount;
 

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.supplier;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
@@ -92,4 +93,6 @@ public interface SupplyCompanyDao {
      * @return
      */
     int updateApplyCode(@Param("supplyCompanyCode") String supplyCompanyCode, @Param("applySupplyCompanyCode") String applySupplyCompanyCode);
+
+    ApplySupplyCompany selectBySupplierCode2(String applySupplyCode);
 }

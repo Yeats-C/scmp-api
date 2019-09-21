@@ -58,6 +58,66 @@
       #{id}
     </foreach>
   </select>
+  <sql id="List_Column">
+       a.id aid,
+       a.create_by acreate_by,
+       a.create_time acreate_time,
+       a.update_by aupdate_by,
+       a.update_time aupdate_time,
+       a.config_code aconfig_code,
+       a.product_code aproduct_code,
+       a.product_name aproduct_name,
+       a.sku_code asku_code,
+       a.sku_name asku_name,
+       a.transport_center_code atransport_center_code,
+       a.transport_center_name atransport_center_name,
+       a.config_status aconfig_status,
+       a.arrival_cycle aarrival_cycle,
+       a.order_cycle aorder_cycle,
+       a.basic_inventory_day abasic_inventory_day,
+       a.large_inventory_warn_day alarge_inventory_warn_day,
+       a.big_effect_period_warn_day abig_effect_period_warn_day,
+       a.turnover_period_after_arrival aturnover_period_after_arrival,
+       a.company_code acompany_code,
+       a.company_name acompany_name,
+       c.procurement_section_code aprocurement_section_code,
+       c.procurement_section_name aprocurement_section_name
+  </sql>
+  <select id="getList3" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
+          resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+    select
+    <include refid="List_Column"/>
+    from
+    product_sku_config a
+    left join product_sku c
+    on a.sku_code = c.sku_code
+    where a.del_flag = 0
+    <if test="skuCode != null and skuCode != '' ">
+      and a.sku_code like concat('%',#{skuCode,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="skuName != null and skuName != ''  ">
+      and a.sku_name like concat('%', #{skuName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="transportCenterCode != null and transportCenterCode != ''  ">
+      and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="transportCenterName != null and transportCenterName != ''  ">
+      and a.transport_center_name like concat('%', #{transportCenterName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="configStatus != null ">
+      and a.config_status = #{configStatus,jdbcType=TINYINT}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''  ">
+      and c.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != '' ">
+      and c.procurement_section_name like concat('%', #{purchaseGroupName,jdbcType=VARCHAR}, '%')
+    </if>
+    <if test="personId != null and personId != '' ">
+      and exists (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    order by a.id desc
+  </select>
 
   <select id="getList2" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.config.QuerySkuConfigReqVo"
           resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
