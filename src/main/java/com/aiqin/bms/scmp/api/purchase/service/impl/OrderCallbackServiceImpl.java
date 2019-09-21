@@ -565,8 +565,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
             return HttpResponse.success();
         } catch (Exception e) {
-            LOGGER.error("订单回调异常:{}", e.getCause());
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            LOGGER.error("订单回调异常:{}", e);
+            throw new GroundRuntimeException(e.getMessage());
         }
     }
 
@@ -819,8 +819,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                LOGGER.error("dl回调   加库存异常");
-                throw new GroundRuntimeException("dl回调    减库存异常");
+                LOGGER.error("dl回调:报损报溢减库存异常");
+                throw new GroundRuntimeException("dl回调:报损报溢减库存异常");
             }
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation, productSkuMap, inboundTypeEnum);
@@ -834,8 +834,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockRequest.setStockVoRequests(inboundList);
             HttpResponse stockResponse = stockService.changeStock(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-                LOGGER.error("dl回调   加库存异常");
-                throw new GroundRuntimeException("dl回调   加库存异常");
+                LOGGER.error("dl回调:报损报溢加库存异常");
+                throw new GroundRuntimeException("dl回调:报损报溢加库存异常");
             }
             allocation.setOutboundOderCode(outboundOderCode);
             allocation.setInboundOderCode(inboundOderCode);
@@ -844,7 +844,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, e.getMessage()));
+            throw new GroundRuntimeException(e.getMessage());
         }
     }
 
@@ -1281,8 +1281,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
-            LOGGER.error("订单回调异常:{}", e);
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, e.getMessage()));
+            LOGGER.error("报损报溢订单回调异常:{}", e);
+            throw new GroundRuntimeException(e.getMessage());
         }
     }
 
