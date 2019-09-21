@@ -75,6 +75,7 @@
     <result column="delivery_area" jdbcType="VARCHAR" property="deliveryArea"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
+    <result column="apply_type" property="applyType"/>
   </resultMap>
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -285,7 +286,8 @@
       sc.brand,
       sc.delivery_area,
       sc.remark,
-      sc.approval_name
+      sc.approval_name,
+      sc.apply_type
     FROM apply_supply_company sc
     left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and sc.apply_supply_type = si.supplier_dictionary_value
     WHERE sc.id=#{id,jdbcType=BIGINT}
@@ -348,7 +350,7 @@
       <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}
       </foreach>
-        and company_code = #{companyCode,jdbcType=VARCHAR}
+        and company_code = #{companyCode,jdbcType=VARCHAR} and apply_status = 1
     </select>
 
   <select id="selectOfficialByCompanyNameList"
@@ -388,5 +390,62 @@
     from supply_company a
     left join delivery_information b on a.supply_code = b.supply_company_code
     where a.supply_code = #{supplyCode, jdbcType=VARCHAR} and b.delivery_type = 0
+  </select>
+    <select id="selectBySupplierCode2"
+            resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
+      select
+      id,
+      supply_name apply_supply_name,
+      supply_code apply_supply_type,
+      supply_abbreviation apply_abbreviation,
+      province_id,
+      province_name,
+      city_id,
+      city_name,
+      district_id,
+      district_name,
+      address,
+      contact_name,
+      mobile_phone,
+      phone,
+      fax,
+      email,
+      company_website,
+      create_time,
+      create_by,
+      update_time,
+      update_by,
+      del_flag,
+      apply_supply_company_code,
+      apply_status,
+--       apply_type,
+      auditor_by,
+      auditor_time,
+      purchasing_group_code,
+      supplier_code,
+      supplier_name,
+      zip_code,
+--      form_no,
+      supply_code supply_company_code,
+      purchasing_group_name,
+      tax_id,
+      corporate_representative,
+      registered_capital,
+      enable,
+      company_code,
+      company_name,
+      max_order_amount,
+      min_order_amount,
+      business_license,
+      star_score,
+      direct_supervisor_code,
+      direct_supervisor_name,
+      payment_method,
+      brand,
+      delivery_area,
+      remark,
+      approval_name
+      from supply_company
+      where supply_code = #{applySupplyCode}
   </select>
 </mapper>

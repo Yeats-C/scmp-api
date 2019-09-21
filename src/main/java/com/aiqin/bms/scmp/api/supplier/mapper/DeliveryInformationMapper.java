@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.supplier.mapper;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyDeliveryInformation;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation;
+
+import java.util.List;
 
 public interface DeliveryInformationMapper {
     int deleteByPrimaryKey(Long id);
@@ -14,4 +17,6 @@ public interface DeliveryInformationMapper {
     int updateByPrimaryKeySelective(DeliveryInformation record);
 
     int updateByPrimaryKey(DeliveryInformation record);
+
+    List<ApplyDeliveryInformation> selectByCode(String oldCode);
 }
