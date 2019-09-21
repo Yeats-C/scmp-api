@@ -519,6 +519,33 @@
              #{item.skuCode}
         </foreach>
     </select>
+    <select id="exportChangePriceData"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.ExportChangePriceVO">
+                select a.sku_code                                                                      skuCode,
+                       ROUND(h.price_tax/100,2)                                                        salePrice,
+                       ROUND(i.price_tax/100,2)                                                        memberPrice,
+                       ROUND(j.tax_included_price / 100, 2)                                            basePrice,
+                       ROUND(((i2.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints2,
+                       ROUND(((i3.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints3,
+                       ROUND(((i4.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints4,
+                       ROUND(((i5.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints5,
+                       ROUND(((i6.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints6,
+                       ROUND(((i7.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints7,
+                       ROUND(((i8.new_price - j.tax_included_price ) / j.tax_included_price) * 100, 4) addPoints8
+                from (select distinct sku_code,code
+                      from product_sku_change_price_info
+                      where code = #{code}) a
+                         left join product_sku_price_info h on h.sku_code = a.sku_code and h.price_item_code = '1013' and h.code = a.code #售价
+                         left join product_sku_price_info i on i.sku_code = a.sku_code and i.price_item_code = '1014' and i.code = a.code #会员价
+                         left join product_sku_supply_unit j on j.product_sku_code = a.sku_code and j.is_default = 1
+                         left join product_sku_change_price_info i2 on i2.sku_code = a.sku_code and i2.price_item_code = '1007' and i2.code = a.code #爱亲分销价
+                         left join product_sku_change_price_info i3 on i3.sku_code = a.sku_code and i3.price_item_code = '1008' and i3.code = a.code #萌贝树分销价
+                         left join product_sku_change_price_info i4 on i4.sku_code = a.sku_code and i4.price_item_code = '1007' and i4.code = a.code #爱亲分销价
+                         left join product_sku_change_price_info i5 on i5.sku_code = a.sku_code and i5.price_item_code = '1001' and i5.code = a.code #爱亲渠道价
+                         left join product_sku_change_price_info i6 on i6.sku_code = a.sku_code and i6.price_item_code = '1002' and i6.code = a.code #萌贝树渠道价
+                         left join product_sku_change_price_info i7 on i7.sku_code = a.sku_code and i7.price_item_code = '1003' and i7.code = a.code #小红马渠道价
+                         left join product_sku_change_price_info i8 on i8.sku_code = a.sku_code and i8.price_item_code = '1009' and i8.code = a.code #小红马分销价
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price
     where id = #{id,jdbcType=BIGINT}

@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -261,4 +262,6 @@ public interface ProductSkuChangePriceService {
     String getApplyCodeByFormNo(String formNo);
 
     PriceMeasurementRespVO priceMeasurement(List<PriceMeasurementReqVO> req,String date);
+
+    Boolean exportChangePriceData(HttpServletResponse resp, String code);
 }
