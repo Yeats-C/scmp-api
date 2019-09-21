@@ -19,7 +19,12 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.platform.flows.client.domain.FormBackRequest;
+import com.aiqin.platform.flows.client.domain.FormCompleteRequest;
+import com.aiqin.platform.flows.client.domain.FormRejectRequest;
+import com.aiqin.platform.flows.client.domain.FormSaveInRequest;
 import com.aiqin.platform.flows.client.service.FormDetailService;
+import com.aiqin.platform.flows.client.service.FormOperateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -45,6 +50,8 @@ public class DingApprovalController {
     private ApplyService applyService;
     @Resource
     private FormDetailService formDetailService;
+    @Resource
+    private FormOperateService formOperateService;
     @Resource
     private ProductApplyService productApplyService;
     @Resource
@@ -163,5 +170,35 @@ public class DingApprovalController {
             processInstanceId = String.valueOf(data);
         }
         return formDetailService.goTaskOpLogList(processInstanceId, isIntervene, personId);
+    }
+
+    @PostMapping("/form/operate/complete")
+    @ApiOperation("同意")
+    HttpResponse complete(@RequestBody FormCompleteRequest request) {
+        return formOperateService.complete(request);
+    }
+
+    @PostMapping("/form/operate/save/in")
+    @ApiOperation("知会")
+    HttpResponse saveInform(@RequestBody FormSaveInRequest request) {
+        return formOperateService.saveInform(request);
+    }
+
+    @PostMapping("/reject")
+    @ApiOperation("驳回")
+    HttpResponse saveRejectToApply(@RequestBody FormRejectRequest request) {
+        return formOperateService.saveRejectToApply(request);
+    }
+
+    @PostMapping("/form/operate/back")
+    @ApiOperation("回退")
+    HttpResponse saveTurnBack(@RequestBody FormBackRequest request) {
+        return formOperateService.saveTurnBack(request);
+    }
+
+    @GetMapping("/form/operate/back/process")
+    @ApiOperation("获得回退的审批节点")
+    HttpResponse saveToCancel(@RequestParam("process_instance_id") String processInstanceId, @RequestParam("task_id") String taskId) {
+        return formOperateService.getBackHisProcessOptLog(processInstanceId, taskId);
     }
 }
