@@ -51,30 +51,35 @@ public class SapScheduledServiceImpl implements SapScheduledService {
     @Scheduled(cron = "0 0 * * * ?")
     public void orderInfoAbutment(){
         DateTime now = new DateTime();
+        LOGGER.info("进入sap同步orderInfoAbutment信息:{}",now.toString(STANDARD_FORMAT));
         orderInfoAbutmentSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void stockAbutment(){
         DateTime now = new DateTime();
+        LOGGER.info("进入sap同步stockAbutment信息:{}",now.toString(STANDARD_FORMAT));
         stockSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void purchaseAbutment(){
         DateTime now = new DateTime();
+        LOGGER.info("进入sap同步purchaseAbutment信息:{}",now.toString(STANDARD_FORMAT));
         purchaseSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void productAbutment(){
         DateTime now = new DateTime();
+        LOGGER.info("进入sap同步productAbutment信息:{}",now.toString(STANDARD_FORMAT));
         productSynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
     @Scheduled(cron = "0 0 * * * ?")
     public void supplyAbutment(){
         DateTime now = new DateTime();
+        LOGGER.info("进入sap同步supplyAbutment信息:{}",now.toString(STANDARD_FORMAT));
         supplySynchronizationSchedule(now.minusHours(1).toString(STANDARD_FORMAT),now.toString(STANDARD_FORMAT));
     }
 
