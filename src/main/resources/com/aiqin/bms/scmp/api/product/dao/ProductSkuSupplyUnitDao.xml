@@ -166,7 +166,7 @@
         <foreach collection="list" open="" close="" item="item" separator=";">
             update apply_product_sku_supply_unit
             set be_effective = 1
-            where product_sku_code = {item.productSkuCode} and apply_code = #{item.applyCode}
+            where product_sku_code = #{item.productSkuCode} and apply_code = #{item.applyCode}
         </foreach>
     </update>
     <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
