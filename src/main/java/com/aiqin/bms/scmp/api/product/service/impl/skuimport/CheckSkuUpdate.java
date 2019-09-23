@@ -203,35 +203,52 @@ public class CheckSkuUpdate {
                 productSkuDraft.setProductSortCode(dic.getSupplierDictionaryValue());
             }
         }
-        //是否管理保质期
-        if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
-//            error.add("是否管理保质期不能为空");
-        } else {
-            QualityAssuranceManagements e = QualityAssuranceManagements.getAll().get(importVo.getQualityAssuranceManagementDesc());
-            if (Objects.isNull(e)) {
-                error.add("是否管理保质期请选择管理或者不管理");
-            } else {
-                productSkuDraft.setQualityAssuranceManagement(e.getType());
-            }
-            if (e.getType().equals((byte) 0)) {
-                //管理
-                //保质期单位
-                if (Objects.isNull(importVo.getQualityNumber())) {
-                    error.add("保质期单位不能为空");
-                } else {
-                    QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
-                    if (Objects.isNull(type)) {
-                        error.add("保质期单位只能是年月天");
-                    } else {
-                        productSkuDraft.setQualityNumber(type.getType().toString());
-                    }
+//        //是否管理保质期
+//        if (Objects.isNull(importVo.getQualityAssuranceManagementDesc())) {
+////            error.add("是否管理保质期不能为空");
+//        } else {
+//            QualityAssuranceManagements e = QualityAssuranceManagements.getAll().get(importVo.getQualityAssuranceManagementDesc());
+//            if (Objects.isNull(e)) {
+//                error.add("是否管理保质期请选择管理或者不管理");
+//            } else {
+//                productSkuDraft.setQualityAssuranceManagement(e.getType());
+//            }
+//            if (e.getType().equals((byte) 0)) {
+//                //管理
+//                //保质期单位
+//                if (Objects.isNull(importVo.getQualityNumber())) {
+//                    error.add("保质期单位不能为空");
+//                } else {
+//                    QualityTypes type = QualityTypes.getAll().get(importVo.getQualityNumber());
+//                    if (Objects.isNull(type)) {
+//                        error.add("保质期单位只能是年月天");
+//                    } else {
+//                        productSkuDraft.setQualityNumber(type.getType().toString());
+//                    }
+//                }
+//                //保质天数
+//                if (Objects.isNull(importVo.getQualityDate())) {
+//                    error.add("保质天数不能为空");
+//                }else {
+//                    productSkuDraft.setQualityDate(Integer.parseInt(importVo.getQualityDate())+"");
+//                }
+//            }
+//        }
+        //保质天数
+        if (StringUtils.isBlank(importVo.getQualityDate())) {
+//            error.add("保质天数不能为空");
+        }else {
+            try {
+                int i = Integer.parseInt(importVo.getQualityDate());
+                if ( i == 0) {
+                    productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.NO.getType());
+                }else if (i>0){
+                    productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.YES.getType());
+                    productSkuDraft.setQualityNumber(QualityTypes.DAY.getType().toString());
+                    productSkuDraft.setQualityDate(i+"");
                 }
-                //保质天数
-                if (Objects.isNull(importVo.getQualityDate())) {
-                    error.add("保质天数不能为空");
-                }else {
-                    productSkuDraft.setQualityDate(Integer.parseInt(importVo.getQualityDate())+"");
-                }
+            } catch (NumberFormatException e) {
+                error.add("保质天数格式不正确");
             }
         }
 

@@ -134,6 +134,10 @@ public class ApplySupplyCompany extends CommonBean {
     @ApiModelProperty("是否禁用")
     private Byte enable;
 
+    @ApiModelProperty("是否增加账户信息  0:增加 1:不增加")
+    private Byte addAccount;
+
+
     @ApiModelProperty("公司编码")
     private String companyCode;
 
