@@ -87,6 +87,8 @@
     <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
 
   </resultMap>
   <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="ListResultMap">

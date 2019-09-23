@@ -380,4 +380,11 @@
       company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectByOrderCode" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      profit_loss
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

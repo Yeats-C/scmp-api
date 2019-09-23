@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.supplier;
 
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
@@ -42,6 +43,7 @@ public interface SupplyCompanyDao {
      * @return
      */
     int checkName(Map<String, Object> map);
+    int checkName2(Map<String, Object> map);
 
     /**
      * 根据申请编码获取正式数据
@@ -91,4 +93,6 @@ public interface SupplyCompanyDao {
      * @return
      */
     int updateApplyCode(@Param("supplyCompanyCode") String supplyCompanyCode, @Param("applySupplyCompanyCode") String applySupplyCompanyCode);
+
+    ApplySupplyCompany selectBySupplierCode2(String applySupplyCode);
 }

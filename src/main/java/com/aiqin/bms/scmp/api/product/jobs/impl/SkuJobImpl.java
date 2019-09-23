@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.product.jobs.impl;
 
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfig;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.jobs.SkuJob;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,13 @@ public class SkuJobImpl implements SkuJob {
 
     @Autowired
     private ProductSkuConfigService productSkuConfigService;
+
+    @Autowired
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
+
+    @Autowired
+    private ProductSkuSupplyUnitService productSkuSupplyUnitService;
+
 
     @Override
     @Scheduled(cron = "0 1/10 * * * ?")
@@ -46,5 +56,17 @@ public class SkuJobImpl implements SkuJob {
             return;
         }
         productSkuConfigService.tobeEffective(list);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @Scheduled(cron = "0 1/10 * * * ?")
+    public void changeSupplyCompanyStatus() {
+        //查未同步的数据
+        List<ApplyProductSkuSupplyUnit> list = productSkuSupplyUnitDao.selectUnSynData();
+        if (CollectionUtils.isEmptyCollection(list)) {
+            return;
+        }
+        productSkuSupplyUnitService.tobeEffective(list);
     }
 }

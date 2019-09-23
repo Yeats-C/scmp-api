@@ -123,4 +123,6 @@ public interface ReturnOrderInfoMapper {
     List<ReturnOrderInfo> listForSap(SapOrderRequest sapOrderRequest);
 
     int updateByOrderCodes(@Param(value = "list")List<String> orderCodes);
+
+    Integer insertList(List<ReturnOrderInfo> returnOrderInfoList);
 }

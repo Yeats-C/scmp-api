@@ -20,4 +20,6 @@ public interface ApplyDeliveryInformationMapper {
      * @return
      */
     List<ApplyDeliveryInformation> selectByApplyCode(String applySupplyCompanyCode);
+
+    int deleteByApplyCode(String applySupplyCompanyCode);
 }

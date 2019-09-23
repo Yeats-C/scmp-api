@@ -547,7 +547,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         }
                          if(record[4] != null){
                              if(!record[4].contains("零")){
-                                 HandleResponse(response, record,"采购数量格式不正确；", i);
+                                 HandleResponse(response, record,"采购数量格式不正确；例如: 5零3", i);
+                                 errorCount++;
                                  errorList.add(response);
                                  continue;
                              }
@@ -561,7 +562,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                          }
                          if(record[5] != null){
                              if(!record[5].contains("零")){
-                                 HandleResponse(response, record,"实物返数量格式不正确；", i);
+                                 HandleResponse(response, record,"实物返数量格式不正确；例如: 5零3", i);
+                                 errorCount++;
                                  errorList.add(response);
                                  continue;
                              }
@@ -608,7 +610,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         if(StringUtils.isNotBlank(record[6] )){
             response.setProductPurchaseAmount(Integer.valueOf(record[6]));
         }
-        response.setErrorInfo("第" + i + "行  " + errorReason);
+        response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
 
     @Override

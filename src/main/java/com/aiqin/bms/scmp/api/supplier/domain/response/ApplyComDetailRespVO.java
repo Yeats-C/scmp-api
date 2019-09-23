@@ -10,4 +10,7 @@ import lombok.EqualsAndHashCode;
 public class ApplyComDetailRespVO extends SupplyComDetailRespVO {
     @ApiModelProperty("申请修改时需要展示的供应商编码")
     private String formalCode;
+
+    @ApiModelProperty("申请类型")
+    private Byte applyType;
 }

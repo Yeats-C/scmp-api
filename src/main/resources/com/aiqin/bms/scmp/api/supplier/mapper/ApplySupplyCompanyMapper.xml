@@ -91,7 +91,7 @@
       select
       <include refid="Base_Column_List" />
       from apply_supply_company
-      where apply_supply_company_code = #{applySupplyCode}
+      where apply_supply_company_code = #{applySupplyCode} and apply_status = 5
     </select>
     <select id="selectBySupplyCode" resultMap="BaseResultMap">
       select

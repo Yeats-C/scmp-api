@@ -1,8 +1,10 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,7 +21,8 @@ public interface ProductSkuConfigDraftMapper {
 
     int updateByPrimaryKey(ProductSkuConfigDraft record);
 
-    List<SkuConfigsRepsVo> getList(String companyCode);
+    List<SkuConfigsRepsVo> getList(List<Long> list);
+    List<Long> getListCount(@Param("vo") ConfigSearchVo vo);
 
     List<ProductSkuConfigDraft> selectByCodes(List<String> codes);
 
@@ -57,4 +60,6 @@ public interface ProductSkuConfigDraftMapper {
      * @return int
      */
     int deleteByIds(List<Long> ids);
+
+    List<ProductSkuConfigDraft> selectbyConfigCode(List<String> list);
 }

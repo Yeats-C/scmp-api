@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.statistics.dao.StatDeptHighInventoryMonthlyDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.statistics.domain.StatDeptHighInventoryMonthly">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stat_year" jdbcType="BIGINT" property="statYear" />
+    <result column="stat_month" jdbcType="BIGINT" property="statMonth" />
+    <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="responsible_person_code" jdbcType="VARCHAR" property="responsiblePersonCode" />
+    <result column="responsible_person_name" jdbcType="VARCHAR" property="responsiblePersonName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="pre_total_sku" jdbcType="BIGINT" property="preTotalSku" />
+    <result column="pre_high_sku" jdbcType="BIGINT" property="preHighSku" />
+    <result column="pre_high_sku_rate" jdbcType="DECIMAL" property="preHighSkuRate" />
+    <result column="pre_stock_amount_total" jdbcType="BIGINT" property="preStockAmountTotal" />
+    <result column="pre_high_inventory_amount" jdbcType="BIGINT" property="preHighInventoryAmount" />
+    <result column="pre_high_inventory_amount_rate" jdbcType="DECIMAL" property="preHighInventoryAmountRate" />
+    <result column="total_sku" jdbcType="BIGINT" property="totalSku" />
+    <result column="high_sku" jdbcType="BIGINT" property="highSku" />
+    <result column="high_sku_rate" jdbcType="DECIMAL" property="highSkuRate" />
+    <result column="stock_amount_total" jdbcType="BIGINT" property="stockAmountTotal" />
+    <result column="high_inventory_amount" jdbcType="BIGINT" property="highInventoryAmount" />
+    <result column="high_inventory_amount_rate" jdbcType="DECIMAL" property="highInventoryAmountRate" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stat_year, stat_month, product_sort_code, product_sort_name, purchase_group_code, 
+    purchase_group_name, responsible_person_code, responsible_person_name, transport_center_code, 
+    transport_center_name, pre_total_sku, pre_high_sku, pre_high_sku_rate, pre_stock_amount_total, 
+    pre_high_inventory_amount, pre_high_inventory_amount_rate, total_sku, high_sku, high_sku_rate, 
+    stock_amount_total, high_inventory_amount, high_inventory_amount_rate, create_time
+  </sql>
+  <select id="inventoryHighSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.inventoryInfoResponse">
+    select
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+    sum(ifnull(pre_total_sku,0)) as preTotalSku, sum(ifnull(pre_high_sku,0)) as preSkuCount,
+    sum(ifnull(pre_stock_amount_total,0)) as preStockAmountTotal, sum(ifnull(pre_high_inventory_amount,0)) as preStockAmount,
+    sum(ifnull(total_sku,0)) as totalSku, sum(ifnull(high_sku,0)) as skuCount,
+    sum(ifnull(stock_amount_total,0)) as stockAmountTotal, sum(ifnull(high_inventory_amount,0)) as stockAmount
+    from stat_dept_high_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    <if test="productSortCode != null">
+      and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupCode != null">
+      and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    group by transport_center_code
+    order by transport_center_code
+  </select>
+  <select id="groupHighList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventorySortResponse">
+    select
+      purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
+      responsible_person_code as responsiblePersonCode, responsible_person_name as responsiblePersonName
+    from stat_dept_high_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    and product_sort_code = #{productSortCode,jdbcType=VARCHAR}
+    group by purchase_group_code
+    order by purchase_group_code
+  </select>
+  <select id="deptHighList" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.inventory.InventorySortResponse">
+    select
+      product_sort_code as productSortCode, product_sort_name as productSortName
+    from stat_dept_high_inventory_monthly
+    where stat_year = #{year,jdbcType=BIGINT}
+    and stat_month = #{month,jdbcType=BIGINT}
+    group by product_sort_code
+    order by product_sort_code
+  </select>
+</mapper>

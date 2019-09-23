@@ -393,12 +393,21 @@
     WHERE a.id=#{applyId,jdbcType=BIGINT}
   </select>
   <select id="checkName" parameterType="java.util.Map" resultType="java.lang.Integer">
-    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0
+    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0 and apply_status in (1,5)
     <if test="name != null and name != '' ">
       AND apply_supply_name =#{name,jdbcType=VARCHAR}
     </if>
     <if test="code != null and code != ''">
       and supply_company_code !=#{code,jdbcType=VARCHAR}
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="checkName2" parameterType="java.util.Map" resultType="java.lang.Integer">
+    SELECT COUNT(1) from apply_supply_company WHERE del_flag=0 and apply_status = 1
+    <if test="name != null and name != '' ">
+      AND apply_supply_name =#{name,jdbcType=VARCHAR}
     </if>
     <if test="companyCode != null and companyCode != '' ">
       and company_code = #{companyCode,jdbcType=VARCHAR}
@@ -506,4 +515,18 @@
       where company_code = #{companyCode} and supply_company_code = #{applySupplyCode} and apply_status = #{applyStatus}
       order by create_time desc limit 1
     </select>
+      <select id="selectByCode"
+              resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
+        select
+        <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List" />
+        from apply_supply_company
+        where supply_company_code = #{oldCode} and apply_status in (1,5)
+      </select>
+      <select id="selectByCode2"
+              resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
+        select
+        <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List" />
+        from apply_supply_company
+        where supply_company_code = #{oldCode} and apply_status = 1
+      </select>
 </mapper>

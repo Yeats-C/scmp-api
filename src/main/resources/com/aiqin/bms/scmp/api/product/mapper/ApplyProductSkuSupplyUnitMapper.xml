@@ -23,11 +23,33 @@
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+    <result column="be_effective"  property="beEffective" />
+    <result column="selection_effective_time"  property="selectionEffectiveTime" />
+    <result column="selection_effective_start_time"  property="selectionEffectiveStartTime" />
+    <result column="direct_supervisor_code"  property="directSupervisorCode" />
+    <result column="direct_supervisor_name"  property="directSupervisorName" />
+    <result column="form_no"  property="formNo" />
+    <result column="auditor_status"  property="auditorStatus" />
+    <result column="apply_type"  property="applyType" />
+    <result column="apply_show"  property="applyShow" />
+    <result column="company_code"  property="companyCode" />
+    <result column="company_name"  property="companyName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price, 
     joint_franchise_rate, point, is_default, del_flag, create_time, create_by, update_time, 
     update_by, product_sku_code, usage_status, product_sku_name, apply_code,tax_rate,
-    categories_supply_channels_code,categories_supply_channels_name,factory_sku_code
+    categories_supply_channels_code,categories_supply_channels_name,factory_sku_code,
+    be_effective,
+    selection_effective_time,
+    selection_effective_start_time,
+    direct_supervisor_code,
+    direct_supervisor_name,
+    form_no,
+    auditor_status,
+    apply_type,
+    apply_show,
+    company_code,
+    company_name
   </sql>
 </mapper>

@@ -4,14 +4,17 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -69,6 +72,10 @@ public interface ProductSkuConfigService {
      */
     DetailConfigSupplierRespVo findDraftList(String companyCode);
 
+    BasePage<SkuConfigsRepsVo> findConfigsList(ConfigSearchVo vo);
+
+    BasePage<ProductSkuSupplyUnitRespVo> findSupplierList(ConfigSearchVo vo);
+
     /**
      * 删除临时表配置信息
      * @param id
@@ -114,6 +121,9 @@ public interface ProductSkuConfigService {
      */
     void updateApplyInfoByVO(WorkFlowCallbackVO newVO,String applyCode);
 
+    @Transactional(rollbackFor = Exception.class)
+    void updateApplyInfoByVO2(WorkFlowCallbackVO newVO, String applyCode);
+
     /**
      * 审批流-审批通过
      * @param newVO
@@ -142,6 +152,9 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer updateApplyInfoByVO(ApplyProductSkuConfigReqVo req);
+
+    @Transactional(rollbackFor = Exception.class)
+    Integer updateApplyInfoByVO2(ApplyProductSkuConfigReqVo req);
 
     /**
      *

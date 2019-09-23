@@ -6,5 +6,5 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 public interface InventoryStatisticsService {
 
-    HttpResponse<InventoryStatisticsResponse> lowInventory(InventoryStatisticsRequest request);
+    HttpResponse<InventoryStatisticsResponse> inventory(InventoryStatisticsRequest request);
 }

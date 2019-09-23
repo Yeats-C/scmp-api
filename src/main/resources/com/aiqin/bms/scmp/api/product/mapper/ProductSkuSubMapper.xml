@@ -39,7 +39,7 @@
     delete from product_sku_sub
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteBySkuCode" parameterType="java.lang.Long">
+  <delete id="deleteBySkuCode" parameterType="java.lang.String">
     delete from product_sku_sub
     where main_sku_code = #{skuCode}
   </delete>
