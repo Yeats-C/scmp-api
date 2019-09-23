@@ -24,7 +24,7 @@ public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
-    private String supplierGiftsBuySalesRespVoCode;
+    private String supplierCode;
 
     @ApiModelProperty("供应商name")
     @JsonProperty(value = "supplier_name")
