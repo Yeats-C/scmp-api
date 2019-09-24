@@ -201,4 +201,10 @@ public class DingApprovalController {
     HttpResponse saveToCancel(@RequestParam("process_instance_id") String processInstanceId, @RequestParam("task_id") String taskId) {
         return formOperateService.getBackHisProcessOptLog(processInstanceId, taskId);
     }
+
+    @PostMapping("/form/operate/read")
+    @ApiOperation("已阅")
+    HttpResponse read(@RequestBody FormCompleteRequest request) {
+        return formOperateService.read(request);
+    }
 }
