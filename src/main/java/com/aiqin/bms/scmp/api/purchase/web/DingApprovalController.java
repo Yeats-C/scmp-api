@@ -19,10 +19,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.platform.flows.client.domain.FormBackRequest;
-import com.aiqin.platform.flows.client.domain.FormCompleteRequest;
-import com.aiqin.platform.flows.client.domain.FormRejectRequest;
-import com.aiqin.platform.flows.client.domain.FormSaveInRequest;
+import com.aiqin.platform.flows.client.domain.*;
 import com.aiqin.platform.flows.client.service.FormDetailService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
 import io.swagger.annotations.Api;
@@ -206,5 +203,11 @@ public class DingApprovalController {
     @ApiOperation("已阅")
     HttpResponse read(@RequestBody FormCompleteRequest request) {
         return formOperateService.read(request);
+    }
+
+    @PostMapping("/cancel")
+    @ApiOperation("撤销")
+    HttpResponse saveToCancel(@RequestBody FormCancelRequest request) {
+        return formOperateService.saveToCancel(request);
     }
 }
