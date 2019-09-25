@@ -263,7 +263,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             }
         }
         if (!Byte.valueOf("1").equals(applyContractReqVo.getSource())) {
-             workFlow(k);
+             workFlow(applyContractDTO.getId());
         }
         return 0;
     }
@@ -294,7 +294,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         }
         ApplyContractViewResVo applyContractResVo = new ApplyContractViewResVo();
         ApplyContractDTO entity = applyContractDao.selectByPrimaryKey(id);
-        if(null == entity){
+        if(Objects.isNull(entity)){
             throw new GroundRuntimeException("查看失败");
         }
         BeanCopyUtils.copy(entity, applyContractResVo);
@@ -530,7 +530,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 int mm = ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(applyContractCategories);
             }
         }
-        workFlow(k);
+        workFlow(applyContractDTO.getId());
         // 修改合同状态防止在审核中修改合同
         int  kp = contractDao.updateByCode(oldApplyContractDTO.getApplyContractCode(),Byte.valueOf("1"),applyContractDTO.getApplyContractCode());
         return kp;
@@ -1196,6 +1196,11 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         }
         applyContractDTO.setPurchasingGroupCode(purchasingGroupCode.toString().substring(0,purchasingGroupCode.toString().length()-1));
         applyContractDTO.setPurchasingGroupName(purchasingGroupName.toString().substring(0,purchasingGroupName.toString().length()-1));
+        //设置创建时间
+        applyContractDTO.setCreateBy(getUser().getPersonName());
+        applyContractDTO.setCreateTime(new Date());
+        applyContractDTO.setUpdateBy(getUser().getPersonName());
+        applyContractDTO.setUpdateTime(new Date());
         //更新数据
         ((ApplyContractService) AopContext.currentProxy()).updateByApplyId(applyContractDTO);
 

@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.PriceMeasurementReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryChangePriceRepeatVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ExportChangePriceVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QueryChangePriceRepeatRespVO;
 import org.apache.ibatis.annotations.Param;
@@ -72,4 +73,6 @@ public interface ProductSkuChangePriceMapper {
      * @return
      */
     List<SaleCountDTO> selectSaleNumBySkuCode(@Param("list") List<PriceMeasurementReqVO> req, @Param("date") String date);
+
+    List<ExportChangePriceVO> exportChangePriceData(String code);
 }

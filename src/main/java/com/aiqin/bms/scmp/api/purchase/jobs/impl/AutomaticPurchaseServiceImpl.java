@@ -65,7 +65,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     @Resource
     private OperationLogDao operationLogDao;
 
-    @Scheduled(cron = "0 0 2 1 * ?")   //每月1号的0:10:00执行
+    @Scheduled(cron = "0 0 10 1 * ?")  //每月1号的10:00执行
     public void automatic(){
         DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
         String data = dateTime.toString("yyyy-MM-dd");
@@ -201,7 +201,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
         return HttpResponse.success();
     }
 
-    @Scheduled(cron = "0 10 0 1 * ?")   //每月1号的0:10:00执行
+    @Scheduled(cron = "0 0 8 1 * ?")   //每月1号的8:00执行
     public void intellectPurchase(){
         // 获取当前月时间
         String months = DateUtils.getMonths();

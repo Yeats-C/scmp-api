@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
@@ -42,6 +43,20 @@ public class ProductSkuChangePriceController {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception ex) {
             ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @GetMapping("/exportChangePriceData")
+    @ApiOperation("/导出价格")
+    public HttpResponse<Boolean> exportChangePriceData(HttpServletResponse resp, String code){
+        log.info("SkuInfoController---exportSku---入参：[{}]",code);
+        try {
+            return HttpResponse.success(productSkuChangePriceService.exportChangePriceData(resp,code));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

@@ -1145,7 +1145,7 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Save
-    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
+    public synchronized HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
 
         try{
             LOGGER.info("对库存进行操作");
@@ -1441,14 +1441,14 @@ public class StockServiceImpl implements StockService {
             //调拨在途变成可用及库存数
             case 8:
                 stock.setAllocationWayNum(allocationWayNum - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
                 stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
                 stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;
             //采购在途变成可用及库存数
             case 9:
                 stock.setPurchaseWayNum(purchaseWayNum - stockVoRequest.getChangeNum());
-                stock.setTotalWayNum(purchaseWayNum + stock.getAllocationWayNum());
+                stock.setTotalWayNum(stock.getPurchaseWayNum() + stock.getAllocationWayNum());
                 stock.setInventoryNum(inventoryNum + stockVoRequest.getChangeNum());
                 stock.setAvailableNum(availableNum + stockVoRequest.getChangeNum());
                 break;

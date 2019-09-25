@@ -103,6 +103,7 @@
     <result column="createTime" property="createTime"/>
     <result column="createBy" property="createBy"/>
     <result column="changePriceName" property="changePriceName"/>
+    <result column="changePriceType" property="changePriceType"/>
     <result column="beContainArea" property="beContainArea"/>
     <result column="purchaseGroupName" property="purchaseGroupName"/>
     <result column="applyStatus" property="applyStatus"/>
@@ -122,6 +123,7 @@
     a.create_time                        as createTime,
     a.create_by                          as createBy,
     a.change_price_name                  as changePriceName,
+    a.change_price_type                  as changePriceType,
     a.be_contain_area                        as beContainArea,
     a.purchase_group_name                as purchaseGroupName,
     a.apply_status                       as applyStatus,
