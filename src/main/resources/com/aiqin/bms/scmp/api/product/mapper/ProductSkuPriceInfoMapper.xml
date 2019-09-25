@@ -339,8 +339,7 @@
         <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
             and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
         </if>
-        group by a.id
-        order by a.create_time desc
+        order by a.create_time desc LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <resultMap id="selectInfoByCode"
                type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO">
