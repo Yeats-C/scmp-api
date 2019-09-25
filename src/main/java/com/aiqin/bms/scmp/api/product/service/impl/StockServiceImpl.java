@@ -1145,7 +1145,7 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     @Save
-    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
+    public synchronized HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
 
         try{
             LOGGER.info("对库存进行操作");
