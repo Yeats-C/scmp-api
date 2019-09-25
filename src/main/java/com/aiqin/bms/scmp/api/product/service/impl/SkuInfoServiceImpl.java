@@ -702,7 +702,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if(CollectionUtils.isNotEmpty(productSkuManufacturerDrafts)){
             ProductSkuManufacturerDraft productSkuManufacturerDraft = productSkuManufacturerDrafts.get(0);
             Optional<ProductSkuManufacturerDraft> first = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst();
-            if(first.isPresent()&&Objects.nonNull(first.get())){
+            if(first.isPresent()){
                 ProductSkuManufacturerDraft productSkuManufacturerDraft1 = first.get();
                 BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDraft,productSkuManufacturerDraft1);
                 productSkuManufacturerDraft1.setIsDefault((byte) 0);
