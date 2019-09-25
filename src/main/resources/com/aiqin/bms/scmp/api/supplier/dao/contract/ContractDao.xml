@@ -295,6 +295,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="comment != null">
+        comment,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">

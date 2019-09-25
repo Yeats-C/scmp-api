@@ -263,7 +263,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             }
         }
         if (!Byte.valueOf("1").equals(applyContractReqVo.getSource())) {
-             workFlow(k);
+             workFlow(applyContractDTO.getId());
         }
         return 0;
     }
@@ -530,7 +530,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 int mm = ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(applyContractCategories);
             }
         }
-        workFlow(k);
+        workFlow(applyContractDTO.getId());
         // 修改合同状态防止在审核中修改合同
         int  kp = contractDao.updateByCode(oldApplyContractDTO.getApplyContractCode(),Byte.valueOf("1"),applyContractDTO.getApplyContractCode());
         return kp;
