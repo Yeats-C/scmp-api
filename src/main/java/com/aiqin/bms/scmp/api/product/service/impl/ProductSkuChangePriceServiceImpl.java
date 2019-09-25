@@ -11,12 +11,10 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
-import com.aiqin.bms.scmp.api.product.domain.excel.PriceImport;
-import com.aiqin.bms.scmp.api.product.domain.excel.PurchasePriceImport;
-import com.aiqin.bms.scmp.api.product.domain.excel.SalePriceImport;
-import com.aiqin.bms.scmp.api.product.domain.excel.TemporaryPriceImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.*;
+import com.aiqin.bms.scmp.api.product.domain.response.ExportChangePriceVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
@@ -30,6 +28,7 @@ import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
+import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -38,6 +37,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -53,6 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -1017,6 +1018,17 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         respVO.setDecreaseGrossProfit(deAmount);
         respVO.setIncreaseGrossProfit(inAmount);
         return respVO;
+    }
+
+    @Override
+    public Boolean exportChangePriceData(HttpServletResponse resp,String code) {
+        List<ExportChangePriceVO> list = productSkuChangePriceMapper.exportChangePriceData(code);
+        try {
+            ExcelUtil.writeExcel(resp,list,"价格DL格式导出模板","价格DL格式导出模板", ExcelTypeEnum.XLS, ExportChangePriceVO.class);
+            return Boolean.FALSE;
+        } catch (ExcelException e) {
+            throw new BizException(ResultCode.EXPORT_FAILED);
+        }
     }
 
     @Override
