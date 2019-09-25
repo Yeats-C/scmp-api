@@ -255,7 +255,6 @@
         <foreach collection="list" open="(" close=")" item="item" separator=",">
             #{item}
         </foreach>
-        order by a.create_time desc
     </select>
     <select id="selectListByQueryVOIds" resultType="java.lang.Long">
         select
