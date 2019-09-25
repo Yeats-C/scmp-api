@@ -251,6 +251,31 @@
         on lv2.category_id = lv3.parent_id
         LEFT JOIN product_category lv1
         on lv1.category_id = lv2.parent_id
+        where a.id in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+            #{item}
+        </foreach>
+        order by a.create_time desc
+    </select>
+    <select id="selectListByQueryVOIds" resultType="java.lang.Long">
+        select
+        a.id
+        from product_sku_price_info a
+        <if test="(productStatus != null and productStatus !='') or (productCategoryCode != null and productCategoryCode !='') or (productBrandCode != null and productBrandCode !='') or (productPropertyCode != null and productPropertyCode !='') or (productCategoryLv4Code != null and  productCategoryLv4Code != '')">
+            LEFT JOIN product_sku b ON a.sku_code = b.sku_code
+        </if>
+        <if test="(productCategoryLv4Code != null and  productCategoryLv4Code != '') or (productCategoryCode != null and productCategoryCode !='')">
+            LEFT JOIN product_category lv4 on lv4.category_id = b.product_category_code
+        </if>
+        <if test="(productCategoryLv3Code != null and  productCategoryLv3Code != '') or (productCategoryLv4Code != null and  productCategoryLv4Code != '')">
+            LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+        </if>
+        <if test="(productCategoryLv2Code != null and  productCategoryLv2Code != '') or (productCategoryLv3Code != null and  productCategoryLv3Code != '')">
+            LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+        </if>
+        <if test="(productCategoryLv1Code != null and  productCategoryLv1Code != '') or (productCategoryLv2Code != null and  productCategoryLv2Code != '')">
+            LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
+        </if>
         where a.company_code = #{companyCode}
         <if test="priceTypeCode != null and priceTypeCode !=''">
             and a.price_type_code = #{priceTypeCode}
@@ -320,7 +345,6 @@
         </if>
         order by a.create_time desc LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
-
     <select id="selectListByQueryVOCount" resultType="java.lang.Integer">
         select
         COUNT(1)
