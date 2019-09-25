@@ -1011,8 +1011,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         Stream<PriceMeasurementReqVO> stream1 = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin());
         long in = stream.count();
         long de = stream1.count();
-        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode()).getSaleNum()).orElse(0) * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
-        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode()).getSaleNum()).orElse(0) * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
         respVO.setDecreaseGrossProfit(deAmount);
