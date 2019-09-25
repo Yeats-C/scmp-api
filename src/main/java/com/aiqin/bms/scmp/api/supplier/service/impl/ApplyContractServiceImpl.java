@@ -294,7 +294,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         }
         ApplyContractViewResVo applyContractResVo = new ApplyContractViewResVo();
         ApplyContractDTO entity = applyContractDao.selectByPrimaryKey(id);
-        if(null == entity){
+        if(Objects.isNull(entity)){
             throw new GroundRuntimeException("查看失败");
         }
         BeanCopyUtils.copy(entity, applyContractResVo);

@@ -78,7 +78,7 @@
     <include refid="Base_Column_List" />
     from apply_contract
     WHERE
-    del_flag = 0
+    del_flag = 0 and apply_status = 5
     <if test="createStartTime != null ">
       AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
     </if>
@@ -399,7 +399,7 @@
       a.auditor_time as approvalTime,
       a.form_no as formNo
     from apply_contract a
-    where 1=1
+    where 1=1 and apply_status != 5
     <if test="createTimeStart != null and createTimeStart != '' ">
       and a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
     </if>
