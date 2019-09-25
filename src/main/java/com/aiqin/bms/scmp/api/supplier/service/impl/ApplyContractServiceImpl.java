@@ -1196,6 +1196,11 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         }
         applyContractDTO.setPurchasingGroupCode(purchasingGroupCode.toString().substring(0,purchasingGroupCode.toString().length()-1));
         applyContractDTO.setPurchasingGroupName(purchasingGroupName.toString().substring(0,purchasingGroupName.toString().length()-1));
+        //设置创建时间
+        applyContractDTO.setCreateBy(getUser().getPersonName());
+        applyContractDTO.setCreateTime(new Date());
+        applyContractDTO.setUpdateBy(getUser().getPersonName());
+        applyContractDTO.setUpdateTime(new Date());
         //更新数据
         ((ApplyContractService) AopContext.currentProxy()).updateByApplyId(applyContractDTO);
 
