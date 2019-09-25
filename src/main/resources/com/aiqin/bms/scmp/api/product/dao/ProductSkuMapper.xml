@@ -859,7 +859,7 @@
     and apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
   </select>
-  <select id="getSkuInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getSkuInfo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.BaseResultMap">
     SELECT * FROM product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="querySkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="QuerySkuListMap">
