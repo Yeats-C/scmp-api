@@ -251,16 +251,79 @@
         on lv2.category_id = lv3.parent_id
         LEFT JOIN product_category lv1
         on lv1.category_id = lv2.parent_id
-        where a.id in
-        <foreach collection="list" open="(" close=")" item="item" separator=",">
-             #{item}
-        </foreach>
-        order by a.create_time desc
+        where a.company_code = #{companyCode}
+        <if test="priceTypeCode != null and priceTypeCode !=''">
+            and a.price_type_code = #{priceTypeCode}
+        </if>
+        <if test="priceItemCode != null and priceItemCode !=''">
+            and a.price_item_code = #{priceItemCode}
+        </if>
+        <if test="priceFrom != null and priceFrom !=''">
+            and a.price_tax &gt;= #{priceFrom}
+        </if>
+        <if test="priceTo != null and priceTo !=''">
+            and a.price_tax &lt;= #{priceTo}
+        </if>
+        <if test="effectiveTimeStartFrom != null">
+            and a.effective_time_start&gt;=#{effectiveTimeStartFrom,jdbcType=TIMESTAMP}
+        </if>
+        <if test="effectiveTimeStartTo != null">
+            and a.effective_time_start&lt;=#{effectiveTimeStartTo,jdbcType=TIMESTAMP}
+        </if>
+        <if test="effectiveTimeEndFrom != null">
+            and a.effective_time_end&gt;=#{effectiveTimeEndFrom,jdbcType=TIMESTAMP}
+        </if>
+        <if test="effectiveTimeEndTo != null">
+            and a.effective_time_end&lt;=#{effectiveTimeEndTo,jdbcType=TIMESTAMP}
+        </if>
+        <if test="productStatus != null and productStatus !=''">
+            and b.sku_status = #{productStatus}
+        </if>
+        <if test="skuCode != null and skuCode !=''">
+            and a.sku_code LIKE CONCAT(CONCAT('%',#{skuCode},'%'))
+        </if>
+        <if test="skuName != null and skuName !=''">
+            and a.sku_name LIKE CONCAT(CONCAT('%',#{skuName},'%'))
+        </if>
+        <if test="supplierCode != null and supplierCode !=''">
+            and a.supplier_code = #{supplierCode}
+        </if>
+        <if test="purchaseGroupCode != null and purchaseGroupCode !=''">
+            and a.purchase_group_code = #{purchaseGroupCode}
+        </if>
+        <if test="productCategoryCode != null and productCategoryCode !=''">
+            and b.product_category_code = #{productCategoryCode}
+        </if>
+        <if test="productBrandCode != null and productBrandCode !=''">
+            and b.product_brand_code = #{productBrandCode}
+        </if>
+        <if test="productPropertyCode != null and productPropertyCode !=''">
+            and b.product_property_code = #{productPropertyCode}
+        </if>
+        <if test="priceAttributeCode != null and priceAttributeCode !=''">
+            and a.price_attribute_code = #{priceAttributeCode}
+        </if>
+        <if test="batchNumber != null and batchNumber !=''">
+            and a.warehouse_batch_number like concat('%',#{batchNumber},'%')
+        </if>
+        <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+            and lv1.category_id = #{productCategoryLv1Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+            and lv2.category_id = #{productCategoryLv2Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+            and lv3.category_id = #{productCategoryLv3Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
+            and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
+        </if>
+        order by a.create_time desc LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
 
-    <select id="selectListByQueryVOCount" resultType="java.lang.Long">
+    <select id="selectListByQueryVOCount" resultType="java.lang.Integer">
         select
-        a.id
+        COUNT(1)
         from product_sku_price_info a
         left join product_sku b
         on a.sku_code = b.sku_code
@@ -339,7 +402,6 @@
         <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
             and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
         </if>
-        order by a.create_time desc LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <resultMap id="selectInfoByCode"
                type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO">
