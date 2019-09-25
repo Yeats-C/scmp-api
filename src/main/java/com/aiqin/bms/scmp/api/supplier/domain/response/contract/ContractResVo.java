@@ -202,6 +202,9 @@ public class ContractResVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("备注2")
+    private String comment;
+
     @ApiModelProperty("合同采购组")
     private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
 
