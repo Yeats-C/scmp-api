@@ -701,9 +701,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts1 = BeanCopyUtils.copyList(list, ProductSkuManufacturerDraft.class);
         if(CollectionUtils.isNotEmpty(productSkuManufacturerDrafts)){
             ProductSkuManufacturerDraft productSkuManufacturerDraft = productSkuManufacturerDrafts.get(0);
-            ProductSkuManufacturerDraft productSkuManufacturerDraft1 = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst().orElseGet(null);
-            if(Objects.nonNull(productSkuManufacturerDraft1)){
-                BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDrafts,productSkuManufacturerDraft1);
+            Optional<ProductSkuManufacturerDraft> first = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst();
+            if(first.isPresent()){
+                ProductSkuManufacturerDraft productSkuManufacturerDraft1 = first.get();
+                BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDraft,productSkuManufacturerDraft1);
+                productSkuManufacturerDraft1.setIsDefault((byte) 0);
+            }else {
+                productSkuManufacturerDrafts1.addAll(productSkuManufacturerDrafts);
             }
         }
 
@@ -745,9 +749,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ProductSkuBoxPackingRespVo> list = productSkuBoxPackingService.getList(productSkuDraft.getSkuCode());
         List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts1 = BeanCopyUtils.copyList(list, ProductSkuBoxPackingDraft.class);
         List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = addSkuInfoReqVO.getProductSkuBoxPackingDrafts();
-        Map<String, ProductSkuBoxPackingRespVo> collect = list.stream().collect(Collectors.toMap(ProductSkuBoxPackingRespVo::getUnitCode, Function.identity()));
+        Map<String, ProductSkuBoxPackingDraft> collect = productSkuBoxPackingDrafts.stream().collect(Collectors.toMap(ProductSkuBoxPackingDraft::getUnitCode, Function.identity()));
         for (ProductSkuBoxPackingDraft respVo : productSkuBoxPackingDrafts1) {
-            ProductSkuBoxPackingRespVo productSkuBoxPackingRespVo = collect.get(respVo.getUnitCode());
+            //如果原来的有，则做更新
+            ProductSkuBoxPackingDraft productSkuBoxPackingRespVo = collect.get(respVo.getUnitCode());
             if (Objects.nonNull(productSkuBoxPackingRespVo)) {
                 BeanCopyUtils.copyValueWithoutNull(productSkuBoxPackingRespVo,respVo);
                 productSkuBoxPackingDrafts.remove(productSkuBoxPackingRespVo);
@@ -755,9 +760,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         productSkuBoxPackingDrafts.addAll(productSkuBoxPackingDrafts1);
         //获取包装信息
-        if (CollectionUtils.isEmpty(addSkuInfoReqVO.getProductSkuBoxPackingDrafts())) {
-        }
-
         if (CollectionUtils.isNotEmpty(productSkuBoxPackingDrafts)) {
             productSkuBoxPackingDrafts.forEach(item -> {
                 item.setId(null);

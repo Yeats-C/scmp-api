@@ -213,6 +213,9 @@ public class ApplyContractViewResVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("最下面的备注")
+    private String comment;
+
     public void setApplyType(Byte applyType) {
         if(applyType.equals((byte)0)){
             this.applyType = "新增申请";

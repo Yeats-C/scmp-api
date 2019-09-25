@@ -171,11 +171,11 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
         List<String> dicNameList = Lists.newArrayList();
         dicNameList.add("结算方式");
         Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
-        dicMap.forEach((k, v) -> {
-            if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
-                contractResVo.setSettlementMethodName(v.getSupplierContent());
-            }
-        });
+//        dicMap.forEach((k, v) -> {
+//            if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
+//                contractResVo.setSettlementMethodName(v.getSupplierContent());
+//            }
+//        });
         List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
         List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
         List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());

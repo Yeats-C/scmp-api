@@ -59,6 +59,7 @@
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode"/>
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    <result column="comment" jdbcType="VARCHAR" property="comment"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -70,14 +71,14 @@
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
     direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
     max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-    categories_supply_channels_code,categories_supply_channels_name,remark
+    categories_supply_channels_code,categories_supply_channels_name,remark,comment
   </sql>
   <select id="selectBySelectApplyContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.QueryApplyContractReqVo" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from apply_contract
     WHERE
-    del_flag = 0
+    del_flag = 0 and apply_status = 5
     <if test="createStartTime != null ">
       AND create_time &gt;=#{createStartTime,jdbcType=TIMESTAMP}
     </if>
@@ -398,7 +399,7 @@
       a.auditor_time as approvalTime,
       a.form_no as formNo
     from apply_contract a
-    where 1=1
+    where 1=1 and apply_status != 5
     <if test="createTimeStart != null and createTimeStart != '' ">
       and a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
     </if>

@@ -203,6 +203,8 @@
     on a.code = b.code
     left join product_sku_sale_area_info c
     on a.code = c.main_code
+    left join product_sku d
+    on d.sku_code = b.sku_code
     where a.company_code = #{companyCode} and a.be_effective = 1
     <if test="code != null and code != ''">
       and a.code  like concat('%',#{code},'%')
@@ -230,6 +232,15 @@
     </if>
     <if test="forbiddenStore != null and forbiddenStore != ''">
       and c.name like concat('%',#{forbiddenStore},'%') and c.status = 0 and c.type = 2
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+      and d.procurement_section_code=#{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != ''">
+      and d.procurement_section_name=#{purchaseGroupName,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and d.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
     </if>
     group by a.id order by a.create_time desc
   </select>

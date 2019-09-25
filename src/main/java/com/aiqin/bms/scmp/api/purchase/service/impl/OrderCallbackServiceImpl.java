@@ -285,7 +285,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         SupplyCompany supplyCompany;
         List<OrderInfoItemProductBatch> supplyDetailList = Lists.newArrayList();
         OrderInfoItemProductBatch orderInfoItemProductBatch;
-        Map<String, OrderInfoItem> orderInfoItemMap = detailList.stream().collect(Collectors.toMap(OrderInfoItem::getSkuCode, Function.identity()));
+        Map<String, OrderInfoItem> orderInfoItemMap = detailList.stream().collect(Collectors.toMap(orderInfoItems->{return orderInfoItems.getSkuCode()+orderInfoItems.getGivePromotion();}, Function.identity()));
         OrderInfoItem infoItem;
         for (OutboundSupplyDetailRequest supplyDetailRequest : request.getSupplyDetail()) {
             orderInfoItemProductBatch = new OrderInfoItemProductBatch();
@@ -293,7 +293,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             if (supplyCompany == null) {
                 throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", supplyDetailRequest.getSupplyCode()));
             }
-            infoItem = orderInfoItemMap.get(supplyDetailRequest.getSkuCode());
+            infoItem = orderInfoItemMap.get(supplyDetailRequest.getSkuCode()+supplyDetailRequest.getGiftType());
             if (infoItem == null) {
                 throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
             }
