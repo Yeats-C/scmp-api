@@ -38,10 +38,10 @@
                 and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bsar.inbound_time between #{beginInboundTime}
+                and bsar.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bsar.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
         </where>
     </sql>
@@ -49,10 +49,10 @@
         <where>
             1=1
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bgbs.inbound_time between #{beginInboundTime}
+                and bgbs.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bgbs.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bgbs.supplier_code=#{supplierCode}
@@ -141,10 +141,10 @@
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bgbs.inbound_time between #{beginInboundTime}
+                and bgbs.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bgbs.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="warehouseCode!=null and warehouseCode!=''">
                 and bgbs.warehouse_code=#{warehouseCode}
@@ -191,10 +191,10 @@
                 and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
             <if test="beginOutStockTime!=null and beginOutStockTime!=''">
-                and bsr.out_stock_time between #{beginOutStockTime}
+                and bsr.out_stock_time <![CDATA[>=]]> #{beginOutStockTime}
             </if>
             <if test="finishOutStockTime!=null and finishOutStockTime!=''">
-                and #{finishOutStockTime}
+                and bsr.out_stock_time <![CDATA[<=]]> #{finishOutStockTime}
             </if>
         </where>
     </sql>
@@ -226,10 +226,10 @@
                 and bnpbmr.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bnpbmr.inbound_time between #{beginInboundTime}
+                and bnpbmr.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bnpbmr.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="batchCode!=null and batchCode!=''">
                 and bnpbmr.stock_batch_code=#{batchCode}
@@ -273,10 +273,10 @@
                 and bsrr.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsrr.create_time between #{beginCreateTime}
+                and bsrr.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bsrr.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -308,10 +308,10 @@
                 and bnm.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bnm.create_time between #{beginCreateTime}
+                and bnm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bnm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnm.product_sort_code=#{productSortCode}
@@ -349,10 +349,10 @@
                 and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsr.create_time between #{beginCreateTime}
+                and bsr.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bsr.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -372,10 +372,10 @@
                 and bli.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bli.create_time between #{beginCreateTime}
+                and bli.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bli.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -395,10 +395,10 @@
                 and bhi.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bhi.create_time between #{beginCreateTime}
+                and bhi.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bhi.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -555,10 +555,10 @@
                 and bmgm.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmgm.create_time between #{beginCreateTime}
+                and bmgm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmgm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -590,10 +590,10 @@
                 and bmsa.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmsa.create_time between #{beginCreateTime}
+                and bmsa.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmsa.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
                 and bmsa.category_code like concat(#{categoryCode}, '%')
@@ -669,10 +669,10 @@
                 and bmcgpm.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmcgpm.create_time between #{beginCreateTime}
+                and bmcgpm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmcgpm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
                 and bmcgpm.category_code like concat(#{categoryCode}, '%')
@@ -726,10 +726,10 @@
             and bsar.category_name like concat('%', #{categoryName}, '%')
         </if>
         <if test="beginInboundTime!=null and beginInboundTime!=''">
-            and bsar.inbound_time between #{beginInboundTime}
+            and bsar.inbound_time <![CDATA[>=]]> #{beginInboundTime}
         </if>
         <if test="finishInboundTime!=null and finishInboundTime!=''">
-            and #{finishInboundTime}
+            and bsar.inbound_time <![CDATA[<=]]> #{finishInboundTime}
         </if>
     </select>
     <select id="selectSupplierArrivalRateTableCloumnName" resultType="java.util.HashMap">
