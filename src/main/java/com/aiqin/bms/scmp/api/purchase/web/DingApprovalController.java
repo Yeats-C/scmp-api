@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
@@ -275,5 +276,28 @@ public class DingApprovalController {
     @ApiOperation("历史消息中删除附件")
     HttpResponse saveFiles(@RequestParam() String fileKey) {
         return formFileService.deleteFile(fileKey);
+    }
+
+    @GetMapping("/product/changePrice/getCodeByFormNo")
+    @ApiOperation("根据FormNo获取申请编码")
+    public HttpResponse<String> getApplyCodeByFormNo(@RequestParam String formNo) {
+        log.info("ProductSkuChangePriceController---getCodeByFormNo---入参：[{}]", formNo);
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getApplyCodeByFormNo(formNo));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/product/apply/getInfoByFormNo")
+    @ApiOperation("根据formNo获取情接口请求 审批类型 1:商品 2.配置 3.区域")
+    public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestParam String formNo,
+                                                             @RequestParam Integer approvalType){
+        log.info("ProductApplyController---getInfoByFormNo---类型:[{}],编码:[{}] ", approvalType,formNo);
+        return HttpResponse.successGenerics(productApplyService.getRequsetParam(formNo,approvalType));
     }
 }
