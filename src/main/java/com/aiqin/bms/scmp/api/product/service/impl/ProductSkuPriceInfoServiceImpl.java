@@ -68,7 +68,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         if(org.apache.commons.collections.CollectionUtils.isEmpty(ids)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(PageUtil.myPage(ids, reqVO));
+        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(ids);
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),count,list);
     }
 
