@@ -44,5 +44,14 @@ public class QueryProductSaleAreaMainReqVO extends PageReq {
 
     @ApiModelProperty("公司编码")
     private String companyCode;
+
+    @ApiModelProperty("公司编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("公司名称")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("人员编码")
+    private String personId;
 }
 
