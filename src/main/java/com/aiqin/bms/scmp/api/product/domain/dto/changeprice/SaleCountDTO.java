@@ -5,5 +5,5 @@ import lombok.Data;
 @Data
 public class SaleCountDTO {
     private String skuCode;
-    private Integer saleNum;
+    private Integer saleNum = 0;
 }
