@@ -1017,8 +1017,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 de++;
             }
         }
-        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
-        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long deAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long inAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
         respVO.setDecreaseGrossProfit(deAmount);
