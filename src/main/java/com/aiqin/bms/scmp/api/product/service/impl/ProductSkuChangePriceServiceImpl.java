@@ -1008,14 +1008,12 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
         PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
         long in = 0L;
-        for (PriceMeasurementReqVO priceMeasurementReqVO : req) {
-            if (priceMeasurementReqVO.getNewGrossProfitMargin() > priceMeasurementReqVO.getOldGrossProfitMargin()) {
-                in++;
-            }
-        }
         long de = 0L;
         for (PriceMeasurementReqVO priceMeasurementReqVO : req) {
-            if (priceMeasurementReqVO.getNewGrossProfitMargin() < priceMeasurementReqVO.getOldGrossProfitMargin()) {
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
+                in++;
+            }
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
                 de++;
             }
         }
