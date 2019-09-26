@@ -1883,6 +1883,14 @@
     on a.sku_code = c.product_sku_code
     left join product_sku_supply_unit d
     on a.sku_code = d.product_sku_code
+    LEFT JOIN product_category lv4
+    on lv4.category_id = a.product_category_code
+    LEFT JOIN product_category lv3
+    on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2
+    on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1
+    on lv1.category_id = lv2.parent_id
     where a.procurement_section_code = #{purchaseGroupCode} and a.company_code =#{companyCode}
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
