@@ -15,10 +15,12 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
+import com.aiqin.bms.scmp.api.supplier.domain.request.DownPicReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
+import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.platform.flows.client.domain.*;
 import com.aiqin.platform.flows.client.domain.vo.FileVo;
@@ -28,6 +30,7 @@ import com.aiqin.platform.flows.client.service.FormMsgService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -53,6 +56,8 @@ public class DingApprovalController {
 
     @Resource
     private ApplyService applyService;
+    @Resource
+    private FileInfoService fileInfoService;
     @Resource
     private FormDetailService formDetailService;
     @Resource
@@ -299,5 +304,17 @@ public class DingApprovalController {
                                                              @RequestParam Integer approvalType){
         log.info("ProductApplyController---getInfoByFormNo---类型:[{}],编码:[{}] ", approvalType,formNo);
         return HttpResponse.successGenerics(productApplyService.getRequsetParam(formNo,approvalType));
+    }
+
+    @PostMapping("/file/down/pic")
+    @ApiModelProperty(value = "图片下载")
+    public HttpResponse<String> downFile(@RequestBody DownPicReqVo reqVo){
+        try {
+            return HttpResponse.success(fileInfoService.down(reqVo.getFilePath()));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.FILE_DOWN_ERROR);
+        }
     }
 }
