@@ -346,6 +346,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         for (OrderInfoItem itemReqVo : orderInfo.getDetailList()) {
             stockVoRequest = new StockVoRequest();
             BeanUtils.copyProperties(itemReqVo, stockVoRequest);
+            stockVoRequest.setCompanyName(orderInfo.getCompanyName());
+            stockVoRequest.setCompanyCode(orderInfo.getCompanyCode());
             stockVoRequest.setTransportCenterCode(orderInfo.getTransportCenterCode());
             stockVoRequest.setTransportCenterName(orderInfo.getTransportCenterName());
             stockVoRequest.setWarehouseCode(orderInfo.getWarehouseCode());
