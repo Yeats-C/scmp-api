@@ -15,51 +15,51 @@ public class DashboardHomepageMonthlySalesRespVo {
 
     @ApiModelProperty("年")
     @JsonProperty("stat_year")
-    private String statYear;
+    private Long statYear;
 
     @ApiModelProperty("月")
     @JsonProperty("stat_month")
-    private String statMonth;
+    private Long statMonth;
 
     @ApiModelProperty("渠道成本")
     @JsonProperty("channel_costs")
-    private Integer channelCosts;
+    private Long channelCosts;
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_amount")
-    private Integer channelAmount;
+    private Long channelAmount;
 
     @ApiModelProperty("同比渠道销售额")
     @JsonProperty("pre_channel_amount")
-    private Integer preChannelAmount;
+    private Double preChannelAmount;
 
     @ApiModelProperty("渠道毛利")
     @JsonProperty("channel_margin")
-    private Integer channelMargin;
+    private Long channelMargin;
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
-    private Integer distributionAmount;
+    private Long distributionAmount;
 
     @ApiModelProperty("同期分销销售额")
     @JsonProperty("pre_distribution_amount")
-    private Integer preDistributionAmount;
+    private Long preDistributionAmount;
 
     @ApiModelProperty("同期预算额")
     @JsonProperty("pre_supplier_content")
-    private Integer preSupplierContent;
+    private Double preSupplierContent;
 
     @ApiModelProperty("分销毛利")
     @JsonProperty("distribution_margin")
-    private Integer distributionMargin;
+    private Long distributionMargin;
 
     @ApiModelProperty("总利润")
     @JsonProperty("margin_total")
-    private Integer marginTotal;
+    private Long marginTotal;
 
     @ApiModelProperty("当期预算额")
     @JsonProperty("supplier_content")
-    private Integer supplierContent;
+    private Double supplierContent;
 
     @ApiModelProperty("当前达成率")
     @JsonProperty("curr_achieve_rate")
