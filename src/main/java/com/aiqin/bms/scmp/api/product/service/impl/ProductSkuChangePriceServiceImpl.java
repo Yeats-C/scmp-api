@@ -1007,12 +1007,18 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req,date);
         Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
         PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
-        Stream<PriceMeasurementReqVO> stream = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin());
-        Stream<PriceMeasurementReqVO> stream1 = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin());
-        long in = stream.count();
-        long de = stream1.count();
-        long deAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() < o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
-        long inAmount = req.stream().filter(o -> o.getNewGrossProfitMargin() > o.getOldGrossProfitMargin()).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long in = 0L;
+        long de = 0L;
+        for (PriceMeasurementReqVO priceMeasurementReqVO : req) {
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
+                in++;
+            }
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
+                de++;
+            }
+        }
+        long deAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long inAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
         respVO.setDecreaseGrossProfit(deAmount);
@@ -1403,16 +1409,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             //爱亲售价
             if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
-                checkPriceItemForSale("爱亲售价",anImport.getReadyCol73());
+                checkPriceItemForSale("售价",anImport.getReadyCol73());
             }
             //萌贝树售价
             if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
-                checkPriceItemForSale("萌贝树售价",anImport.getReadyCol74());
+                checkPriceItemForSale("会员价",anImport.getReadyCol74());
             }
-            //小红马售价
-            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
-                checkPriceItemForSale("小红马售价",anImport.getReadyCol75());
-            }
+//            //小红马售价
+//            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+//                checkPriceItemForSale("小红马售价",anImport.getReadyCol75());
+//            }
             return this;
         }
 
@@ -1444,16 +1450,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             //爱亲临时售价
             if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
-                checkPriceItemForSale("爱亲临时售价",anImport.getReadyCol73());
+                checkPriceItemForSale("临时售价",anImport.getReadyCol73());
             }
             //萌贝树临时售价
             if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
-                checkPriceItemForSale("萌贝树临时售价",anImport.getReadyCol74());
+                checkPriceItemForSale("临时会员价",anImport.getReadyCol74());
             }
-            //小红马售价
-            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
-                checkPriceItemForSale("小红马临时售价",anImport.getReadyCol75());
-            }
+//            //小红马售价
+//            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+//                checkPriceItemForSale("小红马临时售价",anImport.getReadyCol75());
+//            }
             return this;
         }
 
