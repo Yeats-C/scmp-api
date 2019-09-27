@@ -15,27 +15,27 @@ public class DashboardMonthlySalesStatiAccRespVo {
 
     @ApiModelProperty("年")
     @JsonProperty("stat_year")
-    private String statYear;
+    private Long statYear;
 
     @ApiModelProperty("月")
     @JsonProperty("stat_month")
-    private String statMonth;
+    private Long statMonth;
 
     @ApiModelProperty("同比渠道累计额")
     @JsonProperty("pre_acc_sum_channel_amount")
-    private Integer preAccSumChannelAmount;
+    private Long preAccSumChannelAmount;
 
     @ApiModelProperty("累计渠道销售额")
     @JsonProperty("acc_sum_channel_amount")
-    private Integer accSumChannelAmount;
+    private Long accSumChannelAmount;
 
     @ApiModelProperty("渠道累计毛利额")
     @JsonProperty("acc_sum_channel_margin")
-    private Integer accSumChannelMargin;
+    private Long accSumChannelMargin;
 
     @ApiModelProperty("累计预算同比额")
     @JsonProperty("pre_supplier_content")
-    private Integer preSupplierContent;
+    private Double preSupplierContent;
 
     @ApiModelProperty("当前累计渠道达成率")
     @JsonProperty("curr_achieve_rate")

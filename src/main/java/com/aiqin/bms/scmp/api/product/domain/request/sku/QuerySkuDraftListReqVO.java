@@ -45,6 +45,15 @@ public class QuerySkuDraftListReqVO  extends PageReq {
     @ApiModelProperty("品牌编码")
     private String productBrandCode;
 
+    @ApiModelProperty("申请类型")
+    private Byte applyType;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupName;
+
     @ApiModelProperty("申请人")
     private String applyBy;
 

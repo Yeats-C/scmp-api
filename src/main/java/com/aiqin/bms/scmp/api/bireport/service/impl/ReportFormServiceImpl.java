@@ -46,7 +46,8 @@ public class ReportFormServiceImpl implements ReportFormService {
         PageResData pageResData = new PageResData();
         List<ProductAndStockResponse> list = biStockTurnoverReportDao.stockTurnoverList(productAndStock);
         this.transportCenter(list, 1);
-        pageResData.setTotalCount(list.size());
+        Integer count = biStockTurnoverReportDao.stockTurnoverCount(productAndStock);
+        pageResData.setTotalCount(count);
         pageResData.setDataList(list);
         return HttpResponse.success(pageResData);
     }
@@ -56,7 +57,8 @@ public class ReportFormServiceImpl implements ReportFormService {
         PageResData pageResData = new PageResData();
         List<ProductAndStockResponse> list = biStockWayTurnoverReportDao.stockWayTurnoverList(productAndStock);
         this.transportCenter(list, 2);
-        pageResData.setTotalCount(list.size());
+        Integer count = biStockWayTurnoverReportDao.stockWayTurnoverCount(productAndStock);
+        pageResData.setTotalCount(count);
         pageResData.setDataList(list);
         return HttpResponse.success(pageResData);
     }

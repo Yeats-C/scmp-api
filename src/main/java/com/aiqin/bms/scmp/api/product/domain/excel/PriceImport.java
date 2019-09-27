@@ -74,15 +74,15 @@ public class PriceImport {
     @ExcelProperty(index = 9, value = "小红马分销价")
     private String readyCol72;
 
-    @ApiModelProperty(value ="爱亲售价")
-    @ExcelProperty(index = 10, value = "爱亲售价")
+    @ApiModelProperty(value ="售价")
+    @ExcelProperty(index = 10, value = "售价")
     private String readyCol73;
 
-    @ApiModelProperty(value ="萌贝树售价")
-    @ExcelProperty(index = 11, value = "萌贝树售价")
+    @ApiModelProperty(value ="会员价")
+    @ExcelProperty(index = 11, value = "会员价")
     private String readyCol74;
 
-    @ApiModelProperty(value ="小红马售价")
-    @ExcelProperty(index = 12, value = "小红马售价")
-    private String readyCol75;
+//    @ApiModelProperty(value ="小红马售价")
+//    @ExcelProperty(index = 12, value = "小红马售价")
+//    private String readyCol75;
 }

@@ -1409,16 +1409,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             //爱亲售价
             if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
-                checkPriceItemForSale("爱亲售价",anImport.getReadyCol73());
+                checkPriceItemForSale("售价",anImport.getReadyCol73());
             }
             //萌贝树售价
             if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
-                checkPriceItemForSale("萌贝树售价",anImport.getReadyCol74());
+                checkPriceItemForSale("会员价",anImport.getReadyCol74());
             }
-            //小红马售价
-            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
-                checkPriceItemForSale("小红马售价",anImport.getReadyCol75());
-            }
+//            //小红马售价
+//            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+//                checkPriceItemForSale("小红马售价",anImport.getReadyCol75());
+//            }
             return this;
         }
 
@@ -1450,16 +1450,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             }
             //爱亲临时售价
             if (StringUtils.isNotBlank(anImport.getReadyCol73())) {
-                checkPriceItemForSale("爱亲临时售价",anImport.getReadyCol73());
+                checkPriceItemForSale("临时售价",anImport.getReadyCol73());
             }
             //萌贝树临时售价
             if (StringUtils.isNotBlank(anImport.getReadyCol74())) {
-                checkPriceItemForSale("萌贝树临时售价",anImport.getReadyCol74());
+                checkPriceItemForSale("临时会员价",anImport.getReadyCol74());
             }
-            //小红马售价
-            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
-                checkPriceItemForSale("小红马临时售价",anImport.getReadyCol75());
-            }
+//            //小红马售价
+//            if (StringUtils.isNotBlank(anImport.getReadyCol75())) {
+//                checkPriceItemForSale("小红马临时售价",anImport.getReadyCol75());
+//            }
             return this;
         }
 
