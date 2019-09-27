@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
@@ -20,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryMerchantSkuL
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreProductListReqDTO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
@@ -304,4 +306,11 @@ public interface ProductSkuDao {
      * @return
      */
     List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
+
+    List<SkuWarehouseResponse> skuByWarehouse(@Param("warehouseCode")String warehouseCode,
+                                              @Param("logisticsCenterCode")String logisticsCenterCode,
+                                              @Param("request")PagesRequest request);
+
+    Integer skuByWarehouseCount(@Param("warehouseCode")String warehouseCode,
+                        @Param("logisticsCenterCode")String logisticsCenterCode);
 }
