@@ -63,12 +63,13 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
                 log.info("不做处理,让程序继续执行下去");
             }
         }
-        List<Long> ids = productSkuPriceInfoMapper.selectListByQueryVOCount(reqVO);
+        Integer count = productSkuPriceInfoMapper.selectListByQueryVOCount(reqVO);
+        List<Long> ids = productSkuPriceInfoMapper.selectListByQueryVOIds(reqVO);
         if(org.apache.commons.collections.CollectionUtils.isEmpty(ids)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(PageUtil.myPage(ids, reqVO));
-        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),ids.size(),list);
+        List<QueryProductSkuPriceInfoRespVO> list = productSkuPriceInfoMapper.selectListByQueryVO(ids);
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),count,list);
     }
 
     @Override

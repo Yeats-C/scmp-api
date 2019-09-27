@@ -44,6 +44,8 @@ public class PageUtil {
         basePage.setPageSize(pageSize);
         return basePage;
     }
+
+    @Deprecated
     public static List<Long> myPage(List<Long> longs, PageReq reqVO){
         int total = longs.size();
         if (total > reqVO.getPageSize()*reqVO.getPageNo()) {

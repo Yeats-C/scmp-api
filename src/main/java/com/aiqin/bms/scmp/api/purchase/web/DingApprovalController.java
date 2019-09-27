@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
@@ -14,27 +15,34 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
+import com.aiqin.bms.scmp.api.supplier.domain.request.DownPicReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
+import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.platform.flows.client.domain.FormBackRequest;
-import com.aiqin.platform.flows.client.domain.FormCompleteRequest;
-import com.aiqin.platform.flows.client.domain.FormRejectRequest;
-import com.aiqin.platform.flows.client.domain.FormSaveInRequest;
+import com.aiqin.platform.flows.client.domain.*;
+import com.aiqin.platform.flows.client.domain.vo.FileVo;
 import com.aiqin.platform.flows.client.service.FormDetailService;
+import com.aiqin.platform.flows.client.service.FormFileService;
+import com.aiqin.platform.flows.client.service.FormMsgService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -49,7 +57,13 @@ public class DingApprovalController {
     @Resource
     private ApplyService applyService;
     @Resource
+    private FileInfoService fileInfoService;
+    @Resource
     private FormDetailService formDetailService;
+    @Resource
+    private FormMsgService formMsgService;
+    @Resource
+    private FormFileService formFileService;
     @Resource
     private FormOperateService formOperateService;
     @Resource
@@ -200,5 +214,107 @@ public class DingApprovalController {
     @ApiOperation("获得回退的审批节点")
     HttpResponse saveToCancel(@RequestParam("process_instance_id") String processInstanceId, @RequestParam("task_id") String taskId) {
         return formOperateService.getBackHisProcessOptLog(processInstanceId, taskId);
+    }
+
+    @PostMapping("/form/operate/read")
+    @ApiOperation("已阅")
+    HttpResponse read(@RequestBody FormCompleteRequest request) {
+        return formOperateService.read(request);
+    }
+
+    @PostMapping("/form/operate/cancel")
+    @ApiOperation("撤销")
+    HttpResponse saveToCancel(@RequestBody FormCancelRequest request) {
+        return formOperateService.saveToCancel(request);
+    }
+
+    @PostMapping("/form/msg/detail")
+    @ApiOperation("查询历史消息")
+    HttpResponse findMsgProcessList(@RequestParam("person_id") String personId, @RequestParam(value = "form_no", required = false) String formNo, @RequestParam(value = "process_instance_id", required = false) String processInstanceId, @RequestParam(value = "is_history", required = false) String isHistory) {
+        log.info("查询历史消息,personId={},form_no={},process_instance_id={},isHistory={}", personId, formNo, processInstanceId, isHistory);
+        if (StringUtils.isBlank(processInstanceId)) {
+            if (StringUtils.isBlank(formNo)) {
+                log.error("查询历史消息-没有传表单编号");
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            Object data = formDetailService.getProcessInstanceIdByProcessCode(formNo).getData();
+            if (data == null) {
+                log.error("查询历史消息-查询不到流程实例-id");
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
+            processInstanceId = String.valueOf(data);
+        }
+        return formMsgService.findMsgProcessList(processInstanceId, personId, isHistory);
+    }
+
+    @PostMapping("/form/msg")
+    @ApiOperation("保存回复/追加的消息")
+    HttpResponse saveMsgProcess(@RequestBody SaveMsgRequest request) {
+        return formMsgService.saveMsgProcess(request);
+    }
+
+    @PostMapping("/form/file/activiti")
+    @ApiOperation("历史消息中上传附件")
+    HttpResponse saveFiles(@RequestParam("files") MultipartFile[] files) {
+        try {
+            List<FileVo> fileList = new ArrayList<>();
+            if (files != null && files.length > 0) {
+                FileVo fileVo;
+                for (MultipartFile file : files) {
+                    String encode = Base64.getEncoder().encodeToString(file.getBytes());
+                    String fileName = file.getOriginalFilename();
+                    String fileType = fileName.substring(file.getOriginalFilename().lastIndexOf("."));
+                    fileVo = new FileVo(fileType, fileName, encode, "msg", file.getSize());
+                    fileList.add(fileVo);
+                }
+            }
+            log.info("历史消息上传附件,fileList={} ", fileList);
+            return formFileService.saveFiles(fileList);
+        } catch (Exception e) {
+            log.info("历史消息上传附件异常,{}", e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+
+    }
+
+    @DeleteMapping("/form/file/activiti")
+    @ApiOperation("历史消息中删除附件")
+    HttpResponse saveFiles(@RequestParam() String fileKey) {
+        return formFileService.deleteFile(fileKey);
+    }
+
+    @GetMapping("/product/changePrice/getCodeByFormNo")
+    @ApiOperation("根据FormNo获取申请编码")
+    public HttpResponse<String> getApplyCodeByFormNo(@RequestParam String formNo) {
+        log.info("ProductSkuChangePriceController---getCodeByFormNo---入参：[{}]", formNo);
+        try {
+            return HttpResponse.success(productSkuChangePriceService.getApplyCodeByFormNo(formNo));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/product/apply/getInfoByFormNo")
+    @ApiOperation("根据formNo获取情接口请求 审批类型 1:商品 2.配置 3.区域")
+    public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestParam String formNo,
+                                                             @RequestParam Integer approvalType){
+        log.info("ProductApplyController---getInfoByFormNo---类型:[{}],编码:[{}] ", approvalType,formNo);
+        return HttpResponse.successGenerics(productApplyService.getRequsetParam(formNo,approvalType));
+    }
+
+    @PostMapping("/file/down/pic")
+    @ApiModelProperty(value = "图片下载")
+    public HttpResponse<String> downFile(@RequestBody DownPicReqVo reqVo){
+        try {
+            return HttpResponse.success(fileInfoService.down(reqVo.getFilePath()));
+        } catch (BizException ex) {
+            return HttpResponse.failure(ex.getMessageId());
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.FILE_DOWN_ERROR);
+        }
     }
 }

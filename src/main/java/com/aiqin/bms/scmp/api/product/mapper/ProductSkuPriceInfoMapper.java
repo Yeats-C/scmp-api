@@ -81,7 +81,8 @@ public interface ProductSkuPriceInfoMapper {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.price.QueryProductSkuPriceInfoRespVO>
      */
     List<QueryProductSkuPriceInfoRespVO> selectListByQueryVO(List<Long> ids);
-    List<Long> selectListByQueryVOCount(QueryProductSkuPriceInfoReqVO reqVO);
+    Integer selectListByQueryVOCount(QueryProductSkuPriceInfoReqVO reqVO);
+    List<Long> selectListByQueryVOIds(QueryProductSkuPriceInfoReqVO reqVO);
     /**
      * @author NullPointException
      * @date 2019/5/30
