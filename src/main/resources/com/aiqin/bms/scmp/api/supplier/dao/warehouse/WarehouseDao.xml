@@ -25,6 +25,9 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="wms_warehouse_code" jdbcType="VARCHAR" property="wmsWarehouseCode" />
+    <result column="wms_warehouse_name" jdbcType="VARCHAR" property="wmsWarehouseName" />
+    <result column="wms_warehouse_type" jdbcType="TINYINT" property="wmsWarehouseType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
@@ -427,5 +430,13 @@
       and warehouse_type_code != #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
     order by warehouse_order asc
+  </select>
+  <select id="warehouseList" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
+    select
+    warehouse_code as warehouseCode, warehouse_name as warehouseName, logistics_center_code  as logisticsCenterCode, logistics_center_name as logisticsCenterName,
+    warehouse_type_name AS warehouseTypeName, warehouse_type_code AS warehouseTypeCode, wms_warehouse_code AS wmsWarehouseCode,
+    wms_warehouse_name AS wmsWarehouseName, wms_warehouse_type AS wmsWarehouseType
+    from warehouse
+    WHERE warehouse_code NOT IN ('1078','1082')
   </select>
 </mapper>

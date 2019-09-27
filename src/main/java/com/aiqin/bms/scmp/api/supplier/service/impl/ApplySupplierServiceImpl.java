@@ -465,6 +465,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 supplier.setSupplierCode(oldSupplier.getSupplierCode());
                 handleTypeCoce = HandleTypeCoce.UPDATE;
                 handleTypeCoceName = HandleTypeCoce.UPDATE_SUPPLIER.getName();
+                supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
                 supplierMapper.updateByPrimaryKey(supplier);
             } else {
                 //供应商编码
@@ -475,6 +476,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 supplier.setUpdateTime(applySupplier.getUpdateTime());
                 handleTypeCoce = HandleTypeCoce.ADD;
                 handleTypeCoceName = HandleTypeCoce.ADD_SUPPLIER.getName();
+                supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
                 supplierMapper.insert(supplier);
                 //更新编码
                 encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
