@@ -947,7 +947,7 @@
         date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        GROUP by bnpbmr.inbound_time desc
+        order by bnpbmr.inbound_time desc
     </select>
     <select id="selectNewProductSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
         select
