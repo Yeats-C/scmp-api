@@ -691,6 +691,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     private InboundReqSave InboundReqSave(PurchaseOrder purchaseOrder, PurchaseStorageRequest purchaseStorage, List<PurchaseOrderProduct> productList){
         InboundReqSave save = new InboundReqSave();
+        save.setInboundOderCode(purchaseStorage.getInboundOderCode());
         save.setCompanyCode(purchaseStorage.getCompanyCode());
         save.setCompanyName(purchaseStorage.getCompanyName());
         save.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
@@ -777,6 +778,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 list.add(reqVo);
                 //出库加入供应商与商品关系
                 inboundBatchReqVo = new InboundBatchReqVo();
+                inboundBatchReqVo.setInboundOderCode(purchaseStorage.getInboundOderCode());
                 inboundBatchReqVo.setSkuName(product.getSkuName());
                 inboundBatchReqVo.setSkuCode(product.getSkuCode());
                 inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
