@@ -260,7 +260,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String purchaseId = IdUtil.purchaseId();
         PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
-        String purchaseProductCode = "CG" + String.valueOf(encodingRule.getNumberingValue());
+        String purchaseProductCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
         purchaseOrder.setApprovalCode(purchaseProductCode);
         purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
@@ -678,6 +678,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             LOGGER.error("此采购单没有商品");
             return HttpResponse.failure(ResultCode.PRODUCT_NO_EXISTS);
         }
+        String inboundOderCode = purchaseOrderCode + "01";
+        purchaseStorage.setInboundOderCode(inboundOderCode);
         InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
         String s = inboundService.saveInbound(reqSave);
         if(StringUtils.isBlank(s)){
@@ -733,6 +735,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     continue;
                 }
                 reqVo = new InboundProductReqVo();
+                reqVo.setInboundOderCode(purchaseStorage.getInboundOderCode());
                 reqVo.setSkuCode(product.getSkuCode());
                 reqVo.setSkuName(product.getSkuName());
                 productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
@@ -845,6 +848,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     || purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
                 return HttpResponse.success();
             }
+            String code;
+            if(purchaseStorage.getPurchaseNum()  <= 9){
+                code = "0" + purchaseStorage.getPurchaseNum();
+            }else {
+                code = purchaseStorage.getPurchaseNum().toString();
+            }
+            String inboundOderCode = purchaseStorage.getPurchaseOrderCode() + code;
+            purchaseStorage.setInboundOderCode(inboundOderCode);
             InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
             String s = inboundService.saveInbound(save);
             if(StringUtils.isBlank(s)){

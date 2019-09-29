@@ -59,4 +59,8 @@ public class PurchaseStorageRequest {
     @ApiModelProperty("行号")
     @JsonProperty("lineNum")
     private Long lineNum;
+
+    @ApiModelProperty(value="入库单code")
+    @JsonProperty("inbound_oder_code")
+    private String inboundOderCode;
 }

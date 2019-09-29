@@ -271,26 +271,26 @@ public class InboundServiceImpl implements InboundService {
             Inbound inbound = new Inbound();
             BeanCopyUtils.copy(reqVo, inbound);
             // 获取编码 尺度
-            EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-            inbound.setInboundOderCode(rule.getNumberingValue().toString());
+            //EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+            //inbound.setInboundOderCode(rule.getNumberingValue().toString());
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
             log.info("插入入库单主表返回结果:{}", insert);
 
             //  转化入库单sku实体
             List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
-            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
             //插入入库单商品表
             int insertProducts=inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
             List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
             if(CollectionUtils.isNotEmpty(batchList)){
-                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
                 Integer count = inboundBatchDao.insertList(batchList);
                 log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
             }
             //更新编码表
-            encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
+            //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy(), reqVo.getRemark());
