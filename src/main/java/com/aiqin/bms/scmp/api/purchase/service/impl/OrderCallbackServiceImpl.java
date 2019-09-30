@@ -526,11 +526,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     returnOrderInfoItem.setWarehouseCode(returnDetailRequest.getWarehouseCode());
                     returnOrderInfoItem.setWarehouseName(returnDetailRequest.getWarehouseName());
                     supplyCompany = supplyCompanyMap.get(returnDetailRequest.getSupplyCode());
-                    if (supplyCompany == null) {
-                        throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", returnDetailRequest.getSupplyCode()));
+                    if (supplyCompany != null) {
+                        returnOrderInfoItem.setSupplyCode(returnDetailRequest.getSupplyCode());
+                        returnOrderInfoItem.setSupplyName(supplyCompany.getSupplyName());
                     }
-                    returnOrderInfoItem.setSupplyCode(returnDetailRequest.getSupplyCode());
-                    returnOrderInfoItem.setSupplyName(supplyCompany.getSupplyName());
                     detailList.add(returnOrderInfoItem);
                 }
                 //实际金额 数量
@@ -637,14 +636,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             for (ReturnOrderInfoItem returnOrderInfoItem : detailMap.get(reqVo.getReturnOrderCode())) {
                 product = new InboundProductReqVo();
                 inboundBatchReqVo = new InboundBatchReqVo();
-                inboundBatchReqVo.setSkuName(returnOrderInfoItem.getSkuName());
-                inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
-                inboundBatchReqVo.setSupplierCode(returnOrderInfoItem.getSupplyCode());
-                inboundBatchReqVo.setSupplierName(returnOrderInfoItem.getSupplyName());
-                inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
-                inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
-                inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
-
+                if(StringUtils.isNotBlank(returnOrderInfoItem.getSupplyCode())){
+                    inboundBatchReqVo.setSkuName(returnOrderInfoItem.getSkuName());
+                    inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
+                    inboundBatchReqVo.setSupplierCode(returnOrderInfoItem.getSupplyCode());
+                    inboundBatchReqVo.setSupplierName(returnOrderInfoItem.getSupplyName());
+                    inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
+                    inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
+                    inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
+                    batchList.add(inboundBatchReqVo);
+                    product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
+                    product.setSupplyName(returnOrderInfoItem.getSupplyName());
+                }
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());
@@ -669,12 +672,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 product.setCreateTime(reqVo.getCreateDate());
                 product.setInboundBaseContent("1");
                 product.setInboundBaseUnit("1");
-                product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
-                product.setSupplyName(returnOrderInfoItem.getSupplyName());
+
                 //税率
                 product.setTax(returnOrderInfoItem.getTax());
                 products.add(product);
-                batchList.add(inboundBatchReqVo);
+
                 inbound.setList(products);
                 inbound.setInboundBatchReqVos(batchList);
             }
