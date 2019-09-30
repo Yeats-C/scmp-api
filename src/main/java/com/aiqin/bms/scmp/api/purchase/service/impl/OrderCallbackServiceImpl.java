@@ -51,6 +51,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -280,40 +281,43 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             throw new GroundRuntimeException(String.format("未查询到渠道信息,name:%s", request.getOrderOriginal()));
         }
         //供应商与商品记录存入批次表中
-        List<String> supplyIds = request.getSupplyDetail().stream().map(OutboundSupplyDetailRequest::getSupplyCode).collect(Collectors.toList());
-        Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
         SupplyCompany supplyCompany;
-        List<OrderInfoItemProductBatch> supplyDetailList = Lists.newArrayList();
-        OrderInfoItemProductBatch orderInfoItemProductBatch;
-        Map<String, OrderInfoItem> orderInfoItemMap = detailList.stream().collect(Collectors.toMap(orderInfoItems->{return orderInfoItems.getSkuCode()+orderInfoItems.getGivePromotion();}, Function.identity()));
-        OrderInfoItem infoItem;
-        for (OutboundSupplyDetailRequest supplyDetailRequest : request.getSupplyDetail()) {
-            orderInfoItemProductBatch = new OrderInfoItemProductBatch();
-            supplyCompany = supplyCompanyMap.get(supplyDetailRequest.getSupplyCode());
-            if (supplyCompany == null) {
-                throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", supplyDetailRequest.getSupplyCode()));
+        if(CollectionUtils.isNotEmpty(request.getSupplyDetail())){
+            List<String> supplyIds = request.getSupplyDetail().stream().map(OutboundSupplyDetailRequest::getSupplyCode).collect(Collectors.toList());
+            Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
+            List<OrderInfoItemProductBatch> supplyDetailList = Lists.newArrayList();
+            OrderInfoItemProductBatch orderInfoItemProductBatch;
+            Map<String, OrderInfoItem> orderInfoItemMap = detailList.stream().collect(Collectors.toMap(orderInfoItems->{return orderInfoItems.getSkuCode()+orderInfoItems.getGivePromotion();}, Function.identity()));
+            OrderInfoItem infoItem;
+            for (OutboundSupplyDetailRequest supplyDetailRequest : request.getSupplyDetail()) {
+                orderInfoItemProductBatch = new OrderInfoItemProductBatch();
+                supplyCompany = supplyCompanyMap.get(supplyDetailRequest.getSupplyCode());
+                if (supplyCompany == null) {
+                    throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", supplyDetailRequest.getSupplyCode()));
+                }
+                infoItem = orderInfoItemMap.get(supplyDetailRequest.getSkuCode()+supplyDetailRequest.getGiftType());
+                if (infoItem == null) {
+                    throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
+                }
+                orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
+                orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
+                orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
+                orderInfoItemProductBatch.setSkuCode(supplyDetailRequest.getSkuCode());
+                orderInfoItemProductBatch.setSkuName(infoItem.getSkuName());
+                supplyDetailList.add(orderInfoItemProductBatch);
             }
-            infoItem = orderInfoItemMap.get(supplyDetailRequest.getSkuCode()+supplyDetailRequest.getGiftType());
-            if (infoItem == null) {
-                throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
-            }
-            orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
-            orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
-            orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
-            orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
-            orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
-            orderInfoItemProductBatch.setSkuCode(supplyDetailRequest.getSkuCode());
-            orderInfoItemProductBatch.setSkuName(infoItem.getSkuName());
-            supplyDetailList.add(orderInfoItemProductBatch);
+            orderInfo.setDetailBatchList(supplyDetailList);
+            Integer supplyDetailCount = orderInfoItemProductBatchMapper.insertList(supplyDetailList);
+            LOGGER.info("添加订单供应商详情:{}", supplyDetailCount);
         }
+
         orderInfo.setDetailList(detailList);
-        orderInfo.setDetailBatchList(supplyDetailList);
         Integer count = orderInfoMapper.insertSelective(orderInfo);
         LOGGER.info("添加订单:{}", count);
         Integer detailCount = orderInfoItemMapper.insertList(detailList);
         LOGGER.info("添加订单详情:{}", detailCount);
-        Integer supplyDetailCount = orderInfoItemProductBatchMapper.insertList(supplyDetailList);
-        LOGGER.info("添加订单供应商详情:{}", supplyDetailCount);
         //生成出库单
         OutboundReqVo convert = new OrderInfoToOutboundConverter(skuService, supplyComService).convert(orderInfo);
         // 出库单号
@@ -389,10 +393,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         int j = outboundProductDao.insertBatch(outboundProducts);
         LOGGER.info("出库商品保存结果:{}", j);
         List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
-        batchList.stream().forEach(outBoundBatch -> outBoundBatch.setOutboundOderCode(outboundOderCode));
-        //添加供应商对应的商品信息
-        Integer count = outboundBatchDao.insertList(batchList);
-        LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
+        if(CollectionUtils.isNotEmpty(batchList)){
+            batchList.stream().forEach(outBoundBatch -> outBoundBatch.setOutboundOderCode(outboundOderCode));
+            //添加供应商对应的商品信息
+            Integer count = outboundBatchDao.insertList(batchList);
+            LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
+        }
         //批次商品暂时没有
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
@@ -746,9 +752,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         LOGGER.info("插入入库单商品表返回结果:{}", insertProducts);
         //添加供应商对应的商品信息
         List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
-        batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
-        Integer count = inboundBatchDao.insertList(batchList);
-        LOGGER.info("插入入库单供应商对应的商品信息返回结果:{}", count);
+        if(CollectionUtils.isNotEmpty(batchList)){
+            batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+            Integer count = inboundBatchDao.insertList(batchList);
+            LOGGER.info("插入入库单供应商对应的商品信息返回结果:{}", count);
+        }
         //更新编码表
         encodingRuleDao.updateNumberValue(rule.getNumberingValue(), rule.getId());
         // 保存日志
