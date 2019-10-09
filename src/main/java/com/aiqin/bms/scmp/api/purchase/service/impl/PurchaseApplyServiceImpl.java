@@ -579,8 +579,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         if(StringUtils.isBlank((record[6]))){
                             response.setProductPurchaseAmount(0);
                         }else {
-                            Integer value = Integer.valueOf(record[6]);
-                            response.setProductPurchaseAmount(value * 100);
+                            Double value = Double.valueOf(record[6])* 100;
+                            response.setProductPurchaseAmount(value.intValue());
                         }
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品；", i);
@@ -607,8 +607,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setTransportCenterName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        if(StringUtils.isNotBlank(record[6] )){
-            response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[6])){
+            Double num = Double.valueOf(record[6]) * 100;
+            response.setProductPurchaseAmount(num.intValue());
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
