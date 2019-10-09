@@ -656,7 +656,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     product.setSupplyCode(returnOrderInfoItem.getSupplyCode());
                     product.setSupplyName(returnOrderInfoItem.getSupplyName());
                 }
-
                 BeanUtils.copyProperties(returnOrderInfoItem, product);
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());

@@ -2585,6 +2585,5 @@
         and transport_center_code = #{transportCenterCode}
         and warehouse_code = #{warehouseCode}
         and warehouse_type = #{warehouseTypeCode}
-        and purchase_group_code = #{purchaseGroupCode}
     </update>
 </mapper>
