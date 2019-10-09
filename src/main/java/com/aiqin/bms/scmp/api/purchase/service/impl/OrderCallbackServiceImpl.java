@@ -573,7 +573,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.success();
         } catch (Exception e) {
             LOGGER.error("订单回调异常:{}", e);
-            throw new GroundRuntimeException(e.getMessage());
+            throw new GroundRuntimeException("订单回调异常");
         }
     }
 
@@ -855,7 +855,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
-            throw new GroundRuntimeException(e.getMessage());
+            throw new GroundRuntimeException("订单回调异常");
         }
     }
 
@@ -1293,7 +1293,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("报损报溢订单回调异常:{}", e);
-            throw new GroundRuntimeException(e.getMessage());
+            throw new GroundRuntimeException("报损报溢订单回调异常");
         }
     }
 
