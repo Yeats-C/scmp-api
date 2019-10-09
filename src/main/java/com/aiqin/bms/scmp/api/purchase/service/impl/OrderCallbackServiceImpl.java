@@ -57,6 +57,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -571,7 +572,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
 
             return HttpResponse.success();
-        } catch (Exception e) {
+        }catch (DataAccessException e){
+            LOGGER.error("订单回调异常:{}", e);
+            if(e.getCause().toString().contains("return_order_info_return_order_code_uindex")){
+                throw new GroundRuntimeException("单据已存在");
+            }
+            throw new GroundRuntimeException("订单回调异常");
+        }catch (Exception e) {
             LOGGER.error("订单回调异常:{}", e);
             throw new GroundRuntimeException("订单回调异常");
         }
