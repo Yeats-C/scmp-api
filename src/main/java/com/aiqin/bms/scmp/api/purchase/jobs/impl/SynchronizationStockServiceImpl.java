@@ -118,26 +118,21 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                             stock = stockDao.stockInfo(sku.getSkuCode(), sku.getWarehouseCode(), sku.getTransportCenterCode(), sku.getWarehouseTypeCode());
                             if(stock == null){
                                 stock1 = new Stock();
+                                Double num = 0D;
+                                Double amount = 0D;
                                 if(warehouse.getWmsWarehouseType() == 1) {
-                                    Double num = Double.valueOf(normalNum);
-                                    Double amount = Double.valueOf(TaxNormalAmount) * 100;
-                                    stock1.setInventoryNum(num.longValue());
-                                    stock1.setAvailableNum(num.longValue());
-                                    if (num == 0 || amount == 0) {
-                                        stock1.setTaxCost(0L);
-                                    } else {
-                                        stock1.setTaxCost(Math.round(amount/ num));
-                                    }
+                                    num = Double.valueOf(normalNum);
+                                    amount = Double.valueOf(TaxNormalAmount) * 100;
                                 }else if(warehouse.getWmsWarehouseType() == 2){
-                                    Double num = Double.valueOf(returnNum);
-                                    Double amount = Double.valueOf(TaxReturnAmount) * 100;
-                                    stock1.setInventoryNum(num.longValue());
-                                    stock1.setAvailableNum(num.longValue());
-                                    if (num == 0 || amount == 0) {
-                                        stock1.setTaxCost(0L);
-                                    } else {
-                                        stock1.setTaxCost(Math.round(amount / num));
-                                    }
+                                    num = Double.valueOf(returnNum);
+                                    amount = Double.valueOf(TaxReturnAmount) * 100;
+                                }
+                                stock1.setInventoryNum(num.longValue());
+                                stock1.setAvailableNum(num.longValue());
+                                if (num == 0 || amount == 0) {
+                                    stock1.setTaxCost(0L);
+                                } else {
+                                    stock1.setTaxCost(Math.round(amount/ num));
                                 }
                                 stock1.setSkuName(sku.getSkuName());
                                 stock1.setSkuCode(sku.getSkuCode());
