@@ -478,7 +478,8 @@
              a.create_time createTime,
              a.province_name provinceName,
              a.city_name cityName,
-             a.district_name districtName
+             a.district_name districtName,
+             a.apply_type applyType
       from apply_supply_company a
       where 1=1 and a.company_code = #{companyCode} and a.apply_status = 5
     <if test="supplyCode != null and supplyCode != '' ">
@@ -498,6 +499,9 @@
     </if>
     <if test="cityId!=null and cityId!=''">
       and a.city_id =#{cityId,jdbcType=VARCHAR}
+    </if>
+    <if test="applyType != null">
+      and a.apply_type =#{applyType}
     </if>
     <if test="districtId!=null and districtId!=''">
       and a.district_id =#{districtId,jdbcType=VARCHAR}
