@@ -61,6 +61,7 @@
   <select id="oemBrandeCategory" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select
      product_brand_code as lv1, product_brand_name as lv1CategoryName,
+     product_brand_code as productBrandCode, product_brand_name as productBrandName,
      sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
      sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
      sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
@@ -75,6 +76,7 @@
   <select id="oemBrandCategory2" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select
      lv2, lv2_category_name as lv2CategoryName,
+     product_brand_code as productBrandCode, product_brand_name as productBrandName,
      ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
      ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
      ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
