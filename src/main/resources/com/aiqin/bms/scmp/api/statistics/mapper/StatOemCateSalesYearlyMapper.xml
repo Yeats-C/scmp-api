@@ -71,7 +71,7 @@
   </select>
   <select id="oemSaleCategory2" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select
-     lv2, lv2_category_name as lv2CategoryName,
+     lv1, lv1_category_name as lv1CategoryName, lv2, lv2_category_name as lv2CategoryName,
      ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
      ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
      ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
