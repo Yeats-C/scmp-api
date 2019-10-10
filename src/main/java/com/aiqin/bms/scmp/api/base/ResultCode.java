@@ -288,4 +288,5 @@ public interface ResultCode {
 
     MessageId AT_LEAST_ONE_DATA = MessageId.create(Project.SCMP_API,10003,"至少需要一条仓库配置信息或供应商信息");
     MessageId PURCHASE_GROUP_REPEAT = MessageId.create(Project.SCMP_API,10004,"提交的sku不属于同一个采购组");
+    MessageId NOT_SAME_APPLY = MessageId.create(Project.SCMP_API,10004,"提交的申请必须是同一种");
 }
