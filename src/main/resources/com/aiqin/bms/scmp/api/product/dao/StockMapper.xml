@@ -1298,7 +1298,7 @@
         stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
         warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
         new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
-        tax_price,tax_rate,tax_cost,create_time,create_by,update_time,update_by
+        tax_price,tax_rate,tax_cost,create_time,create_by,update_time,update_by, stockup_num
         )
         values
         <foreach collection="list" item="item" index="index" separator=",">
@@ -1332,7 +1332,8 @@
             NOW(),
             #{item.createBy},
             NOW(),
-            #{item.updateBy}
+            #{item.updateBy},
+            #{item.stockupNum}
             )
         </foreach>
     </insert>
@@ -2567,4 +2568,22 @@
             </if>
         </where>
     </select>
+    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+      select
+      stock_code as stockCode, available_num as availableNum, tax_cost AS taxCost
+      from stock
+      where company_code = '09'
+      and sku_code = #{skuCode}
+      and transport_center_code = #{transportCenterCode}
+      and warehouse_code = #{warehouseCode}
+      and warehouse_type = #{warehouseTypeCode}
+    </select>
+    <update id="update">
+        UPDATE stock set available_num = #{availableNum},tax_cost = #{taxCost},update_time = now()
+        WHERE company_code = '09'
+        and sku_code = #{skuCode}
+        and transport_center_code = #{transportCenterCode}
+        and warehouse_code = #{warehouseCode}
+        and warehouse_type = #{warehouseTypeCode}
+    </update>
 </mapper>

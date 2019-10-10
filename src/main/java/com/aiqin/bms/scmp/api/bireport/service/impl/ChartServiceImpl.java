@@ -28,9 +28,9 @@ public class ChartServiceImpl implements ChartService{
     public List<MonthlySalesRespVo> selectMonthlySales(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
-            if(createTime != null){
+           /* if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
-            }
+            }*/
             List<MonthlySalesRespVo> monthlySalesRespVos = chartDao.selectMonthlySales(chartReqVo);
             return monthlySalesRespVos;
         } catch (Exception ex) {
@@ -49,9 +49,9 @@ public class ChartServiceImpl implements ChartService{
     public List<MonthlyGrossMarginRespVo> selectMonthlyGrossMargin(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
-            if(createTime != null){
+            /*if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
-            }
+            }*/
             List<MonthlyGrossMarginRespVo> monthlySalesRespVos = chartDao.selectMonthlyGrossMargin(chartReqVo);
             return monthlySalesRespVos;
         } catch (Exception ex) {
@@ -70,9 +70,9 @@ public class ChartServiceImpl implements ChartService{
     public PageImportResData<MonthSalesAchievementRespVo> selectMonthSalesAchievement(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
-            if(createTime != null){
+            /*if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
-            }
+            }*/
             List<MonthSalesAchievementRespVo> monthSalesAchievementRespVos = chartDao.selectMonthSalesAchievement(chartReqVo);
             MonthSalesAchievementRespVo monthSalesAchievementSum = chartDao.sumMonthSalesAchievement(chartReqVo);
             return new PageImportResData<>(monthSalesAchievementSum,monthSalesAchievementRespVos);

@@ -34,6 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -140,7 +141,15 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         if(purchaseOrder != null){
             Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
             Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
-            jsonObject.addProperty("purchaseAmount", productAmount + giftAmount);
+            Integer num = productAmount + giftAmount;
+            Double amount;
+            if(num == 0){
+                amount = 0D;
+            }else {
+                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(100));
+                amount = big.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+            }
+            jsonObject.addProperty("purchaseAmount", amount);
         }
         workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);

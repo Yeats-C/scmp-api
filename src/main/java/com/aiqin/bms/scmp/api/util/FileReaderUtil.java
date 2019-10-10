@@ -107,7 +107,7 @@ public class FileReaderUtil {
                             Date date = HSSFDateUtil.getJavaDate(cell.getNumericCellValue());
                             value = format.format(date);
                         } else {
-                            value = decimalFormat.format(cell.getNumericCellValue());
+                            value = cell.toString();
                         }
                         break;
                     case HSSFCell.CELL_TYPE_FORMULA:

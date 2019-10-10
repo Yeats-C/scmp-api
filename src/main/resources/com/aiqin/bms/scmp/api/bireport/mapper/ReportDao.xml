@@ -498,8 +498,11 @@
     <sql id="select_monthly_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
-                and bms.year_month = #{month}
+           <if test="productSortCode!=null and productSortCode!=''">
+                and bms.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bms.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bms.price_channel_code=#{priceChannelCode}
@@ -606,8 +609,14 @@
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
+<!--            <if test="month!=null and month!=''">
                 and bmcbs.year_month = #{month}
+            </if>-->
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bmcbs.price_channel_code=#{priceChannelCode}
@@ -1016,7 +1025,7 @@
         date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        GROUP by bnpbmr.inbound_time desc
+        order by bnpbmr.inbound_time desc
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="selectNewProductSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
@@ -1517,16 +1526,47 @@
         bms.distribution_budget as distributionBudget,
         bms.distribution_achievement as distributionAchievement,
         date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime
-        from bi_monthly_sales bms
+        from (select * from bi_monthly_sales bms,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_monthly_sales bms where 1=1
+        <if test="month!=null and month!=''">
+            and bms.year_month = #{month}
+        </if>) bms) daytime where DATEDIFF(now(),bms.create_time)=daytime.days) bms
         <include refid="select_monthly_sales"/>
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                 ,bms.product_sort_code
+             </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bms.price_channel_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bms.store_type_code
+            </if>
+        </if>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="java.lang.Integer">
         select count(1)
-        from bi_monthly_sales bms
+        from (select * from bi_monthly_sales bms,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_monthly_sales bms where 1=1
+        <if test="month!=null and month!=''">
+            and bms.year_month = #{month}
+        </if>) bms) daytime where DATEDIFF(now(),bms.create_time)=daytime.days) bms
         <include refid="select_monthly_sales"/>
-
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                ,bms.product_sort_code
+            </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bms.price_channel_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bms.store_type_code
+            </if>
+        </if>
     </select>
     <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
@@ -1640,16 +1680,53 @@
         bmcbs.total_distribution_margin_rate_sequential as totalDistributionMarginRateSequential,
         bmcbs.total_distribution_gross_margin_compared_same as totalDistributionGrossMarginComparedSame,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
-        from bi_month_cumulative_brand_sales bmcbs
+        from (select * from bi_month_cumulative_brand_sales bmcbs,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
+        <if test="month!=null and month!=''">
+            and bmcbs.year_month = #{month}
+        </if>) bmcbs) daytime where DATEDIFF(now(),bmcbs.create_time)=daytime.days) bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (categoryCode==null and categoryCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                bmcbs.product_sort_code
+            </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bmcbs.price_channel_code
+            </if>
+            <if test="categoryCode==null and categoryCode==''">
+                ,bmcbs.category_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bmcbs.store_type_code
+            </if>
+        </if>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="java.lang.Integer">
         select count(1)
-        from bi_month_cumulative_brand_sales bmcbs
+        from (select * from bi_month_cumulative_brand_sales bmcbs,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
+        <if test="month!=null and month!=''">
+            and bmcbs.year_month = #{month}
+        </if>) bmcbs) daytime where DATEDIFF(now(),bmcbs.create_time)=daytime.days) bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (categoryCode==null and categoryCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                bmcbs.product_sort_code
+            </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bmcbs.price_channel_code
+            </if>
+            <if test="categoryCode==null and categoryCode==''">
+                ,bmcbs.category_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bmcbs.store_type_code
+            </if>
+        </if>
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">

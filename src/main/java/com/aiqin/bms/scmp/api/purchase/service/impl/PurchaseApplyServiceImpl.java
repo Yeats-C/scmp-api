@@ -497,7 +497,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     response = new PurchaseImportResponse();
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
-                            StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
+                            StringUtils.isBlank(record[3])) {
                         HandleResponse(response, record,"导入的数据不全；", i);
                         errorCount++;
                         errorList.add(response);
@@ -545,42 +545,50 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             Long priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
-                         if(record[4] != null){
-                             if(!record[4].contains("零")){
-                                 HandleResponse(response, record,"采购数量格式不正确；例如: 5零3", i);
-                                 errorCount++;
-                                 errorList.add(response);
-                                 continue;
+                         if(StringUtils.isNotBlank(record[4])){
+                             Integer whole;
+                             Integer single;
+                             if(record[4].contains("零")){
+                                 String index = record[4].replace("零", "/").trim();
+                                 int index1 = index.indexOf("/");
+                                 int length = index.length();
+                                 whole = Integer.valueOf(index.substring(0, index1));
+                                 single = Integer.valueOf(index.substring(index1 + 1, length));
+                             }else {
+                                 whole = Double.valueOf(record[4]).intValue();
+                                 single = 0;
                              }
-                             String index = record[4].replace("零", "/").trim();
-                             int index1 = index.indexOf("/");
-                             int length = index.length();
-                             Integer whole = Integer.valueOf(index.substring(0, index1));
-                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
                              applyProduct.setPurchaseWhole(whole);
                              applyProduct.setPurchaseSingle(single);
+                         }else {
+                             applyProduct.setPurchaseWhole(0);
+                             applyProduct.setPurchaseSingle(0);
                          }
-                         if(record[5] != null){
-                             if(!record[5].contains("零")){
-                                 HandleResponse(response, record,"实物返数量格式不正确；例如: 5零3", i);
-                                 errorCount++;
-                                 errorList.add(response);
-                                 continue;
+                         if(StringUtils.isNotBlank(record[5])){
+                             Integer whole;
+                             Integer single;
+                             if(record[5].contains("零")){
+                                 String index = record[5].replace("零", "/").trim();
+                                 int index1 = index.indexOf("/");
+                                 int length = index.length();
+                                 whole = Integer.valueOf(index.substring(0, index1));
+                                 single = Integer.valueOf(index.substring(index1 + 1, length));
+                             }else {
+                                 whole = Double.valueOf(record[5]).intValue();
+                                 single = 0;
                              }
-                             String index = record[5].replace("零", "/").trim();
-                             int index1 = index.indexOf("/");
-                             int length = index.length();
-                             Integer whole = Integer.valueOf(index.substring(0, index1));
-                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
                              applyProduct.setReturnWhole(whole);
                              applyProduct.setReturnSingle(single);
+                         }else {
+                             applyProduct.setReturnWhole(0);
+                             applyProduct.setReturnSingle(0);
                          }
                         BeanUtils.copyProperties(applyProduct, response);
                         if(StringUtils.isBlank((record[6]))){
                             response.setProductPurchaseAmount(0);
                         }else {
-                            Integer value = Integer.valueOf(record[6]);
-                            response.setProductPurchaseAmount(value * 100);
+                            Double value = Double.valueOf(record[6])* 100;
+                            response.setProductPurchaseAmount(value.intValue());
                         }
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品；", i);
@@ -607,8 +615,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setTransportCenterName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        if(StringUtils.isNotBlank(record[6] )){
-            response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[6])){
+            Double num = Double.valueOf(record[6]) * 100;
+            response.setProductPurchaseAmount(num.intValue());
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
