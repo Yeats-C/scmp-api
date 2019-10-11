@@ -1272,10 +1272,17 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     public DetailRequestRespVo getInfoByForm(String formNo) {
         DetailRequestRespVo respVo = new DetailRequestRespVo();
         List<ApplyProductSkuConfig> list = applyMapper.selectByFormNo(formNo);
-        if(CollectionUtils.isEmpty(list)){
+        List<ApplyProductSkuSupplyUnit> unitList = productSkuSupplyUnitDao.selectByFormNo(formNo);
+        if(CollectionUtils.isEmpty(list)&&CollectionUtils.isEmpty(unitList)){
             throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
         }
-        String applyCode = list.get(0).getApplyCode();
+        String applyCode = null;
+        if (CollectionUtils.isNotEmpty(list)) {
+            applyCode = list.get(0).getApplyCode();
+        }
+        if(applyCode == null){
+            applyCode = unitList.get(0).getApplyCode();
+        }
         respVo.setApplyCode(applyCode);
         respVo.setItemCode("2");
         return respVo;
