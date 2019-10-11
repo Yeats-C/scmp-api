@@ -48,6 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -492,6 +493,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 PurchaseApplyDetailResponse applyProduct;
                 PurchaseApplyReqVo applyReqVo;
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                DecimalFormat decimalFormat = new DecimalFormat("0");
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
@@ -517,7 +519,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         errorList.add(response);
                         continue;
                     }
-                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
+                    String skuCode = decimalFormat.format(Double.valueOf(record[0]));
+                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, skuCode, supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
                     if(applyProduct != null){
                         if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
                             String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
