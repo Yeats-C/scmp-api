@@ -48,4 +48,10 @@ public class QueryApplyReqVo extends PageReq {
 
     @ApiModelProperty(value = "申请人", hidden = true)
     private String applyBy;
+
+    @ApiModelProperty(value = "personId")
+    private String personId;
+
+    @ApiModelProperty(value = "采购组编码")
+    private String purchaseGroupCode;
 }

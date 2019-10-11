@@ -1065,6 +1065,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
+        //验证是否是同一种申请类型
+        validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
@@ -1152,6 +1154,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
         }
         return formNo;
+    }
+
+    private void validateSameApply(List<ProductSkuDraft> productSkuDrafts) {
+        Set<Byte> beSameApply = Sets.newHashSet();
+        for (ProductSkuDraft draft : productSkuDrafts) {
+            if (!beSameApply.add(draft.getApplyType())) {
+                throw new BizException(ResultCode.NOT_SAME_APPLY);
+            }
+        }
     }
 
     @Override
