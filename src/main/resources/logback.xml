@@ -21,9 +21,9 @@
     </appender>
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${APP_HOME}/logs/scmp-api.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
-            <maxHistory>168</maxHistory>
-            <totalSizeCap>10MB</totalSizeCap>
+            <fileNamePattern>${APP_HOME}/logs/scmp-api.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>3GB</totalSizeCap>
         </rollingPolicy>
         <encoder>
             <pattern>%date [%5p] - %25c - %m%n</pattern>
@@ -32,7 +32,7 @@
     <!--请求参数,写入日志文件中-->
     <appender name="CALLBACK_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${APP_HOME}/logs/abutment/callback.%d{yyyy-MM-dd_HH}.log</fileNamePattern>
+            <fileNamePattern>${APP_HOME}/logs/abutment/callback.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>%date [%5p] - %25c - %m%n</pattern>
