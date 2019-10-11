@@ -2570,6 +2570,8 @@
     </select>
     <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
       select
+      company_code as companyCode, transport_center_code as transportCenterCode, sku_code as skuCode,
+      warehouse_type as warehouseType, warehouse_code as warehouseCode,
       stock_code as stockCode, available_num as availableNum, tax_cost AS taxCost
       from stock
       where company_code = '09'
@@ -2579,11 +2581,11 @@
       and warehouse_type = #{warehouseTypeCode}
     </select>
     <update id="update">
-        UPDATE stock set available_num = #{availableNum},tax_cost = #{taxCost},update_time = now()
+        UPDATE stock set inventory_num = #{availableNum}, available_num = #{availableNum},tax_cost = #{taxCost},update_time = now()
         WHERE company_code = '09'
         and sku_code = #{skuCode}
         and transport_center_code = #{transportCenterCode}
         and warehouse_code = #{warehouseCode}
-        and warehouse_type = #{warehouseTypeCode}
+        and warehouse_type = #{warehouseType}
     </update>
 </mapper>

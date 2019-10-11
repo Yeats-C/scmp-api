@@ -41,7 +41,6 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
     private static final String username = "dareader1";
     private static final String password = "DA-Reader-20190110@1344";
 
-
     public HttpResponse synchronizationStock(PagesRequest request, Integer isPage) {
         Connection con = null;
         Statement statement = null;
@@ -173,7 +172,9 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                                 stockDao.update(stock);
                             }
                         }
-                        stockDao.insertBatch(stocks);
+                        if(CollectionUtils.isNotEmptyCollection(stocks)){
+                            stockDao.insertBatch(stocks);
+                        }
                         if(isPage == 0){
                             return HttpResponse.success();
                         }
