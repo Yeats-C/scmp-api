@@ -356,7 +356,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     error.add("供应商编号为:"+item.getSupplyUnitCode()+"已有在审批中的数据");
                 }
                 item.setProductSkuCode(reqVo.getSkuCode());
-                item.setProductSkuName(reqVo.getSkuCode());
+                item.setProductSkuName(reqVo.getSkuName());
                 item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
                 item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 item.setCompanyCode(authToken.getCompanyCode());
