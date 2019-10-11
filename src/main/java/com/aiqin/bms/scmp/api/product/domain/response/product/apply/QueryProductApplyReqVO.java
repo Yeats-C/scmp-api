@@ -51,4 +51,10 @@ public class QueryProductApplyReqVO extends PageReq {
 
     @ApiModelProperty("审批名称")
     private String approvalName;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("personId")
+    private String personId;
 }
