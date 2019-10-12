@@ -111,27 +111,28 @@
         ddcpsa.product_category_name as productCategoryName,
         ddcpsa.product_property_code as productPropertyCode,
         ddcpsa.product_property_name as productPropertyName,
-        ddcpsa.channel_costs as channelCosts,
-        ddcpsa.channel_sales_amount as channelSalesAmount,
+        sum(ddcpsa.channel_costs) as channelCosts,
+        sum(ddcpsa.channel_sales_amount) as channelSalesAmount,
         ddcpsa.channel_sales_yearonyear as channelSalesYearonyear,
         ddcpsa.channel_sales_link_relative as channelSalesLinkRelative,
         ddcpsa.distribution_sales_amount as distributionSalesAmount,
-        ddcpsa.channel_margin as channelMargin,
+        sum(ddcpsa.channel_margin) as channelMargin,
         ddcpsa.channel_margin_yearonyear as channelMarginYearonyear,
         ddcpsa.channel_margin_link_relative as channelMarginLinkRelative,
         ddcpsa.distribution_margin as distributionMargin
         FROM dashboard_dep_cate_proper_sales_amount ddcpsa
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and ddcpsa.stat_month=#{statMonth}
+            ddcpsa.stat_month=#{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and ddcpsa.product_sort_code=#{productSortCode}
+            ddcpsa.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and ddcpsa.price_channel_code=#{priceChannelCode}
+            ddcpsa.price_channel_code=#{priceChannelCode}
         </if>
-             group by ddcpsa.product_category_code
+        price_channel_code is not null and product_sort_code is not null and product_category_code is not null
+        group by ddcpsa.stat_month,ddcpsa.product_category_code
     </select>
     <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
         SELECT
