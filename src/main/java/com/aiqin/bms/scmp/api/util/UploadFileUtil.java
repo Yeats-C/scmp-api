@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.supplier.domain.request.DownPicReqVo;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
@@ -68,10 +69,14 @@ public class UploadFileUtil {
         return url;
     }
 
-    public String uploadFile(MultipartFile file) throws Exception {
+    public String uploadFile(MultipartFile file,Boolean isReName) throws Exception {
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
         //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
         String fileName = dir + file.getOriginalFilename();
+        if(isReName){
+            String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            fileName = dir + UUID.randomUUID() + "." + type;
+        }
         ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()));
         ossClient.shutdown();
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
@@ -93,14 +98,17 @@ public class UploadFileUtil {
         return true;
     }
 
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file,Boolean isReName) {
         String url = null;
         // 创建OSSClient实例。
         OSSClient ossClient = new OSSClient(endPoint, accessKeyId, accessKeySecret);
         // 上传文件流。
         InputStream inputStream = null;
-        //String type = DownPicReqVo.getOriginalFilename().substring(DownPicReqVo.getOriginalFilename().lastIndexOf("."));
         String fileName = dir + file.getOriginalFilename();
+        if(isReName){
+            String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+            fileName = dir + UUID.randomUUID() + "." + type;
+        }
         try {
             inputStream = file.getInputStream();
             ossClient.putObject(bucketName,fileName, inputStream);

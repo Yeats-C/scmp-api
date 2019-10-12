@@ -39,13 +39,13 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public String fileUpload(MultipartFile file) {
+    public String fileUpload(MultipartFile file,Boolean isRename) {
         String url = null;
         try {
             if (file.getBytes().length<=0){
                 throw new GroundRuntimeException("文件不能为空");
             }
-            url = uploadFileUtil.upload(file);
+            url = uploadFileUtil.upload(file,isRename);
         } catch (IOException e) {
             log.error(Global.ERROR, e);
         }
@@ -53,7 +53,7 @@ public class FileInfoServiceImpl implements FileInfoService {
     }
 
     @Override
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file,Boolean isRename) {
         String url = null;
         try {
             if (file.getBytes().length<=0){
@@ -62,7 +62,7 @@ public class FileInfoServiceImpl implements FileInfoService {
             if(!file.getContentType().contains("image")){
                 throw new BizException(ResultCode.PLEASE_UPLOAD_AN_IMAGE);
             }
-            url = uploadFileUtil.upload(file);
+            url = uploadFileUtil.upload(file,isRename);
         } catch (IOException e) {
             log.error(Global.ERROR, e);
         }
@@ -75,7 +75,7 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
         List<String> urlList = Lists.newArrayList();
         for (MultipartFile file : files) {
-            urlList.add(upload(file));
+            urlList.add(upload(file,true));
         }
         return urlList;
     }

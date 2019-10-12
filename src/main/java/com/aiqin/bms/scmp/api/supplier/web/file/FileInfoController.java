@@ -50,14 +50,14 @@ public class FileInfoController {
     @PostMapping("/uploadFile")
     @ApiModelProperty(value = " 文件上传")
     public HttpResponse<String> fileUpload(@NotNull MultipartFile file){
-        return HttpResponse.success(fileInfoService.fileUpload(file));
+        return HttpResponse.success(fileInfoService.fileUpload(file,true));
     }
 
     @PostMapping("/upload/pic")
     @ApiModelProperty(value = "图片上传")
     public HttpResponse<String> uploadFile(@NotNull MultipartFile file){
         try {
-            return HttpResponse.success(fileInfoService.upload(file));
+            return HttpResponse.success(fileInfoService.upload(file,true));
         } catch (BizException ex) {
             return HttpResponse.failure(ex.getMessageId());
         }catch (Exception e) {

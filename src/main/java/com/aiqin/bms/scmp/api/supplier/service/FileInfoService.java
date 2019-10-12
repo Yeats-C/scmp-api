@@ -18,7 +18,7 @@ public interface FileInfoService {
      */
     HttpResponse uploadFile(String base64);
 
-    String fileUpload(MultipartFile file);
+    String fileUpload(MultipartFile file,Boolean isRename);
     /**
      * 文件上传
      * @author zth
@@ -26,7 +26,7 @@ public interface FileInfoService {
      * @param file
      * @return java.lang.String
      */
-    String upload(MultipartFile file);
+    String upload(MultipartFile file,Boolean isRename);
     /**
      * 批量上传
      * @author NullPointException
