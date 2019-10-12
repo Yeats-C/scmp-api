@@ -2360,7 +2360,7 @@
     SELECT
      ps.sku_code as skuCode, ps.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
      w.warehouse_code as warehouseCode, w.warehouse_name as warehouseName, p.procurement_section_code as purchaseGroupCode,
-     p.procurement_section_name as purchaseGroupName
+     p.procurement_section_name as purchaseGroupName, w.warehouse_type_code as warehouseTypeCode, w.warehouse_type_name as warehouseTypeName
     from
     product_sku p
     INNER JOIN
