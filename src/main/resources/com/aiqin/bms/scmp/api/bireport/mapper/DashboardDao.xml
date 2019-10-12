@@ -201,11 +201,11 @@
         ddmhr.price_channel_name as priceChannelName,
         ddmhr.product_sort_code as productSortCode,
         ddmhr.product_sort_name as productSortName,
-        ddmhr.channel_costs as channelCosts,
-        ddmhr.channel_sales_amount as channelSalesAmount,
+        sum(ddmhr.channel_costs) as channelCosts,
+        sum(ddmhr.channel_sales_amount) as channelSalesAmount,
         ddmhr.channel_sales_yearonyear as channelSalesYearonyear,
         ddmhr.channel_sales_link_relative as channelSalesLinkRelative,
-        ddmhr.channel_margin as channelMargin,
+        sum(ddmhr.channel_margin) as channelMargin,
         ddmhr.channel_margin_yearonyear as channelMarginYearonyear,
         ddmhr.channel_margin_link_relative as channelMarginLinkRelative,
         ddmhr.distribution_sales_amount as distributionSalesAmount,
@@ -226,6 +226,7 @@
         <if test="priceChannelCode!=null and priceChannelCode!=''">
             and ddmhr.price_channel_code=#{priceChannelCode}
         </if>
+        group by ddmhr.stat_month
     </select>
     <select id="selectAnnualSales" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepartAnnualSalesStatiRespVo">
         SELECT
