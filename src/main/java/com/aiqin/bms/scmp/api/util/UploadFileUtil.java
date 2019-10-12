@@ -75,7 +75,7 @@ public class UploadFileUtil {
         String fileName = dir + file.getOriginalFilename();
         if(isReName){
             String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            fileName = dir + UUID.randomUUID() + "." + type;
+            fileName = dir + UUID.randomUUID() + type;
         }
         ossClient.putObject(bucketName, fileName, new ByteArrayInputStream(file.getBytes()));
         ossClient.shutdown();
@@ -107,7 +107,7 @@ public class UploadFileUtil {
         String fileName = dir + file.getOriginalFilename();
         if(isReName){
             String type = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
-            fileName = dir + UUID.randomUUID() + "." + type;
+            fileName = dir + UUID.randomUUID() + type;
         }
         try {
             inputStream = file.getInputStream();
