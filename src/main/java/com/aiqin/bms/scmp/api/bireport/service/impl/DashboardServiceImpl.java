@@ -66,7 +66,9 @@ public class DashboardServiceImpl implements DashboardService {
     // 当月各部门品类属性下的销售情况
     public List<DashboardDepCateProperSalesAmountRespVo> selectDashboardDepCateProperSalesAmount(DashboardDepCateProperSalesAmountReqVo dashboardDepCateProperSalesAmountReqVo) {
         String oneYearStr = DayUtil.getYearStr(0);
-        dashboardDepCateProperSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepCateProperSalesAmountReqVo.getStatMonth());
+        if(dashboardDepCateProperSalesAmountReqVo.getStatMonth() != null){
+            dashboardDepCateProperSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepCateProperSalesAmountReqVo.getStatMonth());
+        }
         List<DashboardDepCateProperSalesAmountRespVo> dashboardDepCateProperSalesAmountRespVos = dashboardDao.selectDashboardDepCateProperSalesAmount(dashboardDepCateProperSalesAmountReqVo);
         for (DashboardDepCateProperSalesAmountRespVo dashboardDepCateProperSalesAmountRespVo : dashboardDepCateProperSalesAmountRespVos) {
             String statMonth = dashboardDepCateProperSalesAmountRespVo.getStatMonth();
@@ -176,7 +178,9 @@ public class DashboardServiceImpl implements DashboardService {
     public ChannelSectorMonthSalesRespVo selectChannelSectorMonthSales(ChannelSectorMonthSalesReqVo channelSectorMonthSalesReqVo){
         ChannelSectorMonthSalesRespVo channelSectorMonthSalesRespVo = new ChannelSectorMonthSalesRespVo();
         String oneYearStr = DayUtil.getYearStr(0);
-        channelSectorMonthSalesReqVo.setStatMonth(oneYearStr+"-"+channelSectorMonthSalesReqVo.getStatMonth());
+        if(channelSectorMonthSalesReqVo.getStatMonth() != null){
+            channelSectorMonthSalesReqVo.setStatMonth(oneYearStr+"-"+channelSectorMonthSalesReqVo.getStatMonth());
+        }
         // 查询部门销售额贡献率
         // 查询部门销售额（条件筛选的）
         DashboardDepMonthlyHomocyclicRatioRespVo dashboardDepMonthlyHomocyclicRatioRespVo = dashboardDao.selectSalesContributionRate(channelSectorMonthSalesReqVo);
@@ -219,6 +223,31 @@ public class DashboardServiceImpl implements DashboardService {
         String oneMonthStr = DayUtil.getMonthStr();
         List<DashboardHomepageMonthlyHomocyclicRatioRespVo> dashboardHomepageMonthlyHomocyclicRatioRespVos = dashboardDao.selectDashboardHomepageMonthlyHomocyclicRatio(oneMonthStr);
         for (DashboardHomepageMonthlyHomocyclicRatioRespVo dashboardHomepageMonthlyHomocyclicRatioRespVo : dashboardHomepageMonthlyHomocyclicRatioRespVos) {
+
+            if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(0.00);
+            }else {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear());
+            }
+
+            if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(0.00);
+            }else {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative());
+            }
+
+            if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(0L);
+            }else {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear());
+            }
+
+            if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(0L);
+            }else {
+                dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative());
+            }
+
             String statMonth = dashboardHomepageMonthlyHomocyclicRatioRespVo.getStatMonth();
             if (statMonth.substring(5, 6).equals("0")) {
                 dashboardHomepageMonthlyHomocyclicRatioRespVo.setStatMonth(statMonth.substring(6, 7));

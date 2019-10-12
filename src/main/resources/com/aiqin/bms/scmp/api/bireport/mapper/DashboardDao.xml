@@ -131,6 +131,7 @@
         <if test="priceChannelCode!=null and priceChannelCode!=''">
             and ddcpsa.price_channel_code=#{priceChannelCode}
         </if>
+             group by ddcpsa.product_category_code
     </select>
     <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
         SELECT
@@ -299,7 +300,7 @@
     </select>
     <select id="selectOutStockRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardStockoutRateRespVo">
       SELECT
-        dsr.stockout_rate as stockoutRate
+        sum(dsr.stockout_sku_num) / sum(dsr.sku_num_total) as stockoutRate
       FROM dashboard_stockout_rate dsr
         where 1=1
         <if test="statMonth!=null and statMonth!=''">
@@ -314,7 +315,7 @@
     </select>
     <select id="selectAmountChannelRefund" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardReturnAmountRespVo">
         SELECT
-        dra.amt as amt
+        sum(dra.amt) as amt
         FROM dashboard_return_amount dra
         where 1=1
         <if test="statMonth!=null and statMonth!=''">
@@ -359,12 +360,12 @@
         dhmhr.channel_sales_yearonyear as channelSalesYearonyear,
         dhmhr.channel_sales_link_relative as channelSalesLinkRelative,
         dhmhr.channel_margin as channelMargin,
-        dhmhr.channel_margin_yearonyear as channelMarginYearonyear,
-        dhmhr.channel_margin_link_relative as channelMarginLinkRelative,
+        IFNULL(dhmhr.channel_margin_yearonyear,0) as channelMarginYearonyear,
+        IFNULL(dhmhr.channel_margin_link_relative,0) as channelMarginLinkRelative,
         dhmhr.distribution_sales_amount as distributionSalesAmount,
         dhmhr.distribution_margin as distributionMargin,
-        dhmhr.channel_costs_yearonyear as channelCostsYearonyear,
-        dhmhr.channel_costs_link_relative as channelCostsLinkRelative
+        IFNULL(dhmhr.channel_costs_yearonyear,0) as channelCostsYearonyear,
+        IFNULL(dhmhr.channel_costs_link_relative,0) as channelCostsLinkRelative
         FROM dashboard_homepage_monthly_homocyclic_ratio dhmhr
         where dhmhr.stat_month = #{oneMonthStr}
     </select>
