@@ -142,26 +142,28 @@
         ddpsa.product_sort_name as productSortName,
         ddpsa.product_property_code as productPropertyCode,
         ddpsa.product_property_name as productPropertyName,
-        ddpsa.channel_costs as channelCosts,
-        ddpsa.channel_sales_amount as channelSalesAmount,
+        sum(ddpsa.channel_costs) as channelCosts,
+        sum(ddpsa.channel_sales_amount) as channelSalesAmount,
         ddpsa.channel_sales_yearonyear as channelSalesYearonyear,
         ddpsa.channel_sales_link_relative as channelSalesLinkRelative,
         ddpsa.distribution_sales_amount as distributionSalesAmount,
-        ddpsa.channel_margin as channelMargin,
+        sum(ddpsa.channel_margin) as channelMargin,
         ddpsa.channel_margin_yearonyear as channelMarginYearonyear,
         ddpsa.channel_margin_link_relative as channelMarginLinkRelative,
         ddpsa.distribution_margin as distributionMargin
         FROM dashboard_dep_proper_sales_amount ddpsa
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and ddpsa.stat_month=#{statMonth}
+            ddpsa.stat_month=#{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and ddpsa.product_sort_code=#{productSortCode}
+            ddpsa.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and ddpsa.price_channel_code=#{priceChannelCode}
+            ddpsa.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null and product_property_code is not null
+        group by ddpsa.stat_month,ddpsa.product_property_code
     </select>
     <select id="selectDashboardDepCateSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateSalesAmountRespVo">
         SELECT
@@ -173,26 +175,28 @@
         ddcsa.product_sort_name as productSortName,
         ddcsa.product_category_code as productCategoryCode,
         ddcsa.product_category_name as productCategoryName,
-        ddcsa.channel_costs as channelCosts,
-        ddcsa.channel_sales_amount as channelSalesAmount,
+        sum(ddcsa.channel_costs) as channelCosts,
+        sum(ddcsa.channel_sales_amount) as channelSalesAmount,
         ddcsa.channel_sales_yearonyear as channelSalesYearonyear,
         ddcsa.channel_sales_link_relative as channelSalesLinkRelative,
         ddcsa.distribution_sales_amount as distributionSalesAmount,
-        ddcsa.channel_margin as channelMargin,
+        sum(ddcsa.channel_margin) as channelMargin,
         ddcsa.channel_margin_yearonyear as channelMarginYearonyear,
         ddcsa.channel_margin_link_relative as channelMarginLinkRelative,
         ddcsa.distribution_margin as distributionMargin
         FROM dashboard_dep_cate_sales_amount ddcsa
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and ddcsa.stat_month=#{statMonth}
+            ddcsa.stat_month=#{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and ddcsa.product_sort_code=#{productSortCode}
+            ddcsa.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and ddcsa.price_channel_code=#{priceChannelCode}
+            ddcsa.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null and product_category_code is not null
+        group by ddcsa.stat_month,ddcsa.product_category_code
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatioList" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
@@ -264,71 +268,76 @@
         ifNULL(sum(ddmhr.channel_sales_amount),0) as channelSalesAmount
         FROM
           dashboard_dep_monthly_homocyclic_ratio ddmhr
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and ddmhr.stat_month = #{statMonth}
+            ddmhr.stat_month = #{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and ddmhr.product_sort_code=#{productSortCode}
+            ddmhr.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and ddmhr.price_channel_code=#{priceChannelCode}
+            ddmhr.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null
     </select>
     <select id="selectSalesContributionRateAll" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
         ifNULL(sum(ddmhr.channel_sales_amount),0) as channelSalesAmount
         FROM
         dashboard_dep_monthly_homocyclic_ratio ddmhr
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and ddmhr.stat_month = #{statMonth}
+            ddmhr.stat_month = #{statMonth}
         </if>
+        price_channel_code is not null and product_sort_code is not null
     </select>
     <select id="selectNegativeMarginSkuNumber" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardNegativeMarginRespVo">
         SELECT
           dnm.negative_margin_sku_num as negativeMarginSkuNum
         FROM dashboard_negative_margin dnm
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and dnm.year_month = #{statMonth}
+            dnm.year_month = #{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and dnm.product_sort_code=#{productSortCode}
+            dnm.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and dnm.price_channel_code=#{priceChannelCode}
+            dnm.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null
     </select>
     <select id="selectOutStockRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardStockoutRateRespVo">
       SELECT
         sum(dsr.stockout_sku_num) / sum(dsr.sku_num_total) as stockoutRate
       FROM dashboard_stockout_rate dsr
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and dsr.year_month = #{statMonth}
+            dsr.year_month = #{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and dsr.product_sort_code=#{productSortCode}
+            dsr.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and dsr.price_channel_code=#{priceChannelCode}
+            dsr.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null
     </select>
     <select id="selectAmountChannelRefund" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardReturnAmountRespVo">
         SELECT
         sum(dra.amt) as amt
         FROM dashboard_return_amount dra
-        where 1=1
+        where
         <if test="statMonth!=null and statMonth!=''">
-            and dra.year_month = #{statMonth}
+            dra.year_month = #{statMonth} and
         </if>
         <if test="productSortCode!=null and productSortCode!=''">
-            and dra.product_sort_code=#{productSortCode}
+            dra.product_sort_code=#{productSortCode} and
         </if>
         <if test="priceChannelCode!=null and priceChannelCode!=''">
-            and dra.price_channel_code=#{priceChannelCode}
+            dra.price_channel_code=#{priceChannelCode}
         </if>
+        price_channel_code is not null and product_sort_code is not null
     </select>
     <select id="selectDashboardHomepageMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.dashboard.DashboardHomepageMonthlySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardHomepageMonthlySalesRespVo">
