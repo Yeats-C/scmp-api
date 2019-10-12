@@ -1066,7 +1066,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
         //验证是否是同一种申请类型
-        validateSameApply(productSkuDrafts);
+//        validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
