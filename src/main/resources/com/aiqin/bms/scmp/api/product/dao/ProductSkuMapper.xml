@@ -2358,29 +2358,24 @@
   </select>
   <select id="skuByWarehouse" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
     SELECT
-     ps.sku_code as skuCode, ps.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
-     w.warehouse_code as warehouseCode, w.warehouse_name as warehouseName, p.procurement_section_code as purchaseGroupCode,
-     p.procurement_section_name as purchaseGroupName, w.warehouse_type_code as warehouseTypeCode, w.warehouse_type_name as warehouseTypeName
+     p.sku_code as skuCode, p.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
+     w.warehouse_code as warehouseCode, w.warehouse_name as warehouseName, w.warehouse_type_code as warehouseTypeCode, w.warehouse_type_name as warehouseTypeName,
+	 w.wms_warehouse_code as wmsWarehouseCode, w.wms_warehouse_name as wmsWarehouseName, w.wms_warehouse_type as wmsWarehouseType
     from
     product_sku p
-    INNER JOIN
-    product_sku_config ps
+    inner join product_sku_config ps
     on p.sku_code = ps.sku_code
     inner join warehouse w
     on ps.transport_center_code = w.logistics_center_code
-    where w.logistics_center_code = #{logisticsCenterCode} and w.warehouse_code = #{warehouseCode}
-    LIMIT #{request.beginIndex,jdbcType=INTEGER}, #{request.pageSize,jdbcType=INTEGER}
+    order by p.sku_code
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="skuByWarehouseCount" resultType="java.lang.Integer">
-    SELECT
-     count(1)
-    from
-    product_sku p
-    INNER JOIN
-    product_sku_config ps
+    SELECT count(1)
+    from product_sku p
+    inner join product_sku_config ps
     on p.sku_code = ps.sku_code
     inner join warehouse w
     on ps.transport_center_code = w.logistics_center_code
-    where w.logistics_center_code = #{logisticsCenterCode} and w.warehouse_code = #{warehouseCode}
   </select>
 </mapper>

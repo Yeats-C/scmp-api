@@ -89,5 +89,4 @@ public interface WarehouseDao {
 
    List<WarehouseDTO> getWarehouseByLogisticsCenterCodeAndNotExistsType(@Param("logisticsCenterCode") String logisticsCenterCode, @Param("warehouseTypeCode") Byte warehouseTypeCode);
 
-   List<Warehouse> warehouseList();
 }
