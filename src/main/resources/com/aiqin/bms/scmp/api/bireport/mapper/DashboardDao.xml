@@ -66,7 +66,7 @@
       dmla.stockout_sales_amount_monthly_acc as stockoutSalesAmountMonthlyAcc,
       dmla.monthly_loss_amount as monthlyLossAmount
       FROM dashboard_monthly_loss_amount dmla
-      where dmla.stat_year = #{oneYearStr}
+      where dmla.stat_year = #{oneYearStr} order by stat_year,stat_month asc
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatio" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
       SELECT
@@ -132,7 +132,7 @@
             ddcpsa.price_channel_code=#{priceChannelCode}
         </if>
         price_channel_code is not null and product_sort_code is not null and product_category_code is not null
-        group by ddcpsa.stat_month,ddcpsa.product_category_code
+        group by ddcpsa.product_category_code
     </select>
     <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
         SELECT
@@ -287,7 +287,7 @@
         dashboard_dep_monthly_homocyclic_ratio ddmhr
         where
         <if test="statMonth!=null and statMonth!=''">
-            ddmhr.stat_month = #{statMonth}
+            and ddmhr.stat_month = #{statMonth}
         </if>
         price_channel_code is not null and product_sort_code is not null
     </select>
