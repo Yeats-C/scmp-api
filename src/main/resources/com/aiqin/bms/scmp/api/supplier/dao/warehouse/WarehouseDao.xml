@@ -431,12 +431,4 @@
     </if>
     order by warehouse_order asc
   </select>
-  <select id="warehouseList" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
-    select
-    warehouse_code as warehouseCode, warehouse_name as warehouseName, logistics_center_code  as logisticsCenterCode, logistics_center_name as logisticsCenterName,
-    warehouse_type_name AS warehouseTypeName, warehouse_type_code AS warehouseTypeCode, wms_warehouse_code AS wmsWarehouseCode,
-    wms_warehouse_name AS wmsWarehouseName, wms_warehouse_type AS wmsWarehouseType
-    from warehouse
-    WHERE warehouse_code NOT IN ('1078','1082')
-  </select>
 </mapper>
