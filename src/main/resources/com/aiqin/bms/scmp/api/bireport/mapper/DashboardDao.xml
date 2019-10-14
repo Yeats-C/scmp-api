@@ -134,7 +134,7 @@
         price_channel_code is not null and product_sort_code is not null and product_category_code is not null
         group by ddcpsa.stat_month,ddcpsa.product_category_code
     </select>
-    <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateProperSalesAmountRespVo">
+    <select id="selectDashboardDepProperSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepProperSalesAmountRespVo">
         SELECT
         ddpsa.id as id,
         ddpsa.stat_month as statMonth,

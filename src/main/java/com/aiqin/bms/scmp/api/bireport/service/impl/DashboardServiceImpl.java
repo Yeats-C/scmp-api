@@ -85,7 +85,9 @@ public class DashboardServiceImpl implements DashboardService {
     // 当月各部门属性下的销售情况
     public List<DashboardDepProperSalesAmountRespVo> selectDashboardDepProperSalesAmount(DashboardDepProperSalesAmountReqVo dashboardDepProperSalesAmountReqVo) {
         String oneYearStr = DayUtil.getYearStr(0);
-        dashboardDepProperSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepProperSalesAmountReqVo.getStatMonth());
+        if(dashboardDepProperSalesAmountReqVo.getStatMonth() != null){
+            dashboardDepProperSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepProperSalesAmountReqVo.getStatMonth());
+        }
         List<DashboardDepProperSalesAmountRespVo> dashboardDepProperSalesAmountRespVos = dashboardDao.selectDashboardDepProperSalesAmount(dashboardDepProperSalesAmountReqVo);
         for (DashboardDepProperSalesAmountRespVo dashboardDepProperSalesAmountRespVo : dashboardDepProperSalesAmountRespVos) {
             String statMonth = dashboardDepProperSalesAmountRespVo.getStatMonth();
@@ -102,7 +104,9 @@ public class DashboardServiceImpl implements DashboardService {
     // 当月各部门品类下的销售情况
     public List<DashboardDepCateSalesAmountRespVo> selectDashboardDepCateSalesAmount(DashboardDepCateSalesAmountReqVo dashboardDepCateSalesAmountReqVo) {
         String oneYearStr = DayUtil.getYearStr(0);
-        dashboardDepCateSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepCateSalesAmountReqVo.getStatMonth());
+        if(dashboardDepCateSalesAmountReqVo.getStatMonth() != null){
+            dashboardDepCateSalesAmountReqVo.setStatMonth(oneYearStr + "-" + dashboardDepCateSalesAmountReqVo.getStatMonth());
+        }
         List<DashboardDepCateSalesAmountRespVo> dashboardDepCateSalesAmountRespVos = dashboardDao.selectDashboardDepCateSalesAmount(dashboardDepCateSalesAmountReqVo);
         for (DashboardDepCateSalesAmountRespVo dashboardDepCateSalesAmountRespVo : dashboardDepCateSalesAmountRespVos) {
             String statMonth = dashboardDepCateSalesAmountRespVo.getStatMonth();
