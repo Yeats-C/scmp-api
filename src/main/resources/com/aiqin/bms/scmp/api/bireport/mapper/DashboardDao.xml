@@ -163,7 +163,7 @@
             ddpsa.price_channel_code=#{priceChannelCode} and
         </if>
         price_channel_code is not null and product_sort_code is not null and product_property_code is not null
-        group by ddpsa.stat_month,ddpsa.product_property_code
+        group by ddpsa.product_property_code
     </select>
     <select id="selectDashboardDepCateSalesAmount" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepCateSalesAmountRespVo">
         SELECT
@@ -196,7 +196,7 @@
             ddcsa.price_channel_code=#{priceChannelCode} and
         </if>
         price_channel_code is not null and product_sort_code is not null and product_category_code is not null
-        group by ddcsa.stat_month,ddcsa.product_category_code
+        group by ddcsa.product_category_code
     </select>
     <select id="selectDashboardDepMonthlyHomocyclicRatioList" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
