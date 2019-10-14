@@ -1245,7 +1245,7 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bms.id as id,
-        bms.year_month as month,
+        bms.year_month as yearMonth,
         bms.sales_cost as salesCost,
         bms.price_channel_code as priceChannelCode,
         bms.price_channel_name as priceChannelName,
