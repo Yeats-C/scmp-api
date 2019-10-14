@@ -332,16 +332,6 @@
         </if>
         order by id desc limit 10000) as bmsa
         <include refid="select_month_sales_achievement"/>
-        group by bmsa.stat_month
-        <if test="productSortCode==null and productSortCode==''">
-            ,bmsa.product_sort_code
-        </if>
-        <if test="orderCode==null and orderCode==''">
-            ,bmsa.price_channel_code
-        </if>
-        <if test="storeTypeCode==null and storeTypeCode==''">
-            ,bmsa.store_type_code
-        </if>
     </select>
     <select id="selectMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
