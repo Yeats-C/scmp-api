@@ -1159,9 +1159,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private void validateSameApply(List<ProductSkuDraft> productSkuDrafts) {
         Set<Byte> beSameApply = Sets.newHashSet();
         for (ProductSkuDraft draft : productSkuDrafts) {
-            if (!beSameApply.add(draft.getApplyType())) {
-                throw new BizException(ResultCode.NOT_SAME_APPLY);
-            }
+            beSameApply.add(draft.getApplyType());
+        }
+        if (beSameApply.size()>1) {
+            throw new BizException(ResultCode.NOT_SAME_APPLY);
         }
     }
 
