@@ -122,11 +122,14 @@
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+           <!-- <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmcbs.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and bmcbs.year_month = #{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcbs.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -158,11 +161,14 @@
     <sql id="select_month_cumulative_gross_profit_margin">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+            <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmcgpm.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and bmcgpm.year_month = #{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -341,8 +347,8 @@
         bmcbs.year_month as yearMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
-        bmcbs.price_channel_code as orderCode,
-        bmcbs.price_channel_name as orderOriginal,
+        bmcbs.price_channel_code as priceChannelCode,
+        bmcbs.price_channel_name as priceChannelName,
         bmcbs.store_type_code as storeTypeCode,
         bmcbs.store_type as storeType,
         bmcbs.data_type_code as dataTypeCode,
@@ -360,24 +366,19 @@
         bmcbs.total_distribution_amount_daily_compared_same as distributionComparedSame,
         bmcbs.total_distribution_amount_daily_sequential as distributionSequential
         from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
-        <if test="beginCreateTime!=null and beginCreateTime!=''">
+        <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
             and bmcbs.year_month between #{beginCreateTime}
         </if>
         <if test="createTime!=null and createTime!=''">
             and #{createTime}
+        </if>-->
+        <if test="createTime!=null and createTime!=''">
+            and bmcbs.year_month = #{createTime}
         </if>
         order by id desc limit 10000) as bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-        group by substring(bmcbs.year_month,6,2)
-        <if test="productSortCode==null and productSortCode==''">
-            ,bmcbs.product_sort_code
-        </if>
-        <if test="orderCode==null and orderCode==''">
-            ,bmcbs.price_channel_code
-        </if>
-        <if test="storeTypeCode==null and storeTypeCode==''">
-            ,bmcbs.store_type_code
-        </if>
+        and product_sort_code is not null and price_channel_code is not null and store_type_code is not null and data_type_code is not null and category_code is not null
+        group by product_sort_code,price_channel_code,store_type_code,data_type_code,category_code
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
@@ -406,23 +407,18 @@
         bmcgpm.total_distribution_amount_daily_compared_same as distributionComparedSame,
         bmcgpm.total_distribution_amount_daily_sequential as distributionSequential
         from (select * from bi_month_cumulative_brand_sales bmcgpm where 1=1
-        <if test="beginCreateTime!=null and beginCreateTime!=''">
+        <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
             and bmcgpm.year_month between #{beginCreateTime}
         </if>
         <if test="createTime!=null and createTime!=''">
             and #{createTime}
+        </if>-->
+        <if test="createTime!=null and createTime!=''">
+            and bmcgpm.year_month = #{createTime}
         </if>
         order by id desc limit 10000) as bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
-        group by substring(bmcgpm.year_month,6,2)
-        <if test="productSortCode==null and productSortCode==''">
-            ,bmcgpm.product_sort_code
-        </if>
-        <if test="orderCode==null and orderCode==''">
-            ,bmcgpm.price_channel_code
-        </if>
-        <if test="storeTypeCode==null and storeTypeCode==''">
-            ,bmcgpm.store_type_code
-        </if>
+        and product_sort_code is not null and price_channel_code is not null and store_type_code is not null and data_type_code is not null and category_code is not null
+        group by product_sort_code,price_channel_code,store_type_code,data_type_code,category_code
     </select>
 </mapper>
