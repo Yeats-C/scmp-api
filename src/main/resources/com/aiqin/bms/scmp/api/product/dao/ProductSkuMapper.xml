@@ -1728,27 +1728,22 @@
           resultType="java.lang.Long">
     select a.id
     from product_sku a
-    left join product b
-    on a.spu_code = b.product_code
-    left join product_sku_purchase_info c
-    on a.sku_code = c.product_sku_code
-    left join price_project f
-    on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
-    left join product_sku_price_info g
-    on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
-    left join tax_cost_log_stock h
-    on a.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
-    left join stock_batch i
-    on a.sku_code = i.sku_code
-    LEFT JOIN product_category lv4
-    on lv4.category_id = a.product_category_code
-    LEFT JOIN product_category lv3
-    on lv3.category_id = lv4.parent_id
-    LEFT JOIN product_category lv2
-    on lv2.category_id = lv3.parent_id
-    LEFT JOIN product_category lv1
-    on lv1.category_id = lv2.parent_id
-    where a.procurement_section_code = #{purchaseGroupCode}  and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+    left join product b on a.spu_code = b.product_code
+    left join price_project f on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
+    left join product_sku_price_info g on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
+    <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
+      LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
+    </if>
+    <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+      LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+    </if>
+    <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+      LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+    </if>
+    <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+      LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
+    </if>
+    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
