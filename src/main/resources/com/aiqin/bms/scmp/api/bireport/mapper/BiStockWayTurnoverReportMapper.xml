@@ -36,10 +36,10 @@
     from bi_stock_way_turnover_report
     <where>
       <if test="beginTime != null">
-        and stat_date &gt;= #{beginTime,jdbcType=VARCHAR}
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>
       <if test="finishTime != null">
-        and stat_date &lt;= #{finishTime,jdbcType=VARCHAR}
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
       </if>
       <if test="supplierCode != null">
         and supplier_code = #{supplierCode,jdbcType=VARCHAR}
@@ -80,10 +80,10 @@
     from bi_stock_way_turnover_report
     <where>
       <if test="beginTime != null">
-        and stat_date &gt;= #{beginTime,jdbcType=VARCHAR}
+        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
       </if>
       <if test="finishTime != null">
-        and stat_date &lt;= #{finishTime,jdbcType=VARCHAR}
+        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
       </if>
       <if test="supplierCode != null">
         and supplier_code = #{supplierCode,jdbcType=VARCHAR}

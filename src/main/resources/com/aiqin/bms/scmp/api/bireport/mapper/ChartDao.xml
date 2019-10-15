@@ -256,16 +256,16 @@
         sum(bmgm.sales_cost) as salesCost,
         sum(bmgm.channel_amount) as channelAmount,
         sum(bmgm.channel_maori) as channelMaori,
-        bmgm.channel_maori_rate as channelMaoriRate,
-        bmgm.channel_last_year_maori_rate as channelLastYearMaoriRate,
-        bmgm.channel_compared_same as channelComparedSame,
-        bmgm.channel_sequential as channelSequential,
+        (sum(channel_amount)-sum(sales_cost))/sum(channel_amount) as channelMaoriRate,
+        (sum(last_year_channel_amount_daily)-sum(last_year_stock_cost))/sum(last_year_channel_amount_daily) as channelLastYearMaoriRate,
+        (sum(channel_amount)/sum(last_year_channel_amount_daily))-1 as channelComparedSame,
+        (sum(channel_amount)/sum(last_month_channel_amount_daily))-1 as channelSequential,
         sum(bmgm.distribution_amount) as distributionAmount,
         sum(bmgm.distribution_maori) as distributionMaori,
-        sum(bmgm.distribution_maori_rate) as distributionMaoriRate,
-        bmgm.distribution_last_year_maori_rate as distributionLastYearMaoriRate,
-        bmgm.distribution_compared_same as distributionComparedSame,
-        bmgm.distribution_sequential as distributionSequential
+        (sum(distribution_amount_daily)-channel_amount)/sum(distribution_amount_daily) as distributionMaoriRate,
+        (sum(last_year_distribution_amount_daily)-last_year_channel_amount_daily)/sum(last_year_distribution_amount_daily) as distributionLastYearMaoriRate,
+        (sum(distribution_amount_daily)/last_year_distribution_amount_daily)-1 as distributionComparedSame,
+        (sum(distribution_amount_daily)/last_month_distribution_amount_daily)-1 as distributionSequential
         from (select * from bi_chart_month_gross_margin bmgm where 1=1
         <if test="createTime!=null and createTime!=''">
             and substring(bmgm.year_month,1,4)=#{createTime}
@@ -396,16 +396,21 @@
         bmcgpm.data_type as dataType,
         bmcgpm.category_code as categoryCode,
         bmcgpm.category_name as categoryName,
-        bmcgpm.total_channel_amount_daily as channelSales,
-        bmcgpm.total_last_year_channel_amount_daily as channelLastYearSales,
-        bmcgpm.total_last_month_channel_amount_daily as channelLastMonthSales,
-        bmcgpm.total_channel_amount_daily_compared_same as channelComparedSame,
-        bmcgpm.total_channel_amount_daily_sequential as channelSequential,
-        bmcgpm.total_distribution_amount_daily as distributionSales,
-        bmcgpm.total_last_year_distribution_amount_daily as distributionLastYearSales,
-        bmcgpm.total_last_month_distribution_amount_daily as distributionLastMonthSales,
-        bmcgpm.total_distribution_amount_daily_compared_same as distributionComparedSame,
-        bmcgpm.total_distribution_amount_daily_sequential as distributionSequential
+        sum(bmcgpm.total_stock_cost) as salesCost,
+        sum(bmcgpm.total_channel_amount_daily) as channelAmount,
+        sum(bmcgpm.total_channel_maori) as channelMaori,
+        (sum(bmcgpm.total_channel_amount_daily)-sum(bmcgpm.total_stock_cost))/sum(bmcgpm.total_channel_amount_daily) as channelMaoriRate,
+        sum(bmcgpm.last_month_total_channel_maori)/sum(bmcgpm.total_last_month_channel_amount_daily) as channelLastMaoriRate,
+        sum(bmcgpm.last_year_total_channel_maori)/sum(bmcgpm.total_last_year_channel_amount_daily) as lastYearChannelMaoriRate,
+        (sum(bmcgpm.total_channel_amount_daily)/sum(bmcgpm.total_last_year_channel_amount_daily))-1 as channelComparedSame,
+        (sum(bmcgpm.total_channel_amount_daily)/sum(bmcgpm.total_last_month_channel_amount_daily))-1 as channelSequential,
+        sum(bmcgpm.total_distribution_amount_daily) as distributionAmount,
+        sum(bmcgpm.total_distribution_amount) as distributionMaori,
+        sum(bmcgpm.total_distribution_amount)/sum(bmcgpm.total_distribution_amount_daily) as distributionMaoriRate,
+        (sum(bmcgpm.total_last_month_distribution_amount_daily)-sum(bmcgpm.total_last_month_channel_amount_daily))/sum(bmcgpm.total_last_month_distribution_amount_daily) as distributionLastMaoriRate,
+        (sum(bmcgpm.total_last_year_distribution_amount_daily)-sum(bmcgpm.total_last_year_channel_amount_daily))/sum(bmcgpm.total_last_year_distribution_amount_daily) as lastYearDistributionMaoriRate,
+        (sum(bmcgpm.total_distribution_amount_daily)/sum(bmcgpm.total_last_year_distribution_amount_daily))-1 as distributionComparedSame,
+        (sum(bmcgpm.total_distribution_amount_daily)/sum(bmcgpm.total_last_month_distribution_amount_daily))-1 as distributionSequential
         from (select * from bi_month_cumulative_brand_sales bmcgpm where 1=1
         <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
             and bmcgpm.year_month between #{beginCreateTime}

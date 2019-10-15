@@ -97,12 +97,12 @@ public class ReportFormServiceImpl implements ReportFormService {
                             if(i == 2){
                                 response.setHbOnWay(onWay);
                             }
-                        }else {
+                        }/*else {
                             response.setHbStockNum(num);
                             response.setHbSalesNum(num);
                             response.setHbTurnoverDays(num);
                             response.setHbOnWay(num);
-                        }
+                        }*/
                         // 华南仓
                         if(stock.getTransportCenterCode().equals(Global.HN_CODE)){
                             response.setHnTransportCenterCode(stock.getTransportCenterCode());
@@ -113,12 +113,12 @@ public class ReportFormServiceImpl implements ReportFormService {
                             if(i == 2){
                                 response.setHnOnWay(onWay);
                             }
-                        }else {
+                        }/*else {
                             response.setHnStockNum(num);
                             response.setHnSalesNum(num);
                             response.setHnTurnoverDays(num);
                             response.setHnOnWay(num);
-                        }
+                        }*/
                         // 西南仓
                         if(stock.getTransportCenterCode().equals(Global.XN_CODE)){
                             response.setXnTransportCenterCode(stock.getTransportCenterCode());
@@ -129,12 +129,12 @@ public class ReportFormServiceImpl implements ReportFormService {
                             if(i == 2){
                                 response.setXnOnWay(onWay);
                             }
-                        }else {
+                        }/*else {
                             response.setXnStockNum(num);
                             response.setXnSalesNum(num);
                             response.setXnTurnoverDays(num);
                             response.setXnOnWay(num);
-                        }
+                        }*/
                         // 华东仓
                         if(stock.getTransportCenterCode().equals(Global.HD_CODE)){
                             response.setHdTransportCenterCode(stock.getTransportCenterCode());
@@ -145,12 +145,12 @@ public class ReportFormServiceImpl implements ReportFormService {
                             if(i == 2){
                                 response.setHdOnWay(onWay);
                             }
-                        }else {
+                        }/*else {
                             response.setHdStockNum(num);
                             response.setHdSalesNum(num);
                             response.setHdTurnoverDays(num);
                             response.setHdOnWay(num);
-                        }
+                        }*/
 
                         // 华中仓
                         if(stock.getTransportCenterCode().equals(Global.HZ_CODE)){
@@ -162,12 +162,12 @@ public class ReportFormServiceImpl implements ReportFormService {
                             if(i == 2){
                                 response.setHzOnWay(onWay);
                             }
-                        }else {
+                        }/*else {
                             response.setHzStockNum(num);
                             response.setHzSalesNum(num);
                             response.setHzTurnoverDays(num);
                             response.setHzOnWay(num);
-                        }
+                        }*/
                     }
                     response.setSumStockNum(sumStockNum);
                     response.setSumSalesNum(sumSalesNum);

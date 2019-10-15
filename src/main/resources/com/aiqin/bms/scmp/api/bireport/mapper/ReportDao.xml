@@ -1692,16 +1692,16 @@
         <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (categoryCode==null and categoryCode=='') or (storeTypeCode==null and storeTypeCode=='')">
             group by
             <if test="productSortCode==null and productSortCode==''">
-                bmcbs.product_sort_code
+                bmcbs.product_sort_code,
             </if>
             <if test="priceChannelCode==null and priceChannelCode==''">
-                ,bmcbs.price_channel_code
+                bmcbs.price_channel_code,
             </if>
             <if test="categoryCode==null and categoryCode==''">
-                ,bmcbs.category_code
+                bmcbs.category_code,
             </if>
             <if test="storeTypeCode==null and storeTypeCode==''">
-                ,bmcbs.store_type_code
+                bmcbs.store_type_code
             </if>
         </if>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
