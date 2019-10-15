@@ -35,7 +35,7 @@
         psc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
-        FROM bi_app_suggest_replenishment bsr
+        FROM bi_app_suggest_replenishment_all bsr
         LEFT JOIN product_sku_config AS psc ON bsr.sku_code = psc.sku_code AND bsr.transport_center_code  = psc.transport_center_code
         LEFT JOIN product_sku_supply_unit_capacity AS pssuc
           ON bsr.sku_code  = pssuc.product_sku_code
