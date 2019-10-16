@@ -119,9 +119,9 @@ public class FileRecordServiceImpl implements FileRecordService {
                     LOGGER.info("文件名:{},未包含在导入范围内", fileName);
                     continue;
                 }
-                url = fileInfoService.upload(multipartFile);
+                url = fileInfoService.upload(multipartFile,false);
                 LOGGER.info("fileName:{},folderName:{},url:{}", fileName, folderName, url);
-                if (fileName.contains("sm_")) {
+                if (fileName.contains("suploadm_")) {
                     productSkuPicDescDraft = new ProductSkuPicDescDraft();
                     productSkuPicDescDraft.setSortingNumber((long) productSkuPicDescDraftList.size()+1);
                     productSkuPicDescDraft.setPicDescPath(url);
