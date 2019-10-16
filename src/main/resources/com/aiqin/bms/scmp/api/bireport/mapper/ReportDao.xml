@@ -1533,20 +1533,11 @@
         from (select * from bi_monthly_sales bms where 1=1
         <if test="month!=null and month!=''">
             and bms.year_month = #{month}
-        </if>) bms) daytime where DATEDIFF(now(),bms.create_time)=daytime.days) bms
+        </if>) bms) daytime where DATEDIFF(now(),bms.create_time)=daytime.days
+        <if test="month!=null and month!=''">
+        and bms.year_month = #{month}
+        </if>) bms
         <include refid="select_monthly_sales"/>
-        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (storeTypeCode==null and storeTypeCode=='')">
-            group by
-            <if test="productSortCode==null and productSortCode==''">
-                 ,bms.product_sort_code
-             </if>
-            <if test="priceChannelCode==null and priceChannelCode==''">
-                ,bms.price_channel_code
-            </if>
-            <if test="storeTypeCode==null and storeTypeCode==''">
-                ,bms.store_type_code
-            </if>
-        </if>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="countMonthlySales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
