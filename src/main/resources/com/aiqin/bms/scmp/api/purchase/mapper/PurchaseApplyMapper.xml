@@ -11,8 +11,9 @@
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="status" jdbcType="VARCHAR" property="status" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
@@ -64,6 +65,7 @@
     update_by_id as updateById, update_by_name as updateByName, update_time as updateTime
     from purchase_apply
     <where>
+      status = 0 and
       purchase_group_code in
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -93,6 +95,7 @@
   <select id="applyCount" resultType="java.lang.Integer">
     select count(1) from purchase_apply
     <where>
+      status = 0 and
       purchase_group_code in
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -120,7 +123,7 @@
   <select id="purchaseApplyInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
     select <include refid="Base_Column_List"></include>
     from purchase_apply
-    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+    where status = 0 and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </select>
   <insert id="insertAll">
     insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type,
@@ -132,4 +135,9 @@
       #{item.purchaseGroupName,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
+  <update id="delete">
+    update purchase_apply
+    set status = 1
+    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </update>
 </mapper>

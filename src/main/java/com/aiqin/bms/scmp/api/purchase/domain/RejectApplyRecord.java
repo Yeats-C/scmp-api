@@ -54,6 +54,10 @@ public class RejectApplyRecord {
     @JsonProperty("sum_gift_amount")
     private Long sumGiftAmount;
 
+    @ApiModelProperty(value="是否删除 0 否 1是")
+    @JsonProperty("status")
+    private String status;
+
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")
     private String createById;

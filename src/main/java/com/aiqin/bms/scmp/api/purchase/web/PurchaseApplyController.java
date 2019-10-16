@@ -146,4 +146,11 @@ public class PurchaseApplyController {
                                   @RequestParam("purchase_order_code") String purchaseOrderCode) {
         return purchaseApplyService.importPdf(filePath, purchaseOrderCode);
     }
+
+    @GetMapping("/delete")
+    @ApiOperation("删除采购申请单")
+    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseApplyService.purchaseDelete(purchaseOrderId);
+    }
+
 }

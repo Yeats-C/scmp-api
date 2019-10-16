@@ -35,4 +35,6 @@ public interface PurchaseApplyService {
     HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest);
 
     HttpResponse importPdf(String filePath, String purchaseOrderCode);
+
+    HttpResponse purchaseDelete(String purchaseOrderId);
 }

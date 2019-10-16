@@ -969,4 +969,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
         return HttpResponse.success();
     }
+
+    @Override
+    public HttpResponse purchaseDelete(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        purchaseApplyDao.delete(purchaseOrderId);
+        return HttpResponse.success();
+    }
 }
