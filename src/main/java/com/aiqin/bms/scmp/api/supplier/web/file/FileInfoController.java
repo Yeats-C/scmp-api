@@ -77,4 +77,12 @@ public class FileInfoController {
         }
     }
 
+
+    @PostMapping("/uploadFile2")
+    @ApiModelProperty(value = " 文件上传")
+    public HttpResponse<String> uploadFile2(@NotNull MultipartFile file, String type){
+        return HttpResponse.success(fileInfoService.fileUpload(file,type));
+    }
+
+
 }
