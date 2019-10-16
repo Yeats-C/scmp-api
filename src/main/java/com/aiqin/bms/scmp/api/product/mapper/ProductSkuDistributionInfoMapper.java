@@ -19,4 +19,6 @@ public interface ProductSkuDistributionInfoMapper {
     int updateByPrimaryKey(ProductSkuDistributionInfo record);
 
     List<PurchaseSaleStockRespVo> getList(String skuCode);
+
+    ProductSkuDistributionInfo distributionInfoByPdf(String skuCode);
 }
