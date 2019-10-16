@@ -877,7 +877,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         /** 用于组装word、pdf页面需要的数据 */
         Map<String, Object> dataMap = new HashMap<>();
         /** 组装数据 */
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         // 查询采购单的信息
         PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrderCode);
         dataMap.put("code", purchaseOrderCode);
