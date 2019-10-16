@@ -32,6 +32,7 @@
         bsr.out_stock_affects_amount as outStockAffectMoney,
         bsr.stock_one_month_days as outStockContinuousDays,
         bsr.available_num as availableNum,
+        bsr.days_turnover as daysTurnover,
         psc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays

@@ -118,8 +118,8 @@
   <select id="getStockWayTurnoverInfo" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.StockTurnoverResponse">
     select
       stat_date as statDate, sku_code as skuCode, sku_name as skuName,transport_center_code as transportCenterCode,
-      transport_center_name as transportCenterName, sum(stock_num) as stockNum, sum(sales_num) as salesNum,
-      sum(turnover_days) as turnoverDays, sum(on_way) as onWay
+      transport_center_name as transportCenterName, ifnull(sum(stock_num),0) as stockNum, ifnull(sum(sales_num),0) as salesNum,
+      ifnull(sum(turnover_days),0) as turnoverDays, ifnull(sum(on_way),0) as onWay
     from bi_stock_way_turnover_report
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and stat_date = #{statDate,jdbcType=VARCHAR}
