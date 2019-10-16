@@ -33,4 +33,6 @@ public interface PurchaseApplyService {
                                                               String supplierCode, String transportCenterCode, Integer productCount);
 
     HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest);
+
+    HttpResponse importPdf(String filePath, String purchaseOrderCode);
 }

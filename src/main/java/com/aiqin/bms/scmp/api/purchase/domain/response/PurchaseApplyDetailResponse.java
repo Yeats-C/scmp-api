@@ -388,5 +388,9 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="采购单的类型（手动，自动）")
     @JsonProperty("apply_type_form")
     private String applyTypeForm;
+
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("gift_tax_sum")
+    private String giftTaxSum;
 }
 

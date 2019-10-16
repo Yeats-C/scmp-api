@@ -113,13 +113,13 @@
         ddcpsa.product_property_name as productPropertyName,
         sum(ddcpsa.channel_costs) as channelCosts,
         sum(ddcpsa.channel_sales_amount) as channelSalesAmount,
-        ddcpsa.channel_sales_yearonyear as channelSalesYearonyear,
-        ddcpsa.channel_sales_link_relative as channelSalesLinkRelative,
-        ddcpsa.distribution_sales_amount as distributionSalesAmount,
+        sum(ddcpsa.channel_sales_yearonyear) as channelSalesYearonyear,
+        sum(ddcpsa.channel_sales_link_relative) as channelSalesLinkRelative,
+        sum(ddcpsa.distribution_sales_amount) as distributionSalesAmount,
         sum(ddcpsa.channel_margin) as channelMargin,
-        ddcpsa.channel_margin_yearonyear as channelMarginYearonyear,
-        ddcpsa.channel_margin_link_relative as channelMarginLinkRelative,
-        ddcpsa.distribution_margin as distributionMargin
+        sum(ddcpsa.channel_margin_yearonyear) as channelMarginYearonyear,
+        sum(ddcpsa.channel_margin_link_relative) as channelMarginLinkRelative,
+        sum(ddcpsa.distribution_margin) as distributionMargin
         FROM dashboard_dep_cate_proper_sales_amount ddcpsa
         where
         <if test="statMonth!=null and statMonth!=''">
@@ -144,13 +144,13 @@
         ddpsa.product_property_name as productPropertyName,
         sum(ddpsa.channel_costs) as channelCosts,
         sum(ddpsa.channel_sales_amount) as channelSalesAmount,
-        ddpsa.channel_sales_yearonyear as channelSalesYearonyear,
-        ddpsa.channel_sales_link_relative as channelSalesLinkRelative,
-        ddpsa.distribution_sales_amount as distributionSalesAmount,
+        sum(ddpsa.channel_sales_yearonyear) as channelSalesYearonyear,
+        sum(ddpsa.channel_sales_link_relative) as channelSalesLinkRelative,
+        sum(ddpsa.distribution_sales_amount) as distributionSalesAmount,
         sum(ddpsa.channel_margin) as channelMargin,
-        ddpsa.channel_margin_yearonyear as channelMarginYearonyear,
-        ddpsa.channel_margin_link_relative as channelMarginLinkRelative,
-        ddpsa.distribution_margin as distributionMargin
+        sum(ddpsa.channel_margin_yearonyear) as channelMarginYearonyear,
+        sum(ddpsa.channel_margin_link_relative) as channelMarginLinkRelative,
+        sum(ddpsa.distribution_margin) as distributionMargin
         FROM dashboard_dep_proper_sales_amount ddpsa
         where
         <if test="statMonth!=null and statMonth!=''">
@@ -177,13 +177,13 @@
         ddcsa.product_category_name as productCategoryName,
         sum(ddcsa.channel_costs) as channelCosts,
         sum(ddcsa.channel_sales_amount) as channelSalesAmount,
-        ddcsa.channel_sales_yearonyear as channelSalesYearonyear,
-        ddcsa.channel_sales_link_relative as channelSalesLinkRelative,
-        ddcsa.distribution_sales_amount as distributionSalesAmount,
+        sum(ddcsa.channel_sales_yearonyear) as channelSalesYearonyear,
+        sum(ddcsa.channel_sales_link_relative) as channelSalesLinkRelative,
+        sum(ddcsa.distribution_sales_amount) as distributionSalesAmount,
         sum(ddcsa.channel_margin) as channelMargin,
-        ddcsa.channel_margin_yearonyear as channelMarginYearonyear,
-        ddcsa.channel_margin_link_relative as channelMarginLinkRelative,
-        ddcsa.distribution_margin as distributionMargin
+        sum(ddcsa.channel_margin_yearonyear) as channelMarginYearonyear,
+        sum(ddcsa.channel_margin_link_relative) as channelMarginLinkRelative,
+        sum(ddcsa.distribution_margin) as distributionMargin
         FROM dashboard_dep_cate_sales_amount ddcsa
         where
         <if test="statMonth!=null and statMonth!=''">
