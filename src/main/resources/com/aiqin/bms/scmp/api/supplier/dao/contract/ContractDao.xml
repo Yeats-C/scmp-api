@@ -459,6 +459,9 @@
       <if test="remark != null">
         #{remark},
       </if>
+      <if test="comment != null">
+        #{comment},
+      </if>
     </trim>
   </insert>
 
