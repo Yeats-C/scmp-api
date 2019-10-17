@@ -392,5 +392,10 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
     private String giftTaxSum;
+
+    @ApiModelProperty(value="库存金额")
+    @JsonProperty("stock_amount")
+    private Integer stockAmount;
+
 }
 

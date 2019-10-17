@@ -2563,9 +2563,6 @@
             <if test="companyCode!=null and companyCode!=''">
                 AND company_code = #{companyCode,jdbcType=VARCHAR}
             </if>
-            <if test="transportCenterCode!=null and transportCenterCode!=''">
-                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
         </where>
     </select>
     <insert id="insertReplaceAll">
@@ -2608,4 +2605,24 @@
             #{item.stockupNum})
         </foreach>
     </insert>
+    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        select
+        sku_code skuCode, sku_name skuName, ifnull(inventory_num,0) as inventoryNum, ifnull(available_num,0) as availableNum,
+        ifnull(total_way_num,0) as totalWayNum, ifnull(tax_cost,0) as taxCost, ifnull(new_purchase_price,0) as newPurchasePrice
+        from stock
+        <where>
+            <if test="transportCenterCode!=null and transportCenterCode!=''">
+                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+            </if>
+            <if test="skuCode!=null and skuCode!=''">
+                AND sku_code = #{skuCode,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseType!=null and warehouseType!=''">
+                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode!=null and companyCode!=''">
+                AND company_code = #{companyCode,jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
 </mapper>

@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDistributionInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
@@ -191,6 +192,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
+        this.productDetail(detail);
+        Integer count = productSkuDao.purchaseProductCount(purchases);
+        pageResData.setDataList(detail);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
+    }
+
+    private void productDetail(List<PurchaseApplyDetailResponse> detail){
         if (CollectionUtils.isNotEmptyCollection(detail)) {
             PurchaseApplyReqVo applyReqVo;
             Map<String, String> categoryNames = new HashMap<>();
@@ -250,42 +259,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 }
             }
         }
-
-        // 去重已选的商品
-//        List<PurchaseApplyDetailResponse> response = new ArrayList<>();
-//        if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
-//            Set<String> info = this.searchProductInfo(purchases.getSearchList());
-//            List<String> list = new ArrayList<>(info);
-//            for(PurchaseApplyDetailResponse product : detail){
-//                StringBuilder sb = new StringBuilder();
-//                sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
-//                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode()).
-//                        append("_").append(product.getProductType());
-//                for(String str:list){
-//                    if(str.equals(sb.toString())){
-//                        response.add(product);
-//                    }
-//                }
-//            }
-//            detail.removeAll(response);
-//        }
-        Integer count = productSkuDao.purchaseProductCount(purchases);
-        pageResData.setDataList(detail);
-        pageResData.setTotalCount(count);
-        return HttpResponse.success(pageResData);
     }
-
-//    private Set<String> searchProductInfo(List<PurchaseProductSearchRequest>  searchList){
-//        Set<String> set = new HashSet<>();
-//        for(PurchaseProductSearchRequest search:searchList){
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
-//               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode()).
-//                    append("_").append(search.getProductType());
-//            set.add(sb.toString());
-//        }
-//        return set;
-//    }
 
     private PurchaseApplyRequest fourProduct(PurchaseApplyRequest purchases){
         // 查询14大A品建议补货
@@ -365,15 +339,35 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse searchApplyProduct(String applyProductId){
-        if(StringUtils.isBlank(applyProductId)){
+    public HttpResponse searchApplyProduct(String purchaseApplyId){
+        if(StringUtils.isBlank(purchaseApplyId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(applyProductId);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
         if(CollectionUtils.isEmptyCollection(products)){
-            LOGGER.info("查询采购申请商品的信息失败...{}:" +applyProductId);
+            LOGGER.info("查询采购申请商品的信息失败...{}:" +purchaseApplyId);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
-        }
+        }else {
+            // 查询采购申请单的公司
+            PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+            Stock stock;
+            for(PurchaseApplyDetailResponse detail:products){
+                // 查询库存数量，库存金额， 在途库存
+                stock = new Stock();
+                stock.setSkuCode(detail.getSkuCode());
+                stock.setTransportCenterCode(detail.getTransportCenterCode());
+                stock.setWarehouseCode(detail.getWarehouseCode());
+                stock.setCompanyCode(apply.getCompanyCode());
+                Stock info = stockDao.stockInfo(stock);
+                if(info != null){
+                    detail.setStockCount(info.getInventoryNum().intValue());
+                    detail.setTotalWayNum(info.getTotalWayNum().intValue());
+                    detail.setStockAmount(info.getInventoryNum().intValue() * info.getTaxCost().intValue());
+                    detail.setNewPurchasePrice(info.getNewPurchasePrice().intValue());
+                }
+            }
+            this.productDetail(products);
+        }                                                                                                                                
         return HttpResponse.success(products);
     }
 

@@ -427,13 +427,11 @@
     purchase_single as purchaseSingle, supplier_code as supplierCode, supplier_name as supplierName,
     purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
     transport_center_code as transportCenterCode, transport_center_name as transportCenterName, base_product_content as baseProductContent,
-    box_gauge as boxGauge, stock_unit_name as stockUnitName, stock_count as stockCount, total_way_num as totalWayNum,
-    product_sort_code as productSortCode, product_sort_name as productSortName, brand_id as brandId, brand_name as brandName,
-    category_id as categoryId, category_name as categoryName, new_purchase_price as newPurchasePrice,
-    last_time as lastTime, sales_volume as salesVolume, purchase_number as purchaseNumber, receipt_time as receiptTime,
-    purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
-    product_property_code as productPropertyCode, product_property_name as productPropertyName, warehouse_code as warehouseCode,
-    warehouse_name as warehouseName
+    box_gauge as boxGauge, stock_unit_name as stockUnitName, product_sort_code as productSortCode, product_sort_name as productSortName,
+    brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
+    new_purchase_price as newPurchasePrice, last_time as lastTime, sales_volume as salesVolume,  receipt_time as receiptTime,
+    product_spec as productSpec, color_name as colorName, model_number as modelNumber, product_property_code as productPropertyCode,
+    product_property_name as productPropertyName, warehouse_code as warehouseCode,  warehouse_name as warehouseName
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}

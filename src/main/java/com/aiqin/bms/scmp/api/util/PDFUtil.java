@@ -13,6 +13,7 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.List;
 
 public class PDFUtil {
 
@@ -54,7 +55,7 @@ public class PDFUtil {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日");
 //        dataMap.put("time", sdf.format(new Date()));
 //        dataMap.put("number", "CG001");
-//        dataMap.put("name", "张三");
+//        dataMap.put("supplyName", "张三");
 //        dataMap.put("address", "北京");
 //        dataMap.put("phone", "123");
 //        dataMap.put("fax", "55555555");
