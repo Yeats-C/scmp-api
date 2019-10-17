@@ -17,6 +17,18 @@ public class NewProductBatchMovingRateRespVo {
     @JsonProperty("id")
     private Long id;
 
+    @ApiModelProperty("年月日")
+    @JsonProperty("state_date")
+    private String stateDate;
+
+    @ApiModelProperty("仓库code")
+    @JsonProperty("transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty("仓库name")
+    @JsonProperty("transport_center_name")
+    private String transportCenterName;
+
     @ApiModelProperty("sku编码")
     @JsonProperty("sku_code")
     private String skuCode;

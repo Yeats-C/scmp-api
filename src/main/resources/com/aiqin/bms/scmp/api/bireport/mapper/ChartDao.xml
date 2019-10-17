@@ -377,7 +377,7 @@
         sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearDistributionMaoriRate,
         sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthDistributionMaoriRate,
         sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily)) as totalDistributionMarginRateSequential,
-        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily)) as totalDistributionGrossMarginComparedSame,
+        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily)) as totalDistributionGrossMarginComparedSame
         from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
         <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
             and bmcbs.year_month between #{beginCreateTime}
@@ -438,5 +438,13 @@
         <include refid="select_month_cumulative_gross_profit_margin"/>
         and product_sort_code is not null and price_channel_code is not null and store_type_code is not null and data_type_code is not null and category_code is not null
         group by product_sort_code,price_channel_code,store_type_code,data_type_code,category_code
+    </select>
+    <select id="selectMonthCumulativeMargin" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeMarginRespVo">
+        select
+          supplier_content as budgetProduct,
+          supplier_dictionary_name as budgetProductName,
+          supplier_dictionary_value as statMonth
+        from supplier_dictionary_info
+		where supplier_dictionary_name like concat('%', #{productSortName}, '%')
     </select>
 </mapper>
