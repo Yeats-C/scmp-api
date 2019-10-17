@@ -2624,5 +2624,6 @@
                 AND company_code = #{companyCode,jdbcType=VARCHAR}
             </if>
         </where>
+        limit 1
     </select>
 </mapper>

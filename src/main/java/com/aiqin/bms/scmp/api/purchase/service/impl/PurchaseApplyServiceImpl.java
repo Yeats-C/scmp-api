@@ -252,7 +252,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if(StringUtils.isNotBlank(vo.getPredictedArrival())){
                         product.setReceiptTime(DateUtils.getDate(vo.getPredictedArrival()));
                     }
-                    product.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
+                    Integer averageAmount = vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue();
+                    product.setSalesVolumeAvg(averageAmount);
+                    product.setSalesVolume(averageAmount * 90);
                     product.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
                     product.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
                     product.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());

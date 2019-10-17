@@ -188,6 +188,10 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("sales_volume")
     private Integer salesVolume;
 
+    @ApiModelProperty(value="近90天销量")
+    @JsonProperty("sales_volume_avg")
+    private Integer salesVolumeAvg;
+
     @ApiModelProperty(value="商品属性编码")
     @JsonProperty("product_property_code")
     private String productPropertyCode;

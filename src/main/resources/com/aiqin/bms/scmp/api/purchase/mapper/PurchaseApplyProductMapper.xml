@@ -611,7 +611,9 @@
       a.stock_unit_name as stockUnitName, s.Input_tax_rate as taxRate, a.product_type as productType,
       a.brand_id as brandId, a.brand_name as brandName, a.category_id as categoryId, a.category_name as categoryName,
       s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName,
-      a.sku_name as skuName
+      a.sku_name as skuName, a.purchase_apply_id as purchaseApplyId, a.transport_center_code as transportCenterCode,
+      a.warehouse_code as warehouseCode,
+      (ifnull(a.purchase_whole, 0) * ifnull(a.base_product_content, 0) + ifnull(a.purchase_single, 0)) as singleCount
       from purchase_apply_product a inner join
       product_sku_checkout s on
       a.sku_code = s.sku_code

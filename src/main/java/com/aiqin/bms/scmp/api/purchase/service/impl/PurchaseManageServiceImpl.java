@@ -5,14 +5,14 @@ import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
+import com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao;
+import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
+import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPictures;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailRespon
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -52,10 +53,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Calendar;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author: zhao shuai
@@ -112,6 +110,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private ApplyPurchaseOrderDetailsDao applyPurchaseOrderDetailsDao;
     @Resource
     private ApplyPurchaseOrderProductDao applyPurchaseOrderProductDao;
+    @Resource
+    private StockDao stockDao;
+    @Resource
+    private ProSuggestReplenishmentDao proSuggestReplenishmentDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -229,6 +231,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
         // 提交采购单页面商品列表
         if(CollectionUtils.isNotEmptyCollection(details)){
+            PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(details.get(0).getPurchaseApplyId());
             for(PurchaseApplyDetailResponse detail:details){
                 // 计算单品数量， 含税总价
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
@@ -239,6 +242,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 detail.setSingleCount(number);
                 detail.setProductAmount(amount);
                 detail.setProductTotalAmount(number * amount);
+                this.stockAmount(detail, apply.getCompanyCode());
             }
         }
         pageResData.setDataList(details);
@@ -247,6 +251,28 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success(pageResData);
     }
 
+    private void stockAmount(PurchaseApplyDetailResponse detail, String companyCode) {
+        // 查询库存数量，库存金额
+        Stock stock = new Stock();
+        stock.setSkuCode(detail.getSkuCode());
+        stock.setTransportCenterCode(detail.getTransportCenterCode());
+        stock.setWarehouseCode(detail.getWarehouseCode());
+        stock.setCompanyCode(companyCode);
+        Stock info = stockDao.stockInfo(stock);
+        if (info != null) {
+            detail.setStockCount(info.getInventoryNum().intValue());
+            detail.setStockAmount(info.getInventoryNum().intValue() * info.getTaxCost().intValue());
+            Long avgSales = proSuggestReplenishmentDao.biAppSuggestReplenishmentAll(detail.getTransportCenterCode(), detail.getSkuCode(),
+                    detail.getWarehouseCode());
+            // 库存周转期， 预计到货周转期
+            Integer stockTurnover = (avgSales == null || avgSales == 0) ? 0 : info.getInventoryNum().intValue() / avgSales.intValue();
+            Integer num = info.getInventoryNum().intValue() + info.getTotalWayNum().intValue() + detail.getSingleCount();
+            Integer receiptTurnover = (avgSales == null || avgSales == 0) ? 0 : num / avgSales.intValue();
+            detail.setStockTurnover(stockTurnover);
+            detail.setReceiptTurnover(receiptTurnover);
+        }
+
+    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -301,7 +327,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 form.setPurchaseGroupCode(order.getPurchaseGroupCode());
                 form.setSettlementMethodCode(order.getSettlementMethodCode());
             }
-            this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest);
+            this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
             // 添加文件信息
             List<FileRecord> fileList = purchaseOrderRequest.getFileList();
             if(CollectionUtils.isNotEmptyCollection(fileList)){
@@ -309,7 +335,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             //  判断所有采购申请单的完成状态
             List<String> applyIds = purchaseOrderRequest.getApplyIds();
-            PurchaseApply purchaseApply = null;
+            PurchaseApply purchaseApply;
             for(String apply:applyIds){
                 // 查询申请单的所有未提交的sku数量
                 Integer applySkuSum = purchaseApplyProductDao.skuCount(apply, 0);
@@ -338,12 +364,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success();
     }
 
-    private void insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest) {
+    private void insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
         // 提交采购单页面商品列表
         if (CollectionUtils.isNotEmptyCollection(details)) {
             List<PurchaseOrderProduct> list = Lists.newArrayList();
-            PurchaseOrderProduct orderProduct = null;
+            PurchaseOrderProduct orderProduct;
             for (PurchaseApplyDetailResponse detail : details) {
                 orderProduct = new PurchaseOrderProduct();
                 // 计算单品数量， 含税总价
@@ -373,11 +399,16 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setTaxRate(detail.getTaxRate());
                 orderProduct.setProductAmount(amount);
                 orderProduct.setProductTotalAmount(amount * number);
-                orderProduct.setStockCount(detail.getStockCount());
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
                 orderProduct.setActualSingleCount(0);
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
+                detail.setSingleCount(number);
+                this.stockAmount(detail, companyCode);
+                orderProduct.setStockAmount(detail.getStockAmount());
+                orderProduct.setStockTurnover(detail.getStockCount());
+                orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
+                orderProduct.setStockCount(detail.getStockCount());
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
