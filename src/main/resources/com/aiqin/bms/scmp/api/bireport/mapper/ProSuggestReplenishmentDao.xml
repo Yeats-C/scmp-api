@@ -32,10 +32,11 @@
         bsr.out_stock_affects_amount as outStockAffectMoney,
         bsr.stock_one_month_days as outStockContinuousDays,
         bsr.available_num as availableNum,
+        bsr.days_turnover as daysTurnover,
         psc.arrival_cycle as arrivalCycle,
         pssuc.out_put as outPuts,
         pssuc.need_days as needDays
-        FROM bi_app_suggest_replenishment bsr
+        FROM bi_app_suggest_replenishment_all bsr
         LEFT JOIN product_sku_config AS psc ON bsr.sku_code = psc.sku_code AND bsr.transport_center_code  = psc.transport_center_code
         LEFT JOIN product_sku_supply_unit_capacity AS pssuc
           ON bsr.sku_code  = pssuc.product_sku_code
@@ -60,5 +61,12 @@
         sr.purchase_process_supplier_confirm_day as numPaymentConfirm
         FROM supplier_rule sr
         where sr.company_code = 01
+    </select>
+    <select id="biAppSuggestReplenishmentAll" resultType="java.lang.Long">
+        select ifnull(sales_avg_3_month_num, 0) as avgNum
+        FROM bi_app_suggest_replenishment_all
+        where sku_code = #{skuCode,jdbcType=VARCHAR}
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
     </select>
 </mapper>

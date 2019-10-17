@@ -11,6 +11,7 @@
         <result column="sum_sku" jdbcType="INTEGER" property="sumSku"/>
         <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
         <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
+        <result column="status" jdbcType="VARCHAR" property="status" />
         <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
         <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
@@ -45,6 +46,7 @@
     </resultMap>
     <sql id="LIST_QUERY">
         <where>
+            status = 0 and
             purchase_group_code in
             <foreach collection="groupList" open="(" close=")" item="item" separator=",">
                 #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -83,7 +85,7 @@
          <include refid="Base_Column_List"></include>
         from reject_apply_record
         where
-         reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
+        status = 0 and reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
     </select>
     <select id="listCount" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest" resultType="java.lang.Integer">
         select
@@ -222,5 +224,10 @@
          apply_record_status = 1
          where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
     </update>
-
+    <update id="delete">
+         update reject_apply_record
+         set
+         status = 1
+         where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    </update>
 </mapper>

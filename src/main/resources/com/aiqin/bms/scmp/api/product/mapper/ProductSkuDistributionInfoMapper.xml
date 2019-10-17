@@ -249,4 +249,10 @@
       max_order_num = #{maxOrderNum,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="distributionInfoByPdf" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_distribution_info
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -188,6 +188,10 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("sales_volume")
     private Integer salesVolume;
 
+    @ApiModelProperty(value="近90天销量")
+    @JsonProperty("sales_volume_avg")
+    private Integer salesVolumeAvg;
+
     @ApiModelProperty(value="商品属性编码")
     @JsonProperty("product_property_code")
     private String productPropertyCode;
@@ -388,5 +392,14 @@ public class PurchaseApplyDetailResponse {
     @ApiModelProperty(value="采购单的类型（手动，自动）")
     @JsonProperty("apply_type_form")
     private String applyTypeForm;
+
+    @ApiModelProperty(value="赠品含税金额")
+    @JsonProperty("gift_tax_sum")
+    private String giftTaxSum;
+
+    @ApiModelProperty(value="库存金额")
+    @JsonProperty("stock_amount")
+    private Integer stockAmount;
+
 }
 

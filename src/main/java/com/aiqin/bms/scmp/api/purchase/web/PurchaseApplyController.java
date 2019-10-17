@@ -139,4 +139,18 @@ public class PurchaseApplyController {
     public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
         return purchaseApplyService.purchaseContrast(contrastRequest);
     }
+
+    @GetMapping("/pdf")
+    @ApiOperation("订货/收货单导出PDF模板")
+    public HttpResponse importPdf(@RequestParam("file_path") String filePath,
+                                  @RequestParam("purchase_order_code") String purchaseOrderCode) {
+        return purchaseApplyService.importPdf(filePath, purchaseOrderCode);
+    }
+
+    @GetMapping("/delete")
+    @ApiOperation("删除采购申请单")
+    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseApplyService.purchaseDelete(purchaseOrderId);
+    }
+
 }

@@ -199,4 +199,6 @@ public interface StockDao {
     Stock selectStockSum(Stock stock);
 
     Integer insertReplaceAll(List<Stock> stockList);
+
+    Stock stockInfo(Stock stock);
 }

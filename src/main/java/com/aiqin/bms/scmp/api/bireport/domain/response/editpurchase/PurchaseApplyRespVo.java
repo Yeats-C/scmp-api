@@ -39,6 +39,10 @@ public class PurchaseApplyRespVo  implements Serializable {
     @JsonProperty(value = "arrival_cycle")
     private Long arrivalCycle;
 
+    @ApiModelProperty("周转天数")
+    @JsonProperty(value = "days_turnover")
+    private Long daysTurnover;
+
     @ApiModelProperty("生产量")
     @JsonProperty(value = "out_put")
     private Long outPuts;

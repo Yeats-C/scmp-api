@@ -448,4 +448,13 @@
       from supply_company
       where supply_code = #{applySupplyCode}
   </select>
+  <select id="supplyInfoByPdf" resultType="com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse">
+    SELECT s.supply_code as supplyCode, s.supply_name as supplyName, s.mobile_phone as mobilePhone, s.fax,
+    s.contact_name as contactName, CONCAT(d.send_province_name, d.send_city_name, '/', d.sending_address) as address
+    FROM supply_company s
+    INNER JOIN delivery_information d
+    ON s.supply_code = d.supply_company_code
+    WHERE s.supply_code = #{supplyCode}
+    and d.delivery_type = 0
+  </select>
 </mapper>
