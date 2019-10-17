@@ -45,4 +45,7 @@ public interface ChartService {
      * @return
      */
     List<MonthCumulativeGrossProfitMarginRespVo> selectMonthCumulativeGrossProfitMargin(ChartReqVo chartReqVo);
+
+    // 部门预算额
+    Object selectMonthCumulativeMargin(String productSortName,String saleTypeCode);
 }

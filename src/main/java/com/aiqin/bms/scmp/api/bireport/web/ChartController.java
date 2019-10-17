@@ -165,4 +165,16 @@ public class ChartController {
         ChartReqVo chartReqVo = new ChartReqVo(createTime,productSortCode,productSortName,orderCode,orderOriginal,storeTypeCode,storeType,dataTypeCode,dataType);
         return HttpResponse.success(chartService.selectMonthCumulativeGrossProfitMargin(chartReqVo));
     }
+
+    @GetMapping("/search/month/cumulative/margin")
+    @ApiOperation("部门预算额")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "product_sort_name", value = "所属部门", type = "String"),
+            @ApiImplicitParam(name = "sale_type_code", value = "渠道编码", type = "String"),
+    })
+    public HttpResponse<List<MonthCumulativeMarginRespVo>> selectMonthCumulativeGrossProfitMargin(
+            @RequestParam(value = "product_sort_name", required = false) String productSortName,
+            @RequestParam(value = "sale_type_code", required = false) String saleTypeCode){
+        return HttpResponse.success(chartService.selectMonthCumulativeMargin(productSortName,saleTypeCode));
+    }
 }

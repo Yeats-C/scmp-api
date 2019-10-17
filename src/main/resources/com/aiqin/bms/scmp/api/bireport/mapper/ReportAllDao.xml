@@ -920,6 +920,9 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
         select
         bnpbmr.id as id,
+        bnpbmr.state_date as stateDate,
+        bnpbmr.transport_center_code as transportCenterCode,
+        bnpbmr.transport_center_name as transportCenterName,
         bnpbmr.sku_code as skuCode,
         bnpbmr.sku_name as skuName,
         bnpbmr.stock_batch_code as batchCode,
