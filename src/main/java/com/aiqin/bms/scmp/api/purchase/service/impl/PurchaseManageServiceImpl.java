@@ -378,6 +378,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
                 Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
+                if(number == 0){
+                    continue;
+                }
                 orderProduct.setOrderProductId(IdUtil.purchaseId());
                 orderProduct.setPurchaseOrderId(purchaseId);
                 orderProduct.setPurchaseOrderCode(purchaseProductCode);
