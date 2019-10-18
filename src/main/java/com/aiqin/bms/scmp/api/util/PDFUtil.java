@@ -21,6 +21,7 @@ public class PDFUtil {
     private static String tempFileName;
 
     public PDFUtil(String tempFilePath, String tempFileName) {
+
         this.tempFilePath=tempFilePath;
         this.tempFileName=tempFileName;
     }
@@ -99,13 +100,8 @@ public class PDFUtil {
      * @param paramMap
      * @throws Exception
      */
-    public  String  fillTemplate(Map<String, Object> paramMap, String fileName) throws Exception {
-//        File modelFile = new File(tempFilePath);
-//        if(!modelFile.exists()) {
-//            modelFile.mkdirs();
-//        }
+    public String fillTemplate(Map<String, Object> paramMap, String fileName) throws Exception {
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_23);
-        //configuration.setDirectoryForTemplateLoading(modelFile);
         configuration.setClassForTemplateLoading(PDFUtil.class,"/ftl/");
         configuration.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_23));
         //这个一定要设置，不然在生成的页面中 会乱码
@@ -118,13 +114,8 @@ public class PDFUtil {
         String htmlStr = stringWriter.toString();
         writer.flush();
         writer.close();
-        String tmpPath = tempFilePath;
-        File tmepFilePath = new File(tmpPath);
-        if (!tmepFilePath.exists()) {
-            tmepFilePath.mkdirs();
-        }
         String tmpFileName = fileName + ".pdf";
-        String outputFile = tempFilePath + File.separatorChar + tmpFileName;
+        String outputFile = File.separatorChar + tmpFileName;
         FileOutputStream outFile = new FileOutputStream(outputFile);
         createPDFFile(htmlStr, outFile);
         return outputFile;
@@ -136,7 +127,7 @@ public class PDFUtil {
      * @param os
      * @throws Exception
      */
-    private  void createPDFFile(String htmlStr, OutputStream os) throws Exception{
+    private void createPDFFile(String htmlStr, OutputStream os) throws Exception{
         ByteArrayInputStream bais = new ByteArrayInputStream(htmlStr.getBytes("UTF-8"));
         Document document = new Document(new RectangleReadOnly(842F,595F));
         try {
