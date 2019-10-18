@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+
 /**
  * @author: zhao shuai
  * @create: 2019-06-13
@@ -142,9 +146,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/pdf")
     @ApiOperation("订货/收货单导出PDF模板")
-    public HttpResponse importPdf(@RequestParam("file_path") String filePath,
-                                  @RequestParam("purchase_order_code") String purchaseOrderCode) {
-        return purchaseApplyService.importPdf(filePath, purchaseOrderCode);
+    public HttpResponse importPdf(@RequestParam("purchase_order_code") String purchaseOrderCode, HttpServletResponse response) {
+        return  purchaseApplyService.importPdf(purchaseOrderCode, response);
     }
 
     @GetMapping("/delete")
