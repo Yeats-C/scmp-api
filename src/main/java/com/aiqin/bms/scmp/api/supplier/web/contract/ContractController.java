@@ -135,4 +135,15 @@ public class ContractController {
         }
     }
 
+
+    @ApiOperation("根据合同编码查询结算方式")
+    @GetMapping("/getSettlementMethodByContractCode")
+    public HttpResponse getSettlementMethodByContractCode(@RequestParam  @ApiParam( value = "合同编码 必填" ,required =true) String contractCode){
+        try {
+            return HttpResponse.success(contractService.getSettlementMethodByContractCode(contractCode));
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+    }
+
 }
