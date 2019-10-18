@@ -56,6 +56,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
@@ -941,8 +942,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("type", type);
                 map.put("goodsCount", product.getPurchaseWhole());
                 map.put("goodsMin", product.getSingleCount());
-                map.put("price", product.getProductAmount());
-                map.put("priceSum", product.getProductTotalAmount());
+                BigDecimal price = new BigDecimal(product.getProductAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                map.put("price", price);
+                BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                map.put("priceSum", priceSum);
                 productList.add(map);
             }
         }else {

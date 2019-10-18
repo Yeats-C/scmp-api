@@ -28,6 +28,15 @@
     .ft-14{
       font-size: 14px;
     }
+
+    .header-table td{
+      width: 50%;
+    }
+
+    .footer-table td{
+      width: 33%;
+    }
+
   </style>
 </head>
 
@@ -35,7 +44,7 @@
 <div style="width: 95%;margin: 0 auto">
   <center><h4 style="font-size: 16px">宁波熙耘科技有限公司订货收货单</h4></center>
   <center><p class="ft-14" style="margin-top: 5px;margin-bottom: 20px">（请于${time}前发货）</p></center>
-  <table class="ft-14" width="95%" align="center">
+  <table class="ft-14 header-table" width="95%" align="center">
     <tr>
       <td>供应商</td>
       <td>收货部门</td>
@@ -100,7 +109,7 @@
     </tr>
   </#list>
   </table>
-  <table class="ft-14" border=0 cellspacing=0 cellpadding=0 width="95%" align="center">
+  <table class="footer-table ft-14" border=0 cellspacing=0 cellpadding=0 width="95%" align="center">
     <tr>
       <td>总箱数：${boxSum}</td>
       <td>单品总数量：${singleSum}</td>

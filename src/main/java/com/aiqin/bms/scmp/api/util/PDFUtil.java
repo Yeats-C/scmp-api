@@ -38,7 +38,8 @@ public class PDFUtil {
         Template template = configuration.getTemplate(tempFileName);
         StringWriter stringWriter = new StringWriter();
         BufferedWriter writer = new BufferedWriter(stringWriter);
-        template.process(paramMap, writer); //把值写进模板
+        // 把值写进模板
+        template.process(paramMap, writer);
         String htmlStr = stringWriter.toString();
         writer.flush();
         writer.close();
