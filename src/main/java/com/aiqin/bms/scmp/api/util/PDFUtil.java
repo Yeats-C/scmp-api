@@ -114,13 +114,13 @@ public class PDFUtil {
         String htmlStr = stringWriter.toString();
         writer.flush();
         writer.close();
-        String tmpPath = tempFilePath;
-        File tmepFilePath = new File(tmpPath);
+        //String tmpPath = tempFilePath;
+        File tmepFilePath = new File(fileName);
         if (!tmepFilePath.exists()) {
             tmepFilePath.mkdirs();
         }
         String tmpFileName = fileName + ".pdf";
-        String outputFile = tempFilePath + File.separatorChar + tmpFileName;
+        String outputFile =  File.separatorChar + tmpFileName;
         FileOutputStream outFile = new FileOutputStream(outputFile);
         createPDFFile(htmlStr, outFile);
         return outputFile;
