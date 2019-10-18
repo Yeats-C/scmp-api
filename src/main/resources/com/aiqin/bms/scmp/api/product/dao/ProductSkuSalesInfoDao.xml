@@ -123,4 +123,10 @@
       and a.product_sku_code != #{skuCode}
     </if>
   </select>
+  <select id="salesInfoByPdf" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo">
+    select
+     product_sku_code as productSkuCode, sales_code as salesCode
+    from product_sku_sales_info
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -8,13 +8,14 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDistributionInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
@@ -107,7 +108,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Resource
     private WarehouseDao warehouseDao;
     @Resource
-    private ProductSkuDistributionInfoMapper productSkuDistributionInfoDao;
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -883,7 +884,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         dataMap.put("code", purchaseOrderCode);
         if(detail != null){
             dataMap.put("singleSum", detail.getSingleCount());
-            dataMap.put("amountSum", detail.getProductTotalAmount() + detail.getGiftTaxSum());
+            BigDecimal amountSum = new BigDecimal(detail.getProductTotalAmount() + detail.getGiftTaxSum()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+            dataMap.put("amountSum", amountSum);
             if(detail.getExpectArrivalTime() != null) {
                 dataMap.put("time", sdf.format(detail.getExpectArrivalTime()));
             }
@@ -921,13 +923,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 box += product.getPurchaseWhole();
                 map.put("id", ++i);
                 map.put("skuCode", product.getSkuCode());
-                // 查询sku 的分销条形码
-                ProductSkuDistributionInfo distributionInfo = productSkuDistributionInfoDao.distributionInfoByPdf(product.getSkuCode());
-                String deliveryCode = "";
-                if(distributionInfo != null){
-                    deliveryCode = distributionInfo.getDeliveryCode() == null ? "" : distributionInfo.getDeliveryCode();
-                }
-                map.put("distribution", deliveryCode);
+                // 查询sku 的销售条形码
+                ProductSkuSalesInfo salesInfo = productSkuSalesInfoDao.salesInfoByPdf(product.getSkuCode());
+                String salesCode = salesInfo.getSalesCode() == null ? "" : salesInfo.getSalesCode();
+                map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
                 map.put("spec", product.getProductSpec());
                 String type;
