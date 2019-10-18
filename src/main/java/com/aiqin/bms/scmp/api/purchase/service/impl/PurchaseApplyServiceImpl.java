@@ -872,7 +872,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         String name = "订货单模板.htm";
-        PDFUtil pdfUtil = new PDFUtil("", name);
+        PDFUtil pdfUtil = new PDFUtil(name);
         /** 用于组装word、pdf页面需要的数据 */
         Map<String, Object> dataMap = new HashMap<>();
         /** 组装数据 */
@@ -962,21 +962,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         dataMap.put("productList", productList);
         dataMap.put("boxSum", box);
         try {
-            String result = pdfUtil.fillTemplate(dataMap, fileName);
             response.setContentType("*/*");
             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".pdf");
-            FileInputStream in = new FileInputStream(new File(result));
             OutputStream out = response.getOutputStream();
-            byte[] b = new byte[512];
-            while ((in.read(b))!=-1) {
-                out.write(b);
-            }
+            out.write(pdfUtil.fillTemplate(dataMap));
             out.flush();
-            in.close();
             out.close();
         } catch (Exception e) {
-            e.printStackTrace();
-            LOGGER.error("导出订货单PDF数据失败！");
+            LOGGER.error("导出订货单PDF数据失败！", e);
         }
         return HttpResponse.success();
     }
