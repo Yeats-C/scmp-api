@@ -327,7 +327,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 form.setPurchaseGroupCode(order.getPurchaseGroupCode());
                 form.setSettlementMethodCode(order.getSettlementMethodCode());
             }
-            this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
+            List<PurchaseApplyDetailResponse> productList = this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
             // 添加文件信息
             List<FileRecord> fileList = purchaseOrderRequest.getFileList();
             if(CollectionUtils.isNotEmptyCollection(fileList)){
@@ -335,28 +335,27 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             //  判断所有采购申请单的完成状态
             List<String> applyIds = purchaseOrderRequest.getApplyIds();
-            PurchaseApply purchaseApply;
-            for(String apply:applyIds){
-                // 查询申请单的所有未提交的sku数量
-                Integer applySkuSum = purchaseApplyProductDao.skuCount(apply, 0);
-                // 计算该次提交申请单的未提交的选中数量
-                form.getApplyIds().clear();
-                form.getApplyIds().add(apply);
-                Integer skuCount = purchaseApplyProductDao.formSkuCount(form);
-                if(applySkuSum <= skuCount){
-                    // 申请单状态变为完成
-                    purchaseApply = new PurchaseApply();
-                    purchaseApply.setPurchaseApplyId(apply);
-                    purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
-                    purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
-                    purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
-                    purchaseApplyDao.update(purchaseApply);
+            if(CollectionUtils.isNotEmptyCollection(applyIds)){
+                for(String apply:applyIds){
+                    // 变更提交采购申请单的完成状态
+                    for(PurchaseApplyDetailResponse product:productList){
+                        form.setPurchaseApplyId(apply);
+                        form.setSkuCode(product.getSkuCode());
+                        form.setUpdateById(purchaseOrderRequest.getPersonId());
+                        form.setUpdateByName(purchaseOrderRequest.getPersonName());
+                        purchaseApplyProductDao.updateInfoStatus(form);
+                    }
+                    // 判断所有采购申请单的完成状态
+                    Integer count = purchaseApplyProductDao.purchaseFormByComplete(apply);
+                    if(count <= 0){
+                        PurchaseApply purchaseApply = new PurchaseApply();
+                        purchaseApply.setPurchaseApplyId(apply);
+                        purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
+                        purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
+                        purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
+                        purchaseApplyDao.update(purchaseApply);
+                    }
                 }
-                // 变更提交采购申请单的完成状态
-                form.setPurchaseApplyId(apply);
-                form.setUpdateById(purchaseOrderRequest.getPersonId());
-                form.setUpdateByName(purchaseOrderRequest.getPersonName());
-                purchaseApplyProductDao.updateInfoStatus(form);
             }
             // 调审批流
             purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getPersonName(), details.getDirectSupervisorCode());
@@ -364,7 +363,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success();
     }
 
-    private void insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
+    private List<PurchaseApplyDetailResponse> insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
         List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
         // 提交采购单页面商品列表
         if (CollectionUtils.isNotEmptyCollection(details)) {
@@ -418,6 +417,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 添加采购单商品的审批记录
             applyPurchaseOrderProductDao.insertAll(list);
         }
+        return details;
     }
 
     @Override
