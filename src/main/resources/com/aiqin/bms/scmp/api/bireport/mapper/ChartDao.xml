@@ -302,10 +302,10 @@
         bmsa.category_name as categoryName,
         sum(bmsa.channel_amount) as channelAmount,
         sum(bmsa.channel_budget) as channelBudget,
-        sum(bmsa.channel_amount)/sum(bmsa.channel_budget) as channelYieldRate,
+        sum(bmsa.channel_amount)/sum(bmsa.channel_budget)/100 as channelYieldRate,
         sum(bmsa.distribution_amount) as distributionAmount,
         sum(bmsa.distribution_budget) as distributionBudget,
-        sum(bmsa.distribution_amount)/sum(bmsa.distribution_budget) as distributionYieldRate
+        sum(bmsa.distribution_amount)/sum(bmsa.distribution_budget)/100 as distributionYieldRate
         from (select * from bi_chart_month_sales_achievement bmsa where 1=1
         <if test="createTime!=null and createTime!=''">
             and bmsa.stat_year=#{createTime}
