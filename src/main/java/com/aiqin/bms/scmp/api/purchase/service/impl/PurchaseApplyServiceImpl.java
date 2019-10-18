@@ -884,8 +884,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         dataMap.put("code", purchaseOrderCode);
         if(detail != null){
             dataMap.put("singleSum", detail.getSingleCount());
-            BigDecimal amountSum = new BigDecimal(detail.getProductTotalAmount() + detail.getGiftTaxSum()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
-            dataMap.put("amountSum", amountSum);
             if(detail.getExpectArrivalTime() != null) {
                 dataMap.put("time", sdf.format(detail.getExpectArrivalTime()));
             }
@@ -917,6 +915,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         Map<String, Object> map;
         int i = 0;
         int box = 0;
+        BigDecimal amountSum = new BigDecimal("0");
         if(CollectionUtils.isNotEmptyCollection(list)){
             for (PurchaseOrderProduct product:list) {
                 map = new HashMap<>();
@@ -945,6 +944,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("price", price);
                 BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
                 map.put("priceSum", priceSum);
+                amountSum = amountSum.add(priceSum);
                 productList.add(map);
             }
         }else {
@@ -962,6 +962,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             productList.add(map);
         }
         dataMap.put("productList", productList);
+        dataMap.put("amountSum", amountSum);
         dataMap.put("boxSum", box);
         try {
             response.setContentType("*/*");
