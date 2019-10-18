@@ -162,7 +162,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(midSalesSkuNum == num || newSkuNum == num){
                         response.setHbNewProMovingSalesRate(big);
                     }else {
-                        response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        if(newSkuNum == 0){
+                            response.setHbNewProMovingSalesRate(new BigDecimal(0));
+                        }else{
+                            response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(mov.getTransportCenterCode().equals(Global.HD_CODE)){
                     response.setHdIniStockSkuNum(iniStockSkuNum);
@@ -174,7 +178,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(midSalesSkuNum == num || newSkuNum == num){
                         response.setHdNewProMovingSalesRate(big);
                     }else {
-                        response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        if(newSkuNum == 0){
+                            response.setHdNewProMovingSalesRate(new BigDecimal(0));
+                        }else{
+                            response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(mov.getTransportCenterCode().equals(Global.HN_CODE)){
                     response.setHnIniStockSkuNum(iniStockSkuNum);
@@ -186,7 +194,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(midSalesSkuNum == num || newSkuNum == num){
                         response.setHnNewProMovingSalesRate(big);
                     }else {
-                        response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        if(newSkuNum == 0){
+                            response.setHnNewProMovingSalesRate(new BigDecimal(0));
+                        }else{
+                            response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(mov.getTransportCenterCode().equals(Global.XN_CODE)){
                     response.setXnIniStockSkuNum(iniStockSkuNum);
@@ -198,7 +210,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(midSalesSkuNum == num || newSkuNum == num){
                         response.setXnNewProMovingSalesRate(big);
                     }else {
-                        response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        if(newSkuNum == 0){
+                            response.setXnNewProMovingSalesRate(new BigDecimal(0));
+                        }else{
+                            response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(mov.getTransportCenterCode().equals(Global.HZ_CODE)){
                     response.setHzIniStockSkuNum(iniStockSkuNum);
@@ -210,7 +226,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(midSalesSkuNum == num || newSkuNum == num){
                         response.setHzNewProMovingSalesRate(big);
                     }else {
-                        response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        if(newSkuNum == 0){
+                            response.setHzNewProMovingSalesRate(new BigDecimal(0));
+                        }else{
+                            response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }
             }
@@ -224,7 +244,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             if(sumMidSalesSkuNum == num || sumNewSkuNum == num){
                 response.setSumNewProMovingSalesRate(big);
             }else {
-                response.setSumNewProMovingSalesRate(new BigDecimal(sumMidSalesSkuNum).divide(new BigDecimal(sumNewSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                if(sumNewSkuNum == 0){
+                    response.setSumNewProMovingSalesRate(new BigDecimal(0));
+                }else{
+                    response.setSumNewProMovingSalesRate(new BigDecimal(sumMidSalesSkuNum).divide(new BigDecimal(sumNewSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
         }
         return response;
@@ -266,12 +290,14 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             depts = statDeptStockoutDao.deptList(request);
             if(CollectionUtils.isNotEmpty(depts)){
                 for(StatDeptStockout dept:depts){
-                    request.setProductSortCode(dept.getProductSortCode());
-                    request.setPurchaseGroupCode(null);
-                    deptResponse = this.deptStockOut(request);
-                    deptResponse.setProductSortCode(dept.getProductSortCode());
-                    deptResponse.setProductSortName(dept.getProductSortName());
-                    deptSumList.add(deptResponse);
+                    if(dept != null){
+                        request.setProductSortCode(dept.getProductSortCode());
+                        request.setPurchaseGroupCode(null);
+                        deptResponse = this.deptStockOut(request);
+                        deptResponse.setProductSortCode(dept.getProductSortCode());
+                        deptResponse.setProductSortName(dept.getProductSortName());
+                        deptSumList.add(deptResponse);
+                    }
                 }
                 sumResponse.setSubsetList(deptSumList);
             }
@@ -293,15 +319,17 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             purchaseGroupList = statDeptStockoutDao.purchaseGroupList(request);
             if(CollectionUtils.isNotEmpty(purchaseGroupList)){
                 for (StatDeptStockout group:purchaseGroupList){
-                    request.setPurchaseGroupCode(group.getPurchaseGroupCode());
-                    groupList = statDeptStockoutDao.stockOutSum(request);
-                    if (CollectionUtils.isNotEmpty(groupList)) {
-                        groupResponse = this.stockOutRate(groupList);
-                        groupResponse.setPurchaseGroupCode(group.getPurchaseGroupCode());
-                        groupResponse.setPurchaseGroupName(group.getPurchaseGroupName());
-                        groupResponse.setResponsiblePersonCode(group.getResponsiblePersonCode());
-                        groupResponse.setResponsiblePersonName(group.getResponsiblePersonName());
-                        groupSumList.add(groupResponse);
+                    if(group != null){
+                        request.setPurchaseGroupCode(group.getPurchaseGroupCode());
+                        groupList = statDeptStockoutDao.stockOutSum(request);
+                        if (CollectionUtils.isNotEmpty(groupList)) {
+                            groupResponse = this.stockOutRate(groupList);
+                            groupResponse.setPurchaseGroupCode(group.getPurchaseGroupCode());
+                            groupResponse.setPurchaseGroupName(group.getPurchaseGroupName());
+                            groupResponse.setResponsiblePersonCode(group.getResponsiblePersonCode());
+                            groupResponse.setResponsiblePersonName(group.getResponsiblePersonName());
+                            groupSumList.add(groupResponse);
+                        }
                     }
                 }
                 deptResponse.setSubsetList(groupSumList);
@@ -330,8 +358,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHbStockoutRate(big);
                     }else {
-                        response.setHbStockoutRate(new BigDecimal(stockoutSkuNum).
-                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        if(skuNumTotal == 0){
+                            response.setHbStockoutRate(new BigDecimal(0));
+                        }else{
+                            response.setHbStockoutRate(new BigDecimal(stockoutSkuNum).
+                                    divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(stock.getTransportCenterCode().equals(Global.HD_CODE)){
                     response.setHdSkuNumTotal(skuNumTotal);
@@ -340,8 +372,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHdStockoutRate(big);
                     }else {
-                        response.setHdStockoutRate(new BigDecimal(stockoutSkuNum).
-                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        if(skuNumTotal == 0){
+                            response.setHdStockoutRate(new BigDecimal(0));
+                        }else{
+                            response.setHdStockoutRate(new BigDecimal(stockoutSkuNum).
+                                    divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(stock.getTransportCenterCode().equals(Global.HN_CODE)){
                     response.setHnSkuNumTotal(skuNumTotal);
@@ -350,8 +386,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHnStockoutRate(big);
                     }else {
-                        response.setHnStockoutRate(new BigDecimal(stockoutSkuNum).
-                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        if(skuNumTotal == 0){
+                            response.setHnStockoutRate(new BigDecimal(0));
+                        }else{
+                            response.setHnStockoutRate(new BigDecimal(stockoutSkuNum).
+                                    divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(stock.getTransportCenterCode().equals(Global.XN_CODE)){
                     response.setXnSkuNumTotal(skuNumTotal);
@@ -360,8 +400,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setXnStockoutRate(big);
                     }else {
-                        response.setXnStockoutRate(new BigDecimal(stockoutSkuNum).
-                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        if(skuNumTotal == 0){
+                            response.setXnStockoutRate(new BigDecimal(0));
+                        }else{
+                            response.setXnStockoutRate(new BigDecimal(stockoutSkuNum).
+                                    divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }else if(stock.getTransportCenterCode().equals(Global.HZ_CODE)){
                     response.setHzSkuNumTotal(skuNumTotal);
@@ -370,8 +414,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHzStockoutRate(big);
                     }else {
-                        response.setHzStockoutRate(new BigDecimal(stockoutSkuNum).
-                                divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        if(skuNumTotal == 0){
+                            response.setHzStockoutRate(new BigDecimal(0));
+                        }else {
+                            response.setHzStockoutRate(new BigDecimal(stockoutSkuNum).
+                                    divide(new BigDecimal(skuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                        }
                     }
                 }
             }
@@ -381,8 +429,12 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             if(sumSkuNumTotal == 0 || sumStockoutSkuNum == 0){
                 response.setSumStockoutRate(big);
             }else {
-                response.setSumStockoutRate(new BigDecimal(sumStockoutSkuNum).
-                        divide(new BigDecimal(sumSkuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                if(sumSkuNumTotal == 0){
+                    response.setSumStockoutRate(new BigDecimal(0));
+                }else {
+                    response.setSumStockoutRate(new BigDecimal(sumStockoutSkuNum).
+                            divide(new BigDecimal(sumSkuNumTotal), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
         }
         return response;
