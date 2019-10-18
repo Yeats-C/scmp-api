@@ -975,6 +975,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             in.close();
             out.close();
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("导出订货单PDF数据失败！");
         }
         return HttpResponse.success();
