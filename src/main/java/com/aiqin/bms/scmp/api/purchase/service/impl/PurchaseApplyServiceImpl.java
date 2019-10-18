@@ -532,8 +532,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         errorList.add(response);
                         continue;
                     }
-                    String skuCode = decimalFormat.format(Double.valueOf(record[0]));
-                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, skuCode, supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
+                    String skuCode = record[0];
+                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
                     if(applyProduct != null){
                         if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
                             String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
