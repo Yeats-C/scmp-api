@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUser
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -74,4 +75,6 @@ public interface ContractDao {
 
 
     List<ContractPurchaseResVo> getContractByMap(Map<String,String> map);
+
+    DictionaryCodeResVo getSettlementMethodByContractCode(String contractCode);
 }

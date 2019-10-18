@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractR
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractPurchaseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.ContractResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.QueryContractResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
@@ -128,4 +129,14 @@ public interface ContractService {
     List<ContractPurchaseResVo> getContractBySupplierCode(String supplierCode);
 
 
+    /**
+     *
+     * 功能描述: 根据合同编码查询结算方式
+     *
+     * @param contractCode
+     * @return 
+     * @auther knight.xie
+     * @date 2019/10/18 14:24
+     */
+    DictionaryCodeResVo getSettlementMethodByContractCode(String contractCode);
 }
