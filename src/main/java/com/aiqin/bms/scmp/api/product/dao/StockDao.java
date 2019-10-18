@@ -198,10 +198,7 @@ public interface StockDao {
 
     Stock selectStockSum(Stock stock);
 
-    Stock stockInfo(@Param("skuCode") String skuCode,
-                    @Param("warehouseCode") String warehouseCode,
-                    @Param("transportCenterCode") String transportCenterCode,
-                    @Param("warehouseTypeCode") String warehouseTypeCode);
+    Integer insertReplaceAll(List<Stock> stockList);
 
-    Integer update(Stock stock);
+    Stock stockInfo(Stock stock);
 }

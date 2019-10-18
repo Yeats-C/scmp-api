@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.bireport.dao;
 
 import com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.*;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -44,4 +45,6 @@ public interface ChartDao {
      */
     List<MonthCumulativeGrossProfitMarginRespVo> selectMonthCumulativeGrossProfitMargin(ChartReqVo chartReqVo);
 
+    // 部门预算额
+    List<MonthCumulativeMarginRespVo> selectMonthCumulativeMargin(@Param("productSortName") String productSortName);
 }

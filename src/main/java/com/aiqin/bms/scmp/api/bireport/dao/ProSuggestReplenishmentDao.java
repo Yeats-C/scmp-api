@@ -43,4 +43,12 @@ public interface ProSuggestReplenishmentDao {
      * @return
      */
     PurchaseApplyRespVo selectPurchaseRuleNum();
+
+    /**
+     *  查询补货--全部数据表数据
+     * @return
+     */
+    Long biAppSuggestReplenishmentAll(@Param("transportCenterCode") String transportCenterCode,
+                                      @Param("skuCode") String skuCode,
+                                      @Param("warehouseCode") String warehouseCode);
 }

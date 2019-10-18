@@ -184,7 +184,8 @@
     o.update_time as updateTime, o.update_by_id as updateById, o.update_by_name as updateByName, d.payment_code as paymentCode,
     d.advance_payment as advancePayment, d.amount_payable as amountPayable, d.month_amount as monthAmount,
     d.payable_time as payableTime, d.month_time as monthTime, d.remark, o.create_by_name as createByName,
-    d.payment_name as paymentName
+    d.payment_name as paymentName, o.gift_tax_sum as giftTaxSum, o.product_total_amount as productTotalAmount,
+    o.single_count as singleCount
     from purchase_order o
     inner join purchase_order_details d
     on o.purchase_order_id = d.purchase_order_id

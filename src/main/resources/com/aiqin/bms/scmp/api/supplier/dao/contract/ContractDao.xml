@@ -459,6 +459,9 @@
       <if test="remark != null">
         #{remark},
       </if>
+      <if test="comment != null">
+        #{comment},
+      </if>
     </trim>
   </insert>
 
@@ -705,8 +708,16 @@
         and a.supplier_code = #{supplierCode}
       </if>
     </select>
+  <select id="getSettlementMethodByContractCode" parameterType="java.lang.String"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo">
+      select
+      settlement_method_name as dictionaryContent,
+      settlement_method  as dictionaryDictionaryValue
+      from contract
+      where contract_code = #{contractCode}
+  </select>
 
-    <update id="updateByCode" >
+  <update id="updateByCode" >
     update contract
     <set>
       <if test="applyStatus != null">

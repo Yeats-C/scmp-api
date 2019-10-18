@@ -92,9 +92,9 @@ public class ChartServiceImpl implements ChartService{
     public List<MonthCumulativeBrandSalesRespVo> selectMonthCumulativeBrandSales(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
-            if(createTime != null){
+            /*if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
-            }
+            }*/
             List<MonthCumulativeBrandSalesRespVo> monthCumulativeBrandSalesRespVos = chartDao.selectMonthCumulativeBrandSales(chartReqVo);
             return monthCumulativeBrandSalesRespVos;
         } catch (Exception ex) {
@@ -113,9 +113,9 @@ public class ChartServiceImpl implements ChartService{
     public List<MonthCumulativeGrossProfitMarginRespVo> selectMonthCumulativeGrossProfitMargin(ChartReqVo chartReqVo) {
         try {
             String createTime = chartReqVo.getCreateTime();
-            if(createTime != null){
+           /* if(createTime != null){
                 chartReqVo.setBeginCreateTime(createTime.substring(0,5)+"01");
-            }
+            }*/
             List<MonthCumulativeGrossProfitMarginRespVo> monthCumulativeGrossProfitMarginRespVos = chartDao.selectMonthCumulativeGrossProfitMargin(chartReqVo);
             return monthCumulativeGrossProfitMarginRespVos;
         } catch (Exception ex) {
@@ -123,5 +123,30 @@ public class ChartServiceImpl implements ChartService{
             ex.printStackTrace();
             throw new GroundRuntimeException(ex.getMessage());
         }
+    }
+
+    // 部门预算额
+    @Override
+    public List<MonthCumulativeMarginRespVo> selectMonthCumulativeMargin(String productSortName,String saleTypeCode) {
+        String name = productSortName.substring(0, productSortName.length() - 1);
+        List<MonthCumulativeMarginRespVo> monthCumulativeMarginRespVos = null;
+        if(saleTypeCode.equals("1")){
+            monthCumulativeMarginRespVos = chartDao.selectMonthCumulativeMargin(name+"渠道");
+        }else{
+            monthCumulativeMarginRespVos = chartDao.selectMonthCumulativeMargin(name+"分销");
+        }
+      /*  if(monthCumulativeMarginRespVos == null){
+            return null;
+        }else {
+            for (MonthCumulativeMarginRespVo m : monthCumulativeMarginRespVos) {
+                String budgetProductName = name + "分销预算额";
+                if(budgetProductName.equals(m.getBudgetProductName())){
+                    m.setDistributionBudget(m.getBudgetProduct());
+                }else {
+                    m.setChannelBudget(m.getBudgetProduct());
+                }
+            }
+        }*/
+        return monthCumulativeMarginRespVos;
     }
 }

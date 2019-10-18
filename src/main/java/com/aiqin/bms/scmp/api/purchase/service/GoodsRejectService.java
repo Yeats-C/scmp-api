@@ -80,4 +80,6 @@ public interface GoodsRejectService {
     String selectCategoryName(String categoryCode);
 
     HttpResponse<RejectResponse> applyRejectInfo(String approvalCode);
+
+    HttpResponse rejectDelete(String rejectApplyRecordCode);
 }

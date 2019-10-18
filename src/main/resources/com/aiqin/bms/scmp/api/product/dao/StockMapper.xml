@@ -2563,29 +2563,67 @@
             <if test="companyCode!=null and companyCode!=''">
                 AND company_code = #{companyCode,jdbcType=VARCHAR}
             </if>
+        </where>
+    </select>
+    <insert id="insertReplaceAll">
+        replace into stock(
+        stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
+        warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
+        new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
+        tax_price,tax_rate,tax_cost,update_time,update_by,stockup_num)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.stockCode},
+            #{item.companyCode},
+            #{item.companyName},
+            #{item.transportCenterCode},
+            #{item.transportCenterName},
+            #{item.warehouseCode},
+            #{item.warehouseName},
+            #{item.warehouseType},
+            #{item.skuCode},
+            #{item.skuName},
+            #{item.inventoryNum},
+            #{item.availableNum},
+            #{item.lockNum},
+            #{item.purchaseWayNum},
+            #{item.allocationWayNum},
+            #{item.totalWayNum},
+            #{item.newDelivery},
+            #{item.newDeliveryName},
+            #{item.newPurchasePrice},
+            #{item.purchaseGroupCode},
+            #{item.purchaseGroupName},
+            #{item.stockUnitCode},
+            #{item.stockUnitName},
+            #{item.taxPrice},
+            #{item.taxRate},
+            #{item.taxCost},
+            NOW(),
+            #{item.updateBy},
+            #{item.stockupNum})
+        </foreach>
+    </insert>
+    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        select
+        sku_code skuCode, sku_name skuName, ifnull(inventory_num,0) as inventoryNum, ifnull(available_num,0) as availableNum,
+        ifnull(total_way_num,0) as totalWayNum, ifnull(tax_cost,0) as taxCost, ifnull(new_purchase_price,0) as newPurchasePrice
+        from stock
+        <where>
             <if test="transportCenterCode!=null and transportCenterCode!=''">
                 AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
             </if>
+            <if test="skuCode!=null and skuCode!=''">
+                AND sku_code = #{skuCode,jdbcType=VARCHAR}
+            </if>
+            <if test="warehouseType!=null and warehouseType!=''">
+                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
+            </if>
+            <if test="companyCode!=null and companyCode!=''">
+                AND company_code = #{companyCode,jdbcType=VARCHAR}
+            </if>
         </where>
+        limit 1
     </select>
-    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-      select
-      company_code as companyCode, transport_center_code as transportCenterCode, sku_code as skuCode,
-      warehouse_type as warehouseType, warehouse_code as warehouseCode,
-      stock_code as stockCode, available_num as availableNum, tax_cost AS taxCost
-      from stock
-      where company_code = '09'
-      and sku_code = #{skuCode}
-      and transport_center_code = #{transportCenterCode}
-      and warehouse_code = #{warehouseCode}
-      and warehouse_type = #{warehouseTypeCode}
-    </select>
-    <update id="update">
-        UPDATE stock set inventory_num = #{availableNum}, available_num = #{availableNum},tax_cost = #{taxCost},update_time = now()
-        WHERE company_code = '09'
-        and sku_code = #{skuCode}
-        and transport_center_code = #{transportCenterCode}
-        and warehouse_code = #{warehouseCode}
-        and warehouse_type = #{warehouseType}
-    </update>
 </mapper>

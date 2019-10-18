@@ -273,4 +273,10 @@ public class GoodsRejectController {
         LOGGER.info("查询退供单详情请求,reject_record_code:{}", approval_code);
         return goodsRejectService.applyRejectInfo(approval_code);
     }
+
+    @GetMapping("/delete")
+    @ApiOperation("删除退供申请单")
+    public HttpResponse rejectDelete(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode) {
+        return goodsRejectService.rejectDelete(rejectApplyRecordCode);
+    }
 }

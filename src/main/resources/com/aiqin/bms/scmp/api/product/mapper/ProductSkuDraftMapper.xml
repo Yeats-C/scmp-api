@@ -161,6 +161,7 @@
     g.Input_tax_rate                   inputTaxRate,
     a.color_name                       colorName,
     a.model_number                     modelNumber,
+    a.apply_type                       applyType,
     CONCAT(lv1.category_name, '-', lv2.category_name, '-', lv3.category_name, '-',
     lv4.category_name) as       productCategoryName,
     case

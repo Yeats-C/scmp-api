@@ -307,10 +307,7 @@ public interface ProductSkuDao {
      */
     List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
 
-    List<SkuWarehouseResponse> skuByWarehouse(@Param("warehouseCode")String warehouseCode,
-                                              @Param("logisticsCenterCode")String logisticsCenterCode,
-                                              @Param("request")PagesRequest request);
+    List<SkuWarehouseResponse> skuByWarehouse(PagesRequest request);
 
-    Integer skuByWarehouseCount(@Param("warehouseCode")String warehouseCode,
-                        @Param("logisticsCenterCode")String logisticsCenterCode);
+    Integer skuByWarehouseCount();
 }
