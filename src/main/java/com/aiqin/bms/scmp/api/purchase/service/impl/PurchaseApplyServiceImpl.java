@@ -369,7 +369,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 if(info != null){
                     detail.setStockCount(info.getInventoryNum().intValue());
                     detail.setTotalWayNum(info.getTotalWayNum().intValue());
-                    detail.setStockAmount(info.getInventoryNum().intValue() * info.getTaxCost().intValue());
+                    detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
                     detail.setNewPurchasePrice(info.getNewPurchasePrice().intValue());
                 }
             }
