@@ -33,7 +33,7 @@
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
-    <result column="stock_amount" jdbcType="INTEGER" property="stockAmount" />
+    <result column="stock_amount" jdbcType="BIGINT" property="stockAmount" />
     <result column="stock_turnover" jdbcType="INTEGER" property="stockTurnover" />
     <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
   </resultMap>
@@ -180,7 +180,7 @@
       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
       #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, #{item.productAmount,jdbcType=INTEGER},
       #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
-      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=INTEGER},
+      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=BIGINT},
       #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER})
     </foreach>
   </insert>
