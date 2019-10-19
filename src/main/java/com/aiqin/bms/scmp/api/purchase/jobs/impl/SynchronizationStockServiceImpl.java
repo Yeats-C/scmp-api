@@ -33,7 +33,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
     private StockDao stockDao;
 
     //数据库地址
-    private final static String driver = " com.mysql.jdbc.Driver";
+    private final static String driver = "com.mysql.jdbc.Driver";
     private final static String url = "jdbc:mysql://39.105.36.111:1024/dareader?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
     private static final String username = "dareader1";
     private static final String password = "DA-Reader-20190110@1344";
