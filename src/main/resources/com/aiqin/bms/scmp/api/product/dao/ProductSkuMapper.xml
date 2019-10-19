@@ -2103,7 +2103,7 @@
     ps.product_code as spuCode, ps.product_name as spuName, pi.spec as productSpec, su.supply_unit_code as supplierCode,
     su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
-    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, (ifnull(s.tax_cost, 0) * ifnull(s.inventory_num, 0)) as stockAmount
+    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
