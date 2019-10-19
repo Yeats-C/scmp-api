@@ -38,13 +38,13 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
     private static final String username = "dareader1";
     private static final String password = "DA-Reader-20190110@1344";
 
-    public HttpResponse synchronizationStock(PagesRequest request, Integer isPage){
+    public HttpResponse synchronizationStock(PagesRequest request, Integer isPage) {
         Connection con = null;
         Statement statement = null;
         ResultSet rs = null;
-        try{
+        try {
             Class.forName(driver);
-        }catch(java.lang.ClassNotFoundException e){
+        } catch (java.lang.ClassNotFoundException e) {
             LOGGER.error("Cant't load Driver");
         }
         try {
@@ -56,13 +56,6 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
             List<Stock> stockList;
             Stock stock;
             Stock stock1;
-            int size = 1;
-            // 是否执行全部sku 0 是 1否
-            if (isPage == 0) {
-                // 查询sku数量
-                Integer count = productSkuDao.skuCount();
-                size = count / request.getPageSize() + 1;
-            }
             BigDecimal normalNum = new BigDecimal("0");
             BigDecimal returnNum = new BigDecimal("0");
             BigDecimal normalAmount = new BigDecimal("0");
@@ -70,15 +63,12 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
             BigDecimal count = new BigDecimal("100");
             BigDecimal num = new BigDecimal("0");
             BigDecimal amount = new BigDecimal("0");
-            for (int i = 0; i < size; i++) {
-                // 查询sku信息
-                skuList = productSkuDao.skuList(request);
-                stockList = Lists.newArrayList();
-                if (CollectionUtils.isEmptyCollection(skuList)) {
-                    continue;
-                }
+            // 查询sku信息
+            skuList = productSkuDao.skuList(request);
+            stockList = Lists.newArrayList();
+            if (CollectionUtils.isNotEmptyCollection(skuList)) {
                 long startTime = java.lang.System.currentTimeMillis();
-                LOGGER.info("执行代码块/方法" + i);
+                LOGGER.info("执行代码块/方法");
                 for (SkuWarehouseResponse sku : skuList) {
                     // 查询sku对应的库房
                     wareList = productSkuDao.skuByWarehouse(sku.getSkuCode());
@@ -94,12 +84,12 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         if (!rs.next()) {
                             continue;
                         }
-                         while (rs.next()) {
-                             normalNum = new BigDecimal(rs.getString("NormalQty"));
-                             normalAmount = new BigDecimal(rs.getString("TaxNormalAmount").trim());
-                             returnNum = new BigDecimal(rs.getString("ReturnQty"));
-                             returnAmount = new BigDecimal(rs.getString("TaxReturnAmount").trim());
-                         }
+                        while (rs.next()) {
+                            normalNum = new BigDecimal(rs.getString("NormalQty"));
+                            normalAmount = new BigDecimal(rs.getString("TaxNormalAmount").trim());
+                            returnNum = new BigDecimal(rs.getString("ReturnQty"));
+                            returnAmount = new BigDecimal(rs.getString("TaxReturnAmount").trim());
+                        }
                         stock = new Stock();
                         if (ware.getWmsWarehouseType() == 1) {
                             num = normalNum;
@@ -124,9 +114,9 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         stock.setTransportCenterCode(ware.getTransportCenterCode());
                         stock.setCompanyCode("09");
                         stock1 = stockDao.stockInfo(stock);
-                        if(stock1 == null){
+                        if (stock1 == null) {
                             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
-                        }else {
+                        } else {
                             stock.setStockCode(stock1.getStockCode());
                         }
                         stock.setCompanyName("宁波熙耘科技有限公司");
@@ -143,28 +133,27 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         stockList.add(stock);
                     }
                 }
-                stockDao.insertReplaceAll(stockList);
-                long endTime=java.lang.System.currentTimeMillis();
-                LOGGER.info("程序运行时间 " + i + ":"+(endTime - startTime)+"ms");
-                if (isPage == 1) {
-                    return HttpResponse.success();
+                if(stockList.size() > 0){
+                    stockDao.insertReplaceAll(stockList);
                 }
+                long endTime = java.lang.System.currentTimeMillis();
+                LOGGER.info("程序运行时间 " + (endTime - startTime) + "ms");
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("Connect fail:" , e);
-        } finally{
-            try{
-                if(rs != null){
+            LOGGER.error("Connect fail:", e);
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if(statement != null) {
+                if (statement != null) {
                     statement.close();
                 }
-                if(con != null){
+                if (con != null) {
                     con.close();
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
                 LOGGER.error("Close fail:", e);
             }
         }
