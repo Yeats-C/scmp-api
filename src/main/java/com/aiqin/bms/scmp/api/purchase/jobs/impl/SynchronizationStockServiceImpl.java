@@ -138,6 +138,8 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                 }
                 long endTime = java.lang.System.currentTimeMillis();
                 LOGGER.info("程序运行时间 " + (endTime - startTime) + "ms");
+            } else {
+                return HttpResponse.successGenerics("sku is empty");
             }
         } catch (Exception e) {
             e.printStackTrace();
