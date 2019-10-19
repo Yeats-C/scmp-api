@@ -401,5 +401,9 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("stock_amount")
     private Long stockAmount;
 
+    @ApiModelProperty(value="库存昨日成本")
+    @JsonProperty("tax_cost")
+    private Long taxCost;
+
 }
 
