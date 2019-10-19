@@ -56,14 +56,12 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
             List<Stock> stockList;
             Stock stock;
             Stock stock1;
-            Integer size;
+            int size = 1;
             // 是否执行全部sku 0 是 1否
             if (isPage == 0) {
                 // 查询sku数量
                 Integer count = productSkuDao.skuCount();
                 size = count / request.getPageSize() + 1;
-            } else {
-                size = 1;
             }
             BigDecimal normalNum = new BigDecimal("0");
             BigDecimal returnNum = new BigDecimal("0");
@@ -72,7 +70,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
             BigDecimal count = new BigDecimal("100");
             BigDecimal num = new BigDecimal("0");
             BigDecimal amount = new BigDecimal("0");
-            for (int i = 1; i <= size; i++) {
+            for (int i = 0; i < size; i++) {
                 // 查询sku信息
                 skuList = productSkuDao.skuList(request);
                 stockList = Lists.newArrayList();

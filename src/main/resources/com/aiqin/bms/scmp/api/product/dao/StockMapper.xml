@@ -2612,20 +2612,20 @@
         stock_code as stockCode
         from stock
         <where>
+            <if test="skuCode!=null and skuCode!=''">
+                AND sku_code = #{skuCode,jdbcType=VARCHAR}
+            </if>
             <if test="transportCenterCode!=null and transportCenterCode!=''">
                 AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
             </if>
-            <if test="skuCode!=null and skuCode!=''">
-                AND sku_code = #{skuCode,jdbcType=VARCHAR}
+            <if test="warehouseCode!=null and warehouseCode!=''">
+                AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
             </if>
             <if test="warehouseType!=null and warehouseType!=''">
                 AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
             </if>
             <if test="companyCode!=null and companyCode!=''">
                 AND company_code = #{companyCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseCode!=null and warehouseCode!=''">
-                AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
             </if>
         </where>
         limit 1
