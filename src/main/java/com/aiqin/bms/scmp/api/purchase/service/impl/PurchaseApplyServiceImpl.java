@@ -15,7 +15,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
@@ -59,7 +58,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URLEncoder;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -341,7 +339,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             product.setPurchaseApplyCode(purchaseApplyCode);
             product.setApplyProductStatus(Global.USER_ON);
         }
-         purchaseApplyProductDao.insertAll(applyProducts);
+        purchaseApplyProductDao.insertAll(applyProducts);
         return HttpResponse.success();
     }
 
@@ -502,54 +500,52 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 String[] record;
                 SupplyCompany supplier;
                 LogisticsCenter logisticsCenter;
-                PurchaseImportResponse response ;
+                PurchaseImportResponse response;
                 PurchaseApplyDetailResponse applyProduct;
                 PurchaseApplyReqVo applyReqVo;
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                DecimalFormat decimalFormat = new DecimalFormat("0");
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3])) {
-                        HandleResponse(response, record,"导入的数据不全；", i);
+                        HandleResponse(response, record, "导入的数据不全；", i);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
-                    if(supplier==null){
-                        HandleResponse(response, record,"未查询到供应商信息；", i);
+                    if (supplier == null) {
+                        HandleResponse(response, record, "未查询到供应商信息；", i);
                         errorCount++;
                         list.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
-                    if(logisticsCenter==null){
-                        HandleResponse(response, record,"未查询到仓库信息；", i);
+                    if (logisticsCenter == null) {
+                        HandleResponse(response, record, "未查询到仓库信息；", i);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
-                    String skuCode = record[0];
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
-                    if(applyProduct != null){
-                        if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
+                    if (applyProduct != null) {
+                        if (StringUtils.isNotBlank(applyProduct.getCategoryId())) {
                             String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
                             applyProduct.setCategoryName(categoryName);
                         }
-                         // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
+                        // 报表取缺货影响的销售额， 缺货天数， 预测订货件数, 库存周转期
                         applyReqVo = new PurchaseApplyReqVo();
                         applyReqVo.setSkuCode(record[0]);
                         applyReqVo.setSupplierCode(supplier.getSupplyCode());
                         applyReqVo.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
                         PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
-                        if(vo != null){
-                            applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
-                            if(StringUtils.isNotBlank(vo.getPredictedArrival())){
-                               Date parse = formatter.parse(vo.getPredictedArrival());
-                               applyProduct.setReceiptTime(parse);
+                        if (vo != null) {
+                            applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0 : vo.getAdviceOrders().intValue());
+                            if (StringUtils.isNotBlank(vo.getPredictedArrival())) {
+                                Date parse = formatter.parse(vo.getPredictedArrival());
+                                applyProduct.setReceiptTime(parse);
                             }
                             applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0 : vo.getAverageAmount().intValue() * 90);
                             applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0 : vo.getOutStockAffectMoney().intValue());
@@ -561,53 +557,32 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             Long priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
-                         if(StringUtils.isNotBlank(record[4])){
-                             Integer whole;
-                             Integer single;
-                             if(record[4].contains("零")){
-                                 String index = record[4].replace("零", "/").trim();
-                                 int index1 = index.indexOf("/");
-                                 int length = index.length();
-                                 whole = Integer.valueOf(index.substring(0, index1));
-                                 single = Integer.valueOf(index.substring(index1 + 1, length));
-                             }else {
-                                 whole = Double.valueOf(record[4]).intValue();
-                                 single = 0;
-                             }
-                             applyProduct.setPurchaseWhole(whole);
-                             applyProduct.setPurchaseSingle(single);
-                         }else {
-                             applyProduct.setPurchaseWhole(0);
-                             applyProduct.setPurchaseSingle(0);
-                         }
-                         if(StringUtils.isNotBlank(record[5])){
-                             Integer whole;
-                             Integer single;
-                             if(record[5].contains("零")){
-                                 String index = record[5].replace("零", "/").trim();
-                                 int index1 = index.indexOf("/");
-                                 int length = index.length();
-                                 whole = Integer.valueOf(index.substring(0, index1));
-                                 single = Integer.valueOf(index.substring(index1 + 1, length));
-                             }else {
-                                 whole = Double.valueOf(record[5]).intValue();
-                                 single = 0;
-                             }
-                             applyProduct.setReturnWhole(whole);
-                             applyProduct.setReturnSingle(single);
-                         }else {
-                             applyProduct.setReturnWhole(0);
-                             applyProduct.setReturnSingle(0);
-                         }
+                        Integer baseProductContent = applyProduct.getBaseProductContent();
+                        if (StringUtils.isNotBlank(record[4]) && baseProductContent != 0) {
+                            Integer count = Double.valueOf(record[4]).intValue();
+                            applyProduct.setPurchaseWhole(count / baseProductContent);
+                            applyProduct.setPurchaseSingle(count % baseProductContent);
+                        } else {
+                            applyProduct.setPurchaseWhole(0);
+                            applyProduct.setPurchaseSingle(0);
+                        }
+                        if (StringUtils.isNotBlank(record[5]) && baseProductContent != 0) {
+                            Integer count = Double.valueOf(record[5]).intValue();
+                            applyProduct.setReturnWhole(count / baseProductContent);
+                            applyProduct.setReturnSingle(count % baseProductContent);
+                        } else {
+                            applyProduct.setReturnWhole(0);
+                            applyProduct.setReturnSingle(0);
+                        }
                         BeanUtils.copyProperties(applyProduct, response);
-                        if(StringUtils.isBlank((record[6]))){
-                            response.setProductPurchaseAmount(0);
-                        }else {
-                            Double value = Double.valueOf(record[6])* 100;
+                        if (StringUtils.isBlank((record[6]))) {
+                            response.setProductPurchaseAmount(applyProduct.getNewPurchasePrice());
+                        } else {
+                            Double value = Double.valueOf(record[6]) * 100;
                             response.setProductPurchaseAmount(value.intValue());
                         }
-                    }else{
-                        HandleResponse(response, record,"未查询到对应的商品；", i);
+                    } else {
+                        HandleResponse(response, record, "未查询到对应的商品；", i);
                         errorCount++;
                         errorList.add(response);
                     }
@@ -656,7 +631,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
                                                                      String supplierCode, String transportCenterCode, Integer productCount){
         if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode) ||
-            productPurchaseAmount == null || singleCount == null || productCount == null){
+                productPurchaseAmount == null || singleCount == null || productCount == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         PurchaseFlowPathResponse flow = new PurchaseFlowPathResponse();
@@ -739,7 +714,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         List<PurchaseApplyDetailResponse> details =
                 list.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
-                        +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode() + "#" + o.getProductType()))),
+                                +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode() + "#" + o.getProductType()))),
                         ArrayList::new));
         Long frontTurnover = 0L, frontPurchaseCost = 0L;
         PurchaseNewContrastResponse response = new PurchaseNewContrastResponse();
@@ -747,7 +722,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         for(PurchaseApplyDetailResponse detail:details){
             // 查询库存周转天数、大库存预警天数、库存数量
             if(StringUtils.isBlank(detail.getSkuCode()) || StringUtils.isBlank(detail.getTransportCenterCode()) ||
-            StringUtils.isBlank(detail.getWarehouseCode())){
+                    StringUtils.isBlank(detail.getWarehouseCode())){
                 continue;
             }
             PurchaseStockResponse stockResponse = stockDao.stockCountByOtherInfo(detail.getSkuCode(), detail.getTransportCenterCode(), detail.getWarehouseCode());
