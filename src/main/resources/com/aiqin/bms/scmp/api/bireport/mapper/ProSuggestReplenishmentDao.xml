@@ -67,6 +67,6 @@
         FROM bi_app_suggest_replenishment_all
         where sku_code = #{skuCode,jdbcType=VARCHAR}
         and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} limit 1
     </select>
 </mapper>
