@@ -445,4 +445,16 @@
     </foreach>
     )
   </select>
+  <select id="listByRejectIds" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    reject_record_detail
+    where
+    reject_record_id in(
+    <foreach collection="list" item="item" separator=","  >
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+    )
+  </select>
 </mapper>

@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,4 +23,6 @@ public interface ProfitLossProductBatchMapper {
     List<ProfitLossProductBatch> getListByOrderCode(String orderCode);
 
     void insertList(@Param(value = "list") List<ProfitLossProductBatch> batchList);
+
+    List<ProfitLossProductBatch> listForSap(SapOrderRequest sapOrderRequest);
 }

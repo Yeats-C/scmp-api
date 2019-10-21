@@ -2630,4 +2630,27 @@
         </where>
         limit 1
     </select>
+    <resultMap id="SapProductStock" type="com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse">
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
+        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
+        <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode"/>
+    </resultMap>
+    <select id="listBySkuCodes" resultMap="SapProductStock">
+        select
+          ps.sku_code,ps.sku_name,ps.product_category_code,psc.Input_tax_rate,s.transport_center_code,s.transport_center_name,
+          s.warehouse_code,s.warehouse_name,ps.procurement_section_code
+        from
+         stock as s
+         left join product_sku as ps on s.sku_code = ps.sku_code
+        inner join product_sku_checkout psc on s.sku_code = psc.sku_code
+        where s.sku_code in
+        <foreach collection="list" separator="," open="(" close=")" item="item">
+            #{item}
+        </foreach>
+    </select>
 </mapper>

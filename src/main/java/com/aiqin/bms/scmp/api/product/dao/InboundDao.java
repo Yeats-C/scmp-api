@@ -51,4 +51,6 @@ public interface InboundDao {
     Inbound selectById(String id);
 
     List<Inbound> listForSap(SapOrderRequest sapOrderRequest);
+
+    void updateByOrderCodes(List<String> list);
 }

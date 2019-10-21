@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -32,4 +34,6 @@ public interface PurchaseOrderProductDao {
     List<PurchaseApplyDetailResponse> orderProductInfoByGroup(String purchaseOrderId);
 
     List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
+
+    List<PurchaseOrderProduct> listForSap(SapOrderRequest sapOrderRequest);
 }

@@ -693,4 +693,15 @@
     and synchr_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
     and synchr_status = 0
   </select>
+  <update id="updateByOrderCodes">
+    update
+      outbound
+    set
+      synchr_status=1
+    where
+    outbound_oder_code in
+    <foreach collection="list" item="item" open="(" close=")" separator=",">
+      #{item,jdbcType=VARCHAR}
+    </foreach>
+  </update>
 </mapper>

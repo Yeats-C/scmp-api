@@ -416,4 +416,16 @@
       line_num = #{lineNum,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from
+    profit_loss_product_batch
+    where
+    order_code in(
+    <foreach collection="orderCodeList" separator="," item="item">
+      #{item}
+    </foreach>
+    )
+  </select>
 </mapper>
