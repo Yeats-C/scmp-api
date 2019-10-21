@@ -227,4 +227,15 @@
       settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+    product_sku_checkout
+    where sku_code   in(
+    <foreach collection="list" item="skuCode" separator=",">
+      #{skuCode,jdbcType=VARCHAR}
+    </foreach>
+    )
+  </select>
 </mapper>

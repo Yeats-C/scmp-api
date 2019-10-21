@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
@@ -45,8 +46,8 @@ public interface ProductSkuDao {
     ProductSkuRespVo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ApplyProductSku> getSkuApplyList(String applyCode);
+
     /**
-     *
      * @param querySkuListReqVO
      * @return根据查询条件查询商品SKU列表
      */
@@ -54,6 +55,7 @@ public interface ProductSkuDao {
 
     /**
      * 采购获取sku分页列表
+     *
      * @param queryPurchaseSkuReqVO
      * @return
      */
@@ -61,6 +63,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku集合查询sku信息
+     *
      * @param queryMerchantSkuListReqVO
      * @return
      */
@@ -68,6 +71,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据商品编码及颜色等查询sku信息
+     *
      * @param queryStoreSkuListReqVO
      * @return
      */
@@ -75,6 +79,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据SKU编码查询基本信息
+     *
      * @param skuCode
      * @return
      */
@@ -82,6 +87,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku获取默认厂商
+     *
      * @param skuCode
      * @return
      */
@@ -89,6 +95,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku编码获取默认销售信息
+     *
      * @param skuCode
      * @return
      */
@@ -96,6 +103,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku编码获取图片列表信息
+     *
      * @param skuCode
      * @return
      */
@@ -103,6 +111,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据库存集合和sku集合查询仓库下sku库存量
+     *
      * @param skuWarehouseStockNum
      * @return
      */
@@ -110,6 +119,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据门店条件查询商品列表
+     *
      * @param queryStoreProductListReqDTO
      * @return
      */
@@ -117,6 +127,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku集合等检查sku列表
+     *
      * @param checkPurchaseSkuReqVO
      * @return
      */
@@ -124,6 +135,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku集合查询sku基本信息列表
+     *
      * @param skuCodeList
      * @return
      */
@@ -137,6 +149,7 @@ public interface ProductSkuDao {
 
     /**
      * sku管理查询
+     *
      * @param querySkuListReqVO
      * @return
      */
@@ -144,6 +157,7 @@ public interface ProductSkuDao {
 
     /**
      * sku管理查询通过供应商
+     *
      * @param supplyUnitCode
      * @return
      */
@@ -151,18 +165,21 @@ public interface ProductSkuDao {
 
     /**
      * 查询可选择的商品草稿列表
+     *
      * @return
      */
     List<ProductDraftListResp> getProductDraftList();
 
     /**
      * 查询可选择的sku草稿列表
+     *
      * @return
      */
     List<ProductSkuDraft> getProductSkuDraftList();
 
     /**
      * 根据sku集合查询草稿
+     *
      * @param skuCodes
      * @return
      */
@@ -170,6 +187,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据商品集合查询草稿
+     *
      * @param productCodes
      * @return
      */
@@ -177,6 +195,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据sku集合删除草稿
+     *
      * @param skuCodes
      * @return
      */
@@ -184,6 +203,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据商品集合删除草稿
+     *
      * @param productCodes
      * @return
      */
@@ -191,6 +211,7 @@ public interface ProductSkuDao {
 
     /**
      * 批量新增sku申请信息
+     *
      * @param applyProductSkus
      * @return
      */
@@ -220,6 +241,7 @@ public interface ProductSkuDao {
 
     /**
      * 根据物流中心查询配置的skucode集合
+     *
      * @param list
      * @return
      */
@@ -235,57 +257,67 @@ public interface ProductSkuDao {
 
     /**
      * 销售类变价查询sku列表
-     * @author NullPointException
-     * @date 2019/5/28
+     *
      * @param vo
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
+     * @author NullPointException
+     * @date 2019/5/28
      */
     List<QuerySkuInfoRespVO> selectSkuListForSalePrice(@Param("list") List<Long> list, @Param("changePriceType") String changePriceType);
 
     List<Long> selectSkuListForSalePriceCount(QuerySkuInfoReqVO vo);
+
     /**
      * 采购类变价查询sku列表
-     * @author NullPointException
-     * @date 2019/5/29
+     *
      * @param vo
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.changeprice.QuerySkuInfoRespVO>
+     * @author NullPointException
+     * @date 2019/5/29
      */
     List<QuerySkuInfoRespVO> selectSkuListForPurchasePrice(List<Long> ids);
 
     /**
      * 查数量
+     *
      * @param vo
      * @return
      */
     List<Long> selectSkuListForPurchasePriceCount(QuerySkuInfoReqVO vo);
+
     /**
      * 查直送供应商
-     * @author NullPointException
-     * @date 2019/6/5
+     *
      * @param collect
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaRespVO>
+     * @author NullPointException
+     * @date 2019/6/5
      */
     List<QueryProductSaleAreaRespVO> selectDirectSupplierBySkuCodes(@Param("items") List<String> collect);
+
     /**
      * 销售区域查询sku信息
-     * @author NullPointException
-     * @date 2019/6/6
+     *
      * @param ids
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
+     * @author NullPointException
+     * @date 2019/6/6
      */
     List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(List<Long> ids);
+
     /**
      * 查数量
-     * @author NullPointException
-     * @date 2019/7/10
+     *
      * @param reqVO
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO>
+     * @author NullPointException
+     * @date 2019/7/10
      */
     List<Long> selectSkuListForSaleAreaCount(QueryProductSaleAreaForSkuReqVO reqVO);
 
     List<SupervisoryWarehouseSkuRespVo> getSupervisoryWarehouseSku(QuerySkuListReqVO querySkuListReqVO);
 
-    List<ProductSkuInfo> getSkuInfoByCodeList(@Param("skuCodeList")List<String> skuCodeList);
+    List<ProductSkuInfo> getSkuInfoByCodeList(@Param("skuCodeList") List<String> skuCodeList);
 
     List<PurchaseApplyDetailResponse> purchaseProductList(PurchaseApplyRequest purchases);
 
@@ -293,19 +325,22 @@ public interface ProductSkuDao {
 
     List<String> contrastPropertySku(String productCategoryCode);
 
-    PurchaseApplyDetailResponse purchaseBySkuStock(@Param("purchaseGroupCode")String purchaseGroupCode, @Param("skuCode")String skuCode,
-                                            @Param("supplierCode")String supplierCode, @Param("transportCenterCode")String transportCenterCode);
+    PurchaseApplyDetailResponse purchaseBySkuStock(@Param("purchaseGroupCode") String purchaseGroupCode, @Param("skuCode") String skuCode,
+                                                   @Param("supplierCode") String supplierCode, @Param("transportCenterCode") String transportCenterCode);
 
     List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
 
     OrderProductSkuResponse selectSkuInfo(String skuCode);
 
     /**
-     *  查询sku库存的相关单位
+     * 查询sku库存的相关单位
+     *
      * @param skuList
      * @return
      */
     List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
+
+    List<ProductSkuInfo> listForSap(SapOrderRequest sapOrderRequest);
 
     List<SkuWarehouseResponse> skuByWarehouse(String skuCode);
 

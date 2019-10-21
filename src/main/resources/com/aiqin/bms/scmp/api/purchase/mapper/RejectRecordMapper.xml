@@ -595,4 +595,23 @@
         where
         reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
     </select>
+    <select id="listForSap" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from
+        reject_record
+        where
+        synchr_status = 0
+    </select>
+    <update id="updateByOrderCodes">
+        update
+          reject_record
+        set
+          synchr_status=1
+        where
+        reject_record_id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundBatch;
@@ -26,4 +27,6 @@ public interface InboundBatchDao {
     List<InboundBatch> listBySourceCodes(@Param("list") List<String> orderCodes);
 
     Integer insertList(List<InboundBatchReqVo> batchList);
+
+    List<InboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
 }
