@@ -38,10 +38,10 @@
                 and bsar.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bsar.inbound_time between #{beginInboundTime}
+                and bsar.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bsar.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
         </where>
     </sql>
@@ -49,10 +49,10 @@
         <where>
             1=1
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bgbs.inbound_time between #{beginInboundTime}
+                and bgbs.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bgbs.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="supplierCode!=null and supplierCode!=''">
                 and bgbs.supplier_code=#{supplierCode}
@@ -141,10 +141,10 @@
                 and bgbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bgbs.inbound_time between #{beginInboundTime}
+                and bgbs.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bgbs.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="warehouseCode!=null and warehouseCode!=''">
                 and bgbs.warehouse_code=#{warehouseCode}
@@ -191,10 +191,10 @@
                 and bsr.warehouse_name like concat('%', #{warehouseName}, '%')
             </if>
             <if test="beginOutStockTime!=null and beginOutStockTime!=''">
-                and bsr.out_stock_time between #{beginOutStockTime}
+                and bsr.out_stock_time <![CDATA[>=]]> #{beginOutStockTime}
             </if>
             <if test="finishOutStockTime!=null and finishOutStockTime!=''">
-                and #{finishOutStockTime}
+                and bsr.out_stock_time <![CDATA[<=]]> #{finishOutStockTime}
             </if>
         </where>
     </sql>
@@ -226,10 +226,10 @@
                 and bnpbmr.category_name like concat('%', #{categoryName}, '%')
             </if>
             <if test="beginInboundTime!=null and beginInboundTime!=''">
-                and bnpbmr.inbound_time between #{beginInboundTime}
+                and bnpbmr.inbound_time <![CDATA[>=]]> #{beginInboundTime}
             </if>
             <if test="finishInboundTime!=null and finishInboundTime!=''">
-                and #{finishInboundTime}
+                and bnpbmr.inbound_time <![CDATA[<=]]> #{finishInboundTime}
             </if>
             <if test="batchCode!=null and batchCode!=''">
                 and bnpbmr.stock_batch_code=#{batchCode}
@@ -273,10 +273,10 @@
                 and bsrr.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsrr.create_time between #{beginCreateTime}
+                and bsrr.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bsrr.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -308,10 +308,10 @@
                 and bnm.price_channel_name like concat('%', #{orderOriginal}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bnm.create_time between #{beginCreateTime}
+                and bnm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bnm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bnm.product_sort_code=#{productSortCode}
@@ -349,10 +349,10 @@
                 and bsr.transport_center_name like concat('%', #{transportCenterName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bsr.create_time between #{beginCreateTime}
+                and bsr.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bsr.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -372,10 +372,10 @@
                 and bli.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bli.create_time between #{beginCreateTime}
+                and bli.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bli.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -395,10 +395,10 @@
                 and bhi.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bhi.create_time between #{beginCreateTime}
+                and bhi.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bhi.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -498,9 +498,15 @@
     <sql id="select_monthly_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
+        <!--    <if test="month!=null and month!=''">
                 and bms.year_month = #{month}
-            </if>
+            </if>-->
+            <if test="productSortCode!=null and productSortCode!=''">
+               and bms.product_sort_code=#{productSortCode}
+           </if>
+           <if test="productSortName!=null and productSortName!=''">
+               and bms.product_sort_name like concat('%', #{productSortName}, '%')
+           </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bms.price_channel_code=#{priceChannelCode}
             </if>
@@ -555,10 +561,10 @@
                 and bmgm.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmgm.create_time between #{beginCreateTime}
+                and bmgm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmgm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
         </where>
     </sql>
@@ -590,10 +596,10 @@
                 and bmsa.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmsa.create_time between #{beginCreateTime}
+                and bmsa.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmsa.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
                 and bmsa.category_code= like concat(#{categoryCode}, '%')
@@ -606,8 +612,14 @@
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="month!=null and month!=''">
+        <!--    <if test="month!=null and month!=''">
                 and bmcbs.year_month = #{month}
+            </if>-->
+            <if test="productSortCode!=null and productSortCode!=''">
+                and bmcbs.product_sort_code=#{productSortCode}
+            </if>
+            <if test="productSortName!=null and productSortName!=''">
+                and bmcbs.product_sort_name like concat('%', #{productSortName}, '%')
             </if>
             <if test="priceChannelCode!=null and priceChannelCode!=''">
                 and bmcbs.price_channel_code=#{priceChannelCode}
@@ -669,10 +681,10 @@
                 and bmcgpm.data_type like concat('%', #{dataType}, '%')
             </if>
             <if test="beginCreateTime!=null and beginCreateTime!=''">
-                and bmcgpm.create_time between #{beginCreateTime}
+                and bmcgpm.create_time <![CDATA[>=]]> #{beginCreateTime}
             </if>
             <if test="finishCreateTime!=null and finishCreateTime!=''">
-                and #{finishCreateTime}
+                and bmcgpm.create_time <![CDATA[<=]]> #{finishCreateTime}
             </if>
             <if test="categoryCode!=null and categoryCode!=''">
                 and bmcgpm.category_code like concat(#{categoryCode}, '%')
@@ -908,6 +920,9 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
         select
         bnpbmr.id as id,
+        bnpbmr.state_date as stateDate,
+        bnpbmr.transport_center_code as transportCenterCode,
+        bnpbmr.transport_center_name as transportCenterName,
         bnpbmr.sku_code as skuCode,
         bnpbmr.sku_name as skuName,
         bnpbmr.stock_batch_code as batchCode,
@@ -947,7 +962,7 @@
         date_format(bnpbmr.create_time, '%Y-%m-%d %H:%i:%s') as createTime
         from bi_new_product_batch_moving_rate bnpbmr
         <include refid="select_new_product_batch_moving_rate"/>
-        GROUP by bnpbmr.inbound_time desc
+        order by bnpbmr.inbound_time desc
     </select>
     <select id="selectNewProductSkuNameByCodeOne" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.NewProductBatchMovingRateRespVo">
         select
@@ -1233,7 +1248,7 @@
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlySalesRespVo">
         select
         bms.id as id,
-        bms.year_month as month,
+        bms.year_month as yearMonth,
         bms.sales_cost as salesCost,
         bms.price_channel_code as priceChannelCode,
         bms.price_channel_name as priceChannelName,
@@ -1270,8 +1285,24 @@
         bms.distribution_budget as distributionBudget,
         bms.distribution_achievement as distributionAchievement,
         date_format(bms.create_time, '%Y-%m-%d %H:%i:%s') as createTime
-        from bi_monthly_sales bms
+        from (select * from bi_monthly_sales bms,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_monthly_sales bms where 1=1
+        <if test="month!=null and month!=''">
+            and bms.year_month = #{month}
+        </if>) bms) daytime where DATEDIFF(now(),bms.create_time)=daytime.days) bms
         <include refid="select_monthly_sales"/>
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                ,bms.product_sort_code
+            </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bms.price_channel_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bms.store_type_code
+            </if>
+        </if>
     </select>
     <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthlySalesReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
@@ -1345,32 +1376,51 @@
         bmcbs.product_sort_name as productSortName,
         bmcbs.product_property_code as productPropertyCode,
         bmcbs.product_property_name as productPropertyName,
-        bmcbs.total_stock_cost as totalStockCost,
-        bmcbs.total_channel_amount_daily as totalChannelAmountDaily,
-        bmcbs.total_last_year_channel_amount_daily as totalLastYearChannelAmountDaily,
-        bmcbs.total_last_month_channel_amount_daily as totalLastMonthChannelAmountDaily,
-        bmcbs.total_channel_amount_daily_compared_same as totalChannelAmountDailyComparedSame,
-        bmcbs.total_channel_amount_daily_sequential as totalChannelAmountDailySequential,
-        bmcbs.total_channel_maori as totalChannelMaori,
-        bmcbs.total_channel_maori_rate as totalChannelMaoriRate,
-        bmcbs.total_last_year_channel_maori_rate as totalLastYearChannelMaoriRate,
-        bmcbs.total_last_month_channel_maori_rate as totalLastMonthChannelMaoriRate,
-        bmcbs.total_channel_gross_margin_compared_same as totalChannelGrossMarginComparedSame,
-        bmcbs.total_channel_gross_margin_rate_sequential as totalChannelGrossMarginRateSequential,
-        bmcbs.total_distribution_amount_daily as totalDistributionAmountDaily,
-        bmcbs.total_last_year_distribution_amount_daily as totalLastYearDistributionAmountDaily,
-        bmcbs.total_last_month_distribution_amount_daily as totalLastMonthDistributionAmountDaily,
-        bmcbs.total_distribution_amount_daily_compared_same as totalDistributionAmountDailyComparedSame,
-        bmcbs.total_distribution_amount_daily_sequential as totalDistributionAmountDailySequential,
-        bmcbs.total_distribution_amount as totalDistributionAmount,
-        bmcbs.total_distribution_maori_rate as totalDistributionMaoriRate,
-        bmcbs.total_last_year_distribution_maori_rate as totalLastYearDistributionMaoriRate,
-        bmcbs.total_last_month_distribution_maori_rate as totalLastMonthDistributionMaoriRate,
-        bmcbs.total_distribution_margin_rate_sequential as totalDistributionMarginRateSequential,
-        bmcbs.total_distribution_gross_margin_compared_same as totalDistributionGrossMarginComparedSame,
+        sum(bmcbs.total_stock_cost) as totalStockCost,
+        sum(bmcbs.total_channel_amount_daily) as totalChannelAmountDaily,
+        sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearChannelAmountDaily,
+        sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthChannelAmountDaily,
+        sum(bmcbs.total_channel_amount_daily)/sum(bmcbs.total_last_year_channel_amount_daily) as totalChannelAmountDailyComparedSame,
+        sum(bmcbs.total_channel_amount_daily)/sum(bmcbs.total_last_month_channel_amount_daily) as totalChannelAmountDailySequential,
+        sum(bmcbs.total_channel_maori) as totalChannelMaori,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.total_channel_amount_daily) as totalChannelMaoriRate,
+        sum(bmcbs.last_year_total_channel_maori)/sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearChannelMaoriRate,
+        sum(last_month_total_channel_maori)/sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthChannelMaoriRate,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.last_year_total_channel_maori) as totalChannelGrossMarginComparedSame,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.last_month_total_channel_maori) as totalChannelGrossMarginRateSequential,
+        sum(bmcbs.total_distribution_amount_daily) as totalDistributionAmountDaily,
+        sum(bmcbs.total_last_year_distribution_amount_daily) as totalLastYearDistributionAmountDaily,
+        sum(bmcbs.total_last_month_distribution_amount_daily) as totalLastMonthDistributionAmountDaily,
+        sum(bmcbs.total_distribution_amount_daily)/sum(bmcbs.total_last_year_distribution_amount_daily) as totalDistributionAmountDailyComparedSame,
+        sum(bmcbs.total_distribution_amount_daily)/sum(bmcbs.total_last_month_distribution_amount_daily) as totalDistributionAmountDailySequential,
+        sum(bmcbs.total_distribution_amount) as totalDistributionAmount,
+        sum(bmcbs.total_distribution_amount)/sum(bmcbs.total_distribution_amount_daily) as totalDistributionMaoriRate,
+        sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearDistributionMaoriRate,
+        sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthDistributionMaoriRate,
+        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily)) as totalDistributionMarginRateSequential,
+        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily)) as totalDistributionGrossMarginComparedSame,
         date_format(bmcbs.create_time, '%Y-%m-%d %H:%i:%s') as createTime
-        from bi_month_cumulative_brand_sales bmcbs
+        from (select * from bi_month_cumulative_brand_sales bmcbs,(select min(DATEDIFF(now(),create_time)) as days
+        from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
+        <if test="month!=null and month!=''">
+            and bmcbs.year_month = #{month}
+        </if>) bmcbs) daytime where DATEDIFF(now(),bmcbs.create_time)=daytime.days) bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
+        <if test="(productSortCode==null and productSortCode=='') or (priceChannelCode==null and priceChannelCode=='') or (categoryCode==null and categoryCode=='') or (storeTypeCode==null and storeTypeCode=='')">
+            group by
+            <if test="productSortCode==null and productSortCode==''">
+                bmcbs.product_sort_code
+            </if>
+            <if test="priceChannelCode==null and priceChannelCode==''">
+                ,bmcbs.price_channel_code
+            </if>
+            <if test="categoryCode==null and categoryCode==''">
+                ,bmcbs.category_code
+            </if>
+            <if test="storeTypeCode==null and storeTypeCode==''">
+                ,bmcbs.store_type_code
+            </if>
+        </if>
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.MonthSalesAchievementReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">

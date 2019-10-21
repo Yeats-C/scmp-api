@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class TemporaryPriceImport extends BaseRowModel {
-    public static final String HEAD = "TemporaryPriceImport(skuCode=SKU编号, skuName=SKU名称, warehouseBatchName=仓库批次号, effectiveTimeStart=生效时间, effectiveTimeEnd=失效时间, readyCol67=爱亲临时渠道价, readyCol68=萌贝树临时渠道价, readyCol69=小红马临时渠道价, readyCol70=爱亲临时分销价, readyCol71=萌贝树临时分销价, readyCol72=小红马临时分销价, readyCol73=爱亲临时售价, readyCol74=萌贝树临时售价, readyCol75=小红马临时售价)";
+    public static final String HEAD = "TemporaryPriceImport(skuCode=SKU编号, skuName=SKU名称, warehouseBatchName=仓库批次号, effectiveTimeStart=生效时间, effectiveTimeEnd=失效时间, readyCol67=爱亲临时渠道价, readyCol68=萌贝树临时渠道价, readyCol69=小红马临时渠道价, readyCol70=爱亲临时分销价, readyCol71=萌贝树临时分销价, readyCol72=小红马临时分销价, readyCol73=临时售价, readyCol74=临时会员价)";
 
     @ApiModelProperty("sku编码")
     @ExcelProperty(index = 0, value = "sku编码")
@@ -53,16 +53,16 @@ public class TemporaryPriceImport extends BaseRowModel {
     @ExcelProperty(index = 10, value = "小红马临时分销价")
     private String readyCol72;
 
-    @ApiModelProperty(value ="爱亲临时售价")
-    @ExcelProperty(index = 11, value = "爱亲临时售价")
+    @ApiModelProperty(value ="临时售价")
+    @ExcelProperty(index = 11, value = "临时售价")
     private String readyCol73;
 
-    @ApiModelProperty(value ="萌贝树临时售价")
-    @ExcelProperty(index = 12, value = "萌贝树临时售价")
+    @ApiModelProperty(value ="临时会员价")
+    @ExcelProperty(index = 12, value = "临时会员价")
     private String readyCol74;
 
-    @ApiModelProperty(value ="小红马临时售价")
-    @ExcelProperty(index = 13, value = "小红马临时售价")
-    private String readyCol75;
+//    @ApiModelProperty(value ="小红马临时售价")
+//    @ExcelProperty(index = 13, value = "小红马临时售价")
+//    private String readyCol75;
 
 }

@@ -46,7 +46,8 @@ public class ReportFormServiceImpl implements ReportFormService {
         PageResData pageResData = new PageResData();
         List<ProductAndStockResponse> list = biStockTurnoverReportDao.stockTurnoverList(productAndStock);
         this.transportCenter(list, 1);
-        pageResData.setTotalCount(list.size());
+        Integer count = biStockTurnoverReportDao.stockTurnoverCount(productAndStock);
+        pageResData.setTotalCount(count);
         pageResData.setDataList(list);
         return HttpResponse.success(pageResData);
     }
@@ -56,7 +57,8 @@ public class ReportFormServiceImpl implements ReportFormService {
         PageResData pageResData = new PageResData();
         List<ProductAndStockResponse> list = biStockWayTurnoverReportDao.stockWayTurnoverList(productAndStock);
         this.transportCenter(list, 2);
-        pageResData.setTotalCount(list.size());
+        Integer count = biStockWayTurnoverReportDao.stockWayTurnoverCount(productAndStock);
+        pageResData.setTotalCount(count);
         pageResData.setDataList(list);
         return HttpResponse.success(pageResData);
     }
@@ -96,10 +98,18 @@ public class ReportFormServiceImpl implements ReportFormService {
                                 response.setHbOnWay(onWay);
                             }
                         }else {
-                            response.setHbStockNum(num);
-                            response.setHbSalesNum(num);
-                            response.setHbTurnoverDays(num);
-                            response.setHbOnWay(num);
+                            if(response.getHbStockNum() == null){
+                                response.setHbStockNum(num);
+                            }
+                            if(response.getHbSalesNum() == null){
+                                response.setHbSalesNum(num);
+                            }
+                            if(response.getHbTurnoverDays() == null){
+                                response.setHbTurnoverDays(num);
+                            }
+                            if(response.getHbOnWay() == null){
+                                response.setHbOnWay(num);
+                            }
                         }
                         // 华南仓
                         if(stock.getTransportCenterCode().equals(Global.HN_CODE)){
@@ -112,10 +122,18 @@ public class ReportFormServiceImpl implements ReportFormService {
                                 response.setHnOnWay(onWay);
                             }
                         }else {
-                            response.setHnStockNum(num);
-                            response.setHnSalesNum(num);
-                            response.setHnTurnoverDays(num);
-                            response.setHnOnWay(num);
+                            if(response.getHnStockNum() == null){
+                                response.setHnStockNum(num);
+                            }
+                            if(response.getHnSalesNum() == null){
+                                response.setHnSalesNum(num);
+                            }
+                            if(response.getHnTurnoverDays() == null){
+                                response.setHnTurnoverDays(num);
+                            }
+                            if(response.getHnOnWay() == null){
+                                response.setHnOnWay(num);
+                            }
                         }
                         // 西南仓
                         if(stock.getTransportCenterCode().equals(Global.XN_CODE)){
@@ -128,10 +146,18 @@ public class ReportFormServiceImpl implements ReportFormService {
                                 response.setXnOnWay(onWay);
                             }
                         }else {
-                            response.setXnStockNum(num);
-                            response.setXnSalesNum(num);
-                            response.setXnTurnoverDays(num);
-                            response.setXnOnWay(num);
+                            if(response.getXnStockNum() == null){
+                                response.setXnStockNum(num);
+                            }
+                            if(response.getXnSalesNum() == null){
+                                response.setXnSalesNum(num);
+                            }
+                            if(response.getXnTurnoverDays() == null){
+                                response.setXnTurnoverDays(num);
+                            }
+                            if(response.getXnOnWay() == null){
+                                response.setXnOnWay(num);
+                            }
                         }
                         // 华东仓
                         if(stock.getTransportCenterCode().equals(Global.HD_CODE)){
@@ -144,10 +170,18 @@ public class ReportFormServiceImpl implements ReportFormService {
                                 response.setHdOnWay(onWay);
                             }
                         }else {
-                            response.setHdStockNum(num);
-                            response.setHdSalesNum(num);
-                            response.setHdTurnoverDays(num);
-                            response.setHdOnWay(num);
+                            if(response.getHdStockNum() == null){
+                                response.setHdStockNum(num);
+                            }
+                            if(response.getHdSalesNum() == null){
+                                response.setHdSalesNum(num);
+                            }
+                            if(response.getHdTurnoverDays() == null){
+                                response.setHdTurnoverDays(num);
+                            }
+                            if(response.getHdOnWay() == null){
+                                response.setHdOnWay(num);
+                            }
                         }
 
                         // 华中仓
@@ -161,10 +195,18 @@ public class ReportFormServiceImpl implements ReportFormService {
                                 response.setHzOnWay(onWay);
                             }
                         }else {
-                            response.setHzStockNum(num);
-                            response.setHzSalesNum(num);
-                            response.setHzTurnoverDays(num);
-                            response.setHzOnWay(num);
+                            if(response.getHzStockNum() == null){
+                                response.setHzStockNum(num);
+                            }
+                            if(response.getHzSalesNum() == null){
+                                response.setHzSalesNum(num);
+                            }
+                            if(response.getHzTurnoverDays() == null){
+                                response.setHzTurnoverDays(num);
+                            }
+                            if(response.getHzOnWay() == null){
+                                response.setHzOnWay(num);
+                            }
                         }
                     }
                     response.setSumStockNum(sumStockNum);

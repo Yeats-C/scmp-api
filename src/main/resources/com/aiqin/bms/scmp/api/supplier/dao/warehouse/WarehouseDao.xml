@@ -25,6 +25,9 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="wms_warehouse_code" jdbcType="VARCHAR" property="wmsWarehouseCode" />
+    <result column="wms_warehouse_name" jdbcType="VARCHAR" property="wmsWarehouseName" />
+    <result column="wms_warehouse_type" jdbcType="TINYINT" property="wmsWarehouseType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 

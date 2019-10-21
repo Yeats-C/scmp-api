@@ -787,4 +787,12 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         return HttpResponse.successGenerics(rejectResponse);
     }
 
+    @Override
+    public HttpResponse rejectDelete(String rejectApplyRecordCode){
+        if(StringUtils.isBlank(rejectApplyRecordCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        rejectApplyRecordDao.delete(rejectApplyRecordCode);
+        return HttpResponse.success();
+    }
 }

@@ -4,6 +4,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @功能说明:文件相关service
@@ -18,7 +19,7 @@ public interface FileInfoService {
      */
     HttpResponse uploadFile(String base64);
 
-    String fileUpload(MultipartFile file);
+    String fileUpload(MultipartFile file,Boolean isRename);
     /**
      * 文件上传
      * @author zth
@@ -26,7 +27,7 @@ public interface FileInfoService {
      * @param file
      * @return java.lang.String
      */
-    String upload(MultipartFile file);
+    String upload(MultipartFile file,Boolean isRename);
     /**
      * 批量上传
      * @author NullPointException
@@ -46,4 +47,42 @@ public interface FileInfoService {
      * @date 2019/7/25 19:13
      */
     String down(String filePath);
+
+
+    /**
+     *
+     * 功能描述: 文件上传
+     *
+     * @param file
+     * @param type
+     * @return
+     * @auther knight.xie
+     * @date 2019/10/15 14:42
+     */
+    String fileUpload(MultipartFile file,String type);
+
+
+    /**
+     *
+     * 功能描述: 拷贝文件
+     *
+     * @param key
+     * @param destinationKey
+     * @param isDelSource
+     * @return
+     * @auther knight.xie
+     * @date 2019/10/16 11:07
+     */
+    String copyObject(String key,String destinationKey,Boolean isDelSource);
+
+    /**
+     *
+     * 功能描述: 根据URL获取key
+     *
+     * @param url
+     * @return
+     * @auther knight.xie
+     * @date 2019/10/16 11:07
+     */
+    Map<String,String> getKeyAndType(String url);
 }

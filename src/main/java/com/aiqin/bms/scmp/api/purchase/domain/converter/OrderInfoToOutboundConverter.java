@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailB
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
@@ -110,16 +111,18 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
         List<OutboundProductReqVo> parts = Lists.newArrayList();
         List<OutboundBatch> batchList = Lists.newArrayList();
         OutboundBatch outboundBatch;
-        for (OrderInfoItemProductBatch batch : orderInfo.getDetailBatchList()) {
-            outboundBatch = new OutboundBatch();
-            outboundBatch.setSkuName(batch.getSkuName());
-            outboundBatch.setSkuCode(batch.getSkuCode());
-            outboundBatch.setSupplierCode(batch.getSupplierCode());
-            outboundBatch.setSupplierName(batch.getSupplierName());
-            outboundBatch.setPraQty(batch.getActualDeliverNum());
-            outboundBatch.setCreateBy(orderInfo.getCreateByName());
-            outboundBatch.setUpdateBy(orderInfo.getUpdateByName());
-            batchList.add(outboundBatch);
+        if(CollectionUtils.isNotEmpty(orderInfo.getDetailBatchList())){
+            for (OrderInfoItemProductBatch batch : orderInfo.getDetailBatchList()) {
+                outboundBatch = new OutboundBatch();
+                outboundBatch.setSkuName(batch.getSkuName());
+                outboundBatch.setSkuCode(batch.getSkuCode());
+                outboundBatch.setSupplierCode(batch.getSupplierCode());
+                outboundBatch.setSupplierName(batch.getSupplierName());
+                outboundBatch.setPraQty(batch.getActualDeliverNum());
+                outboundBatch.setCreateBy(orderInfo.getCreateByName());
+                outboundBatch.setUpdateBy(orderInfo.getUpdateByName());
+                batchList.add(outboundBatch);
+            }
         }
         OutboundProductReqVo outboundProduct;
         for (OrderInfoItem item : items) {

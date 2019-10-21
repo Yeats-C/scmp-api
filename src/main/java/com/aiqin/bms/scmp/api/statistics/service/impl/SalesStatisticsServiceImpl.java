@@ -110,15 +110,25 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             if (CollectionUtils.isNotEmptyCollection(departments)) {
                 for (CompanyAndDeptResponse dept : departments) {
-                    saleRequest.setProductSortCode(dept.getProductSortCode());
-                    deptResponse = this.deptSale(saleRequest, i);
-                    if(deptResponse != null){
-                        deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
-                                divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                        deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
-                                divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    if(dept != null){
+                        saleRequest.setProductSortCode(dept.getProductSortCode());
+                        deptResponse = this.deptSale(saleRequest, i);
+                        if(deptResponse != null){
+                            if(sumResponse.getChannelSalesAmount() == 0){
+                                deptResponse.setChanneRate(new BigDecimal(0));
+                            }else{
+                                deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
+                                        divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            }
+                            if(sumResponse.getDistributionSalesAmount() == 0){
+                                deptResponse.setDistributionRate(new BigDecimal(0));
+                            }else{
+                                deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
+                                        divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            }
+                        }
+                        deptList.add(deptResponse);
                     }
-                    deptList.add(deptResponse);
                 }
             }
             saleResponse = new SaleResponse();
@@ -182,10 +192,18 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                     BeanUtils.copyProperties(companyResponse, saleResponse);
                     SaleResponse rate = this.saleRate(saleResponse, 0);
                     BeanUtils.copyProperties(rate, companyResponse);
-                    companyResponse.setChanneRate(new BigDecimal(companyResponse.getChannelSalesAmount()).
-                            divide(new BigDecimal(deptResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                    companyResponse.setDistributionRate(new BigDecimal(companyResponse.getDistributionSalesAmount()).
-                            divide(new BigDecimal(deptResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    if(deptResponse.getChannelSalesAmount() == 0){
+                        companyResponse.setChanneRate(new BigDecimal(0));
+                    }else {
+                        companyResponse.setChanneRate(new BigDecimal(companyResponse.getChannelSalesAmount()).
+                                divide(new BigDecimal(deptResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                    if(deptResponse.getDistributionSalesAmount() == 0){
+                        companyResponse.setDistributionRate(new BigDecimal(0));
+                    }else {
+                        companyResponse.setDistributionRate(new BigDecimal(companyResponse.getDistributionSalesAmount()).
+                                divide(new BigDecimal(deptResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    }
                     companyList.add(companyResponse);
                 }
             }
@@ -204,10 +222,30 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 BeanUtils.copyProperties(sale, saleResponse);
                 SaleResponse rate = this.saleRate(saleResponse, 0);
                 BeanUtils.copyProperties(rate, sale);
-                sale.setChanneRate(new BigDecimal(sale.getChannelSalesAmount()).
-                        divide(new BigDecimal(companyResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                sale.setDistributionRate(new BigDecimal(sale.getDistributionSalesAmount()).
-                        divide(new BigDecimal(companyResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                if(companyResponse.getChannelSalesAmount() == 0){
+                    sale.setChanneRate(new BigDecimal(0));
+                }else {
+                    if(companyResponse.getChannelSalesAmount() == 0){
+                        sale.setChanneRate(new BigDecimal(0));
+                    }else {
+                        if(companyResponse.getChannelSalesAmount() == 0){
+                            sale.setChanneRate(new BigDecimal(0));
+                        }else{
+                            sale.setChanneRate(new BigDecimal(sale.getChannelSalesAmount()).
+                                    divide(new BigDecimal(companyResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        }
+                    }
+                }
+                if(companyResponse.getDistributionSalesAmount() == 0){
+                    sale.setDistributionRate(new BigDecimal(0));
+                }else {
+                    if(companyResponse.getDistributionSalesAmount() == 0){
+                        sale.setDistributionRate(new BigDecimal(0));
+                    }else{
+                        sale.setDistributionRate(new BigDecimal(sale.getDistributionSalesAmount()).
+                                divide(new BigDecimal(companyResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    }
+                }
             }
         }
     }
@@ -222,24 +260,36 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             if(channelSalesAmount == amount || channelAmountLastYear == amount){
                 sale.setChannelSalesAmountYearonyear(big);
             }else {
-                sale.setChannelSalesAmountYearonyear(new BigDecimal(channelSalesAmount).
-                        divide(new BigDecimal(channelAmountLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                if(channelAmountLastYear == 0){
+                    sale.setChannelSalesAmountYearonyear(new BigDecimal(0));
+                }else{
+                    sale.setChannelSalesAmountYearonyear(new BigDecimal(channelSalesAmount).
+                            divide(new BigDecimal(channelAmountLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算渠道销售金额的环比
             Long channelAmountLastMonth = sale.getChannelAmountLastMonth() == null ? amount : sale.getChannelAmountLastMonth();
             if(channelSalesAmount == amount || channelAmountLastMonth == amount){
                 sale.setChannelSalesAmountLinkRela(big);
             }else {
-                sale.setChannelSalesAmountLinkRela(new BigDecimal(channelSalesAmount).
-                        divide(new BigDecimal(channelAmountLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                if(channelAmountLastMonth == 0){
+                    sale.setChannelSalesAmountLinkRela(new BigDecimal(0));
+                }else{
+                    sale.setChannelSalesAmountLinkRela(new BigDecimal(channelSalesAmount).
+                            divide(new BigDecimal(channelAmountLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算渠道毛利率
             Long channelSalesCost = sale.getChannelSalesCost() == null ? amount : sale.getChannelSalesCost();
             if(channelSalesCost == amount || channelSalesAmount == amount){
                 sale.setChannelMarginRate(big);
             }else {
-                sale.setChannelMarginRate(new BigDecimal(channelSalesAmount - channelSalesCost).
-                        divide(new BigDecimal(channelSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
+                if(channelSalesAmount == 0){
+                    sale.setChannelMarginRate(new BigDecimal(0));
+                }else{
+                    sale.setChannelMarginRate(new BigDecimal(channelSalesAmount - channelSalesCost).
+                            divide(new BigDecimal(channelSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
 
             // 计算渠道毛利同比
@@ -248,16 +298,24 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             if(channelMargin == amount || channelMarginLastYear == amount){
                 sale.setChannelMarginYearonyear(big);
             }else {
-                sale.setChannelMarginYearonyear(new BigDecimal(channelMargin).
-                        divide(new BigDecimal(channelMarginLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                if(channelMarginLastYear == 0){
+                    sale.setChannelMarginYearonyear(new BigDecimal(0));
+                }else{
+                    sale.setChannelMarginYearonyear(new BigDecimal(channelMargin).
+                            divide(new BigDecimal(channelMarginLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算渠道毛利环比
             Long channelMarginLastMonth  = sale.getChannelMarginLastMonth() == null ? amount : sale.getChannelMarginLastMonth();
             if(channelMargin == amount || channelMarginLastMonth == amount){
                 sale.setChannelMarginLinkRela(big);
             }else {
-                sale.setChannelMarginLinkRela(new BigDecimal(channelMargin).
-                        divide(new BigDecimal(channelMarginLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                if(channelMarginLastMonth == 0){
+                    sale.setChannelMarginLinkRela(new BigDecimal(0));
+                }else{
+                    sale.setChannelMarginLinkRela(new BigDecimal(channelMargin).
+                            divide(new BigDecimal(channelMarginLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
 
             // 计算分销销售额同比
@@ -266,24 +324,36 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             if(distributionSalesAmount == amount || distributionAmountLastYear == amount){
                 sale.setDistributionSalesAmountYearonyear(big);
             }else {
-                sale.setDistributionSalesAmountYearonyear(new BigDecimal(distributionSalesAmount).
-                        divide(new BigDecimal(distributionAmountLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                if(distributionAmountLastYear == 0){
+                    sale.setDistributionSalesAmountYearonyear(new BigDecimal(0));
+                }else{
+                    sale.setDistributionSalesAmountYearonyear(new BigDecimal(distributionSalesAmount).
+                            divide(new BigDecimal(distributionAmountLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算分销销售额环比
             Long distributionAmountLastMonth = sale.getDistributionAmountLastMonth() == null ? amount : sale.getDistributionAmountLastMonth();
             if(distributionSalesAmount == amount || distributionAmountLastMonth == amount){
                 sale.setDistributionSalesAmountLinkRela(big);
             }else {
-                sale.setDistributionSalesAmountLinkRela(new BigDecimal(distributionSalesAmount).
-                        divide(new BigDecimal(distributionAmountLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                if(distributionAmountLastMonth == 0){
+                    sale.setDistributionSalesAmountLinkRela(new BigDecimal(0));
+                }else{
+                    sale.setDistributionSalesAmountLinkRela(new BigDecimal(distributionSalesAmount).
+                            divide(new BigDecimal(distributionAmountLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算分销毛利额
             Long distributionSalesCost = sale.getDistributionSalesCost() == null ? amount : sale.getDistributionSalesCost();
             if(distributionSalesCost == amount || distributionSalesAmount == amount){
                 sale.setDistributionMarginRate(big);
             }else {
-                sale.setDistributionMarginRate(new BigDecimal(distributionSalesAmount - distributionSalesCost).
-                        divide(new BigDecimal(distributionSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
+                if(distributionSalesAmount == 0){
+                    sale.setDistributionMarginRate(new BigDecimal(0));
+                }else {
+                    sale.setDistributionMarginRate(new BigDecimal(distributionSalesAmount - distributionSalesCost).
+                            divide(new BigDecimal(distributionSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算分销毛利额同比
             Long distributionMargin = sale.getDistributionMargin() == null ? amount : sale.getDistributionMargin();
@@ -291,16 +361,24 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             if(distributionMargin == amount || distributionMarginLastYear == amount){
                 sale.setDistributionMarginYearonyear(big);
             }else {
-                sale.setDistributionMarginYearonyear(new BigDecimal(distributionMargin).
-                        divide(new BigDecimal(distributionMarginLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                if(distributionMarginLastYear == 0){
+                    sale.setDistributionMarginYearonyear(new BigDecimal(0));
+                }else {
+                    sale.setDistributionMarginYearonyear(new BigDecimal(distributionMargin).
+                            divide(new BigDecimal(distributionMarginLastYear), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             // 计算分销毛利额同比
             Long distributionMarginLastMonth = sale.getDistributionMarginLastMonth() == null ? amount : sale.getDistributionMarginLastMonth();
             if(distributionMargin == amount || distributionMarginLastMonth == amount){
                 sale.setDistributionMarginLinkRela(big);
             }else {
-                sale.setDistributionMarginLinkRela(new BigDecimal(distributionMargin).
-                        divide(new BigDecimal(distributionMarginLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                if(distributionMarginLastMonth == 0){
+                    sale.setDistributionMarginLinkRela(new BigDecimal(0));
+                }else {
+                    sale.setDistributionMarginLinkRela(new BigDecimal(distributionMargin).
+                            divide(new BigDecimal(distributionMarginLastMonth), 4, BigDecimal.ROUND_HALF_UP));
+                }
             }
             if(i == 1){
                 // 计算渠道的达成率
@@ -309,15 +387,23 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 if(channelSalesAmount == amount || channelBudget == amount){
                     sale.setChannelAchievement(big);
                 }else {
-                    sale.setChannelAchievement(new BigDecimal(channelSalesAmount).
-                            divide(new BigDecimal(channelBudget), 4, BigDecimal.ROUND_HALF_UP));
+                    if(channelBudget == 0){
+                        sale.setChannelAchievement(new BigDecimal(0));
+                    }else {
+                        sale.setChannelAchievement(new BigDecimal(channelSalesAmount).
+                                divide(new BigDecimal(channelBudget), 4, BigDecimal.ROUND_HALF_UP));
+                    }
                 }
                 // 计算分销的达成率
                 if(distributionSalesAmount == amount || distributionBudget == amount){
                     sale.setDistributionAchievement(big);
                 }else {
-                    sale.setDistributionAchievement(new BigDecimal(distributionSalesAmount).
-                            divide(new BigDecimal(distributionBudget), 4, BigDecimal.ROUND_HALF_UP));
+                    if(distributionBudget == 0){
+                        sale.setDistributionAchievement(new BigDecimal(0));
+                    }else {
+                        sale.setDistributionAchievement(new BigDecimal(distributionSalesAmount).
+                                divide(new BigDecimal(distributionBudget), 4, BigDecimal.ROUND_HALF_UP));
+                    }
                 }
             }
         }
@@ -362,15 +448,25 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             departments = statDeptMonthAccSalesDao.saleByDept(saleRequest);
             if (CollectionUtils.isNotEmptyCollection(departments)) {
                 for (CompanyAndDeptResponse dept : departments) {
-                    saleRequest.setProductSortCode(dept.getProductSortCode());
-                    deptResponse = this.deptSale(saleRequest, 3);
-                    if(deptResponse != null){
-                        deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
-                                divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
-                        deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
-                                divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    if(dept != null){
+                        saleRequest.setProductSortCode(dept.getProductSortCode());
+                        deptResponse = this.deptSale(saleRequest, 3);
+                        if(deptResponse != null){
+                            if(sumResponse.getChannelSalesAmount() == 0){
+                                deptResponse.setChanneRate(new BigDecimal(0));
+                            }else {
+                                deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
+                                        divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            }
+                            if(sumResponse.getDistributionSalesAmount() == 0){
+                                deptResponse.setDistributionRate(new BigDecimal(0));
+                            }else {
+                                deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
+                                        divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            }
+                        }
+                        deptList.add(deptResponse);
                     }
-                    deptList.add(deptResponse);
                 }
             }
             saleResponse = new SaleResponse();
@@ -423,8 +519,12 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                     saleRequest.setPriceChannelCode(null);
                     saleRequest.setStoreTypeCode(null);
                     deptSum = this.deptCategory(saleRequest);
-                    deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
-                            divide(new BigDecimal(sum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    if(sum.getCurrSalesAmount() == 0){
+                        deptSum.setRate(new BigDecimal(0));
+                    }else {
+                        deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
+                                divide(new BigDecimal(sum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    }
                     deptList.add(deptSum);
                 }
             }
@@ -456,15 +556,23 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                         for (CategoryResponse category : categoryList) {
                             category.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(category.getCurrSalesAmount(), category.getPreSalesAmount()));
                             category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin(), category.getPreMargin()));
-                            category.setRate(new BigDecimal(category.getCurrSalesAmount()).
-                                    divide(new BigDecimal(companySum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            if(companySum.getCurrSalesAmount() == 0){
+                                category.setRate(new BigDecimal(0));
+                            }else {
+                                category.setRate(new BigDecimal(category.getCurrSalesAmount()).
+                                        divide(new BigDecimal(companySum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
                     }
                     companySum.setCategoryList(categoryList);
                     companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount(), companySum.getPreSalesAmount()));
                     companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin(), companySum.getPreMargin()));
-                    companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
-                            divide(new BigDecimal(deptSum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    if(deptSum.getCurrSalesAmount() == 0){
+                        companySum.setRate(new BigDecimal(0));
+                    }else {
+                        companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
+                                divide(new BigDecimal(deptSum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                    }
                     companyList.add(companySum);
                 }
             }
@@ -482,7 +590,12 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
         }else {
             BigDecimal curr = new BigDecimal(currAmount);
             BigDecimal pre = new BigDecimal(preAmount);
-            big = curr.divide(pre, 4, BigDecimal.ROUND_HALF_UP).subtract(new BigDecimal(1));
+            if(pre == new BigDecimal(0)){
+                big = new BigDecimal(0);
+            }
+            else{
+                big = curr.divide(pre, 4, BigDecimal.ROUND_HALF_UP).subtract(new BigDecimal(1));
+            }
         }
         return big;
     }

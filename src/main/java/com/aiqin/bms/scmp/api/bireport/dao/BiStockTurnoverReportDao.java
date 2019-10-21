@@ -11,6 +11,8 @@ public interface BiStockTurnoverReportDao {
 
     List<ProductAndStockResponse> stockTurnoverList(ProductAndStockRequest productAndStock);
 
+    Integer stockTurnoverCount(ProductAndStockRequest productAndStock);
+
     List<StockTurnoverResponse> getStockTurnoverInfo(@Param("statDate") String statDate, @Param("skuCode") String skuCode);
 
 }

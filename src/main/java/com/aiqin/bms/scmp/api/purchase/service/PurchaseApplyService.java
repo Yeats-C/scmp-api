@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastRespon
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+
 public interface PurchaseApplyService {
 
     HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest);
@@ -33,4 +35,8 @@ public interface PurchaseApplyService {
                                                               String supplierCode, String transportCenterCode, Integer productCount);
 
     HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest);
+
+    HttpResponse importPdf(String purchaseOrderCode, HttpServletResponse response);
+
+    HttpResponse purchaseDelete(String purchaseOrderId);
 }

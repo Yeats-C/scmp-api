@@ -21,4 +21,6 @@ public interface PurchaseApplyDao {
 
     Integer insertAll(@Param("list") List<PurchaseApply> list);
 
+    Integer delete(String purchaseOrderId);
+
 }

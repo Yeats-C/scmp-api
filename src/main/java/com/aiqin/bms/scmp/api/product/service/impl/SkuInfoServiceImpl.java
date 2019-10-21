@@ -35,6 +35,7 @@ import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuUpdate;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
@@ -65,7 +66,6 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.poi.poifs.common.POIFSBigBlockSize;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -172,6 +172,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
     @Autowired
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
+    @Autowired
+    private FileInfoService fileInfoService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -626,17 +628,29 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuConfigService.insertDraftList(productSkuConfigs);
                 }
             }
+            String destinationPicKey =  FilePathEnum.PRODUCT_PICTURE.getFilePath()+productSkuDraft.getSkuCode()+"/";
+            String destinationFileKey =  FilePathEnum.PRODUCT_FILE.getFilePath()+productSkuDraft.getSkuCode()+"/";
             //sku图片及介绍
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuPicturesDrafts())){
                 List<ProductSkuPicturesDraft> productSkuPicturesDrafts = addSkuInfoReqVO.getProductSkuPicturesDrafts();
-                productSkuPicturesDrafts.forEach(item->{
+                int i = 1;
+                for (ProductSkuPicturesDraft item : productSkuPicturesDrafts) {
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
                     item.setProductSkuName(productSkuDraft.getSkuName());
                     item.setCreateBy(productSkuDraft.getCreateBy());
                     item.setUpdateBy(productSkuDraft.getUpdateBy());
                     item.setCreateTime(productSkuDraft.getCreateTime());
                     item.setUpdateTime(productSkuDraft.getUpdateTime());
-                });
+                    //重置图片URL
+                    if (StringUtils.isNotBlank(item.getProductPicturePath())) {
+                        Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
+                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
+                        if(StringUtils.isNotBlank(newUrl)){
+                            item.setProductPicturePath(newUrl);
+                        }
+                    }
+                    i++;
+                }
                 productSkuPicturesService.insertDraftList(productSkuPicturesDrafts);
             }
             //sku商品说明
@@ -649,20 +663,36 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     item.setUpdateBy(productSkuDraft.getUpdateBy());
                     item.setCreateTime(productSkuDraft.getCreateTime());
                     item.setUpdateTime(productSkuDraft.getUpdateTime());
+                    //重置图片URL
+                    if (StringUtils.isNotBlank(item.getPicDescPath())) {
+                        Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
+                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey +"sm_"+(item.getSortingNumber()+1) + map.get("contentType"), true);
+                        if(StringUtils.isNotBlank(newUrl)){
+                            item.setPicDescPath(newUrl);
+                        }
+                    }
                 });
                 productSkuPicDescService.insertDraftList(productSkuPicDescDrafts);
             }
             //sku文件管理
             if (null != addSkuInfoReqVO.getProductSkuFileDrafts() && addSkuInfoReqVO.getProductSkuFileDrafts().size() > 0){
                 List<ProductSkuFileDraft> productSkuFileDrafts = addSkuInfoReqVO.getProductSkuFileDrafts();
-                productSkuFileDrafts.forEach(item->{
+                for (ProductSkuFileDraft item : productSkuFileDrafts) {
                     item.setSkuCode(productSkuDraft.getSkuCode());
                     item.setSkuName(productSkuDraft.getSkuName());
                     item.setCreateBy(productSkuDraft.getCreateBy());
                     item.setUpdateBy(productSkuDraft.getUpdateBy());
                     item.setCreateTime(productSkuDraft.getCreateTime());
                     item.setUpdateTime(productSkuDraft.getUpdateTime());
-                });
+                    //重置图片URL
+                    if (StringUtils.isNotBlank(item.getFilePath())) {
+                        Map<String, String> map = fileInfoService.getKeyAndType(item.getFilePath());
+                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
+                        if(StringUtils.isNotBlank(newUrl)){
+                            item.setFilePath(newUrl);
+                        }
+                    }
+                }
                 productSkuFileService.insertDraftList(productSkuFileDrafts);
             }
             return 1;
@@ -701,9 +731,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts1 = BeanCopyUtils.copyList(list, ProductSkuManufacturerDraft.class);
         if(CollectionUtils.isNotEmpty(productSkuManufacturerDrafts)){
             ProductSkuManufacturerDraft productSkuManufacturerDraft = productSkuManufacturerDrafts.get(0);
-            ProductSkuManufacturerDraft productSkuManufacturerDraft1 = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst().orElseGet(null);
-            if(Objects.nonNull(productSkuManufacturerDraft1)){
-                BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDrafts,productSkuManufacturerDraft1);
+            Optional<ProductSkuManufacturerDraft> first = productSkuManufacturerDrafts1.stream().filter(o -> o.getManufacturerCode().equals(productSkuManufacturerDraft.getManufacturerCode())).findFirst();
+            if(first.isPresent()){
+                ProductSkuManufacturerDraft productSkuManufacturerDraft1 = first.get();
+                BeanCopyUtils.copyValueWithoutNull(productSkuManufacturerDraft,productSkuManufacturerDraft1);
+                productSkuManufacturerDraft1.setIsDefault((byte) 0);
+            }else {
+                productSkuManufacturerDrafts1.addAll(productSkuManufacturerDrafts);
             }
         }
 
@@ -745,9 +779,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<ProductSkuBoxPackingRespVo> list = productSkuBoxPackingService.getList(productSkuDraft.getSkuCode());
         List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts1 = BeanCopyUtils.copyList(list, ProductSkuBoxPackingDraft.class);
         List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = addSkuInfoReqVO.getProductSkuBoxPackingDrafts();
-        Map<String, ProductSkuBoxPackingRespVo> collect = list.stream().collect(Collectors.toMap(ProductSkuBoxPackingRespVo::getUnitCode, Function.identity()));
+        Map<String, ProductSkuBoxPackingDraft> collect = productSkuBoxPackingDrafts.stream().collect(Collectors.toMap(ProductSkuBoxPackingDraft::getUnitCode, Function.identity()));
         for (ProductSkuBoxPackingDraft respVo : productSkuBoxPackingDrafts1) {
-            ProductSkuBoxPackingRespVo productSkuBoxPackingRespVo = collect.get(respVo.getUnitCode());
+            //如果原来的有，则做更新
+            ProductSkuBoxPackingDraft productSkuBoxPackingRespVo = collect.get(respVo.getUnitCode());
             if (Objects.nonNull(productSkuBoxPackingRespVo)) {
                 BeanCopyUtils.copyValueWithoutNull(productSkuBoxPackingRespVo,respVo);
                 productSkuBoxPackingDrafts.remove(productSkuBoxPackingRespVo);
@@ -755,9 +790,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         productSkuBoxPackingDrafts.addAll(productSkuBoxPackingDrafts1);
         //获取包装信息
-        if (CollectionUtils.isEmpty(addSkuInfoReqVO.getProductSkuBoxPackingDrafts())) {
-        }
-
         if (CollectionUtils.isNotEmpty(productSkuBoxPackingDrafts)) {
             productSkuBoxPackingDrafts.forEach(item -> {
                 item.setId(null);
@@ -1063,6 +1095,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (CollectionUtils.isNotEmpty(saveSkuApplyInfoReqVO.getSkuCodes())){
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
+        //验证是否是同一种申请类型
+//        validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
@@ -1150,6 +1184,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
         }
         return formNo;
+    }
+
+    private void validateSameApply(List<ProductSkuDraft> productSkuDrafts) {
+        Set<Byte> beSameApply = Sets.newHashSet();
+        for (ProductSkuDraft draft : productSkuDrafts) {
+            beSameApply.add(draft.getApplyType());
+        }
+        if (beSameApply.size()>1) {
+            throw new BizException(ResultCode.NOT_SAME_APPLY);
+        }
     }
 
     @Override

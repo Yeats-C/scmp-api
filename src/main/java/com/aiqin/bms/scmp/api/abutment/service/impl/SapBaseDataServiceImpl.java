@@ -463,11 +463,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     public void stockSynchronization(SapOrderRequest sapOrderRequest) {
         List<Storage> storageList = Lists.newArrayList();
-//        this.inboundToStock(storageList, sapOrderRequest);
-//        sapStorageAbutment(storageList, 1);
-//        storageList.clear();
-//        this.outboundToStock(storageList, sapOrderRequest);
-//        sapStorageAbutment(storageList, 2);
+        this.inboundToStock(storageList, sapOrderRequest);
+        sapStorageAbutment(storageList, 1);
+        storageList.clear();
+        this.outboundToStock(storageList, sapOrderRequest);
+        sapStorageAbutment(storageList, 2);
         this.sapProfitLossStock(storageList,sapOrderRequest);
         sapStorageAbutment(storageList, 3);
     }
@@ -759,9 +759,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     public void purchaseSynchronization(SapOrderRequest sapOrderRequest) {
         List<Purchase> purchases = Lists.newArrayList();
-//        purchaseOrder(sapOrderRequest, purchases);
-//        sapPurchaseAbutment(purchases, 1);
-//        purchases.clear();
+        purchaseOrder(sapOrderRequest, purchases);
+        sapPurchaseAbutment(purchases, 1);
+        purchases.clear();
         rejectOrder(sapOrderRequest, purchases);
         sapPurchaseAbutment(purchases, 2);
 

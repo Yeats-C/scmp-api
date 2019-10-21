@@ -8,15 +8,19 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyProductDao;
-import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
@@ -26,14 +30,17 @@ import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.bms.scmp.api.util.PDFUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -48,6 +55,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.math.BigDecimal;
+import java.net.URLEncoder;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -60,6 +72,7 @@ import java.util.stream.Collectors;
 public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApplyServiceImpl.class);
+
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商", "仓库", "采购数量", "实物返数量", "含税单价",
     };
@@ -90,6 +103,12 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private ProductSkuDao productSkuDao;
     @Resource
     private StockDao stockDao;
+    @Resource
+    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
+    @Resource
+    private WarehouseDao warehouseDao;
+    @Resource
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -139,7 +158,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 编辑时的商品信息
         List<PurchaseApplyDetailResponse> applyProducts = purchaseApplyProductDao.applyProductList(purchases);
         if(CollectionUtils.isNotEmptyCollection(applyProducts)){
-            PurchaseApplyProduct applyProduct = null;
+            PurchaseApplyProduct applyProduct;
             for(PurchaseApplyDetailResponse product:applyProducts){
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
@@ -178,6 +197,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
+        this.productDetail(detail);
+        Integer count = productSkuDao.purchaseProductCount(purchases);
+        pageResData.setDataList(detail);
+        pageResData.setTotalCount(count);
+        return HttpResponse.success(pageResData);
+    }
+
+    private void productDetail(List<PurchaseApplyDetailResponse> detail){
         if (CollectionUtils.isNotEmptyCollection(detail)) {
             PurchaseApplyReqVo applyReqVo;
             Map<String, String> categoryNames = new HashMap<>();
@@ -213,6 +240,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
 
             for (PurchaseApplyDetailResponse product : detail) {
+                product.setStockAmount(product.getTaxCost() * product.getStockCount());
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
@@ -230,49 +258,16 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if(StringUtils.isNotBlank(vo.getPredictedArrival())){
                         product.setReceiptTime(DateUtils.getDate(vo.getPredictedArrival()));
                     }
-                    product.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
+                    Integer averageAmount = vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue();
+                    product.setSalesVolumeAvg(averageAmount);
+                    product.setSalesVolume(averageAmount * 90);
                     product.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
                     product.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
                     product.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());
                 }
             }
         }
-
-        // 去重已选的商品
-//        List<PurchaseApplyDetailResponse> response = new ArrayList<>();
-//        if(CollectionUtils.isNotEmptyCollection(purchases.getSearchList())){
-//            Set<String> info = this.searchProductInfo(purchases.getSearchList());
-//            List<String> list = new ArrayList<>(info);
-//            for(PurchaseApplyDetailResponse product : detail){
-//                StringBuilder sb = new StringBuilder();
-//                sb.append(product.getSkuCode()).append("_").append(product.getSupplierCode()).append("_").
-//                        append(product.getTransportCenterCode()).append("_").append(product.getWarehouseCode()).
-//                        append("_").append(product.getProductType());
-//                for(String str:list){
-//                    if(str.equals(sb.toString())){
-//                        response.add(product);
-//                    }
-//                }
-//            }
-//            detail.removeAll(response);
-//        }
-        Integer count = productSkuDao.purchaseProductCount(purchases);
-        pageResData.setDataList(detail);
-        pageResData.setTotalCount(count);
-        return HttpResponse.success(pageResData);
     }
-
-//    private Set<String> searchProductInfo(List<PurchaseProductSearchRequest>  searchList){
-//        Set<String> set = new HashSet<>();
-//        for(PurchaseProductSearchRequest search:searchList){
-//            StringBuilder sb = new StringBuilder();
-//            sb.append(search.getSkuCode()).append("_").append(search.getSupplierCode()).append("_").
-//               append(search.getTransportCenterCode()).append("_").append(search.getWarehouseCode()).
-//                    append("_").append(search.getProductType());
-//            set.add(sb.toString());
-//        }
-//        return set;
-//    }
 
     private PurchaseApplyRequest fourProduct(PurchaseApplyRequest purchases){
         // 查询14大A品建议补货
@@ -352,15 +347,35 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse searchApplyProduct(String applyProductId){
-        if(StringUtils.isBlank(applyProductId)){
+    public HttpResponse searchApplyProduct(String purchaseApplyId){
+        if(StringUtils.isBlank(purchaseApplyId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(applyProductId);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
         if(CollectionUtils.isEmptyCollection(products)){
-            LOGGER.info("查询采购申请商品的信息失败...{}:" +applyProductId);
+            LOGGER.info("查询采购申请商品的信息失败...{}:" +purchaseApplyId);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
-        }
+        }else {
+            // 查询采购申请单的公司
+            PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+            Stock stock;
+            for(PurchaseApplyDetailResponse detail:products){
+                // 查询库存数量，库存金额， 在途库存
+                stock = new Stock();
+                stock.setSkuCode(detail.getSkuCode());
+                stock.setTransportCenterCode(detail.getTransportCenterCode());
+                stock.setWarehouseCode(detail.getWarehouseCode());
+                stock.setCompanyCode(apply.getCompanyCode());
+                Stock info = stockDao.stockInfo(stock);
+                if(info != null){
+                    detail.setStockCount(info.getInventoryNum().intValue());
+                    detail.setTotalWayNum(info.getTotalWayNum().intValue());
+                    detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
+                    detail.setNewPurchasePrice(info.getNewPurchasePrice().intValue());
+                }
+            }
+            this.productDetail(products);
+        }                                                                                                                                
         return HttpResponse.success(products);
     }
 
@@ -492,12 +507,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 PurchaseApplyDetailResponse applyProduct;
                 PurchaseApplyReqVo applyReqVo;
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                DecimalFormat decimalFormat = new DecimalFormat("0");
                 for (int i = 1; i <= result.length - 1; i++) {
                     record = result[i];
                     response = new PurchaseImportResponse();
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
-                            StringUtils.isBlank(record[3]) || StringUtils.isBlank(record[4]) || StringUtils.isBlank(record[5]) || StringUtils.isBlank(record[6])) {
+                            StringUtils.isBlank(record[3])) {
                         HandleResponse(response, record,"导入的数据不全；", i);
                         errorCount++;
                         errorList.add(response);
@@ -517,6 +533,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         errorList.add(response);
                         continue;
                     }
+                    String skuCode = record[0];
                     applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
                     if(applyProduct != null){
                         if(StringUtils.isNotBlank(applyProduct.getCategoryId())){
@@ -545,40 +562,50 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             Long priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
                             applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
                         }
-                         if(record[4] != null){
-                             if(!record[4].contains("零")){
-                                 HandleResponse(response, record,"采购数量格式不正确；", i);
-                                 errorList.add(response);
-                                 continue;
+                         if(StringUtils.isNotBlank(record[4])){
+                             Integer whole;
+                             Integer single;
+                             if(record[4].contains("零")){
+                                 String index = record[4].replace("零", "/").trim();
+                                 int index1 = index.indexOf("/");
+                                 int length = index.length();
+                                 whole = Integer.valueOf(index.substring(0, index1));
+                                 single = Integer.valueOf(index.substring(index1 + 1, length));
+                             }else {
+                                 whole = Double.valueOf(record[4]).intValue();
+                                 single = 0;
                              }
-                             String index = record[4].replace("零", "/").trim();
-                             int index1 = index.indexOf("/");
-                             int length = index.length();
-                             Integer whole = Integer.valueOf(index.substring(0, index1));
-                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
                              applyProduct.setPurchaseWhole(whole);
                              applyProduct.setPurchaseSingle(single);
+                         }else {
+                             applyProduct.setPurchaseWhole(0);
+                             applyProduct.setPurchaseSingle(0);
                          }
-                         if(record[5] != null){
-                             if(!record[5].contains("零")){
-                                 HandleResponse(response, record,"实物返数量格式不正确；", i);
-                                 errorList.add(response);
-                                 continue;
+                         if(StringUtils.isNotBlank(record[5])){
+                             Integer whole;
+                             Integer single;
+                             if(record[5].contains("零")){
+                                 String index = record[5].replace("零", "/").trim();
+                                 int index1 = index.indexOf("/");
+                                 int length = index.length();
+                                 whole = Integer.valueOf(index.substring(0, index1));
+                                 single = Integer.valueOf(index.substring(index1 + 1, length));
+                             }else {
+                                 whole = Double.valueOf(record[5]).intValue();
+                                 single = 0;
                              }
-                             String index = record[5].replace("零", "/").trim();
-                             int index1 = index.indexOf("/");
-                             int length = index.length();
-                             Integer whole = Integer.valueOf(index.substring(0, index1));
-                             Integer single = Integer.valueOf(index.substring(index1 + 1, length));
                              applyProduct.setReturnWhole(whole);
                              applyProduct.setReturnSingle(single);
+                         }else {
+                             applyProduct.setReturnWhole(0);
+                             applyProduct.setReturnSingle(0);
                          }
                         BeanUtils.copyProperties(applyProduct, response);
                         if(StringUtils.isBlank((record[6]))){
                             response.setProductPurchaseAmount(0);
                         }else {
-                            Integer value = Integer.valueOf(record[6]);
-                            response.setProductPurchaseAmount(value * 100);
+                            Double value = Double.valueOf(record[6])* 100;
+                            response.setProductPurchaseAmount(value.intValue());
                         }
                     }else{
                         HandleResponse(response, record,"未查询到对应的商品；", i);
@@ -605,10 +632,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setTransportCenterName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        if(StringUtils.isNotBlank(record[6] )){
-            response.setProductPurchaseAmount(Integer.valueOf(record[6]));
+        if(StringUtils.isNotBlank(record[6])){
+            Double num = Double.valueOf(record[6]) * 100;
+            response.setProductPurchaseAmount(num.intValue());
         }
-        response.setErrorInfo("第" + i + "行  " + errorReason);
+        response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
 
     @Override
@@ -839,5 +867,123 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return sb.toString();
         }, Collectors.summingInt(s -> MapUtils.getInteger(s, "sum"))));
         return collect;
+    }
+
+    @Override
+    public HttpResponse importPdf(String purchaseOrderCode, HttpServletResponse response){
+        if(StringUtils.isBlank(purchaseOrderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        String name = "订货单模板.htm";
+        PDFUtil pdfUtil = new PDFUtil(name);
+        /** 用于组装word、pdf页面需要的数据 */
+        Map<String, Object> dataMap = new HashMap<>();
+        /** 组装数据 */
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        // 查询采购单的信息
+        PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrderCode);
+        dataMap.put("code", purchaseOrderCode);
+        if(detail != null){
+            dataMap.put("singleSum", detail.getSingleCount());
+            if(detail.getExpectArrivalTime() != null) {
+                dataMap.put("time", sdf.format(detail.getExpectArrivalTime()));
+            }
+        }
+        String fileName = "订货单";
+        if(StringUtils.isNotBlank(detail.getSupplierCode())){
+            SupplyPdfResponse supply = supplyCompanyDao.supplyInfoByPdf(detail.getSupplierCode());
+            if(supply != null){
+                fileName = "(" + supply.getSupplyCode()+ ")" + supply.getSupplyName();
+                dataMap.put("number", supply.getSupplyCode());
+                dataMap.put("supplyName", supply.getSupplyName());
+                dataMap.put("address", supply.getAddress());
+                dataMap.put("phone", supply.getMobilePhone());
+                dataMap.put("fax", supply.getFax());
+                dataMap.put("contacts", supply.getContactName());
+            }
+        }
+        // 查询收货部门的信息
+        if(StringUtils.isNotBlank(detail.getWarehouseCode())){
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(detail.getWarehouseCode());
+            dataMap.put("dept", detail.getTransportCenterName());
+            dataMap.put("goodsAddress", warehouse.getProvinceName() + warehouse.getCityName() + "/" + warehouse.getDetailedAddress());
+            dataMap.put("mobile", warehouse.getPhone());
+            dataMap.put("goodsPerson", warehouse.getContact());
+        }
+        // 查询采购单的商品信息
+        List<PurchaseOrderProduct> list = purchaseOrderProductDao.orderProductInfo(detail.getPurchaseOrderId());
+        List<Map<String, Object>> productList = new ArrayList<>();
+        Map<String, Object> map;
+        int i = 0;
+        int box = 0;
+        BigDecimal amountSum = new BigDecimal("0");
+        if(CollectionUtils.isNotEmptyCollection(list)){
+            for (PurchaseOrderProduct product:list) {
+                map = new HashMap<>();
+                box += product.getPurchaseWhole();
+                map.put("id", ++i);
+                map.put("skuCode", product.getSkuCode());
+                // 查询sku 的销售条形码
+                ProductSkuSalesInfo salesInfo = productSkuSalesInfoDao.salesInfoByPdf(product.getSkuCode());
+                String salesCode = salesInfo.getSalesCode() == null ? "" : salesInfo.getSalesCode();
+                map.put("distribution", salesCode);
+                map.put("skuName", product.getSkuName());
+                map.put("spec", product.getProductSpec());
+                String type;
+                // 0商品 1赠品 2实物返
+                if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                    type = "商品";
+                }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                    type = "赠品";
+                }else {
+                    type = "实物返";
+                }
+                map.put("type", type);
+                map.put("goodsCount", product.getPurchaseWhole());
+                map.put("goodsMin", product.getSingleCount());
+                BigDecimal price = new BigDecimal(product.getProductAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                map.put("price", price);
+                BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                map.put("priceSum", priceSum);
+                amountSum = amountSum.add(priceSum);
+                productList.add(map);
+            }
+        }else {
+            map = new HashMap<>();
+            map.put("id", "");
+            map.put("skuCode", "");
+            map.put("distribution", "");
+            map.put("skuName", "");
+            map.put("spec", "");
+            map.put("type", "");
+            map.put("goodsCount", "");
+            map.put("goodsMin", "");
+            map.put("price", "");
+            map.put("priceSum", "");
+            productList.add(map);
+        }
+        dataMap.put("productList", productList);
+        dataMap.put("amountSum", amountSum);
+        dataMap.put("boxSum", box);
+        try {
+            response.setContentType("*/*");
+            response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".pdf");
+            OutputStream out = response.getOutputStream();
+            out.write(pdfUtil.fillTemplate(dataMap));
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            LOGGER.error("导出订货单PDF数据失败！", e);
+        }
+        return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse purchaseDelete(String purchaseOrderId){
+        if(StringUtils.isBlank(purchaseOrderId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        purchaseApplyDao.delete(purchaseOrderId);
+        return HttpResponse.success();
     }
 }

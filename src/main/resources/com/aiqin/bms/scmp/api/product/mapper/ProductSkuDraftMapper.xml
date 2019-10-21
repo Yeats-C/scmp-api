@@ -134,36 +134,128 @@
 
   <select id="getProductSkuDraft"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo">
-     select
-       a.apply_type as applyType,
-       a.apply_type_name as applyTypeName,
-       a.sku_code as code,
-       a.sku_name as name,
-       a.procurement_section_code as purchaseGroupCode,
-       a.procurement_section_name as purchaseGroupName,
-       a.product_brand_code as productBrandCode,
-       a.product_brand_name as productBrandName,
-       a.product_category_code as productCategoryCode,
-       CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) as productCategoryName,
-       a.product_code as productCode,
-       a.product_name as productName,
-       a.create_time as createTime,
-       a.create_by as createBy,
-       a.pic_folder_code as picFolderCode,
-       a.change_content as changeContent,
-       a.original_code as originalCode
+    select a.apply_type_name                  applyTypeName,
+    case
+    when a.goods_gifts = 0
+    then '商品'
+    when a.goods_gifts = 1
+    then '赠品'
+    end                            goodsGifts,
+    a.sku_code                         code,
+    a.sku_name                         name,
+    a.product_name                     productName,
+    a.product_brand_name               productBrandName,
+    a.product_property_name            productPropertyName,
+    g.settlement_method_name           settlementMethodName,
+    a.manufacturer_guide_price         manufacturerGuidePrice,
+    j.tax_included_price               taxIncludedPrice,
+    i2.price_tax                       aiqinDistributionPrice,
+    i3.price_tax                       mengbeishuDistributionPrice,
+    i8.price_tax                       xiaohongmaDistributionPrice,
+    i5.price_tax                       aiqinChannelPrice,
+    i6.price_tax                       mengbeishuChannelPrice,
+    i7.price_tax                       xiaohongmaChannelPrice,
+    h.price_tax                        salePrice,
+    i.price_tax                        memberPrice,
+    g.output_tax_rate                  outputTaxRate,
+    g.Input_tax_rate                   inputTaxRate,
+    a.color_name                       colorName,
+    a.model_number                     modelNumber,
+    a.apply_type                       applyType,
+    CONCAT(lv1.category_name, '-', lv2.category_name, '-', lv3.category_name, '-',
+    lv4.category_name) as       productCategoryName,
+    case
+    when a.quality_assurance_management = 0
+    then '是'
+    when a.quality_assurance_management = 1
+    then '否'
+    end                            qualityAssuranceManagement,
+    a.quality_date                     qualityDate,
+    case
+    when a.quality_number = 1
+    then '天'
+    when a.quality_number = 2
+    then '月'
+    when a.quality_number = 3
+    then '年'
+    end                            qualityNumber,
+    a.applicable_month_age             applicableMonthAge,
+    case
+    when a.unique_code = 0
+    then '是'
+    when a.unique_code = 1
+    then '否'
+    end                            uniqueCode,
+    j.supply_unit_name                 supplyUnitName,
+    c.spec                             spec,
+    c.unit_name                        unitName,
+    l.base_product_content             inBaseProductContent,
+    f.zero_removal_coefficient         zeroRemovalCoefficient,
+    e.sales_code                       salesCode,
+    a.change_content                   changeContent,
+    a.create_by                        createBy,
+    a.create_time                      createTime,
+    a.update_time                      updateTime,
+    a.update_by                        updateBy,
+    a.selection_effective_end_time     selectionEffectiveEndTime,
+    a.selection_effective_start_time   selectionEffectiveStartTime,
+    a.pic_folder_code         as       picFolderCode,
+    a.original_code                    originalCode,
+    group_concat(m.price_channel_name) coverage,
+    a.procurement_section_name         purchaseGroupName
     from product_sku_draft a
+    left join product_sku_stock_info_draft c on a.sku_code = c.product_sku_code
+    left join product_sku_box_packing_draft d
+    on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
+    left join product_sku_sales_info_draft e
+    on e.product_sku_code = a.sku_code and e.is_default = 1
+    left join product_sku_distribution_info_draft f
+    on a.sku_code = f.product_sku_code
+    left join product_sku_checkout_draft g on g.sku_code = a.sku_code
+    left join product_sku_price_info_draft h
+    on h.sku_code = a.sku_code and h.price_item_code = '1013' #售价
+    left join product_sku_price_info_draft i
+    on i.sku_code = a.sku_code and i.price_item_code = '1014' #会员价
+    left join product_sku_supply_unit_draft j
+    on j.product_sku_code = a.sku_code and j.is_default = 1
+    left join product_sku_price_info_draft i2
+    on i2.sku_code = a.sku_code and i2.price_item_code = '1007' #爱亲分销价
+    left join product_sku_price_info_draft i3
+    on i3.sku_code = a.sku_code and i3.price_item_code = '1008' #萌贝树分销价
+    left join product_sku_price_info_draft i5
+    on i5.sku_code = a.sku_code and i5.price_item_code = '1001' #爱亲渠道价
+    left join product_sku_price_info_draft i6
+    on i6.sku_code = a.sku_code and i6.price_item_code = '1002' #萌贝树渠道价
+    left join product_sku_price_info_draft i7
+    on i7.sku_code = a.sku_code and i7.price_item_code = '1003' #小红马渠道价
+    left join product_sku_price_info_draft i8
+    on i8.sku_code = a.sku_code and i8.price_item_code = '1009' #小红马分销价
+    left join product_sku_manufacturer_draft k
+    on a.sku_code = k.product_sku_code and k.is_default = 1
+    left join product_sku_purchase_info_draft l
+    on l.product_sku_code = a.sku_code
+    left join product_sku_channel_draft m
+    on m.sku_code = a.sku_code
     LEFT JOIN product_category lv4
-      on lv4.category_id = a.product_category_code
+    on lv4.category_id = a.product_category_code
     LEFT JOIN product_category lv3
-      on lv3.category_id = lv4.parent_id
+    on lv3.category_id = lv4.parent_id
     LEFT JOIN product_category lv2
-      on lv2.category_id = lv3.parent_id
+    on lv2.category_id = lv3.parent_id
     LEFT JOIN product_category lv1
-      on lv1.category_id = lv2.parent_id
+    on lv1.category_id = lv2.parent_id
     where 1=1
     <if test="companyCode != null and companyCode !='' ">
       and a.company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyType != null">
+      and a.apply_type = #{applyType}
+    </if>
+    <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+      and a.procurement_section_code = #{purchaseGroupCode}
+    </if>
+    <if test="purchaseGroupName != null and purchaseGroupName != ''">
+      and a.procurement_section_name = #{purchaseGroupName}
     </if>
     <if test="personId != null and personId != '' ">
       and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
@@ -207,6 +299,7 @@
     <if test="updateTimeEnd != null">
       AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
     </if>
+    group by a.sku_code
     order by a.update_time desc
   </select>
   <select id="getProductSkuDraftByProductCode" parameterType="java.lang.String" resultMap="BaseResultMap">

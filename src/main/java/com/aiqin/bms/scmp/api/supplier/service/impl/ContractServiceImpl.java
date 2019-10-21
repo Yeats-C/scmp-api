@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.PlanTypeReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.contract.*;
+import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCodeResVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
@@ -40,7 +41,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 /**
  * @description:合同Service
@@ -171,11 +171,11 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
         List<String> dicNameList = Lists.newArrayList();
         dicNameList.add("结算方式");
         Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
-        dicMap.forEach((k, v) -> {
-            if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
-                contractResVo.setSettlementMethodName(v.getSupplierContent());
-            }
-        });
+//        dicMap.forEach((k, v) -> {
+//            if (Objects.equals(contractResVo.getSettlementMethod().toString(), v.getSupplierDictionaryValue())) {
+//                contractResVo.setSettlementMethodName(v.getSupplierContent());
+//            }
+//        });
         List<ContractPurchaseVolumeDTO> purchaseVolume = contractPurchaseVolumeDao.selectByContractPurchaseVolume(contractResVo.getContractCode());
         List<ContractFile> contractFiles = contractFileMapper.selectByContractCode(contractResVo.getContractCode());
         List<ContractPurchaseGroup> contractPurchaseGroups = contractPurchaseGroupMapper.selectByContractCode(contractResVo.getContractCode());
@@ -460,5 +460,18 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
         map.put("companyCode",user.getCompanyCode());
         map.put("supplierCode",supplierCode);
         return contractDao.getContractByMap(map);
+    }
+
+    /**
+     * 功能描述: 根据合同编码查询结算方式
+     *
+     * @param contractCode
+     * @return
+     * @auther knight.xie
+     * @date 2019/10/18 14:24
+     */
+    @Override
+    public DictionaryCodeResVo getSettlementMethodByContractCode(String contractCode) {
+        return contractDao.getSettlementMethodByContractCode(contractCode);
     }
 }

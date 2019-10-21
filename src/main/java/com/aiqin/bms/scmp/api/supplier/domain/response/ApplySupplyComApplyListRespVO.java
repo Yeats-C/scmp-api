@@ -57,4 +57,7 @@ public class ApplySupplyComApplyListRespVO {
     @ApiModelProperty("区县名称")
     private String districtName;
 
+    @ApiModelProperty("申请类型")
+    private Byte applyType;
+
 }

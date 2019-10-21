@@ -17,6 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+
 /**
  * @author: zhao shuai
  * @create: 2019-06-13
@@ -139,4 +143,17 @@ public class PurchaseApplyController {
     public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
         return purchaseApplyService.purchaseContrast(contrastRequest);
     }
+
+    @GetMapping("/pdf")
+    @ApiOperation("订货/收货单导出PDF模板")
+    public HttpResponse importPdf(@RequestParam("purchase_order_code") String purchaseOrderCode, HttpServletResponse response) {
+        return  purchaseApplyService.importPdf(purchaseOrderCode, response);
+    }
+
+    @GetMapping("/delete")
+    @ApiOperation("删除采购申请单")
+    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
+        return purchaseApplyService.purchaseDelete(purchaseOrderId);
+    }
+
 }

@@ -164,6 +164,12 @@
       <if test="skuName != null and skuName!= '' ">
         and sku_name like CONCAT('%',#{skuName},'%')
       </if>
+      <if test="purchaseGroupCode != null and purchaseGroupCode!= '' ">
+          and procurement_section_code = #{purchaseGroupCode}
+      </if>
+      <if test="personId != null and personId!= '' ">
+          and procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      </if>
       order by update_time desc
     </select>
   <select id="findFormNoByCode" resultType="java.lang.String">

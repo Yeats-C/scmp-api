@@ -868,6 +868,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         if(null != authToken){
             querySupplierReqVO.setCompanyCode(authToken.getCompanyCode());
             //querySupplierReqVO.setApplyBy(authToken.getPersonName());
+            querySupplierReqVO.setPersonId(authToken.getPersonId());
         }
         return applySupplyCompanyDao.queryApplyList(querySupplierReqVO);
     }

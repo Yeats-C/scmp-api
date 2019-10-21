@@ -45,6 +45,10 @@ public class PurchaseApply {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty(value="是否删除 0 否 1是")
+    @JsonProperty("status")
+    private String status;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

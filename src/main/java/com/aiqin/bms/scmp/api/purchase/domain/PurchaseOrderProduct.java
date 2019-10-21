@@ -133,4 +133,16 @@ public class PurchaseOrderProduct {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @ApiModelProperty(value="库存金额")
+    @JsonProperty("stock_amount")
+    private Long stockAmount;
+
+    @ApiModelProperty(value="库存周转期")
+    @JsonProperty("stock_turnover")
+    private Integer stockTurnover;
+
+    @ApiModelProperty(value="预计到货后的周转期")
+    @JsonProperty("receipt_turnover")
+    private Integer receiptTurnover;
+
 }

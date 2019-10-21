@@ -24,4 +24,6 @@ public interface RejectApplyRecordDao {
     Integer updateByRejectCode(RejectApplyRecord rejectApplyRequest);
 
     void updateStatus(String rejectApplyRecordId);
+
+    Integer delete(String rejectApplyRecordCode);
 }

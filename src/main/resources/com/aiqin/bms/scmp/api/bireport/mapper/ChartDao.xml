@@ -6,11 +6,14 @@
     <sql id="select_monthly_sales">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+          <!--  <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bms.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and substring(bms.year_month,1,4)=#{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bms.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -41,11 +44,14 @@
     <sql id="select_monthly_gross_margin">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+          <!--  <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmgm.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and substring(bmgm.year_month,1,4)=#{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmgm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -77,11 +83,14 @@
     <sql id="select_month_sales_achievement">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+         <!--   <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmsa.stat_year between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and bmsa.stat_year=#{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmsa.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -113,11 +122,14 @@
     <sql id="select_month_cumulative_brand_sales">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+           <!-- <if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmcbs.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and bmcbs.year_month = #{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcbs.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -149,11 +161,14 @@
     <sql id="select_month_cumulative_gross_profit_margin">
         <where>
             1=1
-            <if test="beginCreateTime!=null and beginCreateTime!=''">
+            <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
                 and bmcgpm.year_month between #{beginCreateTime}
             </if>
             <if test="createTime!=null and createTime!=''">
                 and #{createTime}
+            </if>-->
+            <if test="createTime!=null and createTime!=''">
+                and bmcgpm.year_month = #{createTime}
             </if>
             <if test="productSortCode!=null and productSortCode!=''">
                 and bmcgpm.product_sort_code like concat('%', #{productSortCode}, '%')
@@ -197,19 +212,32 @@
         bms.store_type as storeType,
         bms.data_type_code as dataTypeCode,
         bms.data_type as dataType,
-        bms.channel_order_amount as channelOrderAmount,
-        bms.channel_last_year_sales as channelLastYearSales,
-        bms.channel_last_month_sales as channelLastMonthSales,
-        bms.channel_compared_same as channelComparedSame,
-        bms.channel_sequential as channelSequential,
-        bms.distribution_order_amount as distributionOrderAmount,
-        bms.distribution_last_year_sales as distributionLastYearSales,
-        bms.distribution_last_month_sales as distributionLastMonthSales,
-        bms.distribution_compared_same as distributionComparedSame,
-        bms.distribution_sequential as distributionSequential
-        from bi_chart_monthly_sales bms
+        sum(bms.channel_order_amount) as channelOrderAmount,
+        sum(bms.channel_last_year_sales) as channelLastYearSales,
+        sum(bms.channel_last_month_sales) as channelLastMonthSales,
+        (sum(bms.channel_order_amount)/sum(bms.channel_last_year_sales))-1 as channelComparedSame,
+        (sum(bms.channel_order_amount)/sum(bms.channel_last_month_sales))-1 as channelSequential,
+        sum(bms.distribution_order_amount) as distributionOrderAmount,
+        sum(bms.distribution_last_year_sales) as distributionLastYearSales,
+        sum(bms.distribution_last_month_sales) as distributionLastMonthSales,
+        (sum(bms.distribution_order_amount)/sum(bms.distribution_last_year_sales))-1 as distributionComparedSame,
+        (sum(bms.distribution_order_amount)/sum(bms.distribution_last_month_sales))-1 as distributionSequential
+        from (select * from bi_chart_monthly_sales bms where 1=1
+        <if test="createTime!=null and createTime!=''">
+            and substring(bms.year_month,1,4)=#{createTime}
+        </if>
+        order by id desc limit 10000) as bms
         <include refid="select_monthly_sales"/>
-        order by bms.id asc
+        group by substring(bms.year_month,6,2)
+        <if test="productSortCode==null and productSortCode==''">
+            ,bms.product_sort_code
+        </if>
+        <if test="orderCode==null and orderCode==''">
+            ,bms.price_channel_code
+        </if>
+        <if test="storeTypeCode==null and storeTypeCode==''">
+            ,bms.store_type_code
+        </if>
     </select>
     <select id="selectMonthlyGrossMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthlyGrossMarginRespVo">
@@ -225,22 +253,35 @@
         bmgm.store_type as storeType,
         bmgm.data_type_code as dataTypeCode,
         bmgm.data_type as dataType,
-        bmgm.sales_cost as salesCost,
-        bmgm.channel_amount as channelAmount,
-        bmgm.channel_maori as channelMaori,
-        bmgm.channel_maori_rate as channelMaoriRate,
-        bmgm.channel_last_year_maori_rate as channelLastYearMaoriRate,
-        bmgm.channel_compared_same as channelComparedSame,
-        bmgm.channel_sequential as channelSequential,
-        bmgm.distribution_amount as distributionAmount,
-        bmgm.distribution_maori as distributionMaori,
-        bmgm.distribution_maori_rate as distributionMaoriRate,
-        bmgm.distribution_last_year_maori_rate as distributionLastYearMaoriRate,
-        bmgm.distribution_compared_same as distributionComparedSame,
-        bmgm.distribution_sequential as distributionSequential
-        from bi_chart_month_gross_margin bmgm
+        sum(bmgm.sales_cost) as salesCost,
+        sum(bmgm.channel_amount) as channelAmount,
+        sum(bmgm.channel_amount)-sum(bmgm.sales_cost) as channelMaori,
+        (sum(channel_amount)-sum(sales_cost))/sum(channel_amount) as channelMaoriRate,
+        (sum(last_year_channel_amount_daily)-sum(last_year_stock_cost))/sum(last_year_channel_amount_daily) as channelLastYearMaoriRate,
+        (sum(channel_amount)/sum(last_year_channel_amount_daily))-1 as channelComparedSame,
+        (sum(channel_amount)/sum(last_month_channel_amount_daily))-1 as channelSequential,
+        sum(bmgm.distribution_amount_daily) as distributionAmount,
+        sum(bmgm.distribution_amount_daily)-sum(channel_amount) as distributionMaori,
+        (sum(distribution_amount_daily)-channel_amount)/sum(distribution_amount_daily) as distributionMaoriRate,
+        (sum(last_year_distribution_amount_daily)-last_year_channel_amount_daily)/sum(last_year_distribution_amount_daily) as distributionLastYearMaoriRate,
+        (sum(distribution_amount_daily)/last_year_distribution_amount_daily)-1 as distributionComparedSame,
+        (sum(distribution_amount_daily)/last_month_distribution_amount_daily)-1 as distributionSequential
+        from (select * from bi_chart_month_gross_margin bmgm where 1=1
+        <if test="createTime!=null and createTime!=''">
+            and substring(bmgm.year_month,1,4)=#{createTime}
+        </if>
+        order by id desc limit 10000) as bmgm
         <include refid="select_monthly_gross_margin"/>
-        order by bmgm.id asc
+        group by substring(bmgm.year_month,6,2)
+        <if test="productSortCode==null and productSortCode==''">
+            ,bmgm.product_sort_code
+        </if>
+        <if test="orderCode==null and orderCode==''">
+            ,bmgm.price_channel_code
+        </if>
+        <if test="storeTypeCode==null and storeTypeCode==''">
+            ,bmgm.store_type_code
+        </if>
     </select>
     <select id="selectMonthSalesAchievement" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
@@ -259,15 +300,28 @@
         bmsa.data_type as dataType,
         bmsa.category_code as categoryCode,
         bmsa.category_name as categoryName,
-        bmsa.channel_amount as channelAmount,
-        bmsa.channel_budget as channelBudget,
-        bmsa.channel_yield_rate as channelYieldRate,
-        bmsa.distribution_amount as distributionAmount,
-        bmsa.distribution_budget as distributionBudget,
-        bmsa.distribution_yield_rate as distributionYieldRate
-        from bi_chart_month_sales_achievement bmsa
+        sum(bmsa.channel_amount) as channelAmount,
+        sum(bmsa.channel_budget) as channelBudget,
+        sum(bmsa.channel_amount)/sum(bmsa.channel_budget)/100 as channelYieldRate,
+        sum(bmsa.distribution_amount) as distributionAmount,
+        sum(bmsa.distribution_budget) as distributionBudget,
+        sum(bmsa.distribution_amount)/sum(bmsa.distribution_budget)/100 as distributionYieldRate
+        from (select * from bi_chart_month_sales_achievement bmsa where 1=1
+        <if test="createTime!=null and createTime!=''">
+            and bmsa.stat_year=#{createTime}
+        </if>
+        order by id desc limit 10000) as bmsa
         <include refid="select_month_sales_achievement"/>
-        order by bmsa.id asc
+        group by stat_month
+        <if test="productSortCode==null and productSortCode==''">
+            ,bmsa.product_sort_code
+        </if>
+        <if test="orderCode==null and orderCode==''">
+            ,bmsa.price_channel_code
+        </if>
+        <if test="storeTypeCode==null and storeTypeCode==''">
+            ,bmsa.store_type_code
+        </if>
     </select>
     <select id="sumMonthSalesAchievement" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthSalesAchievementRespVo">
         SELECT
@@ -278,9 +332,12 @@
         SUM(bmsa.distribution_amount) as distributionAmount,
         SUM(bmsa.distribution_budget) as distributionBudget,
         SUM(bmsa.distribution_amount)/SUM(bmsa.distribution_budget) as distributionYieldRate
-        from bi_chart_month_sales_achievement bmsa
+        from (select * from bi_chart_month_sales_achievement bmsa where 1=1
+        <if test="createTime!=null and createTime!=''">
+            and bmsa.stat_year=#{createTime}
+        </if>
+        order by id desc limit 10000) as bmsa
         <include refid="select_month_sales_achievement"/>
-        order by bmsa.id asc
     </select>
     <select id="selectMonthCumulativeBrandSales" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeBrandSalesRespVo">
@@ -290,27 +347,51 @@
         bmcbs.year_month as yearMonth,
         bmcbs.product_sort_code as productSortCode,
         bmcbs.product_sort_name as productSortName,
-        bmcbs.price_channel_code as orderCode,
-        bmcbs.price_channel_name as orderOriginal,
+        bmcbs.price_channel_code as priceChannelCode,
+        bmcbs.price_channel_name as priceChannelName,
         bmcbs.store_type_code as storeTypeCode,
         bmcbs.store_type as storeType,
         bmcbs.data_type_code as dataTypeCode,
         bmcbs.data_type as dataType,
         bmcbs.category_code as categoryCode,
         bmcbs.category_name as categoryName,
-        bmcbs.total_channel_amount_daily as channelSales,
-        bmcbs.total_last_year_channel_amount_daily as channelLastYearSales,
-        bmcbs.total_last_month_channel_amount_daily as channelLastMonthSales,
-        bmcbs.total_channel_amount_daily_compared_same as channelComparedSame,
-        bmcbs.total_channel_amount_daily_sequential as channelSequential,
-        bmcbs.total_distribution_amount_daily as distributionSales,
-        bmcbs.total_last_year_distribution_amount_daily as distributionLastYearSales,
-        bmcbs.total_last_month_distribution_amount_daily as distributionLastMonthSales,
-        bmcbs.total_distribution_amount_daily_compared_same as distributionComparedSame,
-        bmcbs.total_distribution_amount_daily_sequential as distributionSequential
-        from bi_month_cumulative_brand_sales bmcbs
+        sum(bmcbs.total_stock_cost) as totalStockCost,
+        sum(bmcbs.total_channel_amount_daily) as totalChannelAmountDaily,
+        sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearChannelAmountDaily,
+        sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthChannelAmountDaily,
+        sum(bmcbs.total_channel_amount_daily)/sum(bmcbs.total_last_year_channel_amount_daily) as totalChannelAmountDailyComparedSame,
+        sum(bmcbs.total_channel_amount_daily)/sum(bmcbs.total_last_month_channel_amount_daily) as totalChannelAmountDailySequential,
+        sum(bmcbs.total_channel_maori) as totalChannelMaori,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.total_channel_amount_daily) as totalChannelMaoriRate,
+        sum(bmcbs.last_year_total_channel_maori)/sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearChannelMaoriRate,
+        sum(last_month_total_channel_maori)/sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthChannelMaoriRate,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.last_year_total_channel_maori) as totalChannelGrossMarginComparedSame,
+        sum(bmcbs.total_channel_maori)/sum(bmcbs.last_month_total_channel_maori) as totalChannelGrossMarginRateSequential,
+        sum(bmcbs.total_distribution_amount_daily) as totalDistributionAmountDaily,
+        sum(bmcbs.total_last_year_distribution_amount_daily) as totalLastYearDistributionAmountDaily,
+        sum(bmcbs.total_last_month_distribution_amount_daily) as totalLastMonthDistributionAmountDaily,
+        sum(bmcbs.total_distribution_amount_daily)/sum(bmcbs.total_last_year_distribution_amount_daily) as totalDistributionAmountDailyComparedSame,
+        sum(bmcbs.total_distribution_amount_daily)/sum(bmcbs.total_last_month_distribution_amount_daily) as totalDistributionAmountDailySequential,
+        sum(bmcbs.total_distribution_amount) as totalDistributionAmount,
+        sum(bmcbs.total_distribution_amount)/sum(bmcbs.total_distribution_amount_daily) as totalDistributionMaoriRate,
+        sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily) as totalLastYearDistributionMaoriRate,
+        sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily) as totalLastMonthDistributionMaoriRate,
+        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_month_distribution_amount_daily)-sum(bmcbs.total_last_month_channel_amount_daily)) as totalDistributionMarginRateSequential,
+        sum(bmcbs.total_distribution_amount)/(sum(bmcbs.total_last_year_distribution_amount_daily)-sum(bmcbs.total_last_year_channel_amount_daily)) as totalDistributionGrossMarginComparedSame
+        from (select * from bi_month_cumulative_brand_sales bmcbs where 1=1
+        <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bmcbs.year_month between #{beginCreateTime}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+            and #{createTime}
+        </if>-->
+        <if test="createTime!=null and createTime!=''">
+            and bmcbs.year_month = #{createTime}
+        </if>
+        order by id desc limit 10000) as bmcbs
         <include refid="select_month_cumulative_brand_sales"/>
-        order by bmcbs.id asc
+        and product_sort_code is not null and price_channel_code is not null and store_type_code is not null and data_type_code is not null and category_code is not null
+        group by product_sort_code,price_channel_code,store_type_code,data_type_code,category_code
     </select>
     <select id="selectMonthCumulativeGrossProfitMargin" parameterType="com.aiqin.bms.scmp.api.bireport.domain.request.ChartReqVo"
             resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeGrossProfitMarginRespVo">
@@ -328,23 +409,42 @@
         bmcgpm.data_type as dataType,
         bmcgpm.category_code as categoryCode,
         bmcgpm.category_name as categoryName,
-        bmcgpm.total_stock_cost as salesCost,
-        bmcgpm.total_channel_amount_daily as channelAmount,
-        bmcgpm.total_channel_maori as channelMaori,
-        bmcgpm.total_channel_maori_rate as channelMaoriRate,
-        bmcgpm.total_last_month__channel_maori_rate as channelLastMaoriRate,
-        bmcgpm.total_last_year__channel_maori_rate as lastYearChannelMaoriRate,
-        bmcgpm.total_channel_amount_daily_compared_same as channelComparedSame,
-        bmcgpm.total_channel_amount_daily_sequential as channelSequential,
-        bmcgpm.total_distribution_amount_daily as distributionAmount,
-        bmcgpm.total_distribution_amount as distributionMaori,
-        bmcgpm.total_distribution_maori_rate as distributionMaoriRate,
-        bmcgpm.total_last_month_distribution_maori_rate as distributionLastMaoriRate,
-        bmcgpm.total_last_year_distribution_maori_rate as lastYearDistributionMaoriRate,
-        bmcgpm.total_distribution_gross_margin_compared_same as distributionComparedSame,
-        bmcgpm.total_distribution_margin_rate_sequential as distributionSequential
-        from bi_month_cumulative_brand_sales bmcgpm
+        sum(bmcgpm.total_stock_cost) as salesCost,
+        sum(bmcgpm.total_channel_amount_daily) as channelAmount,
+        sum(bmcgpm.total_channel_maori) as channelMaori,
+        (sum(bmcgpm.total_channel_amount_daily)-sum(bmcgpm.total_stock_cost))/sum(bmcgpm.total_channel_amount_daily) as channelMaoriRate,
+        sum(bmcgpm.last_month_total_channel_maori)/sum(bmcgpm.total_last_month_channel_amount_daily) as channelLastMaoriRate,
+        sum(bmcgpm.last_year_total_channel_maori)/sum(bmcgpm.total_last_year_channel_amount_daily) as lastYearChannelMaoriRate,
+        (sum(bmcgpm.total_channel_amount_daily)/sum(bmcgpm.total_last_year_channel_amount_daily))-1 as channelComparedSame,
+        (sum(bmcgpm.total_channel_amount_daily)/sum(bmcgpm.total_last_month_channel_amount_daily))-1 as channelSequential,
+        sum(bmcgpm.total_distribution_amount_daily) as distributionAmount,
+        sum(bmcgpm.total_distribution_amount) as distributionMaori,
+        sum(bmcgpm.total_distribution_amount)/sum(bmcgpm.total_distribution_amount_daily) as distributionMaoriRate,
+        (sum(bmcgpm.total_last_month_distribution_amount_daily)-sum(bmcgpm.total_last_month_channel_amount_daily))/sum(bmcgpm.total_last_month_distribution_amount_daily) as distributionLastMaoriRate,
+        (sum(bmcgpm.total_last_year_distribution_amount_daily)-sum(bmcgpm.total_last_year_channel_amount_daily))/sum(bmcgpm.total_last_year_distribution_amount_daily) as lastYearDistributionMaoriRate,
+        (sum(bmcgpm.total_distribution_amount_daily)/sum(bmcgpm.total_last_year_distribution_amount_daily))-1 as distributionComparedSame,
+        (sum(bmcgpm.total_distribution_amount_daily)/sum(bmcgpm.total_last_month_distribution_amount_daily))-1 as distributionSequential
+        from (select * from bi_month_cumulative_brand_sales bmcgpm where 1=1
+        <!--<if test="beginCreateTime!=null and beginCreateTime!=''">
+            and bmcgpm.year_month between #{beginCreateTime}
+        </if>
+        <if test="createTime!=null and createTime!=''">
+            and #{createTime}
+        </if>-->
+        <if test="createTime!=null and createTime!=''">
+            and bmcgpm.year_month = #{createTime}
+        </if>
+        order by id desc limit 10000) as bmcgpm
         <include refid="select_month_cumulative_gross_profit_margin"/>
-        order by bmcgpm.id asc
+        and product_sort_code is not null and price_channel_code is not null and store_type_code is not null and data_type_code is not null and category_code is not null
+        group by product_sort_code,price_channel_code,store_type_code,data_type_code,category_code
+    </select>
+    <select id="selectMonthCumulativeMargin" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.MonthCumulativeMarginRespVo">
+        select
+          supplier_content as budgetProduct,
+          supplier_dictionary_name as budgetProductName,
+          supplier_dictionary_value as statMonth
+        from supplier_dictionary_info
+		where supplier_dictionary_name like concat('%', #{productSortName}, '%')
     </select>
 </mapper>

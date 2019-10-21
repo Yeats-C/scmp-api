@@ -33,6 +33,9 @@
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="stock_amount" jdbcType="BIGINT" property="stockAmount" />
+    <result column="stock_turnover" jdbcType="INTEGER" property="stockTurnover" />
+    <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_product_id as orderProductId, purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
@@ -165,7 +168,8 @@
       purchase_order_code, sku_code, sku_name, brand_id, brand_name, category_id,
       category_name, product_spec, color_name, model_number, product_type, purchase_whole,
       purchase_single, base_product_content, box_gauge, single_count, tax_rate, product_amount,
-      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name)
+      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name,
+      stock_amount, stock_turnover, receipt_turnover)
     values
     <foreach collection="list" item="item" index="" separator=",">
     (#{item.orderProductId,jdbcType=VARCHAR}, #{item.purchaseOrderId,jdbcType=VARCHAR},
@@ -176,7 +180,8 @@
       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
       #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, #{item.productAmount,jdbcType=INTEGER},
       #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
-      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+      now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=BIGINT},
+      #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER})
     </foreach>
   </insert>
   <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">

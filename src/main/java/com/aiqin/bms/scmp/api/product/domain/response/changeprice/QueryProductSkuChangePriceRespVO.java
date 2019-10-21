@@ -43,6 +43,9 @@ public class QueryProductSkuChangePriceRespVO {
     @ApiModelProperty("变价类型名称")
     private String changePriceName;
 
+    @ApiModelProperty("变价类型名称")
+    private String changePriceType;
+
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 

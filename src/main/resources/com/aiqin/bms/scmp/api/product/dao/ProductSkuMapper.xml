@@ -1728,27 +1728,22 @@
           resultType="java.lang.Long">
     select a.id
     from product_sku a
-    left join product b
-    on a.spu_code = b.product_code
-    left join product_sku_purchase_info c
-    on a.sku_code = c.product_sku_code
-    left join price_project f
-    on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
-    left join product_sku_price_info g
-    on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
-    left join tax_cost_log_stock h
-    on a.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
-    left join stock_batch i
-    on a.sku_code = i.sku_code
-    LEFT JOIN product_category lv4
-    on lv4.category_id = a.product_category_code
-    LEFT JOIN product_category lv3
-    on lv3.category_id = lv4.parent_id
-    LEFT JOIN product_category lv2
-    on lv2.category_id = lv3.parent_id
-    LEFT JOIN product_category lv1
-    on lv1.category_id = lv2.parent_id
-    where a.procurement_section_code = #{purchaseGroupCode}  and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+    left join product b on a.spu_code = b.product_code
+    left join price_project f on 1=1 and f.del_flag = 0 and f.price_project_enable = 0
+    left join product_sku_price_info g on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
+    <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
+      LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
+    </if>
+    <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+      LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+    </if>
+    <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+      LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+    </if>
+    <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+      LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
+    </if>
+    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
@@ -1883,6 +1878,14 @@
     on a.sku_code = c.product_sku_code
     left join product_sku_supply_unit d
     on a.sku_code = d.product_sku_code
+    LEFT JOIN product_category lv4
+    on lv4.category_id = a.product_category_code
+    LEFT JOIN product_category lv3
+    on lv3.category_id = lv4.parent_id
+    LEFT JOIN product_category lv2
+    on lv2.category_id = lv3.parent_id
+    LEFT JOIN product_category lv1
+    on lv1.category_id = lv2.parent_id
     where a.procurement_section_code = #{purchaseGroupCode} and a.company_code =#{companyCode}
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
@@ -2092,16 +2095,15 @@
   <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select s.stock_code as stockCode,sc.transport_center_code as transportCenterCode,sc.transport_center_name as transportCenterName,
     w.warehouse_code as warehouseCode,w.warehouse_name as warehouseName,ps.sku_code as skuCode,ps.sku_name as skuName,
-    ss.unit_name as stockUnitName,s.inventory_num as stockCount, s.total_way_num as totalWayNum,
-    ps.product_brand_code as brandId,ps.product_brand_name as brandName,
+    ss.unit_name as stockUnitName,ifnull(s.inventory_num,0) as stockCount, ifnull(s.total_way_num, 0) as totalWayNum,
+    ps.product_brand_code as brandId,ps.product_brand_name as brandName, su.factory_sku_code as factorySkuCode,
     ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
     ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
     ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
     ps.product_code as spuCode, ps.product_name as spuName, pi.spec as productSpec, su.supply_unit_code as supplierCode,
     su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-    s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, pi.base_product_content as baseProductContent,
-    su.factory_sku_code as factorySkuCode, sc.turnover_period_after_arrival as receiptTurnover,
-    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge
+    s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
+    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
@@ -2266,11 +2268,11 @@
     ps.model_number as modelNumber, ps.product_sort_code as productSortCode, ps.product_sort_name as productSortName,
     ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     sc.transport_center_code as transportCenterCode, sc.transport_center_name as transportCenterName,
-    su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName, pi.base_product_content as baseProductContent,
+    su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, pi.spec as productSpec,
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
-    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate
+    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
@@ -2358,5 +2360,27 @@
      where
          ps.update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
           and ps.update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+  </select>
+  <select id="skuList" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
+    select sku_code as skuCode, sku_name as skuName
+    from product_sku
+    order by sku_code
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="skuCount" resultType="java.lang.Integer">
+    select count(1) from product_sku
+  </select>
+  <select id="skuByWarehouse" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
+    SELECT
+     p.sku_code as skuCode, p.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
+     w.warehouse_code as warehouseCode, w.warehouse_name as warehouseName, w.warehouse_type_code as warehouseTypeCode, w.warehouse_type_name as warehouseTypeName,
+	 w.wms_warehouse_code as wmsWarehouseCode, w.wms_warehouse_name as wmsWarehouseName, w.wms_warehouse_type as wmsWarehouseType
+    from
+    product_sku p
+    inner join product_sku_config ps
+    on p.sku_code = ps.sku_code
+    inner join warehouse w
+    on ps.transport_center_code = w.logistics_center_code
+    where p.sku_code = #{skuCode}
   </select>
 </mapper>

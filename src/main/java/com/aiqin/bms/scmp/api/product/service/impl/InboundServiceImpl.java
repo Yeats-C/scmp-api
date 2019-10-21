@@ -271,26 +271,26 @@ public class InboundServiceImpl implements InboundService {
             Inbound inbound = new Inbound();
             BeanCopyUtils.copy(reqVo, inbound);
             // 获取编码 尺度
-            EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-            inbound.setInboundOderCode(rule.getNumberingValue().toString());
+            //EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+            //inbound.setInboundOderCode(rule.getNumberingValue().toString());
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
             log.info("插入入库单主表返回结果:{}", insert);
 
             //  转化入库单sku实体
             List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
-            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
             //插入入库单商品表
             int insertProducts=inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
             List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
             if(CollectionUtils.isNotEmpty(batchList)){
-                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
                 Integer count = inboundBatchDao.insertList(batchList);
                 log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
             }
             //更新编码表
-            encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
+            //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy(), reqVo.getRemark());
@@ -359,8 +359,33 @@ public class InboundServiceImpl implements InboundService {
         List<InboundProductWmsReqVO> inboundProductWmsReqVOS =  inboundProductDao.selectMmsReqByInboundOderCode(inbound.getInboundOderCode());
         inboundWmsReqVO.setList(inboundProductWmsReqVOS);
         InboundCallBackReqVo inboundCallBackReqVo = new InboundCallBackReqVo();
+        // 先更新数据库,防止事务回滚推送DL重复
+        //设置入库状态
+        inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
+        int s = inboundDao.updateByPrimaryKeySelective(inbound);
+
+        //保存日志
+        productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
+        log.info("推送保存日志修改状态,应该在回调接口前面执行");
         //采购传入wms
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            //采购日志列表
+            if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
+                OperationLog operationLog = new OperationLog();
+                PurchaseOrder purchaseOrder = new PurchaseOrder();
+                purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+                PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+                if (resultPurchaseOrder != null) {
+                    operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
+                    operationLog.setCreateByName(inbound.getCreateBy());
+                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                    operationLog.setCreateTime(new Date());
+                    operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
+                    purchaseManageService.addLog(operationLog);
+                }
+            }
             String createById = inboundDao.selectCreateById(inbound.getInboundOderCode());
             inboundWmsReqVO.setCreateById(createById);
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
@@ -371,26 +396,8 @@ public class InboundServiceImpl implements InboundService {
                 ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
                 if ("0".equals(responseWms.getResultCode())) {
                     //设置wms编号
-                    inbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
-                    //设置入库状态
-                    inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                    inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-                    //采购日志列表
-                    if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
-                        OperationLog operationLog = new OperationLog();
-                        PurchaseOrder purchaseOrder = new PurchaseOrder();
-                        purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
-                        PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                        if (resultPurchaseOrder != null) {
-                            operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
-                            operationLog.setCreateByName(inbound.getCreateBy());
-                            operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
-                            operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
-                            operationLog.setCreateTime(new Date());
-                            operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
-                            purchaseManageService.addLog(operationLog);
-                        }
-                    }
+//                    inbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
+                    log.info("入库单传入dl成功");
                 } else {
                     log.error("入库单传入wms失败:{}", responseWms.getReason());
                     throw new GroundRuntimeException(String.format("入库单传入wms失败:%s",responseWms.getReason()));
@@ -410,13 +417,7 @@ public class InboundServiceImpl implements InboundService {
                 supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
             }
             if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
-
-                //设置入库状态
-                inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-                inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-
                 inboundCallBackReqVo.setInboundOderCode(inbound.getInboundOderCode());
-
                 List<InboundProductCallBackReqVo> list = new ArrayList<>();
                 for (InboundProductWmsReqVO inboundProductWmsReqVO : inboundProductWmsReqVOS) {
                     InboundProductCallBackReqVo inboundProductCallBackReqVo = new InboundProductCallBackReqVo();
@@ -431,11 +432,7 @@ public class InboundServiceImpl implements InboundService {
             }
         }
 
-        // 跟新数据库
-        int s = inboundDao.updateByPrimaryKeySelective(inbound);
-        //保存日志
-        productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.PULL_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), code, HandleTypeCoce.PULL_INBOUND_ODER.getName(), new Date(), inbound.getCreateBy(), null);
-        log.error("推送保存日志修改状态,应该在回调接口前面执行");
+
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())){
             inboundService.workFlowCallBack(inboundCallBackReqVo);
         }

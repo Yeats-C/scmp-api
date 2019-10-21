@@ -50,4 +50,8 @@ public class PurchaseFormRequest extends PagesRequest {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @ApiModelProperty(value="sku编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
 }

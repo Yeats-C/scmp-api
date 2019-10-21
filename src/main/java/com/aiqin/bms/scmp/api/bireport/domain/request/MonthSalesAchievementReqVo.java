@@ -16,6 +16,14 @@ public class MonthSalesAchievementReqVo extends PagesRequest implements Serializ
     @JsonProperty("month")
     private String month;
 
+    @ApiModelProperty("所属部门编码")
+    @JsonProperty("product_sort_code")
+    private String productSortCode;
+
+    @ApiModelProperty("所属部门")
+    @JsonProperty("product_sort_name")
+    private String productSortName;
+
     @ApiModelProperty("渠道编码")
     @JsonProperty("price_channel_code")
     private String priceChannelCode;

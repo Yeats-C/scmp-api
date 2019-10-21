@@ -12,6 +12,9 @@ public class QueryApplySupplyListComReqVO extends PageReq {
     @ApiModelProperty("供货单位编码")
     private String supplyCode;
 
+    @ApiModelProperty("申请类型1新增2修改")
+    private Byte applyType;
+
     @ApiModelProperty("供货单位编码")
     private String supplyName;
 
