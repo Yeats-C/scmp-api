@@ -379,11 +379,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private void sapProfitLossStock(List<Storage> storageList, SapOrderRequest sapOrderRequest) {
         List<ProfitLoss> profitLossList = profitLossMapper.listForSap(sapOrderRequest);
-        if(CollectionUtils.isNotEmpty(profitLossList)){
+        if (CollectionUtils.isNotEmpty(profitLossList)) {
             List<String> orderCodes = profitLossList.stream().map(ProfitLoss::getOrderCode).collect(Collectors.toList());
             sapOrderRequest.setOrderCodeList(orderCodes);
             List<ProfitLossProduct> profitLossProductList = profitLossProductMapper.listForSap(sapOrderRequest);
-            Map<String,ProfitLossProduct> profitLossProductMap = profitLossProductList.stream().collect(Collectors.toMap(profitLossProduct -> profitLossProduct.getOrderCode() + profitLossProduct.getSkuCode(),Function.identity()));
+            Map<String, ProfitLossProduct> profitLossProductMap = profitLossProductList.stream().collect(Collectors.toMap(profitLossProduct -> profitLossProduct.getOrderCode() + profitLossProduct.getSkuCode(), Function.identity()));
             List<String> skuCodes = profitLossProductList.stream().map(ProfitLossProduct::getSkuCode).collect(Collectors.toList());
             ProfitLossProduct profitLossProduct;
             List<ProfitLossProductBatch> profitLossProductBatches = profitLossProductBatchMapper.listForSap(sapOrderRequest);
@@ -433,11 +433,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 storage.setSubOrderTypeName(innerValue.getName());
                 storage.setOrderCode(profitLoss.getOrderCode());
                 //0:报损 1:报溢
-                if(0==profitLoss.getOrderType()){
+                if (0 == profitLoss.getOrderType()) {
                     quantity = profitLoss.getLossQuantity();
-                }else if(1==profitLoss.getOrderType()){
+                } else if (1 == profitLoss.getOrderType()) {
                     quantity = profitLoss.getProfitQuantity();
-                }else{
+                } else {
                     quantity = 0L;
                 }
                 storage.setOrderCount(quantity.intValue());
@@ -468,7 +468,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storageList.clear();
         this.outboundToStock(storageList, sapOrderRequest);
         sapStorageAbutment(storageList, 2);
-        this.sapProfitLossStock(storageList,sapOrderRequest);
+        this.sapProfitLossStock(storageList, sapOrderRequest);
         sapStorageAbutment(storageList, 3);
     }
 
@@ -890,8 +890,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 }
                 purchase.setContractNo(purchaseOrderDetails.getContractCode());
                 purchase.setAccountName(purchaseOrderDetails.getAccountName());
-                purchase.setPayType(purchaseOrderDetails.getPaymentCode());
-                purchase.setPayTypeDesc(purchaseOrderDetails.getPaymentName());
+                //固定传转账
+                purchase.setPayType("1");
+                purchase.setPayTypeDesc("转账");
                 purchase.setPayDate(purchaseOrderDetails.getPayableTime() == null ? 0 : purchaseOrderDetails.getPayableTime());
                 purchase.setDetails(purchaseProductMap.get(purchaseOrder.getPurchaseOrderId()));
                 purchases.add(purchase);
@@ -972,7 +973,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 purchase.setWarehouseName(rejectRecord.getWarehouseName());
                 purchase.setSkuCount(rejectRecord.getSingleCount());
                 //总金额,三者实际金额加一起
-                purchase.setAmount((rejectRecord.getActualGiftAmount() + rejectRecord.getActualProductAmount() + rejectRecord.getActualReturnAmount().toString()));
+                purchase.setAmount(String.valueOf(amountHandler(rejectRecord.getActualGiftAmount()) + amountHandler(rejectRecord.getActualProductAmount() )+ amountHandler(rejectRecord.getActualReturnAmount())));
                 purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
                 purchase.setGroupName(rejectRecord.getPurchaseGroupName());
                 purchase.setCompanyCode(rejectRecord.getCompanyCode());
@@ -982,11 +983,20 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 purchase.setCreateTime(rejectRecord.getCreateTime());
                 purchase.setCreateById(rejectRecord.getUpdateById());
                 purchase.setCreateByName(rejectRecord.getUpdateByName());
+                purchase.setPayType("1");
+                purchase.setPayTypeDesc("转账");
                 purchase.setDetails(detailMap.get(rejectRecord.getRejectRecordId()));
                 purchases.add(purchase);
             }
 
         }
+    }
+
+    private Long amountHandler(Long amount) {
+        if (amount == null){
+            amount = 0L;
+        }
+        return amount;
     }
 
     /**
@@ -1099,8 +1109,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setOrderType(Integer.valueOf(innerValue.getValue()));
                 order.setOrderTypeDesc(innerValue.getName());
                 //支付方式
-                order.setPayType(orderInfo.getPaymentTypeCode());
-                order.setPayTypeDesc(orderInfo.getPaymentType());
+                order.setPayType("1");
+                order.setPayTypeDesc("转账");
                 //1 是未支付 2 是已支付
                 order.setPayStatus(2);
                 //支付时间
@@ -1198,8 +1208,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setOrderType(Integer.valueOf(ScmpOrderEnum.ORDER_BACK.getCode()));
                 order.setOrderTypeDesc(ScmpOrderEnum.ORDER_BACK.getDesc());
                 //支付方式
-                order.setPayType(returnOrderInfo.getPaymentTypeCode());
-                order.setPayTypeDesc(returnOrderInfo.getPaymentType());
+                order.setPayType("1");
+                order.setPayTypeDesc("转账");
                 //1 是未支付 2 是已支付
                 order.setPayStatus(2);
                 //支付时间
