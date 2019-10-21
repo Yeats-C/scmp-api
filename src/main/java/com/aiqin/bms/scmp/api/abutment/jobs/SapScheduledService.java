@@ -27,5 +27,8 @@ package com.aiqin.bms.scmp.api.abutment.jobs;
  * 思维方式*热情*能力
  */
 public interface SapScheduledService {
+
     void orderInfoAbutment();
+
+    void stockAbutment();
 }

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
@@ -48,9 +49,9 @@ public interface StockDao {
 
     /**
      * 查询商品总库存
+     *
      * @author gary.diao
      * @date 2019/1/7
-     *
      **/
     List<StockRespVO> selectStockSumInfoByPage(StockRequest stockRequest);
 
@@ -63,7 +64,6 @@ public interface StockDao {
     Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 
     /**
-     *
      * 功能描述: 查询库存商品(采购退供使用) list
      *
      * @param vo
@@ -75,6 +75,7 @@ public interface StockDao {
 
     /**
      * 批量更新库存
+     *
      * @param vos
      * @return
      */
@@ -82,6 +83,7 @@ public interface StockDao {
 
     /**
      * 根据公司编码和sku集合查询商品库存
+     *
      * @param reqVo
      * @return
      */
@@ -107,6 +109,7 @@ public interface StockDao {
 
     /**
      * 批次库存管理查询
+     *
      * @param stockBatchRequest
      * @return
      */
@@ -138,7 +141,6 @@ public interface StockDao {
     Long selectOneStockBatchInfoByStockBatchIdInfoByPage(Long stockBatchId);
 
     /**
-     *
      * 功能描述: 批次查询库存商品(采购退供使用) list
      *
      * @param vo
@@ -147,17 +149,19 @@ public interface StockDao {
      */
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
 
-    QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode,@Param("batchCode") String batchCode);
-    RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode,@Param("productType") Integer productType,@Param("purchaseGroupCode") String procurementSectionCode,@Param("transportCenterCode") String transportCenterCode,@Param("warehouseCode") String warehouseCode,@Param("skuCode") String skuCode);
+    QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+
+    RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode, @Param("productType") Integer productType, @Param("purchaseGroupCode") String procurementSectionCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
 
     /**
      * 库房管理新增调拨,移库,报废列表查询
+     *
      * @param reqVO
      * @return
      */
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
-    List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode")  String skuCode);
+    List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
 
@@ -171,17 +175,18 @@ public interface StockDao {
 
     List<String> importStockSkuList();
 
-    List<String> selectSkuCodeByQueryBatchCode(@Param("skuCode")String skuCode);
+    List<String> selectSkuCodeByQueryBatchCode(@Param("skuCode") String skuCode);
 
-    Long selectSkuCodeByQueryAvailableNum(@Param("skuCode")String skuCode);
+    Long selectSkuCodeByQueryAvailableNum(@Param("skuCode") String skuCode);
 
-    List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode")String skuCode);
+    List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode") String skuCode);
 
     List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
 
     List<QuerySkuInfoRespVO> getSkuBatchForChangePrice(QuerySkuInfoReqVO reqVO);
 
     List<BatchInfo> getBatch();
+
     List<PriceChannelForChangePrice> getSaleChannelList();
 
     List<SkuBatchRespVO> queryStockBatchForAllo(SkuBatchReqVO reqVO);
@@ -197,6 +202,8 @@ public interface StockDao {
     List<Stock> selectSkuCost();
 
     Stock selectStockSum(Stock stock);
+
+    List<StockResponse> listBySkuCodes(List<String> list);
 
     Integer insertReplaceAll(List<Stock> stockList);
 

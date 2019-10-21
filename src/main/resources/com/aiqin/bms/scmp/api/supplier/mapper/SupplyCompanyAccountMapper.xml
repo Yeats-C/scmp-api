@@ -310,4 +310,15 @@
       supply_company_account_code = #{supplyCompanyAccountCode,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="listForSap" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      supply_company_account
+    where
+      supply_company_account_code in
+    <foreach collection="orderCodeList" item="item" open="(" close=")" separator=",">
+      #{item}
+    </foreach>
+  </select>
 </mapper>
