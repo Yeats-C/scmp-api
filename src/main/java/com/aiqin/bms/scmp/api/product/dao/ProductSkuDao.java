@@ -307,7 +307,8 @@ public interface ProductSkuDao {
      */
     List<OrderProductSkuResponse> selectStockSkuInfoList(List<String> skuList);
 
-    List<SkuWarehouseResponse> skuByWarehouse(PagesRequest request);
+    List<SkuWarehouseResponse> skuByWarehouse(String skuCode);
 
-    Integer skuByWarehouseCount();
+    List<SkuWarehouseResponse> skuList(PagesRequest request);
+
 }

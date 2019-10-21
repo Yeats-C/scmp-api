@@ -135,7 +135,7 @@ public class ApplyPurchaseOrderProduct {
 
     @ApiModelProperty(value="库存金额")
     @JsonProperty("stock_amount")
-    private Integer stockAmount;
+    private Long stockAmount;
 
     @ApiModelProperty(value="库存周转期")
     @JsonProperty("stock_turnover")

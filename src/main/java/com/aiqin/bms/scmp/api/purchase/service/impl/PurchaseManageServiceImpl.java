@@ -261,7 +261,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         Stock info = stockDao.stockInfo(stock);
         if (info != null) {
             detail.setStockCount(info.getInventoryNum().intValue());
-            detail.setStockAmount(info.getInventoryNum().intValue() * info.getTaxCost().intValue());
+            detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
             Long avgSales = proSuggestReplenishmentDao.biAppSuggestReplenishmentAll(detail.getTransportCenterCode(), detail.getSkuCode(),
                     detail.getWarehouseCode());
             // 库存周转期， 预计到货周转期
@@ -407,7 +407,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 detail.setSingleCount(number);
                 this.stockAmount(detail, companyCode);
-                orderProduct.setStockAmount(detail.getStockAmount());
+                orderProduct.setStockAmount(detail.getStockAmount().longValue());
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());

@@ -2103,7 +2103,7 @@
     ps.product_code as spuCode, ps.product_name as spuName, pi.spec as productSpec, su.supply_unit_code as supplierCode,
     su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
-    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, (ifnull(s.tax_cost, 0) * ifnull(s.inventory_num, 0)) as stockAmount
+    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
@@ -2268,11 +2268,11 @@
     ps.model_number as modelNumber, ps.product_sort_code as productSortCode, ps.product_sort_name as productSortName,
     ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     sc.transport_center_code as transportCenterCode, sc.transport_center_name as transportCenterName,
-    su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName, pi.base_product_content as baseProductContent,
+    su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, pi.spec as productSpec,
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
-    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate
+    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
@@ -2350,6 +2350,12 @@
     </foreach>
     )
   </select>
+  <select id="skuList" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
+    select sku_code as skuCode, sku_name as skuName
+    from product_sku
+    order by sku_code
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
   <select id="skuByWarehouse" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
     SELECT
      p.sku_code as skuCode, p.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
@@ -2361,15 +2367,6 @@
     on p.sku_code = ps.sku_code
     inner join warehouse w
     on ps.transport_center_code = w.logistics_center_code
-    order by p.sku_code
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="skuByWarehouseCount" resultType="java.lang.Integer">
-    SELECT count(1)
-    from product_sku p
-    inner join product_sku_config ps
-    on p.sku_code = ps.sku_code
-    inner join warehouse w
-    on ps.transport_center_code = w.logistics_center_code
+    where p.sku_code = #{skuCode}
   </select>
 </mapper>

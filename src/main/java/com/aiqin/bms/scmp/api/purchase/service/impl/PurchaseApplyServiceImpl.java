@@ -156,7 +156,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         // 编辑时的商品信息
         List<PurchaseApplyDetailResponse> applyProducts = purchaseApplyProductDao.applyProductList(purchases);
         if(CollectionUtils.isNotEmptyCollection(applyProducts)){
-            PurchaseApplyProduct applyProduct = null;
+            PurchaseApplyProduct applyProduct;
             for(PurchaseApplyDetailResponse product:applyProducts){
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     String categoryName = goodsRejectService.selectCategoryName(product.getCategoryId());
@@ -238,6 +238,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
 
             for (PurchaseApplyDetailResponse product : detail) {
+                product.setStockAmount(product.getTaxCost() * product.getStockCount());
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
@@ -367,7 +368,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 if(info != null){
                     detail.setStockCount(info.getInventoryNum().intValue());
                     detail.setTotalWayNum(info.getTotalWayNum().intValue());
-                    detail.setStockAmount(info.getInventoryNum().intValue() * info.getTaxCost().intValue());
+                    detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
                     detail.setNewPurchasePrice(info.getNewPurchasePrice().intValue());
                 }
             }
