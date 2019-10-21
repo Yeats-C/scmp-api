@@ -311,5 +311,4 @@ public interface ProductSkuDao {
 
     List<SkuWarehouseResponse> skuList(PagesRequest request);
 
-    Integer skuCount();
 }

@@ -2356,9 +2356,6 @@
     order by sku_code
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
-  <select id="skuCount" resultType="java.lang.Integer">
-    select count(1) from product_sku
-  </select>
   <select id="skuByWarehouse" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
     SELECT
      p.sku_code as skuCode, p.sku_name as skuName, w.logistics_center_code as transportCenterCode, w.logistics_center_name as transportCenterName,
