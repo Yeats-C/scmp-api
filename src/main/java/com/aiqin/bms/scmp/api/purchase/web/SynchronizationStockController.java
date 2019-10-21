@@ -25,11 +25,10 @@ public class SynchronizationStockController {
     @GetMapping("/stock")
     @ApiOperation("同步库存数据的定时任务")
     public HttpResponse synchronizationStock(@RequestParam(value = "page_size", required = false) Integer pageSize,
-                                             @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                             @RequestParam(value = "is_page", required = false) Integer isPage) {
+                                             @RequestParam(value = "page_no", required = false) Integer pageNo) {
         PagesRequest request = new PagesRequest();
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
-        return synchronizationStockService.synchronizationStock(request,isPage);
+        return synchronizationStockService.synchronizationStock(request);
     }
 }

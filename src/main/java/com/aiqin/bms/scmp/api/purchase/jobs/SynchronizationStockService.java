@@ -5,5 +5,5 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 public interface SynchronizationStockService {
 
-    HttpResponse synchronizationStock(PagesRequest request, Integer isPage);
+    HttpResponse synchronizationStock(PagesRequest request);
 }
