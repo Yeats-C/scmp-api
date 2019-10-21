@@ -56,4 +56,6 @@ public interface OutboundDao {
     Outbound selectById(Long id);
 
     List<Outbound> listForSap(SapOrderRequest sapOrderRequest);
+
+    void updateByOrderCodes(List<String> list);
 }

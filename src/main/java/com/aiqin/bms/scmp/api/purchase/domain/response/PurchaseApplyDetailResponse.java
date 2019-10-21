@@ -399,7 +399,11 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="库存金额")
     @JsonProperty("stock_amount")
-    private Integer stockAmount;
+    private Long stockAmount;
+
+    @ApiModelProperty(value="库存昨日成本")
+    @JsonProperty("tax_cost")
+    private Long taxCost;
 
 }
 

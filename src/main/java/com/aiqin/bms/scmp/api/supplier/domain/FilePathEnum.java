@@ -21,7 +21,9 @@ public enum  FilePathEnum {
     CONTRACT_FILE("contractFile","contract-file/","合同文件"),
     PRODUCT_FILE("productFile","product-file/","商品文件"),
     PRODUCT_PICTURE("productPicture","product-picture/","商品图片"),
-    ;
+    PURCHASE_FILE("purchaseFile","purchase-file/","采购文件"),
+    RETURN_FILE("returnFile","return-file/","退供文件"),
+    RETURN_PICTURE("returnPicture","return-picture/","退供图片");
     private String code;
     private String filePath;
     private String desc;

@@ -29,6 +29,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
+    <result column="tax" jdbcType="BIGINT" property="tax" />
   </resultMap>
 
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
@@ -43,7 +44,7 @@
     id, inbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code, 
     model, unit_code, unit_name, inbound_norms, inbound_base_unit, inbound_base_content, pre_inbound_num,
     pre_inbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_inbound_num, pra_inbound_main_num, 
-    pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, update_by, update_time,linenum
+    pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, update_by, update_time,linenum,tax
   </sql>
 
   <resultMap id="BaseResultLinenumMap" type="com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct">
@@ -500,5 +501,14 @@
     from inbound_product  a left JOIN product_sku_checkout b on a.sku_code = b.sku_code
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
     and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+  </select>
+  <select id="listDetailForSap" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from inbound_product
+    where inbound_oder_code in
+    <foreach collection="orderCodeList" separator="," item="item" open="(" close=")">
+      #{item}
+    </foreach>
   </select>
 </mapper>

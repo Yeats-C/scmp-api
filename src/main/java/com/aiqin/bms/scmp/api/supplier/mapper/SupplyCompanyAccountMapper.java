@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.mapper;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
 import org.apache.ibatis.annotations.Param;
 
@@ -33,4 +35,6 @@ public interface SupplyCompanyAccountMapper {
      * @return com.aiqin.mgs.scmp.api.domain.pojo.SupplyCompanyAccount
      */
     SupplyCompanyAccount selectByApplyCode(@Param("applyCompanyAccountCode") String applyCompanyAccountCode);
+
+    List<SupplyCompanyAccount> listForSap(SapOrderRequest sapOrderRequest);
 }

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.contract;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.ContractByUsernameReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo;
@@ -16,6 +17,7 @@ public interface ContractDao {
 
     /**
      * 查询合同List  分页
+     *
      * @param vo
      * @return
      */
@@ -23,6 +25,7 @@ public interface ContractDao {
 
     /**
      * 插入合同实体
+     *
      * @param record
      * @return
      */
@@ -30,20 +33,23 @@ public interface ContractDao {
 
     /**
      * 根据id去查询合同实体
+     *
      * @param id
      * @return
      */
-    ContractDTO  selectByPrimaryKey(Long id);
+    ContractDTO selectByPrimaryKey(Long id);
 
     /**
      * 根据关联编码去查询
+     *
      * @param applyContractCode
      * @return
      */
-    ContractDTO  selectByApplyCode(String applyContractCode);
+    ContractDTO selectByApplyCode(String applyContractCode);
 
     /**
      * 有选择的更新合同实体
+     *
      * @param contractDTO
      * @return
      */
@@ -51,6 +57,7 @@ public interface ContractDao {
 
     /**
      * 无选择的更新合同
+     *
      * @param contractDTO
      * @return
      */
@@ -59,22 +66,24 @@ public interface ContractDao {
 
     /**
      * 根据公司，登陆人查询合同
+     *
      * @param reqVO
      * @return
      */
     List<ContractDTO> getContractByUsername(ContractByUsernameReqVo reqVO);
 
     /**
-     *
      * @param applyContractCode
      * @param applyStatus
      * @return
      */
 
-    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus,@Param("newApplyCode") String newApplyCode);
+    int updateByCode(@Param("applyContractCode") String applyContractCode, @Param("applyStatus") byte applyStatus, @Param("newApplyCode") String newApplyCode);
 
 
-    List<ContractPurchaseResVo> getContractByMap(Map<String,String> map);
+    List<ContractPurchaseResVo> getContractByMap(Map<String, String> map);
+
+    List<ContractDTO> listForSap(SapOrderRequest sapOrderRequest);
 
     DictionaryCodeResVo getSettlementMethodByContractCode(String contractCode);
 }

@@ -1158,4 +1158,25 @@
     on a.allocation_code = c.allocation_code
     where a.id = #{id}
   </select>
+  <select id="listByInboundCodes" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      allocation
+    where inbound_oder_code in
+    <foreach collection="list" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="listByOutboundCodes" resultMap="BaseResultMap">
+    select
+      <include refid="Base_Column_List"/>
+    from
+      allocation
+    where outbound_oder_code in
+    <foreach collection="list" separator="," open="(" close=")" item="item">
+      #{item}
+    </foreach>
+  </select>
 </mapper>

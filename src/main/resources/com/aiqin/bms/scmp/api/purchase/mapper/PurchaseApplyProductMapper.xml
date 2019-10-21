@@ -693,5 +693,12 @@
     and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
     and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
   </update>
+  <select id="purchaseFormByComplete" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_apply_product
+    where info_status = 0
+    and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </select>
 </mapper>

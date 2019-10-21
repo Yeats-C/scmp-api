@@ -20,5 +20,4 @@ public interface ProductSkuDistributionInfoMapper {
 
     List<PurchaseSaleStockRespVo> getList(String skuCode);
 
-    ProductSkuDistributionInfo distributionInfoByPdf(String skuCode);
 }
