@@ -168,7 +168,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
             PurchaseOrderDetails detail;
             for(PurchaseApplyDetailResponse order:details){
                 purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
-                if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
                     purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
                 }else {
                     purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
@@ -180,6 +180,8 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                     detail.setUpdateById("0");
                     purchaseOrderDetailsDao.update(detail);
                 }
+                purchaseOrder.setUpdateByName("有效期到期，自动执行");
+                purchaseOrder.setUpdateById("0");
                 purchaseOrderDao.update(purchaseOrder);
                 if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
                     OperationLog log = new OperationLog();
@@ -190,7 +192,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                     log.setCreateById("0");
                     log.setCreateByName("有效期到期，自动执行");
                     operationLogDao.insert(log);
-                    if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+                    if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
                         log.setOperationType(PurchaseOrderLogEnum.PURCHASE_FINISH.getCode());
                         log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_FINISH.getName());
                         operationLogDao.insert(log);
