@@ -72,7 +72,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                 for (SkuWarehouseResponse ware : wareList) {
                     sourceStock = sourceStockMap.get(sku.getSkuCode() + ware.getWmsWarehouseCode());
                     if (sourceStock == null) {
-                        sourceStock = new SourceStock();
+                        continue;
                     }
                     stock = new Stock();
                     if (ware.getWmsWarehouseType() == 1) {
