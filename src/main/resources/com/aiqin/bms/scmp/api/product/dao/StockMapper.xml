@@ -2630,4 +2630,17 @@
         </where>
         limit 1
     </select>
+
+    <select id="stockInfoList" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
+        select
+        sku_code skuCode, sku_name skuName, ifnull(inventory_num,0) as inventoryNum, ifnull(available_num,0) as availableNum,
+        ifnull(total_way_num,0) as totalWayNum, ifnull(tax_cost,0) as taxCost, ifnull(new_purchase_price,0) as newPurchasePrice,
+        stock_code as stockCode, transport_center_code AS transportCenterCode, warehouse_code as warehouseCode, warehouse_type as warehouseType
+        from stock
+        <where>
+            <if test="skuList!=null">
+                sku_code IN <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">#{id}</foreach>
+            </if>
+        </where>
+    </select>
 </mapper>
