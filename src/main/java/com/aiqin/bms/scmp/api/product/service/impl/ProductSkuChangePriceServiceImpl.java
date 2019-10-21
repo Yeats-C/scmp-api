@@ -522,7 +522,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             });
             log.setAreaInfo(StringUtils.join(area,","));
             areaInfos.addAll(areaInfo);
-            if (info.getEffectiveTimeStart().after(new Date())) {
+            if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                 //未生效的
                 //这里在日志表中插入一条未生效的数据
                 log.setStatus(0);
@@ -568,7 +568,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             });
             log.setAreaInfo(StringUtils.join(area,","));
             areaInfos.addAll(areaInfo);
-            if (info.getEffectiveTimeStart().after(new Date())) {
+            if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                 //未生效的
                 //这里在日志表中插入一条未生效的数据
                 log.setStatus(0);
@@ -605,7 +605,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             info.setOfficialCode(priceInfo.getCode());
             priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getTemporaryPrice()).orElse(0L), info.getOutTax()));
             ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),priceInfo.getEffectiveTimeEnd(),1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
-            if (info.getEffectiveTimeStart().after(new Date())) {
+            if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                 //未生效的
                 //TODO 这里在日志表中插入一条未生效的数据
                 log.setStatus(0);
@@ -658,7 +658,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 info.setOfficialCode(priceInfo.getCode());
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
-                if (info.getEffectiveTimeStart().after(new Date())) {
+                if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     log.setStatus(0);
                 } else {
@@ -737,7 +737,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInsertInfos.add(priceInfo);
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
-                if (info.getEffectiveTimeStart().after(new Date())) {
+                if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     log.setStatus(0);
                 } else {
@@ -763,7 +763,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 productSkuChangePriceInfo.setOfficialCode(priceInfo.getCode());
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
-                if (productSkuChangePriceInfo.getEffectiveTimeStart().after(new Date())) {
+                if (Optional.ofNullable(productSkuChangePriceInfo.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     //这里在日志表中插入一条未生效的数据
                     log.setStatus(0);
