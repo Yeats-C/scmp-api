@@ -1096,7 +1096,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
         //验证是否是同一种申请类型
-//        validateSameApply(productSkuDrafts);
+        validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
@@ -1177,6 +1177,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //组合商品子商品列表
             productSkuSubService.saveApplyList(applyProductSkus);
         }
+        //保存审批附件信息
+
         //修改申请编码
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
@@ -1528,8 +1530,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         workFlowVO.setFormNo(form);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
+//        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
+//        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
 //        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
         String title = approvalName;
         workFlowVO.setTitle(title);

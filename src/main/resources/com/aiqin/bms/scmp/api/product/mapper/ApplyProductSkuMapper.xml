@@ -158,6 +158,9 @@
       <if test="applyStatus != null">
         and apply_status = #{applyStatus}
       </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType}
+      </if>
       <if test="code != null and  code != '' ">
         and apply_code like CONCAT('%',#{code},'%')
       </if>
