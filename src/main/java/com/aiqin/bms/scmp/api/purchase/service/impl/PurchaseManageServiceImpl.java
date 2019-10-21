@@ -407,7 +407,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 detail.setSingleCount(number);
                 this.stockAmount(detail, companyCode);
-                orderProduct.setStockAmount(detail.getStockAmount().longValue());
+                orderProduct.setStockAmount(detail.getStockAmount() == null ? 0 : detail.getStockAmount().longValue());
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
