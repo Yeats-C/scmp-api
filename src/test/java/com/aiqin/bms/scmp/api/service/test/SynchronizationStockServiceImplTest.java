@@ -60,8 +60,7 @@ public class SynchronizationStockServiceImplTest {
     public void synchronizationStock() {
         PagesRequest request = new PagesRequest();
         request.setPageNo(1);
-        request.setPageSize(50);
+        request.setPageSize(500);
         synchronizationStockService.synchronizationStock(request);
-        System.err.println(synchronizationStockService);
     }
 }

@@ -45,7 +45,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
         List<SkuWarehouseResponse> wareList;
         List<Stock> stockList;
         Stock stock;
-        Stock stock1;
+        Stock oldStock;
         BigDecimal count = new BigDecimal("100");
         BigDecimal num = new BigDecimal("0");
         BigDecimal amount = new BigDecimal("0");
@@ -55,8 +55,10 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
         if (CollectionUtils.isNotEmptyCollection(skuList)) {
             long startTime = java.lang.System.currentTimeMillis();
             log.info("执行代码块/方法");
-            List<String> warehouseList;
-            Map<String, SourceStock> sourceStockMap;
+            List<String> skuCodeList = new ArrayList<>();
+            skuList.forEach(s -> skuCodeList.add(s.getSkuCode()));
+            Map<String, SourceStock> sourceStockMap = querySourceStock(skuCodeList);
+            Map<String, Stock> localStockMap = queryLocalStock(skuCodeList);
             SourceStock sourceStock;
             for (SkuWarehouseResponse sku : skuList) {
                 // 查询sku对应的库房
@@ -64,11 +66,6 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                 if (CollectionUtils.isEmptyCollection(wareList)) {
                     continue;
                 }
-                warehouseList = new ArrayList<>();
-                for (SkuWarehouseResponse ware : wareList) {
-                    warehouseList.add(ware.getWmsWarehouseCode());
-                }
-                sourceStockMap = querySourceStock(sku.getSkuCode(), warehouseList);
                 for (SkuWarehouseResponse ware : wareList) {
                     sourceStock = sourceStockMap.get(sku.getSkuCode() + ware.getWmsWarehouseCode());
                     if (sourceStock == null) {
@@ -97,11 +94,11 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                     stock.setWarehouseCode(ware.getWarehouseCode());
                     stock.setTransportCenterCode(ware.getTransportCenterCode());
                     stock.setCompanyCode("09");
-                    stock1 = stockDao.stockInfo(stock);
-                    if (stock1 == null) {
+                    oldStock = localStockMap.get(stock.getSkuCode() + stock.getWarehouseCode() + stock.getWarehouseType() + stock.getTransportCenterCode());
+                    if (oldStock == null) {
                         stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
                     } else {
-                        stock.setStockCode(stock1.getStockCode());
+                        stock.setStockCode(oldStock.getStockCode());
                     }
                     stock.setCompanyName("宁波熙耘科技有限公司");
                     stock.setWarehouseName(ware.getWarehouseName());
@@ -129,7 +126,16 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
         return HttpResponse.success();
     }
 
-    private Map<String, SourceStock> querySourceStock(String sku, List<String> warehouseList) {
+    private Map<String, Stock> queryLocalStock(List<String> skuList) {
+        Map<String, Stock> result = new HashMap<>();
+        List<Stock> stockList = stockDao.stockInfoList(skuList);
+        for (Stock stock : stockList) {
+            result.put(stock.getSkuCode() + stock.getWarehouseCode() + stock.getWarehouseType() + stock.getTransportCenterCode(), stock);
+        }
+        return result;
+    }
+
+    private Map<String, SourceStock> querySourceStock(List<String> skuList) {
         Map<String, SourceStock> result = new HashMap<>();
         Connection con = null;
         Statement statement = null;
@@ -144,7 +150,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
             statement = con.createStatement();
             String sql = "SELECT p.`Code`,p.`Name`,dc.StockQty,dc.NormalQty,dc.ReturnQty,dc.TaxNormalAmount,dc.TaxReturnAmount,dc.DCId " +
                     " FROM biz_tbl_product p INNER JOIN biz_tbl_dcproduct dc ON p.Id = dc.ProductId " +
-                    " WHERE p.`Code` = '" + sku + "' AND dc.DCId IN (" + String.join(",", warehouseList) + ");";
+                    " WHERE p.`Code` IN ('" + String.join("','", skuList) + "');";
             rs = statement.executeQuery(sql);
             SourceStock stock;
             while (rs.next()) {
