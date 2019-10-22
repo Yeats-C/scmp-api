@@ -238,7 +238,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
 
             for (PurchaseApplyDetailResponse product : detail) {
-                product.setStockAmount(product.getTaxCost() * product.getStockCount());
+                if(product.getTaxCost() != null && product.getStockCount() != null){
+                    product.setStockAmount(product.getTaxCost() * product.getStockCount());
+                }
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
