@@ -208,4 +208,6 @@ public interface StockDao {
     Integer insertReplaceAll(List<Stock> stockList);
 
     Stock stockInfo(Stock stock);
+
+    List<Stock> stockInfoList(@Param("skuList") List<String> skuList);
 }
