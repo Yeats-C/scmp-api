@@ -38,5 +38,5 @@ public class SaveSkuApplyInfoReqVO {
     private String directSupervisorName;
 
     @ApiModelProperty("附件信息")
-    private List<ApprovalFileInfoReqVo> approvalFileInfoReqVos;
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
 }

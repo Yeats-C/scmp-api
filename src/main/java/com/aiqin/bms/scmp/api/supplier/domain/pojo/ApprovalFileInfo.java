@@ -15,6 +15,9 @@ import lombok.Data;
 @Data
 public class ApprovalFileInfo  extends CommonBean {
 
+    @ApiModelProperty("主键Id")
+    private Long id;
+
     @ApiModelProperty("审批类型")
     private Byte approvalType;
 
@@ -29,5 +32,11 @@ public class ApprovalFileInfo  extends CommonBean {
 
     @ApiModelProperty("表单编号")
     private String formNo;
+
+    @ApiModelProperty("公司编码")
+    private String companyCode;
+
+    @ApiModelProperty("公司名称")
+    private String companyName;
 
 }
