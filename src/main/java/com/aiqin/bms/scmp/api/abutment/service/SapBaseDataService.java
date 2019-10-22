@@ -29,5 +29,14 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
  * 思维方式*热情*能力
  */
 public interface SapBaseDataService {
+
     void saleSynchronization(SapOrderRequest sapOrderRequest);
+
+    void stockSynchronization(SapOrderRequest sapOrderRequest);
+
+    void purchaseSynchronization(SapOrderRequest sapOrderRequest);
+
+    void productSynchronization(SapOrderRequest sapOrderRequest);
+
+    void supplySynchronization(SapOrderRequest sapOrderRequest);
 }

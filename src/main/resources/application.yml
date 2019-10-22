@@ -19,8 +19,8 @@ spring:
     base-package: com.aiqin.bms.scmp.api.webSwagger2Config
   servlet:
     multipart:
-      max-file-size: 20MB
-      max-request-size: 20MB
+      max-file-size: 50MB
+      max-request-size: 50MB
 control:
   url:
    # 角色列表
@@ -53,15 +53,15 @@ Workflow:
   cancelUrl: http://finance.bms.aiqin.com/tpm/workflowcontroller/cancel
 sap:
   #商品
-  product: http://payment.api.aiqin.com/scmp/master/data/sku
+  product: http://settlement.api.aiqin.com/scmp/master/data/sku
   #供应商
-  supply: http://payment.api.aiqin.com/scmp/master/data/supplier
+  supply: http://settlement.api.aiqin.com/scmp/master/data/supplier
   #销售
-  order: http://payment.api.aiqin.com/scmp/business/sync/order
+  order: http://settlement.api.aiqin.com/scmp/business/sync/order
   #采购
-  purchase: http://payment.api.aiqin.com/scmp/business/sync/purchase
+  purchase: http://settlement.api.aiqin.com/scmp/business/sync/purchase
   #出入库
-  storage: http://payment.api.aiqin.com/scmp/business/sync/storage
+  storage: http://settlement.api.aiqin.com/scmp/business/sync/storage
 #审批流的前缀url地址
 WorkFlowBaseUrl:
   #回调url

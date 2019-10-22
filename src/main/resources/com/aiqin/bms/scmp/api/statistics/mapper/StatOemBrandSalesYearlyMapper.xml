@@ -74,23 +74,24 @@
     select
      lv2, lv2_category_name as lv2CategoryName,
      product_brand_code as productBrandCode, product_brand_name as productBrandName,
-     ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
-     ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
-     ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
-     ifnull(sales_margin,0) as salesMargin, ifnull(pre_sales_margin,0) as preSalesMargin,
-     ifnull(com_sales_margin,0) as comSalesMargin, ifnull(pre_com_sales_margin,0) as preComSalesMargin,
-     ifnull(sales_num_wow,0) as salesNumWow, ifnull(sales_amount_vs,0) as salesAmountVs,
-     ifnull(sales_amount_wow,0) as salesAmountWow, ifnull(brand_sales_rate,0) as salesRate,
-     ifnull(pre_brand_sales_rate,0) as preSalesRate, ifnull(brand_sales_rate_wow,0) as salesRateWow,
-     ifnull(sales_margin_wow,0) as salesMarginWow, ifnull(brand_sales_margin_rate,0) as salesMarginRatio,
-     ifnull(pre_brand_sales_margin_rate,0) as preSalesMarginRatio, ifnull(brand_sales_margin_rate_wow,0) as salesMarginRatioWow,
-     ifnull(sales_margin_rate,0) as salesMarginRate, ifnull(pre_sales_margin_rate,0) as preSalesMarginRate,
-     ifnull(sales_margin_rate_wow,0) as salesMarginRateWow
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin,
+     sum(ifnull(sales_num_wow,0)) as salesNumWow, sum(ifnull(sales_amount_vs,0)) as salesAmountVs,
+     sum(ifnull(sales_amount_wow,0)) as salesAmountWow, sum(ifnull(brand_sales_rate,0)) as salesRate,
+     sum(ifnull(pre_brand_sales_rate,0)) as preSalesRate, sum(ifnull(brand_sales_rate_wow,0)) as salesRateWow,
+     sum(ifnull(sales_margin_wow,0)) as salesMarginWow, sum(ifnull(brand_sales_margin_rate,0)) as salesMarginRatio,
+     sum(ifnull(pre_brand_sales_margin_rate,0)) as preSalesMarginRatio, sum(ifnull(brand_sales_margin_rate_wow,0)) as salesMarginRatioWow,
+     sum(ifnull(sales_margin_rate,0)) as salesMarginRate, sum(ifnull(pre_sales_margin_rate,0)) as preSalesMarginRate,
+     sum(ifnull(sales_margin_rate_wow,0)) as salesMarginRateWow
     from stat_oem_brand_sales_yearly
     where stat_year = #{year,jdbcType=BIGINT}
     and product_brand_code = #{lv1,jdbcType=VARCHAR}
     and lv2  is not null
     and lv2 != ''
+    group by lv2
   </select>
   <select id="companySaleBrandSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select

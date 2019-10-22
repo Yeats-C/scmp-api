@@ -407,7 +407,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 detail.setSingleCount(number);
                 this.stockAmount(detail, companyCode);
-                orderProduct.setStockAmount(detail.getStockAmount().longValue());
+                orderProduct.setStockAmount(detail.getStockAmount() == null ? 0 : detail.getStockAmount().longValue());
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
@@ -528,7 +528,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundService.repealOrder(order.getId().toString(), createById, createByName);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
-            if(order.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
                 log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), order.getApplyTypeForm());
                 purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
@@ -916,7 +916,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName() , purchaseOrder.getApplyTypeForm());
             // 仓储确认判断是否入库完成
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_2)){
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7) && !purchaseOrder.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
                 log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName() , purchaseOrder.getApplyTypeForm());
                 this.wayNum(purchaseOrder);

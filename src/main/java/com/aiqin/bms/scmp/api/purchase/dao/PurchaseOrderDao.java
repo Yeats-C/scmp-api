@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.Purchase;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -24,4 +26,7 @@ public interface PurchaseOrderDao {
 
     List<PurchaseApplyDetailResponse> orderByExecuteWarehousing(@Param("beginTime") String beginTime, @Param("finishTime") String finishTime);
 
+    List<PurchaseOrder> listForSap(SapOrderRequest sapOrderRequest);
+
+    void updateByOrderCodes(List<String> orderCodes);
 }

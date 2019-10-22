@@ -101,7 +101,7 @@ public class StorageDetail {
      */
     @JsonProperty("tax_price")
     @ApiModelProperty("实际含税单价")
-    private String taxPrice;
+    private Integer taxPrice;
 
     /**
      * 厂商指导价

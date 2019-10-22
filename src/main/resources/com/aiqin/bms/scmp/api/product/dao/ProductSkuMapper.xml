@@ -2086,7 +2086,7 @@
   </select>
   <select id="getSkuInfoByCodeList" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
     SELECT
-      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice
+      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice, product_property_name as productPropertyName
      FROM product_sku where sku_code in
     <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
       #{item, jdbcType=VARCHAR}
@@ -2350,14 +2350,22 @@
     </foreach>
     )
   </select>
+  <select id="listForSap" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
+    select
+      ps.product_code as productCode,ps.product_name as productName,ps.product_category_code as productCategoryCode,
+      psdi.spec as spec
+    from
+      product_sku as ps
+    left JOIN product_sku_stock_info  as psdi on psdi.product_sku_code = ps.sku_code
+     where
+         ps.update_time <![CDATA[<=]]> #{finishTime,jdbcType=VARCHAR}
+          and ps.update_time <![CDATA[>=]]> #{beginTime,jdbcType=VARCHAR}
+  </select>
   <select id="skuList" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
     select sku_code as skuCode, sku_name as skuName
     from product_sku
     order by sku_code
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="skuCount" resultType="java.lang.Integer">
-    select count(1) from product_sku
   </select>
   <select id="skuByWarehouse" resultType="com.aiqin.bms.scmp.api.product.domain.response.SkuWarehouseResponse">
     SELECT

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundBatchWmsResVO;
@@ -35,4 +36,6 @@ public interface OutboundBatchDao {
     Integer updateBatchInfoByOutboundOderCodeAndLineNum(OutboundBatch outboundBatch);
 
     Integer insertList(List<OutboundBatch> list);
+
+    List<OutboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
 }
