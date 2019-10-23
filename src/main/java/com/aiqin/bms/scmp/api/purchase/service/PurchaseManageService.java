@@ -60,4 +60,6 @@ public interface PurchaseManageService {
     HttpResponse applyOrderProduct(PurchaseOrderProductRequest request);
 
     HttpResponse<PurchaseApplyProductInfoResponse>  applyOrderAmount(String purchaseOrderId);
+
+    HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode);
 }

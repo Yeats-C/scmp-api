@@ -71,6 +71,7 @@ public class PurchaseManageController {
          "0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过", type = "Integer"),
                 @ApiImplicitParam(name = "storage_status", value = "仓储状态 0.未开始  1.确认中 2.完成", type = "Integer"),
                 @ApiImplicitParam(name = "purchase_mode", value = "采购方式 0 配送  1.铺采直送", type = "Integer"),
+                @ApiImplicitParam(name = "purchase_order_type_code", value = "采购单类型编码 1 普通采购 2 预采购", type = "Integer"),
                 @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
                 @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
     public HttpResponse<List<PurchaseOrderResponse>> applyProductList(@RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
@@ -84,10 +85,11 @@ public class PurchaseManageController {
                                                                       @RequestParam(value = "storage_status", required = false) Integer storageStatus,
                                                                       @RequestParam(value = "purchase_mode", required = false) Integer purchaseMode,
                                                                       @RequestParam(value = "approval_code", required = false) String approvalCode,
+                                                                      @RequestParam(value = "purchase_order_type_code", required = false) Integer purchaseOrderTypeCode,
                                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
                                                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, beginTime, finishTime, supplierCode,
-                transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode, approvalCode);
+                transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode, approvalCode, purchaseOrderTypeCode);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseManageService.purchaseOrderList(purchaseApplyRequest);
@@ -214,5 +216,13 @@ public class PurchaseManageController {
     @ApiOperation("查询采购单-审批采购数量金额")
     public HttpResponse<PurchaseApplyProductInfoResponse> applyOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.applyOrderAmount(purchaseOrderId);
+    }
+
+    @GetMapping("/order/pre")
+    @ApiOperation("查询采购的预采购单号")
+    public HttpResponse purchaseOrderPre(@RequestParam("purchase_group_code") String purchaseGroupCode,
+                                         @RequestParam("purchase_order_type_code") Integer purchaseOrderTypeCode,
+                                         @RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode) {
+        return purchaseManageService.purchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
     }
 }

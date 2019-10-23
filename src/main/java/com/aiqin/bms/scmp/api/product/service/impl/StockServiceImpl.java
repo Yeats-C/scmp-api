@@ -309,7 +309,7 @@ public class StockServiceImpl implements StockService {
             LOGGER.info("物流中心库存列表查询");
             List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
             PageResData pageResData = new PageResData();
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+            if (CollectionUtils.isEmpty(groupVoList)) {
                 return pageResData;
             }
             stockRequest.setGroupList(groupVoList);
