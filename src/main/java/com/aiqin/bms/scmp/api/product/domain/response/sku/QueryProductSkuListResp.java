@@ -28,6 +28,9 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("商品名称")
     private String productName;
 
+    @ApiModelProperty("品类编码")
+    private String productCategoryCode;
+
     @ApiModelProperty("品类名称")
     private String productCategoryName;
 
