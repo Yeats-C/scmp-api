@@ -76,6 +76,9 @@ public class QueryProductSkuPriceInfoRespVO {
     @ApiModelProperty("品类")
     private String productCategoryName;
 
+    @ApiModelProperty("品类编码")
+    private String productCategoryCode;
+
     @ApiModelProperty("品牌")
     private String productBrandName;
 

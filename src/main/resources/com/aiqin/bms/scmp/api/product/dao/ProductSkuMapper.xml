@@ -202,6 +202,7 @@
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
+    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
     <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
@@ -864,92 +865,56 @@
   </select>
   <select id="querySkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="QuerySkuListMap">
     SELECT
-      a.sku_code,
-      a.sku_name,
-      a.product_code,
-      d.product_name,
-      CASE a.on_sale
-      WHEN 1 THEN '上架'
-      WHEN 0 THEN '下架'
-      ELSE '其他' END on_sale_name,
-      a.product_property_name,
-      a.product_brand_name,
-      CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
-      a.create_by,
-      a.create_time,
-      a.update_by,
-      a.update_time,
-      a.product_sort_name,
-      a.color_name,
-      a.model_number,
-      c.spec,
-      a.procurement_section_name
+      a.sku_code, a.sku_name, a.product_code, a.product_name,
+      CASE a.on_sale WHEN 1 THEN '上架' WHEN 0 THEN '下架' ELSE '其他' END on_sale_name,
+      a.product_category_code, a.product_property_name, a.product_brand_name,
+      a.create_by, a.create_time, a.update_by, a.update_time, a.product_sort_name,
+      a.color_name,a.model_number, c.spec, a.procurement_section_name
     FROM
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
-      left join product d on a.product_code = d.product_code
-      LEFT JOIN product_category lv4
-      on lv4.category_id = a.product_category_code
-      LEFT JOIN product_category lv3
-      on lv3.category_id = lv4.parent_id
-      LEFT JOIN product_category lv2
-      on lv2.category_id = lv3.parent_id
-      LEFT JOIN product_category lv1
-      on lv1.category_id = lv2.parent_id
     WHERE a.del_flag=0
       <if test="skuCode!=null and skuCode!=''">
-        AND a.sku_code LIKE CONCAT('%',#{skuCode,jdbcType=VARCHAR},'%')
+        AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
       </if>
       <if test="skuName!=null and skuName!=''">
-        AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        AND a.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
       </if>
       <if test="productCode!=null and productCode!=''">
-        AND a.product_code  LIKE CONCAT('%',#{productCode,jdbcType=VARCHAR},'%')
+        AND a.product_code = #{productCode,jdbcType=VARCHAR}
       </if>
       <if test="productName!=null and productName!=''">
-        AND a.product_name like CONCAT('%',#{productName,jdbcType=VARCHAR},'%')
+        AND a.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},'%')
       </if>
       <if test="productPropertyCode!=null and productPropertyCode!=''">
         AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
       </if>
       <if test="productPropertyName!=null and productPropertyName!=''">
-        AND a.product_property_name like CONCAT('%',#{productPropertyName,jdbcType=VARCHAR},'%')
+        AND a.product_property_name like CONCAT('',#{productPropertyName,jdbcType=VARCHAR},'%')
       </if>
       <if test="productCategoryCode!=null and productCategoryCode!=''">
-        AND a.product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
+        AND a.product_category_code like CONCAT('',#{productCategoryCode,jdbcType=VARCHAR},'%')
       </if>
       <if test="productCategoryName!=null and productCategoryName!=''">
-        AND a.product_category_name like CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        AND a.product_category_name like CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
       </if>
       <if test="productBrandCode!=null and productBrandCode!=''">
         AND a.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
       </if>
       <if test="productBrandName!=null and productBrandName!=''">
-        AND a.product_brand_name like CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        AND a.product_brand_name like CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
       </if>
       <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
         AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
       <if test="purchaseGroupName!=null and purchaseGroupName!=''">
-        AND a.procurement_section_name like CONCAT('%',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+        AND a.procurement_section_name like CONCAT('',#{purchaseGroupName,jdbcType=VARCHAR},'%')
       </if>
       <if test="companyCode != null and companyCode != '' ">
         and a.company_code = #{companyCode,jdbcType=VARCHAR}
       </if>
       <if test="skuStatus != null">
         and a.sku_status = #{skuStatus,jdbcType=VARCHAR}
-      </if>
-      <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
-        and lv1.category_id = #{productCategoryLv1Code,jdbcType=VARCHAR}
-      </if>
-      <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
-        and lv2.category_id = #{productCategoryLv2Code,jdbcType=VARCHAR}
-      </if>
-      <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
-        and lv3.category_id = #{productCategoryLv3Code,jdbcType=VARCHAR}
-      </if>
-      <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
-        and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
       </if>
       <if test="personId != null and personId != '' ">
         and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})

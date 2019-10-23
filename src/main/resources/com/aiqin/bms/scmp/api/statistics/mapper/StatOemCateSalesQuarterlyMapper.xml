@@ -75,24 +75,25 @@
   <select id="oemSaleCategory2" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select
      lv1, lv1_category_name as lv1CategoryName, lv2, lv2_category_name as lv2CategoryName,
-     ifnull(sales_num,0) as salesNum, ifnull(pre_sales_num,0) as preSalesNum,
-     ifnull(sales_amount,0) as salesAmount, ifnull(pre_sales_amount,0) as preSalesAmount,
-     ifnull(com_sales_amount,0) as comSalesAmount, ifnull(pre_com_sales_amount,0) as preComSalesAmount,
-     ifnull(sales_margin,0) as salesMargin, ifnull(pre_sales_margin,0) as preSalesMargin,
-     ifnull(com_sales_margin,0) as comSalesMargin, ifnull(pre_com_sales_margin,0) as preComSalesMargin,
-     ifnull(sales_num_wow,0) as salesNumWow, ifnull(sales_amount_vs,0) as salesAmountVs,
-     ifnull(sales_amount_wow,0) as salesAmountWow, ifnull(cate_sales_rate,0) as salesRate,
-     ifnull(pre_cate_sales_rate,0) as preSalesRate, ifnull(cate_sales_rate_wow,0) as salesRateWow,
-     ifnull(sales_margin_wow,0) as salesMarginWow, ifnull(cate_sales_margin_rate,0) as salesMarginRatio,
-     ifnull(pre_cate_sales_margin_rate,0) as preSalesMarginRatio, ifnull(cate_sales_margin_rate_wow,0) as salesMarginRatioWow,
-     ifnull(sales_margin_rate,0) as salesMarginRate, ifnull(pre_sales_margin_rate,0) as preSalesMarginRate,
-     ifnull(sales_margin_rate_wow,0) as salesMarginRateWow
+     sum(ifnull(sales_num,0)) as salesNum, sum(ifnull(pre_sales_num,0)) as preSalesNum,
+     sum(ifnull(sales_amount,0)) as salesAmount, sum(ifnull(pre_sales_amount,0)) as preSalesAmount,
+     sum(ifnull(com_sales_amount,0)) as comSalesAmount, sum(ifnull(pre_com_sales_amount,0)) as preComSalesAmount,
+     sum(ifnull(sales_margin,0)) as salesMargin, sum(ifnull(pre_sales_margin,0)) as preSalesMargin,
+     sum(ifnull(com_sales_margin,0)) as comSalesMargin, sum(ifnull(pre_com_sales_margin,0)) as preComSalesMargin,
+     sum(ifnull(sales_num_wow,0)) as salesNumWow, sum(ifnull(sales_amount_vs,0)) as salesAmountVs,
+     sum(ifnull(sales_amount_wow,0)) as salesAmountWow, sum(ifnull(cate_sales_rate,0)) as salesRate,
+     sum(ifnull(pre_cate_sales_rate,0)) as preSalesRate, sum(ifnull(cate_sales_rate_wow,0)) as salesRateWow,
+     sum(ifnull(sales_margin_wow,0)) as salesMarginWow, sum(ifnull(cate_sales_margin_rate,0)) as salesMarginRatio,
+     sum(ifnull(pre_cate_sales_margin_rate,0)) as preSalesMarginRatio, sum(ifnull(cate_sales_margin_rate_wow,0)) as salesMarginRatioWow,
+     sum(ifnull(sales_margin_rate,0)) as salesMarginRate, sum(ifnull(pre_sales_margin_rate,0)) as preSalesMarginRate,
+     sum(ifnull(sales_margin_rate_wow,0)) as salesMarginRateWow
     from stat_oem_cate_sales_quarterly
     where stat_year = #{year,jdbcType=BIGINT}
     and quarter = #{month,jdbcType=BIGINT}
     and lv1 = #{lv1,jdbcType=VARCHAR}
     and lv2 is not null
     and lv2 != ''
+    group by lv2
   </select>
   <select id="companySaleCateSum" resultType="com.aiqin.bms.scmp.api.statistics.domain.response.oem.OemSaleInfoResponse">
     select
