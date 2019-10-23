@@ -256,14 +256,16 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer updateDraftList(UpdateSkuConfigSupplierReqVo reqVo) {
-        //获取公司
+        //获取公司，通过token来获取公司
         AuthToken authToken = getUser();
         //商品配置更新
         List<UpdateSkuConfigReqVo> configReqVos = reqVo.getConfigs();
         if(CollectionUtils.isEmpty(configReqVos)){
             throw new BizException(ResultCode.UPDATE_ERROR);
         }
+        //获取商品编号
         String configCode = configReqVos.get(0).getConfigCode();
+        //将
         ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
 //        if(Objects.equals(productSkuConfig.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
 //            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
@@ -288,6 +290,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
         });
         try {
+            //进行list的拷贝
            drafts = BeanCopyUtils.copyList(configReqVos,ProductSkuConfigDraft.class);
         } catch (Exception e) {
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
@@ -981,9 +984,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         for (SkuConfigsRepsVo spareWarehouse : list3) {
             ProductSkuConfigSpareWarehouse productSkuConfigSpareWarehouse = spareWarehouseMap.get(spareWarehouse.getConfigCode());
             if (Objects.nonNull(productSkuConfigSpareWarehouse)) {
+                //备用仓库设置
                 spareWarehouse.setSpareWarehouse2(productSkuConfigSpareWarehouse.getTransportCenterName());
             }
-        }
+}
         return PageUtil.getPageList(reqVo.getPageNo(),list3);
     }
 
@@ -996,8 +1000,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public SkuConfigDetailRepsVo detail(String skuCode) {
         SkuConfigDetailRepsVo repsVo = mapper.detail(skuCode);
-        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitService.selectBySkuCode(skuCode);
-        repsVo.setSupplierList(list);
+        //进行供应商列表增加
+//        List<ProductSkuSupplyUnitRespVo> list = productSkuSupplyUnitService.selectBySkuCode(skuCode);
+//        repsVo.setSupplierList(list);
         return repsVo;
     }
 
