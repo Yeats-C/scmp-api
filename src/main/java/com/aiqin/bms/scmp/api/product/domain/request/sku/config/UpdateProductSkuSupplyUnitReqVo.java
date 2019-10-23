@@ -27,6 +27,9 @@ public class UpdateProductSkuSupplyUnitReqVo {
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;
 
+    @ApiModelProperty("含税进价")
+    private Long taxIncludedPrice;
+
     @ApiModelProperty("联营扣率")
     private Long jointFranchiseRate;
 
@@ -41,6 +44,12 @@ public class UpdateProductSkuSupplyUnitReqVo {
 
     @ApiModelProperty(value ="供货渠道类别名称")
     private String categoriesSupplyChannelsName;
+
+    @ApiModelProperty(value ="修改类型 0:没有改动 ，1：增加，2：修改")
+    private String changeType;
+
+    @ApiModelProperty("0:未用 1:在用")
+    private Long usageStatus;
 
     @ApiModelProperty(value = "供应商产能信息",name = "productSkuSupplyUnitCapacities",position = 7)
     @JsonProperty("productSkuSupplyUnitCapacities")

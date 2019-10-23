@@ -1,21 +1,35 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.SaveList;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateProductSkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.alibaba.excel.support.ExcelTypeEnum;
+import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
+import org.omg.CORBA.Object;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +46,7 @@ import java.util.stream.Collectors;
  * @date: 2019/1/29 0029 15:32
  */
 @Service
+@Slf4j
 public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitService {
     @Autowired
     ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
@@ -239,4 +255,104 @@ public class ProductSkuSupplyUnitServiceImpl implements ProductSkuSupplyUnitServ
     public List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> collect) {
         return productSkuSupplyUnitDao.selectApplyBySkuCodes(collect);
     }
+
+    @Override
+    public BasePage<QueryProductSkuSupplyUnitsRespVo> getListPage(QuerySkuSupplyUnitReqVo reqVo) {
+        AuthToken token = AuthenticationInterceptor.getCurrentAuthToken();
+        if (null != token) {
+            reqVo.setCompanyCode(token.getCompanyCode());
+            reqVo.setPersonId(token.getPersonId());
+        }
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(reqVo.getProductCategoryCodes())){
+            try {
+                reqVo.setProductCategoryLv1Code(reqVo.getProductCategoryCodes().get(0));
+                reqVo.setProductCategoryLv2Code(reqVo.getProductCategoryCodes().get(1));
+                reqVo.setProductCategoryLv3Code(reqVo.getProductCategoryCodes().get(2));
+                reqVo.setProductCategoryLv4Code(reqVo.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
+        PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
+        List<QueryProductSkuSupplyUnitsRespVo> list = productSkuSupplyUnitDao.getListPage(reqVo);
+        return PageUtil.getPageList(reqVo.getPageNo(),list);
+    }
+
+    @Override
+    public SkuSupplierDetailRepsVo detail(String skuCode) {
+        if(StringUtils.isBlank(skuCode)){
+            throw new BizException(ResultCode.REQUIRED_PARAMETER);
+        }
+        SkuSupplierDetailRepsVo repsVo = productSkuSupplyUnitDao.detail(skuCode);
+        if (null == repsVo) {
+            throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+        return repsVo;
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode,String productSkuCode) {
+        return productSkuSupplyUnitCapacityService.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public Integer update(UpdateSkuSupplyUnitReqVo reqVo) {
+        //新增数据
+        List<UpdateProductSkuSupplyUnitReqVo> addList = reqVo.getUpdateProductSkuSupplyUnitReqVos().stream().filter(item -> Objects.equals(item.getChangeType(), "1")).collect(Collectors.toList());
+        //修改数据
+        List<UpdateProductSkuSupplyUnitReqVo> updateList = reqVo.getUpdateProductSkuSupplyUnitReqVos().stream().filter(item -> !Objects.equals(item.getChangeType(), "1")).collect(Collectors.toList());
+        //根据SKU查询所有的供应商信息
+        List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitDao.selectBySkuCode(reqVo.getSkuCode());
+        //需要保存到临时表的数据
+        List<UpdateProductSkuSupplyUnitReqVo> list = Lists.newArrayList();
+        if(CollectionUtils.isNotEmptyCollection(productSkuSupplyUnitRespVos)){
+            List<String> supplyCodes = productSkuSupplyUnitRespVos.stream().map(ProductSkuSupplyUnitRespVo::getSupplyUnitCode).collect(Collectors.toList());
+            //判断新增的信息是否已经存在
+            if(CollectionUtils.isNotEmptyCollection(addList)){
+                List<String> addSupplyCodes = addList.stream().map(UpdateProductSkuSupplyUnitReqVo::getSupplyUnitCode).collect(Collectors.toList());
+                if(supplyCodes.contains(addSupplyCodes)){
+                    throw new BizException(ResultCode.REPEAT_DATA);
+                }
+                list.addAll(addList);
+            }
+            if (CollectionUtils.isNotEmptyCollection(updateList)) {
+                //比较修改
+                updateList.forEach(item -> {
+                    if (diffData(item, reqVo.getSkuCode())) {
+                        list.add(item);
+                    }
+                });
+            }
+        } else {
+            list.addAll(reqVo.getUpdateProductSkuSupplyUnitReqVos());
+        }
+        if(CollectionUtils.isEmptyCollection(list)){
+            throw new BizException(ResultCode.SUMBIT_NOT_DATA);
+        }
+        //查询临时表数据 判断新增/修改
+
+
+
+        return null;
+    }
+
+    private Boolean diffData(UpdateProductSkuSupplyUnitReqVo source,String skuCode) {
+        Boolean flag = false;
+        //比较主表信息
+        List<String> supplyUnitCode = productSkuSupplyUnitDao.selectSupplyUnitCode(skuCode,source);
+        //数据存在则说明主表信息没有发生变化
+        if(CollectionUtils.isNotEmptyCollection(supplyUnitCode)){
+            //比较产能信息
+            if(productSkuSupplyUnitCapacityService.selectInfo(source.getProductSkuSupplyUnitCapacityDrafts())){
+                flag = true;
+            }
+        } else {
+            flag = true;
+        }
+        return flag;
+    }
+
+
 }
