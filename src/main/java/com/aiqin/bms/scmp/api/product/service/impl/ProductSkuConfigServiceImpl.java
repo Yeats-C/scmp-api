@@ -278,27 +278,63 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
 
         //查临时
-        List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
+ //       List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
        //先把原来的给查出来配置查出来
+//        List<SkuConfigsRepsVo> ordBeginList=productSkuConfigMapper.getListBySkuCode(reqVo.getSkuCode());
+//        List<UpdateSkuConfigReqVo>  ordList=Lists.newArrayList();
+//        for (SkuConfigsRepsVo skuConfigsRepsVo:
+//                ordBeginList ) {
+//            UpdateSkuConfigReqVo updateSkuConfigReqVo=new UpdateSkuConfigReqVo();
+//            BeanUtils.copyProperties(skuConfigsRepsVo,updateSkuConfigReqVo);
+//            ordList.add(updateSkuConfigReqVo);
+//        }
+//         //新进来的做一个比对
+//        List<UpdateSkuConfigReqVo> newList=reqVo.getConfigs();
+       //对不是新增的进行一个比较
+
+
+        //新增数据
+        List<UpdateSkuConfigReqVo> addList = reqVo.getConfigs().stream().filter(item -> Objects.equals(item.getApplyType(), "1")).collect(Collectors.toList());
+        //先把原来的给查出来配置查出来
         List<SkuConfigsRepsVo> ordBeginList=productSkuConfigMapper.getListBySkuCode(reqVo.getSkuCode());
-        List<UpdateSkuConfigReqVo>  ordList=Lists.newArrayList();
-        for (SkuConfigsRepsVo skuConfigsRepsVo:
-                ordBeginList ) {
-            UpdateSkuConfigReqVo updateSkuConfigReqVo=new UpdateSkuConfigReqVo();
-            BeanUtils.copyProperties(skuConfigsRepsVo,updateSkuConfigReqVo);
-            ordList.add(updateSkuConfigReqVo);
+        //修改数据
+        List<UpdateSkuConfigReqVo> updateList = reqVo.getConfigs().stream().filter(item -> Objects.equals(item.getApplyType(), "2")).collect(Collectors.toList());
+        //需要保存到临时表的数据
+        List<UpdateSkuConfigReqVo>  saveList=Lists.newArrayList();
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(ordBeginList)){
+            List<String> supplyCodes = ordBeginList.stream().map(SkuConfigsRepsVo::getSkuCode).collect(Collectors.toList());
+            //判断新增的信息是否已经存在
+            if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(addList)){
+                List<String> addTransportCodes = addList.stream().map(UpdateSkuConfigReqVo::getTransportCenterCode).collect(Collectors.toList());
+                if(supplyCodes.contains(addTransportCodes)){
+                    throw new BizException(ResultCode.REPEAT_DATA2);
+                }
+                List<UpdateSkuConfigReqVo> updateList2 = reqVo.getConfigs().stream().filter(item -> Objects.equals(item.getApplyType(), "2")).collect(Collectors.toList());
+                if(supplyCodes.contains(addTransportCodes)){
+                    throw new BizException(ResultCode.REPEAT_DATA2);
+                }
+                saveList.addAll(addList);
+            }
+            if (com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(updateList)) {
+                //比较修改
+                updateList.forEach(item -> {
+                    if (diffData(item, reqVo.getSkuCode(),item.getTransportCenterCode())) {
+                        saveList.add(item);
+                    }
+                });
+            }
+        } else {
+            saveList.addAll(reqVo.getConfigs());
         }
-         //新进来的做一个比对
-        List<UpdateSkuConfigReqVo> newList=reqVo.getConfigs();
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(saveList)){
+            throw new BizException(ResultCode.SUMBIT_NOT_DATA);
+        }
 
 
 
 
 
-
-
-
-        Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
+//        Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
         Integer num = 0;
         List<ProductSkuConfigDraft> drafts;
         List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
@@ -413,6 +449,23 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         return num;
     }
+
+    private Boolean diffData(UpdateSkuConfigReqVo source,String skuCode,String transportCenterCode) {
+        Boolean flag = false;
+        //比较主表信息
+//        List<String> supplyUnitCodes = productSkuSupplyUnitDao.selectSupplyUnitCode(skuCode,source);
+        //数据存在则说明主表信息没有发生变化
+//        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(supplyUnitCodes)){
+            //比较产能信息
+//            if(productSkuSupplyUnitCapacityService.selectInfo(skuCode,supplyUnitCode,source.getProductSkuSupplyUnitCapacityDrafts())){
+//                flag = true;
+//            }
+//        } else {
+//            flag = true;
+//        }
+        return flag;
+    }
+
 
     /**
      * 批量插入临时配置信息(数据库)

@@ -291,4 +291,7 @@ public interface ResultCode {
     MessageId NOT_SAME_APPLY = MessageId.create(Project.SCMP_API,10004,"新增类型和修改类型必须分开提交");
     MessageId REPEAT_DATA = MessageId.create(Project.SCMP_API,10005,"新增供应商存在重复,请检查后重新提交");
     MessageId SUMBIT_NOT_DATA = MessageId.create(Project.SCMP_API,10006,"没有找到需要提交的数据,请检查后重新提交");
+
+
+    MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API,10007,"新增仓库存在重复,请检查后重新提交");
 }
