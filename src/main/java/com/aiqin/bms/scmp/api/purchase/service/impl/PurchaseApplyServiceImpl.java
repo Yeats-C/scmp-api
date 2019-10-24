@@ -581,8 +581,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         if (StringUtils.isBlank((record[6]))) {
                             response.setProductPurchaseAmount(applyProduct.getNewPurchasePrice());
                         } else {
-                            Double value = Double.valueOf(record[6]) * 100;
-                            response.setProductPurchaseAmount(value.intValue());
+                            BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(100));
+                            response.setProductPurchaseAmount(big.intValue());
                         }
                     } else {
                         HandleResponse(response, record, "未查询到对应的商品；", i);
