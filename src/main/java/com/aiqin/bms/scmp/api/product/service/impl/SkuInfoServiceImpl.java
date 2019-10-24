@@ -33,6 +33,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuUpdate;
+import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
@@ -176,6 +177,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
     @Autowired
     private FileInfoService fileInfoService;
+    @Autowired
+    private DataManageService dataManageService;
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
 
@@ -1370,23 +1373,29 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
                 querySkuListReqVO.setPersonId(authToken.getPersonId());
             }
-            if(CollectionUtils.isNotEmpty(querySkuListReqVO.getProductCategoryCodes())){
-                try {
-                    querySkuListReqVO.setProductCategoryLv1Code(querySkuListReqVO.getProductCategoryCodes().get(0));
-                    querySkuListReqVO.setProductCategoryLv2Code(querySkuListReqVO.getProductCategoryCodes().get(1));
-                    querySkuListReqVO.setProductCategoryLv3Code(querySkuListReqVO.getProductCategoryCodes().get(2));
-                    querySkuListReqVO.setProductCategoryLv4Code(querySkuListReqVO.getProductCategoryCodes().get(3));
-                } catch (Exception e) {
-                    log.info("不做处理,让程序继续执行下去");
-                }
-            }
+            String categoryId;
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);
+            for(QueryProductSkuListResp sku:queryProductSkuListResps){
+                categoryId = sku.getProductCategoryCode();
+                if (StringUtils.isNotBlank(categoryId)) {
+                    String categoryName = dataManageService.selectCategoryName(categoryId);
+                    sku.setProductCategoryName(categoryName);
+                }
+            }
             return PageUtil.getPageList(querySkuListReqVO.getPageNo(),queryProductSkuListResps);
         } catch (BizException e){
             throw new BizException(e.getMessage());
         }
     }
+
+    /**
+     *  查询品类名称
+     */
+    private void category(QuerySkuListReqVO querySkuListReqVO) {
+
+    }
+
 
     /**
      * 通过供应商编号查询

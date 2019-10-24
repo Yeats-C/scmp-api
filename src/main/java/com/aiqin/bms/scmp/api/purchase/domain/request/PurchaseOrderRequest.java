@@ -39,4 +39,8 @@ public class PurchaseOrderRequest {
     @ApiModelProperty(value="人员名称")
     @JsonProperty("person_name")
     private String personName;
+
+    @ApiModelProperty(value="审批名称")
+    @JsonProperty("checkout_name")
+    private String checkoutName;
 }

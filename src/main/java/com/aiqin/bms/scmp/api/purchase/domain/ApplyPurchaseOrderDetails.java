@@ -141,6 +141,18 @@ public class ApplyPurchaseOrderDetails {
     @JsonProperty("score_code")
     private String scoreCode;
 
+    @ApiModelProperty(value="采购单类型编码 1 普通采购 2 预采购")
+    @JsonProperty("purchase_order_type_code")
+    private Integer purchaseOrderTypeCode;
+
+    @ApiModelProperty(value="采购单类型名称")
+    @JsonProperty("purchase_order_type_name")
+    private String purchaseOrderTypeName;
+
+    @ApiModelProperty(value="预采购单号")
+    @JsonProperty("purchase_order_pre")
+    private String purchaseOrderPre;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

@@ -154,6 +154,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("search_list")
     private List<PurchaseProductSearchRequest>  searchList;
 
+    @ApiModelProperty(value="采购单类型编码 1 普通采购 2 预采购")
+    @JsonProperty("purchase_order_type_code")
+    private Integer purchaseOrderTypeCode;
+
     public PurchaseApplyRequest() {
     }
 
@@ -192,7 +196,8 @@ public class PurchaseApplyRequest extends PagesRequest {
 
     public PurchaseApplyRequest(String purchaseGroupCode, String beginTime, String finishTime, String supplierCode,
                                 String transportCenterCode, String purchaseOrderCode, String warehouseCode,
-                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode, String approvalCode) {
+                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode, String approvalCode,
+                                Integer purchaseOrderTypeCode) {
         this.purchaseGroupCode = purchaseGroupCode;
         this.beginTime = beginTime;
         this.finishTime = finishTime;
@@ -204,5 +209,6 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.storageStatus = storageStatus;
         this.purchaseMode = purchaseMode;
         this.approvalCode = approvalCode;
+        this.purchaseOrderTypeCode = purchaseOrderTypeCode;
     }
 }
