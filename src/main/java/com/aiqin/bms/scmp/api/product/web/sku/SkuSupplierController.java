@@ -55,19 +55,6 @@ public class SkuSupplierController {
         }
     }
 
-    @GetMapping("/capacity")
-    @ApiOperation("正式查看产能")
-    public HttpResponse<List<ProductSkuSupplyUnitCapacityRespVo>> capacityInfo(@RequestParam("supplyUnitCode")String supplyUnitCode, @RequestParam("productSkuCode")String productSkuCode){
-        try {
-            return HttpResponse.success(productSkuSupplyUnitService.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode));
-        } catch (BizException e) {
-            return HttpResponse.failure(e.getMessageId());
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
-
     @PostMapping("/update")
     @ApiOperation("保存")
     public HttpResponse<Integer> update(@RequestBody UpdateSkuSupplyUnitReqVo reqVo){
