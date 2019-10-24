@@ -37,7 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -275,6 +277,9 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
         List<QueryProductSkuSupplyUnitsRespVo> list = productSkuSupplyUnitDao.getListPage(reqVo);
+        list.forEach(item->{
+            item.setCapacityList(productSkuSupplyUnitCapacityService.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(item.getSupplyUnitCode(),item.getProductSkuCode()));
+        });
         return PageUtil.getPageList(reqVo.getPageNo(),list);
     }
 
@@ -290,10 +295,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         return repsVo;
     }
 
-    @Override
-    public List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode,String productSkuCode) {
-        return productSkuSupplyUnitCapacityService.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode);
-    }
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -309,12 +311,15 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         List<UpdateProductSkuSupplyUnitReqVo> list = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(productSkuSupplyUnitRespVos)){
             List<String> supplyCodes = productSkuSupplyUnitRespVos.stream().map(ProductSkuSupplyUnitRespVo::getSupplyUnitCode).collect(Collectors.toList());
+            Map<String, ProductSkuSupplyUnitRespVo> supplyCodeMap = productSkuSupplyUnitRespVos.stream().
+                    collect(Collectors.toMap(ProductSkuSupplyUnitRespVo::getSupplyUnitCode, Function.identity(), (k1, k2) -> k2));
             //判断新增的信息是否已经存在
             if(CollectionUtils.isNotEmptyCollection(addList)){
-                List<String> addSupplyCodes = addList.stream().map(UpdateProductSkuSupplyUnitReqVo::getSupplyUnitCode).collect(Collectors.toList());
-                if(supplyCodes.contains(addSupplyCodes)){
-                    throw new BizException(ResultCode.REPEAT_DATA);
-                }
+                addList.forEach(item->{
+                    if(supplyCodeMap.containsKey(item.getSupplyUnitCode())){
+                        throw new BizException(ResultCode.REPEAT_DATA);
+                    }
+                });
                 list.addAll(addList);
             }
             if (CollectionUtils.isNotEmptyCollection(updateList)) {

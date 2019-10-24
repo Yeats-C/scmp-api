@@ -121,14 +121,6 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     SkuSupplierDetailRepsVo detail(String skuCode);
 
     /**
-     * SKU供应商管理-产能
-     * @param supplyUnitCode
-     * @param productSkuCode
-     * @return
-     */
-    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode,String productSkuCode);
-
-    /**
      * SKU供应商修改
      * @param reqVo
      * @return
