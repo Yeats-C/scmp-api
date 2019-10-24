@@ -331,8 +331,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         stockChangeRequest.setStockVoRequests(list);
         HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
         if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-            LOGGER.error("dl回调   加库存异常");
-            throw new GroundRuntimeException("dl回调    减库存异常");
+            LOGGER.error("dl回调:减库存异常");
+            throw new GroundRuntimeException("dl回调:减库存异常");
         }
         return HttpResponse.success();
 
@@ -837,7 +837,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                 LOGGER.error("dl回调:调拨减库存异常");
-                throw new GroundRuntimeException("dl回调:减库存异常");
+                throw new GroundRuntimeException("dl回:调减库存异常");
             }
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation, productSkuMap, inboundTypeEnum);
@@ -1280,8 +1280,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 stockChangeRequest.setStockVoRequests(list);
                 HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                    LOGGER.error("dl回调   加库存异常");
-                    throw new GroundRuntimeException("dl回调    减库存异常");
+                    LOGGER.error("dl回调:减库存异常");
+                    throw new GroundRuntimeException("dl回调:减库存异常");
                 }
             }
             if (groupByList.get(1) != null) {
@@ -1292,8 +1292,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 stockChangeRequest.setStockVoRequests(list);
                 HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                    LOGGER.error("dl回调   加库存异常");
-                    throw new GroundRuntimeException("dl回调    减库存异常");
+                    LOGGER.error("dl回调:加库存异常");
+                    throw new GroundRuntimeException("dl回调:加库存异常");
                 }
             }
             return HttpResponse.success();

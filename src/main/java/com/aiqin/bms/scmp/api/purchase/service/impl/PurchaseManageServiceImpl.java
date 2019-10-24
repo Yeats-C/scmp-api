@@ -358,7 +358,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 }
             }
             // 调审批流
-            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getPersonName(), details.getDirectSupervisorCode());
+            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getCheckoutName(), details.getDirectSupervisorCode());
         }
         return HttpResponse.success();
     }
@@ -1228,5 +1228,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             amountResponse.setPieceSum(priceSum);
         }
         return HttpResponse.success(amountResponse);
+    }
+
+    @Override
+    public HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode){
+        if(StringUtils.isBlank(purchaseGroupCode) || purchaseOrderTypeCode == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<String> list = purchaseOrderDao.getPurchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
+        return HttpResponse.success(list);
     }
 }

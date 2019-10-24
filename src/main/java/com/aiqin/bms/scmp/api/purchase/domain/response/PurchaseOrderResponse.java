@@ -149,4 +149,16 @@ public class PurchaseOrderResponse {
     @ApiModelProperty(value="关联审批单")
     @JsonProperty("approval_code")
     private String approvalCode;
+
+    @ApiModelProperty(value="采购单类型编码 1 普通采购 2 预采购")
+    @JsonProperty("purchase_order_type_code")
+    private Integer purchaseOrderTypeCode;
+
+    @ApiModelProperty(value="采购单类型名称")
+    @JsonProperty("purchase_order_type_name")
+    private String purchaseOrderTypeName;
+
+    @ApiModelProperty(value="预采购单号")
+    @JsonProperty("purchase_order_pre")
+    private String purchaseOrderPre;
 }

@@ -131,7 +131,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_PURCHASE.getNum());
         workFlowVO.setFormNo(formNo);
-        workFlowVO.setTitle(userName + "创建采购单审批");
+        workFlowVO.setTitle(userName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);
         // 查询采购价格
