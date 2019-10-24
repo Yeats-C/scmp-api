@@ -31,6 +31,6 @@ public interface ProductSkuSupplyUnitCapacityMapper {
 
     int deleteByUintCode(List<String> supplierCode);
 
-    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode, String productSkuCode);
+    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(@Param("supplierCode")String supplyUnitCode, @Param("productSkuCode")String productSkuCode);
 
 }

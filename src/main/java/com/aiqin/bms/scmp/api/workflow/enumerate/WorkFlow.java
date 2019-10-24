@@ -77,6 +77,8 @@ public enum WorkFlow {
      * 商品销售区域申请工作流
      */
     APPLY_SALE_AREA(14,"商品销售区域申请工作流","SCMP_APPLY_SALE_AREA"),
+
+    APPLY_GOODS_COMPANY(15,"商品供应商申请工作流","SCMP_APPLY_GOODS_COMPANY"),
     ;
 
     /**

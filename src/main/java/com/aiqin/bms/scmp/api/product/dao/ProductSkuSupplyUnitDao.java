@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateProductSkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo;
@@ -82,5 +84,10 @@ public interface ProductSkuSupplyUnitDao {
 
     SkuSupplierDetailRepsVo detail(String skuCode);
 
-    List<String> selectSupplyUnitCode(@Param("skuCode") String skuCode, @Param("source") UpdateProductSkuSupplyUnitReqVo source);
+    List<String> selectSupplyUnitCode(@Param("skuCode") String skuCode, @Param("vo") UpdateProductSkuSupplyUnitReqVo source);
+
+
+    ProductSkuSupplyUnitRespVo selectDraftById(Long id);
+
+    List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
 }

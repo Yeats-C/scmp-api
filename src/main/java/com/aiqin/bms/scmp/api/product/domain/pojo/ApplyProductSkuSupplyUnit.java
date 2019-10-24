@@ -76,6 +76,12 @@ public class ApplyProductSkuSupplyUnit extends CommonBean {
     @ApiModelProperty("审批编码")
     private String formNo;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
     @ApiModelProperty("申请状态(0:待审 1:审核中 2:审核通过 3:审核未通过 4:已撤销)")
     private Byte auditorStatus;
 

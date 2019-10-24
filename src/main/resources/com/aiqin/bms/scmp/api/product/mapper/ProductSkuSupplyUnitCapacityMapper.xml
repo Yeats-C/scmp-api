@@ -262,9 +262,9 @@
          b.create_by bcreate_by,
          b.update_time bupdate_time,
          b.update_by bupdate_by
-      from product_sku_supply_unit_capacity
+      from product_sku_supply_unit_capacity b
       where product_sku_code = #{productSkuCode}
-      and supply_unit_code = #{supplyUnitCode}
+      and supply_unit_code = #{supplierCode}
 
   </select>
 

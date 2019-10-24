@@ -23,7 +23,10 @@ public enum  FilePathEnum {
     PRODUCT_PICTURE("productPicture","product-picture/","商品图片"),
     PURCHASE_FILE("purchaseFile","purchase-file/","采购文件"),
     RETURN_FILE("returnFile","return-file/","退供文件"),
-    RETURN_PICTURE("returnPicture","return-picture/","退供图片");
+    RETURN_PICTURE("returnPicture","return-picture/","退供图片"),
+    GOODS_COMPANY("goodsCompany","goods-company/","供应商审批图片"),
+
+    ;
     private String code;
     private String filePath;
     private String desc;

@@ -7,10 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.CancelReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
-import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
-import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
-import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -41,6 +38,9 @@ public class ProductApplyServiceImpl implements ProductApplyService {
     @Autowired
     private SkuInfoService skuInfoService;
 
+    @Autowired
+    private ProductSkuSupplyUnitService productSkuSupplyUnitService;
+
     @Override
     public BasePage<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -58,6 +58,9 @@ public class ProductApplyServiceImpl implements ProductApplyService {
             case 3:
                 list = productSaleAreaService.queryApplyList(reqVo);
                 break;
+            case 4:
+                list = productSkuSupplyUnitService.queryApplyList(reqVo);
+                break;
             default: throw new BizException(MessageId.create(Project.PRODUCT_API,98,"请选择审批类型!"));
         }
         return PageUtil.getPageList(reqVo.getPageNo(),list);
@@ -73,6 +76,8 @@ public class ProductApplyServiceImpl implements ProductApplyService {
                 return productSkuConfigService.applyView(code);
             case 3:
                 return productSaleAreaService.applyView(code);
+            case 4:
+                return productSkuSupplyUnitService.applyView(code);
             default: throw new BizException(MessageId.create(Project.PRODUCT_API,98,"请选择审批类型!"));
         }
     }

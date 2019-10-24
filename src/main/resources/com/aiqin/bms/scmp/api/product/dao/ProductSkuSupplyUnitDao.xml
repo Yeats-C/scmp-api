@@ -131,7 +131,7 @@
       direct_supervisor_code,
       direct_supervisor_name,
       form_no,
-      auditor_status,apply_show,apply_type,company_code,company_name)
+      auditor_status,apply_show,apply_type,company_code,company_name,approval_name,approval_remark)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -152,7 +152,10 @@
       #{item.applyShow},
       #{item.applyType},
       #{item.companyCode},
-      #{item.companyName})
+      #{item.companyName},
+      #{item.approvalName},
+      #{item.approvalRemark}
+      )
     </foreach>
   </insert>
     <update id="updateApplyInfo">
@@ -560,6 +563,7 @@
         <result column="product_brand_name" property="productBrandName"/>
         <result column="product_property_code" property="productPropertyCode"/>
         <result column="product_property_name" property="productPropertyName"/>
+        <result column="apply_type" property="applyType"/>
     </resultMap>
     <select id="getListPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo"
             resultMap="listPageMap">
@@ -762,5 +766,53 @@
         <if test="vo.categoriesSupplyChannelsCode != null and vo.categoriesSupplyChannelsCode != '' ">
             and categories_supply_channels_code = #{vo.categoriesSupplyChannelsCode}
         </if>
+    </select>
+    <select id="selectDraftById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM product_sku_supply_unit_draft
+        where id=#{id}
+    </select>
+
+    <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
+        <result column="apply_code" jdbcType="VARCHAR" property="code"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+        <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+        <result column="auditor_status" jdbcType="INTEGER" property="applyStatus" />
+        <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
+        <result column="apply_type" jdbcType="INTEGER" property="applyType"/>
+        <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+        <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
+    </resultMap>
+    <select id="queryApplyList"  parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
+            resultMap="QueryApplyList">
+        select
+            distinct apply_code,
+            create_by,
+            create_time,
+            auditor_status,
+            update_by auditor_by,
+            update_time auditor_time,
+            form_no,
+            4 as approval_type,
+            approval_name
+        from apply_product_sku_supply_unit
+        where company_code = '09'
+        and apply_show = 0
+        <if test="createTimeStart != null">
+            and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createTimeEnd != null">
+            and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="applyStatus != null">
+            and auditor_status = #{applyStatus}
+        </if>
+        <if test="code != null and  code != '' ">
+            and form_no like CONCAT('%',#{code},'%')
+        </if>
+        order by create_time desc
     </select>
 </mapper>
