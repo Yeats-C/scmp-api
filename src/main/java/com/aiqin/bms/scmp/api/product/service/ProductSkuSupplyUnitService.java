@@ -1,11 +1,18 @@
 package com.aiqin.bms.scmp.api.product.service;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo;
 
 import java.util.List;
 
@@ -14,7 +21,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/29 0029 15:32
  */
-public interface ProductSkuSupplyUnitService {
+public interface ProductSkuSupplyUnitService extends BaseService {
     int insertDraftList(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts);
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
@@ -98,4 +105,40 @@ public interface ProductSkuSupplyUnitService {
     List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCode(String skuCode);
 
     List<ProductSkuSupplyUnitRespVo> selectApplyBySkuCodes(List<String> collect);
+
+    /**
+     * SKU供应商管理-前端列表查询接口
+     * @param reqVo
+     * @return
+     */
+    BasePage<QueryProductSkuSupplyUnitsRespVo> getListPage(QuerySkuSupplyUnitReqVo reqVo);
+
+    /**
+     * SKU供应商管理-前端列表详情接口
+     * @param skuCode
+     * @return
+     */
+    SkuSupplierDetailRepsVo detail(String skuCode);
+
+    /**
+     * SKU供应商管理-产能
+     * @param supplyUnitCode
+     * @param productSkuCode
+     * @return
+     */
+    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode,String productSkuCode);
+
+    /**
+     * SKU供应商修改
+     * @param reqVo
+     * @return
+     */
+    Integer update(UpdateSkuSupplyUnitReqVo reqVo);
+
+    /**
+     * SKU供应商管理-前端待审请列表查询接口
+     * @param reqVo
+     * @return
+     */
+    BasePage<QueryProductSkuSupplyUnitsRespVo> getDraftListPage(QuerySkuSupplyUnitReqVo reqVo);
 }

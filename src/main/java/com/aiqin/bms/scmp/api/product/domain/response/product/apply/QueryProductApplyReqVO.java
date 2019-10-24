@@ -57,4 +57,8 @@ public class QueryProductApplyReqVO extends PageReq {
 
     @ApiModelProperty("personId")
     private String personId;
+
+    @ApiModelProperty("申请类型")
+    @NotEmpty(message = "申请类型不能为空")
+    private Byte applyType;
 }

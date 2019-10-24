@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 import java.util.Map;
@@ -31,4 +32,6 @@ public interface ProductSkuSupplyUnitCapacityDraftMapper {
     List<ProductSkuSupplyUnitCapacityDraft> getDraftsBySupplyUnitDrafts(List<ProductSkuSupplyUnitDraft> skuSupplyUnitDrafts);
 
     int deleteByIds(List<Long> ids);
+
+    Integer deleteBySkuCodeAndSupplierCodes(@Param("skuCode") String skuCode, @Param("deleteCode") List<String> deleteSupplyUnitCodes);
 }

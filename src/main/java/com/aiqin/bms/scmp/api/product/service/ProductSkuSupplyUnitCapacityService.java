@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 
 import java.util.List;
 
@@ -97,4 +98,27 @@ public interface ProductSkuSupplyUnitCapacityService {
     int deleteDraftsByVos(List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts);
 
     Integer saveListForChange(List<ApplyProductSkuSupplyUnit> unitList);
+
+    /**
+     * 根据
+     * @param productSkuCode
+     * @param supplyUnitCode
+     * @return
+     */
+    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode,String productSkuCode);
+
+    /**
+     * 查询主键Id
+     * @param productSkuSupplyUnitCapacityDrafts
+     * @return
+     */
+    Boolean selectInfo(String skuCode, String supplyUnitCode, List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts);
+
+    /**
+     * 删除临时表数据
+     * @param skuCode
+     * @param deleteSupplyUnitCodes
+     * @return
+     */
+    Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes);
 }

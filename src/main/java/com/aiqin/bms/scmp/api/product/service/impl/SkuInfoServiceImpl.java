@@ -38,11 +38,13 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
+import com.aiqin.bms.scmp.api.supplier.mapper.ApprovalFileInfoMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
@@ -177,6 +179,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private FileInfoService fileInfoService;
     @Autowired
     private DataManageService dataManageService;
+    @Autowired
+    private ApprovalFileInfoService approvalFileInfoService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1099,7 +1103,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuDrafts = productSkuDao.getSkuDraftByCodes(saveSkuApplyInfoReqVO.getSkuCodes());
         }
         //验证是否是同一种申请类型
-//        validateSameApply(productSkuDrafts);
+        validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
         EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
         long code = encodingRule.getNumberingValue();
@@ -1180,6 +1184,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //组合商品子商品列表
             productSkuSubService.saveApplyList(applyProductSkus);
         }
+        //保存审批附件信息
+        approvalFileInfoService.batchSave(saveSkuApplyInfoReqVO.getApprovalFileInfos(),String.valueOf(code),formNo,ApprovalFileTypeEnum.SKU.getType());
         //修改申请编码
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
@@ -1537,8 +1543,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         workFlowVO.setFormNo(form);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
+//        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
+//        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
 //        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
         String title = approvalName;
         workFlowVO.setTitle(title);
@@ -2717,6 +2723,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         List<String> spuCodes = list.stream().map(ProductSkuApplyVo2::getProductName).distinct().collect(Collectors.toList());
         resp.setSpuNum(spuCodes.size());
         resp.setData(list);
+        resp.setApprovalFileInfos(approvalFileInfoService.selectByApprovalTypeAndApplyCode(ApprovalFileTypeEnum.SKU.getType(), applyVO.getApplyCode()));
         return resp;
     }
 
