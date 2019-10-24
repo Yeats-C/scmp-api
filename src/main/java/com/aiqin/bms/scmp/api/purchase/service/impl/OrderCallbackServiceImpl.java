@@ -836,8 +836,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockChangeRequest.setStockVoRequests(list);
             HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                LOGGER.error("dl回调:调拨减库存异常");
-                throw new GroundRuntimeException("dl回调:减库存异常");
+                LOGGER.error("dl回调调拨减库存异常");
+                throw new GroundRuntimeException("dl回调减库存异常");
             }
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation, productSkuMap, inboundTypeEnum);
@@ -851,8 +851,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             stockRequest.setStockVoRequests(inboundList);
             HttpResponse stockResponse = stockService.changeStock(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-                LOGGER.error("dl回调:调拨加库存异常");
-                throw new GroundRuntimeException("dl回调:加库存异常");
+                LOGGER.error("dl回调调拨加库存异常");
+                throw new GroundRuntimeException("dl回调加库存异常");
             }
             allocation.setOutboundOderCode(outboundOderCode);
             allocation.setInboundOderCode(inboundOderCode);
