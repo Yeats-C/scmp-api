@@ -54,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -275,8 +276,28 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (CollectionUtils.isNotEmpty(config)) {
             throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
         }
+
         //查临时
         List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
+       //先把原来的给查出来配置查出来
+        List<SkuConfigsRepsVo> ordBeginList=productSkuConfigMapper.getListBySkuCode(reqVo.getSkuCode());
+        List<UpdateSkuConfigReqVo>  ordList=Lists.newArrayList();
+        for (SkuConfigsRepsVo skuConfigsRepsVo:
+                ordBeginList ) {
+            UpdateSkuConfigReqVo updateSkuConfigReqVo=new UpdateSkuConfigReqVo();
+            BeanUtils.copyProperties(skuConfigsRepsVo,updateSkuConfigReqVo);
+            ordList.add(updateSkuConfigReqVo);
+        }
+         //新进来的做一个比对
+        List<UpdateSkuConfigReqVo> newList=reqVo.getConfigs();
+
+
+
+
+
+
+
+
         Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
         Integer num = 0;
         List<ProductSkuConfigDraft> drafts;
@@ -692,18 +713,26 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return num;
     }
 
+
+    //把数据传输给审批流
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
+        //流程编号
         workFlowVO.setFormNo(formNo);
+        //进行编码修改
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
-        workFlowVO.setTitle(userName + "创建商品配置审批");
+        //进行审批名称的传输
+        workFlowVO.setTitle( "创建商品配置审批");
+        //添加备注
+        workFlowVO.setRemark("备注");
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
+        //传输进行
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS_CONFIG);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
@@ -753,7 +782,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //判断是否预约时间
                 boolean b = list.get(0).getSelectionEffectiveTime() == 0 ? true : false;
-                //判断是否不立即生效
+                //判断是否不立即生效，进行防空判断
                 boolean b1 = b && list.get(0).getSelectionEffectiveStartTime().after(new Date());
                 try {
                     updateApplyInfoByVO(newVO, applyCode);

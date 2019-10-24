@@ -46,7 +46,11 @@ public class UpdateSkuConfigReqVo {
     @ApiModelProperty("到货后周转期")
     private Integer turnoverPeriodAfterArrival;
 
+    @ApiModelProperty("修改类型 0:没有改动 ，1：增加，2：修改")
+    private Integer changType;
+
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
+
 
 }

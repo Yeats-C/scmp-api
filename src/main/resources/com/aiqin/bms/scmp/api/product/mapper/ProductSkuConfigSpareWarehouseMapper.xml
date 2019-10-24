@@ -28,10 +28,13 @@
       a.config_code,
       group_concat(a.transport_center_name) as transport_center_name
       from product_sku_config_spare_warehouse a
-      where config_code in
-      <foreach collection="list" open="(" close=")" item="item" separator=",">
-           #{item}
-      </foreach>
+      where  1=1
+        <if test="list.size>0 and list !=null ">
+               and   config_code in
+            <foreach collection="list" open="(" close=")" item="item" separator=",">
+                #{item}
+            </foreach>
+        </if>
       group by a.config_code
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
