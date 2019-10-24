@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +26,8 @@ public interface ProductSkuSupplyUnitDraftMapper {
     List<ProductSkuSupplyUnitDraft> selectByVo(List<ProductSkuSupplyUnitDraft> reqVo);
 
     List<ProductSkuSupplyUnitDraft> selectDraftBySkuCode(String skuCode);
+
+    int deleteBySkuCodeAndSupplierCodes(@Param("skuCode") String skuCode, @Param("deleteCodes")List<String> deleteSupplyUnitCodes);
+
+    List<QueryProductSkuSupplyUnitsRespVo> getListPage(QuerySkuSupplyUnitReqVo reqVo);
 }

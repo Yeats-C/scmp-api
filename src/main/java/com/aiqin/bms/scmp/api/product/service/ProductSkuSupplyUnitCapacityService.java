@@ -112,5 +112,13 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @param productSkuSupplyUnitCapacityDrafts
      * @return
      */
-    Boolean selectInfo(List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts);
+    Boolean selectInfo(String skuCode, String supplyUnitCode, List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts);
+
+    /**
+     * 删除临时表数据
+     * @param skuCode
+     * @param deleteSupplyUnitCodes
+     * @return
+     */
+    Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes);
 }

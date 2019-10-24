@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
@@ -20,7 +21,7 @@ import java.util.List;
  * @author: wangxu
  * @date: 2019/1/29 0029 15:32
  */
-public interface ProductSkuSupplyUnitService {
+public interface ProductSkuSupplyUnitService extends BaseService {
     int insertDraftList(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts);
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
@@ -133,4 +134,11 @@ public interface ProductSkuSupplyUnitService {
      * @return
      */
     Integer update(UpdateSkuSupplyUnitReqVo reqVo);
+
+    /**
+     * SKU供应商管理-前端待审请列表查询接口
+     * @param reqVo
+     * @return
+     */
+    BasePage<QueryProductSkuSupplyUnitsRespVo> getDraftListPage(QuerySkuSupplyUnitReqVo reqVo);
 }

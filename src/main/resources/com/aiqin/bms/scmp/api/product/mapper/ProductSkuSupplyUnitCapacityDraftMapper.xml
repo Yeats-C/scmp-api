@@ -89,8 +89,14 @@
       #{id,jdbcType=BIGINT}
     </foreach>
   </delete>
+  <delete id="deleteBySkuCodeAndSupplierCodes">
+       delete from product_sku_supply_unit_capacity_draft where product_sku_code = #{skuCode} and supply_unit_code in
+      <foreach collection="deleteCodes" item="supplyUnitCode" separator="," open="(" close=")">
+        #{supplyUnitCode,jdbcType=VARCHAR}
+      </foreach>
+  </delete>
 
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft">
     insert into product_sku_supply_unit_capacity_draft (id, supply_unit_code, supply_unit_name, 
       product_sku_code, product_sku_name, out_put, 
       need_days, del_flag, create_time, 

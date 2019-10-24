@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku.supplier;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -85,4 +86,10 @@ public class QueryProductSkuSupplyUnitsRespVo extends CommonBean {
 
     @ApiModelProperty("品类名称")
     private String productCategoryName;
+
+    @ApiModelProperty("申请类型 1:新增 2:修改")
+    private Byte applyType;
+
+    @ApiModelProperty("产能")
+    private List<ProductSkuSupplyUnitCapacityRespVo> capacityList;
 }

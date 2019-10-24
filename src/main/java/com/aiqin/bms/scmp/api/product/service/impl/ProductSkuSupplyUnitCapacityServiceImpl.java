@@ -190,12 +190,11 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
     }
 
     @Override
-    public Boolean selectInfo(List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts) {
+    public Boolean selectInfo(String skuCode,String supplyUnitCode, List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts) {
         Boolean flag = false;
         if(CollectionUtils.isNotEmptyCollection(productSkuSupplyUnitCapacityDrafts)){
-            ProductSkuSupplyUnitCapacityDraft productSkuSupplyUnitCapacityDraft = productSkuSupplyUnitCapacityDrafts.get(0);
             List<ProductSkuSupplyUnitCapacityRespVo> capacityInfoBySupplyUnitCodeAndProductSkuCode =
-                    mapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(productSkuSupplyUnitCapacityDraft.getSupplyUnitCode(), productSkuSupplyUnitCapacityDraft.getProductSkuCode());
+                    mapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode, skuCode);
             if(productSkuSupplyUnitCapacityDrafts.size() != capacityInfoBySupplyUnitCodeAndProductSkuCode.size()){
                 flag = true;
             } else {
@@ -214,5 +213,11 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
             }
         }
         return flag;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes) {
+        return draftMapper.deleteBySkuCodeAndSupplierCodes(skuCode,deleteSupplyUnitCodes);
     }
 }
