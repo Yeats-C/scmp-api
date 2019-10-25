@@ -75,6 +75,7 @@
     <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
     <result column="apply_type" jdbcType="INTEGER" property="applyType"/>
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+    <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
   </resultMap>
   <select id="queryApplyList" parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
             resultMap="QueryApplyList">
@@ -87,7 +88,8 @@
         auditor_time,
         form_no,
         2 as approval_type,
-        apply_type
+        apply_type,
+        approval_name
       from apply_product_sku_config
       where company_code = #{companyCode}
       and apply_show = 0
@@ -103,38 +105,18 @@
     <if test="code != null and  code != '' ">
       and apply_code like CONCAT('%',#{code},'%')
     </if>
-    <if test="skuName != null and skuName!= '' ">
-      and sku_name like CONCAT('%',#{skuName},'%')
+    <if test="formNo != null and  formNo != '' ">
+      and form_no like CONCAT('%',#{formNo},'%')
     </if>
-       union
-       select
-       distinct apply_code,
-       create_by,
-       create_time,
-       auditor_status,
-       update_by auditor_by,
-       update_time auditor_time,
-       form_no,
-       2 as approval_type,
-       apply_type
-       from apply_product_sku_supply_unit
-       where company_code = 09
-        and apply_show = 0
-      <if test="createTimeStart != null">
-        and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
-      </if>
-      <if test="createTimeEnd != null">
-        and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
-      </if>
-      <if test="applyStatus != null">
-        and auditor_status = #{applyStatus}
-      </if>
-      <if test="code != null and  code != '' ">
-        and apply_code like CONCAT('%',#{code},'%')
-      </if>
-      <if test="skuName != null and skuName!= '' ">
-        and sku_name like CONCAT('%',#{skuName},'%')
-      </if>
+    <if test="approvalName != null and  approvalName != '' ">
+      and approval_name like CONCAT('%',#{approvalName},'%')
+    </if>
+    <if test="purchaseGroupCode != null and  purchaseGroupCode != '' ">
+      and exists (select 1 from product_sku a where a.procurement_section_code = #{purchaseGroupCode} and a.sku_code=sku_code)
+    </if>
+    <if test="personId != null and  personId != '' ">
+      and  exists (select 1 from product_sku a where a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}) and a.sku_code=sku_code)
+    </if>
     order by create_time desc
    </select>
   <select id="selectByApplyCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">

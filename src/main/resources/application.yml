@@ -83,6 +83,8 @@ WorkFlowBaseUrl:
     applySku: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #sku配置
     applySkuConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+    #sku供应商
+    applySkuSupplier: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #销售区域
     applySaleArea: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #调拨申请详情
@@ -282,6 +284,34 @@ mgs:
           name: 编辑
         - code: SCMP004007002
           name: 导入
+      - code: SCMP004009
+        name: 商品仓库管理
+        link: '/product/store'
+        methods:
+        - code: SCMP004009001
+          name: 编辑
+        - code: SCMP004009002
+          name: 导入
+        - code: SCMP004009003
+          name: 查看
+        - code: SCMP004009004
+          name: 待申请
+        - code: SCMP004009005
+          name: 审批跟踪
+      - code: SCMP004010
+        name: 商品供应商管理
+        link: '/product/supplier'
+        methods:
+        - code: SCMP004010001
+          name: 编辑
+        - code: SCMP004010002
+          name: 导入
+        - code: SCMP004010003
+          name: 查看
+        - code: SCMP004010004
+          name: 待申请
+        - code: SCMP004010005
+          name: 审批跟踪
       - code: SCMP004008
         name: 质检报告管理
         link: '/product/qualityReport'

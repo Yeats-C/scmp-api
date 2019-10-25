@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SpareWarehouseReqVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 @ApiModel("商品配置临时表")
 @Data
@@ -65,4 +68,6 @@ public class ProductSkuConfigDraft extends CommonBean {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    @ApiModelProperty("备用仓库")
+    private List<SpareWarehouseReqVo> spareWarehouses;
 }

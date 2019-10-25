@@ -112,7 +112,7 @@ public class PurchaseApplyController {
     @GetMapping("/apply/product/detail")
     @ApiOperation("查询采购申请单商品的详情")
     public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
-                                                           @RequestParam("product_purchase_amount") Integer productPurchaseAmount,
+                                                           @RequestParam("product_purchase_amount") Long productPurchaseAmount,
                                                            @RequestParam("sku_code") String skuCode,
                                                            @RequestParam("supplier_code") String supplierCode,
                                                            @RequestParam("transport_center_code") String transportCenterCode,

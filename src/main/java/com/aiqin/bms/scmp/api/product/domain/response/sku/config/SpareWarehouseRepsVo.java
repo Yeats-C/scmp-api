@@ -25,4 +25,6 @@ public class SpareWarehouseRepsVo {
 
     @ApiModelProperty("使用顺序")
     private Integer useOrder;
+
+
 }

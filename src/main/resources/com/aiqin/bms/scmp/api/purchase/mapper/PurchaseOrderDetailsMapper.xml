@@ -19,9 +19,9 @@
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
     <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
     <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
-    <result column="advance_payment" jdbcType="INTEGER" property="advancePayment" />
-    <result column="amount_payable" jdbcType="INTEGER" property="amountPayable" />
-    <result column="month_amount" jdbcType="INTEGER" property="monthAmount" />
+    <result column="advance_payment" jdbcType="BIGINT" property="advancePayment" />
+    <result column="amount_payable" jdbcType="BIGINT" property="amountPayable" />
+    <result column="month_amount" jdbcType="BIGINT" property="monthAmount" />
     <result column="payable_time" jdbcType="INTEGER" property="payableTime" />
     <result column="month_time" jdbcType="INTEGER" property="monthTime" />
     <result column="receipt" jdbcType="VARCHAR" property="receipt" />
@@ -67,8 +67,8 @@
       #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, #{chargePerson,jdbcType=VARCHAR}, 
       #{contactPerson,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, #{expectArrivalTime,jdbcType=TIMESTAMP}, 
       #{validTime,jdbcType=TIMESTAMP}, #{directSupervisorCode,jdbcType=VARCHAR}, #{directSupervisorName,jdbcType=VARCHAR},
-      #{paymentCode,jdbcType=INTEGER}, #{paymentName,jdbcType=INTEGER}, #{advancePayment,jdbcType=INTEGER}, #{amountPayable,jdbcType=INTEGER},
-      #{monthAmount,jdbcType=INTEGER}, #{payableTime,jdbcType=INTEGER}, #{monthTime,jdbcType=INTEGER}, 
+      #{paymentCode,jdbcType=INTEGER}, #{paymentName,jdbcType=INTEGER}, #{advancePayment,jdbcType=BIGINT}, #{amountPayable,jdbcType=BIGINT},
+      #{monthAmount,jdbcType=BIGINT}, #{payableTime,jdbcType=INTEGER}, #{monthTime,jdbcType=INTEGER},
       #{receipt,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, #{delivery,jdbcType=VARCHAR}, 
       #{deliveryAddress,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{warehouseTime,jdbcType=TIMESTAMP}, 
       #{remark,jdbcType=VARCHAR}, #{detailsStatus,jdbcType=INTEGER}, #{orderCode,jdbcType=VARCHAR}, 
@@ -118,13 +118,13 @@
         payment_name = #{paymentName,jdbcType=VARCHAR},
       </if>
       <if test="advancePayment != null">
-        advance_payment = #{advancePayment,jdbcType=INTEGER},
+        advance_payment = #{advancePayment,jdbcType=BIGINT},
       </if>
       <if test="amountPayable != null">
-        amount_payable = #{amountPayable,jdbcType=INTEGER},
+        amount_payable = #{amountPayable,jdbcType=BIGINT},
       </if>
       <if test="monthAmount != null">
-        month_amount = #{monthAmount,jdbcType=INTEGER},
+        month_amount = #{monthAmount,jdbcType=BIGINT},
       </if>
       <if test="payableTime != null">
         payable_time = #{payableTime,jdbcType=INTEGER},

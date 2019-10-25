@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.product.apply;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -62,6 +63,9 @@ public class ProductApplyInfoRespVO<T> {
     @ApiModelProperty("生效开始时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date selectionEffectiveStartTime;
+
+    @ApiModelProperty("审批附件")
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
 
     @ApiModelProperty("列表数据")
     private List<T> data;

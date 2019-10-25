@@ -33,7 +33,7 @@ public class PurchaseImportResponse extends PurchaseApplyDetailResponse{
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Integer productTotalAmount;
+    private Long productTotalAmount;
 
     @ApiModelProperty(value="错误行数")
     @JsonProperty("error_num")

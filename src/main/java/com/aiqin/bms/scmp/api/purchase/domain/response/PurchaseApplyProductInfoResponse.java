@@ -21,7 +21,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="普通商品含税总金额")
     @JsonProperty("product_tax_sum")
-    private Integer productTaxSum;
+    private Long productTaxSum;
 
     @ApiModelProperty(value="实物采购件数")
     @JsonProperty("matter_piece_sum")
@@ -33,7 +33,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实物返含税总金额")
     @JsonProperty("matter_tax_sum")
-    private Integer matterTaxSum;
+    private Long matterTaxSum;
 
     @ApiModelProperty(value="赠品采购件数")
     @JsonProperty("gift_piece_sum")
@@ -45,7 +45,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="赠品含税总金额")
     @JsonProperty("gift_tax_sum")
-    private Integer giftTaxSum;
+    private Long giftTaxSum;
 
     @ApiModelProperty(value="总件数")
     @JsonProperty("piece_sum")
@@ -69,7 +69,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际普通商品含税总金额")
     @JsonProperty("actual_product_tax_sum")
-    private Integer actualProductTaxSum;
+    private Long actualProductTaxSum;
 
     @ApiModelProperty(value="实际实物采购件数")
     @JsonProperty("actual_matter_piece_sum")
@@ -81,7 +81,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际实物返含税总金额")
     @JsonProperty("actual_matter_tax_sum")
-    private Integer actualMatterTaxSum;
+    private Long actualMatterTaxSum;
 
     @ApiModelProperty(value="实际赠品采购件数")
     @JsonProperty("actual_gift_piece_sum")
@@ -93,7 +93,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际赠品含税总金额")
     @JsonProperty("actual_gift_tax_sum")
-    private Integer actualGiftTaxSum;
+    private Long actualGiftTaxSum;
 
     @ApiModelProperty(value="实际总件数")
     @JsonProperty("actual_piece_sum")

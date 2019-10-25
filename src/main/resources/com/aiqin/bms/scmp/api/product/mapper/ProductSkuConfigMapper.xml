@@ -167,6 +167,11 @@
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+
+    <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+    <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+    <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+    <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
     <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
     <collection property="configs" column="{skuCode = sku_code}"
                 javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
@@ -183,6 +188,10 @@
       product_category_name,
       categories_supply_channels_code,
       categories_supply_channels_name,
+      product_brand_code,
+      product_brand_name,
+      product_property_code,
+      product_property_name,
       goods_gifts,
       create_time,
       create_by,

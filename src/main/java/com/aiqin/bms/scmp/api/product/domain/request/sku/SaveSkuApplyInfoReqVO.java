@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -35,4 +36,7 @@ public class SaveSkuApplyInfoReqVO {
     @ApiModelProperty("直属上级名称")
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
+
+    @ApiModelProperty("附件信息")
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
 }
