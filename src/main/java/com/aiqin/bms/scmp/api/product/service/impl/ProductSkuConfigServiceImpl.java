@@ -32,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
+import com.aiqin.bms.scmp.api.supplier.service.ApprovalFileInfoService;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.*;
@@ -116,6 +117,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Autowired
     private ProductSkuConfigDraftMapper productSkuConfigDraftMapper;
+
+    @Autowired
+    private ApprovalFileInfoService approvalFileInfoService;
 
 
 
@@ -589,7 +593,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if (null == currentAuthToken) {
             throw new BizException(ResultCode.LOGIN_ERROR);
         }
-        if (CollectionUtils.isEmpty(reqVo.getSkuConfigs())&&CollectionUtils.isEmpty(reqVo.getSupplierId())) {
+        if (CollectionUtils.isEmpty(reqVo.getSkuConfigs())) {
             throw new BizException(ResultCode.AT_LEAST_ONE_DATA);
         }
         String code;
@@ -655,43 +659,44 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         //供应商信息保存
         //根据供应商信息ID查询供应商信息
-        List<Long> supplierId = reqVo.getSupplierId();
-        if (CollectionUtils.isNotEmpty(supplierId)) {
-            List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = productSkuSupplyUnitService.getDraftByIds(supplierId);
-            if (CollectionUtils.isNotEmpty(productSkuSupplyUnitDrafts)) {
-                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ApplyProductSkuSupplyUnit.class);
-                applyProductSkuSupplyUnits.forEach(item -> {
-                    item.setApplyCode(code);
-                    item.setFormNo(formNo);
-                    item.setBeEffective(Global.UN_EFFECTIVE);
-                    item.setCreateTime(currentDate);
-                    item.setCreateBy(getUser().getPersonName());
-                    item.setSelectionEffectiveTime(reqVo.getSelectionEffectiveTime());
-                    item.setSelectionEffectiveStartTime(reqVo.getSelectionEffectiveStartTime());
-                    item.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
-                    item.setDirectSupervisorCode(reqVo.getDirectSupervisorCode());
-                    item.setDirectSupervisorName(reqVo.getDirectSupervisorName());
-
-                });
-                productSkuSupplyUnitService.insertApplyList(applyProductSkuSupplyUnits);
-                productSkuSupplyUnitService.deleteDraftByIds(supplierId);
-                //供应商产能信息
-                List<ProductSkuSupplyUnitCapacityDraft> supplyUnitCapacityDrafts =
-                        productSkuSupplyUnitCapacityService.getDraftsBySupplyUnitDrafts(productSkuSupplyUnitDrafts);
-                if (CollectionUtils.isNotEmpty(supplyUnitCapacityDrafts)) {
-                    List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities = BeanCopyUtils.copyList(supplyUnitCapacityDrafts, ApplyProductSkuSupplyUnitCapacity.class);
-                    applyProductSkuSupplyUnitCapacities.forEach(item -> {
-                        item.setApplyCode(code);
-                    });
-                    List<Long> ids = supplyUnitCapacityDrafts.stream().map(ProductSkuSupplyUnitCapacityDraft::getId).distinct().collect(Collectors.toList());
-                    //批量新增申请
-                    productSkuSupplyUnitCapacityService.insertApplyList(applyProductSkuSupplyUnitCapacities);
-                    //批量删除草稿
-                    productSkuSupplyUnitCapacityService.deleteDraftByIds(ids);
-                }
-            }
-        }
-
+//        List<Long> supplierId = reqVo.getSupplierId();
+//        if (CollectionUtils.isNotEmpty(supplierId)) {
+//            List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = productSkuSupplyUnitService.getDraftByIds(supplierId);
+//            if (CollectionUtils.isNotEmpty(productSkuSupplyUnitDrafts)) {
+//                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ApplyProductSkuSupplyUnit.class);
+//                applyProductSkuSupplyUnits.forEach(item -> {
+//                    item.setApplyCode(code);
+//                    item.setFormNo(formNo);
+//                    item.setBeEffective(Global.UN_EFFECTIVE);
+//                    item.setCreateTime(currentDate);
+//                    item.setCreateBy(getUser().getPersonName());
+//                    item.setSelectionEffectiveTime(reqVo.getSelectionEffectiveTime());
+//                    item.setSelectionEffectiveStartTime(reqVo.getSelectionEffectiveStartTime());
+//                    item.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
+//                    item.setDirectSupervisorCode(reqVo.getDirectSupervisorCode());
+//                    item.setDirectSupervisorName(reqVo.getDirectSupervisorName());
+//
+//                });
+//                productSkuSupplyUnitService.insertApplyList(applyProductSkuSupplyUnits);
+//                productSkuSupplyUnitService.deleteDraftByIds(supplierId);
+//                //供应商产能信息
+//                List<ProductSkuSupplyUnitCapacityDraft> supplyUnitCapacityDrafts =
+//                        productSkuSupplyUnitCapacityService.getDraftsBySupplyUnitDrafts(productSkuSupplyUnitDrafts);
+//                if (CollectionUtils.isNotEmpty(supplyUnitCapacityDrafts)) {
+//                    List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities = BeanCopyUtils.copyList(supplyUnitCapacityDrafts, ApplyProductSkuSupplyUnitCapacity.class);
+//                    applyProductSkuSupplyUnitCapacities.forEach(item -> {
+//                        item.setApplyCode(code);
+//                    });
+//                    List<Long> ids = supplyUnitCapacityDrafts.stream().map(ProductSkuSupplyUnitCapacityDraft::getId).distinct().collect(Collectors.toList());
+//                    //批量新增申请
+//                    productSkuSupplyUnitCapacityService.insertApplyList(applyProductSkuSupplyUnitCapacities);
+//                    //批量删除草稿
+//                    productSkuSupplyUnitCapacityService.deleteDraftByIds(ids);
+//                }
+//            }
+//        }
+        //进行图片上传
+        approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),code,formNo,ApprovalFileTypeEnum.GOODS_WARHOUSE.getType());
         //调用审批的接口
         workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode());
         return 1;
@@ -1084,13 +1089,14 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code) {
         List<SkuConfigsRepsVo> list = applyMapper.selectByApplyCode(code);
-        List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitService.getApplyCode(code);
-        if(CollectionUtils.isEmpty(list)&&CollectionUtils.isEmpty(productSkuSupplyUnitRespVos)){
-            log.error("传入的编码是：[{}]",code);
-            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
-        }
-        //组装数据
-        return dealApplyViewData(list,productSkuSupplyUnitRespVos);
+ //       List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitService.getApplyCode(code);
+//        if(CollectionUtils.isEmpty(list)&&CollectionUtils.isEmpty(productSkuSupplyUnitRespVos)){
+//            log.error("传入的编码是：[{}]",code);
+//            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
+//        }
+//        //组装数据
+//        return dealApplyViewData(list,productSkuSupplyUnitRespVos);
+        return null;
     }
 
     /**
@@ -1357,7 +1363,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Override
     public SkuConfigDetailRepsVo detailForDraft(String skuCode, Long draftId) {
-        return productSkuConfigDraftMapper.detailForDraft(skuCode,draftId);
+
+
+        SkuConfigDetailRepsVo SkuConfigDetailRepsVo=productSkuConfigDraftMapper.detailForDraft(skuCode,draftId);
+
+        return SkuConfigDetailRepsVo;
     }
 
     //进行修改
@@ -1821,6 +1831,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         List<SkuConfigDetailRepsVo> repsVos = Lists.newArrayList();
         repsVos.add(repsVo);
         resp.setData(repsVos);
+         //放置附件
+        resp.setApprovalFileInfos(approvalFileInfoService.selectByApprovalTypeAndApplyCode(ApprovalFileTypeEnum.GOODS_WARHOUSE.getType(),resp.getCode()));
         return resp;
     }
 }

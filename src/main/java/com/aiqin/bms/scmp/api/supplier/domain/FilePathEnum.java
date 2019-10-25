@@ -25,7 +25,7 @@ public enum  FilePathEnum {
     RETURN_FILE("returnFile","return-file/","退供文件"),
     RETURN_PICTURE("returnPicture","return-picture/","退供图片"),
     GOODS_COMPANY("goodsCompany","goods-company/","供应商审批图片"),
-
+    GOODS_WARHOUSE("goodsWarhouse","goods-warhouse/","供应商仓库")
     ;
     private String code;
     private String filePath;

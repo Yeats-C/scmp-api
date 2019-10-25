@@ -70,27 +70,7 @@ public class DraftController {
         }
     }
 
-    @GetMapping("/update")
-    @ApiOperation("待申请库房进行修改")
-    public HttpResponse update (@RequestBody  SkuConfigDetailRepsVo skuConfigDetailRepsVo) {
-        try {
-            return HttpResponse.success(productSkuConfigService.update(skuConfigDetailRepsVo));
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
 
-    @GetMapping("/view")
-    @ApiOperation("待申请库房进行查看")
-    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode,@RequestParam("draftId")Long draftId ) {
-        try {
-            return HttpResponse.success(productSkuConfigService.detailForDraft(skuCode,draftId));
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
 
     @PutMapping("/delete")
     @ApiOperation("删除")

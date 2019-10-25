@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku.config;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -38,7 +39,16 @@ public class ApplySkuConfigReqVo {
     @NotEmpty(message = "编码不能为空！")
     List<String> skuConfigs;
 
-    @ApiModelProperty("需要提交申请的编码集合")
-    @NotEmpty(message = "编码不能为空！")
-    List<Long> supplierId;
+//    @ApiModelProperty("需要提交申请的编码集合")
+//    @NotEmpty(message = "编码不能为空！")
+//    List<Long> supplierId;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
+    @ApiModelProperty("附件信息")
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
 }
