@@ -371,32 +371,36 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 skuConfigsRepsVoList  ) {
             UpdateSkuConfigReqVo updateSkuConfigReqVo=new UpdateSkuConfigReqVo();
             BeanCopyUtils.copy(skuConfigsRepsVo,updateSkuConfigReqVo);
-            if (skuConfigsRepsVo.getTransportCenterCode().equals(transportCenterCode)&&source.compare(updateSkuConfigReqVo)){
+           if(updateSkuConfigReqVo.getTransportCenterCode().equals(source.getTransportCenterCode())){
+               //如果不一样
+            if (!source.compare(updateSkuConfigReqVo)){
                 //对参数进行判断
                     return true;
             }
-            //原来的备用仓库数量
-            Integer ordCount=skuConfigsRepsVo.getSpareWarehouses().size();
-            //现在提交的仓库数量
-            Integer nowCount=source.getSpareWarehouses().size();
-            if(ordCount!=nowCount){
-                return true;
-            }
-            //原来的备用仓库名称
-            List<SpareWarehouseRepsVo> ordCodes = skuConfigsRepsVo.getSpareWarehouses();
-             //按照使用顺序进行排序
-            Collections.sort(ordCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
-           //新的备用仓库名称
-            List<SpareWarehouseReqVo> newCodes = source.getSpareWarehouses();
-            Collections.sort(newCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
-             if(ordCount ==nowCount ){
-                for (int num=0;num<ordCodes.size();num++){
-                    if(!ordCodes.get(num).getTransportCenterCode().equals(newCodes.get(num).getTransportCenterCode())){
-                        return true;
-                    }
-                }
+               //原来的备用仓库数量
+               Integer ordCount=skuConfigsRepsVo.getSpareWarehouses().size();
+               //现在提交的仓库数量
+               Integer nowCount=source.getSpareWarehouses().size();
+               if(ordCount!=nowCount){
+                   return true;
+               }
+               //原来的备用仓库名称
+               List<SpareWarehouseRepsVo> ordCodes = skuConfigsRepsVo.getSpareWarehouses();
+               //按照使用顺序进行排序
+               Collections.sort(ordCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
+               //新的备用仓库名称
+               List<SpareWarehouseReqVo> newCodes = source.getSpareWarehouses();
+               Collections.sort(newCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
+               if(ordCount ==nowCount ){
+                   for (int num=0;num<ordCodes.size();num++){
+                       if(!ordCodes.get(num).getTransportCenterCode().equals(newCodes.get(num).getTransportCenterCode())){
+                           return true;
+                       }
+                   }
 
-            }
+               }
+           }
+
         }
         return false;
     }
