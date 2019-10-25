@@ -142,6 +142,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         return HttpResponse.success(pageResData);
     }
 
+    // 查询新增采购申请单时候的库存商品信息
+
     @Override
     public HttpResponse applyProductList(PurchaseApplyRequest purchases){
         PageResData pageResData = new PageResData();
@@ -190,8 +192,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
     }
-
-    // 查询新增采购申请单时候的库存商品信息
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
@@ -248,7 +248,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                     key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
                     Long priceTax = productTax.get(key);
-                    product.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
+                    product.setPurchaseMax(priceTax == null ? 0 : priceTax);
                 }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                 key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
@@ -371,7 +371,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     detail.setStockCount(info.getInventoryNum().intValue());
                     detail.setTotalWayNum(info.getTotalWayNum().intValue());
                     detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
-                    detail.setNewPurchasePrice(info.getNewPurchasePrice().intValue());
+                    detail.setNewPurchasePrice(info.getNewPurchasePrice());
                 }
             }
             this.productDetail(products);
@@ -410,8 +410,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
-        Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0;
+        Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0, singleSum = 0;
+        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseApplyDetailResponse product : products) {
                 // 商品采购件数量
@@ -423,8 +423,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 // 计算采购含税总价
-                Integer productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
-                Integer productPurchaseSum = productPurchaseAmount * singleCount;
+                Long productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
+                Long productPurchaseSum = productPurchaseAmount * singleCount;
                 product.setProductPurchaseSum(productPurchaseSum);
                 if(product.getProductType() != null){
                     if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
@@ -474,8 +474,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 product.setSingleCount(singleCount);
                 // 计算采购含税总价
-                Integer productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
-                Integer productPurchaseSum = productPurchaseAmount * singleCount;
+                Long productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
+                Long productPurchaseSum = productPurchaseAmount * singleCount;
                 product.setProductPurchaseSum(productPurchaseSum);
             }
         }
@@ -558,7 +558,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         // 获取最高采购价(价格管理中供应商的含税价格)
                         if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
                             Long priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
-                            applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
+                            applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax);
                         }
                         Integer baseProductContent = applyProduct.getBaseProductContent();
                         if (StringUtils.isNotBlank(record[4]) && baseProductContent != 0) {
@@ -582,7 +582,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             response.setProductPurchaseAmount(applyProduct.getNewPurchasePrice());
                         } else {
                             BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(100));
-                            response.setProductPurchaseAmount(big.intValue());
+                            response.setProductPurchaseAmount(big.longValue());
                         }
                     } else {
                         HandleResponse(response, record, "未查询到对应的商品；", i);
@@ -611,7 +611,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setReturnCount(record[5]);
         if(StringUtils.isNotBlank(record[6])){
             Double num = Double.valueOf(record[6]) * 100;
-            response.setProductPurchaseAmount(num.intValue());
+            response.setProductPurchaseAmount(num.longValue());
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
@@ -631,7 +631,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Integer productPurchaseAmount, String skuCode,
+    public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Long productPurchaseAmount, String skuCode,
                                                                      String supplierCode, String transportCenterCode, Integer productCount){
         if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode) ||
                 productPurchaseAmount == null || singleCount == null || productCount == null){
