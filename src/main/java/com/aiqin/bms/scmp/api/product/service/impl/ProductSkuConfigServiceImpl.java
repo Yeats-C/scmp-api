@@ -335,8 +335,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         Integer num = 0;
         //删除重复的数据,插入数据
         List<String> deleteTransportCenterCodes = saveList.stream().map(UpdateSkuConfigReqVo::getTransportCenterCode).collect(Collectors.toList());
-        productSkuConfigDraftMapper.deleteByTransportCenterCodes(reqVo.getSkuCode(),deleteTransportCenterCodes);
         List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(deleteTransportCenterCodes);
+        productSkuConfigDraftMapper.deleteByTransportCenterCodes(reqVo.getSkuCode(),deleteTransportCenterCodes);
+
         Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
        //进行初次定义
         List<ProductSkuConfigDraft> drafts ;
@@ -418,11 +419,14 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             //原来的备用仓库名称
             List<SpareWarehouseRepsVo> ordCodes = skuConfigsRepsVo.getSpareWarehouses();
+             //按照使用顺序进行排序
+            Collections.sort(ordCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
            //新的备用仓库名称
             List<SpareWarehouseReqVo> newCodes = source.getSpareWarehouses();
+            Collections.sort(newCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
              if(ordCount ==nowCount ){
                 for (int num=0;num<ordCodes.size();num++){
-                    if(!ordCodes.get(num).getTransportCenterCode().equals(ordCodes.get(num).getTransportCenterCode())){
+                    if(!ordCodes.get(num).getTransportCenterCode().equals(newCodes.get(num).getTransportCenterCode())){
                         return true;
                     }
                 }
@@ -1391,8 +1395,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             spareWarehouseDraftMapper.insertBatch(productSkuConfigSpareWarehouseDraftList);
             num++;
         }
-
-        return num;
+        System.out.println("进来咯~");        return num;
     }
 
     @Override
