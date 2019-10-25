@@ -636,7 +636,6 @@
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
-      and apply_show = #{applyShow,jdbcType=TINYINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft">
     update product_sku_config_draft
