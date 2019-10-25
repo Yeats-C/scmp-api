@@ -68,6 +68,7 @@
     big_effect_period_warn_day, turnover_period_after_arrival, company_code, company_name,apply_type
   </sql>
 
+
   <sql id="List_Column">
        a.id aid,
        a.create_by acreate_by,
@@ -97,11 +98,22 @@
        c.procurement_section_code aprocurement_section_code,
        c.procurement_section_name aprocurement_section_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku_config_draft
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+  <select id="detailForDraft"  resultMap="ListResultMap">
     select 
     <include refid="Base_Column_List" />
-    from product_sku_config_draft
-    where id = #{id,jdbcType=BIGINT}
+    from product_sku_config_draft a
+      left join product_sku c
+      on a.sku_code = c.sku_code
+    where a.id = #{draftId,jdbcType=BIGINT} and c.sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getList" resultMap="ListResultMap" parameterType="java.util.List">
     select
@@ -253,6 +265,15 @@
         where id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByTransportCenterCodes" parameterType="java.util.List">
+        delete from product_sku_config_draft
+        where  sku_code =#{skuCode} and
+        transport_center_code in
+        <foreach collection="deleteCodes" open="(" close=")" separator="," item="item">
+            #{item}
         </foreach>
     </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft">

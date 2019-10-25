@@ -293,5 +293,8 @@ public interface ResultCode {
     MessageId SUMBIT_NOT_DATA = MessageId.create(Project.SCMP_API,10006,"没有找到需要提交的数据,请检查后重新提交");
 
 
-    MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API,10007,"新增仓库存在重复,请检查后重新提交");
+   MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API,10007,"修改仓库地址存在重复,请检查后重新提交");
+
+
+
 }

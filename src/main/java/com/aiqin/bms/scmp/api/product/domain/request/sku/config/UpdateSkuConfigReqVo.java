@@ -52,5 +52,28 @@ public class UpdateSkuConfigReqVo {
     @ApiModelProperty("备用仓库")
     private List<SpareWarehouseReqVo> spareWarehouses;
 
-
+    // 这个时候会有两个对象：this表示的当前对象，另外一个是传入对象
+    public boolean compare(UpdateSkuConfigReqVo updateSkuConfigReqVo) {
+        if(updateSkuConfigReqVo == this) {
+            return true;
+        }
+        if(updateSkuConfigReqVo == null) {
+            return false;
+        }
+        //重新进行对象属性的比较
+        //可以直接利用"对象.属性"进行访问
+        if(this.configCode.equals(updateSkuConfigReqVo.configCode) &&
+                this.transportCenterCode.equals(updateSkuConfigReqVo.transportCenterCode) &&
+            this.transportCenterName.equals(updateSkuConfigReqVo.transportCenterName) &&
+                    this.configStatus.equals(updateSkuConfigReqVo.configStatus) &&
+                    this.arrivalCycle==(updateSkuConfigReqVo.arrivalCycle) &&
+                    this.orderCycle==(updateSkuConfigReqVo.orderCycle) &&
+                    this.basicInventoryDay==(updateSkuConfigReqVo.basicInventoryDay) &&
+                    this.largeInventoryWarnDay==(updateSkuConfigReqVo.largeInventoryWarnDay) &&
+                    this.bigEffectPeriodWarnDay==(updateSkuConfigReqVo.bigEffectPeriodWarnDay) &&
+                    this.turnoverPeriodAfterArrival==(updateSkuConfigReqVo.turnoverPeriodAfterArrival) ) {
+            return true;
+        }
+        return false;
+    }
 }

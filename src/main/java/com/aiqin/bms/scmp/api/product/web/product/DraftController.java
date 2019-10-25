@@ -8,10 +8,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.service.DraftService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
-import com.aiqin.bms.scmp.api.product.service.impl.ProductSkuConfigServiceImpl;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
@@ -67,6 +67,28 @@ public class DraftController {
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
+        }
+    }
+
+    @GetMapping("/update")
+    @ApiOperation("待申请库房进行修改")
+    public HttpResponse update (@RequestBody  SkuConfigDetailRepsVo skuConfigDetailRepsVo) {
+        try {
+            return HttpResponse.success(productSkuConfigService.update(skuConfigDetailRepsVo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @GetMapping("/view")
+    @ApiOperation("待申请库房进行查看")
+    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode,@RequestParam("draftId")Long draftId ) {
+        try {
+            return HttpResponse.success(productSkuConfigService.detailForDraft(skuCode,draftId));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 
