@@ -386,11 +386,14 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             //原来的备用仓库名称
             List<SpareWarehouseRepsVo> ordCodes = skuConfigsRepsVo.getSpareWarehouses();
+             //按照使用顺序进行排序
+            Collections.sort(ordCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
            //新的备用仓库名称
             List<SpareWarehouseReqVo> newCodes = source.getSpareWarehouses();
+            Collections.sort(newCodes, (a, b) -> b.getUseOrder().compareTo(a.getUseOrder()));
              if(ordCount ==nowCount ){
                 for (int num=0;num<ordCodes.size();num++){
-                    if(!ordCodes.get(num).getTransportCenterCode().equals(ordCodes.get(num).getTransportCenterCode())){
+                    if(!ordCodes.get(num).getTransportCenterCode().equals(newCodes.get(num).getTransportCenterCode())){
                         return true;
                     }
                 }
@@ -1318,8 +1321,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             spareWarehouseDraftMapper.insertBatch(productSkuConfigSpareWarehouseDraftList);
             num++;
         }
-
-        return num;
+        System.out.println("进来咯~");        return num;
     }
 
     @Override
