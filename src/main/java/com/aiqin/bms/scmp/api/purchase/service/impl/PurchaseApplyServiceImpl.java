@@ -579,7 +579,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         }
                         BeanUtils.copyProperties(applyProduct, response);
                         if (StringUtils.isBlank((record[6]))) {
-                            response.setProductPurchaseAmount(applyProduct.getNewPurchasePrice());
+                            response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? 0 : applyProduct.getPurchaseMax());
                         } else {
                             BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(100));
                             response.setProductPurchaseAmount(big.intValue());

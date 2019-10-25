@@ -79,8 +79,13 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         num = sourceStock.getReturnNum();
                         amount = sourceStock.getReturnAmount();
                     }
-                    stock.setInventoryNum(num.longValue());
-                    stock.setAvailableNum(num.longValue());
+                    if(ware.getWarehouseCode().equals("1099")){
+                        stock.setInventoryNum(100000L);
+                        stock.setAvailableNum(100000L);
+                    }else {
+                        stock.setInventoryNum(num.longValue());
+                        stock.setAvailableNum(num.longValue());
+                    }
                     if (num.longValue() == 0) {
                         stock.setTaxCost(0L);
                     } else {
