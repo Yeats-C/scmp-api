@@ -89,6 +89,9 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
     @ApiModelProperty("申请类型")
     private Byte applyType;
 
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
+
     @ApiModelProperty(value = "供应商产能信息",position = 7)
     private List<ProductSkuSupplyUnitCapacityRespVo> productSkuSupplyUnitCapacities;
 }

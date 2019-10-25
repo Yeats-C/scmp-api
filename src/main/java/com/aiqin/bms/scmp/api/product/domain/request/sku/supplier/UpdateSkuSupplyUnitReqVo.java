@@ -37,6 +37,9 @@ public class UpdateSkuSupplyUnitReqVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    @ApiModelProperty("税率")
+    private Long taxRate;
+
     @ApiModelProperty(value = "sku供应商信息")
     @JsonProperty("productSkuSupplyUnits")
     private List<UpdateProductSkuSupplyUnitReqVo> updateProductSkuSupplyUnitReqVos;

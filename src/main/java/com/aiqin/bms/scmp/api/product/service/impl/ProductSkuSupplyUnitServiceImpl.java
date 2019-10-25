@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateProductSku
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.ApplySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
@@ -23,9 +24,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsV
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.ApprovalFileInfoService;
@@ -80,6 +79,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
 
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
+
+    @Autowired
+    private PriceProjectService priceProjectService;
+
+    @Autowired
+    private SkuInfoService skuInfoService;
+    @Autowired
+    private ProductSkuPriceInfoService productSkuPriceInfoService;
 
     @Override
     @SaveList
@@ -260,6 +267,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         productSkuSupplyUnitCapacityService.saveListForChange(list);
         //设置状态为同步完成
         productSkuSupplyUnitDao.updateBySynStatus(list);
+        //保存采购价
+        productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(list));
     }
 
     @Override
@@ -329,6 +338,17 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     @Transactional(rollbackFor = Exception.class)
     @SaveList
     public Integer update(UpdateSkuSupplyUnitReqVo reqVo) {
+        //验证数据提交的数据有没有重复的数据
+        if(null == reqVo){
+            throw new BizException(ResultCode.REQUIRED_PARAMETER);
+        }
+        if(CollectionUtils.isEmptyCollection(reqVo.getUpdateProductSkuSupplyUnitReqVos())){
+            throw new BizException(ResultCode.SUMBIT_NOT_DATA);
+        }
+        long count = reqVo.getUpdateProductSkuSupplyUnitReqVos().stream().map(UpdateProductSkuSupplyUnitReqVo::getSupplyUnitCode).distinct().count();
+        if(reqVo.getUpdateProductSkuSupplyUnitReqVos().size() != count){
+            throw new BizException(ResultCode.REPEAT_DATA);
+        }
         //新增数据
         List<UpdateProductSkuSupplyUnitReqVo> addList = reqVo.getUpdateProductSkuSupplyUnitReqVos().stream().filter(item -> Objects.equals(item.getApplyType(), Byte.valueOf("1"))).collect(Collectors.toList());
         //修改数据
@@ -378,7 +398,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             item.setCompanyCode(authToken.getCompanyCode());
             item.setCompanyName(authToken.getCompanyName());
-            item.setUsageStatus(StatusTypeCode.USE.getStatus());
+            item.setTaxRate(reqVo.getTaxRate());
             if (CollectionUtils.isNotEmptyCollection(item.getProductSkuSupplyUnitCapacityDrafts())) {
                 item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2 -> {
                     item2.setProductSkuCode(item.getProductSkuCode());
@@ -570,6 +590,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo) {
             WorkFlowCallbackVO newVO = updateSupStatus(vo);
             newVO.setAuditorTime(new Date());
@@ -605,6 +626,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                             this.saveListForChange(unitList);
                             //供应商产能信息
                             productSkuSupplyUnitCapacityService.saveListForChange(unitList);
+                            //保存采购价
+                            productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(unitList));
                         }
                     } catch (Exception e) {
                         log.error(e.getMessage());
@@ -669,6 +692,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         resp.setApprovalName(respVo.getApprovalName());
         resp.setApprovalRemark(respVo.getApprovalRemark());
         resp.setSelectionEffectiveStartTime(respVo.getSelectionEffectiveStartTime());
+        resp.setPurchaseGroupName(respVo.getPurchaseGroupName());
         resp.setSelectionEffectiveTime(respVo.getSelectionEffectiveTime());
         resp.setCode(respVo.getApplyCode());
         resp.setFormNo(respVo.getFormNo());
@@ -679,5 +703,50 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         resp.setData(repsVos);
         resp.setApprovalFileInfos(approvalFileInfoService.selectByApprovalTypeAndApplyCode(ApprovalFileTypeEnum.GOODS_COMPANY.getType(), respVo.getApplyCode()));
         return resp;
+    }
+
+    private List<ProductSkuPriceInfo> getPriceInfo(List<ApplyProductSkuSupplyUnit> productSkuSupplyUnits) {
+        List<ProductSkuPriceInfo> list = Lists.newArrayList();
+        if (CollectionUtils.isNotEmptyCollection(productSkuSupplyUnits)) {
+            QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
+            if (null == purchasePriceProject) {
+                throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
+            }
+            //查询所有的采购组
+            Set<String> skuList = Sets.newHashSet();
+            productSkuSupplyUnits.forEach(o->{
+                skuList.add(o.getProductSkuCode());
+            });
+            Map<String, ProductSkuInfo> stringProductSkuInfoMap = skuInfoService.selectBySkuCodes(skuList, getUser().getCompanyCode());
+            productSkuSupplyUnits.forEach(item -> {
+                String purchaseGroupCode = null != stringProductSkuInfoMap.get(item.getProductSkuCode()) ? stringProductSkuInfoMap.get(item.getProductSkuCode()).getProcurementSectionCode() : "";
+                String purchaseGroupName = null != stringProductSkuInfoMap.get(item.getProductSkuCode()) ? stringProductSkuInfoMap.get(item.getProductSkuCode()).getProcurementSectionName() : "";
+                ProductSkuPriceInfo productSkuPriceInfo = new ProductSkuPriceInfo();
+                productSkuPriceInfo.setSkuCode(item.getProductSkuCode());
+                productSkuPriceInfo.setSkuName(item.getProductSkuName());
+                productSkuPriceInfo.setCompanyCode(getUser().getCompanyCode());
+                productSkuPriceInfo.setCompanyName(getUser().getCompanyName());
+                productSkuPriceInfo.setPurchaseGroupCode(purchaseGroupCode);
+                productSkuPriceInfo.setPurchaseGroupName(purchaseGroupName);
+                productSkuPriceInfo.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
+                productSkuPriceInfo.setPriceItemName(purchasePriceProject.getPriceProjectName());
+                productSkuPriceInfo.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
+                productSkuPriceInfo.setPriceTypeName(purchasePriceProject.getPriceTypeName());
+                productSkuPriceInfo.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
+                productSkuPriceInfo.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
+                productSkuPriceInfo.setPriceNoTax(item.getNoTaxPurchasePrice());
+                productSkuPriceInfo.setPriceTax(item.getTaxIncludedPrice());
+                productSkuPriceInfo.setEffectiveTimeStart(new Date());
+                productSkuPriceInfo.setSupplierCode(item.getSupplyUnitCode());
+                productSkuPriceInfo.setSupplierName(item.getSupplyUnitName());
+                productSkuPriceInfo.setBeDefault(item.getIsDefault().intValue());
+                productSkuPriceInfo.setCreateBy(item.getCreateBy());
+                productSkuPriceInfo.setUpdateBy(item.getUpdateBy());
+                productSkuPriceInfo.setCreateTime(item.getCreateTime());
+                productSkuPriceInfo.setUpdateTime(item.getUpdateTime());
+                list.add(productSkuPriceInfo);
+            });
+        }
+        return list;
     }
 }

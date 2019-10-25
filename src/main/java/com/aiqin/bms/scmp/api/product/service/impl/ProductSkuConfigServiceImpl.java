@@ -270,28 +270,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(CollectionUtils.isEmpty(configReqVos)){
             throw new BizException(ResultCode.UPDATE_ERROR);
         }
-        //获取商品编号
-        String configCode = configReqVos.get(0).getConfigCode();
-        //
-        ProductSkuConfig productSkuConfig = mapper.selectByConfigCode(configCode);
-//        if(Objects.equals(productSkuConfig.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
-//            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
-//        }
-        //查询申请中的数据
-        List<ApplyProductSkuConfig> config = applyProductSkuConfigMapper.selectbyConfigCode(configReqVos.stream().map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
-        if (CollectionUtils.isNotEmpty(config)) {
-            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
-        }
-
         //看加入进来的仓库没有重复的
-        long ordCount=reqVo.getConfigs().stream().map(x->x.getTransportCenterCode()).count();
         long nowCount=  reqVo.getConfigs().stream().map(x->x.getTransportCenterCode()).distinct().count();
-        if(
-                ordCount>nowCount
-        ){
+        if(configReqVos.size() != nowCount){
             throw new BizException(ResultCode.REPEAT_DATA2);
         }
-
         //新增数据
         List<UpdateSkuConfigReqVo> addList = reqVo.getConfigs().stream().filter(item -> Objects.equals(item.getApplyType(), Byte.valueOf("1"))).collect(Collectors.toList());
         //先把原来的给查出来配置查出来
@@ -304,8 +287,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             List<String> supplyCodes = ordBeginList.stream().map(SkuConfigsRepsVo::getTransportCenterCode).collect(Collectors.toList());
             Map<String, SkuConfigsRepsVo> supplyCodeMap = ordBeginList.stream().
                     collect(Collectors.toMap(SkuConfigsRepsVo::getTransportCenterCode, Function.identity(), (k1, k2) -> k2));
-
-
             //判断新增的信息是否已经存在
             if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(addList)){
                 addList.forEach(item->{
@@ -335,52 +316,39 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         Integer num = 0;
         //删除重复的数据,插入数据
         List<String> deleteTransportCenterCodes = saveList.stream().map(UpdateSkuConfigReqVo::getTransportCenterCode).collect(Collectors.toList());
-        productSkuConfigDraftMapper.deleteByTransportCenterCodes(reqVo.getSkuCode(),deleteTransportCenterCodes);
-        List<ProductSkuConfigDraft> draftList1 = productSkuConfigDraftMapper.selectbyConfigCode(deleteTransportCenterCodes);
-        Map<String, ProductSkuConfigDraft> collect1 = draftList1.stream().collect(Collectors.toMap(ProductSkuConfigDraft::getConfigCode, Function.identity(), (k1, k2) -> k2));
-       //进行初次定义
-        List<ProductSkuConfigDraft> drafts ;
-        List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
-        List<String> spareWarehouseConfigCodes = Lists.newArrayList();
-        List<Long> ids = Lists.newArrayList();
+        List<String> configCodes = productSkuConfigDraftMapper.selectBySkuCodeAndTransportCenterCodes(reqVo.getSkuCode(),deleteTransportCenterCodes);
+        if(CollectionUtils.isNotEmpty(configCodes)){
+            productSkuConfigDraftMapper.deleteByConfigCodes(configCodes);
+            spareWarehouseDraftMapper.deleteByConfigCodes(configCodes);
+        }
         //进行过滤后的赋值，进行初始化赋值
-        drafts = BeanCopyUtils.copyList(saveList,ProductSkuConfigDraft.class);
+        List<ProductSkuConfigDraft> drafts = BeanCopyUtils.copyList(saveList,ProductSkuConfigDraft.class);
+        List<SpareWarehouseReqVo> spareWarehouseReqVos = Lists.newArrayList();
         drafts.forEach(item->{
-            if (collect1.containsKey(item.getConfigCode())) {
-                ids.add(collect1.get(item.getConfigCode()).getId());
-                spareWarehouseConfigCodes.add(item.getConfigCode());
-            }
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
-            item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+            if(Objects.equals(item.getApplyType(),StatusTypeCode.ADD_APPLY.getStatus())){
+                item.setConfigCode(getCode(null,EncodingRuleType.SKU_CONFIG_CODE));
+            }
             item.setCompanyCode(authToken.getCompanyCode());
             item.setCompanyName(authToken.getCompanyName());
             item.setProductCode(reqVo.getProductCode());
             item.setProductName(reqVo.getProductName());
             item.setSkuCode(reqVo.getSkuCode());
             item.setSkuName(reqVo.getSkuName());
-        });
-        if (CollectionUtils.isNotEmpty(spareWarehouseConfigCodes)) {
-                spareWarehouseDraftMapper.deleteByConfigCodes(spareWarehouseConfigCodes);
-          }
-        //进行一个加入的修改
-        num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
-        //更新正式表申请状态
-//        ApplyProductSkuConfigReqVo req = new ApplyProductSkuConfigReqVo();
-//        req.setApplyCode(productSkuConfig.getApplyCode());
-//        req.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
-//        mapper.updateApplyStatusByApplyCode(req);
-        if(CollectionUtils.isNotEmpty(spareWarehouseReqVos)){
-            List<ProductSkuConfigSpareWarehouseDraft> draftList = null;
-            try {
-                draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
-            } catch (Exception e) {
-                throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+            if (com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(item.getSpareWarehouses())) {
+                item.getSpareWarehouses().forEach(item2 -> {
+                    item2.setConfigCode(item.getConfigCode());
+                });
+                spareWarehouseReqVos.addAll(item.getSpareWarehouses());
             }
+
+        });
+        num =  ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(drafts);
+        if(CollectionUtils.isNotEmpty(spareWarehouseReqVos)){
+            List<ProductSkuConfigSpareWarehouseDraft> draftList = BeanCopyUtils.copyList(spareWarehouseReqVos,ProductSkuConfigSpareWarehouseDraft.class);
             //插入临时表
             ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
         }
-
-        //供应商更新
         return num;
     }
 
@@ -632,6 +600,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 item.setFormNo(formNo);
                 item.setBeEffective(Global.UN_EFFECTIVE);
                 item.setCreateTime(currentDate);
+                item.setApprovalName(reqVo.getApprovalName());
+                item.setApprovalRemark(reqVo.getApprovalRemark());
                 item.setCreateBy(getUser().getPersonName());
                 item.setSelectionEffectiveTime(reqVo.getSelectionEffectiveTime());
                 item.setSelectionEffectiveStartTime(reqVo.getSelectionEffectiveStartTime());
@@ -657,48 +627,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             //更新正式表申请编码
             mapper.updateApplyCodeByConfigCodes(code, reqVo.getSkuConfigs());
         }
-        //供应商信息保存
-        //根据供应商信息ID查询供应商信息
-//        List<Long> supplierId = reqVo.getSupplierId();
-//        if (CollectionUtils.isNotEmpty(supplierId)) {
-//            List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = productSkuSupplyUnitService.getDraftByIds(supplierId);
-//            if (CollectionUtils.isNotEmpty(productSkuSupplyUnitDrafts)) {
-//                List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ApplyProductSkuSupplyUnit.class);
-//                applyProductSkuSupplyUnits.forEach(item -> {
-//                    item.setApplyCode(code);
-//                    item.setFormNo(formNo);
-//                    item.setBeEffective(Global.UN_EFFECTIVE);
-//                    item.setCreateTime(currentDate);
-//                    item.setCreateBy(getUser().getPersonName());
-//                    item.setSelectionEffectiveTime(reqVo.getSelectionEffectiveTime());
-//                    item.setSelectionEffectiveStartTime(reqVo.getSelectionEffectiveStartTime());
-//                    item.setAuditorStatus(ApplyStatus.APPROVAL.getNumber());
-//                    item.setDirectSupervisorCode(reqVo.getDirectSupervisorCode());
-//                    item.setDirectSupervisorName(reqVo.getDirectSupervisorName());
-//
-//                });
-//                productSkuSupplyUnitService.insertApplyList(applyProductSkuSupplyUnits);
-//                productSkuSupplyUnitService.deleteDraftByIds(supplierId);
-//                //供应商产能信息
-//                List<ProductSkuSupplyUnitCapacityDraft> supplyUnitCapacityDrafts =
-//                        productSkuSupplyUnitCapacityService.getDraftsBySupplyUnitDrafts(productSkuSupplyUnitDrafts);
-//                if (CollectionUtils.isNotEmpty(supplyUnitCapacityDrafts)) {
-//                    List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities = BeanCopyUtils.copyList(supplyUnitCapacityDrafts, ApplyProductSkuSupplyUnitCapacity.class);
-//                    applyProductSkuSupplyUnitCapacities.forEach(item -> {
-//                        item.setApplyCode(code);
-//                    });
-//                    List<Long> ids = supplyUnitCapacityDrafts.stream().map(ProductSkuSupplyUnitCapacityDraft::getId).distinct().collect(Collectors.toList());
-//                    //批量新增申请
-//                    productSkuSupplyUnitCapacityService.insertApplyList(applyProductSkuSupplyUnitCapacities);
-//                    //批量删除草稿
-//                    productSkuSupplyUnitCapacityService.deleteDraftByIds(ids);
-//                }
-//            }
-//        }
         //进行图片上传
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),code,formNo,ApprovalFileTypeEnum.GOODS_WARHOUSE.getType());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode());
+        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode(),reqVo.getApprovalName(),reqVo.getApprovalRemark());
         return 1;
     }
 
@@ -750,7 +682,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     //把数据传输给审批流
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode) {
+    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
@@ -759,9 +691,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //进行编码修改
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
         //进行审批名称的传输
-        workFlowVO.setTitle( "创建商品配置审批");
+        workFlowVO.setTitle(approvalName);
         //添加备注
-        workFlowVO.setRemark("备注");
+        workFlowVO.setRemark(approvalRemark);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
@@ -1089,14 +1021,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Override
     public ProductApplyInfoRespVO<SkuConfigDetailRepsVo> applyView(String code) {
         List<SkuConfigsRepsVo> list = applyMapper.selectByApplyCode(code);
- //       List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitService.getApplyCode(code);
-//        if(CollectionUtils.isEmpty(list)&&CollectionUtils.isEmpty(productSkuSupplyUnitRespVos)){
-//            log.error("传入的编码是：[{}]",code);
-//            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
-//        }
-//        //组装数据
-//        return dealApplyViewData(list,productSkuSupplyUnitRespVos);
-        return null;
+        if(CollectionUtils.isEmpty(list)){
+            log.error("传入的编码是：[{}]",code);
+            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"数据异常，无法查询到该数据"));
+        }
+        //组装数据
+        return dealApplyViewData(list);
     }
 
     /**
@@ -1363,10 +1293,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Override
     public SkuConfigDetailRepsVo detailForDraft(String skuCode, Long draftId) {
-
-
         SkuConfigDetailRepsVo SkuConfigDetailRepsVo=productSkuConfigDraftMapper.detailForDraft(skuCode,draftId);
-
         return SkuConfigDetailRepsVo;
     }
 
@@ -1789,45 +1716,27 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
      * @param list
      * @return
      */
-    private ProductApplyInfoRespVO<SkuConfigDetailRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list,List<ProductSkuSupplyUnitRespVo> unitRespVos) {
+    private ProductApplyInfoRespVO<SkuConfigDetailRepsVo> dealApplyViewData(List<SkuConfigsRepsVo> list) {
         ProductApplyInfoRespVO<SkuConfigDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
         //数据相同默认取第一个
         SkuConfigDetailRepsVo repsVo = new SkuConfigDetailRepsVo();
-        if (CollectionUtils.isNotEmpty(list)) {
-            SkuConfigsRepsVo applyVO = list.get(0);
-            ApplyProductSkuConfig applyProductSkuConfig = applyMapper.selectByPrimaryKey(applyVO.getId());
-            resp.setApplyBy(applyProductSkuConfig.getCreateBy());
-            resp.setApplyTime(applyProductSkuConfig.getCreateTime());
-            resp.setApplyStatus(applyProductSkuConfig.getAuditorStatus().intValue());
-            resp.setAuditorBy(applyProductSkuConfig.getAuditorBy());
-            resp.setAuditorTime(applyProductSkuConfig.getAuditorTime());
-            resp.setSelectionEffectiveStartTime(applyProductSkuConfig.getSelectionEffectiveStartTime());
-            resp.setSelectionEffectiveTime(applyProductSkuConfig.getSelectionEffectiveTime());
-            resp.setCode(applyProductSkuConfig.getApplyCode());
-            resp.setFormNo(applyProductSkuConfig.getFormNo());
-        }else {
-            ProductSkuSupplyUnitRespVo respVo = unitRespVos.get(0);
-            resp.setApplyBy(respVo.getCreateBy());
-            resp.setApplyTime(respVo.getCreateTime());
-            resp.setApplyStatus(respVo.getAuditorStatus().intValue());
-            resp.setAuditorBy(respVo.getUpdateBy());
-            resp.setAuditorTime(respVo.getUpdateTime());
-            resp.setSelectionEffectiveStartTime(respVo.getSelectionEffectiveStartTime());
-            resp.setSelectionEffectiveTime(respVo.getSelectionEffectiveTime());
-            resp.setCode(respVo.getApplyCode());
-            resp.setFormNo(respVo.getFormNo());
-        }
+        SkuConfigsRepsVo applyVO = list.get(0);
+        ApplyProductSkuConfig applyProductSkuConfig = applyMapper.selectByPrimaryKey(applyVO.getId());
+        resp.setApplyBy(applyProductSkuConfig.getCreateBy());
+        resp.setApplyTime(applyProductSkuConfig.getCreateTime());
+        resp.setApplyStatus(applyProductSkuConfig.getAuditorStatus().intValue());
+        resp.setAuditorBy(applyProductSkuConfig.getAuditorBy());
+        resp.setAuditorTime(applyProductSkuConfig.getAuditorTime());
+        resp.setApprovalName(applyProductSkuConfig.getApprovalName());
+        resp.setApprovalRemark(applyProductSkuConfig.getApprovalRemark());
+        resp.setPurchaseGroupName(applyVO.getPurchasingGroupName());
+        resp.setSelectionEffectiveStartTime(applyProductSkuConfig.getSelectionEffectiveStartTime());
+        resp.setSelectionEffectiveTime(applyProductSkuConfig.getSelectionEffectiveTime());
+        resp.setCode(applyProductSkuConfig.getApplyCode());
+        resp.setFormNo(applyProductSkuConfig.getFormNo());
         //统计sku数量
-        List<String> skuCodes = list.stream().map(SkuConfigsRepsVo::getSkuCode).distinct().collect(Collectors.toList());
-        List<String> skuCodes2 = unitRespVos.stream().map(ProductSkuSupplyUnitRespVo::getProductSkuCode).distinct().collect(Collectors.toList());
-
-        Set set = Sets.newHashSet();
-        set.addAll(skuCodes);
-        set.addAll(skuCodes2);
-        resp.setSkuNum(set.size());
-        //统计SPU数量吗
+        resp.setSkuNum(list.size());
         repsVo.setConfigs(list);
-        repsVo.setSupplierList(unitRespVos);
         List<SkuConfigDetailRepsVo> repsVos = Lists.newArrayList();
         repsVos.add(repsVo);
         resp.setData(repsVos);

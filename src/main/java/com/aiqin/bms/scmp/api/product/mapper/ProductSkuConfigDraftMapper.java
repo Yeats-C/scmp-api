@@ -70,4 +70,6 @@ public interface ProductSkuConfigDraftMapper {
     SkuConfigDetailRepsVo detailForDraft(@Param("skuCode")  String skuCode,@Param("draftId") Long draftId);
 
     SkuConfigsRepsVo getList2(SkuConfigId id);
+
+    List<String> selectBySkuCodeAndTransportCenterCodes(@Param("skuCode") String skuCode,@Param("transportCenterCodes")List<String> transportCenterCodes);
 }

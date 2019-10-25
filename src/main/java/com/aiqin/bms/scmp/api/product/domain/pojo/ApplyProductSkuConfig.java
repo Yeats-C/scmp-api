@@ -96,4 +96,10 @@ public class ApplyProductSkuConfig extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("备注")
+    private String approvalRemark;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
 }
