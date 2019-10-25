@@ -5,6 +5,8 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.ApplySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
@@ -72,6 +74,17 @@ public class SkuSupplierController {
     public HttpResponse<BasePage<QueryProductSkuSupplyUnitsRespVo>> draftList(@RequestBody QuerySkuSupplyUnitReqVo reqVo){
         try {
             return HttpResponse.success(productSkuSupplyUnitService.getDraftListPage(reqVo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @DeleteMapping("/draft/delete")
+    @ApiOperation("待审请列表删除")
+    public HttpResponse<Integer> draftDelete(@RequestParam("id") Long id) {
+        try {
+            return HttpResponse.success(productSkuSupplyUnitService.deleteDraftById(id));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
@@ -80,4 +93,41 @@ public class SkuSupplierController {
         }
     }
 
+    @GetMapping("/draft/detail")
+    @ApiOperation("待审请列表详情")
+    public HttpResponse<SkuSupplierDetailRepsVo> draftDetail(@RequestParam("id") Long id){
+        try {
+            return HttpResponse.successGenerics(productSkuSupplyUnitService.draftDetail(id));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/draft/update")
+    @ApiOperation("待审请修改")
+    public HttpResponse<Integer> draftUpdate(@RequestBody UpdateSkuSupplyUnitReqVo reqVo){
+        try {
+            return HttpResponse.successGenerics(productSkuSupplyUnitService.draftUpdate(reqVo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+    @PostMapping("/apply/save")
+    @ApiOperation("审请提交")
+    public HttpResponse<Integer> applySave(@RequestBody ApplySkuSupplyUnitReqVo reqVo){
+        try {
+            return HttpResponse.successGenerics( productSkuSupplyUnitService.applySave(reqVo));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 }

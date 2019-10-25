@@ -121,4 +121,20 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @return
      */
     Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes);
+
+    /**
+     * 查询临时表数据
+     * @param supplyUnitCode
+     * @param productSkuCode
+     * @return
+     */
+    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode, String productSkuCode);
+
+    /**
+     * 删除
+     * @param productSkuCode
+     * @param supplyUnitCode
+     * @return
+     */
+    Integer deleteDraftBySkuCodeAndSupplierCode(String productSkuCode, String supplyUnitCode);
 }

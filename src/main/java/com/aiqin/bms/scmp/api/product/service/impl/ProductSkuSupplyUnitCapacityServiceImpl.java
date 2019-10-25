@@ -220,4 +220,14 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
     public Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes) {
         return draftMapper.deleteBySkuCodeAndSupplierCodes(skuCode,deleteSupplyUnitCodes);
     }
+
+    @Override
+    public List<ProductSkuSupplyUnitCapacityRespVo> getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode, String productSkuCode) {
+        return  draftMapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode);
+    }
+
+    @Override
+    public Integer deleteDraftBySkuCodeAndSupplierCode(String productSkuCode, String supplyUnitCode) {
+        return draftMapper.deleteBySkuCodeAndSupplierCode(productSkuCode,supplyUnitCode);
+    }
 }

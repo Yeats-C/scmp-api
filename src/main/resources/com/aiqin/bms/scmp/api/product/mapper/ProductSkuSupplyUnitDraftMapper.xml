@@ -87,7 +87,8 @@
           b.product_brand_code,
           b.product_brand_name,
           b.product_property_code,
-          b.product_property_name
+          b.product_property_name,
+          a.apply_type
         from product_sku_supply_unit_draft a
         left join product_sku b
         on a.product_sku_code = b.sku_code
@@ -99,7 +100,7 @@
         on lv2.category_id = lv3.parent_id
         LEFT JOIN product_category lv1
         on lv1.category_id = lv2.parent_id
-        where a.del_flag = 0
+        where a.del_flag = 0 and a.apply_show = 0
         <if test="skuCode != null and skuCode != '' ">
           and b.sku_code like CONCAT('%',#{skuCode},'%')
         </if>
@@ -165,7 +166,13 @@
         </if>
         order by create_time desc
   </select>
-  <delete id="delete" parameterType="java.util.List">
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku_supply_unit_draft
+        where id = #{id}
+    </select>
+    <delete id="delete" parameterType="java.util.List">
     delete from product_sku_supply_unit_draft where product_sku_code in
     <foreach collection="list" item="skuCode" separator="," open="(" close=")">
       #{skuCode,jdbcType=VARCHAR}
@@ -182,7 +189,7 @@
     delete from product_sku_supply_unit_draft where id = #{id,jdbcType=BIGINT}
   </delete>
   <delete id="deleteBySkuCodeAndSupplierCodes">
-    delete from product_sku_supply_unit_draft where product_sku_code = #{skuCode} and  supply_unit_code
+    delete from product_sku_supply_unit_draft where product_sku_code = #{skuCode} and  supply_unit_code in
     <foreach collection="deleteCodes" item="supplyUnitCode" separator="," open="(" close=")">
       #{supplyUnitCode,jdbcType=VARCHAR}
     </foreach>

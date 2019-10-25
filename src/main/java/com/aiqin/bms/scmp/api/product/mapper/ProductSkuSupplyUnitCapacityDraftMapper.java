@@ -33,5 +33,9 @@ public interface ProductSkuSupplyUnitCapacityDraftMapper {
 
     int deleteByIds(List<Long> ids);
 
-    Integer deleteBySkuCodeAndSupplierCodes(@Param("skuCode") String skuCode, @Param("deleteCode") List<String> deleteSupplyUnitCodes);
+    Integer deleteBySkuCodeAndSupplierCodes(@Param("skuCode") String skuCode, @Param("deleteCodes") List<String> deleteSupplyUnitCodes);
+
+    List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(@Param("supplyUnitCode")String supplyUnitCode, @Param("productSkuCode")String productSkuCode);
+
+    Integer deleteBySkuCodeAndSupplierCode(@Param("skuCode") String productSkuCode, @Param("supplyUnitCode") String supplyUnitCode);
 }
