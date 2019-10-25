@@ -44,11 +44,11 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="含税采购单价")
     @JsonProperty("product_purchase_amount")
-    private Integer productPurchaseAmount;
+    private Long productPurchaseAmount;
 
     @ApiModelProperty(value="含税采购总价")
     @JsonProperty("product_purchase_sum")
-    private Integer productPurchaseSum;
+    private Long productPurchaseSum;
 
     @ApiModelProperty(value="采购件数（整数）")
     @JsonProperty("purchase_whole")
@@ -141,7 +141,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="最高采购价")
     @JsonProperty("purchase_max")
-    private Integer purchaseMax;
+    private Long purchaseMax;
 
     @ApiModelProperty(value="规格")
     @JsonProperty("product_spec")
@@ -202,7 +202,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="最新采购价格")
     @JsonProperty("new_purchase_price")
-    private Integer newPurchasePrice;
+    private Long newPurchasePrice;
 
     @ApiModelProperty(value="结算方式编码")
     @JsonProperty("settlement_method_code")
@@ -312,7 +312,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="实际含税总价")
     @JsonProperty("actual_tax_sum")
-    private Integer actualTaxSum;
+    private Long actualTaxSum;
 
     @ApiModelProperty(value="入库单的来源单号")
     @JsonProperty("source_oder_code")
@@ -320,11 +320,11 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")
-    private Integer productAmount;
+    private Long productAmount;
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Integer productTotalAmount;
+    private Long productTotalAmount;
 
     @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
     @JsonProperty("storage_status")
@@ -367,15 +367,15 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
-    private Integer advancePayment;
+    private Long advancePayment;
 
     @ApiModelProperty(value="到付金额")
     @JsonProperty("amount_payable")
-    private Integer amountPayable;
+    private Long amountPayable;
 
     @ApiModelProperty(value="月结金额")
     @JsonProperty("month_amount")
-    private Integer monthAmount;
+    private Long monthAmount;
 
     @ApiModelProperty(value="到付付款期")
     @JsonProperty("payable_time")
@@ -395,7 +395,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
-    private String giftTaxSum;
+    private Long giftTaxSum;
 
     @ApiModelProperty(value="库存金额")
     @JsonProperty("stock_amount")

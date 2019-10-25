@@ -19,11 +19,11 @@ public class PurchaseFlowPathResponse{
 
     @ApiModelProperty(value="采购价格")
     @JsonProperty("purchase_amount")
-    private Integer purchaseAmount;
+    private Long purchaseAmount;
 
     @ApiModelProperty(value="采购总价")
     @JsonProperty("purchase_amount_sum")
-    private Integer purchaseAmountSum;
+    private Long purchaseAmountSum;
 
     @ApiModelProperty("物流中心(仓库)编码")
     @JsonProperty("transport_center_code")
