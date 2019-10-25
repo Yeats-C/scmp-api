@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.request.sku.config;
+package com.aiqin.bms.scmp.api.product.domain.request.sku.supplier;
 
 import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -16,9 +16,9 @@ import java.util.List;
  * @className ApplySkuConfigReqVo
  * @date 2019/5/25 11:29
  */
-@ApiModel("提交SKU配置申请VO")
+@ApiModel("提交SKU供应商申请VO")
 @Data
-public class ApplySkuConfigReqVo {
+public class ApplySkuSupplyUnitReqVo {
 
     @ApiModelProperty("是否使用生效时间(0:是1:否)")
     private Byte selectionEffectiveTime;
@@ -35,14 +35,6 @@ public class ApplySkuConfigReqVo {
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
-    @ApiModelProperty("需要提交申请的编码集合")
-    @NotEmpty(message = "编码不能为空！")
-    List<String> skuConfigs;
-
-//    @ApiModelProperty("需要提交申请的编码集合")
-//    @NotEmpty(message = "编码不能为空！")
-//    List<Long> supplierId;
-
     @ApiModelProperty("备注")
     private String approvalRemark;
 
@@ -51,4 +43,8 @@ public class ApplySkuConfigReqVo {
 
     @ApiModelProperty("附件信息")
     private List<ApprovalFileInfoReqVo> approvalFileInfos;
+
+    @ApiModelProperty("需要提交申请的编码集合")
+    @NotEmpty(message = "编码不能为空！")
+    List<Long> supplierId;
 }

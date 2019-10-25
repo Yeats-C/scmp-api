@@ -131,7 +131,7 @@
       direct_supervisor_code,
       direct_supervisor_name,
       form_no,
-      auditor_status,apply_show,apply_type,company_code,company_name)
+      auditor_status,apply_show,apply_type,company_code,company_name,approval_name,approval_remark)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -152,7 +152,10 @@
       #{item.applyShow},
       #{item.applyType},
       #{item.companyCode},
-      #{item.companyName})
+      #{item.companyName},
+      #{item.approvalName},
+      #{item.approvalRemark}
+      )
     </foreach>
   </insert>
     <update id="updateApplyInfo">
@@ -286,6 +289,9 @@
     <result column="aselection_effective_time"  property="selectionEffectiveTime" />
     <result column="aapply_code"  property="applyCode" />
     <result column="aform_no"  property="formNo" />
+    <result column="aapproval_remark"  property="approvalRemark" />
+    <result column="aapproval_name"  property="approvalName" />
+    <result column="aapply_type"  property="applyType" />
     <collection property="productSkuSupplyUnitCapacities" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
       <id column="bid" jdbcType="BIGINT" property="id" />
       <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
@@ -426,6 +432,9 @@
            a.tax_included_price atax_included_price,
            a.joint_franchise_rate ajoint_franchise_rate,
            a.point apoint,
+           a.approval_remark aapproval_remark,
+           a.apply_type aapply_type,
+           a.approval_name aapproval_name,
            a.tax_rate atax_rate,
            a.factory_sku_code afactory_sku_code,
            a.is_default ais_default,
@@ -531,5 +540,297 @@
          #{item}
     </foreach>
      and a.auditor_status = 1 and a.apply_show = 0
+    </select>
+
+    <resultMap id="listPageMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo">
+        <result column="id" property="id"/>
+        <result column="sku_code" property="productSkuCode"/>
+        <result column="sku_name" property="productSkuName"/>
+        <result column="procurement_section_code" property="purchaseGroupCode"/>
+        <result column="procurement_section_name" property="purchaseGroupName"/>
+        <result column="supply_unit_code" property="supplyUnitCode"/>
+        <result column="supply_unit_name" property="supplyUnitName"/>
+        <result column="no_tax_purchase_price" property="noTaxPurchasePrice"/>
+        <result column="tax_included_price" property="taxIncludedPrice"/>
+        <result column="joint_franchise_rate" property="jointFranchiseRate"/>
+        <result column="point" property="point"/>
+        <result column="factory_sku_code" property="factorySkuCode"/>
+        <result column="categories_supply_channels_code" property="categoriesSupplyChannelsCode"/>
+        <result column="categories_supply_channels_name" property="categoriesSupplyChannelsName"/>
+        <result column="is_default" property="isDefault"/>
+        <result column="usage_status" property="usageStatus"/>
+        <result column="create_by" property="createBy"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_by" property="updateBy"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="product_category_name" property="productCategoryName"/>
+        <result column="product_category_code" property="productCategoryCode"/>
+        <result column="product_brand_code" property="productBrandCode"/>
+        <result column="product_brand_name" property="productBrandName"/>
+        <result column="product_property_code" property="productPropertyCode"/>
+        <result column="product_property_name" property="productPropertyName"/>
+        <result column="apply_type" property="applyType"/>
+    </resultMap>
+    <select id="getListPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo"
+            resultMap="listPageMap">
+         select
+               a.id,
+               b.sku_code,
+               b.sku_name,
+               b.procurement_section_code,
+               b.procurement_section_name,
+               a.supply_unit_code,
+               a.supply_unit_name,
+               a.no_tax_purchase_price,
+               a.tax_included_price,
+               a.joint_franchise_rate,
+               a.point,
+               a.factory_sku_code,
+               a.categories_supply_channels_code,
+               a.categories_supply_channels_name,
+               a.is_default,
+               a.usage_status,
+               a.create_by,
+               a.create_time,
+               a.update_by,
+               a.update_time,
+              CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
+              b.product_category_code,
+              b.product_brand_code,
+              b.product_brand_name,
+              b.product_property_code,
+              b.product_property_name
+        from product_sku_supply_unit a
+        left join product_sku b
+        on a.product_sku_code = b.sku_code
+        LEFT JOIN product_category lv4
+        on lv4.category_id = b.product_category_code
+        LEFT JOIN product_category lv3
+        on lv3.category_id = lv4.parent_id
+        LEFT JOIN product_category lv2
+        on lv2.category_id = lv3.parent_id
+        LEFT JOIN product_category lv1
+        on lv1.category_id = lv2.parent_id
+        where a.del_flag = 0
+        <if test="skuCode != null and skuCode != '' ">
+            and b.sku_code like CONCAT('%',#{skuCode},'%')
+        </if>
+        <if test="skuName != null and skuName != '' ">
+            and b.sku_name like CONCAT('%',#{skuName},'%')
+        </if>
+        <if test="supplierCode != null and supplierCode != '' ">
+            and a.supply_unit_code CONCAT('%',#{supplierCode},'%')
+        </if>
+        <if test="supplierName != null and supplierName != '' ">
+            and a.supply_unit_name like CONCAT('%',#{supplierName},'%')
+        </if>
+        <if test="minPurchasePrice != null">
+            and a.tax_included_price >= #{minPurchasePrice} * 100
+        </if>
+        <if test="maxPurchasePrice != null">
+            and a.tax_included_price >= #{maxPurchasePrice} * 100
+        </if>
+        <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
+            and a.categories_supply_channels_code like CONCAT('%',#{categoriesSupplyChannelsCode},'%')
+        </if>
+        <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
+            and a.categories_supply_channels_name like CONCAT('%',#{categoriesSupplyChannelsName},'%')
+        </if>
+        <if test="usageStatus != null">
+            and a.usage_status = #{usageStatus}
+        </if>
+        <if test="companyCode != null  and companyCode != '' ">
+            and b.company_code = #{companyCode}
+        </if>
+        <if test="personId != null and personId != '' ">
+            and b.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        </if>
+        <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+            and lv1.category_id = #{productCategoryLv1Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+            and lv2.category_id = #{productCategoryLv2Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+            and lv3.category_id = #{productCategoryLv3Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
+            and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productBrandCode!=null and productBrandCode!=''">
+            AND b.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            AND b.product_brand_name like CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+            AND b.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+        </if>
+        <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+            AND b.procurement_section_name like CONCAT('%',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productPropertyCode!=null and productPropertyCode!=''">
+            AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productPropertyName!=null and productPropertyName!=''">
+            AND b.product_property_name like CONCAT('%',#{productPropertyName,jdbcType=VARCHAR},'%')
+        </if>
+        order by create_time desc
+    </select>
+    <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo">
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+        <result column="procurement_section_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+        <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+        <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+        <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
+        <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+        <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+        <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
+        <collection property="supplierList" column="{skuCode = sku_code}"
+                    javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo" select="selectBySkuCode"/>
+    </resultMap>
+    <select id="detail" parameterType="java.lang.String" resultMap="SkuResultMap">
+         select
+              a.sku_code,
+              a.sku_name,
+              a.product_code,
+              a.product_name,
+              a.procurement_section_code,
+              a.procurement_section_name,
+              a.product_sort_code,
+              a.product_sort_name,
+              a.product_category_code,
+              CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
+              a.categories_supply_channels_code,
+              a.categories_supply_channels_name,
+              a.product_brand_code,
+              a.product_brand_name,
+              a.product_property_code,
+              a.product_property_name,
+              b.Input_tax_rate,
+              a.goods_gifts,
+              a.create_time,
+              a.create_by,
+              a.update_by,
+              a.update_time
+            from product_sku a
+            LEFT JOIN product_category lv4
+            on lv4.category_id = a.product_category_code
+            LEFT JOIN product_category lv3
+            on lv3.category_id = lv4.parent_id
+            LEFT JOIN product_category lv2
+            on lv2.category_id = lv3.parent_id
+            LEFT JOIN product_category lv1
+            on lv1.category_id = lv2.parent_id
+            left join product_sku_checkout b
+            on a.sku_code = b.sku_code
+            where a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </select>
+    <select id="selectSupplyUnitCode" resultType="java.lang.String">
+        select
+          supply_unit_code
+        from product_sku_supply_unit
+        where del_flag = 0
+        <if test="skuCode != null and skuCode != '' ">
+            and product_sku_code = #{skuCode}
+        </if>
+        <if test="vo.supplyUnitCode != null and vo.supplyUnitCode != '' ">
+            and supply_unit_code = #{vo.supplyUnitCode}
+        </if>
+        <if test="vo.isDefault != null">
+            and is_default = #{vo.isDefault}
+        </if>
+        <if test="vo.jointFranchiseRate != null">
+            and joint_franchise_rate = #{vo.jointFranchiseRate}
+        </if>
+        <if test="vo.point != null">
+            and point = #{vo.point}
+        </if>
+        <if test="vo.taxIncludedPrice != null">
+            and tax_included_price = #{vo.taxIncludedPrice}
+        </if>
+        <if test="vo.usageStatus != null">
+            and usage_status = #{vo.usageStatus}
+        </if>
+        <if test="vo.factorySkuCode != null and vo.factorySkuCode != '' ">
+            and factory_sku_code = #{vo.factorySkuCode}
+        </if>
+        <if test="vo.categoriesSupplyChannelsCode != null and vo.categoriesSupplyChannelsCode != '' ">
+            and categories_supply_channels_code = #{vo.categoriesSupplyChannelsCode}
+        </if>
+    </select>
+    <select id="selectDraftById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        SELECT
+          <include refid="Base_Column_List"/>
+        FROM product_sku_supply_unit_draft
+        where id=#{id}
+    </select>
+
+    <resultMap id="QueryApplyList" type="com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO">
+        <result column="apply_code" jdbcType="VARCHAR" property="code"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+        <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+        <result column="auditor_status" jdbcType="INTEGER" property="applyStatus" />
+        <result column="approval_type" jdbcType="INTEGER" property="approvalType"/>
+        <result column="apply_type" jdbcType="INTEGER" property="applyType"/>
+        <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
+        <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
+    </resultMap>
+    <select id="queryApplyList"  parameterType="com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO"
+            resultMap="QueryApplyList">
+        select
+            distinct apply_code,
+            create_by,
+            create_time,
+            auditor_status,
+            update_by auditor_by,
+            update_time auditor_time,
+            form_no,
+            4 as approval_type,
+            approval_name
+        from apply_product_sku_supply_unit
+        where company_code = #{companyCode}
+        and apply_show = 0
+        <if test="createTimeStart != null">
+            and create_time&gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+        </if>
+        <if test="createTimeEnd != null">
+            and create_time&lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+        </if>
+        <if test="applyStatus != null">
+            and auditor_status = #{applyStatus}
+        </if>
+        <if test="code != null and  code != '' ">
+            and apply_code like CONCAT('%',#{code},'%')
+        </if>
+        <if test="formNo != null and  formNo != '' ">
+            and form_no like CONCAT('%',#{formNo},'%')
+        </if>
+        <if test="approvalName != null and  approvalName != '' ">
+            and approval_name like CONCAT('%',#{approvalName},'%')
+        </if>
+        <if test="purchaseGroupCode != null and  purchaseGroupCode != '' ">
+            and exists (select 1 from product_sku a where a.procurement_section_code = #{purchaseGroupCode} and a.sku_code=product_sku_code)
+        </if>
+        <if test="personId != null and  personId != '' ">
+            and  exists (select 1 from product_sku a where a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}) and a.sku_code=product_sku_code)
+        </if>
+        order by create_time desc
     </select>
 </mapper>

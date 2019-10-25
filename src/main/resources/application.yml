@@ -83,6 +83,8 @@ WorkFlowBaseUrl:
     applySku: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #sku配置
     applySkuConfig: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
+    #sku供应商
+    applySkuSupplier: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #销售区域
     applySaleArea: http://scmp.bms.aiqin.com/#/product/detailProductApprovalProcess
     #调拨申请详情

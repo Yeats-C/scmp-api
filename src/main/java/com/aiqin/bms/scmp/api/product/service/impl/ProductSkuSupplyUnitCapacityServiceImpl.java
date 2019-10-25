@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitCapacityMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityMapper;
@@ -9,12 +10,14 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityServic
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.google.common.collect.Lists;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -179,5 +182,52 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
             return ((ProductSkuSupplyUnitCapacityService)AopContext.currentProxy()).insertList(productSkuSupplyUnitCapacities);
         }
         return 0;
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitCapacityRespVo> getCapacityInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode, String productSkuCode) {
+        return mapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode);
+    }
+
+    @Override
+    public Boolean selectInfo(String skuCode,String supplyUnitCode, List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts) {
+        Boolean flag = false;
+        if(CollectionUtils.isNotEmptyCollection(productSkuSupplyUnitCapacityDrafts)){
+            List<ProductSkuSupplyUnitCapacityRespVo> capacityInfoBySupplyUnitCodeAndProductSkuCode =
+                    mapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode, skuCode);
+            if(productSkuSupplyUnitCapacityDrafts.size() != capacityInfoBySupplyUnitCodeAndProductSkuCode.size()){
+                flag = true;
+            } else {
+                int sameCount = 0;
+                for (ProductSkuSupplyUnitCapacityRespVo productSkuSupplyUnitCapacityRespVo : capacityInfoBySupplyUnitCodeAndProductSkuCode) {
+                    for (ProductSkuSupplyUnitCapacityDraft skuSupplyUnitCapacityDraft : productSkuSupplyUnitCapacityDrafts) {
+                        if(Objects.equals(productSkuSupplyUnitCapacityRespVo.getNeedDays(),skuSupplyUnitCapacityDraft.getNeedDays()) &&
+                                Objects.equals(productSkuSupplyUnitCapacityRespVo.getOutPut(),skuSupplyUnitCapacityDraft.getOutPut())){
+                            sameCount++;
+                        }
+                    }
+                }
+                if(sameCount != productSkuSupplyUnitCapacityDrafts.size()){
+                    flag = true;
+                }
+            }
+        }
+        return flag;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer deleteDraftBySkuCodeAndSupplierCodes(String skuCode, List<String> deleteSupplyUnitCodes) {
+        return draftMapper.deleteBySkuCodeAndSupplierCodes(skuCode,deleteSupplyUnitCodes);
+    }
+
+    @Override
+    public List<ProductSkuSupplyUnitCapacityRespVo> getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(String supplyUnitCode, String productSkuCode) {
+        return  draftMapper.getCapacityInfoBySupplyUnitCodeAndProductSkuCode(supplyUnitCode,productSkuCode);
+    }
+
+    @Override
+    public Integer deleteDraftBySkuCodeAndSupplierCode(String productSkuCode, String supplyUnitCode) {
+        return draftMapper.deleteBySkuCodeAndSupplierCode(productSkuCode,supplyUnitCode);
     }
 }

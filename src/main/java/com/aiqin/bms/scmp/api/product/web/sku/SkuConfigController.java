@@ -73,6 +73,28 @@ public class SkuConfigController {
         }
     }
 
+    @GetMapping("/draft/update")
+    @ApiOperation("待申请库房进行修改")
+    public HttpResponse update (@RequestBody  SkuConfigDetailRepsVo skuConfigDetailRepsVo) {
+        try {
+            return HttpResponse.success(productSkuConfigService.update(skuConfigDetailRepsVo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @GetMapping("/draft/view")
+    @ApiOperation("待申请库房进行查看")
+    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode,@RequestParam("draftId")Long draftId ) {
+        try {
+            return HttpResponse.success(productSkuConfigService.detailForDraft(skuCode,draftId));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @PostMapping("/list")
     @ApiOperation("SKU配置信息列表")
     public HttpResponse<BasePage<SkuConfigsRepsVo>> list(@RequestBody QuerySkuConfigReqVo reqVo) {

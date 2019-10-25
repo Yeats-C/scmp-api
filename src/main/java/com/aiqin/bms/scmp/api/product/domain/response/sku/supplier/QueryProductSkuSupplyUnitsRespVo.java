@@ -1,6 +1,7 @@
-package com.aiqin.bms.scmp.api.product.domain.response.sku;
+package com.aiqin.bms.scmp.api.product.domain.response.sku.supplier;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -14,9 +15,9 @@ import java.util.List;
  * @className ProductSkuSupplyUnitRespVo
  * @date 2019/5/14 15:46
  */
-@ApiModel("SKU供应商信息返回")
+@ApiModel("SKU供应商列表返回信息")
 @Data
-public class ProductSkuSupplyUnitRespVo extends CommonBean {
+public class QueryProductSkuSupplyUnitsRespVo extends CommonBean {
     @ApiModelProperty("主键id")
     private Long id;
 
@@ -47,11 +48,11 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;
 
-    @ApiModelProperty("商品sku code")
-    private String productSkuCode;
-
     @ApiModelProperty("0:未用 1:在用")
     private Byte usageStatus;
+
+    @ApiModelProperty("商品sku code")
+    private String productSkuCode;
 
     @ApiModelProperty("商品sku 名称")
     private String productSkuName;
@@ -62,33 +63,33 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
     @ApiModelProperty(value ="供货渠道类别名称")
     private String categoriesSupplyChannelsName;
 
-    @ApiModelProperty("是否生效(0未生效1已生效）")
-    private Integer beEffective;
+    @ApiModelProperty("采购组编号")
+    private String purchaseGroupCode;
 
-    @ApiModelProperty("是否使用生效时间(0:是1:否)")
-    private Byte selectionEffectiveTime;
+    @ApiModelProperty("采购组编号")
+    private String purchaseGroupName;
 
-    @ApiModelProperty("生效开始时间")
-    private Date selectionEffectiveStartTime;
+    @ApiModelProperty("品牌名称")
+    private String productBrandName;
 
-    @ApiModelProperty("申请状态(0:待审 1:审核中 2:审核通过 3:审核未通过 4:已撤销)")
-    private Byte auditorStatus;
+    @ApiModelProperty("品牌编码")
+    private String productBrandCode;
 
-    @ApiModelProperty("表单号")
-    private String formNo;
+    @ApiModelProperty("属性名称")
+    private String productPropertyName;
 
-    @ApiModelProperty("申请编码")
-    private String applyCode;
+    @ApiModelProperty("属性编码")
+    private String productPropertyCode;
 
-    @ApiModelProperty("申请备注")
-    private String approvalRemark;
+    @ApiModelProperty("品类编码")
+    private String productCategoryCode;
 
-    @ApiModelProperty("申请名称")
-    private String approvalName;
+    @ApiModelProperty("品类名称")
+    private String productCategoryName;
 
-    @ApiModelProperty("申请类型")
+    @ApiModelProperty("申请类型 1:新增 2:修改")
     private Byte applyType;
 
-    @ApiModelProperty(value = "供应商产能信息",position = 7)
-    private List<ProductSkuSupplyUnitCapacityRespVo> productSkuSupplyUnitCapacities;
+    @ApiModelProperty("产能")
+    private List<ProductSkuSupplyUnitCapacityRespVo> capacityList;
 }

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.supplier.mapper.ApprovalFileInfoMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApprovalFileInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="approval_type" jdbcType="TINYINT" property="approvalType" />
+    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+    <result column="file_path" jdbcType="VARCHAR" property="filePath" />
+    <result column="file_name" jdbcType="VARCHAR" property="fileName" />
+    <result column="form_no" jdbcType="VARCHAR" property="formNo" />
+    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, approval_type, apply_code,  file_path, file_name, form_no, del_flag, create_time, create_by, update_time,
+    update_by
+  </sql>
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into approval_file_info(approval_type, apply_code,  file_path, file_name, form_no, del_flag, create_time, create_by, update_time,
+    update_by)
+    values
+    <foreach collection="list" item="item" separator=",">
+      (#{item.approvalType},#{item.applyCode},#{item.filePath},#{item.fileName},#{item.formNo},#{item.delFlag},
+      #{item.createTime},#{item.createBy},#{item.updateTime},#{item.updateBy})
+    </foreach>
+  </insert>
+  <select id="selectByApprovalTypeAndApplyCode" parameterType="java.lang.String"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo">
+    select
+      file_path filePath,
+      file_name fileName
+    from approval_file_info
+    where 1=1
+    <if test="applyCode != null and applyCode != '' ">
+      and apply_code = #{applyCode}
+    </if>
+    <if test="approvalType != null and approvalType != '' ">
+      and approval_type = #{approvalType}
+    </if>
+  </select>
+
+  <select id="selectByApprovalTypeAndFormNo" parameterType="java.lang.String"
+          resultType="com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo">
+    select
+      file_path filePath,
+      file_name fileName
+    from approval_file_info
+    where 1=1
+    <if test="formNo != null and formNo != '' ">
+      and form_no = #{formNo}
+    </if>
+    <if test="approvalType != null and approvalType != '' ">
+      and approval_type = #{approvalType}
+    </if>
+  </select>
+</mapper>

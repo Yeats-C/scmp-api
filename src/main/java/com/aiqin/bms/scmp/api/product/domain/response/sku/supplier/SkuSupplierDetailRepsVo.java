@@ -1,7 +1,8 @@
-package com.aiqin.bms.scmp.api.product.domain.response.sku.config;
+package com.aiqin.bms.scmp.api.product.domain.response.sku.supplier;
 
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,8 +19,8 @@ import java.util.Objects;
  * @date 2019/5/25 18:39
  */
 @Data
-@ApiModel("SKU配置信息详情返回")
-public class SkuConfigDetailRepsVo {
+@ApiModel("SKU供应商信息详情返回")
+public class SkuSupplierDetailRepsVo {
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -27,17 +28,23 @@ public class SkuConfigDetailRepsVo {
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("商品名称")
+    @ApiModelProperty("SPU编码")
     private String productCode;
 
-    @ApiModelProperty("商品编码")
+    @ApiModelProperty("SPU名称")
     private String productName;
 
-    @ApiModelProperty("商品类别code")
+    @ApiModelProperty("所属部门code")
     private String productSortCode;
 
-    @ApiModelProperty("商品类别名称")
+    @ApiModelProperty("所属部门名称")
     private String productSortName;
+
+    @ApiModelProperty("采购组编号")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
 
     @ApiModelProperty("商品品类code")
     private String productCategoryCode;
@@ -45,29 +52,32 @@ public class SkuConfigDetailRepsVo {
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
 
+    @ApiModelProperty("品牌名称")
+    private String productBrandName;
+
+    @ApiModelProperty("品牌编码")
+    private String productBrandCode;
+
+    @ApiModelProperty("属性名称")
+    private String productPropertyName;
+
+    @ApiModelProperty("属性编码")
+    private String productPropertyCode;
+
     @ApiModelProperty("供货渠道类别code")
     private String categoriesSupplyChannelsCode;
 
     @ApiModelProperty("供货渠道类别名称")
     private String categoriesSupplyChannelsName;
 
-    @ApiModelProperty("品牌code")
-    private String productBrandCode;
-
-    @ApiModelProperty("品牌名称")
-    private String productBrandName;
-
-    @ApiModelProperty("商品属性code")
-    private String productPropertyCode;
-
-    @ApiModelProperty("商品属性名称")
-    private String productPropertyName;
-
     @ApiModelProperty("商品类型(0:商品，1:赠品)")
     private Byte skuType;
 
     @ApiModelProperty("商品类型")
     private String skuTypeName;
+
+    @ApiModelProperty("进项税率")
+    private Long inputTaxRate;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
@@ -82,9 +92,6 @@ public class SkuConfigDetailRepsVo {
 
     @ApiModelProperty("修改人")
     private String updateBy;
-
-    @ApiModelProperty("SKU配置列表信息")
-    private List<SkuConfigsRepsVo> configs;
 
     @ApiModelProperty("供应商列表")
     private List<ProductSkuSupplyUnitRespVo> supplierList;

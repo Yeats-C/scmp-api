@@ -309,4 +309,19 @@ public interface ProductSkuConfigService {
      * @return
      */
     List<ApplyProductSkuConfig> selectUnSynData();
+
+    /**
+     * 进行审批页面的编辑查看
+     * @param skuCode
+     * @param draftId
+     * @return
+     */
+    SkuConfigDetailRepsVo detailForDraft(String skuCode, Long draftId);
+
+    /**
+     *
+     * @param skuConfigDetailRepsVo
+     * @return
+     */
+    Integer update(SkuConfigDetailRepsVo skuConfigDetailRepsVo);
 }
