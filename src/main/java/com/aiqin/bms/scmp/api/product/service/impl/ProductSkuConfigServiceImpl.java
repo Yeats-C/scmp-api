@@ -311,8 +311,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(saveList)){
             throw new BizException(ResultCode.SUMBIT_NOT_DATA);
         }
-
-
         Integer num = 0;
         //删除重复的数据,插入数据
         List<String> deleteTransportCenterCodes = saveList.stream().map(UpdateSkuConfigReqVo::getTransportCenterCode).collect(Collectors.toList());
