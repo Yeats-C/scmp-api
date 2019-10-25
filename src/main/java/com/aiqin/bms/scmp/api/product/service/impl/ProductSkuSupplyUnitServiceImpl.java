@@ -471,7 +471,6 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             item.setApplyShow(Global.APPLY_SKU_CONFIG_SHOW);
             item.setCompanyCode(authToken.getCompanyCode());
             item.setCompanyName(authToken.getCompanyName());
-            item.setUsageStatus(StatusTypeCode.USE.getStatus());
             if (CollectionUtils.isNotEmptyCollection(item.getProductSkuSupplyUnitCapacityDrafts())) {
                 item.getProductSkuSupplyUnitCapacityDrafts().forEach(item2 -> {
                     item2.setProductSkuCode(item.getProductSkuCode());
@@ -667,12 +666,13 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         resp.setApplyStatus(respVo.getAuditorStatus().intValue());
         resp.setAuditorBy(respVo.getUpdateBy());
         resp.setAuditorTime(respVo.getUpdateTime());
+        resp.setApprovalName(respVo.getApprovalName());
+        resp.setApprovalRemark(respVo.getApprovalRemark());
         resp.setSelectionEffectiveStartTime(respVo.getSelectionEffectiveStartTime());
         resp.setSelectionEffectiveTime(respVo.getSelectionEffectiveTime());
         resp.setCode(respVo.getApplyCode());
         resp.setFormNo(respVo.getFormNo());
-        List<String> skuCodes2 = unitRespVos.stream().map(ProductSkuSupplyUnitRespVo::getProductSkuCode).distinct().collect(Collectors.toList());
-        resp.setSkuNum(skuCodes2.size());
+        resp.setSkuNum(unitRespVos.size());
         repsVo.setSupplierList(unitRespVos);
         List<SkuSupplierDetailRepsVo> repsVos = Lists.newArrayList();
         repsVos.add(repsVo);

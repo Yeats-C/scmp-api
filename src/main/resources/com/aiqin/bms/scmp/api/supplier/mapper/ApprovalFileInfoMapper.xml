@@ -24,8 +24,8 @@
     update_by)
     values
     <foreach collection="list" item="item" separator=",">
-      (#{approvalType},#{applyCode},#{approvalType},#{filePath},#{formNo},#{delFlag},
-      #{createTime},#{createBy},#{updateTime},#{updateBy})
+      (#{item.approvalType},#{item.applyCode},#{item.filePath},#{item.fileName},#{item.formNo},#{item.delFlag},
+      #{item.createTime},#{item.createBy},#{item.updateTime},#{item.updateBy})
     </foreach>
   </insert>
   <select id="selectByApprovalTypeAndApplyCode" parameterType="java.lang.String"

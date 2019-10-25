@@ -46,6 +46,7 @@ public class ProductApplyServiceImpl implements ProductApplyService {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
             reqVo.setCompanyCode(authToken.getCompanyCode());
+            reqVo.setPersonId(authToken.getPersonId());
         }
         List<QueryProductApplyRespVO> list = Lists.newArrayList();
         switch (reqVo.getApprovalType()){
