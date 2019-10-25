@@ -798,7 +798,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount();
                 reqVo.setPreTaxAmount(productTotalAmount);
-                reqVo.setLinenum(product.getId());
+                String lin = product.getPurchaseOrderCode().substring(9,11);
+                reqVo.setLinenum(Long.valueOf(lin));
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 reqVo.setTax(product.getTaxRate().longValue());
