@@ -693,7 +693,7 @@ public class InboundServiceImpl implements InboundService {
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
                 purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
-                purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
+                purchaseOrderProduct.setLinnum(storageResultItemReqVo.getLinenum().intValue());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
             List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());

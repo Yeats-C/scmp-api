@@ -145,4 +145,8 @@ public class ApplyPurchaseOrderProduct {
     @JsonProperty("receipt_turnover")
     private Integer receiptTurnover;
 
+    @ApiModelProperty(value="行号")
+    @JsonProperty("linnum")
+    private Integer linnum;
+
 }
