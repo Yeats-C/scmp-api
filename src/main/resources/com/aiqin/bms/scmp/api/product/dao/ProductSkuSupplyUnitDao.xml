@@ -292,6 +292,7 @@
     <result column="aapproval_remark"  property="approvalRemark" />
     <result column="aapproval_name"  property="approvalName" />
     <result column="aapply_type"  property="applyType" />
+    <result column="aprocurement_section_name"  property="purchaseGroupName" />
     <collection property="productSkuSupplyUnitCapacities" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
       <id column="bid" jdbcType="BIGINT" property="id" />
       <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
@@ -455,6 +456,7 @@
            a.apply_code aapply_code,
            a.form_no aform_no,
            a.be_effective abe_effective,
+           c.procurement_section_name aprocurement_section_name,
            b.id bid,
            b.supply_unit_code bsupply_unit_code,
            b.supply_unit_name bsupply_unit_name,
@@ -471,6 +473,7 @@
     from apply_product_sku_supply_unit a
     left join apply_product_sku_supply_unit_capacity b
     on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code and a.apply_code = b.apply_code
+    left join product_sku c on a.product_sku_code = c.sku_code
     where a.apply_code = #{applyCode,jdbcType=VARCHAR}
     </select>
     <select id="selectApplyBySkuCode"

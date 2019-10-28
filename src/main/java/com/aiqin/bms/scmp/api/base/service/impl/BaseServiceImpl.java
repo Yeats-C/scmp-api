@@ -207,7 +207,12 @@ public class BaseServiceImpl implements BaseService {
     @Transactional(rollbackFor = Exception.class)
     public synchronized String getCode(String prefix, String Code){
         EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
-        String code = prefix + numberingType.getNumberingValue();
+        String code;
+        if(StringUtils.isNotBlank(prefix)){
+            code = prefix + numberingType.getNumberingValue();
+        }else {
+            code = String.valueOf(numberingType.getNumberingValue());
+        }
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
         return code;

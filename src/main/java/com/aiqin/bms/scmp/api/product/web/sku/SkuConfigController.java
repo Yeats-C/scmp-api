@@ -73,9 +73,9 @@ public class SkuConfigController {
         }
     }
 
-    @GetMapping("/draft/update")
+    @PostMapping("/draft/update")
     @ApiOperation("待申请库房进行修改")
-    public HttpResponse update (@RequestBody  SkuConfigDetailRepsVo skuConfigDetailRepsVo) {
+    public HttpResponse draftUpdate (@RequestBody  SkuConfigDetailRepsVo skuConfigDetailRepsVo) {
         try {
             return HttpResponse.success(productSkuConfigService.update(skuConfigDetailRepsVo));
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class SkuConfigController {
 
     @GetMapping("/draft/view")
     @ApiOperation("待申请库房进行查看")
-    public HttpResponse<SkuConfigDetailRepsVo> view (@RequestParam("skuCode") String skuCode,@RequestParam("draftId")Long draftId ) {
+    public HttpResponse<SkuConfigDetailRepsVo> draftView (@RequestParam("skuCode") String skuCode,@RequestParam("draftId")Long draftId ) {
         try {
             return HttpResponse.success(productSkuConfigService.detailForDraft(skuCode,draftId));
         } catch (Exception e) {
