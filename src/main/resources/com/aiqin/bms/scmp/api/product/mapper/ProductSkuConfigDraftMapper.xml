@@ -163,6 +163,7 @@
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
         <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
         <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
         <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
         <result column="aId"/>
         <collection property="configs" column="{id = aId}"
@@ -189,7 +190,8 @@
       c.create_by,
       c.update_by,
       c.update_time,
-      #{draftId,jdbcType=BIGINT} aId
+      #{draftId,jdbcType=BIGINT} aId,
+      procurement_section_name
     from product_sku c
     where c.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>

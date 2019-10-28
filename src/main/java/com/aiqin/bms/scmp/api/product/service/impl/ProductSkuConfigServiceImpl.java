@@ -1700,7 +1700,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             copy.setSpareWarehouses(spareWarehouses);
         }
-        copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        if(CollectionUtils.isNotEmpty(errorList)){
+            copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        }
         return copy;
     }
 
