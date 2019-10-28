@@ -763,6 +763,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             InboundBatchReqVo inboundBatchReqVo;
             ProductSkuPictures productSkuPicture;
             ProductSkuPurchaseInfo skuPurchaseInfo;
+            Long i = 0L;
             for(PurchaseOrderProduct product:productList){
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
@@ -800,8 +801,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
                 reqVo.setPreTaxAmount(productTotalAmount);
-                String lin = purchaseStorage.getInboundOderCode().substring(9, 11);
-                reqVo.setLinenum(Long.valueOf(lin));
+                i++;
+                reqVo.setLinenum(i);
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 reqVo.setTax(product.getTaxRate().longValue());
