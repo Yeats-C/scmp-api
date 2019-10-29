@@ -162,8 +162,6 @@
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id=""></update>
-
     <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
       <include refid="Base_column_List"/>
