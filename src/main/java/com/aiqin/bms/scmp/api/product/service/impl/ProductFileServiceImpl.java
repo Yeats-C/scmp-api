@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuFileDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
@@ -10,10 +11,12 @@ import com.aiqin.bms.scmp.api.product.service.ProductFileService;
 import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
 import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import io.netty.util.internal.StringUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,18 +47,24 @@ public class ProductFileServiceImpl implements ProductFileService {
 
 
     @Override
-    public ProductSkuFileRespVo loadFileProduct(@Valid @NotNull(message = "传入id不能为空") String code) {
+    public HttpResponse loadFileProduct(@Valid @NotNull(message = "传入code不能为空") String code) {
         ProductSkuFileRespVo productSkuFileRespVo = new ProductSkuFileRespVo();
         ProductSkuInfo productSkuInfo =productSkuInfoMapper.selectByskuCode(code);
+        if (null==productSkuInfo){
+           return HttpResponse.failure(ResultCode.FIND_NULL);
+        }
         BeanCopyUtils.copy(productSkuInfo, productSkuFileRespVo);
         List<ProductSkuFile> productSkuFileList = productSkuFileDao.getInfo(productSkuFileRespVo.getSkuCode());
         productSkuFileRespVo.setProductSkuFileList(productSkuFileList);
-        return productSkuFileRespVo;
+        return HttpResponse.success();
     }
 
     @Override
-    public HttpResponse updateoradd(ProductSkuFile productSkuFile) {
+    public HttpResponse updateoradd(ProductSkuFileRespVo productSkuFileRespVo) {
         List<ProductSkuFile> productSkuFileList = Lists.newArrayList();
+        ProductSkuFile productSkuFile=new ProductSkuFile();
+       BeanCopyUtils.copy(productSkuFileRespVo,productSkuFile);
+
         if (StringUtil.isNullOrEmpty(String.valueOf(productSkuFile.getId()))) {
             productSkuFileList.add(productSkuFile);
             //进行数据库的存储
@@ -65,6 +74,7 @@ public class ProductFileServiceImpl implements ProductFileService {
 
         }
         //进行数据库的修改
+        productSkuFileDao.updateById(productSkuFile);
         return HttpResponse.success(productSkuFileDao.getInfo(productSkuFile.getSkuCode()));
     }
 
@@ -82,8 +92,8 @@ public class ProductFileServiceImpl implements ProductFileService {
       //  for (ProductSkuFileRespVo productSkuFileRespVo : productSkuFileRespVos) {
             List<ProductSkuFile> productSkuFileList = Lists.newArrayList();
         List<MultipartFile> multipartFileList= Arrays.stream(multipartFiles).collect(Collectors.toList());
-        if (multipartFileList == null | multipartFileList.size() == 0) {
-            throw new GroundRuntimeException("上传文件为空");
+        if (CollectionUtils.isNotEmptyCollection(multipartFileList)) {
+            return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR2);
         }
         ProductSkuInfo productSkuInfo=productSkuDao.getSkuInfo(skuCode);
         String name=productSkuInfo.getSkuName();
@@ -100,20 +110,18 @@ public class ProductFileServiceImpl implements ProductFileService {
                 productSkuFile.setFileName(multipartFile.getOriginalFilename());
                 productSkuFileList.add(productSkuFile);
             }
-
             //新的加入的文件
             List<String> newProductSkuFileNames = productSkuFileList.stream().map(x -> x.getFileName()).collect(Collectors.toList());
             //原来的文件
             List<String> ordProductSkuFileNames = productSkuFileDao.getInfo(skuCode).stream().map(x -> x.getFileName()).collect(Collectors.toList());
             ordProductSkuFileNames.retainAll(newProductSkuFileNames);
-            if (ordProductSkuFileNames != null & ordProductSkuFileNames.size() > 0) {
-                throw new GroundRuntimeException("该Sku商品下有相同文件名重复文件，请检查");
+            if (CollectionUtils.isNotEmptyCollection(ordProductSkuFileNames)) {
+                return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR3);
             }
             //进行文件的添加
             productSkuFileDao.insertSkuFileList(productSkuFileList);
 
         //}
-
         return HttpResponse.success();
     }
 
