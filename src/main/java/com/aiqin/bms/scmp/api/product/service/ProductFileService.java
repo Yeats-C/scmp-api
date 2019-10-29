@@ -18,14 +18,14 @@ public interface ProductFileService {
      * @param
      * @return
      */
-    ProductSkuFileRespVo loadFileProduct(String skuCode);
+    HttpResponse loadFileProduct(String skuCode);
 
     /**
      * 对商品内的文件进行修改或者新增
      * @param productSkuFile
      * @return
      */
-    HttpResponse updateoradd(ProductSkuFile productSkuFile);
+    HttpResponse updateoradd(ProductSkuFileRespVo productSkuFile);
     /**
      * 对商品文件管理内的文件进行删除
      * @param

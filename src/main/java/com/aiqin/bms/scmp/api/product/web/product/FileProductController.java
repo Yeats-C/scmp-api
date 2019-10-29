@@ -45,12 +45,12 @@ public class FileProductController {
     @PostMapping("/load")
     @ApiOperation("商品下属文件详情")
     public HttpResponse<ProductSkuRespVo> loadFileProduct(@RequestParam("skuCode") String skuCode) {
-        return HttpResponse.success(productFileService.loadFileProduct(skuCode));
+        return productFileService.loadFileProduct(skuCode);
     }
 
     @PostMapping("/updateoradd")
     @ApiOperation("商品文件编辑或者修改")
-    public HttpResponse updateoradd(@RequestBody ProductSkuFile ProductSkuFile) {
+    public HttpResponse updateoradd(@RequestBody ProductSkuFileRespVo ProductSkuFile) {
         try {
             return HttpResponse.success(productFileService.updateoradd(ProductSkuFile));
         } catch (Exception e) {
@@ -77,13 +77,7 @@ public class FileProductController {
         try {
             return productFileService.uploadFiles(multipartFiles,skuCode);
         } catch (Exception e) {
-            log.info("问题输出:"+e.getLocalizedMessage());
-            if (ResultCode.FILE_UPLOAD_ERROR2.getMessage().equals(e.getLocalizedMessage())){
-                return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR2);
-            }
-            if (ResultCode.FILE_UPLOAD_ERROR3.getMessage().equals(e.getLocalizedMessage())){
-                return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR3);
-            }
+
             return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
         }
 

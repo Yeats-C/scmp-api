@@ -18,6 +18,10 @@ import java.util.List;
 @Data
 @ApiModel("商品文件管理")
 public class ProductSkuFileRespVo {
+
+    @ApiModelProperty("sku编号")
+    private Long id;
+
     @ApiModelProperty("sku编号")
     private String skuCode;
 
