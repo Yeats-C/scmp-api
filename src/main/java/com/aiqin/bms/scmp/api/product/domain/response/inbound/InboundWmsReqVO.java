@@ -38,6 +38,9 @@ public class InboundWmsReqVO {
     @ApiModelProperty("创建人")
     private String createById;
 
+    @ApiModelProperty("创建人名称")
+    private String createByName;
+
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;

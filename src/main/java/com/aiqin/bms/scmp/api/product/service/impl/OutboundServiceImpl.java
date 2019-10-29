@@ -496,8 +496,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundWmsReqVO.setList(outboundProductWmsReqVOs);
             //退供出库需要请求wms
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-            String createById = outboundDao.selectCreateById(outbound.getOutboundOderCode());
-            outboundWmsReqVO.setCreateById(createById);
+            RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+            outboundWmsReqVO.setCreateById(record.getCreateById());
+            outboundWmsReqVO.setCreateByName(record.getCreateByName());
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
             log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);

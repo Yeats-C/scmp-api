@@ -651,8 +651,8 @@
     source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
     order by purchase_num asc
   </select>
-  <select id="selectCreateById" resultType="java.lang.String">
-    select b.create_by_id from inbound a left join purchase_order b on a.source_oder_code = b.purchase_order_code
+  <select id="selectCreateById" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder">
+    select b.create_by_id as createById, b.create_by_name as createByName from inbound a left join purchase_order b on a.source_oder_code = b.purchase_order_code
     where a.inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
   </select>
   <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
