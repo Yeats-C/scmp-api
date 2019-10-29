@@ -35,11 +35,7 @@ public interface ProductFileService {
     int deleteFile(Long id);
 
 
-    /**
-     * 批量文件上传
-     * @param multipartFiles
-     * @param
-     * @return
-     */
+
+
     HttpResponse<String> uploadFiles(MultipartFile[] multipartFiles, String skuCode);
 }
