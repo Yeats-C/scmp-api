@@ -74,7 +74,10 @@ public class ProductFileServiceImpl implements ProductFileService {
 
         }
         //进行数据库的修改
-        productSkuFileDao.updateById(productSkuFile);
+          int num= productSkuFileDao.updateById(productSkuFile);
+       if (num==0){
+           return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+       }
         return HttpResponse.success(productSkuFileDao.getInfo(productSkuFile.getSkuCode()));
     }
 
