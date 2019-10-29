@@ -76,7 +76,7 @@ public interface ProductSkuInfoMapper {
      * @param skuCode
      * @return
      */
-    ProductSkuInfo selectByskuCode(String skuCode);
+    ProductSkuInfo selectBySkuCode(String skuCode);
 
     /**
      * 导出新增

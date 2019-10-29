@@ -49,14 +49,14 @@ public class ProductFileServiceImpl implements ProductFileService {
     @Override
     public HttpResponse loadFileProduct(@Valid @NotNull(message = "传入code不能为空") String code) {
         ProductSkuFileRespVo productSkuFileRespVo = new ProductSkuFileRespVo();
-        ProductSkuInfo productSkuInfo =productSkuInfoMapper.selectByskuCode(code);
+        ProductSkuInfo productSkuInfo =productSkuInfoMapper.selectBySkuCode(code);
         if (null==productSkuInfo){
            return HttpResponse.failure(ResultCode.FIND_NULL);
         }
         BeanCopyUtils.copy(productSkuInfo, productSkuFileRespVo);
         List<ProductSkuFile> productSkuFileList = productSkuFileDao.getInfo(productSkuFileRespVo.getSkuCode());
         productSkuFileRespVo.setProductSkuFileList(productSkuFileList);
-        return HttpResponse.success();
+        return HttpResponse.success(productSkuFileRespVo);
     }
 
     @Override

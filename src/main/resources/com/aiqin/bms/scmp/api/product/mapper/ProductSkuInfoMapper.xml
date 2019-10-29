@@ -95,7 +95,7 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
 
-    <select id="selectByskuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    <select id="selectBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from product_sku
