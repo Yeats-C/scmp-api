@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,7 +26,7 @@ public interface ProductFileService {
      * @param productSkuFile
      * @return
      */
-    HttpResponse updateoradd(ProductSkuFileRespVo productSkuFile);
+    HttpResponse updateOrAdd(ProductSkuFileReqVo productSkuFile);
     /**
      * 对商品文件管理内的文件进行删除
      * @param

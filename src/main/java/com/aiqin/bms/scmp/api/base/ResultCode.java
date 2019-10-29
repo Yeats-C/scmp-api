@@ -28,7 +28,7 @@ public interface ResultCode {
     MessageId FILE_UPLOAD_ERROR = MessageId.create(Project.ZERO, 20, "文件上传失败");
     MessageId FILE_UPLOAD_ERROR2 = MessageId.create(Project.ZERO, 20, "上传文件为空");
     MessageId FILE_UPLOAD_ERROR3 = MessageId.create(Project.ZERO, 20, "该Sku商品下有相同文件名重复文件，请检查");
-    MessageId FIND_NULL = MessageId.create(Project.ZERO, 20, "该Sku商品下有相同文件名重复文件，请检查");
+    MessageId FIND_NULL = MessageId.create(Project.ZERO, 20, "没有查到相应对象");
     //合同
     MessageId SAVE_PLAN_TYPE_FAILED = MessageId.create(Project.SUPPLIER_API, 999, "保存目标返利失败");
 

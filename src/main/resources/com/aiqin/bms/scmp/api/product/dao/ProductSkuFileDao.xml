@@ -187,7 +187,7 @@
   </delete>
 
     <delete id="deleteById" parameterType="java.lang.Long" >
-         DELETE FROM product_sku_file WHERE id=#{Id,jdbcType=BIGINT}
+         DELETE FROM product_sku_file WHERE id=#{id,jdbcType=BIGINT}
     </delete>
 
     <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuFileMapper.BaseResultMap">
@@ -206,4 +206,10 @@
     <include refid="Base_column_List"/>
     FROM product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+    <select id="getInfoBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    </select>
 </mapper>
