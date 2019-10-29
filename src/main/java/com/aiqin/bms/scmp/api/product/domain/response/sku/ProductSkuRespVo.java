@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -50,7 +51,7 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("商品品类名称")
     private String productCategoryName;
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品)")
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品，2:组合商品)")
     private Byte goodsGifts;
 
     @ApiModelProperty("商品属性code")
@@ -166,5 +167,8 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("销售状态(0:未进货 1:新品 2:正常 3:淘汰品)")
     private Byte onSale;
+
+    @ApiModelProperty("所属文件列表")
+    private List<ProductSkuFile> productSkuFileList;
 
 }

@@ -20,6 +20,8 @@ public interface ProductSkuInfoMapper {
 
     ProductSkuInfo selectByPrimaryKey(Long id);
 
+    ProductSkuInfo selectByPrimaryKey(@Param("skuCode")String skuCode);
+
     int updateByPrimaryKeySelective(ProductSkuInfo record);
 
     int updateByPrimaryKey(ProductSkuInfo record);
@@ -74,7 +76,7 @@ public interface ProductSkuInfoMapper {
      * @param skuCode
      * @return
      */
-    ProductSkuInfo selectBySkuCode(String skuCode);
+    ProductSkuInfo selectByskuCode(String skuCode);
 
     /**
      * 导出新增
