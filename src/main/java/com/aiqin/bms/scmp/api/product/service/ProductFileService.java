@@ -16,7 +16,7 @@ import java.util.List;
 public interface ProductFileService {
     /**
      * 获取商品的属性 以及相应的文件列表
-     * @param id
+     * @param
      * @return
      */
     ProductSkuFileRespVo loadFileProduct(String skuCode);
