@@ -69,6 +69,9 @@ public class SkuConfigDetailRepsVo {
     @ApiModelProperty("商品类型")
     private String skuTypeName;
 
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
+
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
     private Date createTime;

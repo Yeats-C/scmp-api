@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
@@ -21,10 +22,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetail
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitCapacityService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuSupplyUnitService;
-import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
@@ -120,6 +118,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
 
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
+
+    @Autowired
+    private ProductSkuCheckoutService productSkuCheckoutService;
 
 
 
@@ -1241,10 +1242,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 supplierList.add(o.getSupplyUnitCode());
             });
             Map<String,ProductSkuInfo> productSkuMap = Maps.newHashMap();
+            Map<String, ProductSkuCheckoutRespVo> productSkuCheckoutMap = Maps.newHashMap();
             Map<String, SupplyCompany> supplyCompanyMap = Maps.newHashMap();
             //sku信息
             if (CollectionUtils.isNotEmpty(skuList)) {
                 productSkuMap = skuInfoService.selectBySkuCodes(skuList,getUser().getCompanyCode());
+                productSkuCheckoutMap = productSkuCheckoutService.selectBySkuCodes(skuList);
             }
             //供应商信息
             if (CollectionUtils.isNotEmpty(supplierList)) {
@@ -1257,7 +1260,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             //k:供应商+skuCode v:skuCode
             Map<String,String> skuCodeMap = Maps.newHashMap();
             for (int i = 0; i < skuSupplierImport.size(); i++) {
-                ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,skuSupplierImport.get(i),purchaseGroupCode);
+                ProductSkuSupplyUnitDraft reqVo = validData2(productSkuMap,supplyCompanyMap,skuCodeMap,dicMap,productSkuCheckoutMap,skuSupplierImport.get(i),purchaseGroupCode);
                 String error = reqVo.getError();
                 if (StringUtils.isNotBlank(error)) {
                     error = "第"+(i+1)+"行 "+error;
@@ -1340,7 +1343,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         List<ProductSkuSupplyUnitCapacityDraft> capacityDrafts = Lists.newArrayList();
         for (ProductSkuSupplyUnitDraft draft : reqVo) {
             draft.setApplyShow((byte) 0);
-            draft.setApplyType((byte) 2);
             draft.setCompanyCode(getUser().getCompanyCode());
             draft.setCompanyName(getUser().getCompanyName());
             if (collect.containsKey(draft.getProductSkuCode() + draft.getSupplyUnitCode())) {
@@ -1374,7 +1376,8 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return Boolean.TRUE;
     }
 
-    private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap, SkuSupplierImport skuSupplierImport,String purchaseGroupCode) {
+    private ProductSkuSupplyUnitDraft validData2(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, String> skuCodeMap, Map<String, SupplierDictionaryInfo> dicMap,
+                                                 Map<String,ProductSkuCheckoutRespVo> productSkuCheckoutMap, SkuSupplierImport skuSupplierImport,String purchaseGroupCode) {
         List<String> errorList = Lists.newArrayList();
         ProductSkuSupplyUnitDraft copy = BeanCopyUtils.copy(skuSupplierImport, ProductSkuSupplyUnitDraft.class);
         String s = skuCodeMap.get(skuSupplierImport.getSupplyUnitCode()+skuSupplierImport.getProductSkuCode());
@@ -1383,6 +1386,16 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("该条数据与之前的数据重复");
             copy.setError(StringUtils.strip(errorList.toString(),"[]"));
             return copy;
+        }
+        //项目校验
+        if(Objects.isNull(skuSupplierImport.getApplyType())){
+            errorList.add("项目不能不能为空");
+        }else{
+            if (Objects.isNull(StatusTypeCode.getAll().get(skuSupplierImport.getApplyType()))) {
+                errorList.add("项目不正确，请填写新增或者修改");
+            }else {
+                copy.setApplyType(StatusTypeCode.getAll().get(skuSupplierImport.getApplyType()).getStatus());
+            }
         }
         //sku校验
         if (Objects.isNull(skuSupplierImport.getProductSkuCode())) {
@@ -1422,6 +1435,24 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                         skuCodeMap.put(skuSupplierImport.getSupplyUnitCode() + skuSupplierImport.getProductSkuCode(), skuSupplierImport.getProductSkuCode());
                     }
                 }
+            }
+        }
+        //含税金额
+        if (Objects.isNull(skuSupplierImport.getTaxIncludedPrice())) {
+            errorList.add("含税金额不能为空");
+        }else {
+            try {
+                Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getTaxIncludedPrice());
+                ProductSkuCheckoutRespVo productSkuCheckout = productSkuCheckoutMap.get(skuSupplierImport.getProductSkuCode().trim());
+                if(null == productSkuCheckout){
+                    errorList.add("该sku编码在库中找不到对应的进项税率");
+                }else{
+                    copy.setTaxIncludedPrice(i);
+                    copy.setNoTaxPurchasePrice(Calculate.computeNoTaxPrice(i,productSkuCheckout.getInputTaxRate()));
+                    copy.setTaxRate(productSkuCheckout.getInputTaxRate());
+                }
+            } catch (Exception e) {
+                errorList.add("含税金额格式不正确");
             }
         }
         //联营扣点(%)
@@ -1469,14 +1500,24 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 copy.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
             }
         }
-        //是否缺省
+        //默认值
         if (Objects.isNull(skuSupplierImport.getIsDefault())) {
-            errorList.add("是否缺省不能为空");
+            errorList.add("默认值不能为空");
         }else {
             if (Objects.isNull(DefaultOrNot.getAll().get(skuSupplierImport.getIsDefault()))) {
-                errorList.add("是否缺省不正确，请填写是或者否");
+                errorList.add("默认值不正确，请填写是或者否");
             }else {
                 copy.setIsDefault(DefaultOrNot.getAll().get(skuSupplierImport.getIsDefault()).getValue());
+            }
+        }
+        //状态
+        if (Objects.isNull(skuSupplierImport.getUsageStatusName())) {
+            errorList.add("状态不能为空");
+        }else {
+            if (Objects.isNull(UsageStatusEnum.getAll().get(skuSupplierImport.getUsageStatusName()))) {
+                errorList.add("状态不正确，请填写在用或者禁用");
+            }else {
+                copy.setUsageStatus(UsageStatusEnum.getAll().get(skuSupplierImport.getUsageStatusName()).getType());
             }
         }
         if (CollectionUtils.isNotEmpty(errorList)) {
@@ -1484,7 +1525,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }else{
 
         }
-        copy.setUsageStatus((byte)0);
         return copy;
     }
 
@@ -1660,7 +1700,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             copy.setSpareWarehouses(spareWarehouses);
         }
-        copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        if(CollectionUtils.isNotEmpty(errorList)){
+            copy.setError(StringUtils.strip(errorList.toString(),"[]"));
+        }
         return copy;
     }
 

@@ -172,6 +172,7 @@
     <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
     <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
     <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+    <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
     <collection property="configs" column="{skuCode = sku_code}"
                 javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
@@ -196,7 +197,8 @@
       create_time,
       create_by,
       update_by,
-      update_time
+      update_time,
+      procurement_section_name
     from product_sku
     where sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>

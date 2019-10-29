@@ -577,12 +577,12 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuSupplier + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_COMPANY.getNum());
         workFlowVO.setTitle(approvalName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS_CONFIG);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS_COMPANY);
         //判断是否成功
         if (!workFlowRespVO.getSuccess()) {
             throw new BizException(MessageId.create(Project.SCMP_API,999,workFlowRespVO.getMsg()));

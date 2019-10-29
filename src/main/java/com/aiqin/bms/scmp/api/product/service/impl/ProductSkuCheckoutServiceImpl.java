@@ -4,10 +4,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
@@ -20,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
@@ -163,5 +162,10 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     @Override
     public ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode) {
         return productSkuCheckoutDao.getApplyInfo(skuCode,applyCode);
+    }
+
+    @Override
+    public Map<String, ProductSkuCheckoutRespVo> selectBySkuCodes(Set<String> skuList) {
+        return productSkuCheckoutDao.selectBySkuCodes(skuList);
     }
 }

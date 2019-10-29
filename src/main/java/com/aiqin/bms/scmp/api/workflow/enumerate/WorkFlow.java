@@ -29,7 +29,7 @@ public enum WorkFlow {
      * 供应商工作流
      */
     APPLY_COMPANY(3,"供应商新增工作流","SCMP_APPLY_COMPANY"),
-    APPLY_COMPANY_REVISE(3,"供应商修改工作流","SCMP_APPLY_COMPANY_REVISE"),
+    APPLY_COMPANY_REVISE(18,"供应商修改工作流","SCMP_APPLY_COMPANY_REVISE"),
     /**
      * 账户申请工作流
      */
@@ -50,11 +50,11 @@ public enum WorkFlow {
      * 商品申请工作流
      */
     APPLY_GOODS(9,"商品新增申请工作流","SCMP_APPLY_GOODS"),
-    APPLY_GOODS_REVISE(14,"商品修改申请工作流","SCMP_APPLY_GOODS_REVISE"),
+    APPLY_GOODS_REVISE(17,"商品修改申请工作流","SCMP_APPLY_GOODS_REVISE"),
     /**
      * 商品配置申请工作流
      */
-    APPLY_GOODS_CONFIG(10,"商品配置申请工作流","SCMP_APPLY_GOODS_CONFIG"),
+    APPLY_GOODS_CONFIG(10,"商品配置申请工作流","SCMP_APPLY_GOODS_WAREHOUSE"),
     /**
      * 商品价格申请工作流
      */
@@ -78,7 +78,7 @@ public enum WorkFlow {
      */
     APPLY_SALE_AREA(14,"商品销售区域申请工作流","SCMP_APPLY_SALE_AREA"),
 
-    APPLY_GOODS_COMPANY(15,"商品供应商申请工作流","SCMP_APPLY_GOODS_COMPANY"),
+    APPLY_GOODS_COMPANY(16,"商品供应商申请工作流","SCMP_APPLY_GOODS_COMPANY"),
     ;
 
     /**
