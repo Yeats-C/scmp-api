@@ -1113,7 +1113,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     product.setFactorySkuCode(factorySkuCode);
                 }
                 if(product != null){
-                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum());
+                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum().intValue());
                     if(orderProduct != null){
                         Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
                         Integer productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();
