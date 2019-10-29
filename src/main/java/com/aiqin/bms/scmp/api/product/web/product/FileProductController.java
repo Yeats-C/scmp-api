@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
 import com.aiqin.bms.scmp.api.product.service.ProductFileService;
@@ -43,7 +44,7 @@ public class FileProductController {
 
     @PostMapping("/load")
     @ApiOperation("商品下属文件详情")
-    public HttpResponse<ProductSkuFileRespVo> loadFileProduct(@RequestParam("skuCode") String skuCode) {
+    public HttpResponse<ProductSkuRespVo> loadFileProduct(@RequestParam("skuCode") String skuCode) {
         return HttpResponse.success(productFileService.loadFileProduct(skuCode));
     }
 
@@ -58,11 +59,11 @@ public class FileProductController {
         }
     }
 
-    @PostMapping("/delete/file")
+    @DeleteMapping("/delete/file")
     @ApiOperation("商品文件删除")
-    public HttpResponse deleteFile(@RequestParam("id") Long id) {
+    public HttpResponse deleteFile(@RequestParam("id") Long id,@RequestParam("skuCode")String skuCode ) {
         try {
-            return HttpResponse.success(productFileService.deleteFile(id));
+            return HttpResponse.success(productFileService.deleteFile(id,skuCode));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

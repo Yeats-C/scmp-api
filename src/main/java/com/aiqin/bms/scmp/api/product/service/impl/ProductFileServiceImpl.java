@@ -54,21 +54,25 @@ public class ProductFileServiceImpl implements ProductFileService {
     }
 
     @Override
-    public int updateoradd(ProductSkuFile productSkuFile) {
+    public HttpResponse updateoradd(ProductSkuFile productSkuFile) {
         List<ProductSkuFile> productSkuFileList = Lists.newArrayList();
         if (StringUtil.isNullOrEmpty(String.valueOf(productSkuFile.getId()))) {
-
             productSkuFileList.add(productSkuFile);
             //进行数据库的存储
-            return productSkuFileDao.insertSkuFileList(productSkuFileList);
+             productSkuFileDao.insertSkuFileList(productSkuFileList);
+
+            return HttpResponse.success(productSkuFileDao.getInfo(productSkuFile.getSkuCode()));
+
         }
         //进行数据库的修改
-        return productSkuFileDao.updateById(productSkuFile);
+        return HttpResponse.success(productSkuFileDao.getInfo(productSkuFile.getSkuCode()));
     }
 
     @Override
-    public int deleteFile(Long id) {
-        return productSkuFileDao.deleteById(id);
+    public HttpResponse deleteFile(Long id, String skuCode) {
+        productSkuFileDao.deleteById(id);
+        List<ProductSkuFile> productSkuFileList = productSkuFileDao.getInfo(skuCode);
+        return HttpResponse.success(productSkuFileList);
     }
 
 

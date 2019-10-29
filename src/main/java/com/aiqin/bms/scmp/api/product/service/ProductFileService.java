@@ -5,7 +5,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRes
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 /**
@@ -26,13 +25,14 @@ public interface ProductFileService {
      * @param productSkuFile
      * @return
      */
-    int updateoradd(ProductSkuFile productSkuFile);
+    HttpResponse updateoradd(ProductSkuFile productSkuFile);
     /**
      * 对商品文件管理内的文件进行删除
      * @param
+     * @param skuCode
      * @return
      */
-    int deleteFile(Long id);
+    HttpResponse deleteFile(Long id, String skuCode);
 
 
 
