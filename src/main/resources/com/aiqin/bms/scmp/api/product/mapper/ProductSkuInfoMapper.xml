@@ -94,6 +94,13 @@
     from product_sku
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+    <select id="selectByskuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku
+        where sku_code = #{skuCode,jdbcType=VARCHAR}
+    </select>
   <select id="selectBySkuCodes" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -125,12 +132,6 @@
     <foreach collection="list" open="(" close=")" separator="," item="item">
       #{item}
     </foreach>
-  </select>
-  <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
-    select
-    <include refid="Base_Column_List" />
-    from product_sku
-    where sku_code = #{skuCode,jdbcType=BIGINT}
   </select>
     <select id="exportAddSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuAddExport">
         select a.sku_code                                 skuCode,
