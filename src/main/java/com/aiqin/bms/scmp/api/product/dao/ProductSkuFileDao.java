@@ -31,6 +31,7 @@ public interface ProductSkuFileDao {
     List<ProductSkuFileRespVO> getDraft(String skuCode);
 
     List<ProductSkuFile> getInfo(String skuCode);
+    List<ProductSkuFileRespVO> getInfoBySkuCode(String skuCode);
 
     List<ProductSkuFileDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 

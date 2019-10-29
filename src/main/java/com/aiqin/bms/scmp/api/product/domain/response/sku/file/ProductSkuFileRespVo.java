@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku.file;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileRespVO;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -19,8 +20,11 @@ import java.util.List;
 @ApiModel("商品文件管理")
 public class ProductSkuFileRespVo {
 
-    @ApiModelProperty("sku编号")
+    @ApiModelProperty("主键id")
     private Long id;
+
+    @ApiModelProperty("文件名称")
+    private String fileName;
 
     @ApiModelProperty("sku编号")
     private String skuCode;
@@ -83,6 +87,6 @@ public class ProductSkuFileRespVo {
     private String purchaseGroupName;
 
     @ApiModelProperty("所属文件列表")
-    private List<ProductSkuFile> productSkuFileList;
+    private List<ProductSkuFileRespVO> productSkuFileList;
 
 }

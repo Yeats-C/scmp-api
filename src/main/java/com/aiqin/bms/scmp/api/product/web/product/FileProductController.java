@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
@@ -50,9 +51,9 @@ public class FileProductController {
 
     @PostMapping("/updateoradd")
     @ApiOperation("商品文件编辑或者修改")
-    public HttpResponse updateoradd(@RequestBody ProductSkuFileRespVo ProductSkuFile) {
+    public HttpResponse updateOrAdd(@RequestBody ProductSkuFileReqVo ProductSkuFile) {
         try {
-            return HttpResponse.success(productFileService.updateoradd(ProductSkuFile));
+            return HttpResponse.success(productFileService.updateOrAdd(ProductSkuFile));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
@@ -77,7 +78,7 @@ public class FileProductController {
         try {
             return productFileService.uploadFiles(multipartFiles,skuCode);
         } catch (Exception e) {
-
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
         }
 
