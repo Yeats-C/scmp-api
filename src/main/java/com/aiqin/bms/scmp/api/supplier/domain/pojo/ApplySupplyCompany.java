@@ -176,4 +176,7 @@ public class ApplySupplyCompany extends CommonBean {
 
     @ApiModelProperty("审批名称")
     private String approvalName;
+
+    @ApiModelProperty("审批备注")
+    private String approvalRemark;
 }

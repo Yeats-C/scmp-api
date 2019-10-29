@@ -196,4 +196,16 @@ public class SupplyCompanyController extends SupplierBaseController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @GetMapping("/apply/reUpdate")
+    public HttpResponse reUpdateApply(@RequestParam("applyCode") String applyCode){
+        try {
+            return HttpResponse.success( applySupplyComService.reUpdateApply(applyCode));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 }

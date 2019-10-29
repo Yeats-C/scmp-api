@@ -424,6 +424,9 @@
     <if test="formNo != null  and formNo != '' " >
       and form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
     </if>
+    <if test="purchaseGroupCode != null  and purchaseGroupCode != '' " >
+      and purchasing_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
     order by create_time desc
   </select>
 

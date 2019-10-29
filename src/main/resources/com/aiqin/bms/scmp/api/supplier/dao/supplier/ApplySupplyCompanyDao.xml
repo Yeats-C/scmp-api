@@ -98,6 +98,7 @@
     <result column="delivery_area" jdbcType="VARCHAR" property="deliveryArea"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="approval_name" jdbcType="VARCHAR" property="approvalName"/>
+    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark"/>
   </resultMap>
   <resultMap id="ApplySupplyComListMap" type="com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO">
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
@@ -134,7 +135,7 @@
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
       enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
       min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
-      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name)
+      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark)
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -148,7 +149,9 @@
       #{registeredCapital, jdbcType=DECIMAL},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
-      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},#{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR}
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},
+      #{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
+      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">
@@ -285,7 +288,8 @@
       a.brand,
       a.delivery_area,
       a.remark,
-      a.approval_name
+      a.approval_name,
+      a.approval_remark
     FROM
 	   apply_supply_company a
 	  left join supplier_dictionary_info si on si.supplier_dictionary_name = '供应商类型' and a.apply_supply_type = si.supplier_dictionary_value

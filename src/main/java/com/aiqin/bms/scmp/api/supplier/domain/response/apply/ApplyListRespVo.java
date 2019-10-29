@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -59,5 +60,8 @@ public class ApplyListRespVo {
 
     @ApiModelProperty("状态")
     private String status;
+
+    @ApiModelProperty("审批名称")
+    private String approvalName;
 
 }
