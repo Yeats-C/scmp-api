@@ -674,8 +674,8 @@
     where
     source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
   </update>
-  <select id="selectCreateById" resultType="java.lang.String">
-    select b.create_by_id from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
+  <select id="selectCreateById" resultType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+    select b.create_by_id as createById, b.create_by_name as createByName from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
     where a.outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
   </select>
 

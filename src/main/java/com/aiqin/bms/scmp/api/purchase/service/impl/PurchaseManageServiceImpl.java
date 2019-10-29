@@ -369,6 +369,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if (CollectionUtils.isNotEmptyCollection(details)) {
             List<PurchaseOrderProduct> list = Lists.newArrayList();
             PurchaseOrderProduct orderProduct;
+            Integer i = 1;
             for (PurchaseApplyDetailResponse detail : details) {
                 orderProduct = new PurchaseOrderProduct();
                 // 计算单品数量， 含税总价
@@ -411,6 +412,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
+                i++;
+                orderProduct.setLinnum(i);
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
@@ -763,7 +766,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             InboundBatchReqVo inboundBatchReqVo;
             ProductSkuPictures productSkuPicture;
             ProductSkuPurchaseInfo skuPurchaseInfo;
-            Long i = 0L;
             for(PurchaseOrderProduct product:productList){
                 Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
                 Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
@@ -801,8 +803,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
                 Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
                 reqVo.setPreTaxAmount(productTotalAmount);
-                i++;
-                reqVo.setLinenum(i);
+                reqVo.setLinenum(product.getLinnum().longValue());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
                 reqVo.setCreateTime(Calendar.getInstance().getTime());
                 reqVo.setTax(product.getTaxRate().longValue());
@@ -862,7 +863,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         for(PurchaseOrderProduct product:list){
             product.setPurchaseOrderCode(purchaseStorage.getPurchaseOrderCode());
             PurchaseOrderProduct orderProduct= purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(
-                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getId());
+                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getLinnum());
             Integer actualCount = orderProduct.getActualSingleCount() == null ? 0 : orderProduct.getActualSingleCount().intValue();
             product.setActualSingleCount(actualCount + product.getActualSingleCount());
             Integer count1 = purchaseOrderProductDao.update(product);
@@ -870,7 +871,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 return HttpResponse.failure(ResultCode.UPDATE_ERROR);
             }
             PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(
-                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getId());
+                    purchaseStorage.getPurchaseOrderCode(), product.getSkuCode(), product.getLinnum());
             Integer singleCount = purchaseOrderProduct.getSingleCount() == null ? 0 : purchaseOrderProduct.getSingleCount().intValue();
             Integer actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0 : purchaseOrderProduct.getActualSingleCount().intValue();
             if(singleCount - actualSingleCount > 0){

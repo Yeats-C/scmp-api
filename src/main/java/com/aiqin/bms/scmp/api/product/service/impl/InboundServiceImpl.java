@@ -386,8 +386,9 @@ public class InboundServiceImpl implements InboundService {
                     purchaseManageService.addLog(operationLog);
                 }
             }
-            String createById = inboundDao.selectCreateById(inbound.getInboundOderCode());
-            inboundWmsReqVO.setCreateById(createById);
+            PurchaseOrder order = inboundDao.selectCreateById(inbound.getInboundOderCode());
+            inboundWmsReqVO.setCreateById(order.getCreateById());
+            inboundWmsReqVO.setCreateByName(order.getCreateByName());
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO).timeout(10000);
@@ -693,7 +694,7 @@ public class InboundServiceImpl implements InboundService {
                 purchaseOrderProduct.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
                 purchaseOrderProduct.setActualSingleCount(Integer.parseInt(storageResultItemReqVo.getPraInboundMainNum().toString()));
                 purchaseOrderProduct.setSkuCode(storageResultItemReqVo.getSkuCode());
-                purchaseOrderProduct.setId(storageResultItemReqVo.getLinenum());
+                purchaseOrderProduct.setLinnum(storageResultItemReqVo.getLinenum().intValue());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
             List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());

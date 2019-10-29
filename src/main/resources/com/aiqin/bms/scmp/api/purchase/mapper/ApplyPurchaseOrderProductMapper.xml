@@ -36,6 +36,7 @@
     <result column="stock_amount" jdbcType="BIGINT" property="stockAmount" />
     <result column="stock_turnover" jdbcType="INTEGER" property="stockTurnover" />
     <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
+    <result column="linnum" jdbcType="INTEGER" property="linnum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, order_product_id, purchase_order_id, purchase_order_code,
@@ -43,7 +44,7 @@
     color_name, model_number, product_type, purchase_whole, purchase_single, base_product_content, 
     box_gauge, single_count, tax_rate, product_amount, product_total_amount, stock_count, 
     actual_single_count, factory_sku_code, create_time, update_time, create_by_id, update_by_id, 
-    create_by_name, update_by_name, stock_amount, stock_turnover, receipt_turnover
+    create_by_name, update_by_name, stock_amount, stock_turnover, receipt_turnover, linnum
   </sql>
   <insert id="insertAll">
     insert into apply_purchase_order_product (order_product_id,
@@ -51,7 +52,7 @@
       category_id, category_name, product_spec, color_name, model_number, product_type,
       purchase_whole, purchase_single, base_product_content, box_gauge, single_count, tax_rate,
       product_amount, product_total_amount, stock_count, actual_single_count, factory_sku_code,
-      create_time, create_by_id, create_by_name, stock_amount, stock_turnover, receipt_turnover)
+      create_time, create_by_id, create_by_name, stock_amount, stock_turnover, receipt_turnover, linnum)
     values
     <foreach collection="list" item="item" index="" separator=",">
      (#{item.orderProductId,jdbcType=VARCHAR}, #{item.purchaseOrderId,jdbcType=VARCHAR},
@@ -64,7 +65,7 @@
       #{item.productAmount,jdbcType=INTEGER}, #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, 
       #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR}, now(), 
       #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=BIGINT},
-      #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER})
+      #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})
     </foreach>
   </insert>
   <select id="applyPurchaseOrderList" resultMap="BaseResultMap">

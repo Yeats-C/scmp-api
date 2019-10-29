@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 
 import java.util.List;
 
@@ -28,9 +29,7 @@ public interface OutboundDao {
 
     int insertSelective(Outbound record);
 
-
     Outbound selectByPrimaryKey(Long id);
-
 
     int updateByPrimaryKeySelective(Outbound record);
 
@@ -51,7 +50,7 @@ public interface OutboundDao {
      */
     int insertBatch(List<Outbound> list);
 
-    String selectCreateById(String outboundOderCode);
+    RejectRecord selectCreateById(String outboundOderCode);
 
     Outbound selectById(Long id);
 
