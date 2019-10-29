@@ -23,7 +23,7 @@ public interface PurchaseOrderProductDao {
 
     List<PurchaseOrderProduct> orderBySku(String purchaseOrderId);
 
-    PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderCode")String purchaseOrderCode,@Param("id") Long id);
+    PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderCode")String purchaseOrderCode,@Param("linnum") Integer linnum);
 
     List<PurchaseOrderProduct> orderProductInfo(String purchaseOrderId);
 
