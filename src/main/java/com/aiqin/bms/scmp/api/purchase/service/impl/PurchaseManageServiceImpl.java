@@ -412,8 +412,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
-                i++;
                 orderProduct.setLinnum(i);
+                i++;
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
