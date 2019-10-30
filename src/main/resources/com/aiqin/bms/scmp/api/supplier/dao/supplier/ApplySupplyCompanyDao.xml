@@ -465,10 +465,10 @@
       and a.form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
     </if>
     <if test="purchaseGroupCode != null and purchaseGroupCode!= '' ">
-      and a.purchasing_group_code in (#{purchaseGroupCode})
+      and a.purchasing_group_code like  concat('%',(#{purchaseGroupCode},'%')
     </if>
     <if test="personId != null and personId!= '' ">
-      and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      and a.apply_supply_company_code in (select apply_supply_company_code from apply_supply_company_purchase_group where purchasing_group_code in(select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}))
     </if>
     order by create_time desc
   </select>
