@@ -418,7 +418,7 @@
     </if>
   </select>
   <select id="getApplySupplyCompany" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> from apply_supply_company where apply_supplier_code=#{applySupplierCode,jdbcType=VARCHAR}
+    SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> from apply_supply_company where apply_supply_company_code=#{applySupplierCode,jdbcType=VARCHAR}
   </select>
   <select id="getApplySupplyComByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
     SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> FROM apply_supply_company WHERE form_no=#{formNo,jdbcType=VARCHAR}
@@ -465,10 +465,10 @@
       and a.form_no like concat('%', #{formNo,jdbcType=VARCHAR},'%')
     </if>
     <if test="purchaseGroupCode != null and purchaseGroupCode!= '' ">
-      and a.purchasing_group_code in (#{purchaseGroupCode})
+      and a.purchasing_group_code like  concat('%',(#{purchaseGroupCode},'%')
     </if>
     <if test="personId != null and personId!= '' ">
-      and a.purchasing_group_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+      and a.apply_supply_company_code in (select apply_supply_company_code from apply_supply_company_purchase_group where purchasing_group_code in(select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR}))
     </if>
     order by create_time desc
   </select>

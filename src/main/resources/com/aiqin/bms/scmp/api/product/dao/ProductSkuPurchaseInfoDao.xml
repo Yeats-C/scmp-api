@@ -99,7 +99,7 @@
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
-  <select id="getApply" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPurchaseInfoMapper.BaseResultMap">
+  <select id="getApply" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPurchaseInfoMapper.BaseResultMap">
     SELECT
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPurchaseInfoMapper.Base_Column_List"/>
     FROM apply_product_sku_purchase_info

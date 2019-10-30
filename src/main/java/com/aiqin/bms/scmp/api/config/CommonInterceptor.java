@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.config;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -23,35 +25,31 @@ public class CommonInterceptor {
      */
     public Map<String,String> getRequest() {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        Map<String,String> map = new HashMap<>();
-        if(null != authToken) {
-            if(StringUtils.isNotBlank(authToken.getPersonName())) {
-                map.put("userName", authToken.getPersonName());
-            }else {
-                map.put("userName", "爱亲张昀童");
-            }
-            if(StringUtils.isNotBlank(authToken.getTicket())){
-                map.put(Global.TICKET,authToken.getTicket());
-            }
-            if(StringUtils.isNotBlank(authToken.getPersonId())){
-                map.put("ticketPersonId",authToken.getPersonId());
-            }
-            if(StringUtils.isNotBlank(authToken.getAccountId())){
-                map.put("accountId",authToken.getAccountId());
-            }
-            if(StringUtils.isNotBlank(authToken.getCompanyCode())){
-                map.put("companyCode",authToken.getCompanyCode());
-            }
-            if(StringUtils.isNotBlank(authToken.getCompanyName())){
-                map.put("companyName",authToken.getCompanyName());
-            }
-            if(StringUtils.isNotBlank(authToken.getPositionCode())){
-                map.put("positionCode",authToken.getPositionCode());
-            }
-        } else {
-            map.put("userName", "爱亲张昀童");
+        if(Objects.isNull(authToken)){
+            throw new BizException(ResultCode.LOGIN_ERROR);
         }
-
+        Map<String,String> map = new HashMap<>();
+        if(StringUtils.isNotBlank(authToken.getPersonName())) {
+            map.put("userName", authToken.getPersonName());
+        }
+        if(StringUtils.isNotBlank(authToken.getTicket())){
+            map.put(Global.TICKET,authToken.getTicket());
+        }
+        if(StringUtils.isNotBlank(authToken.getPersonId())){
+            map.put("ticketPersonId",authToken.getPersonId());
+        }
+        if(StringUtils.isNotBlank(authToken.getAccountId())){
+            map.put("accountId",authToken.getAccountId());
+        }
+        if(StringUtils.isNotBlank(authToken.getCompanyCode())){
+            map.put("companyCode",authToken.getCompanyCode());
+        }
+        if(StringUtils.isNotBlank(authToken.getCompanyName())){
+            map.put("companyName",authToken.getCompanyName());
+        }
+        if(StringUtils.isNotBlank(authToken.getPositionCode())){
+            map.put("positionCode",authToken.getPositionCode());
+        }
         return map;
     }
 

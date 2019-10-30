@@ -27,6 +27,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
@@ -252,9 +253,12 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     @Override
     public BasePage<QueryProductBrandRespVO> selectBrandListByQueryVO(QueryProductBrandReqVO vo) {
         try {
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                vo.setCompanyCode(authToken.getCompanyCode());
+            //前端调用需要封装
+            if(StringUtils.isBlank(vo.getCompanyCode())){
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if(null != authToken){
+                    vo.setCompanyCode(authToken.getCompanyCode());
+                }
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<QueryProductBrandRespVO> userDetails = productBrandTypeDao.selectListByQueryVO(vo);

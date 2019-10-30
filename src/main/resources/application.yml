@@ -276,14 +276,6 @@ mgs:
       - code: SCMP004006
         name: 商品销售区域配置
         link: '/product/productSaleArea'
-      - code: SCMP004007
-        name: 配置信息管理
-        link: '/product/productConfig'
-        methods:
-        - code: SCMP004007001
-          name: 编辑
-        - code: SCMP004007002
-          name: 导入
       - code: SCMP004009
         name: 商品仓库管理
         link: '/product/store'
@@ -318,6 +310,14 @@ mgs:
         methods:
         - code: SCMP004008001
           name: 编辑
+      - code: SCMP004011
+        name: 商品文件管理
+        link: '/product/productFiles'
+        methods:
+        - code: SCMP004011001
+          name: 编辑
+        - code: SCMP004011002
+          name: 导入
     - code: SCMP005
       name: 价格管理
       link: ''

@@ -197,10 +197,13 @@ public class SupplyCompanyController extends SupplierBaseController {
         }
     }
 
-    @GetMapping("/apply/reUpdate")
+    @PostMapping("/apply/reUpdate")
+    @ApiOperation(value = "审批追踪重新编辑")
     public HttpResponse reUpdateApply(@RequestParam("applyCode") String applyCode){
         try {
             return HttpResponse.success( applySupplyComService.reUpdateApply(applyCode));
+        } catch (GroundRuntimeException ex) {
+            return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {

@@ -1368,10 +1368,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public BasePage<QueryProductSkuListResp> querySkuList(QuerySkuListReqVO querySkuListReqVO) {
         try {
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
-                querySkuListReqVO.setPersonId(authToken.getPersonId());
+            //前端调用需要封装
+            if(StringUtils.isBlank(querySkuListReqVO.getCompanyCode())){
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if(null != authToken){
+                    querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
+                    querySkuListReqVO.setPersonId(authToken.getPersonId());
+                }
             }
             String categoryId;
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());

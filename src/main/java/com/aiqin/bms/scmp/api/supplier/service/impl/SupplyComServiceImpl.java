@@ -36,6 +36,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -73,10 +74,13 @@ public class SupplyComServiceImpl implements SupplyComService {
     @Override
     public BasePage<SupplyComListRespVO> getSupplyCompanyInfoList(QuerySupplyComReqVO querySupplyComReqVO) {
         try {
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
-                querySupplyComReqVO.setPersonId(authToken.getPersonId());
+            //前端调用需要封装
+            if(StringUtils.isBlank(querySupplyComReqVO.getCompanyCode())){
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if(null != authToken){
+                    querySupplyComReqVO.setCompanyCode(authToken.getCompanyCode());
+                    querySupplyComReqVO.setPersonId(authToken.getPersonId());
+                }
             }
             PageHelper.startPage(querySupplyComReqVO.getPageNo(), querySupplyComReqVO.getPageSize());
             List<SupplyComListRespVO> supplyComListRespVOS = supplyCompanyDao.getSupplyCompanyList(querySupplyComReqVO);
