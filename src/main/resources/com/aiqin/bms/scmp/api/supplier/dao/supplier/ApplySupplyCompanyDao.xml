@@ -418,7 +418,7 @@
     </if>
   </select>
   <select id="getApplySupplyCompany" parameterType="java.lang.String" resultMap="BaseResultMap">
-    SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> from apply_supply_company where apply_supplier_code=#{applySupplierCode,jdbcType=VARCHAR}
+    SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> from apply_supply_company where apply_supply_company_code=#{applySupplierCode,jdbcType=VARCHAR}
   </select>
   <select id="getApplySupplyComByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.BaseResultMap">
     SELECT <include refid="com.aiqin.bms.scmp.api.supplier.mapper.ApplySupplyCompanyMapper.Base_Column_List"/> FROM apply_supply_company WHERE form_no=#{formNo,jdbcType=VARCHAR}
