@@ -158,4 +158,7 @@ public class ApplySupplyComDetailDTO {
 
     @ApiModelProperty("审批名称")
     private String approvalName;
+
+    @ApiModelProperty("审批名称")
+    private String approvalRemark;
 }

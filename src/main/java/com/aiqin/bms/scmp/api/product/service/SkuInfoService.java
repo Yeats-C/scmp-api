@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -17,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProduct
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import org.springframework.transaction.annotation.Transactional;
@@ -304,4 +306,6 @@ public interface SkuInfoService{
     Boolean exportAddSku(HttpServletResponse resp, String applyCode);
 
     Boolean exportEditSku(HttpServletResponse resp, String applyCode);
+
+
 }

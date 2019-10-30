@@ -31,6 +31,7 @@ public interface ProductSkuFileDao {
     List<ProductSkuFileRespVO> getDraft(String skuCode);
 
     List<ProductSkuFile> getInfo(String skuCode);
+    List<ProductSkuFileRespVO> getInfoBySkuCode(String skuCode);
 
     List<ProductSkuFileDraft> getDrafts(@Param("productSkus") List<ApplyProductSku> productSkus);
 
@@ -43,4 +44,13 @@ public interface ProductSkuFileDao {
     List<ProductSkuFileRespVO> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ProductSkuFileRespVO> getRespVoBySkuCode(String skuCode);
+
+    int deleteById(@Param("id")Long id);
+
+    /**
+     * 根据id来进行sku商品的修改
+     * @param productSkuFile
+     * @return
+     */
+    int updateById(ProductSkuFile productSkuFile);
 }

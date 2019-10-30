@@ -20,6 +20,8 @@ public interface ProductSkuInfoMapper {
 
     ProductSkuInfo selectByPrimaryKey(Long id);
 
+    ProductSkuInfo selectByPrimaryKey(@Param("skuCode")String skuCode);
+
     int updateByPrimaryKeySelective(ProductSkuInfo record);
 
     int updateByPrimaryKey(ProductSkuInfo record);

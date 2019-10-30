@@ -415,7 +415,7 @@
       apply_show, company_code,
       company_name, be_effective, selection_effective_time,
       selection_effective_start_time, direct_supervisor_code,
-      direct_supervisor_name,apply_type)
+      direct_supervisor_name,apply_type,approval_name,approval_remark)
     values
     <foreach collection="list" item="item" open="" close="" separator=",">
       (#{item.id,jdbcType=BIGINT}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
@@ -430,7 +430,8 @@
       #{item.applyShow,jdbcType=TINYINT}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.companyName,jdbcType=VARCHAR}, #{item.beEffective,jdbcType=INTEGER}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
       #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP}, #{item.directSupervisorCode,jdbcType=VARCHAR},
-      #{item.directSupervisorName,jdbcType=VARCHAR}, #{item.applyType,jdbcType=TINYINT})
+      #{item.directSupervisorName,jdbcType=VARCHAR}, #{item.applyType,jdbcType=TINYINT},
+      #{item.approvalName,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfig">
