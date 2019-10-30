@@ -1129,7 +1129,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             List<PurchaseGroupVo> purchaseGroups = purchaseGroupService.getPurchaseGroup(null);
             Map<String, PurchaseGroupVo> purchaseGroupVoList = purchaseGroups.stream().collect(Collectors.toMap(PurchaseGroupVo::getPurchaseGroupName, Function.identity(), (k1, k2) -> k2));
             //查出品类
-            List<ProductCategoryRespVO> categoryRespVos = productCategoryService.getTree((byte) 0, "0");
+            List<ProductCategoryRespVO> categoryRespVos = productCategoryService.getTree((byte) 0, "0", getUser().getCompanyCode());
             Map<String, ProductCategoryRespVO> categoryList = categoryRespVos.stream().collect(Collectors.toMap(ProductCategoryRespVO::getCategoryName, Function.identity(), (k1, k2) -> k2));
             //查出品牌
             QueryProductBrandReqVO vo = new QueryProductBrandReqVO();

@@ -233,12 +233,13 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategoryRespVO> getList(Byte categoryStatus) {
+    public List<ProductCategoryRespVO> getList(Byte categoryStatus, String companyCode) {
         try {
-            String companyCode = "";
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if (null != authToken) {
-                companyCode = authToken.getCompanyCode();
+            if(StringUtils.isBlank(companyCode)){
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if (null != authToken) {
+                    companyCode = authToken.getCompanyCode();
+                }
             }
             //所有数据集合
             List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryDao.getProductCategoryList(categoryStatus, companyCode, null);
@@ -265,13 +266,14 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     }
 
     @Override
-    public List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode) {
+    public List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode, String companyCode) {
         try {
-            String companyCode = "";
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if (null != authToken) {
-                companyCode = authToken.getCompanyCode();
-            }
+           if(StringUtils.isBlank(companyCode)){
+               AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+               if (null != authToken) {
+                   companyCode = authToken.getCompanyCode();
+               }
+           }
             List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryDao.getProductCategoryList(categoryStatus, companyCode, parentCode);
             final String finalCompanyCode = companyCode;
             productCategoryRespVOS.forEach(item -> {
