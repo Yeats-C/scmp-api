@@ -27,6 +27,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApprovalFileInfoService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
@@ -678,6 +679,19 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         //组装数据
         return dealApplyViewData(productSkuSupplyUnitRespVos);
+    }
+
+    @Override
+    public DetailRequestRespVo getInfoByForm(String formNo) {
+        DetailRequestRespVo respVo = new DetailRequestRespVo();
+        List<ApplyProductSkuSupplyUnit> unitList = productSkuSupplyUnitDao.selectByFormNo(formNo);
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(unitList)) {
+            throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
+        }
+        String applyCode = unitList.get(0).getApplyCode();
+        respVo.setApplyCode(applyCode);
+        respVo.setItemCode("4");
+        return respVo;
     }
 
     private ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> dealApplyViewData(List<ProductSkuSupplyUnitRespVo> unitRespVos) {

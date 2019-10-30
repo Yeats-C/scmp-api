@@ -128,6 +128,8 @@ public class ProductApplyServiceImpl implements ProductApplyService {
                 break;
             case 3:
                 respVo = productSaleAreaService.getInfoByForm(formNo);
+            case 4:
+                respVo = productSkuSupplyUnitService.getInfoByForm(formNo);
                 break;
             default: throw new BizException(MessageId.create(Project.PRODUCT_API,98,"请选择审批类型!"));
         }
