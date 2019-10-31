@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateProductSkuSupplyUnitReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.config.UpdateSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.ApplySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
@@ -387,6 +388,13 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         //删除重复的数据,插入数据
         List<String> deleteSupplyUnitCodes = list.stream().map(UpdateProductSkuSupplyUnitReqVo::getSupplyUnitCode).collect(Collectors.toList());
+        //判断需要保存的数据在审批中是否存在
+        List<ProductSkuSupplyUnitRespVo> list2 = this.selectApplyBySkuCode(reqVo.getSkuCode());
+        List<String> list2SupplyUnitCodes = list2.stream().map(ProductSkuSupplyUnitRespVo::getSupplyUnitCode).collect(Collectors.toList());
+        list2SupplyUnitCodes.retainAll(deleteSupplyUnitCodes);
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list2SupplyUnitCodes)) {
+            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
+        }
         draftMapper.deleteBySkuCodeAndSupplierCodes(reqVo.getSkuCode(),deleteSupplyUnitCodes);
         productSkuSupplyUnitCapacityService.deleteDraftBySkuCodeAndSupplierCodes(reqVo.getSkuCode(),deleteSupplyUnitCodes);
         //保存数据到临时表
@@ -597,8 +605,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             newVO.setAuditorTime(new Date());
             //审批中，直接返回成功
             if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
-                return WorkFlowReturn.SUCCESS;
-            }
+            return WorkFlowReturn.SUCCESS;
+        }
             //查询供应商数据
             List<ApplyProductSkuSupplyUnit> unitList = productSkuSupplyUnitDao.selectByFormNo(newVO.getFormNo());
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(unitList)) {
@@ -620,19 +628,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                     boolean b = unitList.get(0).getSelectionEffectiveTime() == 0 ? true : false;
                     //判断是否不立即生效
                     boolean b1 = b && unitList.get(0).getSelectionEffectiveStartTime().after(new Date());
-                    try {
-                        updateApplyInfoByVO2(newVO, applyCode);
-                        if (!b1) {
-                            //供应商信息
-                            this.saveListForChange(unitList);
-                            //供应商产能信息
-                            productSkuSupplyUnitCapacityService.saveListForChange(unitList);
-                            //保存采购价
-                            productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(unitList));
-                        }
-                    } catch (Exception e) {
-                        log.error(e.getMessage());
-                        return WorkFlowReturn.FALSE;
+                    updateApplyInfoByVO2(newVO, applyCode);
+                    if (!b1) {
+                        //供应商信息
+                        this.saveListForChange(unitList);
+                        //供应商产能信息
+                        productSkuSupplyUnitCapacityService.saveListForChange(unitList);
+                        //保存采购价
+                        productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(unitList));
                     }
                 }
             }
@@ -731,15 +734,17 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             productSkuSupplyUnits.forEach(o->{
                 skuList.add(o.getProductSkuCode());
             });
-            Map<String, ProductSkuInfo> stringProductSkuInfoMap = skuInfoService.selectBySkuCodes(skuList, getUser().getCompanyCode());
+            String companyCode = productSkuSupplyUnits.get(0).getCompanyCode();
+            String companyName = productSkuSupplyUnits.get(0).getCompanyName();
+            Map<String, ProductSkuInfo> stringProductSkuInfoMap = skuInfoService.selectBySkuCodes(skuList, companyCode);
             productSkuSupplyUnits.forEach(item -> {
                 String purchaseGroupCode = null != stringProductSkuInfoMap.get(item.getProductSkuCode()) ? stringProductSkuInfoMap.get(item.getProductSkuCode()).getProcurementSectionCode() : "";
                 String purchaseGroupName = null != stringProductSkuInfoMap.get(item.getProductSkuCode()) ? stringProductSkuInfoMap.get(item.getProductSkuCode()).getProcurementSectionName() : "";
                 ProductSkuPriceInfo productSkuPriceInfo = new ProductSkuPriceInfo();
                 productSkuPriceInfo.setSkuCode(item.getProductSkuCode());
                 productSkuPriceInfo.setSkuName(item.getProductSkuName());
-                productSkuPriceInfo.setCompanyCode(getUser().getCompanyCode());
-                productSkuPriceInfo.setCompanyName(getUser().getCompanyName());
+                productSkuPriceInfo.setCompanyCode(companyCode);
+                productSkuPriceInfo.setCompanyName(companyName);
                 productSkuPriceInfo.setPurchaseGroupCode(purchaseGroupCode);
                 productSkuPriceInfo.setPurchaseGroupName(purchaseGroupName);
                 productSkuPriceInfo.setPriceItemCode(purchasePriceProject.getPriceProjectCode());

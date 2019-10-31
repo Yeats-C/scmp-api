@@ -312,6 +312,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(saveList)){
             throw new BizException(ResultCode.SUMBIT_NOT_DATA);
         }
+        //判断需要保存的数据在审批中是否存在
+        List<ApplyProductSkuConfig> applyConfig = applyProductSkuConfigMapper.selectbyConfigCode(saveList.stream().filter(item -> StringUtils.isNotBlank(item.getConfigCode())).map(UpdateSkuConfigReqVo::getConfigCode).collect(Collectors.toList()));
+        if (CollectionUtils.isNotEmpty(applyConfig)) {
+            throw new BizException(ResultCode.UN_SUBMIT_APPROVAL);
+        }
         Integer num = 0;
         //删除重复的数据,插入数据
         List<String> deleteTransportCenterCodes = saveList.stream().map(UpdateSkuConfigReqVo::getTransportCenterCode).collect(Collectors.toList());
@@ -417,19 +422,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     @Transactional(rollbackFor = Exception.class)
     @SaveList
     public Integer insertDraftBatch(List<ProductSkuConfigDraft> drafts) {
-        for (ProductSkuConfigDraft productSkuConfigDraft: drafts
-             ) {
-            List<ProductSkuConfigSpareWarehouseDraft> productSkuConfigSpareWarehouseDrafts=Lists.newArrayList();
-            List<SpareWarehouseReqVo> spareWarehouseReqVoList=  productSkuConfigDraft.getSpareWarehouses();
-            for (int i=0;i<spareWarehouseReqVoList.size();i++){
-                SpareWarehouseReqVo spareWarehouseReqVo= spareWarehouseReqVoList.get(i);
-                ProductSkuConfigSpareWarehouseDraft productSkuConfigSpareWarehouseDraft=new ProductSkuConfigSpareWarehouseDraft();
-                spareWarehouseReqVo.setConfigCode(productSkuConfigDraft.getConfigCode());
-                BeanCopyUtils.copy(spareWarehouseReqVo,productSkuConfigSpareWarehouseDraft);
-                productSkuConfigSpareWarehouseDrafts.add(productSkuConfigSpareWarehouseDraft);
-            }
-            spareWarehouseDraftMapper.insertBatch(productSkuConfigSpareWarehouseDrafts);
-        }
         return draftMapper.insertBatch(drafts);
     }
 
@@ -731,89 +723,52 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         }
         //首先通过formNO查找数据 配置数据
         List<ApplyProductSkuConfig> list = applyMapper.selectByFormNo(newVO.getFormNo());
-        //查询供应商数据
-        List<ApplyProductSkuSupplyUnit> unitList = productSkuSupplyUnitDao.selectByFormNo(newVO.getFormNo());
-        if (CollectionUtils.isEmpty(list) && CollectionUtils.isEmpty(unitList)) {
+        if (CollectionUtils.isEmpty(list)) {
             throw new BizException(ResultCode.DATA_ERROR);
         }
-        if (CollectionUtils.isNotEmpty(list)) {
-            if (!list.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
-            }
-            String applyCode = list.get(0).getApplyCode();
-            //审批驳回
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
-                updateApplyInfoByVO(newVO, applyCode);
-            }
-            //撤销
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-                updateApplyInfoByVO(newVO, applyCode);
-            }
-            //审批通过
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-                //判断是否预约时间
-                boolean b = list.get(0).getSelectionEffectiveTime() == 0 ? true : false;
-                //判断是否不立即生效，进行防空判断
-                boolean b1 = b && list.get(0).getSelectionEffectiveStartTime().after(new Date());
-                try {
-                    updateApplyInfoByVO(newVO, applyCode);
-                    if (!b1) {
-                        //通过applyCode查询备用仓库
-                        List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
-                                selectByApplyCode(applyCode);
-                        //获取配置编号
-                        List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
-                                collect(Collectors.toList());
-                        //保存正式备用仓库信息
-                        //删除正式
-                        if (CollectionUtils.isNotEmpty(configCodes)) {
-                            spareWarehouseMapper.deleteByConfigCodes(configCodes);
-                        }
-                        //批量插入
-                        List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
-                                ProductSkuConfigSpareWarehouse.class);
-                        ((ProductSkuConfigService) AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
-                        //保存商品配置正式数据
-                        saveOfficial(newVO, list);
-                    }
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    return WorkFlowReturn.FALSE;
-                }
-            }
+
+        if (!list.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
         }
-        if (CollectionUtils.isNotEmpty(unitList)) {
-            if (!unitList.get(0).getAuditorStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
-                throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
-            }
-            String applyCode = unitList.get(0).getApplyCode();
-            //审批驳回
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
-                updateApplyInfoByVO2(newVO, applyCode);
-            }
-            //撤销
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-                updateApplyInfoByVO2(newVO, applyCode);
-            }
-            //审批通过
-            if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-                //判断是否预约时间
-                boolean b = unitList.get(0).getSelectionEffectiveTime() == 0 ? true : false;
-                //判断是否不立即生效
-                boolean b1 = b && unitList.get(0).getSelectionEffectiveStartTime().after(new Date());
-                try {
-                    updateApplyInfoByVO2(newVO, applyCode);
-                    if (!b1) {
-                        //供应商信息
-                        productSkuSupplyUnitService.saveListForChange(unitList);
-                        //供应商产能信息
-                        productSkuSupplyUnitCapacityService.saveListForChange(unitList);
-                        //更新状态
+        String applyCode = list.get(0).getApplyCode();
+        //审批驳回
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            updateApplyInfoByVO(newVO, applyCode);
+        }
+        //撤销
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+            updateApplyInfoByVO(newVO, applyCode);
+        }
+        //审批通过
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            //判断是否预约时间
+            boolean b = list.get(0).getSelectionEffectiveTime() == 0 ? true : false;
+            //判断是否不立即生效，进行防空判断
+            boolean b1 = b && list.get(0).getSelectionEffectiveStartTime().after(new Date());
+            try {
+                updateApplyInfoByVO(newVO, applyCode);
+                if (!b1) {
+                    //通过applyCode查询备用仓库
+                    List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
+                            selectByApplyCode(applyCode);
+                    //获取配置编号
+                    List<String> configCodes = applySpareWarehouses.stream().map(item -> item.getConfigCode()).distinct().
+                            collect(Collectors.toList());
+                    //保存正式备用仓库信息
+                    //删除正式
+                    if (CollectionUtils.isNotEmpty(configCodes)) {
+                        spareWarehouseMapper.deleteByConfigCodes(configCodes);
                     }
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                    return WorkFlowReturn.FALSE;
+                    //批量插入
+                    List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses = BeanCopyUtils.copyList(applySpareWarehouses,
+                            ProductSkuConfigSpareWarehouse.class);
+                    ((ProductSkuConfigService) AopContext.currentProxy()).insertSpareWarehouseList(skuConfigSpareWarehouses);
+                    //保存商品配置正式数据
+                    saveOfficial(newVO, list);
                 }
+            } catch (Exception e) {
+                log.error(e.getMessage());
+                return WorkFlowReturn.FALSE;
             }
         }
         return WorkFlowReturn.SUCCESS;
