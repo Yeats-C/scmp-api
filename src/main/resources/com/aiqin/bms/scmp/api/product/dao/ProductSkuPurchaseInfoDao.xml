@@ -42,7 +42,7 @@
     SELECT * FROM product_sku_purchase_info_draft WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuPurchaseInfoMap">
-    SELECT * FROM product_sku_purchase_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    SELECT * FROM product_sku_purchase_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR} limit 1
   </select>
   <select id="getDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuPurchaseInfoDraftMapper.BaseResultMap">
     SELECT * FROM product_sku_purchase_info_draft WHERE del_flag=0 AND product_sku_code IN

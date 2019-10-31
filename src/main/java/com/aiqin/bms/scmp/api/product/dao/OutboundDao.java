@@ -29,9 +29,7 @@ public interface OutboundDao {
 
     int insertSelective(Outbound record);
 
-
     Outbound selectByPrimaryKey(Long id);
-
 
     int updateByPrimaryKeySelective(Outbound record);
 
