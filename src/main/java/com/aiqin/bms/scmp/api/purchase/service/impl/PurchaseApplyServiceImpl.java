@@ -8,10 +8,10 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
-import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSalesInfo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
@@ -106,7 +106,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Resource
     private WarehouseDao warehouseDao;
     @Resource
-    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
+    private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -901,8 +901,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("id", ++i);
                 map.put("skuCode", product.getSkuCode());
                 // 查询sku 的销售条形码
-                ProductSkuSalesInfo salesInfo = productSkuSalesInfoDao.salesInfoByPdf(product.getSkuCode());
-                String salesCode = salesInfo.getSalesCode() == null ? "" : salesInfo.getSalesCode();
+                ProductSkuPurchaseInfo salesInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+                String salesCode = salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
                 map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
                 map.put("spec", product.getProductSpec());
