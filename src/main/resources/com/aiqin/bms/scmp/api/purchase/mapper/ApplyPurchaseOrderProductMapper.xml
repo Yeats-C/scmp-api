@@ -64,8 +64,8 @@
       #{item.boxGauge,jdbcType=VARCHAR}, #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, 
       #{item.productAmount,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT}, #{item.stockCount,jdbcType=INTEGER},
       #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR}, now(), 
-      #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.stockAmount,jdbcType=BIGINT},
-      #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER}, #{item.linnum,jdbcType=INTEGER})
+      #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=BIGINT},
+      #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})
     </foreach>
   </insert>
   <select id="applyPurchaseOrderList" resultMap="BaseResultMap">
