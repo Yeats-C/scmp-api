@@ -867,17 +867,15 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             }
         }
         String fileName = "订货单";
-        if(StringUtils.isNotBlank(detail.getSupplierCode())){
+        if(StringUtils.isNotBlank(detail.getSupplierCode())) {
+            dataMap.put("supplyName", detail.getSupplierName());
+            fileName = "(" + detail.getSupplierCode() + ")" + detail.getSupplierName();
             SupplyPdfResponse supply = supplyCompanyDao.supplyInfoByPdf(detail.getSupplierCode());
-            if(supply != null){
-                fileName = "(" + supply.getSupplyCode()+ ")" + supply.getSupplyName();
-                dataMap.put("number", supply.getSupplyCode());
-                dataMap.put("supplyName", supply.getSupplyName());
-                dataMap.put("address", supply.getAddress());
-                dataMap.put("phone", supply.getMobilePhone());
-                dataMap.put("fax", supply.getFax());
-                dataMap.put("contacts", supply.getContactName());
-            }
+            dataMap.put("number", supply == null || supply.getSupplyCode() == null ? "" : supply.getSupplyCode());
+            dataMap.put("address", supply == null || supply.getAddress() == null ? "" : supply.getAddress());
+            dataMap.put("phone", supply == null || supply.getMobilePhone() == null ? "" : supply.getMobilePhone());
+            dataMap.put("fax", supply == null || supply.getFax() == null ? "" : supply.getFax());
+            dataMap.put("contacts", supply == null || supply.getContactName() == null ? "" : supply.getContactName());
         }
         // 查询收货部门的信息
         if(StringUtils.isNotBlank(detail.getWarehouseCode())){
@@ -914,11 +912,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 }
                 String type;
                 // 0商品 1赠品 2实物返
-                if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                if (product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
                     type = "商品";
-                }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                } else if (product.getProductType().equals(Global.PRODUCT_TYPE_1)) {
                     type = "赠品";
-                }else {
+                } else {
                     type = "实物返";
                 }
                 map.put("type", type);
