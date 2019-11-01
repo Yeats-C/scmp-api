@@ -22,4 +22,7 @@ public class RepealOrderRequest {
     @ApiModelProperty("撤销人id")
     private String repealEmpId;
 
+    @ApiModelProperty("备注")
+    private String description;
+
 }

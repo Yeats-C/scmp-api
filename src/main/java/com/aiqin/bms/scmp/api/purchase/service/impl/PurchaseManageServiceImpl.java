@@ -522,7 +522,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
-                String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
+                // 查询入库单号的id
+                String id = inboundDao.cancelById(order.getPurchaseOrderCode());
+                String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
                 if(!s.equals("0")){
                     return HttpResponse.failure(ResultCode.DL_CANCEL);
                 }
@@ -536,7 +538,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             detail.setUpdateById(createByName);
             purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
-            String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
+            String id = inboundDao.cancelById(order.getPurchaseOrderCode());
+            String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
             if(!s.equals("0")){
                 return HttpResponse.failure(ResultCode.DL_CANCEL);
             }
