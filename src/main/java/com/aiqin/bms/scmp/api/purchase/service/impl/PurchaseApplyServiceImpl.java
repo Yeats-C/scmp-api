@@ -905,7 +905,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 String salesCode = salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
                 map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
-                map.put("spec", product.getProductSpec());
+                try {
+                    String str = new String(product.getProductSpec().getBytes("utf-8"));
+                    String spec = URLEncoder.encode(str, "utf-8");
+                    map.put("spec", spec);
+                } catch (UnsupportedEncodingException e) {
+                    LOGGER.info("规格转义失败", e);
+                }
                 String type;
                 // 0商品 1赠品 2实物返
                 if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
