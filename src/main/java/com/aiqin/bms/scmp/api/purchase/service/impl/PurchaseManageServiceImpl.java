@@ -519,9 +519,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 取消
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
                     PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
-            String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
-            if(!s.equals("0")){
-                return HttpResponse.failure(ResultCode.DL_CANCEL);
+            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)
+                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)
+                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
+                String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
+                if(!s.equals("0")){
+                    return HttpResponse.failure(ResultCode.DL_CANCEL);
+                }
             }
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             // 添加入库完成时间
