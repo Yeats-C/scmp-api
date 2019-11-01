@@ -834,13 +834,12 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public void repealOrder(String orderId, String createById, String createByName){
+    public String repealOrder(String orderId, String createById, String createByName){
         //TODO wms发送撤销订单
         RepealOrderRequest repealOrderRequest = new RepealOrderRequest();
         repealOrderRequest.setRepealEmpId(createById);
         repealOrderRequest.setRepealOrderId(orderId);
         repealOrderRequest.setRepealTime(new Date().toString());
-
         try{
             String url =urlConfig.WMS_API_URL+"/wms/repeal/inbound";
             HttpClient httpClient = HttpClient.post(url).json(repealOrderRequest);
@@ -852,13 +851,14 @@ public class InboundServiceImpl implements InboundService {
                 if ("0".equals(entiy.getResultCode())) {
                     log.info("向dl发送撤销订单请求成功");
                 }
+                return entiy.getResultCode();
             }else{
                 log.error("向dl发送撤销订单请求失败，参数为：{}", repealOrderRequest);
             }
         } catch (Exception e){
             log.error("向dl发送撤销订单请求失败，原因为：{}", e);
         }
-
+        return "";
     }
 
 }

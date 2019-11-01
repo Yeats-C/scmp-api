@@ -235,6 +235,7 @@ public interface ResultCode {
     MessageId PURCHASE_ORDER_CHECK = MessageId.create(Project.SCMP_API, 203, "该采购单未审核通过， 不能开始备货");
     MessageId PURCHASE_PRODUCT_NOT_SUBMIT = MessageId.create(Project.SCMP_API, 204, "此采购单所有商品都未提交， 不能完成");
     MessageId STORAGE_NOT_CONFIRM = MessageId.create(Project.SCMP_API, 205, "采购仓储状态非确认中状态， 不能确认");
+    MessageId DL_CANCEL = MessageId.create(Project.SCMP_API, 206, "DL取消采购单失败");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");

@@ -519,6 +519,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 取消
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
                     PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
+            String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
+            if(!s.equals("0")){
+                return HttpResponse.failure(ResultCode.DL_CANCEL);
+            }
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
             // 添加入库完成时间
             detail = new PurchaseOrderDetails();
@@ -528,7 +532,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             detail.setUpdateById(createByName);
             purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
-            inboundService.repealOrder(order.getId().toString(), createById, createByName);
+            String s = inboundService.repealOrder(order.getId().toString(), createById, createByName);
+            if(!s.equals("0")){
+                return HttpResponse.failure(ResultCode.DL_CANCEL);
+            }
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
             if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
