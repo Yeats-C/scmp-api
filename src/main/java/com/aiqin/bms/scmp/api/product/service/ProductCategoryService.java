@@ -55,7 +55,7 @@ public interface ProductCategoryService {
      * @param categoryStatus
      * @return
      */
-    List<ProductCategoryRespVO> getList(Byte categoryStatus);
+    List<ProductCategoryRespVO> getList(Byte categoryStatus, String companyCode);
 
 
     /**
@@ -63,7 +63,7 @@ public interface ProductCategoryService {
      * @param categoryStatus
      * @return
      */
-    List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode);
+    List<ProductCategoryRespVO> getTree(Byte categoryStatus, String parentCode, String companyCode);
 
     /**
      * 根据品类id查询父类集合

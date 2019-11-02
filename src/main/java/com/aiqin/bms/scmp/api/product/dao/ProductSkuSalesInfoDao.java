@@ -44,5 +44,4 @@ public interface ProductSkuSalesInfoDao {
 
     List<String> productSkuSalesInfoDao(@Param("list") List<String> salesCodes, @Param("skuCode") String skuCode);
 
-    ProductSkuSalesInfo salesInfoByPdf(String skuCode);
 }
