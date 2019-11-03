@@ -53,6 +53,18 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
         return draftMapper.insertSelective(draft);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuStockInfo> applyProductSkuStockInfo = applyMapper.getApplyProductSkuStockInfo(null, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuStockInfo)){
+            List<ProductSkuStockInfoDraft> drafts = BeanCopyUtils.copyList(applyProductSkuStockInfo,ProductSkuStockInfoDraft.class);
+            return draftMapper.insertBatch(drafts);
+        }
+        return 0;
+    }
+
     /**
      * 获取SKU库存配置信息-临时表
      *

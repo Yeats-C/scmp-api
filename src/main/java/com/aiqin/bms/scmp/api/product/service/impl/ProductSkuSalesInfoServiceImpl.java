@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuSalesInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +36,18 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
     @Transactional(rollbackFor = BizException.class)
     @SaveList
     public int insertDraftList(List<ProductSkuSalesInfoDraft> productSkuSalesInfoDrafts) {
-        int num = productSkuSalesInfoDao.insertDraftList(productSkuSalesInfoDrafts);
-        return num;
+        return productSkuSalesInfoDao.insertDraftList(productSkuSalesInfoDrafts);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuSalesInfo> applyProductSkuSalesInfos = productSkuSalesInfoDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSalesInfos)){
+            List<ProductSkuSalesInfoDraft> productSkuSalesInfoDrafts = BeanCopyUtils.copyList(applyProductSkuSalesInfos,ProductSkuSalesInfoDraft.class);
+            return((ProductSkuSalesInfoService)AopContext.currentProxy()).insertDraftList(productSkuSalesInfoDrafts);
+        }
+        return 0;
     }
 
     @Override
@@ -127,6 +138,11 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
         return productSkuSalesInfoDao.getApplys(skuCode,applyCode);
     }
 
+    @Override
+    public List<ApplyProductSkuSalesInfo> getApplyList(String applyCode) {
+        return productSkuSalesInfoDao.getApplysByApplyCode(applyCode);
+    }
+
     /**
      * 功能描述: 获取正式数据
      *
@@ -150,7 +166,44 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
      */
     @Override
     public List<String> checkSalesCodes(List<String> salesCodes,String skuCode) {
-        return productSkuSalesInfoDao.productSkuSalesInfoDao(salesCodes,skuCode);
+        List<String> salesCodeTmps = Lists.newArrayList();
+        //正式
+        List<String> officialCodes = productSkuSalesInfoDao.getSalesCodes(salesCodes, skuCode);
+        if(CollectionUtils.isNotEmptyCollection(officialCodes)){
+            salesCodeTmps.addAll(officialCodes);
+        }
+        //申请中
+        List<String> applyCodes = productSkuSalesInfoDao.getApplySalesCodes(salesCodes, skuCode);
+        if(CollectionUtils.isNotEmptyCollection(applyCodes)){
+            salesCodeTmps.addAll(applyCodes);
+        }
+        //临时表
+        List<String> draftCodes = productSkuSalesInfoDao.getDraftSalesCodes(salesCodes, skuCode);
+        if(CollectionUtils.isNotEmptyCollection(draftCodes)){
+            salesCodeTmps.addAll(draftCodes);
+        }
+        return salesCodeTmps;
+    }
+
+    @Override
+    public List<String> checkSalesCodes(String applyCode) {
+        List<String> salesCodeTmps = Lists.newArrayList();
+        //正式
+        List<String> officialCodes = productSkuSalesInfoDao.getSalesCodesByApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(officialCodes)){
+            salesCodeTmps.addAll(officialCodes);
+        }
+        //申请中
+        List<String> applyCodes = productSkuSalesInfoDao.getApplySalesCodesApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyCodes)){
+            salesCodeTmps.addAll(applyCodes);
+        }
+        //临时表
+        List<String> draftCodes = productSkuSalesInfoDao.getDraftSalesCodesApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(draftCodes)){
+            salesCodeTmps.addAll(draftCodes);
+        }
+        return salesCodeTmps;
     }
 }
 

@@ -217,8 +217,13 @@
     SELECT
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.Base_Column_List"/>
     from apply_product_sku_supply_unit
-    where apply_code=#{applyCode}
-      and product_sku_code = #{skuCode}
+    WHERE 1=1
+    <if test="skuCode != null and skuCode != '' ">
+        and product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode != '' ">
+        and apply_code=#{applyCode}
+    </if>
   </select>
   <select id="getApplys" resultMap="selectBySkuCode">
    select a.id aid,

@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -45,7 +46,7 @@ public class SkuInfoController {
     @ApiOperation("新增sku信息")
     public HttpResponse<Integer> addSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
         try {
-            return HttpResponse.success(skuInfoService.saveDraftSkuInfo(addSkuInfoReqVO));
+            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo(addSkuInfoReqVO));
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
@@ -58,7 +59,7 @@ public class SkuInfoController {
     @ApiOperation("修改临时表信息")
     public HttpResponse<Integer> updateSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
         try {
-            return HttpResponse.success(skuInfoService.updateDraftSkuInfo(addSkuInfoReqVO));
+            return HttpResponse.successGenerics(skuInfoService.updateDraftSkuInfo(addSkuInfoReqVO));
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
@@ -70,44 +71,44 @@ public class SkuInfoController {
     @GetMapping("/draft/detail")
     @ApiOperation("sku草稿详情")
     public HttpResponse<ProductSkuDetailResp> getSkuDraft(String skuCode){
-        return HttpResponse.success(skuInfoService.getSkuDraftInfo(skuCode));
+        return HttpResponse.successGenerics(skuInfoService.getSkuDraftInfo(skuCode));
     }
 
     @GetMapping("/detail")
     @ApiOperation("SKU正式数据详情")
     public HttpResponse<ProductSkuDetailResp> getSkuDetail(String skuCode){
-        return HttpResponse.success(skuInfoService.getSkuDetail(skuCode));
+        return HttpResponse.successGenerics(skuInfoService.getSkuDetail(skuCode));
     }
 
     @PostMapping("/list")
     @ApiOperation("sku管理列表分页查询")
     public HttpResponse<BasePage<QueryProductSkuListResp>> getSkuList(@RequestBody QuerySkuListReqVO querySkuListReqVO){
-        return HttpResponse.success(skuInfoService.querySkuList(querySkuListReqVO));
+        return HttpResponse.successGenerics(skuInfoService.querySkuList(querySkuListReqVO));
     }
 
     @PostMapping("/list/supplyUnitCode")
     @ApiOperation("sku管理列表分页查询")
     public HttpResponse<List<QueryProductSkuListResp>> querySkuListBySupplyUnitCode(String supplyUnitCode){
-        return HttpResponse.success(skuInfoService.querySkuListBySupplyUnitCode(supplyUnitCode));
+        return HttpResponse.successGenerics(skuInfoService.querySkuListBySupplyUnitCode(supplyUnitCode));
     }
 
     @GetMapping("/product/draft")
     @ApiOperation("待提交商品列表")
     public HttpResponse<List<ProductDraftListResp>> getProductDraftList(){
-        return HttpResponse.success(skuInfoService.getProductDraftList());
+        return HttpResponse.successGenerics(skuInfoService.getProductDraftList());
     }
 
     @PostMapping("/draft/list")
     @ApiOperation("待提交sku列表")
     public HttpResponse<BasePage<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
-        return HttpResponse.success(skuInfoService.getProductSkuDraftList(reqVO));
+        return HttpResponse.successGenerics(skuInfoService.getProductSkuDraftList(reqVO));
     }
 
     @PostMapping("/apply/add")
     @ApiOperation("新增sku申请")
     public HttpResponse addSkuApply(@RequestBody SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO){
         try {
-            return HttpResponse.success(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, null, null));
+            return HttpResponse.successGenerics(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, null, null));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, 400, e.getMessage()));
@@ -116,27 +117,27 @@ public class SkuInfoController {
 
     @GetMapping("/apply/detail")
     @ApiOperation("商品申请详情")
-    public HttpResponse<ProductApplyInfoRespVO<ProductSkuApplyVo>> getApplyDetail(String applyCode){
-        return HttpResponse.success(skuInfoService.getSkuApplyDetail(applyCode));
+    public HttpResponse<ProductApplyInfoRespVO<ProductSkuApplyVo2>> getApplyDetail(String applyCode){
+        return HttpResponse.successGenerics(skuInfoService.getSkuApplyDetail(applyCode));
     }
 
     @GetMapping("/apply/skuDetail")
     @ApiOperation("单个sku申请详情")
-    public HttpResponse<ApplyProductSkuDetailResp> getSkuApplyDetail(String skuCode,String applyCode){
-        return HttpResponse.success(skuInfoService.getProductSkuApplyDetail(skuCode,applyCode));
+    public HttpResponse<ProductSkuDetailResp> getSkuApplyDetail(String skuCode,String applyCode){
+        return HttpResponse.successGenerics(skuInfoService.getProductSkuApplyDetail(skuCode,applyCode));
     }
 
     @GetMapping("/apply/cancel")
     @ApiOperation("sku申请撤销")
     public HttpResponse<Integer> cancelSkuApply(String applyCode){
-        return HttpResponse.success(skuInfoService.cancelSkuApply(applyCode));
+        return HttpResponse.successGenerics(skuInfoService.cancelSkuApply(applyCode));
     }
 
     @PostMapping("/all")
     @ApiOperation("获取所有的SKU根据条件")
     public HttpResponse<List<ProductSkuRespVo>> getProductSkuInfos(@RequestBody QuerySkuReqVO reqVO){
         try {
-            return HttpResponse.success(skuInfoService.getProductSkuInfos(reqVO));
+            return HttpResponse.successGenerics(skuInfoService.getProductSkuInfos(reqVO));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
@@ -148,7 +149,7 @@ public class SkuInfoController {
     public HttpResponse<BasePage<QuerySkuInfoRespVO>> querySkuList(@RequestBody @Valid QuerySkuInfoReqVO reqVO){
         log.info("SkuInfoController---querySkuList---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.getSkuListByQueryVO(reqVO));
+            return HttpResponse.successGenerics(skuInfoService.getSkuListByQueryVO(reqVO));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
@@ -160,7 +161,7 @@ public class SkuInfoController {
     public HttpResponse<SkuImportMain> importSkuNew(MultipartFile file){
         log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNew(file));
+            return HttpResponse.successGenerics(skuInfoService.importSkuNew(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -173,7 +174,7 @@ public class SkuInfoController {
     public HttpResponse<SkuImportMain> importSkuForSupplyPlatform(MultipartFile file){
         log.info("SkuInfoController---importSkuForSupplyPlatform---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
-            return HttpResponse.success(skuInfoService.importSkuForSupplyPlatform(file));
+            return HttpResponse.successGenerics(skuInfoService.importSkuForSupplyPlatform(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -187,7 +188,7 @@ public class SkuInfoController {
     public HttpResponse<Boolean> importSkuNewSave(@RequestBody SkuImportReq reqVO){
         log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNewSave(reqVO));
+            return HttpResponse.successGenerics(skuInfoService.importSkuNewSave(reqVO));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -201,7 +202,7 @@ public class SkuInfoController {
     public HttpResponse<Boolean> importSkuUpdateForSupplyPlatform(@RequestBody SkuImportReq reqVO){
         log.info("SkuInfoController---importSkuNewSave---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.importSkuUpdateForSupplyPlatform(reqVO));
+            return HttpResponse.successGenerics(skuInfoService.importSkuUpdateForSupplyPlatform(reqVO));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -216,7 +217,7 @@ public class SkuInfoController {
     public HttpResponse<Boolean> importSkuNewUpdate(@RequestBody SkuImportReq reqVO){
         log.info("SkuInfoController---importSkuNewUpdate---入参：[{}]", JSON.toJSONString(reqVO));
         try {
-            return HttpResponse.success(skuInfoService.importSkuNewUpdate(reqVO));
+            return HttpResponse.successGenerics(skuInfoService.importSkuNewUpdate(reqVO));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -230,7 +231,7 @@ public class SkuInfoController {
     public HttpResponse<SkuImportMain> importSkuUpdate(MultipartFile file){
         log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
         try {
-            return HttpResponse.success(skuInfoService.importSkuUpdate(file));
+            return HttpResponse.successGenerics(skuInfoService.importSkuUpdate(file));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -243,7 +244,7 @@ public class SkuInfoController {
     public HttpResponse<Boolean> exportSku(HttpServletResponse resp){
         log.info("SkuInfoController---exportSku---入参：[{}]");
         try {
-            return HttpResponse.success(skuInfoService.exportSku(resp));
+            return HttpResponse.successGenerics(skuInfoService.exportSku(resp));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -255,7 +256,7 @@ public class SkuInfoController {
     public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {
-            return HttpResponse.success(skuInfoService.exportAddSku(resp,code));
+            return HttpResponse.successGenerics(skuInfoService.exportAddSku(resp,code));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -268,11 +269,24 @@ public class SkuInfoController {
     public HttpResponse<Boolean> exportEditSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {
-            return HttpResponse.success(skuInfoService.exportEditSku(resp,code));
+            return HttpResponse.successGenerics(skuInfoService.exportEditSku(resp,code));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
             log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/apply/reUpdate")
+    @ApiOperation(value = "审批追踪重新编辑")
+    public HttpResponse<Integer> reUpdateApply(@RequestParam("applyCode") String applyCode){
+        try {
+            return HttpResponse.successGenerics( skuInfoService.reUpdateApply(applyCode));
+        }  catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(e.getMessage(),e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }

@@ -971,6 +971,12 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="getDraftAll" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
+    SELECT * FROM product_sku_draft WHERE del_flag=0
+    <if test="companyCode!=null and companyCode!=''" >
+      and company_code = #{companyCode}
+    </if>
+  </select>
   <select id="getSkuDraftByProductCodes" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
     SELECT * FROM product_sku_draft WHERE del_flag=0 AND product_code IN
     <foreach collection="list" item="item" open="(" separator="," close=")">
@@ -1409,6 +1415,15 @@
     from apply_product_sku
     where apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
+  </select>
+  <select id="getApplyAll" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
+    SELECT
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.Base_Column_List"/>
+    from apply_product_sku
+    where del_flag=0 and apply_status = 1
+    <if test="companyCode != null and companyCode!='' ">
+      and company_code = #{companyCode}
+    </if>
   </select>
   <select id="getApplySkuByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
     SELECT

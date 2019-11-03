@@ -53,6 +53,17 @@ public class ProductSkuAssociatedGoodsServiceImpl implements ProductSkuAssociate
         return draftMapper.saveBatch(draftList);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuAssociatedGoods> applys = applyMapper.getApply(null, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applys)){
+            List<ProductSkuAssociatedGoodsDraft> draftList = BeanCopyUtils.copyList(applys, ProductSkuAssociatedGoodsDraft.class);
+            return ((ProductSkuAssociatedGoodsService) AopContext.currentProxy()).insertDraftList(draftList);
+        }
+        return 0;
+    }
+
     /**
      * 获取临时表数据
      *

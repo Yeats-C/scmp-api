@@ -96,8 +96,14 @@
     DELETE  FROM  product_sku_pic_desc WHERE sku_code =#{skuCode,jdbcType=VARCHAR}
   </delete>
   <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPicDescMapper.BaseResultMap">
-    SELECT * from apply_product_sku_pic_desc WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
-    and apply_code = #{applyCode}
+    SELECT * from apply_product_sku_pic_desc
+    WHERE 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode != '' ">
+      and apply_code=#{applyCode}
+    </if>
      order by sorting_number asc
   </select>
   <select id="getApplys" resultMap="BaseResultMap">
