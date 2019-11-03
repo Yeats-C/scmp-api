@@ -280,9 +280,9 @@ public class SkuInfoController {
 
     @PostMapping("/apply/reUpdate")
     @ApiOperation(value = "审批追踪重新编辑")
-    public HttpResponse<Integer> reUpdateApply(@RequestParam("formNo") String formNo){
+    public HttpResponse<Integer> reUpdateApply(@RequestParam("applyCode") String applyCode){
         try {
-            return HttpResponse.successGenerics( skuInfoService.reUpdateApply(formNo));
+            return HttpResponse.successGenerics( skuInfoService.reUpdateApply(applyCode));
         }  catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
