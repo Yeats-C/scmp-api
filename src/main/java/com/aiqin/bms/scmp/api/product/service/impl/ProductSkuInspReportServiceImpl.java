@@ -64,7 +64,7 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
 
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertApplyList(List<ApplyProductSkuInspReport> applyProductSkuInspReports) {
         try {
             return productSkuInspReportDao.insertApplyList(applyProductSkuInspReports);
@@ -95,7 +95,7 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuInspReport> productSkuInspReports) {
         int num = productSkuInspReportDao.insertInspReportList(productSkuInspReports);
         return num;
@@ -103,10 +103,21 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
 
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertDraftList(List<ProductSkuInspReportDraft> productSkuInspReportDrafts) {
         int num = productSkuInspReportDao.insertDraftList(productSkuInspReportDrafts);
         return num;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuInspReport> applyProductSkuInspReports = productSkuInspReportDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmpty(applyProductSkuInspReports)){
+            List<ProductSkuInspReportDraft> productSkuInspReportDrafts = BeanCopyUtils.copyList(applyProductSkuInspReports, ProductSkuInspReportDraft.class);
+            return  ((ProductSkuInspReportService)AopContext.currentProxy()).insertDraftList(productSkuInspReportDrafts);
+        }
+        return 0;
     }
 
     /**

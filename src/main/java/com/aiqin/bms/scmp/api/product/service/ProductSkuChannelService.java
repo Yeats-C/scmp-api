@@ -22,7 +22,7 @@ public interface ProductSkuChannelService {
      * @return
      */
     int insertDraftList(List<ProductSkuChannelDraft> productSkuChannelDrafts);
-
+    int insertDraftList(String applyCode);
     /**
      * 通过SKU获取临时表渠道信息
      * @param skuCode

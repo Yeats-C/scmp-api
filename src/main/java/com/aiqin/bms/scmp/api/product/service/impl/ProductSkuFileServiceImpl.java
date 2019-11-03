@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuFileRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuFileDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuFileService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,14 +33,25 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
     private ProductSkuFileDraftMapper draftMapper;
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertDraftList(List<ProductSkuFileDraft> productSkuFileDrafts) {
         int num = productSkuFileDao.insertDraftList(productSkuFileDrafts);
         return num;
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuFile> applyProductSkuFiles = productSkuFileDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuFiles)){
+            List<ProductSkuFileDraft> productSkuFileDrafts = BeanCopyUtils.copyList(applyProductSkuFiles,ProductSkuFileDraft.class);
+            return ((ProductSkuFileService)AopContext.currentProxy()).insertDraftList(productSkuFileDrafts);
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuFile> productSkuFiles) {
         int num = productSkuFileDao.insertList(productSkuFiles);
         return num;
@@ -47,7 +59,7 @@ public class ProductSkuFileServiceImpl implements ProductSkuFileService {
 
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertApplyList(List<ApplyProductSkuFile> applyProductSkuFiles) {
         int num = productSkuFileDao.insertApplyList(applyProductSkuFiles);
         return num;

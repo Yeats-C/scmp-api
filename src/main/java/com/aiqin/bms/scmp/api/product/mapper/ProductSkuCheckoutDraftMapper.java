@@ -8,6 +8,7 @@ public interface ProductSkuCheckoutDraftMapper {
     int deleteByPrimaryKey(Long id);
 
     int insert(ProductSkuCheckoutDraft record);
+    int insertBatch(List<ProductSkuCheckoutDraft> records);
 
     int insertSelective(ProductSkuCheckoutDraft record);
 

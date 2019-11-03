@@ -35,8 +35,14 @@
     select
     <include refid="Base_Column_List"/>
     from apply_product_sku_channel
-    where sku_code = #{skuCode,jdbcType=VARCHAR}
-    and apply_code = #{applyCode,jdbcType=VARCHAR}
+    where 1=1
+    <if test="skuCode != null and skuCode !='' ">
+      and sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode !='' ">
+      and apply_code = #{applyCode,jdbcType=VARCHAR}
+    </if>
+
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_channel

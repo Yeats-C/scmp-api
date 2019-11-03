@@ -64,4 +64,6 @@ public interface ProductSkuDisInfoService {
      * @date 2019/7/8 17:03
      */
     List<PurchaseSaleStockRespVo> getList(String skuCode);
+
+    int insertDraftList(String applyCode);
 }

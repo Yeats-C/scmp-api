@@ -158,6 +158,25 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         return num;
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer insertDraftList(String applyCode) {
+        int num = 0;
+        List<ApplyProductSkuConfig> applyProductSkuConfigs = applyMapper.selectBySkuCodeAndApplyCode(null, applyCode);
+        if(CollectionUtils.isNotEmpty(applyProductSkuConfigs)){
+            List<ProductSkuConfigDraft> productSkuConfigDrafts = BeanCopyUtils.copyList(applyProductSkuConfigs, ProductSkuConfigDraft.class);
+            num = ((ProductSkuConfigService)AopContext.currentProxy()).insertDraftBatch(productSkuConfigDrafts);
+        }
+        //通过applyCode查询备用仓库
+        List<ApplyProductSkuConfigSpareWarehouse> applySpareWarehouses = applySpareWarehouseMapper.
+                selectByApplyCode(applyCode);
+        if(CollectionUtils.isNotEmpty(applySpareWarehouses)){
+            List<ProductSkuConfigSpareWarehouseDraft> draftList = BeanCopyUtils.copyList(applySpareWarehouses,ProductSkuConfigSpareWarehouseDraft.class);
+            ((ProductSkuConfigService)AopContext.currentProxy()).insertSpareWarehouseDraftList(draftList);
+        }
+        return num;
+    }
+
     /**
      * 批量保存导入的临时配置信息
      * @param configReqVos

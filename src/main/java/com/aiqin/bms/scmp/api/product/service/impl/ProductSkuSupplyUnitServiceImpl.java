@@ -48,6 +48,7 @@ import org.apache.commons.lang.StringUtils;
 import org.omg.CORBA.Object;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,10 +93,21 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
 
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertDraftList(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts) {
         int num = productSkuSupplyUnitDao.insertDraftList(productSkuSupplyUnitDrafts);
         return num;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnits)){
+            List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = BeanCopyUtils.copyList(applyProductSkuSupplyUnits,ProductSkuSupplyUnitDraft.class);
+            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertDraftList(productSkuSupplyUnitDrafts);
+        }
+        return 0;
     }
 
     @Override
@@ -120,7 +132,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertApplyList(List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits) {
         int num = productSkuSupplyUnitDao.insertApplyList(applyProductSkuSupplyUnits);
         return num;

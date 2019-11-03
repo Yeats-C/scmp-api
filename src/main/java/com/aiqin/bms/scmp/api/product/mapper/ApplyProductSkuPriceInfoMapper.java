@@ -35,4 +35,6 @@ public interface ApplyProductSkuPriceInfoMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo>
      */
     List<ApplyProductSkuPriceInfo> selectBySkuCodes(@Param("list") List<String> skuCode, @Param("applyCode") String applyCode);
+    List<ApplyProductSkuPriceInfo> selectByApplyCode(@Param("applyCode") String applyCode);
+
 }

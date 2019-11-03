@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuCheckoutService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,18 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     public int insertDraft(ProductSkuCheckoutDraft productSkuCheckoutDraft) {
         int num = productSkuCheckoutDraftMapper.insert(productSkuCheckoutDraft);
         return num;
+    }
+
+    @Override
+    @SaveList
+    @Transactional(rollbackFor = BizException.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuCheckout> applyProductSkuCheckouts = productSkuCheckoutDao.getApplys(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuCheckouts)){
+            List<ProductSkuCheckoutDraft> productSkuCheckoutDrafts = BeanCopyUtils.copyList(applyProductSkuCheckouts, ProductSkuCheckoutDraft.class);
+            return productSkuCheckoutDraftMapper.insertBatch(productSkuCheckoutDrafts);
+        }
+        return 0;
     }
 
     @Override

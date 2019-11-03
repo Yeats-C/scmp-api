@@ -88,8 +88,14 @@
     DELETE FROM product_sku_sales_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </delete>
   <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSalesInfoMapper.BaseResultMap">
-    SELECT * FROM apply_product_sku_sales_info WHERE product_sku_code=#{skuCode,jdbcType=VARCHAR}
-    and apply_code=#{applyCode}
+    SELECT * FROM apply_product_sku_sales_info
+    WHERE 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode != '' ">
+      and apply_code=#{applyCode}
+    </if>
   </select>
 
   <select id="getApplys" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
@@ -109,18 +115,76 @@
     where product_sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
 
-  <select id="productSkuSalesInfoDao" resultType="java.lang.String">
+  <select id="getSalesCodes" resultType="java.lang.String">
     select
     distinct
-    sales_code
-    from apply_product_sku_sales_info a
-    left join apply_product_sku b on a.product_sku_code = b.sku_code
-    where b.apply_status = 1 and a.sales_code in
+    a.sales_code
+    from product_sku_sales_info a
+    where a.del_flag = 0 and a.sales_code in
     <foreach collection="list" item="salesCode" separator="," close=")" open="(">
       #{salesCode}
     </foreach>
     <if test="skuCode != null and skuCode != '' ">
       and a.product_sku_code != #{skuCode}
     </if>
+  </select>
+
+  <select id="getApplySalesCodes" resultType="java.lang.String">
+    select
+    distinct
+    a.sales_code
+    from apply_product_sku_sales_info a
+    left join apply_product_sku b on a.product_sku_code = b.sku_code
+    where b.apply_status = 1 and  a.del_flag = 0 and a.sales_code in
+    <foreach collection="list" item="salesCode" separator="," close=")" open="(">
+      #{salesCode}
+    </foreach>
+    <if test="skuCode != null and skuCode != '' ">
+      and a.product_sku_code != #{skuCode}
+    </if>
+  </select>
+  <select id="getDraftSalesCodes" resultType="java.lang.String">
+    select
+    distinct
+    a.sales_code
+    from product_sku_sales_info_draft a
+    where a.del_flag = 0 and a.sales_code in
+    <foreach collection="list" item="salesCode" separator="," close=")" open="(">
+      #{salesCode}
+    </foreach>
+    <if test="skuCode != null and skuCode != '' ">
+      and a.product_sku_code != #{skuCode}
+    </if>
+  </select>
+  <select id="getApplysByApplyCode" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSalesInfoMapper.BaseResultMap">
+    SELECT * FROM apply_product_sku_sales_info WHERE apply_code=#{applyCode,jdbcType=VARCHAR}
+  </select>
+  <select id="getSalesCodesByApplyCode" resultType="java.lang.String">
+     select
+      distinct a.sales_code
+    from product_sku_sales_info a,apply_product_sku_sales_info b
+    where a.sales_code = b.sales_code
+    and b.apply_code = #{applyCode}
+    and a.del_flag = 0
+  </select>
+
+  <select id="getApplySalesCodesApplyCode" resultType="java.lang.String">
+     select
+      distinct a.sales_code
+    from apply_product_sku_sales_info a,apply_product_sku_sales_info b,apply_product_sku c
+    where a.sales_code = b.sales_code
+    and b.apply_code = #{applyCode}
+    and c.apply_status = 1
+    and a.product_sku_code = c.sku_code
+    and a.del_flag = 0
+  </select>
+
+  <select id="getDraftSalesCodesApplyCode" resultType="java.lang.String">
+     select
+      distinct a.sales_code
+    from product_sku_sales_info_draft a,apply_product_sku_sales_info b
+    where a.sales_code = b.sales_code
+    and b.apply_code = #{applyCode}
+    and a.del_flag = 0
   </select>
 </mapper>

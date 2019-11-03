@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
@@ -92,6 +93,22 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
             throw new BizException(ResultCode.SAVE_PRICE_FAILED);
         }
         return Boolean.TRUE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public Integer saveSkuPriceDraft(String applyCode) {
+        List<ApplyProductSkuPriceInfo> applyProductSkuPriceInfos = applyProductSkuPriceInfoMapper.selectByApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuPriceInfos)){
+            List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(applyProductSkuPriceInfos, ProductSkuPriceInfoDraft.class);
+            for (ProductSkuPriceInfoDraft o : drafts) {
+                o.setCode("pp"+UUIDUtils.getUUID());
+                o.setBeContainArea(0);
+            }
+            return productSkuPriceInfoDraftMapper.insertBatch(drafts);
+        }
+        return 0;
     }
 
     @Override
