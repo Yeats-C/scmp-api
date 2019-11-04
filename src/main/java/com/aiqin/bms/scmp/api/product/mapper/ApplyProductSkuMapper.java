@@ -28,7 +28,7 @@ public interface ApplyProductSkuMapper {
 
     List<ApplyProductSku> selectByFormNO(@Param("formNo") String formNo);
 
-    List<ApplyProductSku> selectApplyByApplyCode(String applyCode);
+    List<ApplyProductSku> selectApplyByApplyCode(@Param("applyCode") String applyCode);
     int updateList(@Param("list") Collection<ApplyProductSku> list);
 
 

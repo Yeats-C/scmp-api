@@ -105,6 +105,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
             for (ProductSkuPriceInfoDraft o : drafts) {
                 o.setCode("pp"+UUIDUtils.getUUID());
                 o.setBeContainArea(0);
+                o.setId(null);
             }
             return productSkuPriceInfoDraftMapper.insertBatch(drafts);
         }

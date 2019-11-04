@@ -4010,28 +4010,21 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         AuthToken user = getUser();
         //数据验证
-        //查询临时表SKU数据
-        Map<String, ProductSkuDraft> draftAll = productSkuDao.getDraftAll(user.getCompanyCode());
-        //查询申请表申请中的SKU数据
-        Map<String, ApplyProductSku> applyAll = productSkuDao.getApplyAll(user.getCompanyCode());
-        Map<String, ProductSkuInfo> all = productSkuInfoMapper.getAll(user.getCompanyCode());
-        List<String> errors = Lists.newArrayList();
-        //验证名称是否重复
-        applyProductSkus.forEach(item->{
-            if(draftAll.containsKey(item.getSkuName())){
-                errors.add(item.getSkuName()+"在待审请中已存在");
-            }
-            if(applyAll.containsKey(item.getSkuName())){
-                errors.add(item.getSkuName()+"在审批中已存在");
-            }
-            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),item.getApplyType())){
-                if(all.containsKey(item.getSkuName())){
-                    errors.add(item.getSkuName()+"在正式数据中已存在");
-                }
-            }
-        });
-        if(CollectionUtils.isNotEmpty(errors)){
-            throw new BizException(MessageId.create(Project.SCMP_API, 13, StringUtils.join(errors,";")));
+        List<String> repeatSkuName = Lists.newArrayList();
+        List<String> draftAll = productSkuDao.getDraftAll(applyCode);
+        if(CollectionUtils.isNotEmpty(draftAll)){
+            repeatSkuName.addAll(draftAll);
+        }
+        List<String> applyAll = productSkuDao.getApplyAll(applyCode);
+        if(CollectionUtils.isNotEmpty(applyAll)){
+            repeatSkuName.addAll(applyAll);
+        }
+        List<String> all = productSkuInfoMapper.getAll(applyCode);
+        if(CollectionUtils.isNotEmpty(all)){
+            repeatSkuName.addAll(all);
+        }
+        if(CollectionUtils.isNotEmpty(repeatSkuName)){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU名称["+StringUtils.join(repeatSkuName, ",")+"],在数据库中存在相同名称"));
         }
         //验证名称销售码是否重复
         List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(applyCode);

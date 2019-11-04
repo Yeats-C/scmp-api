@@ -34,7 +34,7 @@ public interface ProductSkuDraftMapper {
     ProductSkuDraft getOfficialBySkuCode(String skuCode);
 
     @MapKey("skuCode")
-    Map<String, ProductSkuDraft> getOfficialBySkuCodes(List<String> skuCodes,String companyCode);
+    Map<String, ProductSkuDraft> getOfficialBySkuCodes(@Param("skuCodes") List<String> skuCodes, @Param("companyCode") String companyCode);
 
     /**
      *

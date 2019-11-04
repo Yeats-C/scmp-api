@@ -98,12 +98,12 @@
     from product_sku
     where sku_code = #{skuCode}
   </select>
-  <select id="getOfficialBySkuCodes" parameterType="java.lang.String" resultMap="BaseResultMap">
+  <select id="getOfficialBySkuCodes" resultMap="BaseResultMap">
     select
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.Base_Column_List" />
     from product_sku
     where company_code = #{companyCode} and sku_code in
-    <foreach collection="list" open="(" close=")" item="item" separator=",">
+    <foreach collection="skuCodes" open="(" close=")" item="item" separator=",">
       #{item}
     </foreach>
   </select>
