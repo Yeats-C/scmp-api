@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
@@ -19,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.util.*;
@@ -29,8 +31,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -53,7 +56,8 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     private ProductSkuPriceInfoLogMapper productSkuPriceInfoLogMapper;
     @Autowired
     private DataManageService dataManageService;
-
+    @Autowired
+    private ProductSkuChangePriceService productSkuChangePriceService;
     @Override
     public BasePage<QueryProductSkuPriceInfoRespVO> list(QueryProductSkuPriceInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -166,6 +170,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         List<ProductSkuPriceInfoLog> logs = Lists.newArrayList();
         for (ProductSkuPriceInfo info : list) {
             ProductSkuPriceInfoLog infoLog = null;
+            info.setBeContainArea(0);
             if(!info.getEffectiveTimeStart().after(date)){
                 info.setBeSynchronous(1);
                 infoLog =  new ProductSkuPriceInfoLog(info.getCode(),info.getPriceTax(),info.getPriceNoTax(),info.getTax(),info.getEffectiveTimeStart(),null,1,info.getCreateBy(),date);
@@ -183,6 +188,66 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         if(i1!=logs.size()){
             throw new BizException(ResultCode.SAVE_PRICE_LOG_FAILED);
         }
+        return Boolean.TRUE;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean saveSkuPurchasePriceOfficial(List<ProductSkuPriceInfo> list){
+        Date date = new Date();
+        if(CollectionUtils.isEmptyCollection(list)){
+            throw new BizException(ResultCode.PRICE_DATA_CAN_NOT_BE_NULL);
+        }
+        List<ProductSkuPriceInfoLog> logs = Lists.newArrayList();
+        List<String> skuCodes = list.stream().map(ProductSkuPriceInfo::getSkuCode).distinct().collect(Collectors.toList());
+        //验重
+        QueryProductSkuPriceInfo queryVO = new QueryProductSkuPriceInfo(list.get(0).getCompanyCode(), skuCodes, Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), Lists.newArrayList(), "1");
+        List<ProductSkuPriceInfo> all = productSkuPriceInfoMapper.checkRepeat(queryVO);
+        Map<String, ProductSkuPriceInfo> infoMap = all.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getSupplierCode(), Function.identity(),(k1, k2)->k2));
+        //数据对比，分类
+        List<ProductSkuPriceInfo> repeat = list.stream().filter(o -> Objects.nonNull(infoMap.get(o.getSkuCode() + o.getSupplierCode()))).collect(Collectors.toList());
+        list.removeAll(repeat);
+        List<ProductSkuPriceInfoLog> logList = Lists.newArrayList();
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(list)) {
+            for (ProductSkuPriceInfo priceInfo : list) {
+                priceInfo.setCode("PP" + IdSequenceUtils.getInstance().nextId());
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1, Optional.ofNullable(priceInfo.getUpdateBy()).orElse(priceInfo.getCreateBy()),new Date());
+                //判断生效日期
+                if (Optional.ofNullable(priceInfo.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
+                    //未生效的
+                    log.setStatus(0);
+                    priceInfo.setBeSynchronous(0);
+                } else {
+                    //生效的
+                    priceInfo.setBeSynchronous(1);
+                }
+                logList.add(log);
+            }
+        }
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(repeat)) {
+            for (ProductSkuPriceInfo priceInfo : repeat) {
+                ProductSkuPriceInfo productSkuPriceInfo = infoMap.get(priceInfo.getSkuCode() + priceInfo.getSupplierCode());
+                priceInfo.setCode(productSkuPriceInfo.getCode());
+                priceInfo.setId(productSkuPriceInfo.getId());
+                priceInfo.setBeContainArea(0);
+                ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(priceInfo.getUpdateBy()).orElse(priceInfo.getCreateBy()),new Date());
+                //判断生效日期
+                if (Optional.ofNullable(priceInfo.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
+                    //未生效的
+                    //这里在日志表中插入一条未生效的数据
+                    log.setStatus(0);
+                    priceInfo.setBeSynchronous(0);
+                } else {
+                    //生效的
+                    priceInfo.setBeSynchronous(1);
+                    //插入失效日志，再更新数据, 插入生效的日志
+                    ProductSkuPriceInfoLog log2 = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),new Date(),2,Optional.ofNullable(priceInfo.getUpdateBy()).orElse(priceInfo.getCreateBy()),new Date());
+                    logList.add(log2);
+                }
+                logList.add(log);
+            }
+        }
+        productSkuChangePriceService.saveData(list, Lists.newArrayList(), repeat,Lists.newArrayList(),logList);
         return Boolean.TRUE;
     }
 

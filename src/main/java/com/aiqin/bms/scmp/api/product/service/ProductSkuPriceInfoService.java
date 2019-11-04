@@ -87,6 +87,13 @@ public interface ProductSkuPriceInfoService {
      * @return java.lang.Boolean
      */
     Boolean saveSkuPriceOfficial(List<ProductSkuPriceInfo> list);
+
+    /**
+     * 保存采购价
+     * @param list
+     * @return
+     */
+    Boolean saveSkuPurchasePriceOfficial(List<ProductSkuPriceInfo> list);
     /**
      * 正式查看价格
      * @author NullPointException
