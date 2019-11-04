@@ -111,11 +111,11 @@
         #{item}
     </foreach>
   </select>
-  <select id="getAll" resultMap="BaseResultMap">
+  <select id="getAll" resultType="java.lang.String">
       select
-        <include refid="Base_Column_List" />
-      from product_sku
-      where company_code = #{companyCode} and del_flag = 0
+       distinct a.sku_name
+      from product_sku a,apply_product_sku b
+      where a.del_flag = 0 and a.sku_name = b.sku_name and b.apply_code = #{applyCode} and b.apply_type = 1
   </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select

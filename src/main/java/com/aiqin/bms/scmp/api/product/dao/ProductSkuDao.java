@@ -49,8 +49,7 @@ public interface ProductSkuDao {
 
     List<ApplyProductSku> getSkuApplyList(String applyCode);
 
-    @MapKey("skuName")
-    Map<String, ApplyProductSku> getApplyAll(String companyCode);
+    List<String> getApplyAll(@Param("applyCode") String applyCode);
 
     /**
      * @param querySkuListReqVO
@@ -190,8 +189,8 @@ public interface ProductSkuDao {
      */
     List<ProductSkuDraft> getSkuDraftByCodes(List<String> skuCodes);
 
-    @MapKey("skuName")
-    Map<String, ProductSkuDraft> getDraftAll(String companyCode);
+
+    List<String> getDraftAll(@Param("applyCode") String applyCode);
 
     /**
      * 根据商品集合查询草稿

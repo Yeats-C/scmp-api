@@ -40,8 +40,8 @@ public interface ProductSkuInfoMapper {
     @MapKey("skuCode")
     Map<String,ProductSkuInfo> selectBySkuCodes(@Param("list") Set<String> skuList, @Param("companyCode") String companyCode);
 
-    @MapKey("skuName")
-    Map<String, ProductSkuInfo> getAll(@Param("companyCode") String companyCode);
+
+    List<String> getAll(@Param("applyCode") String applyCode);
     /**
      *
      * 功能描述: 检测品牌在SKU中是否存在
