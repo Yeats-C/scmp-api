@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
+import io.swagger.models.auth.In;
 
 import java.util.List;
 
@@ -44,6 +45,7 @@ public interface ProductSkuPriceInfoService {
      * @return java.lang.Boolean
      */
     Boolean saveSkuPriceDraft(List<SkuPriceDraftReqVO> reqVOList);
+    Integer saveSkuPriceDraft(String applyCode);
     /**
      * 查询临时表价格
      * @author NullPointException

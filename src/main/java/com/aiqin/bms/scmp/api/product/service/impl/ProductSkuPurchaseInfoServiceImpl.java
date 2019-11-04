@@ -39,8 +39,19 @@ public class ProductSkuPurchaseInfoServiceImpl implements ProductSkuPurchaseInfo
     @Transactional(rollbackFor = BizException.class)
     @Save
     public int insertDraft(ProductSkuPurchaseInfoDraft productSkuPurchaseInfoDraft) {
-
         return productSkuPurchaseInfoDraftMapper.insert(productSkuPurchaseInfoDraft);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuPurchaseInfo> applyProductSkuPurchaseInfo = productSkuPurchaseInfoDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuPurchaseInfo)){
+            List<ProductSkuPurchaseInfoDraft> drafts = BeanCopyUtils.copyList(applyProductSkuPurchaseInfo,ProductSkuPurchaseInfoDraft.class);
+            return productSkuPurchaseInfoDraftMapper.insertBatch(drafts);
+        }
+        return 0;
     }
 
     @Override

@@ -103,7 +103,12 @@
     SELECT
     <include refid="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPurchaseInfoMapper.Base_Column_List"/>
     FROM apply_product_sku_purchase_info
-    where apply_code = #{applyCode,jdbcType=VARCHAR}
-    and product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    WHERE 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and product_sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode != '' ">
+      and apply_code=#{applyCode}
+    </if>
   </select>
 </mapper>

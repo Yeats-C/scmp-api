@@ -80,7 +80,7 @@ public class ProductApplyController {
     }
 
     @PostMapping("/getInfoByFormNo")
-    @ApiOperation("根据formNo获取情接口请求 审批类型 1:商品 2.配置 3.区域")
+    @ApiOperation("根据formNo获取情接口请求 审批类型 1:商品 2.仓库 3.区域 4供应商")
     public HttpResponse<DetailRequestRespVo> getInfoByFormNo(@RequestParam String formNo,
                                                              @RequestParam Integer approvalType){
         log.info("ProductApplyController---getInfoByFormNo---类型:[{}],编码:[{}] ", approvalType,formNo);

@@ -31,6 +31,7 @@ import java.util.List;
  */
 public interface ProductSkuSupplyUnitService extends BaseService {
     int insertDraftList(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts);
+    int insertDraftList(String applyCode);
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
 

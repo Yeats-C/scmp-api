@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDisInfoDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuDisInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,10 +36,22 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
     @Autowired
     ProductSkuDistributionInfoMapper productSkuDistributionInfoMapper;
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @Save
     public int insertDraft(ProductSkuDisInfoDraft productSkuDisInfoDraft) {
       return productSkuDisInfoDraftMapper.insert(productSkuDisInfoDraft);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuDisInfo> applyProductSkuDisInfos = productSkuDisInfoDao.getApplyInfoByApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuDisInfos)){
+            List<ProductSkuDisInfoDraft> productSkuDisInfoDrafts = BeanCopyUtils.copyList(applyProductSkuDisInfos, ProductSkuDisInfoDraft.class);
+            return productSkuDisInfoDraftMapper.insertBatch(productSkuDisInfoDrafts);
+        }
+        return 0;
     }
 
     @Override
@@ -93,21 +106,21 @@ public class ProductSkuDisInfoServiceImpl implements ProductSkuDisInfoService {
 
     @Override
     @SaveList
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuDistributionInfo> productSkuDistributionInfos) {
         int num = productSkuDisInfoDao.insertDisInfoList(productSkuDistributionInfos);
         return num;
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int insert(ProductSkuDistributionInfo productSkuDistributionInfo) {
         int num = productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
         return  num;
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int update(ProductSkuDistributionInfo productSkuDistributionInfo) {
         int num = productSkuDistributionInfoMapper.updateByPrimaryKeySelective(productSkuDistributionInfo);
         return num;

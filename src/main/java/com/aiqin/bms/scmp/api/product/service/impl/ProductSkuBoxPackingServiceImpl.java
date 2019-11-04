@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -109,6 +110,17 @@ public class ProductSkuBoxPackingServiceImpl implements ProductSkuBoxPackingServ
     @SaveList
     public int insertDraftList(List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts) {
         return productSkuBoxPackingDraftMapper.saveBatch(productSkuBoxPackingDrafts);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuBoxPacking> applyProductSkuBoxPackings = productSkuBoxPackingDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuBoxPackings)){
+            List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts = BeanCopyUtils.copyList(applyProductSkuBoxPackings,ProductSkuBoxPackingDraft.class);
+            return((ProductSkuBoxPackingService)AopContext.currentProxy()).insertDraftList(productSkuBoxPackingDrafts);
+        }
+        return 0;
     }
 
     /**

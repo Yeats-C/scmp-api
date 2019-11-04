@@ -66,6 +66,14 @@
     </foreach>
     and apply_code = #{applyCode}
   </select>
+  <select id="selectByApplyCode"
+          resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from apply_product_sku_price_info
+    where 1=1
+    and apply_code = #{applyCode}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_price_info
     where id = #{id,jdbcType=BIGINT}

@@ -247,7 +247,7 @@
     inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
     where o.purchase_order_status in(3, 4, 5, 6)
     and d.valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
-    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}listForSap
+    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
   </select>
   <select id="listForSap" resultMap="BaseResultMap">
     select

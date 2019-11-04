@@ -91,5 +91,7 @@ public interface ProductSkuCheckoutService {
      * @return
      */
     Map<String, ProductSkuCheckoutRespVo> selectBySkuCodes(Set<String> skuList);
+
+    int insertDraftList(String applyCode);
 }
 
