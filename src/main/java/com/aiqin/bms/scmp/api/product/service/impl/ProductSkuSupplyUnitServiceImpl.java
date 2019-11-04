@@ -282,7 +282,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         //设置状态为同步完成
         productSkuSupplyUnitDao.updateBySynStatus(list);
         //保存采购价
-        productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(list));
+        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(list));
     }
 
     @Override
@@ -647,7 +647,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                         //供应商产能信息
                         productSkuSupplyUnitCapacityService.saveListForChange(unitList);
                         //保存采购价
-                        productSkuPriceInfoService.saveSkuPriceOfficial(getPriceInfo(unitList));
+                        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(unitList));
                     }
                 }
             }
