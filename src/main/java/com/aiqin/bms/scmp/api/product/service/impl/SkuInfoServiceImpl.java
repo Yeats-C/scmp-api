@@ -2032,6 +2032,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
      * @date 2019/7/18 0:39
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateStatus(List<SkuStatusRespVo> respVos) {
         return productSkuInfoMapper.updateStatus(respVos);
     }

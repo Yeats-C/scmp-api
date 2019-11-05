@@ -322,7 +322,6 @@ public class TagInfoServiceImpl implements TagInfoService {
      * @return
      */
     @Override
-    @SaveList
     @Transactional(rollbackFor = Exception.class)
     public Integer insertRecordSelective(List<UseTagRecordReqVo> records) {
         return  useTagRecordMapper.insertBatch(records);
@@ -335,7 +334,6 @@ public class TagInfoServiceImpl implements TagInfoService {
      * @return
      */
     @Override
-    @UpdateList
     @Transactional(rollbackFor = Exception.class)
     public Integer updateRecordSelective(List<UseTagRecordReqVo> records) {
         return  useTagRecordMapper.updateBatch(records);
