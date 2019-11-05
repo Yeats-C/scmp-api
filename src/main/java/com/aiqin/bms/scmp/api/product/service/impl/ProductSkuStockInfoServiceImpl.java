@@ -192,7 +192,7 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
      * @date 2019/7/8 21:05
      */
     @Override
-    @Save
+    @Transactional(rollbackFor = Exception.class)
     public int insertSelective(ProductSkuStockInfo record) {
         return mapper.insertSelective(record);
     }
@@ -206,7 +206,7 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
      * @date 2019/7/8 21:05
      */
     @Override
-    @Update
+    @Transactional(rollbackFor = Exception.class)
     public int updateByPrimaryKeySelective(ProductSkuStockInfo record) {
         return mapper.updateByPrimaryKeySelective(record);
     }

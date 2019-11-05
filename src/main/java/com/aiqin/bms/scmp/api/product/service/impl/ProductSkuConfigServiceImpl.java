@@ -1047,7 +1047,6 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     }
 
     @Override
-    @SaveList
     @Transactional(rollbackFor = Exception.class)
     public Integer insertSpareWarehouseList(List<ProductSkuConfigSpareWarehouse> skuConfigSpareWarehouses) {
         if(CollectionUtils.isEmpty(skuConfigSpareWarehouses)){
