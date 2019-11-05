@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCa
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.QueryProductSkuSupplyUnitsRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.supplier.SkuSupplierDetailRepsVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import io.swagger.models.auth.In;
 
@@ -30,6 +31,7 @@ import java.util.List;
  */
 public interface ProductSkuSupplyUnitService extends BaseService {
     int insertDraftList(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts);
+    int insertDraftList(String applyCode);
 
     int insertList(List<ProductSkuSupplyUnit> productSkuSupplyUnits);
 
@@ -190,4 +192,5 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     ProductApplyInfoRespVO applyView(String code);
 
 
+    DetailRequestRespVo getInfoByForm(String formNo);
 }

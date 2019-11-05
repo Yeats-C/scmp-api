@@ -17,6 +17,7 @@ public interface ProductSkuBoxPackingService {
     int insertDraft(ProductSkuBoxPackingDraft productSkuBoxPackingDraft);
 
     int insertDraftList(List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts);
+    int insertDraftList(String applyCode);
 
     int saveApplyList(List<ApplyProductSku> applyProductSkus);
 

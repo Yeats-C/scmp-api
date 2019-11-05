@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,7 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     @Autowired
     private ProductSkuManufacturerDraftMapper draftMapper;
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertDraftList(List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts) {
         int num = productSkuManufacturerDao.insertDraftList(productSkuManufacturerDrafts);
@@ -41,7 +42,18 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuManufacturer> applyProductSkuManufacturers = productSkuManufacturerDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuManufacturers)){
+            List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts = BeanCopyUtils.copyList(applyProductSkuManufacturers, ProductSkuManufacturerDraft.class);
+            return ((ProductSkuManufacturerService)AopContext.currentProxy()).insertDraftList(productSkuManufacturerDrafts);
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuManufacturer> productSkuManufacturers) {
         int num = productSkuManufacturerDao.insertList(productSkuManufacturers);
         return num;
@@ -61,7 +73,7 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertApplyList(List<ApplyProductSkuManufacturer> applyProductSkuManufacturers) {
         int num = productSkuManufacturerDao.insertApplyList(applyProductSkuManufacturers);

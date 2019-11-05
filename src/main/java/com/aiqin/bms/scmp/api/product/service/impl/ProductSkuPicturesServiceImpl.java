@@ -11,8 +11,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuPicturesResp
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicturesDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPicturesService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,7 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     @Autowired
     private ProductSkuPicturesDraftMapper draftMapper;
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertDraftList(List<ProductSkuPicturesDraft> productSkuPicturesDrafts) {
         int num = productSkuPicturesDao.insertDraftList(productSkuPicturesDrafts);
@@ -39,7 +41,18 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuPictures> applyProductSkuPictures = productSkuPicturesDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuPictures)){
+            List<ProductSkuPicturesDraft> productSkuPicturesDrafts = BeanCopyUtils.copyList(applyProductSkuPictures,ProductSkuPicturesDraft.class);
+           return ((ProductSkuPicturesService)AopContext.currentProxy()).insertDraftList(productSkuPicturesDrafts);
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuPictures> productSkuPictures) {
         int num = productSkuPicturesDao.insertList(productSkuPictures);
         return num;
@@ -91,7 +104,7 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertApplyList(List<ApplyProductSkuPictures> applyProductSkuPictures) {
         int num = productSkuPicturesDao.insertApplyList(applyProductSkuPictures);

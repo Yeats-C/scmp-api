@@ -72,11 +72,12 @@ public class ProductCategoryController {
     @GetMapping("/list")
     @ApiModelProperty("查询品类")
     @ApiImplicitParams({
-            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部")
+            @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部"),
+            @ApiImplicitParam(name="companyCode",value = "前端查询接口可以不传,但是其他第三方系统此字段必填")
     })
-    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus){
+    public HttpResponse<List<ProductCategoryRespVO>> getProductCategory(Byte categoryStatus,String companyCode){
         try {
-            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus);
+            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getList(categoryStatus,companyCode);
             return HttpResponse.success(productCategoryRespVOS);
         } catch (Exception e){
             return HttpResponse.failure(ResultCode.GET_PRODUCT_CATEGORY_ERROR);
@@ -88,11 +89,12 @@ public class ProductCategoryController {
     @ApiModelProperty("查询品类")
     @ApiImplicitParams({
             @ApiImplicitParam(name="categoryStatus",value = "查询全部还是启用,0为启用,4为全部"),
-            @ApiImplicitParam(name="parentId",value = "列表第一次加载parentId=0")
+            @ApiImplicitParam(name="parentId",value = "列表第一次加载parentId=0"),
+            @ApiImplicitParam(name="companyCode",value = "前端查询接口可以不传,但是其他第三方系统此字段必填"),
     })
-    public HttpResponse<List<ProductCategoryRespVO>> getTree(Byte categoryStatus,String parentId){
+    public HttpResponse<List<ProductCategoryRespVO>> getTree(Byte categoryStatus,String parentId,String companyCode){
         try {
-            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getTree(categoryStatus,parentId);
+            List<ProductCategoryRespVO> productCategoryRespVOS = productCategoryService.getTree(categoryStatus,parentId,companyCode);
             return HttpResponse.success(productCategoryRespVOS);
         } catch (Exception e){
             return HttpResponse.failure(ResultCode.GET_PRODUCT_CATEGORY_ERROR);

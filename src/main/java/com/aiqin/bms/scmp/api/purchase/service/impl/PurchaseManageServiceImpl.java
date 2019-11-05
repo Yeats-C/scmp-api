@@ -408,8 +408,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
-                i++;
                 orderProduct.setLinnum(i);
+                i++;
                 list.add(orderProduct);
             }
             purchaseOrderProductDao.insertAll(list);
@@ -1111,7 +1111,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     product.setFactorySkuCode(factorySkuCode);
                 }
                 if(product != null){
-                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum());
+                    PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum().intValue());
                     if(orderProduct != null){
                         Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
                         Long productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();

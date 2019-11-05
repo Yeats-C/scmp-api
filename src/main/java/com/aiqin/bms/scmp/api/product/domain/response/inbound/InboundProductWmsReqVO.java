@@ -27,4 +27,10 @@ public class InboundProductWmsReqVO {
 
     @ApiModelProperty("0商品 1赠品 2实物返回")
     private int productType;
+
+    @ApiModelProperty("采购单价")
+    private Long productAmount;
+
+    @ApiModelProperty("税率")
+    private int taxRate;
 }

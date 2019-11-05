@@ -62,6 +62,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -74,6 +75,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -204,6 +206,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if(count > 0 ){
                 throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
             }
+            count = productSkuInfoMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
+            if(count > 0 ){
+                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经存在"));
+            }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
                 List<SkuConfigsRepsVo> skuConfigsRepsVos = BeanCopyUtils.copyList(addSkuInfoReqVO.getProductSkuConfigs(),SkuConfigsRepsVo.class);
@@ -240,16 +246,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                     productSkuDraft.setChangeContent("新增SKU");
-                }
-                //判断临时表中是否存在
-                ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
-                if(null != skuRespVo){
-                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
-                }
-                //判断申请表中是否存在申请中的数据
-                ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
-                if(null != applyProductSku){
-                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
                 }
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
@@ -1068,7 +1064,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @Save
     public int insertDraft(ProductSkuDraft productSkuDraft) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -1080,14 +1076,21 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int batchInsertDraft(List<ProductSkuDraft> productSkuDrafts) {
+        return productSkuDraftMapper.batchInsert(productSkuDrafts);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     @Save
     public int insertApply(ApplyProductSku applyProductSku) {
         return  applyProductSkuMapper.insert(applyProductSku);
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public String saveSkuApplyInfo(SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO, String approvalName, String approvalRemark) {
         //验证重复 如果有审核中的数据，不能提交流程
         StringBuilder sb = new StringBuilder();
@@ -1373,10 +1376,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     public BasePage<QueryProductSkuListResp> querySkuList(QuerySkuListReqVO querySkuListReqVO) {
         try {
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
-                querySkuListReqVO.setPersonId(authToken.getPersonId());
+            //前端调用需要封装
+            if(StringUtils.isBlank(querySkuListReqVO.getCompanyCode())){
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if(null != authToken){
+                    querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
+                    querySkuListReqVO.setPersonId(authToken.getPersonId());
+                }
             }
             String categoryId;
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
@@ -1513,7 +1519,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public int cancelSkuApply(String applyCode) {
         String formNo = applyProductSkuMapper.findFormNoByCode(applyCode);
         WorkFlowVO workFlowVO = new WorkFlowVO();
@@ -1528,7 +1534,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @Update
     public int cancelApply(ApplyProductSku applyProductSku) {
         try {
@@ -1539,7 +1545,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
@@ -1569,7 +1575,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     public String skuWorkFlowCallback(WorkFlowCallbackVO vo1) {
         //通过编码查询实体
         WorkFlowCallbackVO vo = updateSupStatus(vo1);
@@ -2031,6 +2037,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
      * @date 2019/7/18 0:39
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int updateStatus(List<SkuStatusRespVo> respVos) {
         return productSkuInfoMapper.updateStatus(respVos);
     }
@@ -3989,6 +3996,94 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             return this;
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer reUpdateApply(String applyCode) {
+        Integer num = 0;
+        if(StringUtils.isBlank(applyCode)){
+            throw new BizException(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectApplyByApplyCode(applyCode);
+        if(CollectionUtils.isEmpty(applyProductSkus)){
+            throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+        Byte applyStatus = applyProductSkus.get(0).getApplyStatus();
+        //判断状态
+        if(!Objects.equals(applyStatus,ApplyStatus.REVOKED.getNumber()) && !Objects.equals(applyStatus,ApplyStatus.APPROVAL_FAILED.getNumber())){
+            throw new BizException(ResultCode.REUPDATE_ERROR);
+        }
+        AuthToken user = getUser();
+        //数据验证
+        List<String> repeatSkuName = Lists.newArrayList();
+        List<String> draftAll = productSkuDao.getDraftAll(applyCode);
+        if(CollectionUtils.isNotEmpty(draftAll)){
+            repeatSkuName.addAll(draftAll);
+        }
+        List<String> applyAll = productSkuDao.getApplyAll(applyCode);
+        if(CollectionUtils.isNotEmpty(applyAll)){
+            repeatSkuName.addAll(applyAll);
+        }
+        List<String> all = productSkuInfoMapper.getAll(applyCode);
+        if(CollectionUtils.isNotEmpty(all)){
+            repeatSkuName.addAll(all);
+        }
+        if(CollectionUtils.isNotEmpty(repeatSkuName)){
+            throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU名称["+StringUtils.join(repeatSkuName, ",")+"],在数据库中存在相同名称"));
+        }
+        //验证名称销售码是否重复
+        List<String> salesCodeTmps = productSkuSalesInfoService.checkSalesCodes(applyCode);
+        if(CollectionUtils.isNotEmpty(salesCodeTmps)){
+            throw new BizException(MessageId.create(Project.SCMP_API, 69,  "条形码["+StringUtils.join(salesCodeTmps, ",")+"],在数据库中存在相同条形码"));
+        }
+        List<String> applySkuCodes = applyProductSkus.stream().map(ApplyProductSku::getSkuCode).distinct().collect(Collectors.toList());
+        Map<String, ProductSkuDraft> officialBySkuCodes = productSkuDraftMapper.getOfficialBySkuCodes(applySkuCodes, user.getCompanyCode());
+        List<ProductSkuDraft> productSkuDrafts = BeanCopyUtils.copyList(applyProductSkus, ProductSkuDraft.class);
+        productSkuDrafts.forEach(item->{
+            ProductSkuDraft oldSku = officialBySkuCodes.get(item.getSkuCode());
+            if(null != oldSku){
+                item.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
+                item.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
+                String compareResult = new GetChangeValueUtil<ProductSkuDraft>().compareResult(oldSku, item, skuHeadMap);
+                item.setChangeContent(compareResult);
+            }else{
+                item.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
+                item.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
+                item.setChangeContent("新增SKU");
+            }
+        });
+        Date currentDate = new Date();
+        num =  ((SkuInfoService) AopContext.currentProxy()).batchInsertDraft(productSkuDrafts);
+        List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(applyCode, TagTypeCode.SKU.getStatus());
+        if(CollectionUtils.isNotEmpty(applyUseTagRecords)){
+            applyUseTagRecords.forEach(item->{
+                item.setApplyUseObjectCode(item.getUseObjectCode());
+                item.setCreateBy(user.getPersonName());
+                item.setUpdateBy(user.getPersonName());
+                item.setCreateTime(currentDate);
+                item.setUpdateTime(currentDate);
+            });
+            applyUseTagRecordService.saveBatch(applyUseTagRecords);
+        }
+        productSkuChannelService.insertDraftList(applyCode);
+        productSkuStockInfoService.insertDraftList(applyCode);
+        productSkuPurchaseInfoService.insertDraftList(applyCode);
+        productSkuSalesInfoService.insertDraftList(applyCode);
+        productSkuBoxPackingService.insertDraftList(applyCode);
+        productSkuCheckoutService.insertDraftList(applyCode);
+        productSkuSupplyUnitService.insertDraftList(applyCode);
+        productSkuSupplyUnitCapacityService.insertDraftList(applyCode);
+        productSkuAssociatedGoodsService.insertDraftList(applyCode);
+        productSkuManufacturerService.insertDraftList(applyCode);
+        productSkuInspReportService.insertDraftList(applyCode);
+        productSkuDisInfoService.insertDraftList(applyCode);
+        productSkuPriceInfoService.saveSkuPriceDraft(applyCode);
+        productSkuConfigService.insertDraftList(applyCode);
+        productSkuPicturesService.insertDraftList(applyCode);
+        productSkuPicDescService.insertDraftList(applyCode);
+        productSkuFileService.insertDraftList(applyCode);
+        return num;
     }
 }
 

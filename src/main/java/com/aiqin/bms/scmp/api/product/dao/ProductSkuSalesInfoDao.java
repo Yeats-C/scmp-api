@@ -42,7 +42,15 @@ public interface ProductSkuSalesInfoDao {
 
     List<PurchaseSaleStockRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
-    List<String> productSkuSalesInfoDao(@Param("list") List<String> salesCodes, @Param("skuCode") String skuCode);
+    List<String> getSalesCodes(@Param("list") List<String> salesCodes, @Param("skuCode") String skuCode);
+    List<String> getApplySalesCodes(@Param("list") List<String> salesCodes, @Param("skuCode") String skuCode);
+    List<String> getDraftSalesCodes(@Param("list") List<String> salesCodes, @Param("skuCode") String skuCode);
 
-    ProductSkuSalesInfo salesInfoByPdf(String skuCode);
+    List<ApplyProductSkuSalesInfo> getApplysByApplyCode(@Param("applyCode") String applyCode);
+
+    List<String> getSalesCodesByApplyCode(String applyCode);
+
+    List<String> getApplySalesCodesApplyCode(String applyCode);
+
+    List<String> getDraftSalesCodesApplyCode(String applyCode);
 }

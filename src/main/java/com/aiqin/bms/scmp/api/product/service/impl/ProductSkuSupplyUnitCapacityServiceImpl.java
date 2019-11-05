@@ -52,6 +52,18 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
         return draftMapper.saveBatch(draftList);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuSupplyUnitCapacity> applyProductSkuSupplyUnitCapacities =
+                applyMapper.selectByApplyCode(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnitCapacities)){
+            List<ProductSkuSupplyUnitCapacityDraft> draftList = BeanCopyUtils.copyList(applyProductSkuSupplyUnitCapacities, ProductSkuSupplyUnitCapacityDraft.class);
+            return ((ProductSkuSupplyUnitCapacityService) AopContext.currentProxy()).insertDraftList(draftList);
+        }
+        return 0;
+    }
+
     /**
      * 删除临时表数据
      *

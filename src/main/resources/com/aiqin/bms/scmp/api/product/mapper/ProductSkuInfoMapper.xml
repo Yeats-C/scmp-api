@@ -111,6 +111,12 @@
         #{item}
     </foreach>
   </select>
+  <select id="getAll" resultType="java.lang.String">
+      select
+       distinct a.sku_name
+      from product_sku a,apply_product_sku b
+      where a.del_flag = 0 and a.sku_name = b.sku_name and b.apply_code = #{applyCode} and b.apply_type = 1
+  </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select
     count(0)
@@ -1155,5 +1161,15 @@ from product_sku a
       where sku_code = #{item.skuCode}
     </foreach>
   </update>
-
+    <select id="checkName" resultType="java.lang.Integer">
+      select count(*) from
+        product_sku
+       where 1=1
+        <if test="skuCode != null and skuCode != '' ">
+            and sku_code != #{skuCode}
+        </if>
+        <if test="skuName != null and skuName != '' ">
+            and sku_name = #{skuName}
+        </if>
+    </select>
 </mapper>

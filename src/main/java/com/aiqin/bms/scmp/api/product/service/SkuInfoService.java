@@ -71,6 +71,13 @@ public interface SkuInfoService{
     int insertDraft(ProductSkuDraft productSkuDraft);
 
     /**
+     * 新增sku草稿信息
+     * @param productSkuDrafts
+     * @return
+     */
+    int batchInsertDraft(List<ProductSkuDraft> productSkuDrafts);
+
+    /**
      * 新增sku申请信息
      * @param applyProductSku
      * @return
@@ -307,5 +314,5 @@ public interface SkuInfoService{
 
     Boolean exportEditSku(HttpServletResponse resp, String applyCode);
 
-
+    Integer reUpdateApply(String formNo);
 }

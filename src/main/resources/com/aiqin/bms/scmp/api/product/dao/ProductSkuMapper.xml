@@ -971,6 +971,12 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </select>
+  <select id="getDraftAll" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT distinct a.sku_name FROM product_sku_draft a,apply_product_sku b
+    WHERE a.del_flag=0
+    and a.sku_name = b.sku_name
+    and b.apply_code = #{applyCode}
+  </select>
   <select id="getSkuDraftByProductCodes" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper.BaseResultMap">
     SELECT * FROM product_sku_draft WHERE del_flag=0 AND product_code IN
     <foreach collection="list" item="item" open="(" separator="," close=")">
@@ -1409,6 +1415,14 @@
     from apply_product_sku
     where apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
+  </select>
+  <select id="getApplyAll" parameterType="java.lang.String" resultType="java.lang.String">
+    SELECT
+    distinct a.sku_name
+    from apply_product_sku a,apply_product_sku b
+    where a.del_flag=0 and a.apply_status = 1
+    and b.apply_code = #{applyCode}
+    and a.sku_name = b.sku_name
   </select>
   <select id="getApplySkuByFormNo" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper.BaseResultMap">
     SELECT
@@ -2066,11 +2080,12 @@
     ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
     ps.product_sort_name as productSortName, ps.color_name as colorName,ps.model_number as modelNumber,
     ps.product_code as spuCode, ps.product_name as spuName, pi.spec as productSpec, su.supply_unit_code as supplierCode,
-    su.supply_unit_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
+    com.supply_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
+    inner join supply_company com on com.supply_code = su.supply_unit_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
     inner join product_sku_config sc on sc.sku_code = ps.sku_code
     inner join warehouse w on w.logistics_center_code = sc.transport_center_code

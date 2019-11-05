@@ -20,6 +20,7 @@ public interface ProductSkuSupplyUnitCapacityService {
      * @return
      */
     int insertDraftList(List<ProductSkuSupplyUnitCapacityDraft> draftList);
+    int insertDraftList(String applyCode);
 
 
     /**

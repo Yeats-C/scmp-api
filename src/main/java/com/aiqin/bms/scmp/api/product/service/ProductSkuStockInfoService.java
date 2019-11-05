@@ -103,4 +103,6 @@ public interface ProductSkuStockInfoService {
      * @date 2019/7/8 21:05
      */
     int updateByPrimaryKeySelective(ProductSkuStockInfo record);
+
+    int insertDraftList(String applyCode);
 }

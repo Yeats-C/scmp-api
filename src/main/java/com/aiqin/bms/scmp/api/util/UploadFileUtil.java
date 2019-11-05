@@ -66,7 +66,7 @@ public class UploadFileUtil {
         //返回文件路径
         String url = ossClient.generatePresignedUrl(bucketName, fileName, expiration).toString();
         //LOGGER.info("oss图片链接,{}", url);
-        return url;
+        return url.startsWith("http://")?url.replace("http://","https://"):url;
     }
 
     public String uploadFile(MultipartFile file,Boolean isReName) throws Exception {
@@ -82,7 +82,7 @@ public class UploadFileUtil {
         Date expiration = new Date(System.currentTimeMillis() + 3600L * 1000 * 24 * 365 * 10);
         String url = ossClient.generatePresignedUrl(bucketName, fileName, expiration).toString();
         //LOGGER.info("oss文件链接,{}", url);
-        return url;
+        return url.startsWith("http://")?url.replace("http://","https://"):url;
     }
 
     public boolean deleteFile(String filePath) {
@@ -129,7 +129,7 @@ public class UploadFileUtil {
             // 关闭OSSClient。
             ossClient.shutdown();
         }
-        return url;
+        return url.startsWith("http://")?url.replace("http://","https://"):url;
     }
 
     public String upload(MultipartFile file,String filePath) {
@@ -160,7 +160,7 @@ public class UploadFileUtil {
         Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
         String url = ossClient.generatePresignedUrl(bucketName, fileName, expiration).toString();
         LOGGER.info("oss图片链接,{}", url);
-        return url;
+        return url.startsWith("http://")?url.replace("http://","https://"):url;
     }
 
     public String downImage(String url){
@@ -239,8 +239,7 @@ public class UploadFileUtil {
         Date expiration = new Date(new Date().getTime() + 3600l * 1000 * 24 * 365 * 10);
         String newUrl = ossClient.generatePresignedUrl(bucketName, destinationKey, expiration).toString();
         LOGGER.info("oss图片链接,{}", newUrl);
-        return newUrl;
-    }
+        return newUrl.startsWith("http://")?newUrl.replace("http://","https://"):newUrl;    }
 
 
     public Map<String,String> getKey(String url){

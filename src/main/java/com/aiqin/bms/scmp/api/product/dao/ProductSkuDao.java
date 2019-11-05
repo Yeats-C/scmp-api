@@ -37,15 +37,19 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ProductSkuDao {
 
     ProductSkuRespVo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ApplyProductSku> getSkuApplyList(String applyCode);
+
+    List<String> getApplyAll(@Param("applyCode") String applyCode);
 
     /**
      * @param querySkuListReqVO
@@ -184,6 +188,9 @@ public interface ProductSkuDao {
      * @return
      */
     List<ProductSkuDraft> getSkuDraftByCodes(List<String> skuCodes);
+
+
+    List<String> getDraftAll(@Param("applyCode") String applyCode);
 
     /**
      * 根据商品集合查询草稿
