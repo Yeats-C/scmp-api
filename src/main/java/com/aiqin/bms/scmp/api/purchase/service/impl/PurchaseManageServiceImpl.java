@@ -292,7 +292,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                 Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 detail.setSingleCount(number);
                 detail.setProductAmount(amount);
