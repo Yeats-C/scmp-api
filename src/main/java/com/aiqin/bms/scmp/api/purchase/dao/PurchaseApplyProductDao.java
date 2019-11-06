@@ -45,4 +45,6 @@ public interface PurchaseApplyProductDao {
 
     Integer purchaseFormByComplete(String purchaseApplyId);
 
+    List<PurchaseApplyDetailResponse> productBySku(PurchaseFormRequest apply);
+
 }

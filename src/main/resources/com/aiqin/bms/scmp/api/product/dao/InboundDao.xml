@@ -680,4 +680,10 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <select id="cancelById" resultType="java.lang.String">
+    select id
+    from inbound
+    where source_oder_code = #{code}
+    order by id desc limit 1
+  </select>
 </mapper>

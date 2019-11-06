@@ -77,7 +77,8 @@ public class callback extends SpringBootTestContext {
         String orderId = "2361";
         String createById ="123123";
         String createByName = "123123";
-        inboundService.repealOrder(orderId,createById,createByName);
+        String description = "123123";
+        inboundService.repealOrder(orderId,createById,createByName, description);
 
     }
 

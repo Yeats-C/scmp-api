@@ -417,5 +417,9 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("purchase_order_pre")
     private String purchaseOrderPre;
 
+    @ApiModelProperty(value="公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
 }
 
