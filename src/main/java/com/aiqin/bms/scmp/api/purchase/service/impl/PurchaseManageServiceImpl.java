@@ -269,14 +269,38 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
         }
         if(num == 1){
-            List<PurchaseApplyDetailResponse> list = Lists.newArrayList();
-            return HttpResponse.success(new PageResData<>(0, list, 1));
+            List<PurchaseApplyDetailResponse> list = this.repeatProduct(purchaseFormRequest);
+            pageResData.setDataList(list);
+            Integer count = purchaseApplyProductDao.purchaseFormByRepeatCount(purchaseFormRequest);
+            pageResData.setTotalCount(count);
+        }else {
+            pageResData.setDataList(skuList);
+            Integer count = purchaseApplyProductDao.purchaseFormCount(purchaseFormRequest);
+            pageResData.setTotalCount(count);
         }
         pageResData.setIsRepeat(num);
-        pageResData.setDataList(skuList);
-        Integer count = purchaseApplyProductDao.purchaseFormCount(purchaseFormRequest);
-        pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
+    }
+
+    // 查询采购单重复的商品
+    private List<PurchaseApplyDetailResponse> repeatProduct(PurchaseFormRequest purchaseFormRequest) {
+        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormByRepeat(purchaseFormRequest);
+        // 提交采购单页面商品列表
+        if (CollectionUtils.isNotEmptyCollection(details)) {
+            for (PurchaseApplyDetailResponse detail : details) {
+                // 计算单品数量， 含税总价
+                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
+                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
+                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
+                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                Integer number = purchaseWhole * packNumber + purchaseSingle;
+                detail.setSingleCount(number);
+                detail.setProductAmount(amount);
+                detail.setProductTotalAmount(number * amount);
+                this.stockAmount(detail);
+            }
+        }
+        return details;
     }
 
     private void stockAmount(PurchaseApplyDetailResponse detail) {
