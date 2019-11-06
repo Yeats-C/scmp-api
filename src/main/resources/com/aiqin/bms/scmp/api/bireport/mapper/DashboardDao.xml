@@ -293,7 +293,7 @@
     </select>
     <select id="selectNegativeMarginSkuNumber" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardNegativeMarginRespVo">
         SELECT
-          dnm.negative_margin_sku_num as negativeMarginSkuNum
+          sum(dnm.negative_margin_sku_num) as negativeMarginSkuNum
         FROM dashboard_negative_margin dnm
         where
         <if test="statMonth!=null and statMonth!=''">
