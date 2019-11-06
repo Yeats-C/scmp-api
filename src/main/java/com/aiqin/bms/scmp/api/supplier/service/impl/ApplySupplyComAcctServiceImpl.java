@@ -226,16 +226,6 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
             s.setId(supplyCompanyAccount.getId());
             return ((ApplySupplyComAcctService) AopContext.currentProxy()).deleteSupplyData(s);
         }
-        //修改意味着变更故要更改状态锁定
-        //更新申请表中审核通过的值
-        ApplySupplyCompanyAccount entity = new ApplySupplyCompanyAccount();
-        entity.setApplyCompanyAccountCode(supplyCompanyAccount.getApplyCompanyAccountCode());
-        List<ApplySupplyCompanyAccount> applySupplyCompanyAccounts = applySupplyCompanyAcctDao.selectByPojo(entity);
-        if (CollectionUtils.isEmptyCollection(applySupplyCompanyAccounts) || applySupplyCompanyAccounts.size() > 1) {
-            log.error("查询供应单位数据申请表中审核通过的值错误，传入ApplyCompanyAccountCode是:{}", supplyCompanyAccount.getApplyCompanyAccountCode());
-            throw new GroundRuntimeException("修改供应单位账户失败");
-        }
-        ApplySupplyCompanyAccount account = applySupplyCompanyAccounts.get(0);
         //修改数据
         ApplySupplyCompanyAcctReqDTO s = new ApplySupplyCompanyAcctReqDTO();
         BeanCopyUtils.copy(applySupplyCompanyAcctReq, s);
