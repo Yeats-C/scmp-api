@@ -228,36 +228,66 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(purchaseFormRequest == null){
             return HttpResponse.successGenerics(pageResData);
         }
-        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
-        // 提交采购单页面商品列表
-        if(CollectionUtils.isNotEmptyCollection(details)){
-            PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(details.get(0).getPurchaseApplyId());
-            for(PurchaseApplyDetailResponse detail:details){
-                // 计算单品数量， 含税总价
-                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
-                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
-                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
-                Integer number = purchaseWhole * packNumber + purchaseSingle;
-                detail.setSingleCount(number);
-                detail.setProductAmount(amount);
-                detail.setProductTotalAmount(number * amount);
-                this.stockAmount(detail, apply.getCompanyCode());
+        // 根据sku去重
+        List<PurchaseApplyDetailResponse> skuList = purchaseApplyProductDao.productBySku(purchaseFormRequest);
+        Integer num = 0;
+        if(CollectionUtils.isNotEmptyCollection(skuList)) {
+            for (PurchaseApplyDetailResponse sku : skuList) {
+                purchaseFormRequest.setSkuCode(sku.getSkuCode());
+                // 提交采购单页面商品列表
+                List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
+                if(CollectionUtils.isNotEmptyCollection(details)){
+                    Integer amount = 0, number = 0, singCount = 0, whole = 0, single = 0;
+                    for (PurchaseApplyDetailResponse detail : details) {
+                        if(details.size() > 1){
+                            for(int i = 0; i < details.size(); i++){
+                                for(int j = 0; j < details.size(); j++){
+                                    if(!details.get(i).getProductPurchaseAmount().equals(details.get(j).getProductPurchaseAmount())){
+                                        num =1;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        // 计算单品数量， 含税总价
+                        Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
+                        Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
+                        Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
+                        amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                        whole += purchaseWhole;
+                        single += purchaseSingle;
+                        Integer purchaseNumber = purchaseWhole * packNumber + purchaseSingle;
+                        number += purchaseNumber;
+                        singCount += detail.getSingleCount();
+                    }
+                    sku.setPurchaseWhole(whole);
+                    sku.setPurchaseSingle(single);
+                    sku.setSingleCount(number);
+                    sku.setProductAmount(amount);
+                    sku.setProductTotalAmount(number * amount);
+                    sku.setSingleCount(singCount);
+                    this.stockAmount(sku);
+                }
             }
         }
-        pageResData.setDataList(details);
+        if(num == 1){
+            List<PurchaseApplyDetailResponse> list = Lists.newArrayList();
+            return HttpResponse.success(new PageResData<>(0, list, 1));
+        }
+        pageResData.setIsRepeat(num);
+        pageResData.setDataList(skuList);
         Integer count = purchaseApplyProductDao.purchaseFormCount(purchaseFormRequest);
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
     }
 
-    private void stockAmount(PurchaseApplyDetailResponse detail, String companyCode) {
+    private void stockAmount(PurchaseApplyDetailResponse detail) {
         // 查询库存数量，库存金额
         Stock stock = new Stock();
         stock.setSkuCode(detail.getSkuCode());
         stock.setTransportCenterCode(detail.getTransportCenterCode());
         stock.setWarehouseCode(detail.getWarehouseCode());
-        stock.setCompanyCode(companyCode);
+        stock.setCompanyCode(detail.getCompanyCode());
         Stock info = stockDao.stockInfo(stock);
         if (info != null) {
             detail.setStockCount(info.getInventoryNum().intValue());
@@ -407,7 +437,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setActualSingleCount(0);
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 detail.setSingleCount(number);
-                this.stockAmount(detail, companyCode);
+                detail.setCompanyCode(companyCode);
+                this.stockAmount(detail);
                 orderProduct.setStockAmount(detail.getStockAmount() == null ? 0 : detail.getStockAmount().longValue());
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
