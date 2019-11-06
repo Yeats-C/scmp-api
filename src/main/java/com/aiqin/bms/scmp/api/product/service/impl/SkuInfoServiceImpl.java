@@ -1547,17 +1547,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-//        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-//        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
-//        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
-        String title = approvalName;
-        workFlowVO.setTitle(title);
+        Byte applyType = applyProductSkus.get(0).getApplyType();
+        WorkFlow workFlow;
+        if (Objects.equals(applyType, StatusTypeCode.ADD_APPLY.getStatus())) {
+            workFlow = WorkFlow.APPLY_GOODS;
+        } else {
+            workFlow = WorkFlow.APPLY_GOODS_REVISE;
+        }
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ workFlow);
+        workFlowVO.setTitle(approvalName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, workFlow);
         if(workFlowRespVO.getSuccess()){
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 //存日志
@@ -1616,7 +1618,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
                 }
-                productCommonService.getInstance(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName);
+                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName,new Date(),vo1.getApprovalUserName(), null);
                 //渠道
                 productSkuChannelService.save(skuCode, applyCode);
                 //标签
@@ -1726,7 +1728,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
                 }
-                productCommonService.getInstance(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName);
+                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName,new Date(),"系统自动",null);
                 //渠道
                 productSkuChannelService.save(skuCode, applyCode);
                 //标签
