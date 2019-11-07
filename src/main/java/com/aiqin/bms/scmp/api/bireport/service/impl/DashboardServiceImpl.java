@@ -232,25 +232,42 @@ public class DashboardServiceImpl implements DashboardService {
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
                     dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(0.00);
                 }else {
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear());
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(0.00);
+                    }else {
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear());
+                    }
+
                 }
 
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
                     dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(0.00);
                 }else {
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative());
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(0.00);
+                    }else {
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative());
+                    }
                 }
 
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
                     dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(0L);
                 }else {
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear());
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(0L);
+                    }else {
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear());
+                    }
                 }
 
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
                     dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(0L);
                 }else {
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative());
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(0L);
+                    }else {
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative());
+                    }
                 }
 
                 String statMonth = dashboardHomepageMonthlyHomocyclicRatioRespVo.getStatMonth();
