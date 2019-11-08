@@ -121,7 +121,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                 }
                 url = fileInfoService.upload(multipartFile,false);
                 LOGGER.info("fileName:{},folderName:{},url:{}", fileName, folderName, url);
-                if (fileName.contains("suploadm_")) {
+                if (fileName.contains("sm_")) {
                     productSkuPicDescDraft = new ProductSkuPicDescDraft();
                     productSkuPicDescDraft.setSortingNumber((long) productSkuPicDescDraftList.size()+1);
                     productSkuPicDescDraft.setPicDescPath(url);
