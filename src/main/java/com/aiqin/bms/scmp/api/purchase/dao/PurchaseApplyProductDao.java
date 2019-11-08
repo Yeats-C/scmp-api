@@ -45,4 +45,10 @@ public interface PurchaseApplyProductDao {
 
     Integer purchaseFormByComplete(String purchaseApplyId);
 
+    List<PurchaseApplyDetailResponse> productBySku(PurchaseFormRequest apply);
+
+    Integer purchaseFormByRepeatCount(PurchaseFormRequest apply);
+
+    List<PurchaseApplyDetailResponse> purchaseFormByRepeat(PurchaseFormRequest apply);
+
 }
