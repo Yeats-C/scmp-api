@@ -582,6 +582,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
                 if(!s.equals("0")){
                     return HttpResponse.failure(ResultCode.DL_CANCEL);
+                }else {
+                    Inbound inbound = new Inbound();
+                    // 将入库单状态修改为取消
+                    inbound.setId(Long.valueOf(id));
+                    inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
+                    inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
+                    inboundDao.updateByPrimaryKeySelective(inbound);
                 }
             }
         }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
@@ -598,6 +605,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if(!s.equals("0")){
                 return HttpResponse.failure(ResultCode.DL_CANCEL);
             }
+            Inbound inbound = new Inbound();
+            // 将入库单状态修改为取消
+            inbound.setId(Long.valueOf(id));
+            inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
+            inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
+            inboundDao.updateByPrimaryKeySelective(inbound);
             log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
                     PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
             if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
