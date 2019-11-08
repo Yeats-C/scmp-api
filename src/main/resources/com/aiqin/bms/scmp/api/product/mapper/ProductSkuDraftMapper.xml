@@ -211,7 +211,8 @@
     a.pic_folder_code         as       picFolderCode,
     a.original_code                    originalCode,
     group_concat(m.price_channel_name) coverage,
-    a.procurement_section_name         purchaseGroupName
+    a.procurement_section_name         purchaseGroupName,
+    a.procurement_section_code         purchaseGroupCode
     from product_sku_draft a
     left join product_sku_stock_info_draft c on a.sku_code = c.product_sku_code
     left join product_sku_box_packing_draft d
