@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.StatusTypeCode;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.PurchaseSaleStockReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.google.common.collect.Maps;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +25,8 @@ public class GetChangeValueUtil<T> {
 
     public static Map<String,String> skuHeadMap = Maps.newHashMap();
     public static Map<String,String> headMap = Maps.newHashMap();
+    /** 进销存map **/
+    public static Map<String,String> purchaseSaleStockHeadMap = Maps.newHashMap();
     static {
         skuHeadMap.put("goodsGifts","类型");
         skuHeadMap.put("skuName","SKU名称");
@@ -55,6 +59,16 @@ public class GetChangeValueUtil<T> {
         headMap.put("id","主键ID");
         headMap.put("supplierName","供应商集团名称");
         headMap.put("supplierAbbreviation","供应商集团简称");
+
+        purchaseSaleStockHeadMap.put("type", "类型");
+        purchaseSaleStockHeadMap.put("spec", "规格");
+        purchaseSaleStockHeadMap.put("unitName", "单位");
+        purchaseSaleStockHeadMap.put("baseProductContent", "单位含量");
+        purchaseSaleStockHeadMap.put("zeroRemovalCoefficient", "交易倍数");
+        purchaseSaleStockHeadMap.put("barCode", "条形码");
+        purchaseSaleStockHeadMap.put("description", "描述");
+        purchaseSaleStockHeadMap.put("maxOrderNum", "最大订购数量");
+        purchaseSaleStockHeadMap.put("isDefault", "是否默认");
     }
     private Map<String,String> compareObject(Object oldBean, Object newBean) {
         Map<String,String> changeMap = Maps.newHashMap();
@@ -103,6 +117,10 @@ public class GetChangeValueUtil<T> {
                         o1 = InventoryModels.getByType((Byte) o1).getName();
                         o2 = InventoryModels.getByType((Byte) o2).getName();
                     }
+                    if("type".equals(field.getName())){
+                        o1 = PurchaseSaleStockType.getSkuTypeEnumByType((Byte) o1).getName();
+                        o2 = PurchaseSaleStockType.getSkuTypeEnumByType((Byte) o2).getName();
+                    }
                     str =  "从\"" + o1 + "\"改为\"" + o2+"\"";
                 }
                 if (StringUtils.isNotBlank(str)) {
@@ -141,7 +159,14 @@ public class GetChangeValueUtil<T> {
         String compareResult = new GetChangeValueUtil<Supplier>().compareResult(old, supplier, headMap);
         System.out.println(compareResult);
 
-
+        PurchaseSaleStockReqVo oldVo = new PurchaseSaleStockReqVo();
+        oldVo.setUnitName("个");
+        oldVo.setType((StatusTypeCode.STOCK.getStatus()));
+        PurchaseSaleStockReqVo newVo = new PurchaseSaleStockReqVo();
+        newVo.setUnitName("箱");
+        newVo.setType(StatusTypeCode.PURCHASE.getStatus());
+        String cResult = new GetChangeValueUtil<PurchaseSaleStockReqVo>().compareResult(oldVo, newVo, purchaseSaleStockHeadMap);
+        System.out.println(cResult);
     }
 
 
