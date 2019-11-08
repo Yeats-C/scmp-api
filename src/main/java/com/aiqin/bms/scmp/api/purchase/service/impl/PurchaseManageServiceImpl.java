@@ -579,12 +579,15 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
                 // 查询入库单号的id
                 String id = inboundDao.cancelById(order.getPurchaseOrderCode());
+                if(StringUtils.isBlank(id)){
+                    return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
+                }
                 String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
                 if(!s.equals("0")){
                     return HttpResponse.failure(ResultCode.DL_CANCEL);
                 }else {
-                    Inbound inbound = new Inbound();
                     // 将入库单状态修改为取消
+                    Inbound inbound = new Inbound();
                     inbound.setId(Long.valueOf(id));
                     inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
                     inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
@@ -601,12 +604,15 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             purchaseOrderDetailsDao.update(detail);
             // 手动入库完成 撤销未完成的入库单
             String id = inboundDao.cancelById(order.getPurchaseOrderCode());
+            if(StringUtils.isBlank(id)){
+                return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
+            }
             String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
             if(!s.equals("0")){
                 return HttpResponse.failure(ResultCode.DL_CANCEL);
             }
-            Inbound inbound = new Inbound();
             // 将入库单状态修改为取消
+            Inbound inbound = new Inbound();
             inbound.setId(Long.valueOf(id));
             inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
             inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
