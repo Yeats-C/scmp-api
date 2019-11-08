@@ -250,8 +250,9 @@ public class UploadFileUtil {
         String filePath = url.contains("?") ? url.substring(0,url.indexOf("?")) : url;
         String contentType = filePath.substring(filePath.lastIndexOf("."));
         int indexOf = filePath.lastIndexOf(dir);
+        //兼容期初数据
         if(indexOf == -1){
-            indexOf = filePath.lastIndexOf("com/") + 4;
+            indexOf = filePath.lastIndexOf("product/");
         }
         String fileName =  filePath.substring(indexOf);
         Map<String,String> map = Maps.newHashMap();
@@ -268,7 +269,7 @@ public class UploadFileUtil {
         String contentType = filePath.substring(filePath.lastIndexOf("."));
         int indexOf = filePath.lastIndexOf(dir);
         if(indexOf == -1){
-            indexOf = filePath.lastIndexOf("com/")+4;
+            indexOf = filePath.lastIndexOf("product/");
         }
         String fileName =  filePath.substring(indexOf);
         Map<String,String> map = Maps.newHashMap();
