@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.util;
 
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSONObject;
 import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.OSSObject;
@@ -242,10 +245,15 @@ public class UploadFileUtil {
         return newUrl.startsWith("http://")?newUrl.replace("http://","https://"):newUrl;    }
 
 
-    public Map<String,String> getKey(String url){
-        String filePath = url.substring(0,url.indexOf("?"));
+    public Map<String,String> getKey(String url) throws BizException {
+        String filePath = url.contains("?") ? url.substring(0,url.indexOf("?")) : url;
         String contentType = filePath.substring(filePath.lastIndexOf("."));
-        String fileName =  filePath.substring(filePath.lastIndexOf(dir));
+        int indexOf = filePath.lastIndexOf(dir);
+        //兼容期初数据
+        if(indexOf == -1){
+            indexOf = filePath.lastIndexOf("product/");
+        }
+        String fileName =  filePath.substring(indexOf);
         Map<String,String> map = Maps.newHashMap();
         map.put("key",fileName);
         map.put("contentType",contentType);
@@ -253,11 +261,16 @@ public class UploadFileUtil {
     }
 
     public static void main(String[] args) {
-        String url = "http://aq-flows-test.oss-cn-beijing.aliyuncs.com/dev/product-picture/fc40d4a0-88c7-4f1e-aad0-1b6653dd2436.jpg?Expires=1886567951&OSSAccessKeyId=LTAILR1FRNY70UY0&Signature=McSkk2xWNQ6IeB5YCg2a9WgiUUQ%3D";
+        //String url = "http://aq-flows-test.oss-cn-beijing.aliyuncs.com/dev/product-picture/fc40d4a0-88c7-4f1e-aad0-1b6653dd2436.jpg?Expires=1886567951&OSSAccessKeyId=LTAILR1FRNY70UY0&Signature=McSkk2xWNQ6IeB5YCg2a9WgiUUQ%3D";
+        String url = "http://aq-scmp.oss-cn-beijing.aliyuncs.com/product/196319/sm_1.jpg";
         String dir = "dev/";
-        String filePath = url.substring(0,url.indexOf("?"));
+        String filePath = url.contains("?") ? url.substring(0,url.indexOf("?")) : url;
         String contentType = filePath.substring(filePath.lastIndexOf("."));
-        String fileName =  filePath.substring(filePath.lastIndexOf(dir));
+        int indexOf = filePath.lastIndexOf(dir);
+        if(indexOf == -1){
+            indexOf = filePath.lastIndexOf("product/");
+        }
+        String fileName =  filePath.substring(indexOf);
         Map<String,String> map = Maps.newHashMap();
         map.put("key",fileName);
         map.put("contentType",contentType);
