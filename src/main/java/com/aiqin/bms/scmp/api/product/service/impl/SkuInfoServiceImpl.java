@@ -1560,7 +1560,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         } else {
             workFlow = WorkFlow.APPLY_GOODS_REVISE;
         }
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ workFlow);
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ workFlow.getNum());
         workFlowVO.setTitle(approvalName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
