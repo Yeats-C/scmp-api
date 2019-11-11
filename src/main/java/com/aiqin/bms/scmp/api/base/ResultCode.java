@@ -228,6 +228,7 @@ public interface ResultCode {
     MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");
     MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库商品数据失败");
     MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
+    MessageId INBOUND_INFO_NULL = MessageId.create(Project.SCMP_API,76,"入库单的信息为空");
 
     // 采购
     MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,201,"此采购组该人员无相关数据");
