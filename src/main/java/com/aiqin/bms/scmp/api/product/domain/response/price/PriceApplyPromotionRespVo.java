@@ -28,7 +28,7 @@ public class PriceApplyPromotionRespVo {
      * 表字段 : price_apply_promotion.apply_promotion_no
      */
     @ApiModelProperty("申请促销编号")
-    private Long applyPromotionNo;
+    private String applyPromotionNo;
 
     /**
      * 申请促销编号名称
@@ -41,7 +41,7 @@ public class PriceApplyPromotionRespVo {
      *  0:未完成 1：已完成
      * 表字段 : price_apply_promotion.status
      */
-    @ApiModelProperty("状态：0:未完成 1：已完成")
+    @ApiModelProperty("状态：0:未完成 1：已完成 2：取消")
     private Integer status;
 
     /**
@@ -49,7 +49,7 @@ public class PriceApplyPromotionRespVo {
      * 表字段 : price_apply_promotion.promotion_no
      */
     @ApiModelProperty("促销单编号")
-    private Long promotionNo;
+    private String promotionNo;
 
     /**
      * 促销单名称

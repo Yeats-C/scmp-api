@@ -87,6 +87,13 @@ public class PricePromotionProductReqVo extends PageReq {
     private BigDecimal promotionDistributionPrice;
 
     /**
+     * 是否被标注 0：是 1：否
+     * 表字段 : price_promotion_detail.is_sign
+     */
+    @ApiModelProperty("是否被标识")
+    private Integer isSign;
+
+    /**
      * 补贴成本
      * 表字段 : price_promotion_product.subsidy_cost
      */

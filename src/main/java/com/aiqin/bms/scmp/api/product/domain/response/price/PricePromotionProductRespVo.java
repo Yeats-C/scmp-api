@@ -65,6 +65,59 @@ public class PricePromotionProductRespVo {
     @ApiModelProperty("商品属性")
     private String attribute;
 
+
+
+    /**
+     * 商品属性
+     */
+    @ApiModelProperty("库存成本")
+    private BigDecimal stockPrice;
+
+
+    /**
+     * 促销分销价格
+     * 表字段 : price_promotion_product.promotion_distribution_price
+     */
+    @ApiModelProperty("分销价格")
+    private BigDecimal distributionPrice;
+
+    /**
+     * 促销分销毛利
+     */
+    @ApiModelProperty("促销分销毛利")
+    private BigDecimal distributionGrossProfit;
+
+    /**
+     * 补贴后分销毛利率
+     */
+    @ApiModelProperty("补贴后分销毛利率")
+    private BigDecimal subsidyDistributionGrossProfit;
+
+    /**
+     * 近三个月月均销量
+     */
+    @ApiModelProperty("近三个月月均销量")
+    private BigDecimal averageNumLastThreeMouth;
+
+    /**
+     *可用库存数量
+     */
+    @ApiModelProperty("可用库存数量")
+    private Long stockNum;
+
+    /**
+     * 近三个月月均销量
+     */
+    @ApiModelProperty("可用库存金额")
+    private BigDecimal stockMoney;
+
+    /**
+     * 是否被标注 0：是 1：否
+     * 表字段 : price_promotion_detail.is_sign
+     */
+    @ApiModelProperty("是否被标识")
+    private Integer isSign;
+
     /**
      * 开始时间
      * 表字段 : price_promotion_product.begin_date

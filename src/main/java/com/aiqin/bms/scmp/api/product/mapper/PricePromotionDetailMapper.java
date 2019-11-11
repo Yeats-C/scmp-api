@@ -20,6 +20,12 @@ public interface PricePromotionDetailMapper {
      * @return
      */
     Integer insertSelective(List<PricePromotionDetailReqVo> pricePromotionDetailList);
+
+    /**
+     * 对规则进行批量添加
+     * @return
+     */
+    Integer insert(PricePromotionDetailReqVo pricePromotionDetailReqVo);
     /**
      * 根据促销获取详情
      * @param

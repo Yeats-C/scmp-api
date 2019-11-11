@@ -24,7 +24,7 @@
         <result column="remark" jdbcType="VARCHAR" property="remark" />
     </resultMap>
 
-    <select id="list" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    <select id="list" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo" resultMap="BaseResultMap">
         select  *
         from price_apply_promotion
         where 1=1
@@ -46,19 +46,19 @@
         <if test="createName != null and createName != ''">
           and  create_name = #{createName,jdbcType=VARCHAR}
         </if>
-        <if test="createTimestamp != null and createTimestamp != ''">
+        <if test="createTimestamp != null ">
            and create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP}
         </if>
         <if test="updateName != null and updateName != ''">
            and update_name = #{updateName,jdbcType=VARCHAR}
         </if>
-        <if test="updateTimestamp != null and updateTimestamp != ''">
+        <if test="updateTimestamp != null ">
            and update_timestamp = #{updateTimestamp,jdbcType=TIMESTAMP}
         </if>
         <if test="operateName != null and operateName != ''">
            and operate_name = #{operateName,jdbcType=VARCHAR}
         </if>
-        <if test="operateTimestamp != null and operateTimestamp != ''">
+        <if test="operateTimestamp != null ">
            and operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP}
         </if>
         <if test="procurementSectionCode != null and procurementSectionCode != ''">
@@ -76,6 +76,10 @@
         <if test="remark != null and remark != ''">
            and remark = #{remark,jdbcType=LONGVARCHAR}
         </if>
+        and procurement_section_code in
+        <foreach collection="purchaseGroupCodes" item="item" index="item" separator="," open="(" close=")">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
     </select>
 
     <select id="loadById" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -85,10 +89,11 @@
     </select>
 
 
-    <delete id="deteleById" parameterType="java.lang.Long">
-        delete from price_apply_promotion
+    <update id="deteleById" parameterType="java.lang.Long">
+        update from price_apply_promotion
+        set status = '2'
         where id = #{id,jdbcType=BIGINT}
-    </delete>
+    </update>
 
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
         <!--

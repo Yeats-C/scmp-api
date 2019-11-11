@@ -61,7 +61,7 @@ public class PricePromotionDetailRespVo {
      * 是否被标注 0：是 1：否
      * 表字段 : price_promotion_detail.is_sign
      */
-    @ApiModelProperty("主键id")
+    @ApiModelProperty("是否被标注 0：是 1：否")
     private Integer isSign;
 
     /**
@@ -70,6 +70,13 @@ public class PricePromotionDetailRespVo {
      */
     @ApiModelProperty("下属产品详情")
     private List<PricePromotionProductRespVo> pricePromotionProductRespVoList;
+
+    /**
+     * 促销规则请求vo
+     * 表字段 : price_promotion_detail.is_sign
+     */
+    @ApiModelProperty("促销规则请求封装集合")
+    private List<PricePromotionDetailRespVo> pricePromotionDetailRespVos;
 
 
 }

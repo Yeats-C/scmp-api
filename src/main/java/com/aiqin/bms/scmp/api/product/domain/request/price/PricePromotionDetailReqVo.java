@@ -58,11 +58,14 @@ public class PricePromotionDetailReqVo extends PageReq {
     private Integer ruleType;
 
     /**
-     * 是否被标注 0：是 1：否
-     * 表字段 : price_promotion_detail.is_sign
+     * 除满赠之外的赠送方式
+     * 表字段 : price_promotion_detail.rule_type
      */
-    @ApiModelProperty("是否被标识")
-    private Integer isSign;
+    @ApiModelProperty("除满赠之外的赠送方式")
+    private List<PricePromotionDetailReqVo> pricePromotionDetailReqVoList;
+
+
+
 
     /**
      * 规则对应的列表

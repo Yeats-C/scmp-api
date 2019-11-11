@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.response.price;
+package com.aiqin.bms.scmp.api.product.domain.request.price;
 
 /**
  * @Auther: mamingze
@@ -6,6 +6,8 @@ package com.aiqin.bms.scmp.api.product.domain.response.price;
  * @Description:
  */
 
+import com.aiqin.bms.scmp.api.base.PageReq;
+import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,7 +22,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("促销单实体返回Vo")
-public class PromotionRespVo {
+public class PricePromotionReqVo extends PageReq {
 
     /**
      * 主键id
@@ -34,7 +36,14 @@ public class PromotionRespVo {
      * 表字段 : price_apply_promotion.promotion_no
      */
     @ApiModelProperty("促销单编号")
-    private Long promotionNo;
+    private String promotionNo;
+
+    /**
+     * 审批单号
+     * 表字段 : price_apply_promotion.promotion_no
+     */
+    @ApiModelProperty("审批单号")
+    private String formNo;
 
     /**
      * 促销单名称
@@ -46,8 +55,14 @@ public class PromotionRespVo {
     /**
      * 部门
      */
-    @ApiModelProperty("部门")
-    private String department;
+    @ApiModelProperty("部门编号")
+    private String departmentCode;
+
+    /**
+     * 部门
+     */
+    @ApiModelProperty("部门名称")
+    private String departmentName;
 
     /**
      * 供货渠道编码
@@ -67,7 +82,7 @@ public class PromotionRespVo {
      * 状态
      */
     @ApiModelProperty("状态:1.待审核,2.审核中，3.审核通过，4.审核不通过，5.取消")
-    private String status;
+    private Byte status;
 
     /**
      * 备注
@@ -111,6 +126,12 @@ public class PromotionRespVo {
     @ApiModelProperty("关联审批编号")
     private String approvalNo ;
 
+    /**
+     * 申请促销编号
+     * 表字段 : price_apply_promotion.apply_promotion_no
+     */
+    @ApiModelProperty("申请促销编号")
+    private String applyPromotionNo;
 
     /**
      * 买赠列表

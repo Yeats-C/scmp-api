@@ -16,13 +16,14 @@
         <result column="end_date" jdbcType="TIMESTAMP" property="endDate" />
         <result column="promotion_distribution_price" jdbcType="DECIMAL" property="promotionDistributionPrice" />
         <result column="subsidy_cost" jdbcType="DECIMAL" property="subsidyCost" />
+        <result column="is_sign" jdbcType="INTEGER" property="isSign" />
     </resultMap>
     <sql id="Base_Column_List">
         <!--
           This element was generated on Tue Nov 05 10:33:06 CST 2019.
         -->
         id, business_id, product_type, product_code, product_name, category, attribute, begin_date, 
-        end_date, promotion_distribution_price, subsidy_cost
+        end_date, promotion_distribution_price, subsidy_cost,is_sign
     </sql>
     <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
         <!--
@@ -41,12 +42,12 @@
         where business_id = #{businessId,jdbcType=BIGINT}
     </select>
 
-    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <delete id="deteleByBusinessId" parameterType="java.lang.Long">
         <!--
           This element was generated on Tue Nov 05 10:33:06 CST 2019.
         -->
         delete from price_promotion_product
-        where id = #{id,jdbcType=BIGINT}
+        where business_id = #{businessId,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo">
         <!--

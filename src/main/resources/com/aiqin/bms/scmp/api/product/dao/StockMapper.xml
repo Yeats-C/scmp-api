@@ -2662,4 +2662,10 @@
             </if>
         </where>
     </select>
+    <select id="selectSkuCodeByQueryAvailableSum" resultType="java.lang.Long">
+             SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        WHERE sku_code = #{skuCode}
+    </select>
 </mapper>

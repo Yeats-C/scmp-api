@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.PricePromotionMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="promotion_no" jdbcType="VARCHAR" property="promotionNo" />
+        <result column="promotion_name" jdbcType="VARCHAR" property="promotionName" />
+        <result column="department_code" jdbcType="VARCHAR" property="departmentCode" />
+        <result column="department_name" jdbcType="VARCHAR" property="departmentName" />
+        <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+        <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+        <result column="status" jdbcType="VARCHAR" property="status" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="create_name" jdbcType="VARCHAR" property="createName" />
+        <result column="create_timestamp" jdbcType="TIMESTAMP" property="createTimestamp" />
+        <result column="operate_name" jdbcType="VARCHAR" property="operateName" />
+        <result column="operate_timestamp" jdbcType="TIMESTAMP" property="operateTimestamp" />
+        <result column="approval_no" jdbcType="VARCHAR" property="approvalNo" />
+        <result column="apply_promotion_no" jdbcType="INTEGER" property="applyPromotionNo" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        id, promotion_no, promotion_name, department_code, department_name, categories_supply_channels_code, 
+        categories_supply_channels_name, status, remark, create_name, create_timestamp, operate_name, 
+        operate_timestamp, approval_no, apply_promotion_no
+    </sql>
+    <select id="list" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo" resultMap="BaseResultMap">
+        select *
+        from price_promotion
+        <where>
+            1=1
+            <if test="promotionNo != null and promotionNo != ''">
+                promotion_no = #{promotionNo,jdbcType=VARCHAR}
+            </if>
+            <if test="promotionName != null and promotionName != '' ">
+                promotion_name = #{promotionName,jdbcType=VARCHAR}
+            </if>
+            <if test="departmentCode != null and departmentCode != '' ">
+                department_code = #{departmentCode,jdbcType=VARCHAR}
+            </if>
+            <if test="departmentName != null and departmentName != '' ">
+                department_name = #{departmentName,jdbcType=VARCHAR}
+            </if>
+            <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
+                categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}
+            </if>
+            <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
+                categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR}
+            </if>
+            <if test="status != null and status != '' ">
+                status = #{status,jdbcType=VARCHAR}
+            </if>
+            <if test="remark != null and remark != '' ">
+                remark = #{remark,jdbcType=VARCHAR}
+            </if>
+            <if test="createName != null and createName != '' ">
+                create_name = #{createName,jdbcType=VARCHAR}
+            </if>
+            <if test="createTimestamp != null and createTimestamp != '' ">
+                create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP}
+            </if>
+            <if test="operateName != null and operateName != '' ">
+                operate_name = #{operateName,jdbcType=VARCHAR}
+            </if>
+            <if test="operateTimestamp != null and operateTimestamp != '' ">
+                operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP}
+            </if>
+            <if test="approvalNo != null and approvalNo != '' ">
+                approval_no = #{approvalNo,jdbcType=VARCHAR}
+            </if>
+            <if test="applyPromotionNo != null and applyPromotionNo != '' ">
+                apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        delete from price_promotion
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        insert into price_promotion (id, promotion_no, promotion_name,
+            department_code, department_name, categories_supply_channels_code,
+            categories_supply_channels_name, status,
+            remark, create_name, create_timestamp,
+            operate_name, operate_timestamp, approval_no,
+            apply_promotion_no)
+        values
+        (#{id,jdbcType=BIGINT}, #{promotionNo,jdbcType=VARCHAR},#{vo.formNo,jdbcType=VARCHAR}, #{promotionName,jdbcType=VARCHAR},
+            #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+            #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
+            #{remark,jdbcType=VARCHAR}, #{createName,jdbcType=VARCHAR}, #{createTimestamp,jdbcType=TIMESTAMP},
+            #{operateName,jdbcType=VARCHAR}, #{operateTimestamp,jdbcType=TIMESTAMP}, #{approvalNo,jdbcType=VARCHAR},
+            #{applyPromotionNo,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        insert into price_promotion (id, promotion_no, promotion_name,
+        department_code, department_name, categories_supply_channels_code,
+        categories_supply_channels_name, status,
+        remark, create_name, create_timestamp,
+        operate_name, operate_timestamp, approval_no,
+        apply_promotion_no)
+        values
+        <foreach collection="pricePromotionDetailList" item="vo" index="vo" separator=",">
+        (
+        #{vo.id,jdbcType=BIGINT}, #{vo.promotionNo,jdbcType=VARCHAR}, #{vo.formNo,jdbcType=VARCHAR}, #{vo.promotionName,jdbcType=VARCHAR},
+        #{vo.departmentCode,jdbcType=VARCHAR}, #{vo.departmentName,jdbcType=VARCHAR}, #{vo.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+        #{vo.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{vo.status,jdbcType=VARCHAR},
+        #{vo.remark,jdbcType=VARCHAR}, #{vo.createName,jdbcType=VARCHAR}, #{vo.createTimestamp,jdbcType=TIMESTAMP},
+        #{vo.operateName,jdbcType=VARCHAR}, #{vo.operateTimestamp,jdbcType=TIMESTAMP}, #{vo.approvalNo,jdbcType=VARCHAR},
+        #{vo.applyPromotionNo,jdbcType=INTEGER}
+        )
+        </foreach>
+    </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        insert into price_promotion
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="promotionNo != null">
+                promotion_no,
+            </if>
+            <if test="promotionName != null">
+                promotion_name,
+            </if>
+            <if test="departmentCode != null">
+                department_code,
+            </if>
+            <if test="departmentName != null">
+                department_name,
+            </if>
+            <if test="categoriesSupplyChannelsCode != null">
+                categories_supply_channels_code,
+            </if>
+            <if test="categoriesSupplyChannelsName != null">
+                categories_supply_channels_name,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="createName != null">
+                create_name,
+            </if>
+            <if test="createTimestamp != null">
+                create_timestamp,
+            </if>
+            <if test="operateName != null">
+                operate_name,
+            </if>
+            <if test="operateTimestamp != null">
+                operate_timestamp,
+            </if>
+            <if test="approvalNo != null">
+                approval_no,
+            </if>
+            <if test="applyPromotionNo != null">
+                apply_promotion_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="promotionNo != null">
+                #{promotionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionName != null">
+                #{promotionName,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentCode != null">
+                #{departmentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentName != null">
+                #{departmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="categoriesSupplyChannelsCode != null">
+                #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+            </if>
+            <if test="categoriesSupplyChannelsName != null">
+                #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createName != null">
+                #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTimestamp != null">
+                #{createTimestamp,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operateName != null">
+                #{operateName,jdbcType=VARCHAR},
+            </if>
+            <if test="operateTimestamp != null">
+                #{operateTimestamp,jdbcType=TIMESTAMP},
+            </if>
+            <if test="approvalNo != null">
+                #{approvalNo,jdbcType=VARCHAR},
+            </if>
+            <if test="applyPromotionNo != null">
+                #{applyPromotionNo,jdbcType=INTEGER},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        update price_promotion
+        <set>
+            <if test="promotionNo != null">
+                promotion_no = #{promotionNo,jdbcType=VARCHAR},
+            </if>
+            <if test="promotionName != null">
+                promotion_name = #{promotionName,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentCode != null">
+                department_code = #{departmentCode,jdbcType=VARCHAR},
+            </if>
+            <if test="departmentName != null">
+                department_name = #{departmentName,jdbcType=VARCHAR},
+            </if>
+            <if test="categoriesSupplyChannelsCode != null">
+                categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+            </if>
+            <if test="categoriesSupplyChannelsName != null">
+                categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="createName != null">
+                create_name = #{createName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTimestamp != null">
+                create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP},
+            </if>
+            <if test="operateName != null">
+                operate_name = #{operateName,jdbcType=VARCHAR},
+            </if>
+            <if test="operateTimestamp != null">
+                operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP},
+            </if>
+            <if test="approvalNo != null">
+                approval_no = #{approvalNo,jdbcType=VARCHAR},
+            </if>
+            <if test="applyPromotionNo != null">
+                apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
+        <!--
+          This element was generated on Wed Nov 06 11:16:51 CST 2019.
+        -->
+        update price_promotion
+        set promotion_no = #{promotionNo,jdbcType=VARCHAR},
+            promotion_name = #{promotionName,jdbcType=VARCHAR},
+            department_code = #{departmentCode,jdbcType=VARCHAR},
+            department_name = #{departmentName,jdbcType=VARCHAR},
+            categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+            categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+            status = #{status,jdbcType=VARCHAR},
+            remark = #{remark,jdbcType=VARCHAR},
+            create_name = #{createName,jdbcType=VARCHAR},
+            create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP},
+            operate_name = #{operateName,jdbcType=VARCHAR},
+            operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP},
+            approval_no = #{approvalNo,jdbcType=VARCHAR},
+            apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>
