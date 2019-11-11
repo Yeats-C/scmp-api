@@ -242,6 +242,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                     productSkuDraft.setChangeContent("新增SKU");
                 }
+                //判断临时表中是否存在
+                ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
+                if(null != skuRespVo){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+                }
+                //判断申请表中是否存在申请中的数据
+                ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
+                if(null != applyProductSku){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+                }
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
