@@ -1641,7 +1641,7 @@
             and sb.company_code = #{companyCode}
         </if>
         <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('',#{companyName}, )
+            and sb.company_name like concat('',#{companyName}, '%' )
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             and sb.transport_center_code = #{transportCenterText}
@@ -1711,7 +1711,7 @@
             and sb.company_code = #{companyCode}
         </if>
         <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('',#{companyName}, )
+            and sb.company_name like concat('',#{companyName}, '%')
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             and sb.transport_center_code = #{transportCenterText}
