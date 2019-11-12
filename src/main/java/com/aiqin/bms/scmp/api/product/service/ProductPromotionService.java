@@ -12,6 +12,17 @@ import org.springframework.stereotype.Service;
  */
 
 public interface ProductPromotionService {
-
+    /**
+     * 首页列表
+     * @param priceApplyPromotionReqVo
+     * @return
+     */
     BasePage<PricePromotionRespVo> list(PricePromotionReqVo priceApplyPromotionReqVo);
+
+    /**
+     *
+     * @param promotionNo
+     * @return
+     */
+    PricePromotionRespVo detail(Long id);
 }

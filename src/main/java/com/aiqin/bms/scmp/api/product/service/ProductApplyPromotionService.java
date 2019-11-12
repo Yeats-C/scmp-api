@@ -2,8 +2,10 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
+import com.github.pagehelper.Page;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
@@ -67,4 +69,5 @@ public interface ProductApplyPromotionService {
     void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark);
 
 
+    LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList);
 }

@@ -12,14 +12,11 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@Api(description = "促销申请管理")
+@Api(description = "促销管理")
 @RequestMapping("/product/promotion")
 public class ProductSkuPromotionController {
     @Autowired
@@ -40,5 +37,19 @@ public class ProductSkuPromotionController {
         }
     }
 
+    @PostMapping("/detail")
+    @ApiOperation("促销单详情")
+    public HttpResponse<PricePromotionRespVo> detail(@RequestParam("id") Long id) {
+        log.info("ProductSkuPromotionController---save---入参：[{}]", JSON.toJSONString(id));
+        try {
+            return HttpResponse.success(productPromotionService.detail(id));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
 
 }

@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionRe
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionDetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
@@ -23,14 +24,18 @@ import com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import io.swagger.annotations.ApiModelProperty;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,6 +43,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Auther: mamingze
@@ -88,7 +94,8 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
      //   vo.setCompanyCode(authToken.getCompanyCode());
         PageHelper.startPage(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize());
         priceApplyPromotionReqVo.setPurchaseGroupCodes(purchaseGroupCodes);
-        return productApplyPromotionMapper.list(priceApplyPromotionReqVo);
+        List<PriceApplyPromotionRespVo> priceApplyPromotionRespVoBasePage= productApplyPromotionMapper.list(priceApplyPromotionReqVo);
+        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize(),priceApplyPromotionRespVoBasePage.size(),priceApplyPromotionRespVoBasePage);
     }
 
     @Override
@@ -99,7 +106,6 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         //   vo.setCompanyCode(authToken.getCompanyCode());
         priceApplyPromotionReqVo.setCreateName(authToken.getPersonName());
         priceApplyPromotionReqVo.setCreateTimestamp(new Date());
-
         //获取编码
         synchronized (ProductApplyPromotionServiceImpl.class){
             String code = getCode("PAP", EncodingRuleType.APPLY_PROMOTION_NO);
@@ -118,7 +124,6 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
 
     @Override
     public Boolean updateOrDelete(PriceApplyPromotionReqVo priceApplyPromotionReqVo,Integer type) {
-
         //进行调整
        if(type==1){
            //把规则下面的产品
@@ -138,6 +143,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public PriceApplyPromotionRespVo load(Long id) {
         PriceApplyPromotionRespVo priceApplyPromotionRespVo=productApplyPromotionMapper.loadById(id);
         List<PricePromotionDetailRespVo> pricePromotionDetailRespVoList=pricePromotionDetailMapper.loadByPromotionId(id);
@@ -148,25 +154,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             pricePromotionProductRespVoList) {
                 //对有测算标识进行计算
                 if(pricePromotionProductRespVo.getIsSign()==1){
-                 List<BigDecimal> prices =   taxCostLogDao.loadPriceByProductCode(pricePromotionProductRespVo.getProductCode());
-                  if (CollectionUtils.isNotEmptyCollection(prices)){
-                      //设置库存价格
-                      pricePromotionProductRespVo.setStockPrice(prices.get(0));
-                  }
-                  //获取供货渠道
-                   String categoriesSupplyChannelsCode= priceApplyPromotionRespVo.getCategoriesSupplyChannelsCode();
-                    List<BigDecimal> prices2= productSkuPriceInfoMapper.getDistributionPriceByProductCode(pricePromotionProductRespVo.getProductCode(),categoriesSupplyChannelsCode);
-                    if (CollectionUtils.isNotEmptyCollection(prices)){
-                        //设置分销价格
-                        pricePromotionProductRespVo.setDistributionPrice(prices2.get(0));
-                    }
-                     //设置库存
-                    pricePromotionProductRespVo.setStockNum(stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode()));
-                    //设置库存成本
-                    pricePromotionProductRespVo.setStockPrice(BigDecimal.valueOf(pricePromotionProductRespVo.getStockNum()).multiply(pricePromotionProductRespVo.getStockPrice()));
-                    //设置月平均销量
-                   Long num= proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(pricePromotionProductRespVo.getProductCode());
-                    pricePromotionProductRespVo.setAverageNumLastThreeMouth(BigDecimal.valueOf(num).multiply(BigDecimal.valueOf(30)));
+                    calculationProduct(pricePromotionProductRespVo,priceApplyPromotionRespVo.getCategoriesSupplyChannelsCode());
                 }
             }
 
@@ -176,37 +164,62 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         return priceApplyPromotionRespVo;
     }
 
+    //计算商品
+   public void calculationProduct(PricePromotionProductRespVo pricePromotionProductRespVo,String categoriesSupplyChannelsCode){
+       List<BigDecimal> prices =   taxCostLogDao.loadPriceByProductCode(pricePromotionProductRespVo.getProductCode());
+       if (CollectionUtils.isNotEmptyCollection(prices)){
+           //设置库存价格
+           pricePromotionProductRespVo.setStockPrice(prices.get(0));
+       }
+       //获取供货渠道
+//       String categoriesSupplyChannelsCode= priceApplyPromotionRespVo.getCategoriesSupplyChannelsCode();
+       List<BigDecimal> prices2= productSkuPriceInfoMapper.getDistributionPriceByProductCode(pricePromotionProductRespVo.getProductCode(),categoriesSupplyChannelsCode);
+       if (CollectionUtils.isNotEmptyCollection(prices)){
+           //设置分销价格
+           pricePromotionProductRespVo.setDistributionPrice(prices2.get(0));
+       }
+       //设置库存
+       pricePromotionProductRespVo.setStockNum(stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode()));
+       //设置库存成本
+       pricePromotionProductRespVo.setStockPrice(BigDecimal.valueOf(pricePromotionProductRespVo.getStockNum()).multiply(pricePromotionProductRespVo.getStockPrice()));
+       //设置月平均销量
+       Long num= proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(pricePromotionProductRespVo.getProductCode());
+       pricePromotionProductRespVo.setAverageNumLastThreeMouth(BigDecimal.valueOf(num).multiply(BigDecimal.valueOf(30)));
+
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean generatePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
         AuthToken authToken = getUser();
        List<PricePromotionReqVo> pricePromotionProductReqVoList= Lists.newArrayList();
+        //获取促销编码
+        PricePromotionReqVo pricePromotionReqVo=new PricePromotionReqVo();
+        synchronized (ProductApplyPromotionServiceImpl.class){
+            String code = getCode("PP", EncodingRuleType.PROMOTION_NO);
+            pricePromotionReqVo.setPromotionNo(code);
+        }
+        pricePromotionReqVo.setId(IdSequenceUtils.getInstance().nextId());
+        synchronized (ProductApplyPromotionServiceImpl.class){
+            String  formNo = "PPA" + IdSequenceUtils.getInstance().nextId();
+            pricePromotionReqVo.setFormNo(formNo);
+        }
+        pricePromotionReqVo.setStatus(PricePromotionStatus.WAIT_CHECK.getNum());
+        pricePromotionReqVo.setCreateName(authToken.getPersonName());
+        pricePromotionReqVo.setCreateTimestamp(new Date());
+        pricePromotionMapper.insert(pricePromotionReqVo);
         for (PriceApplyPromotionReqVo priceApplyPromotionReqVo:
         priceApplyPromotionReqVoList  ) {
-            PricePromotionReqVo pricePromotionReqVo=new PricePromotionReqVo();
-            pricePromotionReqVo.setId(IdSequenceUtils.getInstance().nextId());
-            pricePromotionReqVo.setApplyPromotionNo(priceApplyPromotionReqVo.getApplyPromotionNo());
-            //获取编码
-            synchronized (ProductApplyPromotionServiceImpl.class){
-                String code = getCode("PP", EncodingRuleType.PROMOTION_NO);
-                pricePromotionReqVo.setPromotionNo(code);
-            }
-            //获取
-            synchronized (ProductApplyPromotionServiceImpl.class){
-              String  formNo = "PPA" + IdSequenceUtils.getInstance().nextId();
-                pricePromotionReqVo.setFormNo(formNo);
-            }
-            pricePromotionReqVo.setStatus(PricePromotionStatus.WAIT_CHECK.getNum());
-            pricePromotionReqVo.setCreateName(authToken.getPersonName());
-            pricePromotionReqVo.setCreateTimestamp(new Date());
-//            pricePromotionProductReqVoList.add(pricePromotionReqVo);
-            pricePromotionMapper.insert(pricePromotionReqVo);
-            workFlow(pricePromotionReqVo.getFormNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
-                    ,priceApplyPromotionReqVo.getDirectSupervisorName(),priceApplyPromotionReqVo.getPromotionName(),priceApplyPromotionReqVo.getRemark());
-        }
-        pricePromotionMapper.insertList(pricePromotionProductReqVoList);
+            priceApplyPromotionReqVo.setPromotionNo(pricePromotionReqVo.getPromotionNo());
+        productApplyPromotionMapper.updateById(priceApplyPromotionReqVo);
+       }
+        workFlow(pricePromotionReqVo.getFormNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
+                ,pricePromotionReqVo.getDirectSupervisorName(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
+
         return true;
     }
+
+
 
 
     //把数据传输给审批流
@@ -235,6 +248,34 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         } else {
             throw new BizException(MessageId.create(Project.SCMP_API,999,workFlowRespVO.getMsg()));
         }
+    }
+
+    @Override
+    public LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
+        LoadGeneratePromotionRespVo loadGeneratePromotionRespVo=new LoadGeneratePromotionRespVo();
+        List<PriceApplyPromotionRespVo> priceApplyPromotionRespVos=Lists.newArrayList();
+        for (PriceApplyPromotionReqVo priceApplyPromotionReqVo:
+        priceApplyPromotionReqVoList) {
+            PriceApplyPromotionRespVo priceApplyPromotionRespVo=new PriceApplyPromotionRespVo();
+            BeanUtils.copyProperties(priceApplyPromotionReqVo,priceApplyPromotionRespVo);
+            priceApplyPromotionRespVos.add(priceApplyPromotionRespVo);
+        }
+        loadGeneratePromotionRespVo.setPriceApplyPromotionRespVos(priceApplyPromotionRespVos);
+        PriceApplyPromotionRespVo priceApplyPromotionRespVo = load(priceApplyPromotionReqVoList.get(0).getId());
+        //买赠
+        List<PricePromotionDetailRespVo> buyPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==1).collect(Collectors.toList());
+        loadGeneratePromotionRespVo.setBuyPromotionDetailList(buyPromotionDetailList);
+         //满赠
+         List<PricePromotionDetailRespVo> enoughPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==2).collect(Collectors.toList());;
+        loadGeneratePromotionRespVo.setEnoughPromotionDetailList(enoughPromotionDetailList);
+         //满减
+         List<PricePromotionDetailRespVo> reducePromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==3).collect(Collectors.toList());;
+        loadGeneratePromotionRespVo.setReducePromotionDetailList(reducePromotionDetailList);
+        //满折
+         List<PricePromotionDetailRespVo> discountPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==4).collect(Collectors.toList());;
+        loadGeneratePromotionRespVo.setDiscountPromotionDetailList(discountPromotionDetailList);
+
+        return loadGeneratePromotionRespVo;
     }
 
 

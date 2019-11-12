@@ -78,6 +78,16 @@
             </if>
         </where>
     </select>
+    <select id="loadById" resultType="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo">
+         select *
+        from price_promotion
+        <where>
+            id=#{id,jdbcType="BIGINT"}
+        </where>
+    </select>
+
+
+
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         <!--
           This element was generated on Wed Nov 06 11:16:51 CST 2019.

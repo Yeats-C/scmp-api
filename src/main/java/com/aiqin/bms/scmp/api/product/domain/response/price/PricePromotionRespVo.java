@@ -134,21 +134,36 @@ public class PricePromotionRespVo {
     /**
      * 满赠列表
      */
-    @ApiModelProperty("满赠列表")
-    private List<PricePromotionDetailRespVo> enoughPromotionDetailList;
+    @ApiModelProperty("满赠列表:金额")
+    private List<PricePromotionDetailRespVo> enoughPromotionDetailMoneyList;
+    /**
+     * 满赠列表
+     */
+    @ApiModelProperty("满赠列表:数量")
+    private List<PricePromotionDetailRespVo> enoughPromotionDetailNumList;
 
     /**
      * 满减列表
      */
-    @ApiModelProperty("满减列表")
-    private List<PricePromotionDetailRespVo> reducePromotionDetailList;
+    @ApiModelProperty("满减列表:金额")
+    private List<PricePromotionDetailRespVo> reducePromotionDetaiMoneylList;
+    /**
+     * 满减列表
+     */
+    @ApiModelProperty("满减列表:数量")
+    private List<PricePromotionDetailRespVo> reducePromotionDetaiNumlList;
 
     /**
      * 满折列表
      */
-    @ApiModelProperty("满折列表")
-    private List<PricePromotionDetailRespVo> discountPromotionDetailList;
+    @ApiModelProperty("满折列表:金额")
+    private List<PricePromotionDetailRespVo> discountPromotionDetailMoneyList;
 
+    /**
+     * 满折列表
+     */
+    @ApiModelProperty("满折列表:数量")
+    private List<PricePromotionDetailRespVo> discountPromotionDetailNumList;
 
 
 }

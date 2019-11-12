@@ -33,4 +33,10 @@ public interface PricePromotionMapper {
      */
     void insert(PricePromotionReqVo pricePromotionReqVo);
 
-     }
+    /**
+     *生成促销单下属的所有详情
+     * @param promotionNo
+     * @return
+     */
+    PricePromotionRespVo loadById(Long id);
+}

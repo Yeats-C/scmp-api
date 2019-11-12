@@ -66,7 +66,6 @@ public class PricePromotionDetailReqVo extends PageReq {
 
 
 
-
     /**
      * 规则对应的列表
      */

@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @Auther: mamingze
@@ -25,7 +27,7 @@ public interface ProductApplyPromotionMapper {
      * @param priceApplyPromotionReqVo
      * @return
      */
-    BasePage<PriceApplyPromotionRespVo> list(PriceApplyPromotionReqVo priceApplyPromotionReqVo);
+    Page<PriceApplyPromotionRespVo> list(PriceApplyPromotionReqVo priceApplyPromotionReqVo);
 
     /**
      * 进行添加
@@ -46,4 +48,6 @@ public interface ProductApplyPromotionMapper {
      * @param id
      */
     void deteleById(Long id);
+
+    List<PriceApplyPromotionRespVo> loadByPromotionNo(String promotionNo);
 }

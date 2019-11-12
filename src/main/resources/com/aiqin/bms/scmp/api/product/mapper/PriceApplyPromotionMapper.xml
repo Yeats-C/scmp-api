@@ -29,52 +29,52 @@
         from price_apply_promotion
         where 1=1
         <if test="applyPromotionNo != null and applyPromotionNo != ''">
-           and apply_promotion_no = #{applyPromotionNo,jdbcType=BIGINT}
+           and apply_promotion_no like concat('%',#{applyPromotionNo},'%')
         </if>
         <if test="applyPromotionName != null and applyPromotionName != ''">
-           and apply_promotion_name = #{applyPromotionName,jdbcType=VARCHAR}
+           and apply_promotion_name like concat('%',#{applyPromotionName},'%')
         </if>
         <if test="status != null and status != ''">
-           and status = #{status,jdbcType=INTEGER}
+           and status like concat('%',#{status},'%')
         </if>
         <if test="promotionNo != null and promotionNo != ''">
-           and promotion_no = #{promotionNo,jdbcType=BIGINT}
+           and promotion_no like concat('%',#{promotionNo},'%')
         </if>
         <if test="promotionName != null and promotionName != ''">
-           and promotion_name = #{promotionName,jdbcType=VARCHAR}
+           and promotion_name like concat('%',#{promotionName},'%')
         </if>
         <if test="createName != null and createName != ''">
-          and  create_name = #{createName,jdbcType=VARCHAR}
+          and  create_name like concat('%',#{createName},'%')
         </if>
         <if test="createTimestamp != null ">
-           and create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP}
+           and create_timestamp like concat('%',#{createTimestamp},'%')
         </if>
         <if test="updateName != null and updateName != ''">
-           and update_name = #{updateName,jdbcType=VARCHAR}
+           and update_name like concat('%',#{updateName},'%')
         </if>
         <if test="updateTimestamp != null ">
-           and update_timestamp = #{updateTimestamp,jdbcType=TIMESTAMP}
+           and update_timestamp like concat('%',#{updateTimestamp},'%')
         </if>
         <if test="operateName != null and operateName != ''">
-           and operate_name = #{operateName,jdbcType=VARCHAR}
+           and operate_name like concat('%',#{operateName},'%')
         </if>
         <if test="operateTimestamp != null ">
-           and operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP}
+           and operate_timestamp like concat('%',#{operateTimestamp},'%')
         </if>
         <if test="procurementSectionCode != null and procurementSectionCode != ''">
-           and procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR}
+           and procurement_section_code like concat('%',#{procurementSectionCode},'%')
         </if>
         <if test="procurementSectionName != null and procurementSectionName != ''">
-           and procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR}
+           and procurement_section_name like concat('%',#{procurementSectionName},'%')
         </if>
         <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != ''">
-           and categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}
+           and categories_supply_channels_code like concat('%',#{categoriesSupplyChannelsCode},'%')
         </if>
         <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != ''">
-           and categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR}
+           and categories_supply_channels_name like concat('%',#{categoriesSupplyChannelsName},'%')
         </if>
         <if test="remark != null and remark != ''">
-           and remark = #{remark,jdbcType=LONGVARCHAR}
+           and remark like concat('%',#{remark},'%')
         </if>
         and procurement_section_code in
         <foreach collection="purchaseGroupCodes" item="item" index="item" separator="," open="(" close=")">
@@ -226,7 +226,7 @@
             </if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
+    <update id="updateById" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
         <!--
           This element was generated on Tue Nov 05 10:33:04 CST 2019.
         -->
@@ -306,7 +306,7 @@
             remark = #{remark,jdbcType=LONGVARCHAR}
         where id = #{id,jdbcType=BIGINT}
     </update>
-    <update id="updateById" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
+    <update id="update" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
         update price_apply_promotion
         set apply_promotion_no = #{applyPromotionNo,jdbcType=BIGINT},
             apply_promotion_name = #{applyPromotionName,jdbcType=VARCHAR},

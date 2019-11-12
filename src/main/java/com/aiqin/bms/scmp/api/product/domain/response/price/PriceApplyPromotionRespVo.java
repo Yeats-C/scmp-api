@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
@@ -134,6 +135,15 @@ public class PriceApplyPromotionRespVo {
      */
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("直属上级编码")
+    @NotEmpty(message = "直属上级编码不能为空！")
+    private String directSupervisorCode;
+
+    @ApiModelProperty("直属上级名称")
+    @NotEmpty(message = "直属上级名称不能为空！")
+    private String directSupervisorName;
+
 
     /**
      * 备注
