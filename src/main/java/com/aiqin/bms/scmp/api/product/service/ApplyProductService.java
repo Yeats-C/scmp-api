@@ -69,4 +69,7 @@ public interface ApplyProductService {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ApplyProduct>
      */
     List<ApplyProduct> getProductApplyList(List<String> productCodes, Byte number);
+
+
+    String nativeWorkFlowCallback(WorkFlowCallbackVO vo);
 }

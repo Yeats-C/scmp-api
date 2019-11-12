@@ -247,6 +247,16 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                     productSkuDraft.setChangeContent("新增SKU");
                 }
+                //判断临时表中是否存在
+                ProductSkuRespVo skuRespVo = productSkuDao.getSkuDraft(productSkuDraft.getSkuCode());
+                if(null != skuRespVo){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+                }
+                //判断申请表中是否存在申请中的数据
+                ApplyProductSku applyProductSku = applyProductSkuMapper.selectNoExistsApprovalBySkuCode(productSkuDraft.getSkuCode());
+                if(null != applyProductSku){
+                    throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+                }
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
@@ -652,9 +662,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //重置图片URL
                     if (StringUtils.isNotBlank(item.getProductPicturePath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
-                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
-                        if(StringUtils.isNotBlank(newUrl)){
-                            item.setProductPicturePath(newUrl);
+                        if(null != map){
+                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
+                            if(StringUtils.isNotBlank(newUrl)){
+                                item.setProductPicturePath(newUrl);
+                            }
                         }
                     }
                     i++;
@@ -674,9 +686,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //重置图片URL
                     if (StringUtils.isNotBlank(item.getPicDescPath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
-                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey +"sm_"+(item.getSortingNumber()+1) + map.get("contentType"), true);
-                        if(StringUtils.isNotBlank(newUrl)){
-                            item.setPicDescPath(newUrl);
+                        if(null != map) {
+                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType"), true);
+                            if (StringUtils.isNotBlank(newUrl)) {
+                                item.setPicDescPath(newUrl);
+                            }
                         }
                     }
                 });
@@ -695,9 +709,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //重置图片URL
                     if (StringUtils.isNotBlank(item.getFilePath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getFilePath());
-                        String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
-                        if(StringUtils.isNotBlank(newUrl)){
-                            item.setFilePath(newUrl);
+                        if(null != map) {
+                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
+                            if (StringUtils.isNotBlank(newUrl)) {
+                                item.setFilePath(newUrl);
+                            }
                         }
                     }
                 }
@@ -1552,17 +1568,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_GOODS.getNum());
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-//        String personName = null != currentAuthToken.getPersonName() ? currentAuthToken.getPersonName() : "";
-//        String currentTime= DateUtils.getCurrentDateTime(DateUtils.FORMAT);
-//        String title = personName+"在"+currentTime+","+WorkFlow.APPLY_GOODS.getTitle();
-        String title = approvalName;
-        workFlowVO.setTitle(title);
+        Byte applyType = applyProductSkus.get(0).getApplyType();
+        WorkFlow workFlow;
+        if (Objects.equals(applyType, StatusTypeCode.ADD_APPLY.getStatus())) {
+            workFlow = WorkFlow.APPLY_GOODS;
+        } else {
+            workFlow = WorkFlow.APPLY_GOODS_REVISE;
+        }
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ workFlow.getNum());
+        workFlowVO.setTitle(approvalName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, workFlow);
         if(workFlowRespVO.getSuccess()){
             if(CollectionUtils.isNotEmpty(applyProductSkus)){
                 //存日志
@@ -1621,7 +1639,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
                 }
-                productCommonService.getInstance(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName);
+                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName,new Date(),vo1.getApprovalUserName(), null);
                 //渠道
                 productSkuChannelService.save(skuCode, applyCode);
                 //标签
@@ -1731,7 +1749,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
                 }
-                productCommonService.getInstance(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName);
+                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName,new Date(),"系统自动",null);
                 //渠道
                 productSkuChannelService.save(skuCode, applyCode);
                 //标签

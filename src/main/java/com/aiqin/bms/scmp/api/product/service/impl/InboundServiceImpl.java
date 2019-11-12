@@ -37,6 +37,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
@@ -48,6 +49,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -55,10 +57,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Classname: InboundServiceImpl
@@ -204,16 +204,18 @@ public class InboundServiceImpl implements InboundService {
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
             String supplyCode = inbound.getSupplierCode();
             SupplyCompany supplyCompany = supplyCompanyDao.selectAddress(supplyCode);
-            inboundResVo.setProvinceCode(supplyCompany.getSendProvinceId());
-            inboundResVo.setProvinceName(supplyCompany.getSendProvinceName());
-            inboundResVo.setCityCode(supplyCompany.getSendCityId());
-            inboundResVo.setCityName(supplyCompany.getSendCityName());
-            inboundResVo.setCountyCode(supplyCompany.getSendDistrictId());
-            inboundResVo.setCountyName(supplyCompany.getSendDistrictName());
-            inboundResVo.setDetailedAddress(supplyCompany.getSendingAddress());
-            inboundResVo.setShipper(supplyCompany.getContactName());
-            inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
-            inboundResVo.setShipperRate(supplyCompany.getZipCode());
+            if(supplyCompany != null){
+                inboundResVo.setProvinceCode(supplyCompany.getSendProvinceId());
+                inboundResVo.setProvinceName(supplyCompany.getSendProvinceName());
+                inboundResVo.setCityCode(supplyCompany.getSendCityId());
+                inboundResVo.setCityName(supplyCompany.getSendCityName());
+                inboundResVo.setCountyCode(supplyCompany.getSendDistrictId());
+                inboundResVo.setCountyName(supplyCompany.getSendDistrictName());
+                inboundResVo.setDetailedAddress(supplyCompany.getSendingAddress());
+                inboundResVo.setShipper(supplyCompany.getContactName());
+                inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
+                inboundResVo.setShipperRate(supplyCompany.getZipCode());
+            }
         }
         List<InboundProduct> list = inboundProductDao.selectByInboundOderCode(inboundResVo.getInboundOderCode());
         try {
@@ -832,13 +834,14 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    public void repealOrder(String orderId, String createById, String createByName){
+    public String repealOrder(String orderId, String createById, String createByName, String cancel){
         //TODO wms发送撤销订单
         RepealOrderRequest repealOrderRequest = new RepealOrderRequest();
         repealOrderRequest.setRepealEmpId(createById);
         repealOrderRequest.setRepealOrderId(orderId);
-        repealOrderRequest.setRepealTime(new Date().toString());
-
+        repealOrderRequest.setDescription(cancel == null ? "" : cancel);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        repealOrderRequest.setRepealTime(formatter.format(Calendar.getInstance().getTime()));
         try{
             String url =urlConfig.WMS_API_URL+"/wms/repeal/inbound";
             HttpClient httpClient = HttpClient.post(url).json(repealOrderRequest);
@@ -850,13 +853,14 @@ public class InboundServiceImpl implements InboundService {
                 if ("0".equals(entiy.getResultCode())) {
                     log.info("向dl发送撤销订单请求成功");
                 }
+                return entiy.getResultCode();
             }else{
                 log.error("向dl发送撤销订单请求失败，参数为：{}", repealOrderRequest);
             }
         } catch (Exception e){
             log.error("向dl发送撤销订单请求失败，原因为：{}", e);
         }
-
+        return "";
     }
 
 }
