@@ -142,12 +142,12 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
             Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
             Integer num = productAmount + giftAmount;
-            Double amount;
+            BigDecimal amount;
             if(num == 0){
-                amount = 0D;
+                amount = new BigDecimal(0);
             }else {
-                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(100));
-                amount = big.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
+                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(10000));
+                amount = big.setScale(4, BigDecimal.ROUND_HALF_UP);
             }
             jsonObject.addProperty("purchaseAmount", amount);
         }

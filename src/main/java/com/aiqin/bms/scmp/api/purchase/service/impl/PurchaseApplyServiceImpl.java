@@ -581,7 +581,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         if (StringUtils.isBlank((record[6]))) {
                             response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? 0 : applyProduct.getPurchaseMax());
                         } else {
-                            BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(100));
+                            BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(10000));
                             response.setProductPurchaseAmount(big.intValue());
                         }
                     } else {
@@ -610,7 +610,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
         if(StringUtils.isNotBlank(record[6])){
-            Double num = Double.valueOf(record[6]) * 100;
+            Double num = Double.valueOf(record[6]) * 10000;
             response.setProductPurchaseAmount(num.intValue());
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
@@ -922,9 +922,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("type", type);
                 map.put("goodsCount", product.getPurchaseWhole());
                 map.put("goodsMin", product.getSingleCount());
-                BigDecimal price = new BigDecimal(product.getProductAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                BigDecimal price = new BigDecimal(product.getProductAmount()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_HALF_UP);
                 map.put("price", price);
-                BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_HALF_UP);
                 map.put("priceSum", priceSum);
                 amountSum = amountSum.add(priceSum);
                 productList.add(map);

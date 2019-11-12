@@ -118,8 +118,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Resource
     private WarehouseDao warehouseDao;
     @Resource
-    private ProductCategoryDao productCategoryDao;
-    @Resource
     private ApplyRejectRecordDao applyRejectRecordDao;
     @Resource
     private ApplyRejectRecordDetailDao applyRejectRecordDetailDao;
@@ -313,11 +311,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
-                    response.setProductAmount(Long.valueOf(record[8]) * 100);
+                    response.setProductAmount(Long.valueOf(record[8]) * 10000);
                     if (productTypeList.contains(record[6])) {
                         response.setProductType(productTypeList.indexOf(record[6]));
                     }
-                    response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]) * 100);
+                    response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]) * 10000);
                     if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
@@ -461,7 +459,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (detailResponse.getTaxRate() == null) {
                     untaxedAmount = detailResponse.getProductTotalAmount();
                 } else {
-                    untaxedAmount += detailResponse.getProductTotalAmount() * 100 / (100 + detailResponse.getTaxRate());
+                    untaxedAmount += detailResponse.getProductTotalAmount() * 10000 / (100 + detailResponse.getTaxRate());
                 }
                 if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                     returnCount += detailResponse.getProductCount();
