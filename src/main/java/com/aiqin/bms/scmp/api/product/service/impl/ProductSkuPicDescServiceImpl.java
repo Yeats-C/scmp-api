@@ -11,8 +11,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuPicDescRespV
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicDescDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPicDescService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,7 +33,7 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
     @Autowired
     private ProductSkuPicDescDraftMapper descDraftMapper;
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertDraftList(List<ProductSkuPicDescDraft> productSkuPicDescDrafts) {
         int num = productSkuPicDescDao.insertDraftList(productSkuPicDescDrafts);
@@ -39,7 +41,18 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuPicDesc> applyProductSkuPicDescs = productSkuPicDescDao.getApply(null,applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuPicDescs)){
+            List<ProductSkuPicDescDraft> productSkuPicDescDrafts = BeanCopyUtils.copyList(applyProductSkuPicDescs,ProductSkuPicDescDraft.class);
+            return ((ProductSkuPicDescService)AopContext.currentProxy()).insertDraftList(productSkuPicDescDrafts);
+        }
+        return 0;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public int insertList(List<ProductSkuPicDesc> productSkuPicDescs) {
         int num = productSkuPicDescDao.insertList(productSkuPicDescs);
         return num;
@@ -91,7 +104,7 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
     }
 
     @Override
-    @Transactional(rollbackFor = BizException.class)
+    @Transactional(rollbackFor = Exception.class)
     @SaveList
     public int insertApplyList(List<ApplyProductSkuPicDesc> applyProductSkuPicDescs) {
         int num = productSkuPicDescDao.insertApplyList(applyProductSkuPicDescs);

@@ -23,6 +23,7 @@ public interface ProductSkuAssociatedGoodsService {
      * @return
      */
     int insertDraftList(List<ProductSkuAssociatedGoodsDraft> draftList);
+    int insertDraftList(String applyCode);
 
     /**
      * 获取临时表数据

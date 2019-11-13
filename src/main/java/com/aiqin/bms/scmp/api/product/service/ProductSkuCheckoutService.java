@@ -1,12 +1,11 @@
 package com.aiqin.bms.scmp.api.product.service;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
@@ -85,4 +84,14 @@ public interface ProductSkuCheckoutService {
      * @date 2019/7/6 22:52
      */
     ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode);
+
+    /**
+     * 通过sku编码查询数据
+     * @param skuList
+     * @return
+     */
+    Map<String, ProductSkuCheckoutRespVo> selectBySkuCodes(Set<String> skuList);
+
+    int insertDraftList(String applyCode);
 }
+

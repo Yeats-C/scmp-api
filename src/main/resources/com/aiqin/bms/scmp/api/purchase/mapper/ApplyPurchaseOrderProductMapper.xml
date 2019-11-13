@@ -22,8 +22,8 @@
     <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
-    <result column="product_amount" jdbcType="INTEGER" property="productAmount" />
-    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
+    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
+    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
     <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount" />
     <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
@@ -62,7 +62,7 @@
       #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, 
       #{item.purchaseWhole,jdbcType=INTEGER}, #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, 
       #{item.boxGauge,jdbcType=VARCHAR}, #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, 
-      #{item.productAmount,jdbcType=INTEGER}, #{item.productTotalAmount,jdbcType=INTEGER}, #{item.stockCount,jdbcType=INTEGER}, 
+      #{item.productAmount,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT}, #{item.stockCount,jdbcType=INTEGER},
       #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR}, now(), 
       #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=BIGINT},
       #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})

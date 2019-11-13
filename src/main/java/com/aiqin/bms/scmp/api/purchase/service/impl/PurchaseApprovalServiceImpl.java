@@ -139,9 +139,9 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         order.setPurchaseOrderCode(formNo);
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder != null){
-            Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
-            Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
-            Integer num = productAmount + giftAmount;
+            Long productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
+            Long giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
+            Long num = productAmount + giftAmount;
             Double amount;
             if(num == 0){
                 amount = 0D;

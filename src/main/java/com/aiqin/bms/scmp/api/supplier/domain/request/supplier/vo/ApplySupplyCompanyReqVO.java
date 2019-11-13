@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo;
 
 import com.aiqin.bms.scmp.api.base.MsgStatus;
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -167,6 +168,13 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("审批名称")
     @NotNull(message = "审批名称不能为空")
     private String approvalName;
+
+    @ApiModelProperty("审批备注")
+    @NotNull(message = "审批备注不能为空")
+    private String approvalRemark;
+
+    @ApiModelProperty("审批附件")
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
 
 
 }

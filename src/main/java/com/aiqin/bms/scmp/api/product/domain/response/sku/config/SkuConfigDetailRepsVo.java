@@ -51,11 +51,26 @@ public class SkuConfigDetailRepsVo {
     @ApiModelProperty("供货渠道类别名称")
     private String categoriesSupplyChannelsName;
 
+    @ApiModelProperty("品牌code")
+    private String productBrandCode;
+
+    @ApiModelProperty("品牌名称")
+    private String productBrandName;
+
+    @ApiModelProperty("商品属性code")
+    private String productPropertyCode;
+
+    @ApiModelProperty("商品属性名称")
+    private String productPropertyName;
+
     @ApiModelProperty("商品类型(0:商品，1:赠品)")
     private Byte skuType;
 
     @ApiModelProperty("商品类型")
     private String skuTypeName;
+
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")

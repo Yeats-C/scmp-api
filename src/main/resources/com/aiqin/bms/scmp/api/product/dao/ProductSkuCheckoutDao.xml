@@ -102,6 +102,9 @@
   <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuCheckoutMapper.BaseResultMap">
     SELECT * from apply_product_sku_checkout WHERE sku_code=#{skuCode,jdbcType=VARCHAR} and apply_code = #{applyCode}
   </select>
+  <select id="getApplys" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuCheckoutMapper.BaseResultMap">
+    SELECT * from apply_product_sku_checkout WHERE apply_code = #{applyCode}
+  </select>
   <select id="getApplyInfo" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
     <include refid="Base_Column_List"/>
@@ -109,4 +112,14 @@
     WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode}
   </select>
+    <select id="selectBySkuCodes" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from product_sku_checkout
+      where 1=1 and
+      sku_code in
+      <foreach collection="list" open="(" close=")" separator="," item="item">
+        #{item}
+      </foreach>
+    </select>
 </mapper>

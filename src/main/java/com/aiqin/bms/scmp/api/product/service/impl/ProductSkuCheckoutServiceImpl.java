@@ -4,15 +4,13 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuCheckoutService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +18,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
@@ -40,6 +40,18 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     public int insertDraft(ProductSkuCheckoutDraft productSkuCheckoutDraft) {
         int num = productSkuCheckoutDraftMapper.insert(productSkuCheckoutDraft);
         return num;
+    }
+
+    @Override
+    @SaveList
+    @Transactional(rollbackFor = BizException.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuCheckout> applyProductSkuCheckouts = productSkuCheckoutDao.getApplys(applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuCheckouts)){
+            List<ProductSkuCheckoutDraft> productSkuCheckoutDrafts = BeanCopyUtils.copyList(applyProductSkuCheckouts, ProductSkuCheckoutDraft.class);
+            return productSkuCheckoutDraftMapper.insertBatch(productSkuCheckoutDrafts);
+        }
+        return 0;
     }
 
     @Override
@@ -163,5 +175,10 @@ public class ProductSkuCheckoutServiceImpl implements ProductSkuCheckoutService 
     @Override
     public ProductSkuCheckoutRespVo getApply(String skuCode, String applyCode) {
         return productSkuCheckoutDao.getApplyInfo(skuCode,applyCode);
+    }
+
+    @Override
+    public Map<String, ProductSkuCheckoutRespVo> selectBySkuCodes(Set<String> skuList) {
+        return productSkuCheckoutDao.selectBySkuCodes(skuList);
     }
 }

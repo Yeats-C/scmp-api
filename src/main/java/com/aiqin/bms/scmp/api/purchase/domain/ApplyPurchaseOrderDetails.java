@@ -79,15 +79,15 @@ public class ApplyPurchaseOrderDetails {
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
-    private Integer advancePayment;
+    private Long advancePayment;
 
     @ApiModelProperty(value="到付金额")
     @JsonProperty("amount_payable")
-    private Integer amountPayable;
+    private Long amountPayable;
 
     @ApiModelProperty(value="月结金额")
     @JsonProperty("month_amount")
-    private Integer monthAmount;
+    private Long monthAmount;
 
     @ApiModelProperty(value="到付付款期")
     @JsonProperty("payable_time")

@@ -17,8 +17,8 @@
     <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
     <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="product_total_amount" jdbcType="INTEGER" property="productTotalAmount" />
-    <result column="return_amount" jdbcType="INTEGER" property="returnAmount" />
+    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="return_amount" jdbcType="BIGINT" property="returnAmount" />
     <result column="purchase_mode" jdbcType="INTEGER" property="purchaseMode" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
@@ -26,7 +26,7 @@
     <result column="cancel_remark" jdbcType="VARCHAR" property="cancelRemark" />
     <result column="apply_type_form" jdbcType="VARCHAR" property="applyTypeForm" />
     <result column="approval_code" jdbcType="VARCHAR" property="approvalCode" />
-    <result column="gift_tax_sum" jdbcType="INTEGER" property="giftTaxSum" />
+    <result column="gift_tax_sum" jdbcType="BIGINT" property="giftTaxSum" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -58,10 +58,10 @@
       #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, 
       #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{infoStatus,jdbcType=INTEGER}, 
       #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER}, #{singleCount,jdbcType=INTEGER}, 
-      #{productTotalAmount,jdbcType=INTEGER}, #{returnAmount,jdbcType=INTEGER}, #{purchaseMode,jdbcType=INTEGER}, 
+      #{productTotalAmount,jdbcType=BIGINT}, #{returnAmount,jdbcType=BIGINT}, #{purchaseMode,jdbcType=INTEGER},
       #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
       #{cancelReason,jdbcType=VARCHAR}, #{cancelRemark,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR}, 
-      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=INTEGER}, now(), #{createById,jdbcType=VARCHAR},
+      #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=BIGINT}, now(), #{createById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">

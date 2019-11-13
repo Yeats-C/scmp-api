@@ -1,13 +1,13 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckoutDraft;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
+import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @功能说明:
@@ -33,7 +33,12 @@ public interface ProductSkuCheckoutDao {
 
     ApplyProductSkuCheckout getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
+    List<ApplyProductSkuCheckout> getApplys( @Param("applyCode") String applyCode);
+
     ProductSkuCheckoutRespVo getApplyInfo(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     int insertCheckOuts(@Param("productSkuCheckouts") List<ProductSkuCheckout> productSkuCheckouts);
+
+    @MapKey("skuCode")
+    Map<String, ProductSkuCheckoutRespVo> selectBySkuCodes(@Param("list") Set<String> skuList);
 }

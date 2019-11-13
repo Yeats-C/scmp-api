@@ -732,7 +732,6 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setBeContainArea(0);
                 priceInfo.setTax(info.getInTax());
                 priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(Optional.ofNullable(info.getPurchasePriceNew()).orElse(0L), info.getInTax()));
-                info.setBeSynchronize(1);
                 info.setOfficialCode(priceInfo.getCode());
                 priceInsertInfos.add(priceInfo);
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
@@ -740,7 +739,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 if (Optional.ofNullable(info.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     log.setStatus(0);
+                    priceInfo.setBeSynchronous(0);
                 } else {
+                    info.setBeSynchronize(1);
                     //生效的
                     priceInfo.setBeSynchronous(1);
                 }
@@ -760,16 +761,19 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 priceInfo.setTax(productSkuChangePriceInfo.getInTax());
                 priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                 priceInfo.setUpdateTime(new Date());
+                priceInfo.setBeContainArea(0);
                 productSkuChangePriceInfo.setOfficialCode(priceInfo.getCode());
                 ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),productSkuChangePriceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                 //判断生效日期
                 if (Optional.ofNullable(productSkuChangePriceInfo.getEffectiveTimeStart()).orElse(new Date()).after(new Date())) {
                     //未生效的
                     //这里在日志表中插入一条未生效的数据
+                    priceInfo.setBeSynchronous(0);
                     log.setStatus(0);
                 } else {
                     //生效的
                     productSkuChangePriceInfo.setBeSynchronize(1);
+                    priceInfo.setBeSynchronous(1);
                     //插入失效日志，再更新数据, 插入生效的日志
                     ProductSkuPriceInfoLog log2 = new ProductSkuPriceInfoLog(copy.getCode(),copy.getPriceTax(),copy.getPriceNoTax(),copy.getTax(),copy.getEffectiveTimeStart(),new Date(),2,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                     logList.add(log2);

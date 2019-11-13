@@ -61,11 +61,11 @@ public class PurchaseApplyResponse {
 
     @ApiModelProperty(value="采购含税金额")
     @JsonProperty("product_total_amount")
-    private Integer productTotalAmount;
+    private Long productTotalAmount;
 
     @ApiModelProperty(value="实物返金额")
     @JsonProperty("return_amount")
-    private Integer returnAmount;
+    private Long returnAmount;
 
     @ApiModelProperty(value="是否可以部分提交  0.是 1.否")
     @JsonProperty("submit_status")
@@ -81,7 +81,7 @@ public class PurchaseApplyResponse {
 
     @ApiModelProperty(value="赠品含税总金额")
     @JsonProperty("gift_tax_sum")
-    private Integer giftTaxSum;
+    private Long giftTaxSum;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")

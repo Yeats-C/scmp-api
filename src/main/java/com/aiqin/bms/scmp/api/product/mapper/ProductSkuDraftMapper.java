@@ -16,6 +16,8 @@ public interface ProductSkuDraftMapper {
 
     int insert(ProductSkuDraft record);
 
+    int batchInsert(List<ProductSkuDraft> record);
+
     int insertSelective(ProductSkuDraft record);
 
     ProductSkuDraft selectByPrimaryKey(Long id);
@@ -30,6 +32,9 @@ public interface ProductSkuDraftMapper {
     List<ProductSkuDraft> getProductSkuDraftByProductCode(String productCode);
 
     ProductSkuDraft getOfficialBySkuCode(String skuCode);
+
+    @MapKey("skuCode")
+    Map<String, ProductSkuDraft> getOfficialBySkuCodes(@Param("skuCodes") List<String> skuCodes, @Param("companyCode") String companyCode);
 
     /**
      *

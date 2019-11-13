@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.product.mapper;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigId;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -62,4 +64,12 @@ public interface ProductSkuConfigDraftMapper {
     int deleteByIds(List<Long> ids);
 
     List<ProductSkuConfigDraft> selectbyConfigCode(List<String> list);
+
+    int deleteByTransportCenterCodes(@Param("skuCode") String skuCode, @Param("deleteCodes") List<String> deleteTransportCenterCodes);
+
+    SkuConfigDetailRepsVo detailForDraft(@Param("skuCode")  String skuCode,@Param("draftId") Long draftId);
+
+    SkuConfigsRepsVo getList2(SkuConfigId id);
+
+    List<String> selectBySkuCodeAndTransportCenterCodes(@Param("skuCode") String skuCode,@Param("transportCenterCodes")List<String> transportCenterCodes);
 }

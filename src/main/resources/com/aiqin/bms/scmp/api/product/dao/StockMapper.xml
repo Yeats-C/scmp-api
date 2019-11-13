@@ -1641,7 +1641,7 @@
             and sb.company_code = #{companyCode}
         </if>
         <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('',#{companyName}, '%')
+            and sb.company_name like concat('',#{companyName}, '%' )
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             and sb.transport_center_code = #{transportCenterText}
@@ -2661,5 +2661,11 @@
                 sku_code IN <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">#{id}</foreach>
             </if>
         </where>
+    </select>
+    <select id="selectSkuCodeByQueryAvailableSum" resultType="java.lang.Long">
+             SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        WHERE sku_code = #{skuCode}
     </select>
 </mapper>

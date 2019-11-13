@@ -16,6 +16,7 @@ import java.util.List;
 public interface ProductSkuFileService {
 
     int insertDraftList(List<ProductSkuFileDraft> productSkuFileDrafts);
+    int insertDraftList(String applyCode);
 
     int insertList(List<ProductSkuFile> productSkuFiles);
 

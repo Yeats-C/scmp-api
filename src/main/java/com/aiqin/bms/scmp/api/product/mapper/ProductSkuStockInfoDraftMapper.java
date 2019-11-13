@@ -26,4 +26,6 @@ public interface ProductSkuStockInfoDraftMapper {
     int deleteDrafts(List<ApplyProductSku> applyProductSkus);
 
     List<ProductSkuStockInfoDraft> getDrafts(List<ApplyProductSku> applyProductSkus);
+
+    int insertBatch(List<ProductSkuStockInfoDraft> drafts);
 }

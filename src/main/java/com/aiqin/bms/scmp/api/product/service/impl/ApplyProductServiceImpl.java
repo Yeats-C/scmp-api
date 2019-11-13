@@ -266,6 +266,12 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo) {
 
+        return nativeWorkFlowCallback(vo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String nativeWorkFlowCallback(WorkFlowCallbackVO vo) {
         WorkFlowCallbackVO workFlowCallbackVO = updateSupStatus(vo);
         //判断审核通过还是撤销，或者审核不通过
         List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());

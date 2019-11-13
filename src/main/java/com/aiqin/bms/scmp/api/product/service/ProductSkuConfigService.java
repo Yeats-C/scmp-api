@@ -32,6 +32,7 @@ public interface ProductSkuConfigService {
      * @return
      */
     Integer insertDraftList(List<SaveSkuConfigReqVo> configReqVos);
+    Integer insertDraftList(String applyCode);
     /**
      * 批量保存导入的临时配置信息
      * @param configReqVos
@@ -110,7 +111,7 @@ public interface ProductSkuConfigService {
      * @param applyCode
      * @param userName
      */
-    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark);
 
 
     void tobeEffective(List<ApplyProductSkuConfig> list);
@@ -309,4 +310,19 @@ public interface ProductSkuConfigService {
      * @return
      */
     List<ApplyProductSkuConfig> selectUnSynData();
+
+    /**
+     * 进行审批页面的编辑查看
+     * @param skuCode
+     * @param draftId
+     * @return
+     */
+    SkuConfigDetailRepsVo detailForDraft(String skuCode, Long draftId);
+
+    /**
+     *
+     * @param skuConfigDetailRepsVo
+     * @return
+     */
+    Integer update(SkuConfigDetailRepsVo skuConfigDetailRepsVo);
 }

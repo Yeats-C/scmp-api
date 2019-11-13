@@ -434,8 +434,6 @@ public class InboundServiceImpl implements InboundService {
                 inboundCallBackReqVo.setList(list);
             }
         }
-
-
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())){
             inboundService.workFlowCallBack(inboundCallBackReqVo);
         }
