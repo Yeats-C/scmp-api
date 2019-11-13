@@ -261,7 +261,7 @@
         FROM
         dashboard_dep_cate_proper_sales_amount ddcpsa
         WHERE
-        ddcpsa.stat_month like concat('%',#{oneYearStr},'%') and ddcpsa.product_property_name = "A+品"
+        ddcpsa.stat_month like concat('%',#{oneYearStr},'%') and ddcpsa.product_property_code = "7"
     </select>
     <select id="selectSalesContributionRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardDepMonthlyHomocyclicRatioRespVo">
         SELECT
@@ -306,6 +306,7 @@
             dnm.price_channel_code=#{priceChannelCode} and
         </if>
         price_channel_code is not null and product_sort_code is not null
+        limit 1
     </select>
     <select id="selectOutStockRate" resultType="com.aiqin.bms.scmp.api.bireport.domain.response.dashboard.DashboardStockoutRateRespVo">
       SELECT
@@ -366,15 +367,15 @@
         dhmhr.stat_month as statMonth,
         dhmhr.product_sort_code as productSortCode,
         dhmhr.product_sort_name as productSortName,
-        dhmhr.channel_costs as channelCosts,
-        dhmhr.channel_sales_amount as channelSalesAmount,
-        dhmhr.channel_sales_yearonyear as channelSalesYearonyear,
-        dhmhr.channel_sales_link_relative as channelSalesLinkRelative,
-        dhmhr.channel_margin as channelMargin,
+        IFNULL(dhmhr.channel_costs,0) as channelCosts,
+        IFNULL(dhmhr.channel_sales_amount,0) as channelSalesAmount,
+        IFNULL(dhmhr.channel_sales_yearonyear,0) as channelSalesYearonyear,
+        IFNULL(dhmhr.channel_sales_link_relative,0) as channelSalesLinkRelative,
+        IFNULL(dhmhr.channel_margin,0) as channelMargin,
         IFNULL(dhmhr.channel_margin_yearonyear,0) as channelMarginYearonyear,
         IFNULL(dhmhr.channel_margin_link_relative,0) as channelMarginLinkRelative,
-        dhmhr.distribution_sales_amount as distributionSalesAmount,
-        dhmhr.distribution_margin as distributionMargin,
+        IFNULL(dhmhr.distribution_sales_amount,0) as distributionSalesAmount,
+        IFNULL(dhmhr.distribution_margin,0) as distributionMargin,
         IFNULL(dhmhr.channel_costs_yearonyear,0) as channelCostsYearonyear,
         IFNULL(dhmhr.channel_costs_link_relative,0) as channelCostsLinkRelative
         FROM dashboard_homepage_monthly_homocyclic_ratio dhmhr
