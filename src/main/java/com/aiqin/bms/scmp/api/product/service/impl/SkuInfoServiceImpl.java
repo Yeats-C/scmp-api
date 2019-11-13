@@ -69,6 +69,7 @@ import com.google.gson.JsonObject;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -191,7 +192,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //SKU基本信息
             ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
             // 修改内容
-            String changeStr = "";
+            StringBuilder changeStr = new StringBuilder();
             //判断SKU名称是否
             //临时表
             int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
@@ -234,15 +235,17 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     //获取旧的数据
                     ProductSkuDraft oldSku = productSkuDraftMapper.getOfficialBySkuCode(productSkuDraft.getSkuCode());
                     String compareResult = new GetChangeValueUtil<ProductSkuDraft>().compareResult(oldSku, productSkuDraft, skuHeadMap);
-                    productSkuDraft.setChangeContent(compareResult);
-                    changeStr = "基本信息:" + compareResult;
+                    // productSkuDraft.setChangeContent(compareResult);
+                    if (StringUtils.isNotBlank(compareResult)) {
+                        changeStr.append("基本信息:").append(compareResult).append(";");
+                    }
                 } else {
                     productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                     productSkuDraft.setChangeContent("新增SKU");
                 }
-                ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
-                productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
+                // ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
+                // productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
                 EncodingRule encodingRule=encodingRuleDao.getNumberingType("PRODUCT_SKU_CODE");
                 Long thisCode = encodingRule.getNumberingValue();
@@ -352,8 +355,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         oldVo.setSpec(respVos.get(0).getSpec());
                         oldVo.setUnitName(respVos.get(0).getUnitName());
                         oldVo.setBarCode(respVos.get(0).getBarCode());
-                        String compareResult = new BeanChangeUtil<PurchaseSaleStockRespVo>().contrastObj(oldVo, productSkuDraft);
-                        changeStr = changeStr + "库存:" + compareResult;
+                        String compareResult = new BeanChangeUtil<ProductSkuStockInfoDraft>().contrastObj(oldVo, productSkuDraft);
+                        if (StringUtils.isNotBlank(compareResult)) {
+                            changeStr.append("库存:").append(compareResult);
+                        }
                     }
                     productSkuStockInfoService.insertDraft(productSkuStockInfoDraft);
                 } catch (Exception e) {
@@ -381,7 +386,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (flag) {
                         // 计算进销存采购修改内容
                         // 查询旧数据 查询正式表中的数据
-                        List<PurchaseSaleStockRespVo> respVos = productSkuPurchaseInfoService.getDraftList(productSkuDraft.getSkuCode());
+                        List<PurchaseSaleStockRespVo> respVos = productSkuPurchaseInfoService.getList(productSkuDraft.getSkuCode());
                         if(CollectionUtils.isEmpty(respVos)){
                             throw new BizException(ResultCode.PURCHASE_EMPTY);
                         }
@@ -395,7 +400,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         oldVo.setBaseProductContent(respVos.get(0).getBaseProductContent());
                         oldVo.setZeroRemovalCoefficient(respVos.get(0).getZeroRemovalCoefficient());
                         String compareResult = new BeanChangeUtil<ProductSkuPurchaseInfoDraft>().contrastObj(oldVo, productSkuPurchaseInfoDraft);
-                        changeStr = changeStr + "采购:" + compareResult;
+                        if(StringUtils.isNotBlank(compareResult)) {
+                            changeStr.append("采购:").append(compareResult);
+                        }
                     }
                     productSkuPurchaseInfoService.insertDraft(productSkuPurchaseInfoDraft);
                 } catch (Exception e) {
@@ -435,23 +442,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if(flag) {
                         // 计算进销存门店销售修改内容
                         // 获取旧数据
-                        List<PurchaseSaleStockRespVo> respVos = productSkuSalesInfoService.getDraftList(productSkuDraft.getSkuCode());
+                        List<PurchaseSaleStockRespVo> respVos = productSkuSalesInfoService.getList(productSkuDraft.getSkuCode());
                         if (CollectionUtils.isEmpty(respVos)) {
                             throw new BizException(ResultCode.STORE_SALE_EMPTY);
                         }
-                        if (respVos.size() == productSkuSalesInfoDrafts.size()) {
-                            // 大小相同，只修改了数据
-                            String SaleStockChange = "";
-                            for (ProductSkuSalesInfoDraft skuSalesInfoDraft : productSkuSalesInfoDrafts) {
-                                for (PurchaseSaleStockRespVo respVo : respVos) {
-                                    ProductSkuSalesInfoDraft oldVo = new ProductSkuSalesInfoDraft();
-                                    BeanCopyUtils.copy(respVo, oldVo);
-                                    oldVo.setSalesCode(respVo.getBarCode());
-                                    String s = new BeanChangeUtil<ProductSkuSalesInfoDraft>().contrastObj(oldVo, respVo);
-                                    // SaleStockChange = ;
-                                }
-                            }
-
+                        List<ProductSkuSalesInfoDraft> oldVos = Lists.newArrayList();
+                        for (PurchaseSaleStockRespVo respVo : respVos) {
+                            // 创建一个对象与新数据做比较
+                            ProductSkuSalesInfoDraft oldVo = new ProductSkuSalesInfoDraft();
+                            BeanCopyUtils.copy(respVo, oldVo);
+                            oldVo.setSalesCode(respVo.getBarCode());
+                            oldVo.setSmallUnit(respVo.getUnitName());
+                            oldVos.add(oldVo);
+                        }
+                        String saleStockChangeStr = new BeanChangeUtil<ProductSkuSalesInfoDraft>().getChangeInfo(oldVos, productSkuSalesInfoDrafts, "门店销售");
+                        if (StringUtils.isNotBlank(saleStockChangeStr)) {
+                            changeStr.append(saleStockChangeStr);
                         }
                     }
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -473,6 +479,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
+                    if(flag) {
+                        // 计算包装信息修改数据
+                        // 获取旧数据
+                        List<ProductSkuBoxPackingRespVo> boxPackingRespVos = productSkuBoxPackingService.getList(productSkuDraft.getSkuCode());
+                        if (CollectionUtils.isEmpty(boxPackingRespVos)) {
+                            throw new BizException(ResultCode.BOX_PACKING_EMPTY);
+                        }
+                        List<ProductSkuBoxPackingDraft> oldVos = BeanCopyUtils.copyList(boxPackingRespVos, ProductSkuBoxPackingDraft.class);
+                        String boxPackingStr = new BeanChangeUtil<>().getChangeInfo(oldVos, productSkuBoxPackingDrafts, "包装");
+                        if (StringUtils.isNotBlank(boxPackingStr)) {
+                            changeStr.append("包装信息:").append(boxPackingStr);
+                        }
+                    }
                     productSkuBoxPackingService.insertDraftList(productSkuBoxPackingDrafts);
                 }
                 //结算信息
@@ -491,6 +510,17 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     outputTaxRateL = productSkuCheckoutDraft.getOutputTaxRate();
                     inputTaxRate = new BigDecimal(productSkuCheckoutDraft.getInputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
                     outputTaxRate = new BigDecimal(productSkuCheckoutDraft.getOutputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+                    if(flag) {
+                        // 计算结算修改的内容
+                        // 获取旧数据
+                        ProductSkuCheckoutRespVo checkoutRespVo = productSkuCheckoutService.getBySkuCode(productSkuDraft.getSkuCode());
+                        ProductSkuCheckoutDraft oldVo = new ProductSkuCheckoutDraft();
+                        BeanCopyUtils.copy(checkoutRespVo, oldVo);
+                        String checkoutStr = new BeanChangeUtil<ProductSkuCheckoutDraft>().contrastObj(oldVo, productSkuCheckoutDraft);
+                        if (StringUtils.isNotBlank(checkoutStr)) {
+                            changeStr.append("结算信息:").append(checkoutStr);
+                        }
+                    }
                 }
                     //供应商信息
                     if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
@@ -585,7 +615,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     });
                     productSkuAssociatedGoodsService.insertDraftList(productSkuAssociatedGoodsDrafts);
                 }
-                //商产厂家
+                //生产厂家
                 if (null != addSkuInfoReqVO.getProductSkuManufacturerDrafts() && addSkuInfoReqVO.getProductSkuManufacturerDrafts().size() > 0){
                     List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts = addSkuInfoReqVO.getProductSkuManufacturerDrafts();
                     productSkuManufacturerDrafts.forEach(item->{
@@ -597,6 +627,29 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
+                    if (flag) {
+                        // 计算生产厂家修改内容
+                        // 获取旧数据
+                        List<ProductSkuManufacturerRespVo> manufacturerRespVos = productSkuManufacturerService.getList(productSkuDraft.getSkuCode());
+                        BeanChangeUtil<ProductSkuManufacturerDraft> beanChangeUtil = new BeanChangeUtil<>();
+                        StringBuilder str = new StringBuilder();
+                        if(CollectionUtils.isEmpty(manufacturerRespVos)) {
+                            // 如果旧数据为空，全为新增
+                            for (int i = 0; i < productSkuManufacturerDrafts.size(); i++) {
+                                String addStr = beanChangeUtil.addOrDeleteObj(productSkuManufacturerDrafts.get(i), (i + 1) + "", true, "生产厂家");
+                                str.append(addStr);
+                            }
+
+                        } else {
+                            List<ProductSkuManufacturerDraft> oldVos = BeanCopyUtils.copyList(manufacturerRespVos, ProductSkuManufacturerDraft.class);
+                            String manufacturerStr = beanChangeUtil.getChangeInfo(oldVos, productSkuManufacturerDrafts, "生产厂家");
+                            str.append(manufacturerStr);
+                        }
+                        if (StringUtils.isNotBlank(str.toString())) {
+                            changeStr.append("生产厂家信息:").append(str.toString());
+                        }
+
+                    }
                     productSkuManufacturerService.insertDraftList(productSkuManufacturerDrafts);
                 }
                 //sku质检信息
@@ -657,7 +710,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     oldVo.setZeroRemovalCoefficient(respVos.get(0).getZeroRemovalCoefficient());
                     oldVo.setMaxOrderNum(respVos.get(0).getMaxOrderNum());
                     String compareResult = new BeanChangeUtil<ProductSkuDisInfoDraft>().contrastObj(oldVo, productSkuDisInfoDraft);
-                    changeStr = changeStr + "分销:" + compareResult;
+                    if(StringUtils.isNotBlank(compareResult)) {
+                        changeStr.append("分销:").append(compareResult);
+                    }
                 }
                 productSkuDisInfoService.insertDraft(productSkuDisInfoDraft);
             } catch (Exception e) {
@@ -731,6 +786,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     }
                     i++;
                 }
+                if (flag) {
+                    // 计算商品图片是否变更
+                    List<ProductSkuPicturesRespVo> picturesRespVos = productSkuPicturesService.getList(productSkuDraft.getSkuCode());
+                    if (CollectionUtils.isEmpty(picturesRespVos)) {
+                        changeStr.append("图片:商品图片变更;");
+                    } else {
+                        List<ProductSkuPicturesDraft> oldVos = BeanCopyUtils.copyList(picturesRespVos, ProductSkuPicturesDraft.class);
+                        String compareResult = new BeanChangeUtil<ProductSkuPicturesDraft>().getChangeInfo(oldVos, productSkuPicturesDrafts, "商品图片");
+                        if(StringUtils.isNotBlank(compareResult)) {
+                            changeStr.append("图片:商品图片变更;");
+                        }
+                    }
+                }
                 productSkuPicturesService.insertDraftList(productSkuPicturesDrafts);
             }
             //sku商品说明
@@ -752,6 +820,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         }
                     }
                 });
+                if (flag) {
+                    // 计算商品说明是否变更
+                    List<ProductSkuPicDescRespVo> picDescRespVos = productSkuPicDescService.getList(productSkuDraft.getSkuCode());
+                    if(CollectionUtils.isEmpty(picDescRespVos)) {
+                        changeStr.append("商品说明:商品说明变更;");
+                    } else {
+                        List<ProductSkuPicDescDraft> oldVos = BeanCopyUtils.copyList(picDescRespVos, ProductSkuPicDescDraft.class);
+                        String compareResult = new BeanChangeUtil<ProductSkuPicDescDraft>().getChangeInfo(oldVos, productSkuPicDescDrafts, "商品说明");
+                        if (StringUtils.isNotBlank(compareResult)) {
+                            changeStr.append("商品说明:商品说明变更;");
+                        }
+                    }
+                }
                 productSkuPicDescService.insertDraftList(productSkuPicDescDrafts);
             }
             //sku文件管理
@@ -773,8 +854,34 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         }
                     }
                 }
+                if (flag) {
+                    // 计算文件修改内容
+                    // 获取旧数据
+                    List<ProductSkuFileRespVO> fileRespVOS = productSkuFileService.getList(productSkuDraft.getSkuCode());
+                    BeanChangeUtil<ProductSkuFileDraft> beanChangeUtil = new BeanChangeUtil<>();
+                    StringBuilder str = new StringBuilder();
+                    if (CollectionUtils.isEmpty(fileRespVOS)) {
+                        // 旧数据为空，新数据全为新增
+                        for (int i = 0; i < productSkuFileDrafts.size(); i++) {
+                            String fileStr = beanChangeUtil.addOrDeleteObj(productSkuFileDrafts.get(i), (i + 1) + "", true, "文件");
+                            str.append(fileStr);
+                        }
+                    } else {
+                        List<ProductSkuFileDraft> oldVos = BeanCopyUtils.copyList(fileRespVOS, ProductSkuFileDraft.class);
+                        String fileStr = beanChangeUtil.getChangeInfo(oldVos, productSkuFileDrafts, "文件");
+                        str.append(fileStr);
+                    }
+                    if(StringUtils.isNotBlank(str.toString())) {
+                        changeStr.append("商品文件:").append(str.toString());
+                    }
+                }
                 productSkuFileService.insertDraftList(productSkuFileDrafts);
             }
+            // 由于需要获得修改的内容，所以把添加基本信息放到最后
+            productSkuDraft.setChangeContent(changeStr.toString());
+            log.info("=============================================================修改内容:" + changeStr.toString());
+            ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
+            productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             return 1;
         } else {
             return 0;

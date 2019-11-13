@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -24,21 +25,26 @@ public class ProductSkuCheckoutDraft extends CommonBean {
     private String settlementMethodCode;
 
     @ApiModelProperty("结算方式名称")
+    @PropertyMsg("结算方式")
     private String settlementMethodName;
 
     @ApiModelProperty("销项税率")
+    // @PropertyMsg("销项税率")
     private Long outputTaxRate;
 
     @ApiModelProperty("进项税率")
+    // @PropertyMsg("进项税率")
     private Long inputTaxRate;
 
     @ApiModelProperty("积分系数")
+    @PropertyMsg("积分系数")
     private Long integralCoefficient;
 
     @ApiModelProperty(value = "返点", hidden = true)
     private Long rebate;
 
     @ApiModelProperty("物流费奖励比例")
+    // @PropertyMsg("物流费奖励比例")
     private BigDecimal logisticsFeeAwardRatio;
 
 }

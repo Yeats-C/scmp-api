@@ -94,7 +94,7 @@ public class GetChangeValueUtil<T> {
                     str =  "从\"空\"改为\"" + o2+"\"";
                 } else if(o1 != null && o2 == null){
                     str =  "从\"" + o1 + "\"改为\"\"";
-                } else if (!o1.toString().equals(o2.toString())) {
+                } else if (!o1.toString().trim().equals(o2.toString().trim())) {
                     if("goodsGifts".equals(field.getName())){
                        o1 = SkuTypeEnum.getSkuTypeEnumByType((Byte) o1).getName();
                        o2 = SkuTypeEnum.getSkuTypeEnumByType((Byte) o2).getName();

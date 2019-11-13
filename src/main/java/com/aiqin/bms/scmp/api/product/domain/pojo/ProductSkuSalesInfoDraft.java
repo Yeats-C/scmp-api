@@ -30,7 +30,7 @@ public class ProductSkuSalesInfoDraft extends CommonBean {
     private String spec;
 
     @ApiModelProperty("单位名称")
-    @PropertyMsg("单位")
+    @PropertyMsg(value = "单位", delete = true)
     private String smallUnit;
 
     @ApiModelProperty("单位编码")

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -16,9 +17,11 @@ public class ProductSkuManufacturerDraft extends CommonBean {
     private String manufacturerCode;
 
     @ApiModelProperty("生产厂家")
+    @PropertyMsg(value = "生产厂家", delete = true)
     private String manufacturerName;
 
     @ApiModelProperty("厂方商品编号")
+    @PropertyMsg("厂方商品编号")
     private String factoryProductNumber;
 
     @ApiModelProperty("省id")
@@ -40,9 +43,11 @@ public class ProductSkuManufacturerDraft extends CommonBean {
     private String districtName;
 
     @ApiModelProperty("是否缺省（0:否,1：是）")
+    @PropertyMsg(value = "是否默认",replace = "0_否,1_是")
     private Byte isDefault;
 
     @ApiModelProperty("保修地址")
+    @PropertyMsg("保修地址")
     private String address;
 
     @ApiModelProperty("删除标记(0:正常 1:删除）")
