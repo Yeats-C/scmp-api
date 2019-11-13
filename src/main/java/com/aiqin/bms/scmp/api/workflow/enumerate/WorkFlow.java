@@ -54,7 +54,7 @@ public enum WorkFlow {
     /**
      * 商品配置申请工作流
      */
-    APPLY_GOODS_CONFIG(10,"商品配置申请工作流","SCMP_APPLY_GOODS_WAREHOUSE"),
+    APPLY_GOODS_CONFIG(10,"商品配置申请工作流","SCMP_APPLY_GOODS_CONFIG"),
     /**
      * 商品价格申请工作流
      */
