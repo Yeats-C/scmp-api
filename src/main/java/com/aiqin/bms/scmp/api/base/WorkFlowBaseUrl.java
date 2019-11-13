@@ -73,6 +73,12 @@ public class WorkFlowBaseUrl {
     @Value("${WorkFlowBaseUrl.productUrl.applySkuConfig}")
     public String applySkuConfig;
 
+//    /**
+//     * 商品促销
+//     */
+//    @Value("${WorkFlowBaseUrl.productUrl.applySkuPromotion}")
+//    public String applySkuPromotion;
+
     @Value("${WorkFlowBaseUrl.productUrl.applySkuSupplier}")
     public String applySkuSupplier;
     /**

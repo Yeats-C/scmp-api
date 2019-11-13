@@ -179,6 +179,8 @@ public interface StockDao {
 
     Long selectSkuCodeByQueryAvailableNum(@Param("skuCode") String skuCode);
 
+    Long selectSkuCodeByQueryAvailableSum(@Param("skuCode") String skuCode);
+
     List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode") String skuCode);
 
     List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
