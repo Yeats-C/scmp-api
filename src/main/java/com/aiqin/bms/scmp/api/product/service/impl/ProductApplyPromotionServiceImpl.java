@@ -292,14 +292,14 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         pricePromotionDetailReqVoList.stream().forEach(x->x.setId(IdSequenceUtils.getInstance().nextId()));
         for (PricePromotionDetailReqVo pricePromotionDetailReqVo:
         pricePromotionDetailReqVoList ) {
-            if(pricePromotionDetailReqVo.getPromotionType().equals("2")) {
+//            if(pricePromotionDetailReqVo.getPromotionType().equals("2")) {
                 pricePromotionDetailMapper.insert(pricePromotionDetailReqVo);
                 //进行下属的产品的属性书写
                 List<PricePromotionProductReqVo> pricePromotionProductReqVoList = pricePromotionDetailReqVo.getPricePromotionProductReqVoList();
                 pricePromotionProductReqVoList.stream().forEach(x -> x.setBusinessId(pricePromotionDetailReqVo.getId()));
                 pricePromotionProductReqVoList.stream().forEach(x -> x.setId(IdSequenceUtils.getInstance().nextId()));
                 pricePromotionProductMapper.insertSelective(pricePromotionProductReqVoList);
-            }
+//            }
 
         }
 

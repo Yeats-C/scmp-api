@@ -76,7 +76,7 @@ public class PricePromotionDetailRespVo {
      * 表字段 : price_promotion_detail.is_sign
      */
     @ApiModelProperty("促销规则请求封装集合")
-    private List<PricePromotionDetailRespVo> pricePromotionDetailRespVos;
+    private List<PricePromotionDetailRespVo> pricePromotionDetailRespVoList;
 
 
 }
