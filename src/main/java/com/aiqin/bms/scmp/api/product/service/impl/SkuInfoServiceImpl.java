@@ -664,7 +664,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
                         if(null != map){
                             String destinationKey = destinationPicKey + i + map.get("contentType");
-                            if(!Objects.equals(map.get("key"),destinationKey)){
+                            if(!map.get("key").endsWith(destinationKey)){
                                 String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
                                 if(StringUtils.isNotBlank(newUrl)){
                                     item.setProductPicturePath(newUrl);
@@ -691,7 +691,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
                         if(null != map) {
                             String destinationKey = destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType");
-                            if (!Objects.equals(map.get("key"), destinationKey)) {
+                            if (!map.get("key").endsWith(destinationKey)) {
                                 String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType"), true);
                                 if (StringUtils.isNotBlank(newUrl)) {
                                     item.setPicDescPath(newUrl);
@@ -717,7 +717,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getFilePath());
                         if(null != map) {
                             String destinationKey = destinationFileKey + UUID.randomUUID() + map.get("contentType");
-                            if (!Objects.equals(map.get("key"), destinationKey)) {
+                            if (!map.get("key").endsWith(destinationKey)) {
                                 String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
                                 if (StringUtils.isNotBlank(newUrl)) {
                                     item.setFilePath(newUrl);
