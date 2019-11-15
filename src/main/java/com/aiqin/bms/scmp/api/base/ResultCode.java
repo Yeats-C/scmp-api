@@ -181,6 +181,8 @@ public interface ResultCode {
 
     MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
     MessageId SKU_PURCHASE_PRICE_IS_EMPTY =  MessageId.create(Project.PRODUCT_API, 74, "未找到价格项目为采购类的,请先添加价格项目");
+    MessageId SKU_DIFFERENT_APPLY_TYPE =  MessageId.create(Project.PRODUCT_API, 75, "不同申请类型必须分开提交");
+    MessageId SKU_DIFFERENT_GRPUP_TYPE =  MessageId.create(Project.PRODUCT_API, 76, "不同采购组必须分开提交");
 
     //价格
     MessageId SAVE_PRICE_FAILED =MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");

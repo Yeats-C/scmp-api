@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
@@ -184,6 +185,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private DataManageService dataManageService;
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
+    @Autowired
+    private StockDao stockDao;
+    @Autowired
+    private ProductSkuConfigMapper productSkuConfigMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1780,6 +1785,31 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (null == oldSku) {
                     //配置
                     productSkuConfigService.saveList(vo, skuCode, applyCode);
+                    // 初始化每个仓库库存信息
+                    ArrayList<Stock> stockList = Lists.newArrayList();
+                    List<SkuConfigsRepsVo> configList = productSkuConfigMapper.getListBySkuCode(productSkuInfo.getSkuCode());
+                    if (CollectionUtils.isNotEmpty(configList)) {
+                        for (SkuConfigsRepsVo skuConfigsRepsVo : configList) {
+                            Stock stock = BeanCopyUtils.copy(productSkuInfo, Stock.class);
+                            stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                            stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
+                            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+                            stock.setLockNum(0L);
+                            stock.setInventoryNum(0L);
+                            stock.setAvailableNum(0L);
+                            stock.setPurchaseWayNum(0L);
+                            stock.setAllocationWayNum(0L);
+                            stock.setTotalWayNum(0L);
+                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
+                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
+                            stock.setNewPurchasePrice(0L);
+                            stock.setTaxRate(0L);
+                            stock.setTaxCost(0L);
+                            stock.setTaxPrice(0L);
+                            stockList.add(stock);
+                        }
+                    }
+                    stockDao.insertBatch(stockList);
                 }
                 //关联商品
                 productSkuAssociatedGoodsService.saveList(skuCode, applyCode);
@@ -2736,6 +2766,26 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
         }
         return PageUtil.getPageList(reqVO.getPageNo(),productSkuDraftMapper.getProductSkuDraft(reqVO));
+    }
+
+    @Override
+    public List<ProductSkuDraftRespVo> getProductSkuDraftListNoPage(QuerySkuDraftListReqVO reqVO) {
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if(null != authToken){
+            reqVO.setCompanyCode(authToken.getCompanyCode());
+            reqVO.setPersonId(authToken.getPersonId());
+        }
+        if(CollectionUtils.isNotEmpty(reqVO.getProductCategoryCodes())){
+            try {
+                reqVO.setProductCategoryLv1Code(reqVO.getProductCategoryCodes().get(0));
+                reqVO.setProductCategoryLv2Code(reqVO.getProductCategoryCodes().get(1));
+                reqVO.setProductCategoryLv3Code(reqVO.getProductCategoryCodes().get(2));
+                reqVO.setProductCategoryLv4Code(reqVO.getProductCategoryCodes().get(3));
+            } catch (Exception e) {
+                log.info("不做处理,让程序继续执行下去");
+            }
+        }
+        return productSkuDraftMapper.getProductSkuDraft(reqVO);
     }
 
     @Override

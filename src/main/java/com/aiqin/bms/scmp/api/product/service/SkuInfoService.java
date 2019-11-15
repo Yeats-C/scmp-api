@@ -302,6 +302,13 @@ public interface SkuInfoService{
     BasePage<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
 
     /**
+     * 带条件获取商品临时表，不分页
+     * @param reqVO
+     * @return
+     */
+    List<ProductSkuDraftRespVo> getProductSkuDraftListNoPage(QuerySkuDraftListReqVO reqVO);
+
+    /**
      * 查未同步的
      * @return
      */

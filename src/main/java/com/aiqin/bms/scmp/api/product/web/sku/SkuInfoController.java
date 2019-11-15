@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -21,6 +22,7 @@ import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +30,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @功能说明:
@@ -102,6 +106,43 @@ public class SkuInfoController {
     @ApiOperation("待提交sku列表")
     public HttpResponse<BasePage<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
         return HttpResponse.successGenerics(skuInfoService.getProductSkuDraftList(reqVO));
+    }
+
+    @PostMapping("/draft/submit/check")
+    @ApiOperation("提交审批验证,是否为同一修改类型或同一采购组")
+    public HttpResponse<List<String>> submitCheck(@RequestBody QuerySkuDraftListReqVO reqVO){
+        List<ProductSkuDraftRespVo> list = skuInfoService.getProductSkuDraftListNoPage(reqVO);
+        if (CollectionUtils.isEmptyCollection(list)) {
+            return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+        Byte applyType = list.get(0).getApplyType();
+        String groupCode = list.get(0).getPurchaseGroupCode();
+        for (ProductSkuDraftRespVo productSkuDraftRespVo : list) {
+            if (applyType - productSkuDraftRespVo.getApplyType() != 0) {
+                return HttpResponse.failure(ResultCode.SKU_DIFFERENT_APPLY_TYPE);
+            }
+            if (!StringUtils.equals(groupCode, productSkuDraftRespVo.getPurchaseGroupCode())) {
+                return HttpResponse.failure(ResultCode.SKU_DIFFERENT_GRPUP_TYPE);
+            }
+        }
+        List<String> skuCodeList = list.stream().map(ProductSkuDraftRespVo::getCode).collect(Collectors.toList());
+        return HttpResponse.successGenerics(skuCodeList);
+    }
+
+    @DeleteMapping("/draft/list")
+    @ApiOperation("删除所有符合条件待提交sku列表")
+    public HttpResponse<Integer> deleteDraft(@RequestBody QuerySkuDraftListReqVO reqVO){
+        log.info(reqVO.toString());
+        List<ProductSkuDraftRespVo> list = skuInfoService.getProductSkuDraftListNoPage(reqVO);
+        List<String> skuList = list.stream().map(ProductSkuDraftRespVo::getCode).collect(Collectors.toList());
+        try {
+            return HttpResponse.successGenerics(skuInfoService.deleteProductSkuDraft(skuList));
+        } catch (BizException bz){
+            return HttpResponse.failure(bz.getMessageId(),0);
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+        }
     }
 
     @PostMapping("/apply/add")
