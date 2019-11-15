@@ -38,6 +38,7 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="linnum" jdbcType="INTEGER" property="linnum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_record_id, reject_record_detail_id, reject_record_code, barcode, sku_code, 
@@ -45,7 +46,7 @@
     single_count, product_count, color_code, color_name, model_number, factory_sku_code, 
     product_spec, unit_name, unit_code, tax_rate, product_amount, product_total_amount, 
     actual_count, actual_amount, batch_no, batch_remark, batch_create_time, create_by_id, 
-    create_by_name, update_by_id, update_by_name, create_time, update_time
+    create_by_name, update_by_id, update_by_name, create_time, update_time, linnum
   </sql>
   <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
     SELECT
@@ -83,7 +84,7 @@
     color_code,color_name,model_number,factory_sku_code,
     batch_no, batch_remark, batch_create_time,
     create_by_id, create_by_name,update_by_id, update_by_name,
-    create_time, update_time
+    create_time, update_time, linnum
     )
     values
     <foreach collection="list" separator="," item="item">
@@ -121,7 +122,7 @@
       #{createByName,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR},
-      now(),now()
+      now(),now(), #{item.linnum,jdbcType=INTEGER}
       )
     </foreach>
   </insert>

@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
-import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
@@ -452,6 +451,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
             List<RejectRecordDetail> list = new ArrayList<>();
             RejectRecordDetail rejectRecordDetail;
+            Integer i = 1;
             for (RejectApplyRecordDetail detailResponse : detailList) {
                 //计算总数
                 sumSingleCount += detailResponse.getProductCount();
@@ -459,7 +459,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (detailResponse.getTaxRate() == null) {
                     untaxedAmount = detailResponse.getProductTotalAmount();
                 } else {
-                    untaxedAmount += detailResponse.getProductTotalAmount() * 10000 / (100 + detailResponse.getTaxRate());
+                    untaxedAmount += detailResponse.getProductTotalAmount() * 100 / (100 + detailResponse.getTaxRate());
                 }
                 if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                     returnCount += detailResponse.getProductCount();
@@ -476,7 +476,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 rejectRecordDetail.setProductCount(detailResponse.getProductCount().longValue());
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
                 rejectRecordDetail.setRejectRecordCode(rejectCode);
+                rejectRecordDetail.setLinnum(i);
                 list.add(rejectRecordDetail);
+                ++i;
             }
             rejectRecord.setProductAmount(productAmount);
             rejectRecord.setProductCount(productCount);
