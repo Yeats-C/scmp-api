@@ -29,5 +29,7 @@ public interface ProductSkuDisInfoDao {
 
     ApplyProductSkuDisInfo getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
+    List<ApplyProductSkuDisInfo> getApplyInfoByApplyCode(String applyCode);
+
     List<PurchaseSaleStockRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 }

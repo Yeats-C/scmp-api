@@ -25,6 +25,7 @@ public interface ProductSkuInspReportService {
     int insertList(List<ProductSkuInspReport> productSkuInspReports);
 
     int insertDraftList(List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
+    int insertDraftList(String applyCode);
 
     /**
      * 获取临时数据

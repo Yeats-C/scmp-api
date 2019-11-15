@@ -27,7 +27,7 @@ public class QueryProductApplyReqVO extends PageReq {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTimeEnd;
 
-    @ApiModelProperty("审批类型 1:商品 2.配置 3.区域")
+    @ApiModelProperty("审批类型 1:商品 2.配置 3.区域 4.供应商")
     @NotEmpty(message = "审批类型不能为空")
     private Integer approvalType;
 
@@ -57,4 +57,8 @@ public class QueryProductApplyReqVO extends PageReq {
 
     @ApiModelProperty("personId")
     private String personId;
+
+    @ApiModelProperty("申请类型")
+    @NotEmpty(message = "申请类型不能为空")
+    private Byte applyType;
 }

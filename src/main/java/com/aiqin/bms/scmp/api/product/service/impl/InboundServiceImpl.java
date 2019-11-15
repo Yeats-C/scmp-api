@@ -204,16 +204,18 @@ public class InboundServiceImpl implements InboundService {
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
             String supplyCode = inbound.getSupplierCode();
             SupplyCompany supplyCompany = supplyCompanyDao.selectAddress(supplyCode);
-            inboundResVo.setProvinceCode(supplyCompany.getSendProvinceId());
-            inboundResVo.setProvinceName(supplyCompany.getSendProvinceName());
-            inboundResVo.setCityCode(supplyCompany.getSendCityId());
-            inboundResVo.setCityName(supplyCompany.getSendCityName());
-            inboundResVo.setCountyCode(supplyCompany.getSendDistrictId());
-            inboundResVo.setCountyName(supplyCompany.getSendDistrictName());
-            inboundResVo.setDetailedAddress(supplyCompany.getSendingAddress());
-            inboundResVo.setShipper(supplyCompany.getContactName());
-            inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
-            inboundResVo.setShipperRate(supplyCompany.getZipCode());
+            if(supplyCompany != null){
+                inboundResVo.setProvinceCode(supplyCompany.getSendProvinceId());
+                inboundResVo.setProvinceName(supplyCompany.getSendProvinceName());
+                inboundResVo.setCityCode(supplyCompany.getSendCityId());
+                inboundResVo.setCityName(supplyCompany.getSendCityName());
+                inboundResVo.setCountyCode(supplyCompany.getSendDistrictId());
+                inboundResVo.setCountyName(supplyCompany.getSendDistrictName());
+                inboundResVo.setDetailedAddress(supplyCompany.getSendingAddress());
+                inboundResVo.setShipper(supplyCompany.getContactName());
+                inboundResVo.setShipperNumber(supplyCompany.getMobilePhone());
+                inboundResVo.setShipperRate(supplyCompany.getZipCode());
+            }
         }
         List<InboundProduct> list = inboundProductDao.selectByInboundOderCode(inboundResVo.getInboundOderCode());
         try {
@@ -432,8 +434,6 @@ public class InboundServiceImpl implements InboundService {
                 inboundCallBackReqVo.setList(list);
             }
         }
-
-
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())){
             inboundService.workFlowCallBack(inboundCallBackReqVo);
         }

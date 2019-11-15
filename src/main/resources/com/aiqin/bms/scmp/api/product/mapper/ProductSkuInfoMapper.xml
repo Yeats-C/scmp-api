@@ -94,6 +94,13 @@
     from product_sku
     where id = #{id,jdbcType=BIGINT}
   </select>
+
+    <select id="selectBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku
+        where sku_code = #{skuCode,jdbcType=VARCHAR}
+    </select>
   <select id="selectBySkuCodes" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -103,6 +110,12 @@
     <foreach collection="list" open="(" close=")" separator="," item="item">
         #{item}
     </foreach>
+  </select>
+  <select id="getAll" resultType="java.lang.String">
+      select
+       distinct a.sku_name
+      from product_sku a,apply_product_sku b
+      where a.del_flag = 0 and a.sku_name = b.sku_name and b.apply_code = #{applyCode} and b.apply_type = 1
   </select>
   <select id="checkBrand" resultType="java.lang.Integer">
     select
@@ -125,12 +138,6 @@
     <foreach collection="list" open="(" close=")" separator="," item="item">
       #{item}
     </foreach>
-  </select>
-  <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
-    select
-    <include refid="Base_Column_List" />
-    from product_sku
-    where sku_code = #{skuCode,jdbcType=BIGINT}
   </select>
     <select id="exportAddSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuAddExport">
         select a.sku_code                                 skuCode,
@@ -1154,5 +1161,15 @@ from product_sku a
       where sku_code = #{item.skuCode}
     </foreach>
   </update>
-
+    <select id="checkName" resultType="java.lang.Integer">
+      select count(*) from
+        product_sku
+       where 1=1
+        <if test="skuCode != null and skuCode != '' ">
+            and sku_code != #{skuCode}
+        </if>
+        <if test="skuName != null and skuName != '' ">
+            and sku_name = #{skuName}
+        </if>
+    </select>
 </mapper>

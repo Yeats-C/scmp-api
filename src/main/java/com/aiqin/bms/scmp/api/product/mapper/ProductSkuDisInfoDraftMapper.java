@@ -21,4 +21,6 @@ public interface ProductSkuDisInfoDraftMapper {
     List<PurchaseSaleStockRespVo> getList(String skuCode);
 
     Integer delete(List<String> skuCodes);
+
+    int insertBatch(List<ProductSkuDisInfoDraft> productSkuDisInfoDrafts);
 }

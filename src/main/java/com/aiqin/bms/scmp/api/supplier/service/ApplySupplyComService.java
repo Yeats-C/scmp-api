@@ -194,4 +194,11 @@ public interface ApplySupplyComService {
     int saveApplyPurchaseGroupList(List<ApplySupplyCompanyPurchaseGroup> purchaseGroups);
 
     Boolean deleteApply(Long id);
+
+    /**
+     * 重新比价
+     * @param applyCode
+     * @return
+     */
+    Integer reUpdateApply(String applyCode);
 }

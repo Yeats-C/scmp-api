@@ -68,6 +68,7 @@
     big_effect_period_warn_day, turnover_period_after_arrival, company_code, company_name,apply_type
   </sql>
 
+
   <sql id="List_Column">
        a.id aid,
        a.create_by acreate_by,
@@ -97,11 +98,102 @@
        c.procurement_section_code aprocurement_section_code,
        c.procurement_section_name aprocurement_section_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from product_sku_config_draft
-    where id = #{id,jdbcType=BIGINT}
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku_config_draft
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <resultMap id="SkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+        <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+        <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+        <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
+        <collection property="configs" column="{skuCode = sku_code}"
+                    javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
+    </resultMap>
+
+    <select id="getList2" parameterType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigId"
+            resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.ListResultMap">
+        select
+        <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+        from
+        product_sku_config_draft a
+        left join product_sku_config_spare_warehouse_draft b
+        on a.config_code = b.config_code
+        left join product_sku c
+        on a.sku_code = c.sku_code
+        where a.del_flag = 0
+        <if test="id != null">
+            and a.id = #{id}
+        </if>
+    </select>
+
+
+    <resultMap id="SkuResultDraftMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigDetailRepsVo">
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+        <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+        <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+        <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+        <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />
+        <result column="aId"/>
+        <collection property="configs" column="{id = aId}"
+                    javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo" select="getList2"/>
+    </resultMap>
+  <select id="detailForDraft"  resultMap="SkuResultDraftMap">
+      select
+      c.sku_code,
+      c.sku_name,
+      c.product_code,
+      c.product_name,
+      c.product_sort_code,
+      c.product_sort_name,
+      c.product_category_code,
+      c.product_category_name,
+      c.categories_supply_channels_code,
+      c.categories_supply_channels_name,
+      c.product_brand_code,
+      c.product_brand_name,
+      c.product_property_code,
+      c.product_property_name,
+      c.goods_gifts,
+      c.create_time,
+      c.create_by,
+      c.update_by,
+      c.update_time,
+      #{draftId,jdbcType=BIGINT} aId,
+      procurement_section_name
+    from product_sku c
+    where c.sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getList" resultMap="ListResultMap" parameterType="java.util.List">
     select
@@ -221,7 +313,18 @@
       #{item}
     </foreach>
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    <select id="selectBySkuCodeAndTransportCenterCodes" resultType="java.lang.String">
+        select
+          config_code
+        from
+        product_sku_config_draft
+        where sku_code = #{skuCode}
+        and transport_center_code in
+        <foreach collection="transportCenterCodes" open="(" close=")" separator="," item="item">
+            #{item}
+        </foreach>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_config_draft
     where id = #{id,jdbcType=BIGINT}
   </delete>
@@ -253,6 +356,15 @@
         where id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteByTransportCenterCodes" parameterType="java.util.List">
+        delete from product_sku_config_draft
+        where  sku_code =#{skuCode} and
+        transport_center_code in
+        <foreach collection="deleteCodes" open="(" close=")" separator="," item="item">
+            #{item}
         </foreach>
     </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft">
@@ -526,7 +638,6 @@
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
-      and apply_show = #{applyShow,jdbcType=TINYINT}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigDraft">
     update product_sku_config_draft

@@ -139,14 +139,14 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         order.setPurchaseOrderCode(formNo);
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder != null){
-            Integer productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
-            Integer giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
-            Integer num = productAmount + giftAmount;
+            Long productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
+            Long giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
+            Long num = productAmount + giftAmount;
             BigDecimal amount;
             if(num == 0){
                 amount = new BigDecimal(0);
             }else {
-                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(10000));
+                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(100));
                 amount = big.setScale(4, BigDecimal.ROUND_HALF_UP);
             }
             jsonObject.addProperty("purchaseAmount", amount);

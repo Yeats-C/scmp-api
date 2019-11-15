@@ -51,6 +51,17 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
         return draftMapper.saveBatch(productSkuChannelDrafts);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuChannel> applyProductSkuChannels = applyMapper.selectApplyProductSkuChannelBySkuAndApplyCode(null, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuChannels)){
+            List<ProductSkuChannelDraft> productSkuChannelDrafts = BeanCopyUtils.copyList(applyProductSkuChannels,ProductSkuChannelDraft.class);
+            return ((ProductSkuChannelService)AopContext.currentProxy()).insertDraftList(productSkuChannelDrafts);
+        }
+        return 0;
+    }
+
     /**
      * 通过SKU获取临时表渠道信息
      *
@@ -159,6 +170,8 @@ public class ProductSkuChannelServiceImpl implements ProductSkuChannelService {
         }
         return 0;
     }
+
+
 
     /**
      * 功能描述: 批量插入数据库

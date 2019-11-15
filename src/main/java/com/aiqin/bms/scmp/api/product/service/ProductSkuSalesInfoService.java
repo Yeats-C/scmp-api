@@ -15,6 +15,7 @@ import java.util.List;
  */
 public interface ProductSkuSalesInfoService {
     int insertDraftList(List<ProductSkuSalesInfoDraft> productSkuSalesInfoDrafts);
+    int insertDraftList(String applyCode);
 
     int insertList(List<ProductSkuSalesInfo> productSkuSalesInfos);
 
@@ -50,6 +51,8 @@ public interface ProductSkuSalesInfoService {
      */
     List<PurchaseSaleStockRespVo> getApplyList(String skuCode, String applyCode);
 
+    List<ApplyProductSkuSalesInfo> getApplyList(String applyCode);
+
     /**
      *
      * 功能描述: 获取正式数据
@@ -71,4 +74,11 @@ public interface ProductSkuSalesInfoService {
      * @date 2019/7/30 18:33
      */
     List<String> checkSalesCodes(List<String> salesCodes,String skuCode);
+
+    /**
+     * 根据申请编码检查销售条形码是否存在
+     * @param applyCode
+     * @return
+     */
+    List<String> checkSalesCodes(String applyCode);
 }

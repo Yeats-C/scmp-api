@@ -10,7 +10,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="del_flag" jdbcType="VARCHAR" property="delFlag" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
   </resultMap>
@@ -107,7 +107,62 @@
       #{item.skuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
-  <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+    <update id="updateById" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuFile">
+        update product_sku_file
+        <set>
+            <if test="fileCode != null">
+                file_code = #{fileCode,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="filePath != null">
+                file_path = #{filePath,jdbcType=VARCHAR},
+            </if>
+            <if test="productCategoryCode != null">
+                product_category_code = #{productCategoryCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productCategoryName != null">
+                product_category_name = #{productCategoryName,jdbcType=VARCHAR},
+            </if>
+            <if test="spec != null">
+                spec = #{spec,jdbcType=VARCHAR},
+            </if>
+            <if test="unitName != null">
+                unit_name = #{unitName,jdbcType=VARCHAR},
+            </if>
+            <if test="unitCode != null">
+                unit_code = #{unitCode,jdbcType=VARCHAR},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=BIT},
+            </if>
+            <if test="skuCode != null">
+                sku_code = #{skuCode,jdbcType=VARCHAR},
+            </if>
+            <if test="skuName != null">
+                sku_name = #{skuName,jdbcType=VARCHAR},
+            </if>
+            <if test="applyCode != null">
+                apply_code = #{applyCode,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
       <include refid="Base_column_List"/>
     FROM product_sku_file_draft WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
@@ -130,9 +185,20 @@
   <delete id="deleteList" parameterType="java.lang.String">
     DELETE FROM product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
   </delete>
-  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuFileMapper.BaseResultMap">
-    SELECT * from apply_product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
-    and apply_code=#{applyCode}
+
+    <delete id="deleteById" parameterType="java.lang.Long" >
+         DELETE FROM product_sku_file WHERE id=#{id,jdbcType=BIGINT}
+    </delete>
+
+    <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuFileMapper.BaseResultMap">
+    SELECT * from apply_product_sku_file
+    WHERE 1=1
+    <if test="skuCode != null and skuCode != '' ">
+        and sku_code=#{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="applyCode != null and applyCode != '' ">
+        and apply_code=#{applyCode}
+    </if>
   </select>
   <select id="getApplys" resultMap="BaseResultMap">
     SELECT
@@ -146,4 +212,10 @@
     <include refid="Base_column_List"/>
     FROM product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
+    <select id="getInfoBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+
+        SELECT
+        <include refid="Base_column_List"/>
+        FROM product_sku_file WHERE sku_code=#{skuCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

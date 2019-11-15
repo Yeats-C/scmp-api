@@ -59,6 +59,119 @@
       from product_sku_supply_unit_draft
       where product_sku_code = #{skuCode}
     </select>
+  <select id="getListPage"
+          resultMap="com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao.listPageMap">
+        select
+          a.id,
+          b.sku_code,
+          b.sku_name,
+          b.procurement_section_code,
+          b.procurement_section_name,
+          a.supply_unit_code,
+          a.supply_unit_name,
+          a.no_tax_purchase_price,
+          a.tax_included_price,
+          a.joint_franchise_rate,
+          a.point,
+          a.factory_sku_code,
+          a.categories_supply_channels_code,
+          a.categories_supply_channels_name,
+          a.is_default,
+          a.usage_status,
+          a.create_by,
+          a.create_time,
+          a.update_by,
+          a.update_time,
+          CONCAT(lv1.category_name,'-',lv2.category_name,'-',lv3.category_name,'-',lv4.category_name) product_category_name,
+          b.product_category_code,
+          b.product_brand_code,
+          b.product_brand_name,
+          b.product_property_code,
+          b.product_property_name,
+          a.apply_type
+        from product_sku_supply_unit_draft a
+        left join product_sku b
+        on a.product_sku_code = b.sku_code
+        LEFT JOIN product_category lv4
+        on lv4.category_id = b.product_category_code
+        LEFT JOIN product_category lv3
+        on lv3.category_id = lv4.parent_id
+        LEFT JOIN product_category lv2
+        on lv2.category_id = lv3.parent_id
+        LEFT JOIN product_category lv1
+        on lv1.category_id = lv2.parent_id
+        where a.del_flag = 0 and a.apply_show = 0
+        <if test="skuCode != null and skuCode != '' ">
+          and b.sku_code like CONCAT('%',#{skuCode},'%')
+        </if>
+        <if test="skuName != null and skuName != '' ">
+          and b.sku_name like CONCAT('%',#{skuName},'%')
+        </if>
+        <if test="supplierCode != null and supplierCode != '' ">
+          and a.supply_unit_code CONCAT('%',#{supplierCode},'%')
+        </if>
+        <if test="supplierName != null and supplierName != '' ">
+          and a.supply_unit_name like CONCAT('%',#{supplierName},'%')
+        </if>
+        <if test="minPurchasePrice != null">
+          and a.tax_included_price >= #{minPurchasePrice} * 100
+        </if>
+        <if test="maxPurchasePrice != null">
+          and a.tax_included_price >= #{maxPurchasePrice} * 100
+        </if>
+        <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
+          and a.categories_supply_channels_code like CONCAT('%',#{categoriesSupplyChannelsCode},'%')
+        </if>
+        <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
+          and a.categories_supply_channels_name like CONCAT('%',#{categoriesSupplyChannelsName},'%')
+        </if>
+        <if test="usageStatus != null">
+          and a.usage_status = #{usageStatus}
+        </if>
+        <if test="companyCode != null  and companyCode != '' ">
+          and b.company_code = #{companyCode}
+        </if>
+        <if test="personId != null and personId != '' ">
+          and b.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        </if>
+        <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+          and lv1.category_id = #{productCategoryLv1Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+          and lv2.category_id = #{productCategoryLv2Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+          and lv3.category_id = #{productCategoryLv3Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
+          and lv4.category_id = #{productCategoryLv4Code,jdbcType=VARCHAR}
+        </if>
+        <if test="productBrandCode!=null and productBrandCode!=''">
+          AND b.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+          AND b.product_brand_name like CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+          AND b.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+        </if>
+        <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+          AND b.procurement_section_name like CONCAT('%',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productPropertyCode!=null and productPropertyCode!=''">
+          AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productPropertyName!=null and productPropertyName!=''">
+          AND b.product_property_name like CONCAT('%',#{productPropertyName,jdbcType=VARCHAR},'%')
+        </if>
+        order by create_time desc
+  </select>
+    <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from product_sku_supply_unit_draft
+        where id = #{id}
+    </select>
     <delete id="delete" parameterType="java.util.List">
     delete from product_sku_supply_unit_draft where product_sku_code in
     <foreach collection="list" item="skuCode" separator="," open="(" close=")">
@@ -74,6 +187,12 @@
 
   <delete id="deleteDraftById" parameterType="java.util.List">
     delete from product_sku_supply_unit_draft where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteBySkuCodeAndSupplierCodes">
+    delete from product_sku_supply_unit_draft where product_sku_code = #{skuCode} and  supply_unit_code in
+    <foreach collection="deleteCodes" item="supplyUnitCode" separator="," open="(" close=")">
+      #{supplyUnitCode,jdbcType=VARCHAR}
+    </foreach>
   </delete>
 
 </mapper>

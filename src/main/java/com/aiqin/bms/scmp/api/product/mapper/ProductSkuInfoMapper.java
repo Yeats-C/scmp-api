@@ -20,6 +20,8 @@ public interface ProductSkuInfoMapper {
 
     ProductSkuInfo selectByPrimaryKey(Long id);
 
+    ProductSkuInfo selectByPrimaryKey(@Param("skuCode")String skuCode);
+
     int updateByPrimaryKeySelective(ProductSkuInfo record);
 
     int updateByPrimaryKey(ProductSkuInfo record);
@@ -38,6 +40,8 @@ public interface ProductSkuInfoMapper {
     @MapKey("skuCode")
     Map<String,ProductSkuInfo> selectBySkuCodes(@Param("list") Set<String> skuList, @Param("companyCode") String companyCode);
 
+
+    List<String> getAll(@Param("applyCode") String applyCode);
     /**
      *
      * 功能描述: 检测品牌在SKU中是否存在
@@ -89,4 +93,6 @@ public interface ProductSkuInfoMapper {
      * @param applyCode
      */
     List<SkuEditExport> exportEditSku(String applyCode);
+
+    int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
 }

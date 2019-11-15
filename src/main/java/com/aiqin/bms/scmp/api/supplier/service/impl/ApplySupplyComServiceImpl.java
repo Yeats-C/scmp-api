@@ -50,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -118,6 +119,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private DeliveryInformationMapper deliveryInformationMapper;
     @Autowired
     private SupplierFileMapper supplierFileMapper;
+    @Autowired
+    private ApprovalFileInfoService approvalFileInfoService;
 
 
     @Override
@@ -165,6 +168,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 //审批流程
                 applySupplyCompanyReqDTO.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
+                approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompanyReqDTO.getApplyCode(),applySupplyCompanyReqDTO.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
                 workFlow(applySupplyCompanyReqDTO);
             }
             if(applySupplyCompanyCode != null){
@@ -294,6 +298,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //                applySupplyCompanyMapper.delectByIds(forImportList.stream().map(ApplySupplyCompany::getId).collect(Collectors.toList()));
 //            }
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
+                approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompany.getApplyCode(),applySupplyCompany.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
                 workFlow(applySupplyCompany);
             }
         } catch (Exception e){
@@ -446,44 +451,46 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
-        try {
-            WorkFlowVO workFlowVO = new WorkFlowVO();
-            workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl+"?applyType="+applySupplyCompanyReqDTO.getApplyType()+"&applyCode="+applySupplyCompanyReqDTO.getApplyCode()+"&id="+applySupplyCompanyReqDTO.getId()+"&itemCode=1"+"&"+workFlowBaseUrl.authority);
-            workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
-            workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ WorkFlow.APPLY_COMPANY.getNum());
-            String title = "修改";
-            if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompanyReqDTO.getApplyType())){
-                title = "新增";
-            }
-            workFlowVO.setTitle(title+applySupplyCompanyReqDTO.getApplySupplyName()+"申请");
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("auditPersonId",applySupplyCompanyReqDTO.getDirectSupervisorCode());
-            workFlowVO.setVariables(jsonObject.toString());
-            WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_COMPANY);
-            if(workFlowRespVO.getSuccess()){
-                ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
-                applySupplyCompany.setId(applySupplyCompanyReqDTO.getId());
-                //状态变为审核中
-                applySupplyCompany.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
-                applySupplyCompany.setFormNo(applySupplyCompanyReqDTO.getFormNo());
-                int i = applySupplyCompanyMapper.updateByPrimaryKeySelective(applySupplyCompany);
+        WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
+        workFlowVO.setHost(workFlowBaseUrl.supplierHost);
+        workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
+        WorkFlow workFlow;
+        if (Objects.equals(applySupplyCompanyReqDTO.getApplyType(), StatusTypeCode.ADD_APPLY.getStatus())) {
+            workFlow = WorkFlow.APPLY_COMPANY;
+        } else {
+            workFlow = WorkFlow.APPLY_COMPANY_REVISE;
+        }
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + workFlow.getNum());
+        workFlowVO.setTitle(applySupplyCompanyReqDTO.getApprovalName());
+        workFlowVO.setRemark(applySupplyCompanyReqDTO.getApprovalRemark());
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("auditPersonId", applySupplyCompanyReqDTO.getDirectSupervisorCode());
+        workFlowVO.setVariables(jsonObject.toString());
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, workFlow);
+        if (workFlowRespVO.getSuccess()) {
+            ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
+            applySupplyCompany.setId(applySupplyCompanyReqDTO.getId());
+            //状态变为审核中
+            applySupplyCompany.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
+            applySupplyCompany.setFormNo(applySupplyCompanyReqDTO.getFormNo());
+            int i = applySupplyCompanyMapper.updateByPrimaryKeySelective(applySupplyCompany);
 
-                SupplyCompany oldComByApplyCode = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
-                if(null != oldComByApplyCode){
-                    SupplyCompany supplyCompany = new SupplyCompany();
-                    supplyCompany.setId(oldComByApplyCode.getId());
-                    supplyCompany.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
-                    supplyCompanyMapper.updateByPrimaryKeySelective(supplyCompany);
-                }
-                List<ApplyDeliveryInformation> oldApplyDeliveryInfo = applyDeliveryInfoDao.getApplyDeliveryInfo(applySupplyCompanyReqDTO.getApplyCode());
-                if (CollectionUtils.isNotEmptyCollection(oldApplyDeliveryInfo)){
-                    oldApplyDeliveryInfo.forEach(item->{
-                        item.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
-                    });
-                    applyDeliveryInfoDao.updateBatch(oldApplyDeliveryInfo);
-                }
-                //去掉结算信息 2019-04-22
+            SupplyCompany oldComByApplyCode = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompanyReqDTO.getApplyCode());
+            if (null != oldComByApplyCode) {
+                SupplyCompany supplyCompany = new SupplyCompany();
+                supplyCompany.setId(oldComByApplyCode.getId());
+                supplyCompany.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
+                supplyCompanyMapper.updateByPrimaryKeySelective(supplyCompany);
+            }
+            List<ApplyDeliveryInformation> oldApplyDeliveryInfo = applyDeliveryInfoDao.getApplyDeliveryInfo(applySupplyCompanyReqDTO.getApplyCode());
+            if (CollectionUtils.isNotEmptyCollection(oldApplyDeliveryInfo)) {
+                oldApplyDeliveryInfo.forEach(item -> {
+                    item.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
+                });
+                applyDeliveryInfoDao.updateBatch(oldApplyDeliveryInfo);
+            }
+            //去掉结算信息 2019-04-22
 //                ApplySettlementInformation oldApplySetInfo = applySettlementInfoDao.getApplySettInfo(applySupplyCompanyReqDTO.getApplyCode());
 //                if (null != oldApplySetInfo){
 //                    ApplySettlementInformation newApplySetInfo = new ApplySettlementInformation();
@@ -491,28 +498,25 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //                    newApplySetInfo.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
 //                    i = applySettlementInformationMapper.updateByPrimaryKeySelective(newApplySetInfo);
 //                }
-                ApplySupplyCompanyAccount oldApplySupplyComAcct = applySupplyCompanyAcctDao.getApplySupplyComAcct(applySupplyCompanyReqDTO.getApplyCode());
-                if(null != oldApplySupplyComAcct) {
-                    ApplySupplyCompanyAccount newApplySupplyComAcct = new ApplySupplyCompanyAccount();
-                    newApplySupplyComAcct.setId(oldApplySupplyComAcct.getId());
-                    newApplySupplyComAcct.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
-                    applySupplyCompanyAccountMapper.updateByPrimaryKeySelective(newApplySupplyComAcct);
-                }
-                if(i<=0){
-                    throw new GroundRuntimeException("审核状态修改失败");
-                }
-                String content = ApplyStatus.APPROVAL.getContent().replace(Global.CREATE_BY, applySupplyCompanyReqDTO.getUpdateBy()).replace(Global.APPLY_TYPE, title);
-                //存日志
-                supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.APPROVAL.getName());
-            }else {
-                //存调用失败的日志
-                String msg = workFlowRespVO.getMsg();
-                throw new GroundRuntimeException(msg);
+            ApplySupplyCompanyAccount oldApplySupplyComAcct = applySupplyCompanyAcctDao.getApplySupplyComAcct(applySupplyCompanyReqDTO.getApplyCode());
+            if (null != oldApplySupplyComAcct) {
+                ApplySupplyCompanyAccount newApplySupplyComAcct = new ApplySupplyCompanyAccount();
+                newApplySupplyComAcct.setId(oldApplySupplyComAcct.getId());
+                newApplySupplyComAcct.setApplyStatus(StatusTypeCode.REVIEW_STATUS.getStatus());
+                applySupplyCompanyAccountMapper.updateByPrimaryKeySelective(newApplySupplyComAcct);
             }
-        } catch (Exception e) {
-            //存失败日志
-            throw new GroundRuntimeException(e.getMessage());
+            if (i <= 0) {
+                throw new GroundRuntimeException("审核状态修改失败");
+            }
+            String content = ApplyStatus.APPROVAL.getContent().replace(Global.CREATE_BY, applySupplyCompanyReqDTO.getUpdateBy()).replace(Global.APPLY_TYPE, applySupplyCompanyReqDTO.getApprovalName());
+            //存日志
+            supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode() + "", HandleTypeCoce.APPROVAL.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, HandleTypeCoce.APPROVAL.getName());
+        } else {
+            //存调用失败的日志
+            String msg = workFlowRespVO.getMsg();
+            throw new GroundRuntimeException(msg);
         }
+
     }
 
     @Override
@@ -550,66 +554,64 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public ApplySupplyComDetailRespVO getApplySupplyComDetail(String applyCode) {
-        try {
-            ApplySupplyComDetailRespVO applySupplyComDetailRespVO = new ApplySupplyComDetailRespVO();
-            ApplyInfoRespVO applyInfoRespVO = new ApplyInfoRespVO();
-            ApplySupplyComInfoRespVO applySupplyComInfoRespVO = new ApplySupplyComInfoRespVO();
-            ApplySupplyComAcctInfoRespVO applySupplyComAcctInfoRespVO = new ApplySupplyComAcctInfoRespVO();
+        ApplySupplyComDetailRespVO applySupplyComDetailRespVO = new ApplySupplyComDetailRespVO();
+        ApplyInfoRespVO applyInfoRespVO = new ApplyInfoRespVO();
+        ApplySupplyComInfoRespVO applySupplyComInfoRespVO = new ApplySupplyComInfoRespVO();
+        ApplySupplyComAcctInfoRespVO applySupplyComAcctInfoRespVO = new ApplySupplyComAcctInfoRespVO();
 
-            ApplySupplyComDetailDTO applySupplyComDetailDTO = applySupplyCompanyDao.getApplySupplyComDetail(applyCode);
-            BeanCopyUtils.copy(applySupplyComDetailDTO,applyInfoRespVO);
-            BeanCopyUtils.copy(applySupplyComDetailDTO,applySupplyComInfoRespVO);
-            if (null != applyInfoRespVO){
-                //获取操作日志
-                OperationLogVo operationLogVo = new OperationLogVo();
-                operationLogVo.setPageNo(1);
-                operationLogVo.setPageSize(100);
-                operationLogVo.setObjectType(ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus());
-                operationLogVo.setObjectId(applyCode);
-                BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo,62);
-                List<LogData> logDataList = new ArrayList<>();
-                if (null != pageList.getDataList() && pageList.getDataList().size() > 0){
-                    logDataList = pageList.getDataList();
-                }
-                applyInfoRespVO.setModelType("供应商");
-                applyInfoRespVO.setModelTypeCode("1");
-                applyInfoRespVO.setStatus(applySupplyComDetailDTO.getApplyStatus().toString());
-                applySupplyComDetailRespVO.setLogDataList(logDataList);
-                applySupplyComDetailRespVO.setApplyInfoRespVO(applyInfoRespVO);
+        ApplySupplyComDetailDTO applySupplyComDetailDTO = applySupplyCompanyDao.getApplySupplyComDetail(applyCode);
+        BeanCopyUtils.copy(applySupplyComDetailDTO, applyInfoRespVO);
+        BeanCopyUtils.copy(applySupplyComDetailDTO, applySupplyComInfoRespVO);
+        if (null != applyInfoRespVO) {
+            //获取操作日志
+            OperationLogVo operationLogVo = new OperationLogVo();
+            operationLogVo.setPageNo(1);
+            operationLogVo.setPageSize(100);
+            operationLogVo.setObjectType(ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus());
+            operationLogVo.setObjectId(applyCode);
+            BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo, 62);
+            List<LogData> logDataList = new ArrayList<>();
+            if (null != pageList.getDataList() && pageList.getDataList().size() > 0) {
+                logDataList = pageList.getDataList();
             }
-            if (null != applySupplyComInfoRespVO) {
-                applySupplyComDetailRespVO.setApplySupplyComInfoRespVO(applySupplyComInfoRespVO);
-            }
-            if(StatusTypeCode.ADD_ACCOUNT.getStatus().equals(applySupplyComDetailDTO.getAddAccount())){
-                //查询账户信息
-                ApplySupplyCompanyAccount applySupplyComAcct = applySupplyCompanyAcctDao.getApplySupplyComAcct(applyCode);
-                if(null != applySupplyComAcct){
-                    BeanCopyUtils.copy(applySupplyComAcct,applySupplyComAcctInfoRespVO);
-                    if(null != applySupplyComAcctInfoRespVO){
-                        applySupplyComAcctInfoRespVO.setAcctMaxPaymentAmount(applySupplyComAcct.getMaxPaymentAmount());
-                        applySupplyComDetailRespVO.setApplySupplyComAcctInfoRespVO(applySupplyComAcctInfoRespVO);
-                    }
-                }
-                applySupplyComDetailRespVO.setShowAccount(StatusTypeCode.SHOW_ACCOUNT.getStatus());
-            } else {
-                applySupplyComDetailRespVO.setShowAccount(StatusTypeCode.NOT_SHOW_ACCOUNT.getStatus());
-            }
-            //查询文件信息
-            List<ApplySupplierFile> applySupplierFiles  = applySupplierFileDao.getApplySupplierFile(applyCode);
-            applySupplyComDetailRespVO.setApplySupplierFileList(applySupplierFiles);
-            //根据供应商申请编码获取发货/退后申请信息
-            List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO = applyDeliveryInfoDao.getApplyDeliveryInfoDetail(applyCode);
-            applySupplyComDetailRespVO.setApplyDeliveryInfoRespVO(applyDeliveryInfoRespVO);
-            //采购组
-            List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applyCode);
-            if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)){
-                List<SupplyCompanyPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
-                applySupplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupResVos);
-            }
-            return applySupplyComDetailRespVO;
-        } catch (Exception e) {
-            throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
+            applyInfoRespVO.setModelType("供应商");
+            applyInfoRespVO.setModelTypeCode("1");
+            applyInfoRespVO.setStatus(applySupplyComDetailDTO.getApplyStatus().toString());
+            applyInfoRespVO.setApprovalFileInfos(approvalFileInfoService.selectByApprovalTypeAndApplyCode(ApprovalFileTypeEnum.SUPPLIER.getType(), applyInfoRespVO.getApplyCode()));
+            applySupplyComDetailRespVO.setLogDataList(logDataList);
+            applySupplyComDetailRespVO.setApplyInfoRespVO(applyInfoRespVO);
         }
+        if (null != applySupplyComInfoRespVO) {
+            applySupplyComDetailRespVO.setApplySupplyComInfoRespVO(applySupplyComInfoRespVO);
+        }
+        if (StatusTypeCode.ADD_ACCOUNT.getStatus().equals(applySupplyComDetailDTO.getAddAccount())) {
+            //查询账户信息
+            ApplySupplyCompanyAccount applySupplyComAcct = applySupplyCompanyAcctDao.getApplySupplyComAcct(applyCode);
+            if (null != applySupplyComAcct) {
+                BeanCopyUtils.copy(applySupplyComAcct, applySupplyComAcctInfoRespVO);
+                if (null != applySupplyComAcctInfoRespVO) {
+                    applySupplyComAcctInfoRespVO.setAcctMaxPaymentAmount(applySupplyComAcct.getMaxPaymentAmount());
+                    applySupplyComDetailRespVO.setApplySupplyComAcctInfoRespVO(applySupplyComAcctInfoRespVO);
+                }
+            }
+            applySupplyComDetailRespVO.setShowAccount(StatusTypeCode.SHOW_ACCOUNT.getStatus());
+        } else {
+            applySupplyComDetailRespVO.setShowAccount(StatusTypeCode.NOT_SHOW_ACCOUNT.getStatus());
+        }
+        //查询文件信息
+        List<ApplySupplierFile> applySupplierFiles = applySupplierFileDao.getApplySupplierFile(applyCode);
+        applySupplyComDetailRespVO.setApplySupplierFileList(applySupplierFiles);
+        //根据供应商申请编码获取发货/退后申请信息
+        List<ApplyDeliveryInfoRespVO> applyDeliveryInfoRespVO = applyDeliveryInfoDao.getApplyDeliveryInfoDetail(applyCode);
+        applySupplyComDetailRespVO.setApplyDeliveryInfoRespVO(applyDeliveryInfoRespVO);
+        //采购组
+        List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applyCode);
+        if (CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)) {
+            List<SupplyCompanyPurchaseGroupResVo> purchaseGroupResVos = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroupResVo.class);
+            applySupplyComDetailRespVO.setPurchaseGroupVos(purchaseGroupResVos);
+        }
+        return applySupplyComDetailRespVO;
+
     }
 
     @Override
@@ -1232,12 +1234,16 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             applySupplyCompanyAccountMapper.deleteByPrimaryKey(applySupplyCompanyReqVO.getApplySupplyCompanyAccountReq().getId());
 
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
+                approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompanyReqDTO.getApplyCode(),applySupplyCompany.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
                 applySupplyCompanyReqDTO.setDirectSupervisorCode(applySupplyCompanyReqVO.getDirectSupervisorCode());
                 applySupplyCompanyReqDTO.setDirectSupervisorName(applySupplyCompanyReqVO.getDirectSupervisorName());
                 applySupplyCompanyReqDTO.setFormNo(applySupplyCompany.getFormNo());
                 applySupplyCompanyReqDTO.setId(applySupplyCompany.getId());
+                applySupplyCompanyReqDTO.setApprovalName(applySupplyCompany.getApprovalName());
+                applySupplyCompanyReqDTO.setApprovalRemark(applySupplyCompany.getApprovalRemark());
                 workFlow(applySupplyCompanyReqDTO);
             }
+            //审批附件
         } catch (Exception e){
             log.error(Global.ERROR, e);
             throw new BizException(MessageId.create(Project.SUPPLIER_API,41,e.getMessage()));
@@ -1323,6 +1329,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         }
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
+
 
 
     public Map<String, AreaInfo> getAreaTree() {
@@ -2228,5 +2235,62 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 }
             }
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Integer reUpdateApply(String applyCode) {
+        Integer num = 0;
+        if(StringUtils.isBlank(applyCode)){
+            throw new BizException(ResultCode.REQUIRED_PARAMETER);
+        }
+        //供应商信息
+        ApplySupplyCompany applySupplyCompany = applySupplyCompanyDao.getApplySupplyCompany(applyCode);
+        if(null == applySupplyCompany){
+            throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+        //判断状态
+        if(!Objects.equals(applySupplyCompany.getApplyStatus(),ApplyStatus.REVOKED.getNumber()) &&
+                !Objects.equals(applySupplyCompany.getApplyStatus(),ApplyStatus.APPROVAL_FAILED.getNumber())){
+            throw new BizException(ResultCode.REUPDATE_ERROR);
+        }
+        //账户信息
+        ApplySupplyCompanyAcctReqVO applySupplyCompanyAccountReq = null;
+        if(StatusTypeCode.ADD_ACCOUNT.getStatus().equals(applySupplyCompany.getAddAccount())){
+            ApplySupplyCompanyAccount applySupplyComAcct = applySupplyCompanyAcctDao.getApplySupplyComAcct(applyCode);
+            applySupplyCompanyAccountReq = BeanCopyUtils.copy(applySupplyComAcct,ApplySupplyCompanyAcctReqVO.class);
+        }
+        //文件信息
+        List<ApplySupplierFile> applySupplierFiles  = applySupplierFileDao.getApplySupplierFile(applyCode);
+        //发货/退后申请信息
+        List<ApplyDeliveryInformation> applyDeliveryInfo = applyDeliveryInfoDao.getApplyDeliveryInfo(applyCode);
+        //采购组
+        List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applyCode);
+        //数据转化
+        ApplySupplyCompanyReqVO applySupplyCompanyReqVO = BeanCopyUtils.copy(applySupplyCompany,ApplySupplyCompanyReqVO.class);
+        if(null != applySupplyCompanyAccountReq){
+            applySupplyCompanyReqVO.setApplySupplyCompanyAccountReq(applySupplyCompanyAccountReq);
+        }
+        if(CollectionUtils.isNotEmptyCollection(applySupplierFiles)){
+            List<SupplierFileReqVO> fileReqVOList = BeanCopyUtils.copyList(applySupplierFiles,SupplierFileReqVO.class);
+            applySupplyCompanyReqVO.setFileReqVOList(fileReqVOList);
+        }
+        if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)){
+            List<ApplySupplyCompanyPurchaseGroupReqVo> purchaseGroupVos = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups,ApplySupplyCompanyPurchaseGroupReqVo.class);
+            applySupplyCompanyReqVO.setPurchaseGroupVos(purchaseGroupVos);
+        }
+        if(CollectionUtils.isNotEmptyCollection(applyDeliveryInfo)){
+            List<ApplyDeliveryInfoReqVO> deliveryInfoList = BeanCopyUtils.copyList(applyDeliveryInfo,ApplyDeliveryInfoReqVO.class);
+            applySupplyCompanyReqVO.setDeliveryInfoList(deliveryInfoList);
+        }
+        applySupplyCompanyReqVO.setSource(Byte.valueOf("1"));
+        //如果是新增
+        if(Objects.equals(StatusTypeCode.ADD_APPLY.getStatus(),applySupplyCompany.getApplyType())){
+            applySupplyCompanyReqVO.setApplySupplyCode(null);
+            num = ((ApplySupplyComService) AopContext.currentProxy()).saveApply(applySupplyCompanyReqVO).getData();
+        }else{
+            num = ((ApplySupplyComService) AopContext.currentProxy()).updateApply(applySupplyCompanyReqVO).intValue();
+        }
+        return num;
     }
 }

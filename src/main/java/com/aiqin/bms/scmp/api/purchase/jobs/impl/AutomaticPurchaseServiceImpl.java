@@ -110,7 +110,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                       applyProduct.setPurchaseApplyId(purchaseApply.getPurchaseApplyId());
                       applyProduct.setPurchaseApplyCode(purchaseApply.getPurchaseApplyCode());
                       applyProduct.setProductType(Global.PRODUCT_TYPE_0);
-                      Integer price  = product.getNewPurchasePrice() == null ? 0 : product.getNewPurchasePrice();
+                      Long price  = product.getNewPurchasePrice() == null ? 0 : product.getNewPurchasePrice();
                       applyProduct.setProductPurchaseAmount(price);
                       applyProduct.setNewPurchasePrice(price);
                       applyProduct.setCreateByName("系统");
@@ -123,7 +123,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                       if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                           key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
                           Long priceTax = productTax.get(key);
-                          applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax.intValue());
+                          applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax);
                       }
                       // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                       Map<String, PurchaseApplyRespVo> purchase = new HashMap<>();

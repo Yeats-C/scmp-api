@@ -63,6 +63,26 @@
        #{zeroRemovalCoefficient,jdbcType=BIGINT}
       )
   </insert>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into product_sku_purchase_info_draft (product_code, spec,
+      product_name, unit_code, unit_name,
+      purchase_code, base_product_content, del_flag,
+      create_time, create_by, update_time,
+      update_by, product_sku_code, product_sku_name,zero_removal_coefficient
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+      ( #{item.productCode,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
+      #{item.productName,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR},
+      #{item.purchaseCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
+      #{item.zeroRemovalCoefficient,jdbcType=BIGINT}
+      )
+    </foreach>
+
+  </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfoDraft">
     insert into product_sku_purchase_info_draft
     <trim prefix="(" suffix=")" suffixOverrides=",">

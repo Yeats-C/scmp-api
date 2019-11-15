@@ -27,8 +27,8 @@
     <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
     <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="product_type" jdbcType="INTEGER" property="productType" />
-    <result column="product_purchase_amount" jdbcType="INTEGER" property="productPurchaseAmount" />
-    <result column="new_purchase_price" jdbcType="INTEGER" property="newPurchasePrice" />
+    <result column="product_purchase_amount" jdbcType="BIGINT" property="productPurchaseAmount" />
+    <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice" />
     <result column="purchase_whole" jdbcType="INTEGER" property="purchaseWhole" />
     <result column="purchase_single" jdbcType="INTEGER" property="purchaseSingle" />
     <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName" />
@@ -40,7 +40,7 @@
     <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
     <result column="purchase_number" jdbcType="INTEGER" property="purchaseNumber" />
     <result column="receipt_time" jdbcType="TIMESTAMP" property="receiptTime" />
-    <result column="purchase_max" jdbcType="INTEGER" property="purchaseMax" />
+    <result column="purchase_max" jdbcType="BIGINT" property="purchaseMax" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
@@ -91,12 +91,12 @@
       #{purchaseGroupName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
       #{productPropertyCode,jdbcType=VARCHAR}, #{productPropertyName,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
       #{categoryId,jdbcType=VARCHAR}, #{categoryName,jdbcType=VARCHAR}, #{productSortCode,jdbcType=VARCHAR}, #{productSortName,jdbcType=VARCHAR},
-      #{productType,jdbcType=INTEGER}, #{productPurchaseAmount,jdbcType=INTEGER},  #{newPurchasePrice,jdbcType=INTEGER},
+      #{productType,jdbcType=INTEGER}, #{productPurchaseAmount,jdbcType=BIGINT},  #{newPurchasePrice,jdbcType=BIGINT},
       #{purchaseWhole,jdbcType=INTEGER}, #{purchaseSingle,jdbcType=INTEGER}, #{stockUnitName,jdbcType=VARCHAR},
       #{stockCount,jdbcType=INTEGER}, #{totalWayNum,jdbcType=INTEGER},
       #{lastTime,jdbcType=TIMESTAMP}, #{salesVolume,jdbcType=INTEGER}, #{baseProductContent,jdbcType=INTEGER},
       #{boxGauge,jdbcType=VARCHAR}, #{purchaseNumber,jdbcType=INTEGER}, #{receiptTime,jdbcType=TIMESTAMP},
-      #{purchaseMax,jdbcType=INTEGER}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
+      #{purchaseMax,jdbcType=BIGINT}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR},
       #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=INTEGER}, #{shortageDay,jdbcType=INTEGER}, 
       #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
       #{applyProductStatus,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
@@ -171,10 +171,10 @@
         product_type = #{productType,jdbcType=INTEGER},
       </if>
       <if test="productPurchaseAmount != null">
-        product_purchase_amount = #{productPurchaseAmount,jdbcType=INTEGER},
+        product_purchase_amount = #{productPurchaseAmount,jdbcType=BIGINT},
       </if>
       <if test="newPurchasePrice != null">
-        new_purchase_price = #{newPurchasePrice,jdbcType=INTEGER},
+        new_purchase_price = #{newPurchasePrice,jdbcType=BIGINT},
       </if>
       <if test="purchaseWhole != null">
         purchase_whole = #{purchaseWhole,jdbcType=INTEGER},
@@ -210,7 +210,7 @@
         receipt_time = #{receiptTime,jdbcType=TIMESTAMP},
       </if>
       <if test="purchaseMax != null">
-        purchase_max = #{purchaseMax,jdbcType=INTEGER},
+        purchase_max = #{purchaseMax,jdbcType=BIGINT},
       </if>
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
@@ -468,14 +468,14 @@
        #{item.brandId,jdbcType=VARCHAR}, #{item.brandName,jdbcType=VARCHAR},
        #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR},
        #{item.productSortCode,jdbcType=VARCHAR}, #{item.productSortName,jdbcType=VARCHAR},
-       #{item.productType,jdbcType=INTEGER}, #{item.productPurchaseAmount,jdbcType=INTEGER},
-       #{item.newPurchasePrice,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
+       #{item.productType,jdbcType=INTEGER}, #{item.productPurchaseAmount,jdbcType=BIGINT},
+       #{item.newPurchasePrice,jdbcType=BIGINT}, #{item.purchaseWhole,jdbcType=INTEGER},
        #{item.purchaseSingle,jdbcType=INTEGER}, #{item.stockUnitName,jdbcType=VARCHAR},
        #{item.stockCount,jdbcType=INTEGER}, #{item.totalWayNum,jdbcType=INTEGER},
        #{item.lastTime,jdbcType=VARCHAR}, #{item.salesVolume,jdbcType=INTEGER},
        #{item.boxGauge,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
        #{item.purchaseNumber,jdbcType=INTEGER}, #{item.receiptTime,jdbcType=VARCHAR},
-       #{item.purchaseMax,jdbcType=INTEGER}, #{item.productSpec,jdbcType=VARCHAR},
+       #{item.purchaseMax,jdbcType=BIGINT}, #{item.productSpec,jdbcType=VARCHAR},
        #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
        #{item.shortageNumber,jdbcType=INTEGER}, #{item.shortageDay,jdbcType=INTEGER},
        #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},

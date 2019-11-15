@@ -181,12 +181,11 @@ public class DraftServiceImpl implements DraftService {
             List<String> skuCodes = (List<String>) reqVo.getData();
             saveSkuApplyInfoReqVO.setSkuCodes(skuCodes);
             s = skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, reqVo.getApprovalName(), reqVo.getApprovalRemark());
+           //进行配置增加
         }else if (Objects.equals(ApprovalTypeEnum.PRODUCT_CONFIG,approvalTypeEnum)) {
             ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
             BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
-            Map<String,Object> dataMap = (Map<String, Object>) reqVo.getData();
-            applySkuConfigReqVo.setSkuConfigs((List<String>)dataMap.get(Global.CONFIG_CODE));
-            applySkuConfigReqVo.setSupplierId((List<Long>)dataMap.get(Global.SUPPLIER_ID));
+            applySkuConfigReqVo.setSkuConfigs(((List<String>) reqVo.getData()));
             productSkuConfigService.insertApplyList(applySkuConfigReqVo);
         }else if (Objects.equals(ApprovalTypeEnum.SALES_AREA,approvalTypeEnum)) {
             ApplySaleAreaReqVO saleAreaReqVO = new ApplySaleAreaReqVO();

@@ -112,11 +112,11 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="含税采购价")
     @JsonProperty("product_purchase_amount")
-    private Integer productPurchaseAmount;
+    private Long productPurchaseAmount;
 
     @ApiModelProperty(value="最新采购价格")
     @JsonProperty("new_purchase_price")
-    private Integer newPurchasePrice;
+    private Long newPurchasePrice;
 
     @ApiModelProperty(value="采购件数（整数）")
     @JsonProperty("purchase_whole")
@@ -166,7 +166,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="最高采购价")
     @JsonProperty("purchase_max")
-    private Integer purchaseMax;
+    private Long purchaseMax;
 
     @ApiModelProperty(value="规格")
     @JsonProperty("product_spec")

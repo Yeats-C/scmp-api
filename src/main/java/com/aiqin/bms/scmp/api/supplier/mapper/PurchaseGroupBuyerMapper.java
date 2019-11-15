@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroupBuyer;
 import java.util.List;
 
 public interface PurchaseGroupBuyerMapper {
+
     int deleteByPrimaryKey(Long id);
 
     int insert(PurchaseGroupBuyer record);
@@ -33,4 +34,19 @@ public interface PurchaseGroupBuyerMapper {
      * @return
      */
     int updateStatus(List<PurchaseGroupBuyer> saveVos);
+
+    /**
+     * 获取当前用户的采购组编码
+     * @param personId
+     * @return
+     */
+    List<String> loadCodesByPersonId(String personId);
+
+
+    /**
+     * 获取当前用户的采购组
+     * @param personId
+     * @return
+     */
+    List<String> loadNamesByPersonId(String personId);
 }

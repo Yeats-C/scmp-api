@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
  */
 public enum StatusTypeCode {
 
-    ADD_APPLY((byte) 1,"新增申请类型"),
-    UPDATE_APPLY((byte)2,"修改申请类型"),
-    CANCEL_APPLY((byte)4,"撤销申请类型"),
+    ADD_APPLY((byte) 1,"新增"),
+    UPDATE_APPLY((byte)2,"修改"),
+    CANCEL_APPLY((byte)4,"撤销"),
 
     DEL_FLAG((byte)1,"删除"),
     UN_DEL_FLAG((byte)0,"未删除"),

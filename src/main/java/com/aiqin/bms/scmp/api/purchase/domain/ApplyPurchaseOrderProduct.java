@@ -91,11 +91,11 @@ public class ApplyPurchaseOrderProduct {
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")
-    private Integer productAmount;
+    private Long productAmount;
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Integer productTotalAmount;
+    private Long productTotalAmount;
 
     @ApiModelProperty(value="库存数量")
     @JsonProperty("stock_count")

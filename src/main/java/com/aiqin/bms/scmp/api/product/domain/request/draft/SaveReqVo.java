@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.draft;
 
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -7,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author knight.xie
@@ -46,5 +48,10 @@ public class SaveReqVo<T> {
 
     @ApiModelProperty("审批名称")
     private String approvalName;
+
+    @ApiModelProperty("附件信息")
+    private List<ApprovalFileInfoReqVo> approvalFileInfos;
+
+
 
 }

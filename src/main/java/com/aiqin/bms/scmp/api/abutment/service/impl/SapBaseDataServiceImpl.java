@@ -77,7 +77,7 @@ import java.util.stream.Collectors;
 public class SapBaseDataServiceImpl implements SapBaseDataService {
 
     private static Logger LOGGER = LoggerFactory.getLogger(SapBaseDataServiceImpl.class);
-    private static Integer SAP_API_COUNT = 100;
+    private static Integer SAP_API_COUNT = 10;
     @Value("${sap.order}")
     private String ORDER_URL;
     @Value("${sap.product}")
@@ -198,7 +198,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                         SapSkuStorageFinancialMap.put(stock.getSkuCode(), sapSkuStorageFinancialList);
                     }
                 }
-                for (ProductSkuInfo productSkuInfo : productSkuInfoList) {
+                for (ProductSkuInfo productSkuInfo : subLists) {
                     baseInfo2 = Lists.newArrayList();
                     sapProductSku = new SapProductSku();
                     sapProductSku.setSapSkuCode(productSkuInfo.getProductCode());
@@ -233,7 +233,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             sapSkuSale.setSaleOrg(priceChannel.getPriceChannelCode());
             sapSkuSale.setSubjectGroupCode("14");
             sapSkuSale.setMainCategoryCode("NORM");
-            sapSkuSale.setTaxCategoryCode(productSkuCheckout.getInputTaxRate().toString());
+            sapSkuSale.setTaxCategoryCode(Objects.isNull(productSkuCheckout)?"0":productSkuCheckout.getInputTaxRate().toString());
             sapSkuSale.setDistributionChannelCode("00");
             baseInfo2.add(sapSkuSale);
         }

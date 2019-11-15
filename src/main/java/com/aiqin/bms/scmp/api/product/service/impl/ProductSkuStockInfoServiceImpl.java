@@ -53,6 +53,18 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
         return draftMapper.insertSelective(draft);
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    @SaveList
+    public int insertDraftList(String applyCode) {
+        List<ApplyProductSkuStockInfo> applyProductSkuStockInfo = applyMapper.getApplyProductSkuStockInfo(null, applyCode);
+        if(CollectionUtils.isNotEmptyCollection(applyProductSkuStockInfo)){
+            List<ProductSkuStockInfoDraft> drafts = BeanCopyUtils.copyList(applyProductSkuStockInfo,ProductSkuStockInfoDraft.class);
+            return draftMapper.insertBatch(drafts);
+        }
+        return 0;
+    }
+
     /**
      * 获取SKU库存配置信息-临时表
      *
@@ -180,7 +192,7 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
      * @date 2019/7/8 21:05
      */
     @Override
-    @Save
+    @Transactional(rollbackFor = Exception.class)
     public int insertSelective(ProductSkuStockInfo record) {
         return mapper.insertSelective(record);
     }
@@ -194,7 +206,7 @@ public class ProductSkuStockInfoServiceImpl implements ProductSkuStockInfoServic
      * @date 2019/7/8 21:05
      */
     @Override
-    @Update
+    @Transactional(rollbackFor = Exception.class)
     public int updateByPrimaryKeySelective(ProductSkuStockInfo record) {
         return mapper.updateByPrimaryKeySelective(record);
     }

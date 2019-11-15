@@ -232,4 +232,40 @@
     and supply_unit_code = #{supplierCode,jdbcType=VARCHAR}
     order by out_put asc
   </select>
+
+  <resultMap id="ProductSkuSupplyUnitCapacityRespVo" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
+      <id column="bid" jdbcType="BIGINT" property="id" />
+      <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
+      <result column="bsupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
+      <result column="bproduct_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
+      <result column="bproduct_sku_name" jdbcType="VARCHAR" property="productSkuName" />
+      <result column="bout_put" jdbcType="BIGINT" property="outPut" />
+      <result column="bneed_days" jdbcType="BIGINT" property="needDays" />
+      <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
+      <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+      <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
+      <result column="bupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+      <result column="bupdate_by" jdbcType="VARCHAR" property="updateBy" />
+  </resultMap>
+  <select id="getCapacityInfoBySupplyUnitCodeAndProductSkuCode" resultMap="ProductSkuSupplyUnitCapacityRespVo">
+      select
+         b.id bid,
+         b.supply_unit_code bsupply_unit_code,
+         b.supply_unit_name bsupply_unit_name,
+         b.product_sku_code bproduct_sku_code,
+         b.product_sku_name bproduct_sku_name,
+         b.out_put bout_put,
+         b.need_days bneed_days,
+         b.apply_code bapply_code,
+         b.del_flag bdel_flag,
+         b.create_time bcreate_time,
+         b.create_by bcreate_by,
+         b.update_time bupdate_time,
+         b.update_by bupdate_by
+      from product_sku_supply_unit_capacity b
+      where product_sku_code = #{productSkuCode}
+      and supply_unit_code = #{supplierCode}
+
+  </select>
+
 </mapper>

@@ -6,8 +6,6 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao;
-import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
-import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -29,7 +27,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailRespon
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
-import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -123,7 +120,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         // 查询要生成采购单的信息
         List<PurchaseFormResponse> purchaseForms = purchaseApplyProductDao.selectPurchaseForm(applyIds);
         if(CollectionUtils.isNotEmptyCollection(purchaseForms)){
-            PurchaseFormRequest apply = null;
+            PurchaseFormRequest apply;
             for(PurchaseFormResponse form:purchaseForms){
                 apply = new PurchaseFormRequest();
                 apply.setPurchaseGroupCode(form.getPurchaseGroupCode());
@@ -133,7 +130,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 apply.setApplyIds(applyIds);
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(apply);
                 // 计算sku数量，单品数量，含税采购金额，实物返金额
-                Integer singleCount = 0, productTotalAmount = 0, returnAmount = 0, wholeCount = 0, giftTaxSum= 0;
+                Integer singleCount = 0, wholeCount = 0;
+                Long productTotalAmount = 0L, returnAmount = 0L, giftTaxSum = 0L;
                 if(CollectionUtils.isNotEmptyCollection(details)){
                     Set<Integer> setType = new HashSet<>();
                     for(PurchaseApplyDetailResponse detail:details){
@@ -141,9 +139,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                         Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                         Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                        Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                        Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                         Integer number = purchaseWhole * packNumber + purchaseSingle;
-                        Integer amountSum = number * amount;
+                        Long amountSum = number * amount;
                         // 单品数量
                         singleCount += number;
                         wholeCount += purchaseWhole;
@@ -175,8 +173,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 form.setReturnAmount(returnAmount);
                 form.setSingleCount(singleCount);
                 form.setGiftTaxSum(giftTaxSum);
-                // sku数量
-                //Integer skuCount = purchaseApplyProductDao.formSkuCount(apply);
                 form.setSkuCount(wholeCount);
             }
         }
@@ -195,13 +191,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 purchaseFormRequest.getApplyIds().clear();
                 purchaseFormRequest.getApplyIds().add(form.getPurchaseApplyId());
                 List<PurchaseApplyDetailResponse> formDetails = purchaseApplyProductDao.purchaseFormProduct(purchaseFormRequest);
-                Integer singleCount = 0, productTotalAmount = 0, returnAmount =0;
+                Long productTotalAmount = 0L, returnAmount = 0L;
+                Integer singleCount = 0;
                 for(PurchaseApplyDetailResponse apply:formDetails){
                     // 计算单品数量， 采购含税金额， 实物返金额
                     Integer purchaseWhole = apply.getPurchaseWhole() == null ? 0 : apply.getPurchaseWhole();
                     Integer purchaseSingle = apply.getPurchaseSingle() == null ? 0 : apply.getPurchaseSingle();
                     Integer packNumber = apply.getBaseProductContent() == null ? 0 : apply.getBaseProductContent();
-                    Integer amount = apply.getProductPurchaseAmount() == null ? 0 : apply.getProductPurchaseAmount();
+                    Long amount = apply.getProductPurchaseAmount() == null ? 0 : apply.getProductPurchaseAmount();
                     Integer number = purchaseWhole * packNumber + purchaseSingle;
                     singleCount += number;
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
@@ -237,7 +234,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 // 提交采购单页面商品列表
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
                 if(CollectionUtils.isNotEmptyCollection(details)){
-                    Integer amount = 0, number = 0, singCount = 0, whole = 0, single = 0;
+                    Long amount = 0L;
+                    Integer  number = 0, singCount = 0, whole = 0, single = 0;
                     for (PurchaseApplyDetailResponse detail : details) {
                         if(details.size() > 1){
                             for(int i = 0; i < details.size(); i++){
@@ -294,7 +292,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                 Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 detail.setSingleCount(number);
                 detail.setProductAmount(amount);
@@ -325,7 +323,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             detail.setStockTurnover(stockTurnover);
             detail.setReceiptTurnover(receiptTurnover);
         }
-
     }
 
     @Override
@@ -430,7 +427,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                 Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Integer amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 if(number == 0){
                     continue;
@@ -490,14 +487,15 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseOrderResponse order:list){
                 // 计算实际单品数量，实际含税采购金额， 实际实物返金额
-                Integer actualSingleCount = 0, actualTotalAmount = 0, actualReturnAmount = 0, actualGiftTaxSum = 0;
-                Integer productTotalAmount = 0, returnAmount = 0, giftTaxSum = 0;
+                Integer actualSingleCount = 0;
+                Long actualTotalAmount = 0L, actualReturnAmount = 0L, actualGiftTaxSum = 0L;
+                Long productTotalAmount = 0L, returnAmount = 0L, giftTaxSum = 0L;
                 List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
                 if(CollectionUtils.isNotEmptyCollection(orderProducts)){
                     for(PurchaseOrderProduct product:orderProducts){
                         Integer singleCount = product.getSingleCount() == null ? 0:product.getSingleCount();
                         Integer actualSingle = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
-                        Integer productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
+                        Long productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
                         actualSingleCount += actualSingle;
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
                             actualTotalAmount += productAmount * actualSingle;
@@ -682,10 +680,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0, priceSum = 0;
         Integer actualProductPieceSum = 0, actualMatterPieceSum = 0, actualGiftPieceSum = 0;
+        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
+        Integer  singleSum = 0, priceSum = 0, actualSingleSum = 0, actualPriceSum = 0;
         Integer actualProductSingleSum= 0, actualMatterSingleSum = 0, actualGiftSingleSum = 0;
-        Integer actualProductTaxSum = 0, actualMatterTaxSum = 0, actualGiftTaxSum = 0, actualSingleSum = 0, actualPriceSum = 0;
+        Long actualProductTaxSum = 0L, actualMatterTaxSum = 0L, actualGiftTaxSum = 0L;
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
         request.setIsPage(1);
@@ -697,7 +696,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                Long amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;
@@ -882,14 +881,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 }
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
                 Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
-                Integer amount = product.getProductAmount() == null ? 0 : product.getProductAmount();
+                Long amount = product.getProductAmount() == null ? 0 : product.getProductAmount();
                 if(actualSingleCount > 0 && baseProductContent > 0){
                     purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
                 }
                 reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
                 reqVo.setPreInboundNum(purchaseWhole.longValue());
-                reqVo.setPreTaxPurchaseAmount(product.getProductAmount().longValue());
-                Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount().longValue();
+                reqVo.setPreTaxPurchaseAmount(product.getProductAmount());
+                Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount();
                 reqVo.setPreTaxAmount(productTotalAmount);
                 reqVo.setLinenum(product.getLinnum().longValue());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
@@ -897,9 +896,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setTax(product.getTaxRate().longValue());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
-                Integer totalAmount = amount * (singleCount - actualSingleCount);
-                preTaxAmount += totalAmount.longValue();
-                preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount.longValue(), product.getTaxRate().longValue());
+                Long totalAmount = amount * (singleCount - actualSingleCount);
+                preTaxAmount += totalAmount;
+                preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount, product.getTaxRate().longValue());
                 list.add(reqVo);
                 //出库加入供应商与商品关系
                 inboundBatchReqVo = new InboundBatchReqVo();
@@ -1204,7 +1203,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum().intValue());
                     if(orderProduct != null){
                         Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
-                        Integer productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();
+                        Long productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();
                         BeanUtils.copyProperties(orderProduct, product);
                         product.setActualSingleCount(actualSingleCount);
                         product.setActualTaxSum(actualSingleCount * productAmount);
@@ -1275,7 +1274,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum = 0, matterSingleSum = 0, giftSingleSum = 0;
-        Integer productTaxSum = 0, matterTaxSum = 0, giftTaxSum = 0, singleSum = 0, priceSum = 0;
+        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
+        Integer singleSum = 0, priceSum = 0;
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
         request.setIsPage(1);
@@ -1287,7 +1287,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Integer amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                Long amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;

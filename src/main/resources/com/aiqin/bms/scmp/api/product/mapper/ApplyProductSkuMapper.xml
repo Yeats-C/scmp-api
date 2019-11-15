@@ -110,6 +110,16 @@
     </if>
 
   </select>
+  <select id="selectApplyByApplyCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from apply_product_sku
+    where
+    1=1
+    <if test="applyCode!=null and applyCode!=''">
+        AND apply_code=#{applyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
     <select id="getProductApplyList" resultMap="BaseResultMap">
       select
       <include refid="Base_Column_List"/>
@@ -157,6 +167,9 @@
       </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus}
+      </if>
+      <if test="applyType != null">
+        and apply_type = #{applyType}
       </if>
       <if test="code != null and  code != '' ">
         and apply_code like CONCAT('%',#{code},'%')

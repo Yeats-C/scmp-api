@@ -26,6 +26,9 @@ public interface ResultCode {
     MessageId CANCEL_ERROR = MessageId.create(Project.ZERO, 16, "撤销失败");
 
     MessageId FILE_UPLOAD_ERROR = MessageId.create(Project.ZERO, 20, "文件上传失败");
+    MessageId FILE_UPLOAD_ERROR2 = MessageId.create(Project.ZERO, 20, "上传文件为空");
+    MessageId FILE_UPLOAD_ERROR3 = MessageId.create(Project.ZERO, 20, "该Sku商品下有相同文件名重复文件，请检查");
+    MessageId FIND_NULL = MessageId.create(Project.ZERO, 20, "没有查到相应对象");
     //合同
     MessageId SAVE_PLAN_TYPE_FAILED = MessageId.create(Project.SUPPLIER_API, 999, "保存目标返利失败");
 
@@ -288,7 +291,16 @@ public interface ResultCode {
     MessageId OPERATION_TYPE_ERROR = MessageId.create(Project.SCMP_API,10001,"采购组操作类型错误");
     MessageId FIND_CONTRACT_ERROR = MessageId.create(Project.SCMP_API,10002,"无法找到合同信息");
 
-    MessageId AT_LEAST_ONE_DATA = MessageId.create(Project.SCMP_API,10003,"至少需要一条仓库配置信息或供应商信息");
+    MessageId AT_LEAST_ONE_DATA = MessageId.create(Project.SCMP_API,10003,"至少需要一条仓库配置信息");
     MessageId PURCHASE_GROUP_REPEAT = MessageId.create(Project.SCMP_API,10004,"提交的sku不属于同一个采购组");
     MessageId NOT_SAME_APPLY = MessageId.create(Project.SCMP_API,10004,"新增类型和修改类型必须分开提交");
+    MessageId REPEAT_DATA = MessageId.create(Project.SCMP_API,10005,"新增供应商存在重复,请检查后重新提交");
+    MessageId SUMBIT_NOT_DATA = MessageId.create(Project.SCMP_API,10006,"没有找到需要提交的数据,请检查后重新提交");
+
+
+   MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API,10007,"修改仓库地址存在重复,请检查后重新提交");
+   MessageId REUPDATE_ERROR = MessageId.create(Project.SCMP_API,10007,"只有审批驳回或者撤销的数据才能重新编辑");
+
+
+
 }

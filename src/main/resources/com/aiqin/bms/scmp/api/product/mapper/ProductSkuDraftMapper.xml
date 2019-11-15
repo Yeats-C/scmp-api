@@ -98,6 +98,15 @@
     from product_sku
     where sku_code = #{skuCode}
   </select>
+  <select id="getOfficialBySkuCodes" resultMap="BaseResultMap">
+    select
+    <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoMapper.Base_Column_List" />
+    from product_sku
+    where company_code = #{companyCode} and sku_code in
+    <foreach collection="skuCodes" open="(" close=")" item="item" separator=",">
+      #{item}
+    </foreach>
+  </select>
   <select id="getProductSkuDraftByCompanyCode"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo">
      select
@@ -202,7 +211,8 @@
     a.pic_folder_code         as       picFolderCode,
     a.original_code                    originalCode,
     group_concat(m.price_channel_name) coverage,
-    a.procurement_section_name         purchaseGroupName
+    a.procurement_section_name         purchaseGroupName,
+    a.procurement_section_code         purchaseGroupCode
     from product_sku_draft a
     left join product_sku_stock_info_draft c on a.sku_code = c.product_sku_code
     left join product_sku_box_packing_draft d
@@ -376,6 +386,64 @@
       #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
       #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR},#{productDesc,jdbcType=VARCHAR}
       )
+  </insert>
+
+  <insert id="batchInsert" parameterType="java.util.List">
+    insert into product_sku_draft ( product_code, product_name,
+      product_category_code, product_category_name,
+      sku_code, spec, unit_code,
+      sku_status, del_flag, product_property_code,
+      product_property_name, product_brand_code,
+      product_brand_name, sku_abbreviation, color_code,
+      color_name, model_number, unit_name,
+      quality_assurance_management, product_sort_code,
+      product_sort_name, quality_number, quality_date,
+      management_style_code, management_style_name,
+      categories_supply_channels_code, on_sale, categories_supply_channels_name,
+      box_gauge, applicable_month_age, point,
+      bar_code, mnemonic_code, selection_effective_time,
+      selection_effective_start_time, selection_effective_end_time,
+      create_time, create_by, update_time,
+      update_by, goods_gifts, spu_code,
+      logo, images, itro_images,
+      sku_name, is_main_push, new_product,
+      manufacturer_guide_price, zero_removal_coefficient,
+      procurement_section_code, procurement_section_name,
+      seasonal_goods,structural_goods,warehouse_type_code,
+      warehouse_type_name,company_code,company_name,remark,
+      apply_type,apply_type_name,inventory_model,use_time,unique_code,
+      inventory_allocation,price_model,change_content,pic_folder_code,product_desc
+      )
+    values
+    <foreach collection="list" item="item" separator=",">
+    ( #{item.productCode,jdbcType=VARCHAR}, #{item.productName,jdbcType=VARCHAR},
+      #{item.productCategoryCode,jdbcType=VARCHAR}, #{item.productCategoryName,jdbcType=VARCHAR},
+      #{item.skuCode,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
+      #{item.skuStatus,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.productPropertyCode,jdbcType=VARCHAR},
+      #{item.productPropertyName,jdbcType=VARCHAR}, #{item.productBrandCode,jdbcType=VARCHAR},
+      #{item.productBrandName,jdbcType=VARCHAR}, #{item.skuAbbreviation,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
+      #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR},
+      #{item.qualityAssuranceManagement,jdbcType=TINYINT}, #{item.productSortCode,jdbcType=VARCHAR},
+      #{item.productSortName,jdbcType=VARCHAR}, #{item.qualityNumber,jdbcType=VARCHAR}, #{item.qualityDate,jdbcType=VARCHAR},
+      #{item.managementStyleCode,jdbcType=VARCHAR}, #{item.managementStyleName,jdbcType=VARCHAR},
+      #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.onSale,jdbcType=TINYINT}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{item.boxGauge,jdbcType=VARCHAR}, #{item.applicableMonthAge,jdbcType=VARCHAR}, #{item.point,jdbcType=VARCHAR},
+      #{item.barCode,jdbcType=VARCHAR}, #{item.mnemonicCode,jdbcType=VARCHAR}, #{item.selectionEffectiveTime,jdbcType=TINYINT},
+      #{item.selectionEffectiveStartTime,jdbcType=VARCHAR}, #{item.selectionEffectiveEndTime,jdbcType=VARCHAR},
+      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      #{item.updateBy,jdbcType=VARCHAR}, #{item.goodsGifts,jdbcType=TINYINT}, #{item.spuCode,jdbcType=VARCHAR},
+      #{item.logo,jdbcType=VARCHAR}, #{item.images,jdbcType=VARCHAR}, #{item.itroImages,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR}, #{item.isMainPush,jdbcType=TINYINT}, #{item.newProduct,jdbcType=TINYINT},
+      #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
+      #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
+      #{item.seasonalGoods,jdbcType=TINYINT},#{item.structuralGoods,jdbcType=TINYINT},
+      #{item.warehouseTypeCode,jdbcType=VARCHAR}, #{item.warehouseTypeName,jdbcType=VARCHAR},
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},
+      #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR},#{item.inventoryModel,jdbcType=TINYINT},
+      #{item.useTime,jdbcType=INTEGER},#{item.uniqueCode,jdbcType=TINYINT},#{item.inventoryAllocation,jdbcType=TINYINT},
+      #{item.priceModel,jdbcType=TINYINT},#{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR}
+      )
+    </foreach>
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
     insert into product_sku_draft

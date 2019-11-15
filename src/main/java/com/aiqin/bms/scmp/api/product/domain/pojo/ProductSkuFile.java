@@ -8,7 +8,7 @@ import java.util.Date;
 
 @ApiModel("sku文件信息")
 public class ProductSkuFile extends CommonBean {
-    @ApiModelProperty("")
+    @ApiModelProperty("主键id")
     private Long id;
 
     @ApiModelProperty("文件编码")

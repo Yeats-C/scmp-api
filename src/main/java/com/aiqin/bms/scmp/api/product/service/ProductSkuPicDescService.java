@@ -15,6 +15,7 @@ import java.util.List;
  */
 public interface ProductSkuPicDescService {
     int insertDraftList(List<ProductSkuPicDescDraft> productSkuPicDescDrafts);
+    int insertDraftList(String applyCode);
 
     int insertList(List<ProductSkuPicDesc> productSkuPicDescs);
 

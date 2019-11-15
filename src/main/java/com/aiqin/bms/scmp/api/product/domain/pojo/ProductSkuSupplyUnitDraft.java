@@ -63,7 +63,7 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     @ApiModelProperty("错误信息")
     private String error;
 
-    @ApiModelProperty("申请类型(0:待审 1:审核中 2:审核通过 3:审核未通过 4:已撤销)")
+    @ApiModelProperty("申请类型")
     private Byte applyType;
 
     @ApiModelProperty("公司名称")
