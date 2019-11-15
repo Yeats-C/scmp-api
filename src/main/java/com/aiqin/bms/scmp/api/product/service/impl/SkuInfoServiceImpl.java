@@ -663,9 +663,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (StringUtils.isNotBlank(item.getProductPicturePath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
                         if(null != map){
-                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
-                            if(StringUtils.isNotBlank(newUrl)){
-                                item.setProductPicturePath(newUrl);
+                            String destinationKey = destinationPicKey + i + map.get("contentType");
+                            if(!Objects.equals(map.get("key"),destinationKey)){
+                                String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
+                                if(StringUtils.isNotBlank(newUrl)){
+                                    item.setProductPicturePath(newUrl);
+                                }
                             }
                         }
                     }
@@ -687,9 +690,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (StringUtils.isNotBlank(item.getPicDescPath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
                         if(null != map) {
-                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType"), true);
-                            if (StringUtils.isNotBlank(newUrl)) {
-                                item.setPicDescPath(newUrl);
+                            String destinationKey = destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType");
+                            if (!Objects.equals(map.get("key"), destinationKey)) {
+                                String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType"), true);
+                                if (StringUtils.isNotBlank(newUrl)) {
+                                    item.setPicDescPath(newUrl);
+                                }
                             }
                         }
                     }
@@ -710,9 +716,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (StringUtils.isNotBlank(item.getFilePath())) {
                         Map<String, String> map = fileInfoService.getKeyAndType(item.getFilePath());
                         if(null != map) {
-                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
-                            if (StringUtils.isNotBlank(newUrl)) {
-                                item.setFilePath(newUrl);
+                            String destinationKey = destinationFileKey + UUID.randomUUID() + map.get("contentType");
+                            if (!Objects.equals(map.get("key"), destinationKey)) {
+                                String newUrl = fileInfoService.copyObject(map.get("key"), destinationFileKey + UUID.randomUUID() + map.get("contentType"), true);
+                                if (StringUtils.isNotBlank(newUrl)) {
+                                    item.setFilePath(newUrl);
+                                }
                             }
                         }
                     }
