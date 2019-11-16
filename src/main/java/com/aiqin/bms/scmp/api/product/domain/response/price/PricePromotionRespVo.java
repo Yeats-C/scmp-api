@@ -6,6 +6,9 @@ package com.aiqin.bms.scmp.api.product.domain.response.price;
  * @Description:
  */
 
+import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -27,6 +30,7 @@ public class PricePromotionRespVo {
      * 表字段 : price_apply_promotion.promotion_no
      */
     @ApiModelProperty("主键id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -164,6 +168,12 @@ public class PricePromotionRespVo {
      */
     @ApiModelProperty("满折列表:数量")
     private List<PricePromotionDetailRespVo> discountPromotionDetailNumList;
+
+    /**
+     * 下属申请单促销
+     */
+    @ApiModelProperty("下属申请单促销")
+    private List<PriceApplyPromotionRespVo> priceApplyPromotionReqVoList;
 
 
 }

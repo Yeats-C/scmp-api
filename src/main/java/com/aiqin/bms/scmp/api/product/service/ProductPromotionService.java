@@ -25,4 +25,11 @@ public interface ProductPromotionService {
      * @return
      */
     PricePromotionRespVo detail(Long id);
+
+    /**
+     * 取消
+     * @param id
+     * @return
+     */
+    Boolean delete(Long id);
 }

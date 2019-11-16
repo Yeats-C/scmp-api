@@ -8,6 +8,8 @@ package com.aiqin.bms.scmp.api.product.domain.request.price;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -30,6 +32,7 @@ public class PricePromotionReqVo extends PageReq {
      * 表字段 : price_apply_promotion.promotion_no
      */
     @ApiModelProperty("主键id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -157,6 +160,12 @@ public class PricePromotionReqVo extends PageReq {
      */
     @ApiModelProperty("满折列表")
     private List<PricePromotionDetailRespVo> discountPromotionDetailList;
+
+   /**
+   * 下属申请单促销
+    */
+    @ApiModelProperty("下属申请单促销")
+    private List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList;
 
 
     @ApiModelProperty("直属上级编码")

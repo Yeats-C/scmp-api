@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.product.domain.request.price;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -25,6 +27,7 @@ public class PriceApplyPromotionReqVo extends PageReq {
      * 表字段 : price_apply_promotion.id
      */
     @ApiModelProperty("主键id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -159,4 +162,11 @@ public class PriceApplyPromotionReqVo extends PageReq {
     @ApiModelProperty("下属的商品规则详情")
     @NotEmpty(message = "下属的商品规则详情！")
     private List<PricePromotionDetailReqVo> pricePromotionDetailReqVoList;
+
+    /**
+     * 穿入的修改 还是删除标识符
+     */
+    @ApiModelProperty("穿入的修改 还是删除标识符 1:修改 0：删除")
+    @NotEmpty(message = "穿入的修改 还是删除标识符")
+    private  Integer type;
 }

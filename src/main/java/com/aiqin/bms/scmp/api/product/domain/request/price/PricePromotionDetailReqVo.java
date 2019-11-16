@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.request.price;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -20,6 +22,7 @@ public class PricePromotionDetailReqVo extends PageReq {
      * 表字段 : price_promotion_detail.id
      */
     @ApiModelProperty("主键id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -64,12 +67,17 @@ public class PricePromotionDetailReqVo extends PageReq {
     @ApiModelProperty("除满赠之外的赠送方式")
     private List<PricePromotionDetailReqVo> pricePromotionDetailReqVoList;
 
-
+    /**
+     * 是否被标注 0：是 1：否
+     * 表字段 : price_promotion_detail.is_sign
+     */
+    @ApiModelProperty("是否被标识")
+    private Integer isSign;
 
     /**
      * 规则对应的列表
      */
-    @ApiModelProperty("规则对应的列表")
+    @ApiModelProperty("规则对应的商品列表")
     private List<PricePromotionProductReqVo> pricePromotionProductReqVoList;
 
 }

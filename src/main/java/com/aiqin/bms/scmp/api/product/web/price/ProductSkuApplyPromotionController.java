@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
@@ -78,11 +79,10 @@ public class ProductSkuApplyPromotionController {
 
     @PostMapping("/updateOrDelete")
     @ApiOperation("修改促销")
-    public HttpResponse<Boolean> updateOrDelete(@RequestParam("priceApplyPromotionReqVo") PriceApplyPromotionReqVo priceApplyPromotionReqVo,
-                                                @RequestParam("type")Integer type) {
+    public HttpResponse<Boolean> updateOrDelete(@RequestBody PriceApplyPromotionReqVo priceApplyPromotionReqVo) {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(priceApplyPromotionReqVo));
         try {
-            return HttpResponse.success(productApplyPromotionService.updateOrDelete(priceApplyPromotionReqVo,type));
+            return HttpResponse.success(productApplyPromotionService.updateOrDelete(priceApplyPromotionReqVo,priceApplyPromotionReqVo.getType()));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -94,7 +94,7 @@ public class ProductSkuApplyPromotionController {
 
     @PostMapping("/load")
     @ApiOperation("获取促销详情")
-    public HttpResponse<PriceApplyPromotionRespVo> load(@Param("id") Long id) {
+    public HttpResponse<PriceApplyPromotionRespVo> load(@RequestParam("id") Long id) {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", id);
         try {
             return HttpResponse.success(productApplyPromotionService.load(id));
@@ -108,8 +108,8 @@ public class ProductSkuApplyPromotionController {
     }
 
     @PostMapping("/loadGeneratePromotion")
-    @ApiOperation("查看")
-    public HttpResponse<LoadGeneratePromotionRespVo> loadGeneratePromotion(@RequestParam("priceApplyPromotionReqVoList") List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
+    @ApiOperation("查看生成促销单" )
+    public HttpResponse<LoadGeneratePromotionRespVo> loadGeneratePromotion(@RequestBody List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(priceApplyPromotionReqVoList));
         try {
             return HttpResponse.success(productApplyPromotionService.loadGeneratePromotion(priceApplyPromotionReqVoList));
@@ -124,10 +124,10 @@ public class ProductSkuApplyPromotionController {
 
     @PostMapping("/generatePromotion")
     @ApiOperation("生成促销单")
-    public HttpResponse<Boolean> generatePromotion(@RequestParam("priceApplyPromotionReqVoList") List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
-        log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(priceApplyPromotionReqVoList));
+    public HttpResponse<Boolean> generatePromotion(@RequestBody PricePromotionReqVo pricePromotionReqVo) {
+        log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(pricePromotionReqVo));
         try {
-            return HttpResponse.success(productApplyPromotionService.generatePromotion(priceApplyPromotionReqVoList));
+            return HttpResponse.success(productApplyPromotionService.generatePromotion(pricePromotionReqVo));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());

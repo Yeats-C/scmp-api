@@ -52,4 +52,19 @@ public class ProductSkuPromotionController {
         }
     }
 
+    @PostMapping("/delete")
+    @ApiOperation("取消促销单")
+    public HttpResponse<Boolean> delete(@RequestParam("id") Long id) {
+        log.info("ProductSkuPromotionController---save---入参：[{}]", JSON.toJSONString(id));
+        try {
+            return HttpResponse.success(productPromotionService.delete(id));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
 }

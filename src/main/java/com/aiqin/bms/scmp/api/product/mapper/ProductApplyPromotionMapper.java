@@ -49,5 +49,10 @@ public interface ProductApplyPromotionMapper {
      */
     void deteleById(Long id);
 
+    /**
+     * 查询对应的促销申请
+     * @param promotionNo
+     * @return
+     */
     List<PriceApplyPromotionRespVo> loadByPromotionNo(String promotionNo);
 }

@@ -15,11 +15,21 @@ import java.util.List;
  * @Description:
  */
 public interface PricePromotionProductMapper {
-    Integer insertSelective(List<PricePromotionProductReqVo> pricePromotionProductReqVoList);
+
+    Integer insertSelective(@Param("pricePromotionProductReqVoList")List<PricePromotionProductReqVo> pricePromotionProductReqVoList);
 
     List<PricePromotionProductRespVo> loadByBusinessId(@Param("businessId") Long businessId);
 
     void deteleByBusinessId(@Param("businessId") Long businessId);
 
     BasePage<PricePromotionRespVo> list(PricePromotionReqVo priceApplyPromotionReqVo);
+
+    /**
+     * 获取赠送codes
+     * @param promotionId
+     * @param businessId
+     * @param productCode
+     * @return
+     */
+    List<PricePromotionProductRespVo> getGiveCodes(Long promotionId, Long businessId, String productCode);
 }

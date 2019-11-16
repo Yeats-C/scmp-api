@@ -7,11 +7,13 @@ import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionR
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.PricePromotionDetailMapper;
 import com.aiqin.bms.scmp.api.product.mapper.PricePromotionMapper;
 import com.aiqin.bms.scmp.api.product.mapper.PricePromotionProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductApplyPromotionMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductPromotionService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModelProperty;
@@ -37,6 +39,10 @@ private PricePromotionMapper pricePromotionMapper;
 @Autowired
 private ProductApplyPromotionMapper productApplyPromotionMapper;
 
+    @Autowired
+    private PricePromotionDetailMapper pricePromotionDetailMapper;
+
+
 @Autowired
 private PricePromotionProductMapper pricePromotionProductMapper;
 
@@ -46,7 +52,11 @@ private PricePromotionProductMapper pricePromotionProductMapper;
 
         //获取当前用户
         AuthToken authToken = getUser();
-        return pricePromotionMapper.list(priceApplyPromotionReqVo);
+        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),
+                priceApplyPromotionReqVo.getPageSize(),
+                pricePromotionMapper.list(priceApplyPromotionReqVo).size(),
+                pricePromotionMapper.list(priceApplyPromotionReqVo));
+
     }
 
     @Override
@@ -66,62 +76,78 @@ private PricePromotionProductMapper pricePromotionProductMapper;
         List<PricePromotionDetailRespVo> discountPromotionDetailMoneyList= Lists.newArrayList();
          //满折数量
          List<PricePromotionDetailRespVo> discountPromotionDetailNumList= Lists.newArrayList();
+
         //获取对应的申请列表
         List<PriceApplyPromotionRespVo> priceApplyPromotionRespVoList=productApplyPromotionMapper.loadByPromotionNo(respVo.getPromotionNo());
         for (PriceApplyPromotionRespVo priceApplyPromotionRespVo:
         priceApplyPromotionRespVoList) {
+
+            priceApplyPromotionRespVo.setPricePromotionDetailRespVoList(pricePromotionDetailMapper.loadByPromotionId(priceApplyPromotionRespVo.getId()));
+
             //进行买赠的添加
             List<PricePromotionDetailRespVo> b=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(1)).collect(Collectors.toList());
-              getProductIn(b,priceApplyPromotionRespVo.getId());
+              getProductIn(b);
             buyPromotionDetailList.addAll(b);
 
             //进行满赠金额的添加
             List<PricePromotionDetailRespVo> em=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(2)).filter(x->x.getRuleType().equals(0)).collect(Collectors.toList());
-            getProductIn(em,priceApplyPromotionRespVo.getId());
+            getProductIn(em);
             enoughPromotionDetailMoneyList.addAll(em);
 
             //进行满赠数量的添加
             List<PricePromotionDetailRespVo> en=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(2)).filter(x->x.getRuleType().equals(1)).collect(Collectors.toList());
-            getProductIn(en,priceApplyPromotionRespVo.getId());
+            getProductIn(en);
             enoughPromotionDetailNumList.addAll(en);
 
 
             //进行满减金额的添加
             List<PricePromotionDetailRespVo> rm=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(3)).filter(x->x.getRuleType().equals(0)).collect(Collectors.toList());
-            getProductIn(rm,priceApplyPromotionRespVo.getId());
+            getProductIn(rm);
             reducePromotionDetaiMoneylList.addAll(rm);
 
             //进行满减数量的添加
             List<PricePromotionDetailRespVo> rn=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(3)).filter(x->x.getRuleType().equals(1)).collect(Collectors.toList());
-            getProductIn(rn,priceApplyPromotionRespVo.getId());
+            getProductIn(rn);
             reducePromotionDetaiNumlList.addAll(rn);
 
             //进行满折金额的添加
             List<PricePromotionDetailRespVo> dm=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(4)).filter(x->x.getRuleType().equals(0)).collect(Collectors.toList());
-            getProductIn(dm,priceApplyPromotionRespVo.getId());
+            getProductIn(dm);
             discountPromotionDetailMoneyList.addAll(dm);
 
             //进行满折数量的添加
             List<PricePromotionDetailRespVo> dn=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType().equals(4)).filter(x->x.getRuleType().equals(1)).collect(Collectors.toList());
-            getProductIn(dn,priceApplyPromotionRespVo.getId());
+            getProductIn(dn);
             discountPromotionDetailNumList.addAll(dn);
 
+            priceApplyPromotionRespVo.setPricePromotionDetailRespVoList(pricePromotionDetailMapper.loadByPromotionId(priceApplyPromotionRespVo.getId()));
+            getProductIn(priceApplyPromotionRespVo.getPricePromotionDetailRespVoList());
+
         }
-        respVo.setBuyPromotionDetailList(buyPromotionDetailList);
-        respVo.setEnoughPromotionDetailMoneyList(enoughPromotionDetailMoneyList);
-        respVo.setReducePromotionDetaiNumlList(enoughPromotionDetailNumList);
-        respVo.setReducePromotionDetaiMoneylList(reducePromotionDetaiMoneylList);
-        respVo.setReducePromotionDetaiNumlList(reducePromotionDetaiNumlList);
-        respVo.setDiscountPromotionDetailMoneyList(discountPromotionDetailMoneyList);
-        respVo.setReducePromotionDetaiNumlList(discountPromotionDetailNumList);
+        respVo.setBuyPromotionDetailList(buyPromotionDetailList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():buyPromotionDetailList.stream().distinct().collect(Collectors.toList()));
+        respVo.setEnoughPromotionDetailMoneyList(enoughPromotionDetailMoneyList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():enoughPromotionDetailMoneyList.stream().distinct().collect(Collectors.toList()));
+        respVo.setEnoughPromotionDetailNumList(enoughPromotionDetailNumList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():enoughPromotionDetailNumList.stream().distinct().collect(Collectors.toList()));
+        respVo.setReducePromotionDetaiMoneylList(reducePromotionDetaiMoneylList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():reducePromotionDetaiMoneylList.stream().distinct().collect(Collectors.toList()));
+        respVo.setReducePromotionDetaiNumlList(reducePromotionDetaiNumlList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():reducePromotionDetaiNumlList.stream().distinct().collect(Collectors.toList()));
+        respVo.setDiscountPromotionDetailMoneyList(discountPromotionDetailMoneyList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():discountPromotionDetailMoneyList.stream().distinct().collect(Collectors.toList()));
+        respVo.setDiscountPromotionDetailNumList(discountPromotionDetailNumList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():discountPromotionDetailNumList.stream().distinct().collect(Collectors.toList()));
+
+
+        respVo.setPriceApplyPromotionReqVoList(priceApplyPromotionRespVoList.stream().distinct().collect(Collectors.toList())==null?Lists.newArrayList():priceApplyPromotionRespVoList.stream().distinct().collect(Collectors.toList()));
         return respVo;
     }
 
+    @Override
+    public Boolean delete(Long id) {
+        pricePromotionMapper.delete(id);
+        return null;
+    }
 
-    void getProductIn(List<PricePromotionDetailRespVo> pricePromotionProductRespVoList,Long businessId){
+
+    void getProductIn(List<PricePromotionDetailRespVo> pricePromotionProductRespVoList){
         for (PricePromotionDetailRespVo p:
                 pricePromotionProductRespVoList) {
-            List<PricePromotionProductRespVo> pricePromotionProductRespVos  =pricePromotionProductMapper.loadByBusinessId(businessId);
+            List<PricePromotionProductRespVo> pricePromotionProductRespVos  =pricePromotionProductMapper.loadByBusinessId(p.getId());
             p.setPricePromotionProductRespVoList(pricePromotionProductRespVos);
         }
     }

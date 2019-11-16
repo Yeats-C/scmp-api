@@ -20,7 +20,7 @@ public interface PricePromotionMapper {
      * @param priceApplyPromotionReqVo
      * @return
      */
-    BasePage<PricePromotionRespVo> list(PricePromotionReqVo priceApplyPromotionReqVo) ;
+    List<PricePromotionRespVo> list(PricePromotionReqVo priceApplyPromotionReqVo) ;
 
     /**
      * 批量生成促销单
@@ -39,4 +39,10 @@ public interface PricePromotionMapper {
      * @return
      */
     PricePromotionRespVo loadById(Long id);
+
+    /**
+     * 取消
+     * @param id
+     */
+    void delete(Long id);
 }

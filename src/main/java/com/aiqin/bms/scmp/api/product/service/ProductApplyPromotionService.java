@@ -2,12 +2,9 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
-import com.github.pagehelper.Page;
-import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -51,7 +48,7 @@ public interface ProductApplyPromotionService {
      * @param priceApplyPromotionReqVoList
      * @return
      */
-    Boolean generatePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList);
+    Boolean generatePromotion(PricePromotionReqVo priceApplyPromotionReqVoList);
 
     /**
      * 获取当前用户的的所属销售组名称

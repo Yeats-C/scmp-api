@@ -1,5 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.response.price;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -21,6 +24,7 @@ public class PricePromotionProductRespVo {
      * 表字段 : price_promotion_product.id
      */
     @ApiModelProperty("主键id")
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
 
     /**
@@ -75,7 +79,7 @@ public class PricePromotionProductRespVo {
 
 
     /**
-     * 促销分销价格
+     * 分销价格
      * 表字段 : price_promotion_product.promotion_distribution_price
      */
     @ApiModelProperty("分销价格")
@@ -123,6 +127,7 @@ public class PricePromotionProductRespVo {
      * 表字段 : price_promotion_product.begin_date
      */
     @ApiModelProperty("开始时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date beginDate;
 
     /**
@@ -130,6 +135,7 @@ public class PricePromotionProductRespVo {
      * 表字段 : price_promotion_product.end_date
      */
     @ApiModelProperty("结束时间")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
 
     /**

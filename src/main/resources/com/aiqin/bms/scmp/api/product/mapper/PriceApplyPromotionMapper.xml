@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductApplyPromotionMapper">
-    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
-        <!--
-          This element was generated on Tue Nov 05 10:33:04 CST 2019.
-        -->
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo">
         <id column="id" jdbcType="BIGINT" property="id" />
         <result column="apply_promotion_no" jdbcType="BIGINT" property="applyPromotionNo" />
         <result column="apply_promotion_name" jdbcType="VARCHAR" property="applyPromotionName" />
@@ -24,9 +21,10 @@
         <result column="remark" jdbcType="VARCHAR" property="remark" />
     </resultMap>
 
+
     <select id="list" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo" resultMap="BaseResultMap">
         select  *
-        from price_apply_promotion
+        from price_promotion_apply
         where 1=1
         <if test="applyPromotionNo != null and applyPromotionNo != ''">
            and apply_promotion_no like concat('%',#{applyPromotionNo},'%')
@@ -84,13 +82,20 @@
 
     <select id="loadById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
-        from price_apply_promotion
+        *
+        from price_promotion_apply
         where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="loadByPromotionNo"  parameterType="java.lang.String" resultMap="BaseResultMap">
+         select
+        *
+        from price_promotion_apply
+        where promotion_no = #{promotionNo,jdbcType=VARCHAR}
     </select>
 
 
     <update id="deteleById" parameterType="java.lang.Long">
-        update from price_apply_promotion
+        update  price_promotion_apply
         set status = '2'
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -99,7 +104,7 @@
         <!--
           This element was generated on Tue Nov 05 10:33:04 CST 2019.
         -->
-        insert into price_apply_promotion (id, apply_promotion_no, apply_promotion_name, 
+        insert into price_promotion_apply (id, apply_promotion_no, apply_promotion_name, 
             status, promotion_no, promotion_name, 
             create_name, create_timestamp, update_name, 
             update_timestamp, operate_name, operate_timestamp, 
@@ -118,7 +123,7 @@
         <!--
           This element was generated on Tue Nov 05 10:33:04 CST 2019.
         -->
-        insert into price_apply_promotion
+        insert into price_promotion_apply
         <trim prefix="(" suffix=")" suffixOverrides=",">
             <if test="id != null">
                 id,
@@ -230,7 +235,7 @@
         <!--
           This element was generated on Tue Nov 05 10:33:04 CST 2019.
         -->
-        update price_apply_promotion
+        update price_promotion_apply
         <set>
             <if test="applyPromotionNo != null">
                 apply_promotion_no = #{applyPromotionNo,jdbcType=BIGINT},
@@ -287,7 +292,7 @@
         <!--
           This element was generated on Tue Nov 05 10:33:04 CST 2019.
         -->
-        update price_apply_promotion
+        update price_promotion_apply
         set apply_promotion_no = #{applyPromotionNo,jdbcType=BIGINT},
             apply_promotion_name = #{applyPromotionName,jdbcType=VARCHAR},
             status = #{status,jdbcType=INTEGER},
@@ -307,7 +312,7 @@
         where id = #{id,jdbcType=BIGINT}
     </update>
     <update id="update" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo">
-        update price_apply_promotion
+        update price_promotion_apply
         set apply_promotion_no = #{applyPromotionNo,jdbcType=BIGINT},
             apply_promotion_name = #{applyPromotionName,jdbcType=VARCHAR},
             status = #{status,jdbcType=INTEGER},

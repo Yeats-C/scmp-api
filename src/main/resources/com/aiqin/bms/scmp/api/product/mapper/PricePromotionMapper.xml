@@ -78,11 +78,11 @@
             </if>
         </where>
     </select>
-    <select id="loadById" resultType="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo">
+    <select id="loadById" parameterType="java.lang.Long" resultMap="BaseResultMap">
          select *
         from price_promotion
         <where>
-            id=#{id,jdbcType="BIGINT"}
+            id=#{id,jdbcType=BIGINT}
         </where>
     </select>
 
@@ -95,6 +95,17 @@
         delete from price_promotion
         where id = #{id,jdbcType=BIGINT}
     </delete>
+
+
+    <update id="delete" parameterType="java.lang.Long">
+      update  price_promotion
+      set status = 5
+      <where>
+          id=#{id,jdbcType=BIGINT}
+      </where>
+
+    </update>
+
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo">
         <!--
           This element was generated on Wed Nov 06 11:16:51 CST 2019.
@@ -106,7 +117,7 @@
             operate_name, operate_timestamp, approval_no,
             apply_promotion_no)
         values
-        (#{id,jdbcType=BIGINT}, #{promotionNo,jdbcType=VARCHAR},#{vo.formNo,jdbcType=VARCHAR}, #{promotionName,jdbcType=VARCHAR},
+        (#{id,jdbcType=BIGINT}, #{promotionNo,jdbcType=VARCHAR}, #{promotionName,jdbcType=VARCHAR},
             #{departmentCode,jdbcType=VARCHAR}, #{departmentName,jdbcType=VARCHAR}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
             #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{status,jdbcType=VARCHAR},
             #{remark,jdbcType=VARCHAR}, #{createName,jdbcType=VARCHAR}, #{createTimestamp,jdbcType=TIMESTAMP},

@@ -35,11 +35,18 @@
         where id = #{id,jdbcType=BIGINT}
     </select>
 
-    <select id="loadByBusinessId" parameterType="java.lang.Long" resultType="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo">
+    <select id="loadByBusinessId" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List" />
         from price_promotion_product
         where business_id = #{businessId,jdbcType=BIGINT}
+    </select>
+    <select id="getGiveCodes" resultMap="BaseResultMap">
+        select pp.product_code from price_promotion_product as pp
+        left join price_promotion_detail pd on pp.business_id = pd.id
+        left join price_promotion pd on pp.business_id = pd.id
+
+        group by user_name having count>1;
     </select>
 
     <delete id="deteleByBusinessId" parameterType="java.lang.Long">
