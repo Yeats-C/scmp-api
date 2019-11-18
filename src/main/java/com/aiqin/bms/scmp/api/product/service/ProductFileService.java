@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRes
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
 import java.util.List;
 
 /**
@@ -19,14 +20,14 @@ public interface ProductFileService {
      * @param
      * @return
      */
-    HttpResponse loadFileProduct(String skuCode);
+    HttpResponse loadFileProduct(String skuCode) throws ParseException;
 
     /**
      * 对商品内的文件进行修改或者新增
      * @param productSkuFile
      * @return
      */
-    HttpResponse updateOrAdd(ProductSkuFileReqVo productSkuFile);
+    HttpResponse updateOrAdd(ProductSkuFileReqVo productSkuFile) throws ParseException;
     /**
      * 对商品文件管理内的文件进行删除
      * @param

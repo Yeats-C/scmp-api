@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuFileDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
@@ -29,6 +30,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleA
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
@@ -66,6 +68,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
+import io.netty.util.internal.StringUtil;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -183,6 +186,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private DataManageService dataManageService;
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
+    @Autowired
+    private ProductSkuFileDao productSkuFileDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1407,13 +1412,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             String categoryId;
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);
-            for(QueryProductSkuListResp sku:queryProductSkuListResps){
-                categoryId = sku.getProductCategoryCode();
-                if (StringUtils.isNotBlank(categoryId)) {
-                    String categoryName = dataManageService.selectCategoryName(categoryId);
-                    sku.setProductCategoryName(categoryName);
-                }
-            }
+//            for(QueryProductSkuListResp sku:queryProductSkuListResps){
+////                categoryId = sku.getProductCategoryCode();
+////                if (StringUtils.isNotBlank(categoryId)) {
+////                    String categoryName = dataManageService.selectCategoryName(categoryId);
+////                    sku.setProductCategoryName(categoryName);
+////                }
+////            }
             return PageUtil.getPageList(querySkuListReqVO.getPageNo(),queryProductSkuListResps);
         } catch (BizException e){
             throw new BizException(e.getMessage());

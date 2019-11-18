@@ -68,6 +68,15 @@
         WHERE tax_date = #{taxDate}
         GROUP BY tax_date
     </select>
+
+    <select id="loadPriceByProductCode" parameterType="java.lang.String" resultType="java.math.BigDecimal">
+     SELECT stock_tax_cost from  tax_cost_log_stock
+     <where>
+         sku_code =#{productCode}
+     </where>
+      order by tax_date
+    </select>
+
     <update id="updateOneSku">
         <foreach collection="taxCostStock" item="item" separator=";">
         update tax_cost_log_stock
