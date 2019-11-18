@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface RejectApplyRecordDetailDao {
@@ -41,7 +42,7 @@ public interface RejectApplyRecordDetailDao {
 
     void updateStatus(String rejectApplyCode);
 
-    Long selectReturnAmount(RejectApplyRequest request);
+    BigDecimal selectReturnAmount(RejectApplyRequest request);
 
     List<RejectApplyListResponse> applyListByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
 

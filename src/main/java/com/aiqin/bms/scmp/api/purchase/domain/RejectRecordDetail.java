@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -105,11 +106,11 @@ public class RejectRecordDetail {
 
     @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value = "含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value = "wms 传回来的实际数量")
     @JsonProperty("actual_count")
@@ -117,7 +118,7 @@ public class RejectRecordDetail {
 
     @ApiModelProperty(value = "wms 传回来的实际金额")
     @JsonProperty("actual_amount")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty(value = "商品批次号")
     @JsonProperty("batch_no")
