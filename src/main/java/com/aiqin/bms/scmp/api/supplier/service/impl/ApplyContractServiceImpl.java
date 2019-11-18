@@ -687,7 +687,6 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    @Update
     public int updateApplyContractDetails(ApplyContractDTO applyContractDTO) {
         int k = applyContractDao.updateByPrimaryKeySelective(applyContractDTO);
         if (k > 0) {
