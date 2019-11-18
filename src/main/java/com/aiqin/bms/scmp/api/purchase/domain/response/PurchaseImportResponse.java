@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author: zhao shuai
  * @create: 2019-07-06
@@ -33,7 +35,7 @@ public class PurchaseImportResponse extends PurchaseApplyDetailResponse{
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value="错误行数")
     @JsonProperty("error_num")

@@ -50,6 +50,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -58,6 +59,8 @@ import java.util.*;
  **/
 @Service
 public class PurchaseManageServiceImpl extends BaseServiceImpl implements PurchaseManageService {
+
+    private static final BigDecimal big = BigDecimal.valueOf(0);
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseManageServiceImpl.class);
 
@@ -131,7 +134,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(apply);
                 // 计算sku数量，单品数量，含税采购金额，实物返金额
                 Integer singleCount = 0, wholeCount = 0;
-                Long productTotalAmount = 0L, returnAmount = 0L, giftTaxSum = 0L;
+                BigDecimal productTotalAmount = big, returnAmount = big, giftTaxSum = big;
                 if(CollectionUtils.isNotEmptyCollection(details)){
                     Set<Integer> setType = new HashSet<>();
                     for(PurchaseApplyDetailResponse detail:details){
@@ -139,18 +142,18 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                         Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                         Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                        Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                        BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
                         Integer number = purchaseWhole * packNumber + purchaseSingle;
-                        Long amountSum = number * amount;
+                        BigDecimal amountSum = amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP);
                         // 单品数量
                         singleCount += number;
                         wholeCount += purchaseWhole;
                         if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                            returnAmount +=  amountSum;
+                            returnAmount = amountSum.add(returnAmount);
                         }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_1)){
-                            giftTaxSum += amountSum;
+                            giftTaxSum = amountSum.add(giftTaxSum);
                         }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
-                            productTotalAmount += amountSum;
+                            productTotalAmount = amountSum.add(productTotalAmount);
                         }
                     }
                     if(setType != null){
@@ -191,21 +194,21 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 purchaseFormRequest.getApplyIds().clear();
                 purchaseFormRequest.getApplyIds().add(form.getPurchaseApplyId());
                 List<PurchaseApplyDetailResponse> formDetails = purchaseApplyProductDao.purchaseFormProduct(purchaseFormRequest);
-                Long productTotalAmount = 0L, returnAmount = 0L;
+                BigDecimal productTotalAmount = big, returnAmount = big;
                 Integer singleCount = 0;
                 for(PurchaseApplyDetailResponse apply:formDetails){
                     // 计算单品数量， 采购含税金额， 实物返金额
                     Integer purchaseWhole = apply.getPurchaseWhole() == null ? 0 : apply.getPurchaseWhole();
                     Integer purchaseSingle = apply.getPurchaseSingle() == null ? 0 : apply.getPurchaseSingle();
                     Integer packNumber = apply.getBaseProductContent() == null ? 0 : apply.getBaseProductContent();
-                    Long amount = apply.getProductPurchaseAmount() == null ? 0 : apply.getProductPurchaseAmount();
+                    BigDecimal amount = apply.getProductPurchaseAmount() == null ? big : apply.getProductPurchaseAmount();
                     Integer number = purchaseWhole * packNumber + purchaseSingle;
                     singleCount += number;
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                        returnAmount += number * amount;
+                        returnAmount = amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP).add(returnAmount);
                     }
                     if(apply.getProductType().equals(Global.PRODUCT_TYPE_0)){
-                        productTotalAmount += number * amount;
+                        productTotalAmount = amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTotalAmount);
                     }
                 }
                 form.setSingleCount(singleCount);
@@ -234,7 +237,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 // 提交采购单页面商品列表
                 List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormList(purchaseFormRequest);
                 if(CollectionUtils.isNotEmptyCollection(details)){
-                    Long amount = 0L;
+                    BigDecimal amount = big;
                     Integer  number = 0, singCount = 0, whole = 0, single = 0;
                     for (PurchaseApplyDetailResponse detail : details) {
                         if(details.size() > 1){
@@ -251,7 +254,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                         Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                         Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                        amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                        amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
                         whole += purchaseWhole;
                         single += purchaseSingle;
                         Integer purchaseNumber = purchaseWhole * packNumber + purchaseSingle;
@@ -262,7 +265,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     sku.setPurchaseSingle(single);
                     sku.setSingleCount(number);
                     sku.setProductAmount(amount);
-                    sku.setProductTotalAmount(number * amount);
+                    sku.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
                     sku.setSingleCount(singCount);
                     this.stockAmount(sku);
                 }
@@ -292,11 +295,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                 Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 detail.setSingleCount(number);
                 detail.setProductAmount(amount);
-                detail.setProductTotalAmount(number * amount);
+                detail.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
                 this.stockAmount(detail);
             }
         }
@@ -313,7 +316,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         Stock info = stockDao.stockInfo(stock);
         if (info != null) {
             detail.setStockCount(info.getInventoryNum().intValue());
-            detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
+            detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
             Long avgSales = proSuggestReplenishmentDao.biAppSuggestReplenishmentAll(detail.getTransportCenterCode(), detail.getSkuCode(),
                     detail.getWarehouseCode());
             // 库存周转期， 预计到货周转期
@@ -427,7 +430,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
                 Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
                 Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                Long amount = detail.getProductPurchaseAmount() == null ? 0 : detail.getProductPurchaseAmount();
+                BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
                 Integer number = purchaseWhole * packNumber + purchaseSingle;
                 if(number == 0){
                     continue;
@@ -452,7 +455,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setSingleCount(number);
                 orderProduct.setTaxRate(detail.getTaxRate());
                 orderProduct.setProductAmount(amount);
-                orderProduct.setProductTotalAmount(amount * number);
+                orderProduct.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
                 orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
                 orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
                 orderProduct.setActualSingleCount(0);
@@ -460,7 +463,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 detail.setSingleCount(number);
                 detail.setCompanyCode(companyCode);
                 this.stockAmount(detail);
-                orderProduct.setStockAmount(detail.getStockAmount() == null ? 0 : detail.getStockAmount().longValue());
+                orderProduct.setStockAmount(detail.getStockAmount() == null ? big : detail.getStockAmount());
                 orderProduct.setStockTurnover(detail.getStockCount());
                 orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
                 orderProduct.setStockCount(detail.getStockCount());
@@ -488,26 +491,26 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             for(PurchaseOrderResponse order:list){
                 // 计算实际单品数量，实际含税采购金额， 实际实物返金额
                 Integer actualSingleCount = 0;
-                Long actualTotalAmount = 0L, actualReturnAmount = 0L, actualGiftTaxSum = 0L;
-                Long productTotalAmount = 0L, returnAmount = 0L, giftTaxSum = 0L;
+                BigDecimal actualTotalAmount = big, actualReturnAmount = big, actualGiftTaxSum = big;
+                BigDecimal productTotalAmount = big, returnAmount = big, giftTaxSum = big;
                 List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
                 if(CollectionUtils.isNotEmptyCollection(orderProducts)){
                     for(PurchaseOrderProduct product:orderProducts){
-                        Integer singleCount = product.getSingleCount() == null ? 0:product.getSingleCount();
-                        Integer actualSingle = product.getActualSingleCount() == null ? 0:product.getActualSingleCount();
-                        Long productAmount = product.getProductAmount() == null ?0:product.getProductAmount();
+                        Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+                        Integer actualSingle = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                        BigDecimal productAmount = product.getProductAmount() == null ? big :product.getProductAmount();
                         actualSingleCount += actualSingle;
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
-                            actualTotalAmount += productAmount * actualSingle;
-                            productTotalAmount += productAmount * singleCount;
+                            actualTotalAmount = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualTotalAmount) ;
+                            productTotalAmount = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTotalAmount);
                         }
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_2)) {
-                            actualReturnAmount += productAmount * actualSingle;
-                            returnAmount += productAmount * singleCount;
+                            actualReturnAmount = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualReturnAmount);
+                            returnAmount = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(returnAmount);
                         }
                         if(product.getProductType().equals(Global.PRODUCT_TYPE_1)) {
-                            actualGiftTaxSum += productAmount * actualSingle;
-                            giftTaxSum += productAmount * singleCount;
+                            actualGiftTaxSum = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualGiftTaxSum);
+                            giftTaxSum = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
                         }
                     }
                 }
@@ -681,10 +684,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0;
         Integer actualProductPieceSum = 0, actualMatterPieceSum = 0, actualGiftPieceSum = 0;
-        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
+        BigDecimal productTaxSum = big, matterTaxSum = big, giftTaxSum = big;
         Integer  singleSum = 0, priceSum = 0, actualSingleSum = 0, actualPriceSum = 0;
         Integer actualProductSingleSum= 0, actualMatterSingleSum = 0, actualGiftSingleSum = 0;
-        Long actualProductTaxSum = 0L, actualMatterTaxSum = 0L, actualGiftTaxSum = 0L;
+        BigDecimal actualProductTaxSum = big, actualMatterTaxSum = big, actualGiftTaxSum = big;
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
         request.setIsPage(1);
@@ -696,7 +699,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Long amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                BigDecimal amount = order.getProductAmount() == null ? big : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;
@@ -711,24 +714,24 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
                     productPieceSum += purchaseWhole;
                     productSingleSum += singleCount;
-                    productTaxSum += amount * singleCount;
+                    productTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTaxSum);
                     actualProductPieceSum += actualWhole;
                     actualProductSingleSum += actualSingleCount;
-                    actualProductTaxSum += amount * actualSingleCount;
+                    actualProductTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualProductTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
                     matterPieceSum += purchaseWhole;
                     matterSingleSum += singleCount;
-                    matterTaxSum += amount * singleCount;
+                    matterTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(matterTaxSum);
                     actualMatterPieceSum += actualWhole;
                     actualMatterSingleSum += actualSingleCount;
-                    actualMatterTaxSum += amount * actualSingleCount;
+                    actualMatterTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualMatterTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     giftPieceSum += purchaseWhole;
                     giftSingleSum += singleCount;
-                    giftTaxSum += amount * singleCount;
+                    giftTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
                     actualGiftPieceSum += actualWhole;
                     actualGiftSingleSum += actualSingleCount;
-                    actualGiftTaxSum += amount * actualSingleCount;
+                    actualGiftTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualGiftTaxSum);
                 }
             }
             // 采购
@@ -839,10 +842,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         if(detail != null){
             save.setPreArrivalTime(detail.getExpectArrivalTime());
         }
-        Long preInboundNum = 0L;
-        Long preInboundMainNum = 0L;
-        Long preTaxAmount = 0L;
-        Long preNoTaxAmount = 0L;
+        Long preInboundNum = 0L, preInboundMainNum = 0L;
+        BigDecimal preTaxAmount = big, preNoTaxAmount = big;
 
         InboundProductReqVo reqVo;
         // 入库sku商品
@@ -881,14 +882,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 }
                 Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
                 Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
-                Long amount = product.getProductAmount() == null ? 0 : product.getProductAmount();
+                BigDecimal amount = product.getProductAmount() == null ? big : product.getProductAmount();
                 if(actualSingleCount > 0 && baseProductContent > 0){
                     purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
                 }
                 reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
                 reqVo.setPreInboundNum(purchaseWhole.longValue());
                 reqVo.setPreTaxPurchaseAmount(product.getProductAmount());
-                Long productTotalAmount = product.getProductTotalAmount() == null ? 0 : product.getProductTotalAmount();
+                BigDecimal productTotalAmount = product.getProductTotalAmount() == null ? big : product.getProductTotalAmount();
                 reqVo.setPreTaxAmount(productTotalAmount);
                 reqVo.setLinenum(product.getLinnum().longValue());
                 reqVo.setCreateBy(purchaseStorage.getCreateByName());
@@ -896,9 +897,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 reqVo.setTax(product.getTaxRate().longValue());
                 preInboundMainNum += reqVo.getPreInboundMainNum();
                 preInboundNum += purchaseWhole;
-                Long totalAmount = amount * (singleCount - actualSingleCount);
-                preTaxAmount += totalAmount;
-                preNoTaxAmount += Calculate.computeNoTaxPrice(totalAmount, product.getTaxRate().longValue());
+                Integer num = singleCount - actualSingleCount;
+                BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
+                preTaxAmount = totalAmount.add(preTaxAmount);
+                BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, product.getTaxRate().longValue());
+                preNoTaxAmount = noTax.add(preNoTaxAmount);
                 list.add(reqVo);
                 //出库加入供应商与商品关系
                 inboundBatchReqVo = new InboundBatchReqVo();
@@ -917,7 +920,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreMainUnitNum(preInboundMainNum);
         save.setPreTaxAmount(preTaxAmount);
         save.setPreAmount(preNoTaxAmount);
-        save.setPreTax(preTaxAmount-preNoTaxAmount);
+        save.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         save.setRemark(null);
         save.setList(list);
         save.setInboundBatchReqVos(batchReqVoList);
@@ -1203,10 +1206,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     PurchaseApplyDetailResponse orderProduct = purchaseOrderProductDao.warehousingInfo(product.getSourceOderCode(), product.getLinenum().intValue());
                     if(orderProduct != null){
                         Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
-                        Long productAmount = orderProduct.getProductAmount() == null ? 0 : orderProduct.getProductAmount();
+                        BigDecimal productAmount = orderProduct.getProductAmount() == null ? big : orderProduct.getProductAmount();
                         BeanUtils.copyProperties(orderProduct, product);
                         product.setActualSingleCount(actualSingleCount);
-                        product.setActualTaxSum(actualSingleCount * productAmount);
+                        product.setActualTaxSum(productAmount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP));
                     }
                 }
             }
@@ -1274,7 +1277,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         PurchaseApplyProductInfoResponse amountResponse = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum = 0, matterSingleSum = 0, giftSingleSum = 0;
-        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
+        BigDecimal productTaxSum = big, matterTaxSum = big, giftTaxSum = big;
         Integer singleSum = 0, priceSum = 0;
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
         request.setPurchaseOrderId(purchaseOrderId);
@@ -1287,22 +1290,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
-                Long amount = order.getProductAmount() == null ? 0 : order.getProductAmount();
+                BigDecimal amount = order.getProductAmount() == null ? big : order.getProductAmount();
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 priceSum += purchaseWhole;
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
                     productPieceSum += purchaseWhole;
                     productSingleSum += singleCount;
-                    productTaxSum += amount * singleCount;
+                    productTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
                     matterPieceSum += purchaseWhole;
                     matterSingleSum += singleCount;
-                    matterTaxSum += amount * singleCount;
+                    matterTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(matterTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     giftPieceSum += purchaseWhole;
                     giftSingleSum += singleCount;
-                    giftTaxSum += amount * singleCount;
+                    giftTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
                 }
             }
             // 采购
