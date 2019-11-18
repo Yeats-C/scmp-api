@@ -293,6 +293,32 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping("/exportSkuInfo")
+    @ApiOperation("导出审批通过的sku信息")
+    public HttpResponse<Boolean> exportSkuByQuery(@RequestBody QuerySkuListReqVO querySkuListReqVO){
+        // todo
+        // try {
+        //     return HttpResponse.successGenerics(skuInfoService.exportFormalSku(querySkuListReqVO));
+        // } catch (BizException e) {
+        //     return HttpResponse.failure(e.getMessageId());
+        // }catch (Exception e) {
+        //     log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        // }
+    }
+    @GetMapping("/exportSkuInfo")
+    @ApiOperation("导出审批通过的sku信息,通过skuCode")
+    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String skuCode){
+        try {
+            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCode));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @GetMapping("/exportAddSku")
     public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);

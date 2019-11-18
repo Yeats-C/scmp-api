@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -73,6 +74,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -2692,6 +2694,239 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = Exception.class)
+    public Boolean exportFormalSkuBySkuCode(HttpServletResponse resp, String skuCode) {
+        ProductSkuDetailResp skuDetail = ((SkuInfoService)AopContext.currentProxy()).getSkuDetail(skuCode);
+        if (null == skuDetail) {
+            return false;
+        }
+        SkuInfoExport skuInfoExport = new SkuInfoExport();
+        // 基本信息
+        ProductSkuRespVo productSkuInfo = skuDetail.getProductSkuInfo();
+        if (productSkuInfo != null) {
+            BeanCopyUtils.copyIgnoreNullValue(productSkuInfo, skuInfoExport);
+            skuInfoExport.setGoodsGifts(SkuTypeEnum.getSkuTypeEnumByType(productSkuInfo.getGoodsGifts()).getName());
+            skuInfoExport.setQualityNumber(productSkuInfo.getQualityDate());
+            if (productSkuInfo.getManufacturerGuidePrice() != null) {
+                skuInfoExport.setManufacturerGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+            }
+            Byte seasonalGoods = productSkuInfo.getSeasonalGoods();
+            if (Objects.equals(seasonalGoods, (byte) 0)) {
+                skuInfoExport.setSeasonalGoodsDesc("是");
+            } else if (Objects.equals(seasonalGoods, (byte) 1)){
+                skuInfoExport.setSeasonalGoodsDesc("否");
+            }
+            Byte structuralGoods = productSkuInfo.getStructuralGoods();
+            if (Objects.equals(structuralGoods, (byte) 0)) {
+                skuInfoExport.setStructuralGoodsDesc("是");
+            } else if (Objects.equals(structuralGoods, (byte) 1)) {
+                skuInfoExport.setStructuralGoodsDesc("否");
+            }
+            if (productSkuInfo.getUseTime() != null) {
+                skuInfoExport.setUseTime(productSkuInfo.getUseTime().toString());
+            }
+            if (Objects.equals(productSkuInfo.getUniqueCode(), (byte) 0)) {
+                skuInfoExport.setUniqueCodeDesc("是");
+            } else if (Objects.equals(productSkuInfo.getUniqueCode(), (byte) 1)) {
+                skuInfoExport.setUniqueCodeDesc("否");
+            }
+            // 渠道信息
+            List<ProductSkuChannelRespVo> productSkuChannels = skuDetail.getProductSkuChannels();
+            if (CollectionUtils.isNotEmpty(productSkuChannels)) {
+                StringBuilder sb = new StringBuilder();
+                for (ProductSkuChannelRespVo productSkuChannel : productSkuChannels) {
+                    sb.append(productSkuChannel.getPriceChannelName()).append(",");
+                }
+                if (sb.length() > 1) {
+                    skuInfoExport.setPriceChannelName(sb.toString().substring(0, sb.length() -1 ));
+                }
+            }
+            // 标签信息
+            List<ApplyUseTagRecord> tagInfoList = skuDetail.getTagInfoList();
+            if (CollectionUtils.isNotEmpty(tagInfoList)) {
+                StringBuilder sb = new StringBuilder();
+                for (ApplyUseTagRecord tagRecord : tagInfoList) {
+                    sb.append(tagRecord.getTagName()).append(",");
+                }
+                if (sb.length() > 1) {
+                    skuInfoExport.setPriceChannelName(sb.toString().substring(0, sb.length() -1 ));
+                }
+            }
+        }
+        // 价格信息
+        List<ProductSkuPriceRespVo> productSkuPrices = skuDetail.getProductSkuPrices();
+        if (CollectionUtils.isNotEmpty(productSkuPrices)) {
+            productSkuPrices.forEach(item -> {
+                switch (item.getPriceItemCode()) {
+                    case "1001":
+                        // 爱亲渠道价
+                        skuInfoExport.setReadyCol67(item.getPriceTax().toString());
+                        break;
+                    case "1002":
+                        // 萌贝树渠道价
+                        skuInfoExport.setReadyCol68(item.getPriceTax().toString());
+                        break;
+                    case "1003":
+                        // 小红马渠道价
+                        skuInfoExport.setReadyCol69(item.getPriceTax().toString());
+                        break;
+                    case "1007":
+                        // 爱亲分销价
+                        skuInfoExport.setReadyCol70(item.getPriceTax().toString());
+                        break;
+                    case "1008":
+                        // 萌贝树分销价"
+                        skuInfoExport.setReadyCol71(item.getPriceTax().toString());
+                        break;
+                    case "1009":
+                        // 小红马分销价
+                        skuInfoExport.setReadyCol72(item.getPriceTax().toString());
+                        break;
+                    case "1013":
+                        // 售价
+                        skuInfoExport.setReadyCol73(item.getPriceTax().toString());
+                        break;
+                    case "1014":
+                        // 会员价
+                        skuInfoExport.setReadyCol74(item.getPriceTax().toString());
+                        break;
+                    default:
+                        break;
+                }
+            });
+        }
+        // 供应商
+        BeanCopyUtils.copyIgnoreNullValue(skuDetail.getProductSkuSupplyUnits().get(0), skuInfoExport);
+        // 进销存信息
+        List<PurchaseSaleStockRespVo> purchaseSaleStockReqVos = skuDetail.getPurchaseSaleStocks();
+        // 包装信息
+        List<ProductSkuBoxPackingRespVo> skuBoxPackings = skuDetail.getProductSkuBoxPackings();
+        if(CollectionUtils.isNotEmpty(purchaseSaleStockReqVos)) {
+            // 进销存库存
+            List<PurchaseSaleStockRespVo> stockRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.STOCK.getStatus(), item.getType())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(stockRespVos)) {
+                skuInfoExport.setStockSpec(stockRespVos.get(0).getSpec());
+                skuInfoExport.setStockUnitName(stockRespVos.get(0).getUnitName());
+                if (CollectionUtils.isNotEmpty(skuBoxPackings)) {
+                    for (ProductSkuBoxPackingRespVo skuBoxPacking : skuBoxPackings) {
+                        if (StringUtils.equals(stockRespVos.get(0).getUnitCode(), skuBoxPacking.getUnitCode())) {
+                            // 库存长宽高
+                            skuInfoExport.setStockBoxLength(skuBoxPacking.getBoxLength().toString());
+                            skuInfoExport.setStockBoxWidth(skuBoxPacking.getBoxWidth().toString());
+                            skuInfoExport.setStockBoxHeight(skuBoxPacking.getBoxHeight().toString());
+                            // 库存毛重净重
+                            skuInfoExport.setStockBoxGrossWeight(skuBoxPacking.getBoxGrossWeight().toString());
+                            skuInfoExport.setStockNetWeight(skuBoxPacking.getNetWeight().toString());
+                        }
+                    }
+                }
+            }
+            // 进销存采购
+            List<PurchaseSaleStockRespVo> purchaseRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.PURCHASE.getStatus(), item.getType())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(purchaseRespVos)) {
+                skuInfoExport.setPurchaseSpec(purchaseRespVos.get(0).getSpec());
+                skuInfoExport.setPurchaseUnitName(purchaseRespVos.get(0).getUnitName());
+                skuInfoExport.setPurchaseBaseProductContent(purchaseRespVos.get(0).getBaseProductContent().toString());
+                skuInfoExport.setPurchaseBarCode(purchaseRespVos.get(0).getBarCode());
+                if (CollectionUtils.isNotEmpty(skuBoxPackings)) {
+                    for (ProductSkuBoxPackingRespVo skuBoxPacking : skuBoxPackings) {
+                        if (StringUtils.equals(purchaseRespVos.get(0).getUnitCode(), skuBoxPacking.getUnitCode())) {
+                            // 库存长宽高
+                            skuInfoExport.setPurchaseBoxLength(skuBoxPacking.getBoxLength().toString());
+                            skuInfoExport.setPurchaseBoxWidth(skuBoxPacking.getBoxWidth().toString());
+                            skuInfoExport.setPurchaseBoxHeight(skuBoxPacking.getBoxHeight().toString());
+                            // 库存毛重净重
+                            skuInfoExport.setPurchaseBoxGrossWeight(skuBoxPacking.getBoxGrossWeight().toString());
+                            skuInfoExport.setPurchaseNetWeight(skuBoxPacking.getNetWeight().toString());
+                        }
+                    }
+                }
+            }
+            // 进销存分销
+            List<PurchaseSaleStockRespVo> saleRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.SALE.getStatus(), item.getType())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(saleRespVos)) {
+                skuInfoExport.setDistributionZeroRemovalCoefficient(saleRespVos.get(0).getZeroRemovalCoefficient().toString());
+            }
+            // 进销存门店销售
+            List<PurchaseSaleStockRespVo> stockSaleRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.STORE_SALE.getStatus(), item.getType())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmpty(stockSaleRespVos)) {
+                for (PurchaseSaleStockRespVo stockSaleRespVo : stockSaleRespVos) {
+                    if (Objects.equals(stockSaleRespVo.getIsDefault(), (byte) 1)) {
+                        skuInfoExport.setSaleBarCode(stockSaleRespVo.getBarCode());
+                        if (null != stockSaleRespVo.getMaxOrderNum())
+                            skuInfoExport.setMaxOrderNum(stockSaleRespVo.getMaxOrderNum().toString());
+                        skuInfoExport.setDescription(stockSaleRespVo.getDescription());
+                    }
+                }
+            }
+        }
+        // 结算信息
+        ProductSkuCheckoutRespVo productSkuCheckout = skuDetail.getProductSkuCheckout();
+        if (productSkuCheckout != null) {
+            BeanCopyUtils.copy(productSkuCheckout, skuInfoExport);
+            if (productSkuCheckout.getInputTaxRate() != null) {
+                skuInfoExport.setInputTaxRate(String.valueOf((double) productSkuCheckout.getInputTaxRate() / 100));
+            }
+            if (productSkuCheckout.getOutputTaxRate() != null) {
+                skuInfoExport.setOutputTaxRate(String.valueOf((double) productSkuCheckout.getOutputTaxRate() / 100));
+            }
+            if (productSkuCheckout.getIntegralCoefficient() != null) {
+                skuInfoExport.setIntegralCoefficient(productSkuCheckout.getIntegralCoefficient().toString());
+            }
+            if (productSkuCheckout.getLogisticsFeeAwardRatio() != null)
+                skuInfoExport.setLogisticsFeeAwardRatio(productSkuCheckout.getLogisticsFeeAwardRatio().divide(new BigDecimal(100)).toString());
+        }
+        // 配置信息
+        List<SkuConfigsRepsVo> skuConfigs = skuDetail.getProductSkuConfigs();
+        for (SkuConfigsRepsVo skuConfig : skuConfigs) {
+            switch (skuConfig.getTransportCenterCode()) {
+                case "1081":
+                    // 华北仓状态
+                    Byte configStatus = skuConfig.getConfigStatus();
+                    skuInfoExport.setReadyCol76(SkuStatusEnum.getByStatus(configStatus).getName());
+                    break;
+                case "1083":
+                    // 华东仓
+                    skuInfoExport.setReadyCol77(SkuStatusEnum.getByStatus(skuConfig.getConfigStatus()).getName());
+                    break;
+                case "1084":
+                    // 华南仓
+                    skuInfoExport.setReadyCol78(SkuStatusEnum.getByStatus(skuConfig.getConfigStatus()).getName());
+                    break;
+                case "1082":
+                    // 西南仓
+                    skuInfoExport.setReadyCol79(SkuStatusEnum.getByStatus(skuConfig.getConfigStatus()).getName());
+                    break;
+                case "1085":
+                    // 华中仓
+                    skuInfoExport.setReadyCol80(SkuStatusEnum.getByStatus(skuConfig.getConfigStatus()).getName());
+                    break;
+                default:
+                    break;
+            }
+        }
+        // 生产厂家
+        List<ProductSkuManufacturerRespVo> productSkuManufacturers = skuDetail.getProductSkuManufacturers();
+        if (CollectionUtils.isNotEmpty(productSkuManufacturers)) {
+            BeanCopyUtils.copyIgnoreNullValue(productSkuManufacturers.get(0), skuInfoExport);
+        }
+        // 图片信息,图片文件夹编号
+        List<ProductSkuFileRespVO> files = skuDetail.getProductSkuFiles();
+        if (CollectionUtils.isNotEmpty(files)) {
+            skuInfoExport.setPicFolderCode(files.get(0).getFileCode());
+        }
+        try {
+            List<SkuInfoExport> list = Lists.newArrayList();
+            list.add(skuInfoExport);
+            ExcelUtil.writeExcel(resp, list, "商品导出模板", "商品导出模板", ExcelTypeEnum.XLSX,SkuInfoExport.class);
+            return Boolean.TRUE;
+        } catch (ExcelException e) {
+            log.error(e.getMessage(),e);
+            throw new BizException(ResultCode.EXPORT_FAILED);
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVOs) {
         HashMap<String, String> spuMap = Maps.newHashMap();
         for (AddSkuInfoReqVO reqVO : reqVOs.getAddSkuList()) {
@@ -3206,6 +3441,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //厂家指导价
             if (Objects.isNull(importVo.getManufacturerGuidePrice())) {
                 error.add("厂家指导价不能为空");
+            } else if (importVo.getManufacturerGuidePrice().trim().equals("0")) {
+                error.add("厂家指导价不能为0");
             } else {
                 try {
                     productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));

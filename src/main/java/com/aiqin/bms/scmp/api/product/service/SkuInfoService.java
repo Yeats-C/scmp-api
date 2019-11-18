@@ -293,6 +293,14 @@ public interface SkuInfoService{
 
     Boolean exportSku(HttpServletResponse resp);
 
+    /**
+     * 通过skuCode导出
+     * @param resp
+     * @param skuCode
+     * @return
+     */
+    Boolean exportFormalSkuBySkuCode(HttpServletResponse resp, String skuCode);
+
     Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
 
     int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
