@@ -76,6 +76,7 @@
             <if test="applyPromotionNo != null and applyPromotionNo != '' ">
                 apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER}
             </if>
+            order By create_timestamp desc
         </where>
     </select>
     <select id="loadById" parameterType="java.lang.Long" resultMap="BaseResultMap">

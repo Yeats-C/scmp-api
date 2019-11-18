@@ -78,6 +78,7 @@
         <foreach collection="purchaseGroupCodes" item="item" index="item" separator="," open="(" close=")">
             #{item,jdbcType=VARCHAR}
         </foreach>
+        order By create_timestamp desc
     </select>
 
     <select id="loadById" parameterType="java.lang.Long" resultMap="BaseResultMap">

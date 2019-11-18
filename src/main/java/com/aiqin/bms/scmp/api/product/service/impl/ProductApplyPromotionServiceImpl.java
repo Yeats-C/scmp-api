@@ -32,6 +32,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -98,6 +99,11 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean add(PriceApplyPromotionReqVo priceApplyPromotionReqVo) throws Exception {
+       if(StringUtils.isEmpty(priceApplyPromotionReqVo.getApplyPromotionName())
+               ||StringUtils.isEmpty(priceApplyPromotionReqVo.getProcurementSectionCode())
+       ||StringUtils.isEmpty(priceApplyPromotionReqVo.getApplyPromotionName())){
+           throw new BizException("有必填项没有传输");
+       }
         //获取当前用户
         AuthToken authToken = getUser();
         //   vo.setCompanyCode(authToken.getCompanyCode());
@@ -349,9 +355,9 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             priceApplyPromotionReqVo.setStatus(1);
             productApplyPromotionMapper.updateById(priceApplyPromotionReqVo);
         }
-
         workFlow(pricePromotionReqVo.getFormNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
                 ,pricePromotionReqVo.getDirectSupervisorName(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
+
         return true;
     }
 
@@ -362,12 +368,14 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
     @Override
     public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setFormUrl(workFlowBaseUrl.applySkuPromotion + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
-        workFlowVO.setHost(workFlowBaseUrl.applySkuPromotion);
+        //详情
+//       workFlowVO.setFormUrl(workFlowBaseUrl.applySkuPromotion + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
+        ///主机地址
+        workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         //流程编号
         workFlowVO.setFormNo(formNo);
         //进行编码修改
-        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS_CONFIG.getNum());
+        workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.SCMP_APPLY_GOODS_PROMOTION.getNum());
         //进行审批名称的传输
         workFlowVO.setTitle(approvalName);
         //添加备注
@@ -376,7 +384,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         jsonObject.addProperty("auditPersonId",directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
         //传输进行
-        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS_CONFIG);
+        WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.SCMP_APPLY_GOODS_PROMOTION);
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
             //TODO 这里暂时没有任何操作
