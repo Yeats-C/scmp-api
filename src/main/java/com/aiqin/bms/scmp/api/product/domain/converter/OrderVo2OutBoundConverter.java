@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +73,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 outbound.setPreMainUnitNum(reqVo.getProductNum());
                 outbound.setPreTaxAmount(reqVo.getOrderAmount());
                 outbound.setPreAmount(reqVo.getOrderAmount());
-                outbound.setPreTax(0L);
+                outbound.setPreTax(BigDecimal.valueOf(0));
 //                order.setPraTax(order.getPreTax());
 //                order.setPraAmount(order.getPreAmount());
 //                order.setPraTaxAmount(order.getPreTaxAmount());
@@ -95,7 +96,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
 //            if(StringUtils.isNotBlank(inbound.getUpdateBy())){
 //                inbound.setUpdateTime(new Date());
 //            }
-                long noTaxTotalAmount = 0L;
+                BigDecimal noTaxTotalAmount = BigDecimal.valueOf(0);
                 List<OutboundProductReqVo> products = Lists.newArrayList();
                 for (SupplyOrderProductItem vo : reqMainVo.getProductItem()) {
                     OutboundProductReqVo product = BeanCopyUtils.copy(vo, OutboundProductReqVo.class);
@@ -104,12 +105,12 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                     try {
                         //计算不含税单价
                         Long aLong = map.get(vo.getSkuCode());
-                        Long noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
+                        BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
 
                         //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();
-                        long noTaxTotalPrice = noTaxPrice * vo.getNum();
-                        noTaxTotalAmount += noTaxTotalPrice;
+                        BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(vo.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
+                        noTaxTotalAmount = noTaxTotalPrice.add(noTaxTotalAmount);
 //                        product.setPreInboundMainNum(vo.getNum() * map.get(vo.getSkuCode()));
                     } catch (Exception e) {
                         log.error(Global.ERROR, e);
@@ -130,7 +131,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                     products.add(product);
                 }
                 outbound.setPreAmount(noTaxTotalAmount);
-                outbound.setPreTax(reqVo.getOrderAmount()-noTaxTotalAmount);
+                outbound.setPreTax(reqVo.getOrderAmount().subtract(noTaxTotalAmount));
 //            po.setInbound(inbound);
                 outbound.setList(products);
                 list.add(outbound);

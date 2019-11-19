@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Classname: InboundProductCallBackReqVo
  * 描述:入库单回调请求sku实体
@@ -44,10 +46,10 @@ public class InboundProductCallBackReqVo {
     private Long preInboundMainNum;
 
     @ApiModelProperty("预计含税进价")
-    private Long preTaxPurchaseAmount;
+    private BigDecimal preTaxPurchaseAmount;
 
     @ApiModelProperty("预计含税总价")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("实际入库数量")
     private Long praInboundNum;
@@ -56,10 +58,10 @@ public class InboundProductCallBackReqVo {
     private Long praInboundMainNum;
 
     @ApiModelProperty("实际含税进价")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
     @ApiModelProperty("实际含税总价")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("行号")
     private Long linenum;

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -63,10 +64,10 @@ public class ReturnInboundProduct {
     private Long preInboundMainNum;
 
     @ApiModelProperty("预计含税进价")
-    private Long preTaxPurchaseAmount;
+    private BigDecimal preTaxPurchaseAmount;
 
     @ApiModelProperty("预计含税总价")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("实际入库数量")
     private Long praInboundNum;
@@ -75,10 +76,10 @@ public class ReturnInboundProduct {
     private Long praInboundMainNum;
 
     @ApiModelProperty("实际含税进价")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
     @ApiModelProperty("实际含税总价")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("创建人")
     private String createBy;
