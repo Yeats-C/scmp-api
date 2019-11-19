@@ -517,7 +517,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public String workFlowCallback(WorkFlowCallbackVO vo) throws Exception {
+    public String workFlowCallback(WorkFlowCallbackVO vo)  {
         WorkFlowCallbackVO newVO = updateSupStatus(vo);
         newVO.setAuditorTime(new Date());
         //审批中，直接返回成功
