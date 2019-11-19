@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  *
@@ -113,11 +114,11 @@ public class QueryStockBatchSkuRespVo implements Serializable {
 
     @ApiModelProperty("含税单价")
     @JsonProperty("purchase_price")
-    private Long  purchasePrice;
+    private BigDecimal purchasePrice;
 
     @ApiModelProperty(value = "含税成本")
     @JsonProperty("tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty("商品批次号")
     @JsonProperty("batch_code")

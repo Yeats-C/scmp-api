@@ -71,6 +71,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApplyServiceImpl.class);
 
+    private static final BigDecimal big = BigDecimal.valueOf(0);
+
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商", "仓库", "采购数量", "实物返数量", "含税单价",
     };
@@ -216,7 +218,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 }
             }
 
-            Map<String, Long> productTax = new HashMap<>();
+            Map<String, BigDecimal> productTax = new HashMap<>();
             String key;
             for (PurchaseApplyDetailResponse product : detail) {
                 key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
@@ -239,7 +241,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
             for (PurchaseApplyDetailResponse product : detail) {
                 if(product.getTaxCost() != null && product.getStockCount() != null){
-                    product.setStockAmount(product.getTaxCost() * product.getStockCount());
+                    product.setStockAmount(product.getTaxCost().multiply(BigDecimal.valueOf(product.getStockCount())).setScale(4, BigDecimal.ROUND_HALF_UP));
                 }
                 if(StringUtils.isNotBlank(product.getCategoryId())){
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
@@ -247,8 +249,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 // 获取最高采购价(价格管理中供应商的含税价格)
                 if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                     key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                    Long priceTax = productTax.get(key);
-                    product.setPurchaseMax(priceTax == null ? 0 : priceTax);
+                    BigDecimal priceTax = productTax.get(key);
+                    product.setPurchaseMax(priceTax == null ? big : priceTax);
                 }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                 key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
@@ -261,8 +263,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     Integer averageAmount = vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue();
                     product.setSalesVolumeAvg(averageAmount);
                     product.setSalesVolume(averageAmount * 90);
-                    product.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
-                    product.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
+                    product.setShortageNumber(vo.getOutStockAffectMoney() == null ? big : vo.getOutStockAffectMoney());
+                    product.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
                     product.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());
                 }
             }
@@ -370,7 +372,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 if(info != null){
                     detail.setStockCount(info.getInventoryNum().intValue());
                     detail.setTotalWayNum(info.getTotalWayNum().intValue());
-                    detail.setStockAmount(info.getInventoryNum().longValue() * info.getTaxCost().longValue());
+                    detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                     detail.setNewPurchasePrice(info.getNewPurchasePrice());
                 }
             }
@@ -411,7 +413,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
         Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
         Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0, singleSum = 0;
-        Long productTaxSum = 0L, matterTaxSum = 0L, giftTaxSum = 0L;
+        BigDecimal productTaxSum = big, matterTaxSum = big, giftTaxSum = big;
         if(CollectionUtils.isNotEmptyCollection(products)) {
             for (PurchaseApplyDetailResponse product : products) {
                 // 商品采购件数量
@@ -423,22 +425,22 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 singleSum += singleCount;
                 // 计算采购含税总价
-                Long productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
-                Long productPurchaseSum = productPurchaseAmount * singleCount;
+                BigDecimal productPurchaseAmount = product.getProductPurchaseAmount() == null ? big : product.getProductPurchaseAmount();
+                BigDecimal productPurchaseSum = productPurchaseAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP);
                 product.setProductPurchaseSum(productPurchaseSum);
                 if(product.getProductType() != null){
                     if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
                         productPieceSum += purchaseWhole;
                         productSingleSum += singleCount;
-                        productTaxSum += productPurchaseSum;
+                        productTaxSum = productPurchaseSum.add(productTaxSum);
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
                         giftSingleSum += purchaseWhole;
                         giftSingleSum += singleCount;
-                        giftTaxSum += productPurchaseSum;
+                        giftTaxSum = productPurchaseSum.add(giftTaxSum);
                     }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
                         matterPieceSum += purchaseWhole;
                         matterSingleSum += singleCount;
-                        matterTaxSum += productPurchaseSum;
+                        matterTaxSum = productPurchaseSum.add(matterTaxSum);
                     }
                 }
             }
@@ -474,8 +476,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
                 product.setSingleCount(singleCount);
                 // 计算采购含税总价
-                Long productPurchaseAmount = product.getProductPurchaseAmount() == null ? 0 : product.getProductPurchaseAmount();
-                Long productPurchaseSum = productPurchaseAmount * singleCount;
+                BigDecimal productPurchaseAmount = product.getProductPurchaseAmount() == null ? big : product.getProductPurchaseAmount();
+                BigDecimal productPurchaseSum = productPurchaseAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP);
                 product.setProductPurchaseSum(productPurchaseSum);
             }
         }
@@ -551,14 +553,14 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                                 applyProduct.setReceiptTime(parse);
                             }
                             applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0 : vo.getAverageAmount().intValue() * 90);
-                            applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0 : vo.getOutStockAffectMoney().intValue());
+                            applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? big : vo.getOutStockAffectMoney());
                             applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
                             applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
                         }
                         // 获取最高采购价(价格管理中供应商的含税价格)
                         if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
-                            Long priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
-                            applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax);
+                            BigDecimal priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
+                            applyProduct.setPurchaseMax(priceTax == null ? big : priceTax);
                         }
                         Integer baseProductContent = applyProduct.getBaseProductContent();
                         if (StringUtils.isNotBlank(record[4]) && baseProductContent != 0) {
@@ -579,10 +581,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         }
                         BeanUtils.copyProperties(applyProduct, response);
                         if (StringUtils.isBlank((record[6]))) {
-                            response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? 0 : applyProduct.getPurchaseMax());
+                            response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? big : applyProduct.getPurchaseMax());
                         } else {
-                            BigDecimal big = new BigDecimal(record[6]).multiply(new BigDecimal(100));
-                            response.setProductPurchaseAmount(big.longValue());
+                            response.setProductPurchaseAmount(new BigDecimal(record[6]));
                         }
                     } else {
                         HandleResponse(response, record, "未查询到对应的商品；", i);
@@ -610,8 +611,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
         if(StringUtils.isNotBlank(record[6])){
-            Double num = Double.valueOf(record[6]) * 100;
-            response.setProductPurchaseAmount(num.longValue());
+            response.setProductPurchaseAmount(new BigDecimal(record[6]));
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
@@ -631,7 +631,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Long productPurchaseAmount, String skuCode,
+    public HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, BigDecimal productPurchaseAmount, String skuCode,
                                                                      String supplierCode, String transportCenterCode, Integer productCount){
         if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(supplierCode) || StringUtils.isBlank(transportCenterCode) ||
                 productPurchaseAmount == null || singleCount == null || productCount == null){
@@ -645,7 +645,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
         flow.setPurchaseCount(singleCount);
         flow.setPurchaseAmount(productPurchaseAmount);
-        flow.setPurchaseAmountSum(productCount * productPurchaseAmount);
+        flow.setPurchaseAmountSum(productPurchaseAmount.multiply(BigDecimal.valueOf(productCount)).setScale(4, BigDecimal.ROUND_HALF_UP));
         // 查询sku配置信息
         ProductSkuConfig cycleInfo = productSkuConfigDao.getCycleInfo(skuCode, transportCenterCode);
         if(cycleInfo != null){
@@ -719,7 +719,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                         () -> new TreeSet<>(Comparator.comparing(o -> o.getSkuCode() + "#" + o.getTransportCenterCode()
                                 +  "#" + o.getWarehouseCode() + "#" + o.getSupplierCode() + "#" + o.getProductType()))),
                         ArrayList::new));
-        Long frontTurnover = 0L, frontPurchaseCost = 0L;
+        BigDecimal frontTurnover = big, frontPurchaseCost = big;
         PurchaseNewContrastResponse response = new PurchaseNewContrastResponse();
         Integer unsalableFrontCount = 0, stockCount = 0, unsalableAfterCount = 0;
         for(PurchaseApplyDetailResponse detail:details){
@@ -733,21 +733,21 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 continue;
             }
             // 查询sku对应的爱亲渠道价
-            Long channelPrice;
+            BigDecimal channelPrice;
             if(StringUtils.isNotBlank(detail.getSkuCode()) || StringUtils.isNotBlank(detail.getSupplierCode())){
                 channelPrice = productSkuPriceInfoDao.selectPriceTax(detail.getSkuCode(), detail.getSupplierCode());
                 if(channelPrice == null){
-                    channelPrice = 0L;
+                    channelPrice = big;
                 }
             }else {
-                channelPrice = 0L;
+                channelPrice = big;
             }
             // 库存数量
             Long availableNum = stockResponse.getAvailableNum() == null ? 0L : stockResponse.getAvailableNum();
-            Long taxCost = stockResponse.getTaxCost() == null ? 0L : stockResponse.getTaxCost();
+            BigDecimal taxCost = stockResponse.getTaxCost() == null ? big : stockResponse.getTaxCost();
             if(!detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                frontTurnover += availableNum * channelPrice;
-                frontPurchaseCost += availableNum * taxCost;
+                frontTurnover = channelPrice.multiply(BigDecimal.valueOf(availableNum)).setScale(4, BigDecimal.ROUND_HALF_UP).add(frontTurnover);
+                frontPurchaseCost = taxCost.multiply(BigDecimal.valueOf(availableNum)).setScale(4, BigDecimal.ROUND_HALF_UP).add(frontPurchaseCost);
             }
         }
         List<PurchaseApplyDetailResponse> skuList =
@@ -793,7 +793,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
         response.setFrontTurnover(frontTurnover);
         response.setFrontPurchaseCost(frontPurchaseCost);
-        response.setFrontGrossProfit(frontTurnover - frontPurchaseCost);
+        response.setFrontGrossProfit(frontTurnover.subtract(frontPurchaseCost));
         this.purchaseAfter(list, response);
         response.setFrontUnsalableSku(unsalableFrontCount);
         response.setAfterUnsalableSku(unsalableAfterCount);
@@ -803,24 +803,24 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     private void purchaseAfter(List<PurchaseApplyDetailResponse> list, PurchaseNewContrastResponse response){
-        Long afterTurnover = 0L, afterPurchaseCost = 0L;
+        BigDecimal afterTurnover = big, afterPurchaseCost = big;
         for(PurchaseApplyDetailResponse detail:list){
             // 销售价
-            Long channelPrice =  productSkuPriceInfoDao.selectPriceTax(detail.getSkuCode(), detail.getSupplierCode());
-            channelPrice = channelPrice == null ? 0L : channelPrice;
+            BigDecimal channelPrice =  productSkuPriceInfoDao.selectPriceTax(detail.getSkuCode(), detail.getSupplierCode());
+            channelPrice = channelPrice == null ? big : channelPrice;
             // 采购价
-            Long productAmount = detail.getProductAmount() == null ? 0L : detail.getProductAmount().longValue();
+            BigDecimal productAmount = detail.getProductAmount() == null ? big : detail.getProductAmount();
             // 采购数量
             Long singCount = detail.getSingleCount() == null ? 0L : detail.getSingleCount().longValue();
             if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
                 continue;
             }
-            afterTurnover += channelPrice * singCount;
-            afterPurchaseCost += productAmount * singCount;
+            afterTurnover = channelPrice.multiply(BigDecimal.valueOf(singCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(afterTurnover);
+            afterPurchaseCost = productAmount.multiply(BigDecimal.valueOf(singCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(afterPurchaseCost);
         }
-        response.setAfterTurnover(response.getFrontTurnover() + afterTurnover);
-        response.setAfterPurchaseCost(response.getFrontPurchaseCost() + afterPurchaseCost);
-        response.setAfterGrossProfit(response.getAfterTurnover() - response.getAfterPurchaseCost());
+        response.setAfterTurnover(response.getFrontTurnover().add(afterTurnover));
+        response.setAfterPurchaseCost(response.getFrontPurchaseCost().add(afterPurchaseCost));
+        response.setAfterGrossProfit(response.getAfterTurnover().subtract(response.getAfterPurchaseCost()));
     }
 
     private Map<String, Integer> purchaseMap(List<PurchaseApplyDetailResponse> list){
@@ -922,9 +922,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("type", type);
                 map.put("goodsCount", product.getPurchaseWhole());
                 map.put("goodsMin", product.getSingleCount());
-                BigDecimal price = new BigDecimal(product.getProductAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
-                map.put("price", price);
-                BigDecimal priceSum = new BigDecimal(product.getProductTotalAmount()).divide(new BigDecimal(100), 2, BigDecimal.ROUND_CEILING);
+                map.put("price", product.getProductAmount());
+                BigDecimal priceSum = product.getProductTotalAmount();
                 map.put("priceSum", priceSum);
                 amountSum = amountSum.add(priceSum);
                 productList.add(map);

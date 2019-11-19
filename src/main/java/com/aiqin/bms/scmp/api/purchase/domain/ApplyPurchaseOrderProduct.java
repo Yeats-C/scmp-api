@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -91,11 +92,11 @@ public class ApplyPurchaseOrderProduct {
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value="库存数量")
     @JsonProperty("stock_count")
@@ -135,7 +136,7 @@ public class ApplyPurchaseOrderProduct {
 
     @ApiModelProperty(value="库存金额")
     @JsonProperty("stock_amount")
-    private Long stockAmount;
+    private BigDecimal stockAmount;
 
     @ApiModelProperty(value="库存周转期")
     @JsonProperty("stock_turnover")

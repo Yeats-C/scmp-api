@@ -62,7 +62,7 @@ public class OrderToOutBoundConverter extends BaseServiceImpl implements Convert
             outbound.setPreMainUnitNum(dto.getProductNum());
             outbound.setPreTaxAmount(dto.getProductTotalAmount());
             outbound.setPreAmount(Calculate.computeNoTaxPrice(dto.getProductTotalAmount(), Long.valueOf(101)));
-            outbound.setPreTax(outbound.getPreTaxAmount()-outbound.getPreAmount());
+            outbound.setPreTax(outbound.getPreTaxAmount().subtract(outbound.getPreAmount()));
             List<OutboundProductReqVo> reqVos = BeanCopyUtils.copyList(dto.getItemList(), OutboundProductReqVo.class);
             outbound.setList(reqVos);
             List<OutboundBatch> batches = BeanCopyUtils.copyList(dto.getBatchList(), OutboundBatch.class);

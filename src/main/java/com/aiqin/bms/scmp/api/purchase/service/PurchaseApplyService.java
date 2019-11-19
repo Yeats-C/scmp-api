@@ -10,6 +10,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 
 public interface PurchaseApplyService {
 
@@ -31,7 +32,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyStatus(PurchaseApply purchaseApply);
 
-    HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, Long productPurchaseAmount, String skuCode,
+    HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, BigDecimal productPurchaseAmount, String skuCode,
                                                               String supplierCode, String transportCenterCode, Integer productCount);
 
     HttpResponse<PurchaseNewContrastResponse> purchaseContrast(PurchaseNewContrastRequest contrastRequest);

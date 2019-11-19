@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("监管仓订单")
 @Data
 public class SupervisoryWarehouseOrderProduct extends CommonBean {
@@ -46,10 +48,10 @@ public class SupervisoryWarehouseOrderProduct extends CommonBean {
     private Integer taxRate;
 
     @ApiModelProperty("含税单价")
-    private Integer productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty("含税总价")
-    private Integer productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("品牌id")
     private String brandId;

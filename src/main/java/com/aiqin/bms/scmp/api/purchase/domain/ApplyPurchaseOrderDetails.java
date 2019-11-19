@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -79,15 +80,15 @@ public class ApplyPurchaseOrderDetails {
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
-    private Long advancePayment;
+    private BigDecimal advancePayment;
 
     @ApiModelProperty(value="到付金额")
     @JsonProperty("amount_payable")
-    private Long amountPayable;
+    private BigDecimal amountPayable;
 
     @ApiModelProperty(value="月结金额")
     @JsonProperty("month_amount")
-    private Long monthAmount;
+    private BigDecimal monthAmount;
 
     @ApiModelProperty(value="到付付款期")
     @JsonProperty("payable_time")

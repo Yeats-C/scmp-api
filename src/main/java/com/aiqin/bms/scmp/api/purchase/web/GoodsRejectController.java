@@ -53,7 +53,6 @@ public class GoodsRejectController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectController.class);
 
-
     @Resource
     private GoodsRejectService goodsRejectService;
 

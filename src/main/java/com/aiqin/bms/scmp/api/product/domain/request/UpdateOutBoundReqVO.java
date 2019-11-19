@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -38,10 +39,10 @@ public class UpdateOutBoundReqVO implements Serializable {
     private Long praMainUnitNum;
 
     @ApiModelProperty("实际含税总金额")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("实际无税总金额")
-    private Long praAmount;
+    private BigDecimal praAmount;
 
     @ApiModelProperty("实际税额")
     private Long praTax;

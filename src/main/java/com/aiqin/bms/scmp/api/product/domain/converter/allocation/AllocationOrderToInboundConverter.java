@@ -18,6 +18,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 
@@ -80,8 +81,8 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         List<InboundBatchReqVo> inboundBatchReqVos = Lists.newArrayList();
         Long preInboundNum = 0L;
         Long preInboundMainNum = 0L;
-        Long preTaxAmount = 0L;
-        Long preNoTaxAmount = 0L;
+        BigDecimal preTaxAmount = BigDecimal.ZERO;
+        BigDecimal preNoTaxAmount = BigDecimal.ZERO;
         List<AllocationProduct> records = order.getProducts();
         ProductSkuPictures productSkuPicture = null;
         for (AllocationProduct record : records) {
@@ -104,10 +105,10 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             //由于调拨/移库/报废 是库存信息,故基商品含量默认为1
             reqVo1.setInboundBaseContent("1");
             reqVo1.setInboundBaseUnit("1");
-            reqVo1.setPreInboundNum(record.getQuantity().longValue());
-            reqVo1.setPreInboundMainNum(record.getQuantity().longValue());
-            reqVo1.setPreTaxPurchaseAmount(record.getTaxPrice().longValue());
-            reqVo1.setPreTaxAmount(record.getTaxAmount().longValue());
+            reqVo1.setPreInboundNum(record.getQuantity());
+            reqVo1.setPreInboundMainNum(record.getQuantity());
+            reqVo1.setPreTaxPurchaseAmount(record.getTaxPrice());
+            reqVo1.setPreTaxAmount(record.getTaxAmount());
             reqVo1.setCreateBy(record.getCreateBy());
             reqVo1.setCreateTime(record.getCreateTime());
             reqVo1.setUpdateBy(record.getUpdateBy());
@@ -117,8 +118,8 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             }
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
-            preTaxAmount += record.getTaxAmount();
-            preNoTaxAmount += Calculate.computeNoTaxPrice(record.getTaxAmount().longValue(), record.getTax().longValue());
+            preTaxAmount = record.getTaxAmount().add(preTaxAmount);
+            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getTaxAmount(), record.getTax().longValue()).add(preNoTaxAmount);
             list.add(reqVo1);
         }
         List<AllocationProductBatch> list1 = order.getList();
@@ -144,7 +145,7 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         inboundReqSave.setPreMainUnitNum(preInboundMainNum);
         inboundReqSave.setPreTaxAmount(preTaxAmount);
         inboundReqSave.setPreAmount(preNoTaxAmount);
-        inboundReqSave.setPreTax(preTaxAmount-preNoTaxAmount);
+        inboundReqSave.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         inboundReqSave.setInboundBatchReqVos(inboundBatchReqVos);
         inboundReqSave.setList(list);
         return inboundReqSave;

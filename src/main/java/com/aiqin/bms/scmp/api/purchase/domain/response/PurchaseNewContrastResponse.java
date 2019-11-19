@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author: zhao shuai
  * @create: 2019-08-08
@@ -13,15 +15,15 @@ public class PurchaseNewContrastResponse {
 
     @ApiModelProperty(value="采购前_预计营业额")
     @JsonProperty("front_turnover")
-    private Long frontTurnover;
+    private BigDecimal frontTurnover;
 
     @ApiModelProperty(value="采购前_采购成本")
     @JsonProperty("front_purchase_cost")
-    private Long frontPurchaseCost;
+    private BigDecimal frontPurchaseCost;
 
     @ApiModelProperty(value="采购前_毛利额")
     @JsonProperty("front_gross_profit")
-    private Long frontGrossProfit;
+    private BigDecimal frontGrossProfit;
 
 //    @ApiModelProperty(value="采购前_毛利率")
 //    @JsonProperty("front_gross_rate")
@@ -29,15 +31,15 @@ public class PurchaseNewContrastResponse {
 
     @ApiModelProperty(value="采购后_预计营业额")
     @JsonProperty("after_turnover")
-    private Long afterTurnover;
+    private BigDecimal afterTurnover;
 
     @ApiModelProperty(value="采购后_采购成本")
     @JsonProperty("after_purchase_cost")
-    private Long afterPurchaseCost;
+    private BigDecimal afterPurchaseCost;
 
     @ApiModelProperty(value="采购后_毛利额")
     @JsonProperty("after_gross_profit")
-    private Long afterGrossProfit;
+    private BigDecimal afterGrossProfit;
 
 //    @ApiModelProperty(value="采购后_毛利率")
 //    @JsonProperty("after_gross_rate")

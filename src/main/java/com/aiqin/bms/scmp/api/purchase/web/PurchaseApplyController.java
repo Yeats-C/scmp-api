@@ -17,9 +17,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
+import java.math.BigDecimal;
 
 /**
  * @author: zhao shuai
@@ -112,7 +111,7 @@ public class PurchaseApplyController {
     @GetMapping("/apply/product/detail")
     @ApiOperation("查询采购申请单商品的详情")
     public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
-                                                           @RequestParam("product_purchase_amount") Long productPurchaseAmount,
+                                                           @RequestParam("product_purchase_amount") BigDecimal productPurchaseAmount,
                                                            @RequestParam("sku_code") String skuCode,
                                                            @RequestParam("supplier_code") String supplierCode,
                                                            @RequestParam("transport_center_code") String transportCenterCode,

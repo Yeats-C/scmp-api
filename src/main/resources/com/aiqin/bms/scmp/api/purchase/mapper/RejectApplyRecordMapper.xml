@@ -10,7 +10,7 @@
         <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus"/>
         <result column="sum_sku" jdbcType="INTEGER" property="sumSku"/>
         <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
-        <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
+        <result column="sum_amount" jdbcType="DECIMAL" property="sumAmount"/>
         <result column="status" jdbcType="VARCHAR" property="status" />
         <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
@@ -20,8 +20,8 @@
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
         <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-        <result column="sum_return_amount" jdbcType="VARCHAR" property="sumReturnAmount" />
-        <result column="sum_gift_amount" jdbcType="VARCHAR" property="sumGiftAmount" />
+        <result column="sum_return_amount" jdbcType="DECIMAL" property="sumReturnAmount" />
+        <result column="sum_gift_amount" jdbcType="DECIMAL" property="sumGiftAmount" />
     </resultMap>
     <sql id="Base_Column_List">
     id, reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name, 
@@ -36,9 +36,9 @@
         <result column="apply_record_status" jdbcType="INTEGER" property="applyRecordStatus"/>
         <result column="sum_sku" jdbcType="INTEGER" property="sumSku"/>
         <result column="sum_count" jdbcType="INTEGER" property="sumCount"/>
-        <result column="sum_amount" jdbcType="BIGINT" property="sumAmount"/>
-        <result column="sum_return_amount" jdbcType="BIGINT" property="sumReturnAmount"/>
-        <result column="sum_gift_amount" jdbcType="BIGINT" property="sumGiftAmount"/>
+        <result column="sum_amount" jdbcType="DECIMAL" property="sumAmount"/>
+        <result column="sum_return_amount" jdbcType="DECIMAL" property="sumReturnAmount"/>
+        <result column="sum_gift_amount" jdbcType="DECIMAL" property="sumGiftAmount"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
@@ -102,8 +102,8 @@
       )
     values ( #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{applyType,jdbcType=BIT},
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{applyRecordStatus,jdbcType=BIT}, 
-      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=BIGINT},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
-      #{sumReturnAmount,jdbcType=BIGINT},#{sumGiftAmount,jdbcType=BIGINT}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{sumSku,jdbcType=INTEGER}, #{sumCount,jdbcType=INTEGER}, #{sumAmount,jdbcType=DECIMAL},  #{companyCode,jdbcType=VARCHAR},  #{companyName,jdbcType=VARCHAR},
+      #{sumReturnAmount,jdbcType=DECIMAL},#{sumGiftAmount,jdbcType=DECIMAL}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR}, now()
       )
   </insert>
@@ -182,7 +182,7 @@
                 #{sumCount,jdbcType=INTEGER},
             </if>
             <if test="sumAmount != null">
-                #{sumAmount,jdbcType=BIGINT},
+                #{sumAmount,jdbcType=DECIMAL},
             </if>
             <if test="createById != null">
                 #{createById,jdbcType=VARCHAR},
@@ -209,9 +209,9 @@
         <set>
                 sum_sku = #{sumSku,jdbcType=INTEGER},
                 sum_count = #{sumCount,jdbcType=INTEGER},
-                sum_amount = #{sumAmount,jdbcType=BIGINT},
-                sum_return_amount = #{sumReturnAmount,jdbcType=BIGINT},
-                sum_gift_amount = #{sumGiftAmount,jdbcType=BIGINT},
+                sum_amount = #{sumAmount,jdbcType=DECIMAL},
+                sum_return_amount = #{sumReturnAmount,jdbcType=DECIMAL},
+                sum_gift_amount = #{sumGiftAmount,jdbcType=DECIMAL},
                 update_by_id = #{updateById,jdbcType=VARCHAR},
                 update_by_name = #{updateByName,jdbcType=VARCHAR},
                 update_time = now()

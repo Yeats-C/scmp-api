@@ -19,6 +19,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -149,7 +150,7 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
             //预计含税进价
             outboundProduct.setPreTaxPurchaseAmount(item.getChannelUnitPrice());
             //预计含税总价
-            outboundProduct.setPreTaxAmount(item.getNum() * item.getChannelUnitPrice());
+            outboundProduct.setPreTaxAmount(item.getChannelUnitPrice().multiply(BigDecimal.valueOf(item.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
 
             //实际出库数量
             outboundProduct.setPraOutboundNum(item.getActualDeliverNum());
@@ -158,7 +159,7 @@ public class OrderInfoToOutboundConverter implements Converter<OrderInfo, Outbou
             //实际含税进价
             outboundProduct.setPraTaxPurchaseAmount(item.getChannelUnitPrice());
             //实际含税总价
-            outboundProduct.setPraTaxAmount(item.getActualDeliverNum() * item.getChannelUnitPrice());
+            outboundProduct.setPraTaxAmount(item.getChannelUnitPrice().multiply(BigDecimal.valueOf(item.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
 
             outboundProduct.setColorCode(item.getColorCode());
             outboundProduct.setColorName(item.getColorName());

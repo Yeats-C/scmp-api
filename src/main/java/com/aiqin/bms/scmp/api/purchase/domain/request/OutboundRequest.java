@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -150,7 +151,7 @@ public class OutboundRequest {
     private String detailAddress;
 
     @ApiModelProperty("商品渠道价总金额")
-    private Long productChannelTotalAmount;
+    private BigDecimal productChannelTotalAmount;
 
     @ApiModelProperty(value = "商品详情")
     private List<OutboundDetailRequest> detail;

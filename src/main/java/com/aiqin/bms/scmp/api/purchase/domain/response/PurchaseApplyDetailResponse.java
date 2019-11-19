@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -44,11 +45,11 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="含税采购单价")
     @JsonProperty("product_purchase_amount")
-    private Long productPurchaseAmount;
+    private BigDecimal productPurchaseAmount;
 
     @ApiModelProperty(value="含税采购总价")
     @JsonProperty("product_purchase_sum")
-    private Long productPurchaseSum;
+    private BigDecimal productPurchaseSum;
 
     @ApiModelProperty(value="采购件数（整数）")
     @JsonProperty("purchase_whole")
@@ -116,7 +117,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="缺货影响的销售额")
     @JsonProperty("shortage_number")
-    private Integer shortageNumber;
+    private BigDecimal shortageNumber;
 
     @ApiModelProperty(value="缺货天数")
     @JsonProperty("shortage_day")
@@ -141,7 +142,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="最高采购价")
     @JsonProperty("purchase_max")
-    private Long purchaseMax;
+    private BigDecimal purchaseMax;
 
     @ApiModelProperty(value="规格")
     @JsonProperty("product_spec")
@@ -188,7 +189,7 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("sales_volume")
     private Integer salesVolume;
 
-    @ApiModelProperty(value="近90天销量")
+    @ApiModelProperty(value="近90天平均日销量")
     @JsonProperty("sales_volume_avg")
     private Integer salesVolumeAvg;
 
@@ -202,7 +203,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="最新采购价格")
     @JsonProperty("new_purchase_price")
-    private Long newPurchasePrice;
+    private BigDecimal newPurchasePrice;
 
     @ApiModelProperty(value="结算方式编码")
     @JsonProperty("settlement_method_code")
@@ -312,7 +313,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="实际含税总价")
     @JsonProperty("actual_tax_sum")
-    private Long actualTaxSum;
+    private BigDecimal actualTaxSum;
 
     @ApiModelProperty(value="入库单的来源单号")
     @JsonProperty("source_oder_code")
@@ -320,11 +321,11 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value="仓储状态 0.未开始  1.确认中 2.完成")
     @JsonProperty("storage_status")
@@ -367,15 +368,15 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="预付款金额")
     @JsonProperty("advance_payment")
-    private Long advancePayment;
+    private BigDecimal advancePayment;
 
     @ApiModelProperty(value="到付金额")
     @JsonProperty("amount_payable")
-    private Long amountPayable;
+    private BigDecimal amountPayable;
 
     @ApiModelProperty(value="月结金额")
     @JsonProperty("month_amount")
-    private Long monthAmount;
+    private BigDecimal monthAmount;
 
     @ApiModelProperty(value="到付付款期")
     @JsonProperty("payable_time")
@@ -395,15 +396,15 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
-    private Long giftTaxSum;
+    private BigDecimal giftTaxSum;
 
     @ApiModelProperty(value="库存金额")
     @JsonProperty("stock_amount")
-    private Long stockAmount;
+    private BigDecimal stockAmount;
 
     @ApiModelProperty(value="库存昨日成本")
     @JsonProperty("tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty(value="采购单类型编码 1 普通采购 2 预采购")
     @JsonProperty("purchase_order_type_code")

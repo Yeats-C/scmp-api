@@ -5,6 +5,8 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Description:
  * SKU编号	SKU名称	供应商编号	供应商名称	联营扣点(%)	返点(%)	厂商SKU编号	供货渠道类别	是否缺省
@@ -39,7 +41,7 @@ public class SkuSupplierImport extends BaseRowModel {
 
     @ApiModelProperty("含税采购价")
     @ExcelProperty(index = 5 , value = "含税采购价")
-    private String taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("联营扣率")
     @ExcelProperty(index = 6 , value = "联营扣点(%)")

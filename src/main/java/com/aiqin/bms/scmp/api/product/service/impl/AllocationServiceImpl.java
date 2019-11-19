@@ -5,7 +5,6 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
@@ -26,13 +25,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
-import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
@@ -61,6 +57,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -78,54 +75,30 @@ import java.util.stream.Collectors;
 @WorkFlowAnnotation(WorkFlow.APPLY_ALLOCATTION)
 public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService, WorkFlowHelper {
 
-
     @Autowired
     private AllocationMapper allocationMapper;
-
     @Autowired
     private AllocationProductMapper allocationProductMapper;
-
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
-
     @Autowired
     private EncodingRuleDao encodingRuleDao;
-
     @Autowired
     private SupplierCommonService supplierCommonService;
-
     @Autowired
     private OperationLogService operationLogService;
-
     @Autowired
     private WorkFlowBaseUrl workFlowBaseUrl;
-
-    @Autowired
-    private InboundService inboundService;
-
     @Autowired
     private StockService stockService;
-
     @Autowired
     private WarehouseService supplierApiService;
-
     @Autowired
     private ProductSkuPicturesDao productSkuPicturesDao;
-
     @Autowired
     private OutboundService outboundService;
-
     @Autowired
     private WarehouseService warehouseService;
-
-    @Autowired
-    private ProductSkuStockInfoMapper productSkuStockInfoMapper;
-
-    @Autowired
-    private ProductSkuDao productSkuDao;
-
-    @Autowired
-    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -138,7 +111,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         return basePage;
 
     }
-
 
     /**
      * 转化保存实体
@@ -531,8 +503,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             Long totalNum = v.stream().mapToLong(AllocationProductBatch::getQuantity).sum();
             product.setQuantity(totalNum);
             //合并含税总成本
-            Long totalTaxAmount = v.stream().mapToLong(AllocationProductBatch::getTaxAmount).sum();
-            product.setTaxAmount(totalTaxAmount);
+            double totalTaxAmount = v.stream().mapToDouble(AllocationProductBatch::getTaxAmount).sum();
+            product.setTaxAmount(BigDecimal.valueOf(totalTaxAmount));
             products.add(product);
         });
 

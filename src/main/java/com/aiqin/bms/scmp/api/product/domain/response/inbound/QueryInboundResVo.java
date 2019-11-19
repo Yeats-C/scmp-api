@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -80,8 +81,8 @@ public class QueryInboundResVo extends PageReq {
     private Long praInboundNum;
 
     @ApiModelProperty("预计入库含税总金额")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("实际入库含税总金额")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 }

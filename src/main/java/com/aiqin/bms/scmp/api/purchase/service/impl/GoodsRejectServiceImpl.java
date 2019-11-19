@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
-import com.aiqin.bms.scmp.api.product.dao.ProductCategoryDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
@@ -48,6 +47,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -84,6 +84,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
+    private static final BigDecimal big = BigDecimal.valueOf(0);
+
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商名称", "仓库名称", "库房名称", "商品批次号", "退供类型", "退供数量", "含税单价",
     };
@@ -117,8 +119,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private LogisticsCenterDao logisticsCenterDao;
     @Resource
     private WarehouseDao warehouseDao;
-    @Resource
-    private ProductCategoryDao productCategoryDao;
     @Resource
     private ApplyRejectRecordDao applyRejectRecordDao;
     @Resource
@@ -179,12 +179,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private Integer rejectApplyData(RejectApplyHandleRequest rejectApplyQueryRequest, RejectApplyRecord rejectApplyRecord, String rejectCode) {
         //总退供数量
         Integer sumCount = 0;
-        //普通商品含税金额
-        Long sumAmount = 0L;
-        //实物返商品含税金额
-        Long sumReturnAmount = 0L;
-        //赠品含税金额
-        Long sumGiftAmount = 0L;
+        //普通商品含税金额, 实物返商品含税金额, 赠品含税金额
+        BigDecimal sumAmount = big, sumReturnAmount = big, sumGiftAmount = big;
         Set<String> skuList = new HashSet<>();
         for (RejectApplyDetailHandleRequest detail : rejectApplyQueryRequest.getDetailList()) {
             if (detail.getProductCount() == 0) {
@@ -200,14 +196,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             detail.setCreateByName(rejectApplyQueryRequest.getCreateByName());
             detail.setUpdateById(rejectApplyRecord.getUpdateById());
             detail.setUpdateByName(rejectApplyRecord.getUpdateByName());
-            detail.setProductTotalAmount(detail.getProductAmount() * detail.getProductCount());
+            detail.setProductTotalAmount(detail.getProductAmount().multiply(BigDecimal.valueOf(detail.getProductCount())).setScale(4, BigDecimal.ROUND_HALF_UP));
             detail.setApplyType(rejectApplyQueryRequest.getApplyType());
             if (detail.getProductType().equals(Global.PRODUCT_TYPE_0)) {
-                sumAmount += detail.getProductTotalAmount();
+                sumAmount = detail.getProductTotalAmount().add(sumAmount);
             } else if (detail.getProductType().equals(Global.PRODUCT_TYPE_2)) {
-                sumReturnAmount += detail.getProductTotalAmount();
+                sumReturnAmount = detail.getProductTotalAmount().add(sumReturnAmount);
             } else if (detail.getProductType().equals(Global.PRODUCT_TYPE_1)) {
-                sumGiftAmount += detail.getProductTotalAmount();
+                sumGiftAmount = detail.getProductTotalAmount().add(sumGiftAmount);
             }
             sumCount += detail.getProductCount();
             skuList.add(detail.getSkuCode());
@@ -313,11 +309,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     response.setProductCount(new Double(record[7]).intValue());
-                    response.setProductAmount(Long.valueOf(record[8]) * 100);
+                    response.setProductAmount(new BigDecimal(record[8]));
                     if (productTypeList.contains(record[6])) {
                         response.setProductType(productTypeList.indexOf(record[6]));
                     }
-                    response.setProductTotalAmount(Long.valueOf(record[8]) * Long.valueOf(record[7]) * 100);
+                    response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal((record[7])).setScale(4, BigDecimal.ROUND_HALF_UP)));
                     if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
@@ -354,8 +350,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyListResponse> detailList = rejectApplyRecordDetailDao.applyListByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
                 request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
         List<String> codes = new ArrayList<>();
-        Long returnAmount;
-        Long sumAmount;
+        BigDecimal returnAmount;
+        BigDecimal sumAmount;
         Integer skuCount;
         for (RejectApplyListResponse rejectApplyListResponse : detailList) {
             BeanUtils.copyProperties(rejectApplyListResponse, request);
@@ -386,8 +382,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         //退供申请单分组后的列表
         List<RejectApplyResponse> list = rejectApplyRecordDetailDao.listForRejectRecord(request);
         SupplyCompany company;
-        Long returnAmount;
-        Long sumAmount;
+        BigDecimal returnAmount;
+        BigDecimal sumAmount;
         for (RejectApplyResponse response : list) {
             company = rejectApplyRecordDetailDao.selectSupplyCompany(response.getSupplierCode());
             //查询实物返金额
@@ -437,23 +433,24 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             //总普通商品数量
             Integer productCount = 0;
             //总普通商品含税金额
-            Long productAmount = 0L;
+            BigDecimal productAmount = big;
             //总赠品商品数量
             Integer giftCount = 0;
             //总赠品商品含税金额
-            Long giftAmount = 0L;
+            BigDecimal giftAmount = big;
             //总单品数量
             Integer sumSingleCount = 0;
             //总实物返回数量
             Integer returnCount = 0;
             //总实物返回金额
-            Long returnAmount = 0L;
+            BigDecimal returnAmount = big;
             //无税金额
-            Long untaxedAmount = 0L;
+            BigDecimal untaxedAmount = big;
             List<RejectApplyRecordDetail> detailList = rejectApplyRecordDetailDao.listByCondition(request.getSupplierCode(), request.getPurchaseGroupCode(), request.getSettlementMethodCode(),
                     request.getTransportCenterCode(), request.getWarehouseCode(), request.getRejectApplyRecordCodes());
             List<RejectRecordDetail> list = new ArrayList<>();
             RejectRecordDetail rejectRecordDetail;
+            Integer i = 1;
             for (RejectApplyRecordDetail detailResponse : detailList) {
                 //计算总数
                 sumSingleCount += detailResponse.getProductCount();
@@ -461,24 +458,29 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (detailResponse.getTaxRate() == null) {
                     untaxedAmount = detailResponse.getProductTotalAmount();
                 } else {
-                    untaxedAmount += detailResponse.getProductTotalAmount() * 100 / (100 + detailResponse.getTaxRate());
+                    Integer tax = 100 + detailResponse.getTaxRate();
+                    BigDecimal amount = detailResponse.getProductTotalAmount().divide(BigDecimal.valueOf(tax), 4, BigDecimal.ROUND_HALF_UP).
+                            divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
+                    untaxedAmount = amount.add(untaxedAmount);
                 }
                 if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                     returnCount += detailResponse.getProductCount();
-                    returnAmount += detailResponse.getProductTotalAmount();
+                    returnAmount = detailResponse.getProductTotalAmount().add(returnAmount);
                 } else if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)) {
                     giftCount += detailResponse.getProductCount();
-                    giftAmount += detailResponse.getProductTotalAmount();
+                    giftAmount = detailResponse.getProductTotalAmount().add(giftAmount);
                 } else if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)) {
                     productCount += detailResponse.getProductCount();
-                    productAmount += detailResponse.getProductTotalAmount();
+                    productAmount = detailResponse.getProductTotalAmount().add(productAmount);
                 }
                 rejectRecordDetail = new RejectRecordDetail();
                 BeanUtils.copyProperties(detailResponse, rejectRecordDetail);
                 rejectRecordDetail.setProductCount(detailResponse.getProductCount().longValue());
                 rejectRecordDetail.setRejectRecordDetailId(IdUtil.uuid());
                 rejectRecordDetail.setRejectRecordCode(rejectCode);
+                rejectRecordDetail.setLinnum(i);
                 list.add(rejectRecordDetail);
+                ++i;
             }
             rejectRecord.setProductAmount(productAmount);
             rejectRecord.setProductCount(productCount);
@@ -666,17 +668,17 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             //总普通商品数量
             Long productCount = 0L;
             //总普通商品含税金额
-            Long productAmount = 0L;
+            BigDecimal productAmount = big;
             //总赠品商品数量
             Long giftCount = 0L;
             //总赠品商品含税金额
-            Long giftAmount = 0L;
+            BigDecimal giftAmount = big;
             //总单品数量
             Integer sumSingleCount = 0;
             //总实物返回数量
             Long returnCount = 0L;
             //总实物返回金额
-            Long returnAmount = 0L;
+            BigDecimal returnAmount = big;
             if (CollectionUtils.isNotEmpty(request.getDetailList())) {
                 List<RejectRecordDetail> detailList = rejectRecordDetailDao.selectByRejectDetailIdList(request.getDetailList().stream().map(RejectDetailStockRequest::getId).collect(Collectors.toList()));
                 Map<Long, RejectDetailStockRequest> map = request.getDetailList().stream().collect(Collectors.toMap(RejectDetailStockRequest::getId, Function.identity(), (k1, k2) -> k2));
@@ -686,15 +688,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     if (rejectDetailStockRequest != null) {
                         if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_2)) {
                             returnCount += detailResponse.getProductCount();
-                            returnAmount += detailResponse.getProductTotalAmount();
+                            returnAmount = detailResponse.getProductTotalAmount().add(returnAmount);
                         } else if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_0)) {
                             productCount += detailResponse.getProductCount();
-                            productAmount += detailResponse.getProductTotalAmount();
+                            productAmount = detailResponse.getProductTotalAmount().add(productAmount);
                         } else if (detailResponse.getProductType().equals(Global.PRODUCT_TYPE_1)) {
                             giftCount += detailResponse.getProductCount();
-                            giftAmount += detailResponse.getProductTotalAmount();
+                            giftAmount = detailResponse.getProductTotalAmount().add(giftAmount);
                         }
-                        rejectDetailStockRequest.setActualAmount(rejectDetailStockRequest.getActualCount() * detailResponse.getProductAmount());
+                        rejectDetailStockRequest.setActualAmount(
+                                detailResponse.getProductAmount().multiply(BigDecimal.valueOf(rejectDetailStockRequest.getActualCount())).setScale(4, BigDecimal.ROUND_HALF_UP));
                         rejectRecordDetailDao.updateByDetailId(rejectDetailStockRequest);
                     }
                 }

@@ -29,6 +29,8 @@ import java.util.Map;
 @Slf4j
 public class SynchronizationStockServiceImpl implements SynchronizationStockService {
 
+    private static final BigDecimal big = BigDecimal.valueOf(0);
+
     //数据库地址
     private final static String DRIVER = "com.mysql.jdbc.Driver";
     private final static String URL = "jdbc:mysql://39.105.36.111:1024/dareader?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
@@ -46,7 +48,6 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
         List<Stock> stockList;
         Stock stock;
         Stock oldStock;
-        BigDecimal count = new BigDecimal("100");
         BigDecimal num = new BigDecimal("0");
         BigDecimal amount = new BigDecimal("0");
         // 查询sku信息
@@ -87,9 +88,9 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         stock.setAvailableNum(num.longValue());
                     }
                     if (num.longValue() == 0) {
-                        stock.setTaxCost(0L);
+                        stock.setTaxCost(big);
                     } else {
-                        Long cost = amount.divide(num, 2, BigDecimal.ROUND_CEILING).multiply(count).longValue();
+                        BigDecimal cost = amount.divide(num, 4, BigDecimal.ROUND_HALF_UP);
                         stock.setTaxCost(cost);
                     }
                     stock.setSkuCode(sku.getSkuCode());
@@ -113,8 +114,8 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                     stock.setPurchaseWayNum(0L);
                     stock.setAllocationWayNum(0L);
                     stock.setTotalWayNum(0L);
-                    stock.setNewPurchasePrice(0L);
-                    stock.setTaxPrice(0L);
+                    stock.setNewPurchasePrice(big);
+                    stock.setTaxPrice(big);
                     stock.setUpdateBy("0");
                     stockList.add(stock);
                 }
