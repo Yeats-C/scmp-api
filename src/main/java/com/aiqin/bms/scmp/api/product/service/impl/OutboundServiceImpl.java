@@ -58,6 +58,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -76,46 +77,28 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     @Autowired
     private OutboundDao outboundDao;
-
     @Autowired
     private EncodingRuleDao encodingRuleDao;
-
     @Autowired
     private OutboundProductDao outboundProductDao;
-
     @Autowired
     private SkuService skuService;
-
     @Autowired
     private StockService stockService;
-
     @Autowired
     private UrlConfig urlConfig;
-
     @Autowired
     private ProductCommonService productCommonService;
-
     @Autowired
     private ProductOperationLogService productOperationLogService;
-
     @Autowired
     private InboundService inboundService;
-
     @Autowired
     private AllocationMapper allocationMapper;
-
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
-
-    @Autowired
-    private MovementDao movementDao;
-
-    @Autowired
-    private MovementProductDao  movementProductDao;
-
     @Autowired
     private OutboundBatchDao outboundBatchDao;
-
     @Autowired
     @Lazy(true)
     private GoodsRejectService goodsRejectService;
@@ -152,7 +135,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             log.error("分页查询失败");
             throw new GroundRuntimeException(ex.getMessage());
         }
-
     }
 
     /**
@@ -209,7 +191,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     /**
      * 保存出库信息
-     *
      * @param stockReqVO
      * @return
      */
@@ -246,7 +227,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
-
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
@@ -289,7 +269,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
                 outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
-
                 int m = outboundBatchDao.insertInfo(outboundBatches);
                 log.info("插入出库单商品批次表返回结果", m);
             }
@@ -302,9 +281,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //  调用推送接口
             OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
             outboundService.pushWms(outbound.getOutboundOderCode());
-
             return outboundOderCode;
-
         } catch (GroundRuntimeException e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException(String.format("保存出库单失败%s",e.getMessage()));
@@ -313,7 +290,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     /**
      * 根据原始单据号查询出库信息
-     *
      * @param sourceOderCode
      * @return
      */
@@ -369,7 +345,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             throw new GroundRuntimeException("根据id查询不到数据信息");
         }
         OutboundResVo outboundResVo = new OutboundResVo();
-
         BeanCopyUtils.copy(outbound, outboundResVo);
         if (outboundResVo.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
             RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(outboundResVo.getSourceOderCode());
@@ -445,7 +420,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         for (OutboundTypeEnum outboundTypeEnum : outboundTypeEnums) {
             list.add(new EnumReqVo(outboundTypeEnum.getCode(),outboundTypeEnum.getName()));
         }
-
         return list;
     }
 
@@ -469,8 +443,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         //保存
         return saveOutBoundInfo(convert);
     }
-
-
 
     /**
      * 入库单推送给wms
@@ -544,6 +516,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             workFlowCallBack(outboundCallBackReqVo);
         }
     }
+
     /**
      * 出库单回调接口
      * @param reqVo
@@ -552,7 +525,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
 //    @Async("myTaskAsyncPool")
     public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
-
         log.info(" 出库单回传实体为 ：[{}]" + reqVo);
         Outbound outbound = new Outbound();
         try{ // 根据入库单编号查询旧的入库单主体
@@ -574,9 +546,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setPraOutboundNum(reqVo.getPraMainUnitNum());
             outbound.setPraMainUnitNum(reqVo.getPraMainUnitNum());
             //设置实际含税总金额。税额。不含税总金额
-            outbound.setPraTaxAmount(0L);
-            outbound.setPraTax(0L);
-            outbound.setPraAmount(0L);
+            outbound.setPraTaxAmount(BigDecimal.ZERO);
+            outbound.setPraTax(BigDecimal.ZERO);
+            outbound.setPraAmount(BigDecimal.ZERO);
             outbound.setOutboundTime(reqVo.getOutboundTime());
             // 设置解锁并且减少库存
 
@@ -646,7 +618,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
                 stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
                 stockVoRequest.setOperator(outbound.getUpdateBy());
-                stockVoRequest.setTaxRate(outbound.getPraTax());
+                stockVoRequest.setTaxRate(outboundProduct.getTax());
 //                stockVoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
                 stockVoRequestList.add(stockVoRequest);
             }
@@ -688,7 +660,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
            }
 
             //计算税额
-            outbound.setPraTax(outbound.getPraTaxAmount()-outbound.getPraAmount());
+            outbound.setPraTax(outbound.getPraTaxAmount().subtract(outbound.getPraAmount()));
             //修改实际的入库单主体
             int k = outboundDao.updateByPrimaryKeySelective(outbound);
 
@@ -1025,7 +997,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         saveData(outbounds,productList,batchList);
         //TODo 保存日志
         //推送订单到wms
-
         return Boolean.TRUE;
     }
 
