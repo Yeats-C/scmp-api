@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 
 import java.util.List;
@@ -66,5 +65,5 @@ public interface ProductApplyPromotionService {
     void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark);
 
 
-    LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList);
+//    LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList);
 }

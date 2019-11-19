@@ -13,7 +13,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionRe
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionDetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.price.LoadGeneratePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
@@ -444,33 +443,33 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         }
     }
 
-    @Override
-    public LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
-        LoadGeneratePromotionRespVo loadGeneratePromotionRespVo=new LoadGeneratePromotionRespVo();
-        List<PriceApplyPromotionRespVo> priceApplyPromotionRespVos=Lists.newArrayList();
-        for (PriceApplyPromotionReqVo priceApplyPromotionReqVo:
-        priceApplyPromotionReqVoList) {
-            PriceApplyPromotionRespVo priceApplyPromotionRespVo=new PriceApplyPromotionRespVo();
-            BeanUtils.copyProperties(priceApplyPromotionReqVo,priceApplyPromotionRespVo);
-            priceApplyPromotionRespVos.add(priceApplyPromotionRespVo);
-        }
-        loadGeneratePromotionRespVo.setPriceApplyPromotionRespVos(priceApplyPromotionRespVos);
-        PriceApplyPromotionRespVo priceApplyPromotionRespVo = load(priceApplyPromotionReqVoList.get(0).getId());
-        //买赠
-        List<PricePromotionDetailRespVo> buyPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==1).collect(Collectors.toList());
-        loadGeneratePromotionRespVo.setBuyPromotionDetailList(buyPromotionDetailList);
-         //满赠
-         List<PricePromotionDetailRespVo> enoughPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==2).collect(Collectors.toList());;
-        loadGeneratePromotionRespVo.setEnoughPromotionDetailList(enoughPromotionDetailList);
-         //满减
-         List<PricePromotionDetailRespVo> reducePromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==3).collect(Collectors.toList());;
-        loadGeneratePromotionRespVo.setReducePromotionDetailList(reducePromotionDetailList);
-        //满折
-         List<PricePromotionDetailRespVo> discountPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==4).collect(Collectors.toList());;
-        loadGeneratePromotionRespVo.setDiscountPromotionDetailList(discountPromotionDetailList);
-
-        return loadGeneratePromotionRespVo;
-    }
+//    @Override
+//    public LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList) {
+//        LoadGeneratePromotionRespVo loadGeneratePromotionRespVo=new LoadGeneratePromotionRespVo();
+//        List<PriceApplyPromotionRespVo> priceApplyPromotionRespVos=Lists.newArrayList();
+//        for (PriceApplyPromotionReqVo priceApplyPromotionReqVo:
+//        priceApplyPromotionReqVoList) {
+//            PriceApplyPromotionRespVo priceApplyPromotionRespVo=new PriceApplyPromotionRespVo();
+//            BeanUtils.copyProperties(priceApplyPromotionReqVo,priceApplyPromotionRespVo);
+//            priceApplyPromotionRespVos.add(priceApplyPromotionRespVo);
+//        }
+//        loadGeneratePromotionRespVo.setPriceApplyPromotionRespVos(priceApplyPromotionRespVos);
+//        PriceApplyPromotionRespVo priceApplyPromotionRespVo = load(priceApplyPromotionReqVoList.get(0).getId());
+//        //买赠
+//        List<PricePromotionDetailRespVo> buyPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==1).collect(Collectors.toList());
+//        loadGeneratePromotionRespVo.setBuyPromotionDetailList(buyPromotionDetailList);
+//         //满赠
+//         List<PricePromotionDetailRespVo> enoughPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==2).collect(Collectors.toList());;
+//        loadGeneratePromotionRespVo.setEnoughPromotionDetailList(enoughPromotionDetailList);
+//         //满减
+//         List<PricePromotionDetailRespVo> reducePromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==3).collect(Collectors.toList());;
+//        loadGeneratePromotionRespVo.setReducePromotionDetailList(reducePromotionDetailList);
+//        //满折
+//         List<PricePromotionDetailRespVo> discountPromotionDetailList=priceApplyPromotionRespVo.getPricePromotionDetailRespVoList().stream().filter(x->x.getPromotionType()==4).collect(Collectors.toList());;
+//        loadGeneratePromotionRespVo.setDiscountPromotionDetailList(discountPromotionDetailList);
+//
+//        return loadGeneratePromotionRespVo;
+//    }
 
 
     @Override
