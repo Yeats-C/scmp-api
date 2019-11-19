@@ -405,8 +405,8 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             priceApplyPromotionReqVo.setStatus(1);
             productApplyPromotionMapper.updateById(priceApplyPromotionReqVo);
         }
-        workFlow(pricePromotionReqVo.getFormNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
-                ,pricePromotionReqVo.getDirectSupervisorName(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
+//        workFlow(pricePromotionReqVo.getApprovalNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
+//                ,pricePromotionReqVo.getDirectSupervisorCode(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
 
         return true;
     }
