@@ -75,6 +75,7 @@
     </select>
 
 
+
     <delete id="deteleByBusinessId" parameterType="java.lang.Long">
         <!--
           This element was generated on Tue Nov 05 10:33:06 CST 2019.

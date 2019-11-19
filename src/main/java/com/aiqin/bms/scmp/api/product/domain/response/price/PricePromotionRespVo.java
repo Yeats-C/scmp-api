@@ -76,7 +76,7 @@ public class PricePromotionRespVo {
     /**
      * 状态
      */
-    @ApiModelProperty("状态:1.待审核,2.审核中，3.审核通过，4.审核不通过，5.取消")
+    @ApiModelProperty("状态:0.待审核,1.审核中，2.审核通过，3.审核不通过，4.取消")
     private Byte status;
 
     /**

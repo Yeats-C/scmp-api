@@ -55,4 +55,5 @@ public interface ProductApplyPromotionMapper {
      * @return
      */
     List<PriceApplyPromotionRespVo> loadByPromotionNo(String promotionNo);
+
 }

@@ -1,14 +1,15 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.PricePromotionStatus;
-import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.TaxCostLogDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfig;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigSpareWarehouse;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionDetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
@@ -16,14 +17,16 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionDetailRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyPromotionService;
+import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
 import com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
+import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -32,6 +35,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -48,7 +53,8 @@ import java.util.stream.Collectors;
  * @Description:
  */
 @Service
-public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements ProductApplyPromotionService {
+@WorkFlowAnnotation(WorkFlow.SCMP_APPLY_GOODS_PROMOTION)
+public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements ProductApplyPromotionService, WorkFlowHelper {
 
   @Autowired
   private ProductApplyPromotionMapper productApplyPromotionMapper;
@@ -392,7 +398,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             String  formNo = "PPA" + IdSequenceUtils.getInstance().nextId();
             pricePromotionReqVo.setApprovalNo(formNo);
         }
-        pricePromotionReqVo.setStatus(PricePromotionStatus.WAIT_CHECK.getNum());
+        pricePromotionReqVo.setStatus(ApplyStatus.PENDING.getNumber());
         pricePromotionReqVo.setCreateName(authToken.getPersonName());
         pricePromotionReqVo.setCreateTimestamp(new Date());
         pricePromotionMapper.insert(pricePromotionReqVo);
@@ -405,10 +411,9 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             priceApplyPromotionReqVo.setStatus(1);
             productApplyPromotionMapper.updateById(priceApplyPromotionReqVo);
         }
-        workFlow(pricePromotionReqVo.getApprovalNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
-                ,pricePromotionReqVo.getDirectSupervisorCode(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
-
-        return true;
+//        workFlow(pricePromotionReqVo.getApprovalNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
+//                ,pricePromotionReqVo.getDirectSupervisorCode(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
+       return true;
     }
 
 
@@ -507,6 +512,45 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             }
 
         }
+
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public String workFlowCallback(WorkFlowCallbackVO vo) throws Exception {
+        WorkFlowCallbackVO newVO = updateSupStatus(vo);
+        newVO.setAuditorTime(new Date());
+        //审批中，直接返回成功
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
+            return WorkFlowReturn.SUCCESS;
+        }
+        //首先通过formNO查找数据 配置数据
+        List<PricePromotionRespVo> list = pricePromotionMapper.selectByFormNo(newVO.getFormNo());
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(list)) {
+            throw new BizException(ResultCode.DATA_ERROR);
+        }
+
+        if (!list.get(0).getStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
+            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
+        }
+        String applyCode = list.get(0).getApprovalNo();
+        //审批驳回
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+            updateApplyInfoByVO(newVO.getFormNo(), newVO.getApplyStatus());
+        }
+        //撤销
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+            updateApplyInfoByVO(newVO.getFormNo(), newVO.getApplyStatus());
+        }
+        //审批通过
+        if (Objects.equals(newVO.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            updateApplyInfoByVO(newVO.getFormNo(), newVO.getApplyStatus());
+        }
+        return WorkFlowReturn.SUCCESS;
+    }
+
+    private void updateApplyInfoByVO(String formNo, Byte applyStatus) {
+        pricePromotionMapper.updateApplyInfoByVO(formNo,applyStatus);
 
     }
 }

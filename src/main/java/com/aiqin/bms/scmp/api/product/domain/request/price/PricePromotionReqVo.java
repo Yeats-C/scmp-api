@@ -41,14 +41,6 @@ public class PricePromotionReqVo extends PageReq {
      */
     @ApiModelProperty("促销单编号")
     private String promotionNo;
-
-    /**
-     * 审批单号
-     * 表字段 : price_apply_promotion.promotion_no
-     */
-    @ApiModelProperty("审批单号")
-    private String formNo;
-
     /**
      * 促销单名称
      * 表字段 : price_apply_promotion.promotion_name
@@ -85,7 +77,7 @@ public class PricePromotionReqVo extends PageReq {
     /**
      * 状态
      */
-    @ApiModelProperty("状态:1.待审核,2.审核中，3.审核通过，4.审核不通过，5.取消")
+    @ApiModelProperty("状态:0.待审核,1.审核中，2.审核通过，3.审核不通过，4.取消")
     private Byte status;
 
     /**

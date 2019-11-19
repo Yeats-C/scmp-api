@@ -86,7 +86,14 @@
             id=#{id,jdbcType=BIGINT}
         </where>
     </select>
-
+    <select id="selectByFormNo"
+            resultMap="BaseResultMap">
+        select *
+        from price_promotion
+        <where>
+            approval_no=#{formNo,jdbcType=VARCHAR}
+        </where>
+    </select>
 
 
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
@@ -319,5 +326,14 @@
             approval_no = #{approvalNo,jdbcType=VARCHAR},
             apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER}
         where id = #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <update id="updateApplyInfoByVO" parameterType="java.lang.String">
+        update price_promotion
+        set status = #{status,jdbcType=VARCHAR}
+        <where>
+            form_no=#{formNo,jdbcType=VARCHAR}
+        </where>
     </update>
 </mapper>

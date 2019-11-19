@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionRe
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -45,4 +46,16 @@ public interface PricePromotionMapper {
      * @param id
      */
     void delete(Long id);
+    /**
+     *查询对应相应form下面的促销
+     * @param
+     * @return
+     */
+    List<PricePromotionRespVo> selectByFormNo(String formNo);
+    /**
+     *根据回调来进行促销单状态的改变
+     * @param
+     * @return
+     */
+    void updateApplyInfoByVO(@Param("formNo") String formNo,@Param("status") Byte status);
 }

@@ -95,6 +95,7 @@
     </select>
 
 
+
     <update id="deteleById" parameterType="java.lang.Long">
         update  price_promotion_apply
         set status = '2'
