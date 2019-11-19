@@ -560,8 +560,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
                     // 查询商品类型
                     PurchaseOrderProduct orderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(batch.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLinenum().intValue());
-                    if(orderProduct != null){
-                        storageDetail.setProductType(orderProduct.getProductType());
+                    if(orderProduct != null && orderProduct.getProductType() != null){
+                        if(orderProduct.getProductType() == 1){
+                            storageDetail.setProductType(10);
+                        }else if(orderProduct.getProductType() == 2){
+                            storageDetail.setProductType(5);
+                        }else if(orderProduct.getProductType() == 0){
+                            storageDetail.setProductType(0);
+                        }
                     }
                 }
                 //厂商指导价
