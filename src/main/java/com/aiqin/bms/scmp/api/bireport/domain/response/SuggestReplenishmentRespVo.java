@@ -71,7 +71,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("库存金额")
     @JsonProperty("stock_amount")
-    private Long stockAmount;
+    private BigDecimal stockAmount;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("days_turnover")
@@ -83,7 +83,7 @@ public class SuggestReplenishmentRespVo {
 
     @ApiModelProperty("缺货影响金额")
     @JsonProperty("out_stock_affects_amount")
-    private Long outStockAffectsAmount;
+    private BigDecimal outStockAffectsAmount;
 
     @ApiModelProperty("近一月内缺货天数")
     @JsonProperty("stock_one_month_days")

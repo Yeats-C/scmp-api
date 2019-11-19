@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -80,8 +81,8 @@ public class AllocationCallbackToOutboundConverter implements Converter<Allocati
         List<OutboundBatch> outboundBatchReqVos = Lists.newArrayList();
         Long preInboundNum = 0L;
         Long preInboundMainNum = 0L;
-        Long preTaxAmount = 0L;
-        Long preNoTaxAmount = 0L;
+        BigDecimal preTaxAmount = BigDecimal.ZERO;
+        BigDecimal preNoTaxAmount = BigDecimal.ZERO;
         ProductSkuPictures productSkuPicture = null;
         List<AllocationProductCallbackReqVo> allocationProductCallbackReqVos = reqVo.getList();
         for (AllocationProductCallbackReqVo allocationProductCallbackReqVo : allocationProductCallbackReqVos) {
@@ -149,7 +150,7 @@ public class AllocationCallbackToOutboundConverter implements Converter<Allocati
         outboundReqVo.setPraMainUnitNum(preInboundMainNum);
         outboundReqVo.setPreTaxAmount(preTaxAmount);
         outboundReqVo.setPreAmount(preNoTaxAmount);
-        outboundReqVo.setPreTax(preTaxAmount-preNoTaxAmount);
+        outboundReqVo.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         outboundReqVo.setOutboundBatches(outboundBatchReqVos);
         outboundReqVo.setList(list);
         return outboundReqVo;

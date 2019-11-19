@@ -43,6 +43,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -973,7 +974,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 purchase.setWarehouseName(rejectRecord.getWarehouseName());
                 purchase.setSkuCount(rejectRecord.getSingleCount());
                 //总金额,三者实际金额加一起
-                purchase.setAmount(String.valueOf(amountHandler(rejectRecord.getActualGiftAmount()) + amountHandler(rejectRecord.getActualProductAmount() )+ amountHandler(rejectRecord.getActualReturnAmount())));
+                BigDecimal actualGiftAmount = rejectRecord.getActualGiftAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualGiftAmount();
+                BigDecimal actualProductAmount = rejectRecord.getActualProductAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualProductAmount();
+                BigDecimal actualReturnAmount = rejectRecord.getActualReturnAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualReturnAmount();
+                purchase.setAmount(String.valueOf(actualGiftAmount.add(actualProductAmount).add(actualReturnAmount)));
                 purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
                 purchase.setGroupName(rejectRecord.getPurchaseGroupName());
                 purchase.setCompanyCode(rejectRecord.getCompanyCode());

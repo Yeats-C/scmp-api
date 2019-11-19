@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApiModel("供应商信息")
@@ -21,10 +22,10 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     private String supplyUnitName;
 
     @ApiModelProperty("无税进价")
-    private Long noTaxPurchasePrice;
+    private BigDecimal noTaxPurchasePrice;
 
     @ApiModelProperty("含税进价")
-    private Long taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("联营扣率")
     private Long jointFranchiseRate;

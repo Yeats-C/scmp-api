@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -80,13 +81,13 @@ public class OrderCallbackServiceTest extends SpringBootTestContext {
         request.setDistrictCode("001");
         request.setDistrictName("区");
         request.setDetailAddress("详细地址");
-        request.setProductChannelTotalAmount(2000L);
+        request.setProductChannelTotalAmount(BigDecimal.valueOf(20000));
 
         List<OutboundDetailRequest> detail = new ArrayList<>();
         OutboundDetailRequest outboundDetailRequest = new OutboundDetailRequest();
         outboundDetailRequest.setProductLineNum(1L);
         outboundDetailRequest.setSkuCode("10000000201");
-        outboundDetailRequest.setChannelUnitPrice(10L);
+        outboundDetailRequest.setChannelUnitPrice(BigDecimal.valueOf(10));
         outboundDetailRequest.setNum(200L);
         outboundDetailRequest.setActualDeliverNum(200L);
         detail.add(outboundDetailRequest);
