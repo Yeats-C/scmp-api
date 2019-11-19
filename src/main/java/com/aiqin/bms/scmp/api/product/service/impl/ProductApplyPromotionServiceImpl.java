@@ -213,118 +213,169 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
        BigDecimal stockPrice = pricePromotionProductRespVo.getStockPrice();
        //补贴后成本
        BigDecimal subsidyCost = pricePromotionProductRespVo.getSubsidyCost();
-       //设置促销分销毛利，补贴分销毛利率，买赠
-//         if(promotionType.equals(1)){
-//
-//          if (promotionDistributionPrice.compareTo(BigDecimal.ZERO)>=0) {
-//
-////             买赠：取标有测算标识的一行，假设某个sku1，买N个赠M个。
-////             促销分销毛利率：（促销分销价*N-库存成本*（N+M））/促销分销价*N*100%
-//              BigDecimal num1 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum));
-//              BigDecimal num2 = stockPrice.multiply(BigDecimal.valueOf(conditionNum + giveNum));
-//              BigDecimal num3 = (num1.subtract(num2)).compareTo(BigDecimal.ZERO) > 0 ? num1.subtract(num2) : BigDecimal.ZERO;
-//              BigDecimal num4 = num3.divide(promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).multiply(BigDecimal.ONE)).setScale(2,BigDecimal.ROUND_HALF_UP);
-//              pricePromotionProductRespVo.setDistributionGrossProfit(num4);
-//
-////                    补贴后分销毛利率：（促销分销价*N-补贴后成本*（N+M））/促销分销价*N*100%
-//              BigDecimal num5 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum));
-//              BigDecimal num6 = subsidyCost.multiply(BigDecimal.valueOf(conditionNum + giveNum));
-//              BigDecimal num7 = (num5.subtract(num6)).compareTo(BigDecimal.ZERO) > 0 ? num5.subtract(num6) : BigDecimal.ZERO;
-//              BigDecimal num8 = num7.divide(promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).multiply(BigDecimal.ONE)).setScale(2,BigDecimal.ROUND_HALF_UP);
-//              pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
-//          }else {
-//              pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
-//              pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
-//          }
-//       }else if(promotionType.equals(2)){
-//             if (promotionDistributionPrice.compareTo(BigDecimal.ZERO)>=0) {
-//
-////                 假设sku1买满X元赠sku2*N个，sku3*M个。X元/sku1的分销价，向上取整得到Y个
-////                 假设sku1买满Y个赠sku2*N个，sku3*M个。sku2的库存成本*N个+sku3的库存成本*M个=Z元
-////                 促销分销毛利率：((促销分销价*Y-Z)-库存成本*Y)/(促销分销价*Y-Z)*100%
-//                 if(ruleType.equals(0)){
-//                   BigDecimal  conditionNum1=BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0,BigDecimal.ROUND_UP);
-//                 }else {
-//                     BigDecimal conditionNum1=BigDecimal.valueOf(conditionNum);
-//                 }
-//                BigDecimal z=BigDecimal.ZERO;
-//                 pricePromotionProductRespVo.getBusinessId();
-//                List<PricePromotionProductRespVo> Codes=pricePromotionProductMapper.getGiveCodes(promotionId,pricePromotionProductRespVo.getBusinessId(),pricePromotionProductRespVo.getProductCode());
-//
-////           补贴后分销毛利率：((促销分销价*Y-Z)-补贴后成本*Y)/(促销分销价*Y-Z)*100%
-//                 BigDecimal num5 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum));
-//
-//             }else {
-//                 pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
-//                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
-//             }
-//
-//       }else if(promotionType.equals(3)){
-//
-//             if (promotionDistributionPrice.compareTo(BigDecimal.ZERO)>=0) {
-//
-//                 BigDecimal  conditionNum1;
-//                 if(ruleType.equals(0)){
-//                       conditionNum1=BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0,BigDecimal.ROUND_UP);
-//                 }else {
-//                      conditionNum1=BigDecimal.valueOf(conditionNum);
-//                 }
-//                 //             满减：取标有测算标识的一行，
-////             假设sku1买满X元减N元。X元/sku1的分销价，向上取整得到Y个
-////             假设sku1买满Y个减N元。
-////             促销分销毛利率：((促销分销价*Y-N)-库存成本*Y)/(促销分销价*Y-N)*100%
-//                 BigDecimal num1 = promotionDistributionPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum));
-//                 BigDecimal num2 = stockPrice.multiply(conditionNum1);
-//                 BigDecimal num3 = (stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
-//                 BigDecimal num4 =(num1.subtract(num2)).divide(num3).setScale(2,BigDecimal.ROUND_HALF_UP);
-//                 pricePromotionProductRespVo.setDistributionGrossProfit(num4);
-//
-////                     补贴后分销毛利率：((促销分销价*Y-N)-补贴后成本*Y)/(促销分销价*Y-N)*100%
-//                 BigDecimal num5 = promotionDistributionPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum));
-//                 BigDecimal num6 = subsidyCost.multiply(conditionNum1);
-//                 BigDecimal num7 = (stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
-//                 BigDecimal num8 =(num5.subtract(num6)).divide(num7).setScale(2,BigDecimal.ROUND_HALF_UP);
-//                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
-//             }else {
-//                 pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
-//                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
-//             }
-//
-//
-//         }else if(promotionType.equals(4)){
-//
-//             if (promotionDistributionPrice.compareTo(BigDecimal.ZERO)>=0) {
-//
-//                 BigDecimal  conditionNum1;
-//                 if(ruleType.equals(0)){
-//                     conditionNum1=BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0,BigDecimal.ROUND_UP);
-//                 }else {
-//                     conditionNum1=BigDecimal.valueOf(conditionNum);
-//                 }
-////                 满折：取标有测算标识的一行，
-////                 假设sku1买满X元折扣N。X元/sku1的分销价，向上取整得到Y个
-////                 假设sku1买满Y个折扣N。
-////                 促销分销毛利率：((促销分销价*Y*N)-库存成本*Y)/(促销分销价*Y*N)*100%
-//                 BigDecimal num1 = promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum));
-//                 BigDecimal num2 = stockPrice.multiply(conditionNum1);
-//                 BigDecimal num3 = (promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
-//                 BigDecimal num4 =(num1.subtract(num2)).divide(num3).setScale(2,BigDecimal.ROUND_HALF_UP);
-//                 pricePromotionProductRespVo.setDistributionGrossProfit(num4);
-//
-////                     补贴后分销毛利率：((促销分销价*Y*N)-补贴后成本*Y)/(促销分销价*Y*N)*100%
-//                 BigDecimal num5 = promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum));
-//                 BigDecimal num6 = subsidyCost.multiply(conditionNum1);
-//                 BigDecimal num7 = (promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
-//                 BigDecimal num8 =(num5.subtract(num6)).divide(num7).setScale(2,BigDecimal.ROUND_HALF_UP);
-//                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
-//             }else {
-//                 pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
-//                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
-//             }
-//
-//         }
+       if(promotionDistributionPrice!=null&&stockPrice!=null&&subsidyCost!=null) {
+           //设置促销分销毛利，补贴分销毛利率，买赠
+           if (promotionType.equals(1)) {
+
+               if (promotionDistributionPrice.compareTo(BigDecimal.ZERO) >= 0) {
+
+//             买赠：取标有测算标识的一行，假设某个sku1，买N个赠M个。
+//             促销分销毛利率：（促销分销价*N-库存成本*（N+M））/促销分销价*N*100%
+                   BigDecimal num1 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum));
+                   BigDecimal num2 = stockPrice.multiply(BigDecimal.valueOf(conditionNum + giveNum));
+                   BigDecimal num3 = (num1.subtract(num2)).compareTo(BigDecimal.ZERO) > 0 ? num1.subtract(num2) : BigDecimal.ZERO;
+                   BigDecimal num4 = num3.divide(promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).multiply(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setDistributionGrossProfit(num4);
+
+//                    补贴后分销毛利率：（促销分销价*N-补贴后成本*（N+M））/促销分销价*N*100%
+                   BigDecimal num5 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum));
+                   BigDecimal num6 = subsidyCost.multiply(BigDecimal.valueOf(conditionNum + giveNum));
+                   BigDecimal num7 = (num5.subtract(num6)).compareTo(BigDecimal.ZERO) > 0 ? num5.subtract(num6) : BigDecimal.ZERO;
+                   BigDecimal num8 = num7.divide(promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).multiply(BigDecimal.ONE)).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
+               } else {
+                   pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
+               }
+               //设置促销分销毛利，补贴分销毛利率，满赠
+           } else if (promotionType.equals(2)) {
+             if (promotionDistributionPrice.compareTo(BigDecimal.ZERO)>=0) {
+
+//                 假设sku1买满X元赠sku2*N个，sku3*M个。X元/sku1的分销价，向上取整得到Y个
+//                 假设sku1买满Y个赠sku2*N个，sku3*M个。sku2的库存成本*N个+sku3的库存成本*M个=Z元
+
+                 if(ruleType.equals(0)){
+                   BigDecimal  conditionNum1=BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0,BigDecimal.ROUND_UP);
+                 }else {
+                     BigDecimal conditionNum1=BigDecimal.valueOf(conditionNum);
+                 }
+                BigDecimal z=BigDecimal.ZERO;
+                Float productConditionNum=pricePromotionProductMapper.getConditionNum(promotionId,pricePromotionProductRespVo.getBusinessId(),pricePromotionProductRespVo.getId());
+             //在没有赠送多种=的情况下
+               if (productConditionNum==null){
+                   for (String codes:
+                   pricePromotionProductMapper.getGiveCodes(pricePromotionProductRespVo.getBusinessId())) {
+                       List<BigDecimal> givePrices =   taxCostLogDao.loadPriceByProductCode(codes);
+                       PricePromotionDetailRespVo detailRespVo=   pricePromotionDetailMapper.loadById(pricePromotionProductRespVo.getBusinessId());
+                       BigDecimal stockPrice1;
+                       if (CollectionUtils.isNotEmptyCollection(givePrices)){
+                           //设置库存价格
+                           stockPrice1= givePrices.get(0);
+                       }else {
+                           //设置库存价格
+                            stockPrice1= BigDecimal.ZERO;
+                       }
+
+                       z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
+                   }
+
+               }else {
+                   List<Long> ids=pricePromotionDetailMapper.getBusinessIdForEnough(promotionId,productConditionNum);
+                   for (Long businessId:
+                   ids ) {
+                       for (String codes:
+                               pricePromotionProductMapper.getGiveCodes(businessId)) {
+                           List<BigDecimal> givePrices =   taxCostLogDao.loadPriceByProductCode(codes);
+                           PricePromotionDetailRespVo detailRespVo=   pricePromotionDetailMapper.loadById(pricePromotionProductRespVo.getBusinessId());
+                           BigDecimal stockPrice1;
+                           if (CollectionUtils.isNotEmptyCollection(givePrices)){
+                               //设置库存价格
+                               stockPrice1= givePrices.get(0);
+                           }else {
+                               //设置库存价格
+                               stockPrice1= BigDecimal.ZERO;
+                           }
+
+                           z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
+                       }
+                   }
+
+               }
+//                 促销分销毛利率：((促销分销价*Y-Z)-库存成本*Y)/(促销分销价*Y-Z)*100%
+                 BigDecimal num1 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).subtract(z);
+                 BigDecimal num2 = stockPrice.multiply(BigDecimal.valueOf(conditionNum));
+                 BigDecimal num3 = (num1.subtract(num2)).compareTo(BigDecimal.ZERO) > 0 ? num1.subtract(num2) : BigDecimal.ZERO;
+                 BigDecimal num4 = num3.divide(num1).multiply(BigDecimal.ONE).setScale(2, BigDecimal.ROUND_HALF_UP);
+                 pricePromotionProductRespVo.setDistributionGrossProfit(num4);
+
+//           补贴后分销毛利率：((促销分销价*Y-Z)-补贴后成本*Y)/(促销分销价*Y-Z)*100%
+                 BigDecimal num5 = promotionDistributionPrice.multiply(BigDecimal.valueOf(conditionNum)).subtract(z);
+                 BigDecimal num6 = subsidyCost.multiply(BigDecimal.valueOf(conditionNum));
+                 BigDecimal num7 = (num5.subtract(num6)).compareTo(BigDecimal.ZERO) > 0 ? num5.subtract(num6) : BigDecimal.ZERO;
+                 BigDecimal num8 = num7.divide(num5).multiply(BigDecimal.ONE).setScale(2, BigDecimal.ROUND_HALF_UP);
+                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
+
+             }else {
+                 pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
+                 pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
+             }
+
+           } else if (promotionType.equals(3)) {
+
+               if (promotionDistributionPrice.compareTo(BigDecimal.ZERO) >= 0) {
+
+                   BigDecimal conditionNum1;
+                   if (ruleType.equals(0)) {
+                       conditionNum1 = BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0, BigDecimal.ROUND_UP);
+                   } else {
+                       conditionNum1 = BigDecimal.valueOf(conditionNum);
+                   }
+                   //             满减：取标有测算标识的一行，
+//             假设sku1买满X元减N元。X元/sku1的分销价，向上取整得到Y个
+//             假设sku1买满Y个减N元。
+//             促销分销毛利率：((促销分销价*Y-N)-库存成本*Y)/(促销分销价*Y-N)*100%
+                   BigDecimal num1 = promotionDistributionPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum));
+                   BigDecimal num2 = stockPrice.multiply(conditionNum1);
+                   BigDecimal num3 = (stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
+                   BigDecimal num4 = (num1.subtract(num2)).divide(num3).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setDistributionGrossProfit(num4);
+
+//                     补贴后分销毛利率：((促销分销价*Y-N)-补贴后成本*Y)/(促销分销价*Y-N)*100%
+                   BigDecimal num5 = promotionDistributionPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum));
+                   BigDecimal num6 = subsidyCost.multiply(conditionNum1);
+                   BigDecimal num7 = (stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
+                   BigDecimal num8 = (num5.subtract(num6)).divide(num7).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
+               } else {
+                   pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
+               }
 
 
+           } else if (promotionType.equals(4)) {
+
+               if (promotionDistributionPrice.compareTo(BigDecimal.ZERO) >= 0) {
+
+                   BigDecimal conditionNum1;
+                   if (ruleType.equals(0)) {
+                       conditionNum1 = BigDecimal.valueOf(conditionNum).divide(promotionDistributionPrice).setScale(0, BigDecimal.ROUND_UP);
+                   } else {
+                       conditionNum1 = BigDecimal.valueOf(conditionNum);
+                   }
+//                 满折：取标有测算标识的一行，
+//                 假设sku1买满X元折扣N。X元/sku1的分销价，向上取整得到Y个
+//                 假设sku1买满Y个折扣N。
+//                 促销分销毛利率：((促销分销价*Y*N)-库存成本*Y)/(促销分销价*Y*N)*100%
+                   BigDecimal num1 = promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum));
+                   BigDecimal num2 = stockPrice.multiply(conditionNum1);
+                   BigDecimal num3 = (promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
+                   BigDecimal num4 = (num1.subtract(num2)).divide(num3).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setDistributionGrossProfit(num4);
+
+//                     补贴后分销毛利率：((促销分销价*Y*N)-补贴后成本*Y)/(促销分销价*Y*N)*100%
+                   BigDecimal num5 = promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum));
+                   BigDecimal num6 = subsidyCost.multiply(conditionNum1);
+                   BigDecimal num7 = (promotionDistributionPrice.multiply(conditionNum1).multiply(BigDecimal.valueOf(giveNum))).compareTo(BigDecimal.ZERO) > 0 ? stockPrice.multiply(conditionNum1).subtract(BigDecimal.valueOf(giveNum)) : BigDecimal.ONE;
+                   BigDecimal num8 = (num5.subtract(num6)).divide(num7).setScale(2, BigDecimal.ROUND_HALF_UP);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(num8);
+               } else {
+                   pricePromotionProductRespVo.setDistributionGrossProfit(BigDecimal.ZERO);
+                   pricePromotionProductRespVo.setSubsidyDistributionGrossProfit(BigDecimal.ZERO);
+               }
+
+           }
+
+       }
     }
 
     @Override

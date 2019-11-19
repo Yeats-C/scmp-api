@@ -34,8 +34,23 @@ public interface PricePromotionDetailMapper {
     List<PricePromotionDetailRespVo> loadByPromotionId(@Param("promotionId") Long promotionId);
 
     /**
+     * 根据id获取详情
+     * @param
+     * @return
+     */
+    PricePromotionDetailRespVo loadById(@Param("id") Long id);
+
+    /**
      * 删除在促销的规则
      * @param id
      */
     void deteleByPromotionId(@Param("promotionId")Long id);
+
+    /**
+     * 获取满赠重复的数量
+     * @param promotionId
+     * @param productConditionNum
+     * @return
+     */
+    List<Long> getBusinessIdForEnough(@Param("promotionId") Long promotionId, @Param("conditionNum") Float conditionNum);
 }

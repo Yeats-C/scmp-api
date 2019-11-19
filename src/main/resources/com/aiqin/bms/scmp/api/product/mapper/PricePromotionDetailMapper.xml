@@ -36,6 +36,25 @@
         where promotion_id = #{promotionId,jdbcType=BIGINT}
     </select>
 
+    <select id="loadById"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from price_promotion_detail
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <select id="getBusinessIdForEnough" resultType="java.lang.Long">
+        select
+        id
+        from price_promotion_detail
+        <where>
+            id = #{promotionId,jdbcType=BIGINT}
+       and condition_num=#{conditionNum,jdbcType=FLOAT}
+        </where>
+        where
+
+    </select>
+
     <delete id="deteleByPromotionId" parameterType="java.lang.Long">
         delete from price_promotion_detail
         where promotion_id = #{promotionId,jdbcType=BIGINT}

@@ -25,11 +25,16 @@ public interface PricePromotionProductMapper {
     BasePage<PricePromotionRespVo> list(PricePromotionReqVo priceApplyPromotionReqVo);
 
     /**
-     * 获取赠送codes
-     * @param promotionId
-     * @param businessId
-     * @param productCode
+     * 获取赠送是否有重复的条件数量
      * @return
      */
-    List<PricePromotionProductRespVo> getGiveCodes(Long promotionId, Long businessId, String productCode);
+    Float getConditionNum(@Param("promotionId")Long promotionId,@Param("businessId") Long businessId,@Param("productId") Long productId);
+
+    /**
+     * 获取满赠商品code
+     * @param businessId
+     * @return
+     */
+    List<String> getGiveCodes(Long businessId);
+
 }
