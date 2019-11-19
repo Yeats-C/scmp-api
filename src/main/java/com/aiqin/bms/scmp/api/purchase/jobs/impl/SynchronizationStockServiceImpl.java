@@ -32,8 +32,8 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
     //数据库地址
     private final static String DRIVER = "com.mysql.jdbc.Driver";
     private final static String URL = "jdbc:mysql://39.105.36.111:1024/dareader?useSSL=false&useUnicode=true&characterEncoding=UTF-8";
-    private static final String USERNAME = "dareader1";
-    private static final String PASSWORD = "DA-Reader-20190110@1344";
+    private static final String USERNAME = "dareader";
+    private static final String PASSWORD = "x4p6ayYI6yvE6AvKorTG";
     @Resource
     private ProductSkuDao productSkuDao;
     @Resource
