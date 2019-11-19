@@ -265,7 +265,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
                             stockPrice1= BigDecimal.ZERO;
                        }
 
-                       z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
+                       z=z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
                    }
 
                }else {
@@ -285,7 +285,7 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
                                stockPrice1= BigDecimal.ZERO;
                            }
 
-                           z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
+                           z=z.add(BigDecimal.valueOf(detailRespVo.getGiveNum()).multiply(stockPrice1));
                        }
                    }
 
