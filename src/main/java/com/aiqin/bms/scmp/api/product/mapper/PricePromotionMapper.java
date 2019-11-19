@@ -1,7 +1,5 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
 import org.apache.ibatis.annotations.Mapper;

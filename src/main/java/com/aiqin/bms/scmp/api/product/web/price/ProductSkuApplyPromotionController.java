@@ -121,7 +121,7 @@ public class ProductSkuApplyPromotionController {
     @PostMapping("/generatePromotion")
     @ApiOperation("生成促销单")
     public HttpResponse<Boolean> generatePromotion(@RequestBody PricePromotionReqVo pricePromotionReqVo) {
-        log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(pricePromotionReqVo));
+//        log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(pricePromotionReqVo));
         try {
             return HttpResponse.success(productApplyPromotionService.generatePromotion(pricePromotionReqVo));
         } catch (BizException e) {

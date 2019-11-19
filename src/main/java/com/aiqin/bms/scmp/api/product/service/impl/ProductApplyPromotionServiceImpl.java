@@ -7,9 +7,6 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.dao.TaxCostLogDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfig;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuConfigSpareWarehouse;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfigSpareWarehouse;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionDetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
@@ -20,9 +17,11 @@ import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProduc
 import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyPromotionService;
-import com.aiqin.bms.scmp.api.product.service.ProductSkuConfigService;
 import com.aiqin.bms.scmp.api.supplier.mapper.PurchaseGroupBuyerMapper;
-import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
@@ -32,11 +31,8 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.github.pagehelper.PageHelper;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import org.apache.commons.lang.StringUtils;
-import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,7 +41,6 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * @Auther: mamingze
@@ -132,6 +127,9 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
 
     @Override
     public Boolean updateOrDelete(PriceApplyPromotionReqVo priceApplyPromotionReqVo,Integer type) {
+        if (StringUtils.isEmpty(String.valueOf(type))){
+            throw new BizException("参数为空");
+        }
         //进行调整
        if(type==1){
            //把规则下面的产品
