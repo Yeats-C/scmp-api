@@ -156,11 +156,10 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         for (PricePromotionDetailRespVo pricePromotionDetailRespVo:
         pricePromotionDetailRespVoList) {
             List<PricePromotionProductRespVo> pricePromotionProductRespVoList=pricePromotionProductMapper.loadByBusinessId(pricePromotionDetailRespVo.getId());
-            pricePromotionProductRespVoList.stream().filter(x->x.getProductType().equals(1));
             for (PricePromotionProductRespVo pricePromotionProductRespVo:
             pricePromotionProductRespVoList) {
                 //对有测算标识进行计算
-                if(pricePromotionDetailRespVo.getIsSign()==1&&pricePromotionProductRespVo.getProductType()==1){
+                if(pricePromotionDetailRespVo.getIsSign()==0&&pricePromotionProductRespVo.getProductType()==1){
                     calculationProduct(pricePromotionProductRespVo,
                             priceApplyPromotionRespVo.getCategoriesSupplyChannelsCode(),
                             pricePromotionDetailRespVo.getPromotionType(),
