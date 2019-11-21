@@ -329,6 +329,32 @@ mgs:
         methods:
         - code: SCMP005001001
           name: 新建变价
+      - code: SCMP005002
+        name: 促销申请管理
+        link: '/price/promotionApply'
+        methods:
+        - code: SCMP005002001
+          name: 新增
+        - code: SCMP005002002
+          name: 查询
+        - code: SCMP005002003
+          name: 编辑
+        - code: SCMP005002004
+          name: 查看
+        - code: SCMP005002005
+          name: 取消
+        - code: SCMP005002006
+          name: 生成促销单
+      - code: SCMP005003
+        name: 促销管理
+        link: '/price/promotion'
+        methods:
+        - code: SCMP005003001
+          name: 查询
+        - code: SCMP005003002
+          name: 查看
+        - code: SCMP005003003
+          name: 取消
     - code: SCMP006
       name: 采购管理
       link: ''
