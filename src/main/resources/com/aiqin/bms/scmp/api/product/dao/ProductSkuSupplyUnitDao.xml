@@ -271,8 +271,8 @@
     <id column="aid" jdbcType="BIGINT" property="id" />
     <result column="asupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="asupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="ano_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="atax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
+    <result column="ano_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="atax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
     <result column="ajoint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
     <result column="apoint" jdbcType="BIGINT" property="point" />
     <result column="atax_rate" jdbcType="BIGINT" property="taxRate" />

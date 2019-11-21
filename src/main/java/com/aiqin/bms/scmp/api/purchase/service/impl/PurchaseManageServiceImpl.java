@@ -489,7 +489,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
         if(CollectionUtils.isNotEmptyCollection(list)){
             for(PurchaseOrderResponse order:list){
-                // 计算实际单品数量，实际含税采购金额， 实际实物返金额
+                // 计算实际单品数量，实际含税采购金额， 实际实物返金额。
                 Integer actualSingleCount = 0;
                 BigDecimal actualTotalAmount = big, actualReturnAmount = big, actualGiftTaxSum = big;
                 BigDecimal productTotalAmount = big, returnAmount = big, giftTaxSum = big;
@@ -1297,6 +1297,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
                     productPieceSum += purchaseWhole;
                     productSingleSum += singleCount;
+                    //进行运算
                     productTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
                     matterPieceSum += purchaseWhole;
