@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.PricePromotionProductMapper">
+    <resultMap id="BaseResultMap"
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="business_id" jdbcType="BIGINT" property="businessId"/>
+        <result column="product_type" jdbcType="INTEGER" property="productType"/>
+        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="category" jdbcType="VARCHAR" property="category"/>
+        <result column="attribute" jdbcType="VARCHAR" property="attribute"/>
+        <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate"/>
+        <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
+        <result column="promotion_distribution_price" jdbcType="DECIMAL" property="promotionDistributionPrice"/>
+        <result column="subsidy_cost" jdbcType="DECIMAL" property="subsidyCost"/>
+        <result column="is_sign" jdbcType="INTEGER" property="isSign"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        id, business_id, product_type, product_code, product_name, category, attribute, begin_date,
+        end_date, promotion_distribution_price, subsidy_cost,is_sign
+    </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        select
+        <include refid="Base_Column_List"/>
+        from price_promotion_product
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="loadByBusinessId" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from price_promotion_product
+        where business_id = #{businessId,jdbcType=BIGINT}
+    </select>
+
+
+    <select id="getConditionNum" resultType="java.lang.Float">
+        SELECT pd.condition_num FROM price_promotion_product pp
+         LEFT JOIN
+	   price_promotion_detail pd on pp.business_id = pd.id
+          WHERE
+	    pd.promotion_type = 2
+        and pp.product_type=1
+        AND pd.promotion_id = #{promotionId,jdbcType=BIGINT}
+        and pp.id =#{productId,jdbcType=BIGINT}
+         and	pd.condition_num IN (
+		SELECT
+			condition_num
+		FROM
+			price_promotion_detail
+        WHERE
+	        promotion_type = 2
+           AND pd.promotion_id = #{promotionId,jdbcType=BIGINT}
+		GROUP BY
+			condition_num
+		HAVING
+			Count(condition_num) > 1
+	      ) GROUP BY
+			pd.condition_num,pd.give_num
+    </select>
+
+
+    <select id="getGiveCodes" resultType="java.lang.String">
+         SELECT product_code FROM price_promotion_product
+         <where>
+             business_id= #{businessId,jdbcType=BIGINT}
+         </where>
+    </select>
+
+
+
+    <delete id="deteleByBusinessId" parameterType="java.lang.Long">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        delete from price_promotion_product
+        where business_id = #{businessId,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        insert into price_promotion_product (id, business_id, product_type,
+        product_code, product_name, category,
+        attribute, begin_date, end_date,
+        promotion_distribution_price, subsidy_cost
+        )
+        values (#{id,jdbcType=BIGINT}, #{businessId,jdbcType=BIGINT}, #{productType,jdbcType=INTEGER},
+        #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR}, #{category,jdbcType=VARCHAR},
+        #{attribute,jdbcType=VARCHAR}, #{beginDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP},
+        #{promotionDistributionPrice,jdbcType=DECIMAL}, #{subsidyCost,jdbcType=DECIMAL}
+        )
+    </insert>
+    <insert id="insertSelective" parameterType="java.util.List">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        insert into price_promotion_product
+        (id, business_id, product_type,
+        product_code, product_name, category,
+        attribute, begin_date, end_date,
+        promotion_distribution_price, subsidy_cost
+        )
+        values
+        <foreach collection="pricePromotionProductReqVoList" item="vo" index="vo" separator=",">
+            (
+            #{vo.id,jdbcType=BIGINT},
+            #{vo.businessId,jdbcType=BIGINT},
+            #{vo.productType,jdbcType=INTEGER},
+            #{vo.productCode,jdbcType=VARCHAR},
+            #{vo.productName,jdbcType=VARCHAR},
+            #{vo.category,jdbcType=VARCHAR},
+            #{vo.attribute,jdbcType=VARCHAR},
+            #{vo.beginDate,jdbcType=TIMESTAMP},
+            #{vo.endDate,jdbcType=TIMESTAMP},
+            #{vo.promotionDistributionPrice,jdbcType=DECIMAL},
+            #{vo.subsidyCost,jdbcType=DECIMAL}
+            )
+        </foreach>
+    </insert>
+    <update id="updateByPrimaryKeySelective"
+            parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        update price_promotion_product
+        <set>
+            <if test="businessId != null">
+                business_id = #{businessId,jdbcType=BIGINT},
+            </if>
+            <if test="productType != null">
+                product_type = #{productType,jdbcType=INTEGER},
+            </if>
+            <if test="productCode != null">
+                product_code = #{productCode,jdbcType=VARCHAR},
+            </if>
+            <if test="productName != null">
+                product_name = #{productName,jdbcType=VARCHAR},
+            </if>
+            <if test="category != null">
+                category = #{category,jdbcType=VARCHAR},
+            </if>
+            <if test="attribute != null">
+                attribute = #{attribute,jdbcType=VARCHAR},
+            </if>
+            <if test="beginDate != null">
+                begin_date = #{beginDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="promotionDistributionPrice != null">
+                promotion_distribution_price = #{promotionDistributionPrice,jdbcType=DECIMAL},
+            </if>
+            <if test="subsidyCost != null">
+                subsidy_cost = #{subsidyCost,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey"
+            parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo">
+        <!--
+          This element was generated on Tue Nov 05 10:33:06 CST 2019.
+        -->
+        update price_promotion_product
+        set business_id = #{businessId,jdbcType=BIGINT},
+        product_type = #{productType,jdbcType=INTEGER},
+        product_code = #{productCode,jdbcType=VARCHAR},
+        product_name = #{productName,jdbcType=VARCHAR},
+        category = #{category,jdbcType=VARCHAR},
+        attribute = #{attribute,jdbcType=VARCHAR},
+        begin_date = #{beginDate,jdbcType=TIMESTAMP},
+        end_date = #{endDate,jdbcType=TIMESTAMP},
+        promotion_distribution_price = #{promotionDistributionPrice,jdbcType=DECIMAL},
+        subsidy_cost = #{subsidyCost,jdbcType=DECIMAL}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

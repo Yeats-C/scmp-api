@@ -96,8 +96,7 @@
   </select>
 
     <select id="selectBySkuCode" parameterType="java.lang.String" resultMap="BaseResultMap">
-        select
-        <include refid="Base_Column_List" />
+        select *
         from product_sku
         where sku_code = #{skuCode,jdbcType=VARCHAR}
     </select>

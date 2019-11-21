@@ -86,6 +86,12 @@ public class ProductSkuFileRespVo {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
+    @ApiModelProperty("商品类别(部门)code")
+    private String productSortCode;
+
+    @ApiModelProperty("商品类别(部门)名称")
+    private String productSortName;
+
     @ApiModelProperty("所属文件列表")
     private List<ProductSkuFileRespVO> productSkuFileList;
 
