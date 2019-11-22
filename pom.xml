@@ -131,7 +131,7 @@
         </dependency>
         <dependency>
             <groupId>com.aiqin.platform.flows</groupId>
-            <artifactId>flows-client-test</artifactId>
+            <artifactId>flows-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
