@@ -73,10 +73,10 @@ public class ProductSkuInfo extends CommonBean {
     @ApiModelProperty("保质管理（0:管理 1:不管理）")
     private Byte qualityAssuranceManagement;
 
-    @ApiModelProperty("商品类别code")
+    @ApiModelProperty("商品类别(部门)code")
     private String productSortCode;
 
-    @ApiModelProperty("商品类别名称")
+    @ApiModelProperty("商品类别(部门)名称")
     private String productSortName;
 
     @ApiModelProperty("保质数量")

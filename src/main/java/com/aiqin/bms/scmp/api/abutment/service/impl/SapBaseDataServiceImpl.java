@@ -558,6 +558,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 if ((null != inbounds) && (inbounds.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || inbounds.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))) {
                     storageDetail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().intValue());
                     storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
+                    // 查询商品类型
+                    PurchaseOrderProduct orderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(batch.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLinenum().intValue());
+                    if(orderProduct != null && orderProduct.getProductType() != null){
+                        if(orderProduct.getProductType() == 1){
+                            storageDetail.setProductType(10);
+                        }else if(orderProduct.getProductType() == 2){
+                            storageDetail.setProductType(5);
+                        }else if(orderProduct.getProductType() == 0){
+                            storageDetail.setProductType(0);
+                        }
+                    }
                 }
                 //厂商指导价
                 storageDetail.setGuidePrice(productMap.containsKey(inboundProduct.getSkuCode()) ? productMap.get(inboundProduct.getSkuCode()).toString() : "0");
@@ -675,6 +686,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 if ((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))) {
                     storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
                     storageDetail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().intValue());
+                    // 查询商品类型 TODO
+
                 }
                 //厂商指导价
                 storageDetail.setGuidePrice(productMap.containsKey(outboundProduct.getSkuCode()) ? productMap.get(outboundProduct.getSkuCode()).toString() : "0");

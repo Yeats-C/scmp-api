@@ -171,4 +171,9 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("所属文件列表")
     private List<ProductSkuFile> productSkuFileList;
 
+    @ApiModelProperty("sku商品文件管理采购组名称")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("sku商品文件管理采购组编码")
+    private String purchaseGroupCode;
 }
