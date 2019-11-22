@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuManufacturer;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuManufacturer;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuManufacturerDraft;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.ProductSkuManufacturerReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuManufacturerRespVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -41,4 +42,13 @@ public interface ProductSkuManufacturerDao {
     List<ApplyProductSkuManufacturer> getApply(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
 
     List<ProductSkuManufacturerRespVo> getApplys(@Param("skuCode") String skuCode, @Param("applyCode") String applyCode);
+
+    /**
+     * 根据条件获取正式数据,商品供应商管理
+     * @param productSkuManufacturerReqVO
+     * @return
+     */
+    List<ProductSkuManufacturerRespVo> getPageList(ProductSkuManufacturerReqVO productSkuManufacturerReqVO);
+
+    void deleteById(@Param("id") Long id);
 }

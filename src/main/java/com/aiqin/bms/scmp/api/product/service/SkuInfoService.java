@@ -294,12 +294,12 @@ public interface SkuInfoService{
     Boolean exportSku(HttpServletResponse resp);
 
     /**
-     * 通过skuCode导出
+     * 通过skuCode导出sku正式数据
      * @param resp
-     * @param skuCode
+     * @param skuCodeList
      * @return
      */
-    Boolean exportFormalSkuBySkuCode(HttpServletResponse resp, String skuCode);
+    Boolean exportFormalSkuBySkuCode(HttpServletResponse resp, List<String> skuCodeList);
 
     Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
 

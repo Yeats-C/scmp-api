@@ -51,4 +51,10 @@ public interface ProSuggestReplenishmentDao {
     Long biAppSuggestReplenishmentAll(@Param("transportCenterCode") String transportCenterCode,
                                       @Param("skuCode") String skuCode,
                                       @Param("warehouseCode") String warehouseCode);
+
+    /**
+     *  促销月销量
+     * @return
+     */
+    Long biAppSuggestReplenishmentAllForPromotion(@Param("skuCode") String skuCode);
 }

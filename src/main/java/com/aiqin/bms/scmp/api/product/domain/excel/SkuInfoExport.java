@@ -163,9 +163,9 @@ public class SkuInfoExport extends BaseRowModel {
     @ExcelProperty(index = 32, value = "库存净重")
     private String stockNetWeight;
 
-    @ApiModelProperty("条形码")
-    @ExcelProperty(index = 33, value = "库存条形码")
-    private String stockBarCode;
+    // @ApiModelProperty("条形码")
+    // @ExcelProperty(index = 33, value = "库存条形码")
+    // private String stockBarCode;
 
     @ApiModelProperty("规格")
     @ExcelProperty(index = 34, value = "采购规格")

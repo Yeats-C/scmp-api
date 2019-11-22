@@ -131,4 +131,14 @@ public interface EncodingRuleType {
      * 监管库订单编号
      */
     String SUPERVISORY_WAREHOUSE_ORDER_CODE = "SUPERVISORY_WAREHOUSE_ORDER_CODE";
+
+    /**
+     * 促销申请编号
+     */
+    String APPLY_PROMOTION_NO = "APPLY_PROMOTION_NO";
+
+    /**
+     * 促销编号
+     */
+    String PROMOTION_NO = "PROMOTION_NO";
 }

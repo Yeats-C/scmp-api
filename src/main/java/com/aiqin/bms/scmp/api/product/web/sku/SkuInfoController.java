@@ -19,6 +19,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -294,24 +295,18 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/exportSkuInfo")
-    @ApiOperation("导出审批通过的sku信息")
-    public HttpResponse<Boolean> exportSkuByQuery(@RequestBody QuerySkuListReqVO querySkuListReqVO){
-        // todo
-        // try {
-        //     return HttpResponse.successGenerics(skuInfoService.exportFormalSku(querySkuListReqVO));
-        // } catch (BizException e) {
-        //     return HttpResponse.failure(e.getMessageId());
-        // }catch (Exception e) {
-        //     log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        // }
-    }
     @GetMapping("/exportSkuInfo")
-    @ApiOperation("导出审批通过的sku信息,通过skuCode")
-    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String skuCode){
+    @ApiOperation("导出审批通过的sku信息,多个skuCode通过逗号隔开")
+    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String skuCode) {
+        List<String> list;
+        if (StringUtils.isNotBlank(skuCode)) {
+            String[] split = skuCode.split(",");
+            list = Lists.newArrayList(split);
+        } else {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
         try {
-            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCode));
+            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, list));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {
@@ -319,6 +314,7 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
     @GetMapping("/exportAddSku")
     public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);

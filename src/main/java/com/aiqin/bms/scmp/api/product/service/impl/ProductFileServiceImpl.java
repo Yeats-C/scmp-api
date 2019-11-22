@@ -29,6 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -53,7 +55,7 @@ public class ProductFileServiceImpl extends BaseServiceImpl implements ProductFi
 
 
     @Override
-    public HttpResponse loadFileProduct(@Valid @NotNull(message = "传入code不能为空") String code) {
+    public HttpResponse loadFileProduct(@Valid @NotNull(message = "传入code不能为空") String code) throws ParseException {
         ProductSkuFileRespVo productSkuFileRespVo = new ProductSkuFileRespVo();
         ProductSkuInfo productSkuInfo =productSkuInfoMapper.selectBySkuCode(code);
         if (null==productSkuInfo){
@@ -61,12 +63,23 @@ public class ProductFileServiceImpl extends BaseServiceImpl implements ProductFi
         }
         BeanCopyUtils.copy(productSkuInfo, productSkuFileRespVo);
         List<ProductSkuFileRespVO> productSkuFileList = productSkuFileDao.getInfoBySkuCode(productSkuFileRespVo.getSkuCode());
+
+        for (ProductSkuFileRespVO productSkuFileRespVO:
+        productSkuFileList ) {
+            if (productSkuFileRespVO.getCreateTime()!=null&&String.valueOf(productSkuFileRespVO.getCreateTime())!=""){
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String str=sdf.format(productSkuFileRespVO.getCreateTime());
+            Date time=sdf.parse(str);
+            productSkuFileRespVO.setCreateTime(time);
+            }
+        }
+
         productSkuFileRespVo.setProductSkuFileList(productSkuFileList);
         return HttpResponse.success(productSkuFileRespVo);
     }
 
     @Override
-    public HttpResponse updateOrAdd(ProductSkuFileReqVo productSkuFileRespVo) {
+    public HttpResponse updateOrAdd(ProductSkuFileReqVo productSkuFileRespVo) throws ParseException {
         if(null == productSkuFileRespVo || StringUtils.isBlank(productSkuFileRespVo.getFileName())
                 || StringUtils.isBlank(productSkuFileRespVo.getFilePath()) || StringUtils.isBlank(productSkuFileRespVo.getSkuCode())
                 || StringUtils.isBlank(productSkuFileRespVo.getSkuCode())){
@@ -87,7 +100,17 @@ public class ProductFileServiceImpl extends BaseServiceImpl implements ProductFi
             productSkuFileList.add(productSkuFile);
             //进行数据库的存储
              productSkuFileDao.insertSkuFileList(productSkuFileList);
-            return HttpResponse.success(productSkuFileDao.getInfo(productSkuFile.getSkuCode()));
+            List<ProductSkuFileRespVO> productSkuFiles = productSkuFileDao.getInfoBySkuCode(productSkuFileRespVo.getSkuCode());
+            for (ProductSkuFileRespVO productSkuFileRespVO:
+                    productSkuFiles ) {
+                if (productSkuFileRespVO.getCreateTime()!=null&&String.valueOf(productSkuFileRespVO.getCreateTime())!=""){
+                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String str=sdf.format(productSkuFileRespVO.getCreateTime());
+                    Date time=sdf.parse(str);
+                    productSkuFileRespVO.setCreateTime(time);
+                }
+            }
+            return HttpResponse.success(productSkuFiles);
         }
         productSkuFile.setUpdateBy(userName);
         productSkuFile.setUpdateTime(new Date());
