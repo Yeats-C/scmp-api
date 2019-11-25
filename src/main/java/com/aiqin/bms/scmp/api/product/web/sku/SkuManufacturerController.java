@@ -67,7 +67,7 @@ public class SkuManufacturerController {
 
     @PostMapping("/save")
     @ApiOperation("保存商品制造商信息")
-    public HttpResponse update(@RequestBody ProductSkuManufacturerListReqVO productSkuManufacturerListReqVO) {
+    public HttpResponse save(@RequestBody ProductSkuManufacturerListReqVO productSkuManufacturerListReqVO) {
         List<ProductSkuManufacturer> manufacturerList = productSkuManufacturerListReqVO.getManufacturerList();
         log.info("SkuInfoController---save---入参：[{}]", JSON.toJSONString(manufacturerList));
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -77,7 +77,12 @@ public class SkuManufacturerController {
         if (CollectionUtils.isNotEmptyCollection(manufacturerList)) {
             Date now = new Date();
             manufacturerList.forEach(item -> {
-                item.setCreateTime(now);
+                if(Objects.isNull(item.getCreateTime())) {
+                    item.setCreateTime(now);
+                }
+                if(Objects.isNull(item.getCreateBy())) {
+                    item.setCreateBy(currentAuthToken.getPersonName());
+                }
                 item.setUpdateTime(now);
                 item.setDelFlag((byte) 0);
                 item.setCreateBy(currentAuthToken.getPersonName());

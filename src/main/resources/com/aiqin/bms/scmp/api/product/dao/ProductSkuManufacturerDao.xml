@@ -112,7 +112,7 @@
     SELECT id, manufacturer_name,manufacturer_code,
     factory_product_number, is_default, address,
     del_flag, create_time, create_by,
-    update_time, update_by, product_sku_code,
+    update_time, update_by, product_sku_code,usage_status,
     product_sku_name FROM product_sku_manufacturer where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuManufacturerMap">

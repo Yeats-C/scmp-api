@@ -223,7 +223,7 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
         for (int i = 0; i < importList.size(); i++) {
             // 检查信息
             StringBuilder stringBuilder = new StringBuilder();
-            // 检查skuCode否为空
+            // 检查skuCode
             if (StringUtils.isBlank(importList.get(i).getProductSkuCode())) {
                 stringBuilder.append("sku编号不能为空;");
             } else {
@@ -235,6 +235,10 @@ public class ProductSkuManufacturerServiceImpl implements ProductSkuManufacturer
                     // 从数据库取skuName
                     importList.get(i).setProductSkuName(skuInfo.getProductName());
                 }
+            }
+            // 检查制造商
+            if (StringUtils.isBlank(importList.get(i).getManufacturerCode())) {
+                stringBuilder.append("制造商编码不能为空;");
             }
             // 默认值
             if (StringUtils.isBlank(importList.get(i).getIsDefaultDesc())) {
