@@ -557,11 +557,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
                             applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
                         }
-                        // 获取最高采购价(价格管理中供应商的含税价格)
-                        if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
-                            BigDecimal priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
-                            applyProduct.setPurchaseMax(priceTax == null ? big : priceTax);
-                        }
                         Integer baseProductContent = applyProduct.getBaseProductContent();
                         if (StringUtils.isNotBlank(record[4]) && baseProductContent != 0) {
                             Integer count = Double.valueOf(record[4]).intValue();

@@ -62,6 +62,8 @@ public class ProductFileServiceImpl extends BaseServiceImpl implements ProductFi
            return HttpResponse.failure(ResultCode.FIND_NULL);
         }
         BeanCopyUtils.copy(productSkuInfo, productSkuFileRespVo);
+        productSkuFileRespVo.setProductSortName(productSkuInfo.getProductSortName());
+        productSkuFileRespVo.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
         List<ProductSkuFileRespVO> productSkuFileList = productSkuFileDao.getInfoBySkuCode(productSkuFileRespVo.getSkuCode());
 
         for (ProductSkuFileRespVO productSkuFileRespVO:
