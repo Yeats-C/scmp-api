@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.StockFlowRequest;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface StockFlowDao {
@@ -26,6 +27,6 @@ public interface StockFlowDao {
     /**
      * 回显出库库存成本
      */
-    Integer updateStockCost(@Param("stockCost")Long stockCost, @Param("documentNum")String documentNum, @Param("skuCode")String skuCode);
+    Integer updateStockCost(@Param("stockCost") BigDecimal stockCost, @Param("documentNum")String documentNum, @Param("skuCode")String skuCode);
 
 }

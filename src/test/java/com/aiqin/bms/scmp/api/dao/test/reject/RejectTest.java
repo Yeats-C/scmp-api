@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -163,8 +164,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");
         detail.setWarehouseName("华北销售库");
-        detail.setProductAmount(10L);
-        detail.setProductCost(10L);
+        detail.setProductAmount(BigDecimal.valueOf(10));
+        detail.setProductCost(BigDecimal.valueOf(10));
         detail.setBatchNo("123456788");
         detail.setBatchCreateTime("2019-06-28");
         detail.setBatchRemark("第二次入库");
@@ -201,8 +202,8 @@ public class RejectTest extends SpringBootTestContext {
         detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");
         detail.setWarehouseName("华北销售库");
-        detail1.setProductAmount(10L);
-        detail1.setProductCost(10L);
+        detail1.setProductAmount(BigDecimal.valueOf(10));
+        detail1.setProductCost(BigDecimal.valueOf(10));
         detail1.setBatchNo("123456788");
         detail1.setBatchCreateTime("2019-06-28");
         detail1.setBatchRemark("第二次入库");

@@ -38,7 +38,7 @@ import javax.sql.DataSource;
  * 　　　　┃　　　┃神兽保佑, 永无BUG!
  * 　　　　┃　　　┃Code is far away from bug with the animal protecting
  * 　　　　┃　　　┗━━━┓
- * 　　　　┃　　　　　　　┣┓
+ * 　　　　┃　　　　　　　┣┓sku/info
  * 　　　　┃　　　　　　　┏┛
  * 　　　　┗┓┓┏━┳┓┏┛
  * 　　　　　┃┫┫　┃┫┫

@@ -16,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStoc
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
-import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
@@ -25,7 +24,6 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -41,10 +39,9 @@ import java.util.List;
 @RequestMapping("/stock")
 @Slf4j
 public class StockController {
+
     @Resource
     private StockService stockService;
-    @Autowired
-    private InboundService inboundService;
 
     @PostMapping("/search/page")
     @ApiOperation(value = "总库存管理列表")
@@ -129,7 +126,6 @@ public class StockController {
     public HttpResponse reduceUnlockStock(@RequestBody UpdateOutBoundReqVO reqVo){
         return stockService.reduceUnlockStock(reqVo);
     }
-
 
     @PostMapping("/search/merchant")
     @ApiOperation(value = "门店库存查询")
@@ -269,9 +265,10 @@ public class StockController {
         stockService.updateStorehouseById(stockRespVO);
         return  HttpResponse.success();
     }
+
     @PostMapping("change/stock/batch")
     @ApiOperation(value = "批次库存修改")
-    public HttpResponse changeStockBatch(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
+    public HttpResponse changeStockBatch(@RequestBody StockChangeRequest stockChangeRequest){
         return stockService.changeStockBatch(stockChangeRequest);
     }
 

@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.purchase.domain.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -38,7 +40,7 @@ public class ReturnDetailRequest {
     private String skuCode;
 
     @ApiModelProperty("渠道单价")
-    private Long channelUnitPrice;
+    private BigDecimal channelUnitPrice;
 
     @ApiModelProperty("数量")
     private Long num;

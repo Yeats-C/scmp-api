@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -44,15 +45,15 @@ public class RejectApplyRecord {
 
     @ApiModelProperty(value = "商品含税金额")
     @JsonProperty("sum_amount")
-    private Long sumAmount;
+    private BigDecimal sumAmount;
 
     @ApiModelProperty(value = "实物返商品含税金额")
     @JsonProperty("sum_return_amount")
-    private Long sumReturnAmount;
+    private BigDecimal sumReturnAmount;
 
     @ApiModelProperty(value = "赠品含税金额")
     @JsonProperty("sum_gift_amount")
-    private Long sumGiftAmount;
+    private BigDecimal sumGiftAmount;
 
     @ApiModelProperty(value="是否删除 0 否 1是")
     @JsonProperty("status")

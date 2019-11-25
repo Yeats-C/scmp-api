@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 public class NumberConvertUtils {
     public static Long stringParseLong(String s) {
         BigDecimal temp = new BigDecimal(s);
-        temp = temp.setScale(2,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(100));
+        temp = temp.setScale(2,BigDecimal.ROUND_HALF_UP).multiply(BigDecimal.valueOf(1));
         return temp.longValue();
     }
     public static BigDecimal stringParseBigDecimal(String s) {

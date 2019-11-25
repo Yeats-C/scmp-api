@@ -92,7 +92,7 @@ public interface ProductSkuPriceInfoMapper {
      */
     ProductSkuPriceInfoRespVO selectInfoByCode(String code);
 
-    Long selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
+    BigDecimal selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
     /**
      * 通过sku编码查询sku信息
      * @author NullPointException

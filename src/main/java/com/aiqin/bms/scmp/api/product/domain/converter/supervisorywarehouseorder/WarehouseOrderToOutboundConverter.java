@@ -15,6 +15,7 @@ import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -58,8 +59,8 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
         List<OutboundBatch> outboundBatchReqVos = Lists.newArrayList();
         Long preInboundNum = 0L;
         Long preInboundMainNum = 0L;
-        Long preTaxAmount = 0L;
-        Long preNoTaxAmount = 0L;
+        BigDecimal preTaxAmount = BigDecimal.ZERO;
+        BigDecimal preNoTaxAmount = BigDecimal.ZERO;
         List<SupervisoryWarehouseOrderProduct> records = order.getRecords();
         for (SupervisoryWarehouseOrderProduct record : records) {
             OutboundProductReqVo reqVo1 = new OutboundProductReqVo();
@@ -78,8 +79,8 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             reqVo1.setOutboundBaseContent(record.getBaseProductContent().toString());
             reqVo1.setPreOutboundNum(record.getNum().longValue());
             reqVo1.setPreOutboundMainNum(record.getSingleCount().longValue());
-            reqVo1.setPreTaxPurchaseAmount(record.getProductAmount().longValue());
-            reqVo1.setPreTaxAmount(record.getProductTotalAmount().longValue());
+            reqVo1.setPreTaxPurchaseAmount(record.getProductAmount());
+            reqVo1.setPreTaxAmount(record.getProductTotalAmount());
             reqVo1.setCreateBy(record.getCreateBy());
             reqVo1.setCreateTime(record.getCreateTime());
             reqVo1.setUpdateBy(record.getUpdateBy());
@@ -100,8 +101,8 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
             batch.setLineNum(record.getLineNum().longValue());
             preInboundNum += record.getNum().intValue();
             preInboundMainNum += record.getSingleCount().intValue();
-            preTaxAmount += record.getProductTotalAmount();
-            preNoTaxAmount += Calculate.computeNoTaxPrice(record.getProductTotalAmount().longValue(), record.getTaxRate().longValue());
+            preTaxAmount = record.getProductTotalAmount().add(preTaxAmount);
+            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getProductTotalAmount(), BigDecimal.valueOf(record.getTaxRate().longValue()).add(preNoTaxAmount));
             list.add(reqVo1);
             outboundBatchReqVos.add(batch);
         }
@@ -109,7 +110,7 @@ public class WarehouseOrderToOutboundConverter implements Converter<SupervisoryW
         outboundReqVo.setPreMainUnitNum(preInboundMainNum);
         outboundReqVo.setPreTaxAmount(preTaxAmount);
         outboundReqVo.setPreAmount(preNoTaxAmount);
-        outboundReqVo.setPreTax(preTaxAmount-preNoTaxAmount);
+        outboundReqVo.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         outboundReqVo.setOutboundBatches(outboundBatchReqVos);
         outboundReqVo.setList(list);
         return outboundReqVo;

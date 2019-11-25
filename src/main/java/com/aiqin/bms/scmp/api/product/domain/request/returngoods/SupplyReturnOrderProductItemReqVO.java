@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Description:
  * 退货订单的商品信息
@@ -51,10 +53,10 @@ public class SupplyReturnOrderProductItemReqVO {
     private Long num;
 
     @ApiModelProperty("总价")
-    private Long amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("优惠分摊")
     private Long preferentialAllocation;

@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -116,16 +117,16 @@ public class OrderInfo {
     private Long deliverAmount;
 
     @ApiModelProperty("商品分销价总金额")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("商品渠道价总金额")
-    private Long productChannelTotalAmount;
+    private BigDecimal productChannelTotalAmount;
 
     @ApiModelProperty("优惠额度")
-    private Long discountAmount;
+    private BigDecimal discountAmount;
 
     @ApiModelProperty("订单金额")
-    private Long orderAmount;
+    private BigDecimal orderAmount;
 
     @ApiModelProperty("商品数量")
     private Long productNum;
@@ -224,10 +225,10 @@ public class OrderInfo {
     private Date updateTime;
 
     @ApiModelProperty("实际渠道总价")
-    private Long actualProductChannelTotalAmount;
+    private BigDecimal actualProductChannelTotalAmount;
 
     @ApiModelProperty("实际订单金额")
-    private Long actualOrderAmount;
+    private BigDecimal actualOrderAmount;
 
     @ApiModelProperty("实际发货数量")
     private Long actualProductNum;
@@ -242,7 +243,7 @@ public class OrderInfo {
     private Long actualVolume;
 
     @ApiModelProperty("实际分销总价")
-    private Long actualProductTotalAmount;
+    private BigDecimal actualProductTotalAmount;
 
     @ApiModelProperty("运输公司")
     private String transportCompany;

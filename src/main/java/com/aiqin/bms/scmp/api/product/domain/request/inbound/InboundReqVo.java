@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -110,7 +111,7 @@ public class InboundReqVo {
 
     @ApiModelProperty("含税采购总金额")
     @Min(message = "含税采购总金额不能小于1",value = 1)
-    private Long totalAmount;
+    private BigDecimal totalAmount;
 
     @ApiModelProperty("采购单类型(0,人工创建,1自动创建的直供单,2,自动创建的配送单)")
     @NotNull(message = "采购单类型不能为空")
@@ -126,7 +127,7 @@ public class InboundReqVo {
     private Long saleUnitTotalNum;
 
     @ApiModelProperty("不含税采购总金额")
-    private Long noTaxTotalAmount;
+    private BigDecimal noTaxTotalAmount;
 
     @ApiModelProperty("创建人")
     private String createBy;
@@ -135,13 +136,13 @@ public class InboundReqVo {
     private Long actualNum;
 
     @ApiModelProperty("实际含税采购总金额")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty("实际到货销售单位数量")
     private Long saleUnitActualNum;
 
     @ApiModelProperty("实际不含税采购总金额")
-    private Long noTaxActualAmount;
+    private BigDecimal noTaxActualAmount;
 
     @ApiModelProperty("采购单商品信息集合")
     @NotNull(message = "采购单商品信息集合不能为空")

@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -38,8 +39,6 @@ public class OutboundCallBackReqVo extends BaseDateRequest {
 //
 //    @ApiModelProperty("sku 列表")
 //    private List<OutboundProductCallBackReqVo> list;
-
-
 
     @ApiModelProperty("公司编码")
     private String companyCode;
@@ -89,13 +88,13 @@ public class OutboundCallBackReqVo extends BaseDateRequest {
     private Long praMainUnitNum;
 
     @ApiModelProperty("实际含税总金额")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("实际无税总金额")
-    private Long praAmount;
+    private BigDecimal praAmount;
 
     @ApiModelProperty("实际税额")
-    private Long praTax;
+    private BigDecimal praTax;
 
     @ApiModelProperty("回调sku列表")
     private List<OutboundProductCallBackReqVo> list;

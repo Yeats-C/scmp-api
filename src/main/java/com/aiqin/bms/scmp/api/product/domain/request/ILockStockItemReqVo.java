@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.product.domain.request;
 
 import io.swagger.annotations.ApiModel;
 
+import java.math.BigDecimal;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -34,9 +36,9 @@ public interface ILockStockItemReqVo {
 
     Long getPreOutboundMainNum();
 
-    Long getPreTaxPurchaseAmount();
+    BigDecimal getPreTaxPurchaseAmount();
 
-    Long getPreTaxAmount();
+    BigDecimal getPreTaxAmount();
 
     Long getNum();
 

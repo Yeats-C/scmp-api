@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 @ApiModel("编辑采购申请返回respVo")
 @Data
@@ -25,7 +26,7 @@ public class PurchaseApplyRespVo  implements Serializable {
 
     @ApiModelProperty("缺货影响的销售额")
     @JsonProperty(value = "out_stock_affect_money")
-    private Long outStockAffectMoney;
+    private BigDecimal outStockAffectMoney;
 
     @ApiModelProperty("连续缺货天数")
     @JsonProperty(value = "out_stock_continuous_days")

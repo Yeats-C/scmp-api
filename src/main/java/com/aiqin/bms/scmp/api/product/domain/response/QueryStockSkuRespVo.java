@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 /**
  * @author knight.xie
@@ -107,12 +108,10 @@ public class QueryStockSkuRespVo implements Serializable {
 
     @ApiModelProperty("含税单价")
     @JsonProperty("price")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("拆零系数")
     @JsonProperty("convertNum")
     private Long zeroRemovalCoefficient;
-
-
 
 }

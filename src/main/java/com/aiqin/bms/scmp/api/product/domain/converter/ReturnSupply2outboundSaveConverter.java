@@ -22,6 +22,7 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +93,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //预计主出库数量
                 outbound.setPreMainUnitNum(Long.parseLong(reqVo.getSingleCount().toString()));
                 //预计含税总金额
-                outbound.setPreTaxAmount(reqVo.getGiftAmount() + reqVo.getReturnAmount() + reqVo.getProductAmount());
+                outbound.setPreTaxAmount(reqVo.getGiftAmount().add(reqVo.getReturnAmount()).add(reqVo.getProductAmount()));
                 //预计无税总金额
                 outbound.setPreAmount(reqVo.getUntaxedAmount());
                 //预计税额
@@ -111,7 +112,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 List<RejectRecordDetail> items = reqMainVo.getRejectRecordDetails();
                 List<OutboundProductReqVo> parts = Lists.newArrayList();
                 List<OutboundBatch> batchReqVos = Lists.newArrayList();
-                long noTaxTotalAmount = 0;
+                BigDecimal noTaxTotalAmount = BigDecimal.valueOf(0);
                 for (RejectRecordDetail item : items) {
                     OutboundProductReqVo outboundProduct = new OutboundProductReqVo();
                     //税率
@@ -141,15 +142,15 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setPreOutboundMainNum(item.getProductCount());
                     outboundProduct.setCreateTime(new Date());
                     outboundProduct.setUpdateTime(new Date());
-                    outboundProduct.setLinenum(item.getId());
+                    outboundProduct.setLinenum(item.getLinnum().longValue());
                     //计算不含税单价
                     Long aLong = map.get(item.getSkuCode());
-                    Long noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), aLong);
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), BigDecimal.valueOf(aLong));
                     outboundProduct.setOutboundBaseContent("1");
                     outboundProduct.setOutboundBaseUnit("1");
                     //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();
-                    long noTaxTotalPrice = noTaxPrice * item.getProductCount();
+                    BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(item.getProductCount())).setScale(4, BigDecimal.ROUND_HALF_UP);
                     noTaxTotalAmount = noTaxTotalPrice;
                     parts.add(outboundProduct);
                     OutboundBatch outboundBatch = new OutboundBatch();
@@ -169,7 +170,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     batchReqVos.add(outboundBatch);
                 }
                 outbound.setPreAmount(noTaxTotalAmount);
-                outbound.setPreTax(outbound.getPreTaxAmount() - noTaxTotalAmount);
+                outbound.setPreTax(outbound.getPreTaxAmount().subtract(noTaxTotalAmount));
                 outbound.setList(parts);
                 outbound.setOutboundBatches(batchReqVos);
                 return outbound;

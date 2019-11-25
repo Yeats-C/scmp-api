@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1408,7 +1409,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("含税金额不能为空");
         }else {
             try {
-                Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getTaxIncludedPrice());
+                BigDecimal i = skuSupplierImport.getTaxIncludedPrice();
                 ProductSkuCheckoutRespVo productSkuCheckout = productSkuCheckoutMap.get(skuSupplierImport.getProductSkuCode().trim());
                 if(null == productSkuCheckout){
                     errorList.add("该sku编码在库中找不到对应的进项税率");
@@ -1430,7 +1431,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
               if (i < 0 || i > 10000) {
                   errorList.add("联营扣点(%)应在0-100之间");
               }else {
-                  copy.setJointFranchiseRate(i);
+                  copy.setJointFranchiseRate(BigDecimal.valueOf(i));
               }
             } catch (Exception e) {
                 errorList.add("联营扣点(%)格式不正确");
@@ -1445,7 +1446,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 if (i < 0 || i > 10000) {
                     errorList.add("联营扣点(%)应在0-100之间");
                 }else {
-                    copy.setPoint(i);
+                    copy.setPoint(BigDecimal.valueOf(i));
                 }
             } catch (Exception e) {
                 errorList.add("返点(%)格式不正确");

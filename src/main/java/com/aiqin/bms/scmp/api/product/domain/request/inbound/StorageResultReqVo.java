@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -24,13 +25,13 @@ public class StorageResultReqVo {
     private Long saleUnitActualNum;
 
     @ApiModelProperty("实际不含税采购总金额")
-    private Long noTaxActualAmount;
+    private BigDecimal noTaxActualAmount;
 
     @ApiModelProperty("实际到货数量")
     private Long actualNum;
 
     @ApiModelProperty("实际含税采购总金额")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty("采购单商品集合")
     private List<StorageResultItemReqVo> itemReqVos;

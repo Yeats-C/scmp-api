@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("sku库存成本日志")
@@ -41,93 +42,14 @@ public class TaxCostLogStock {
 
     @ApiModelProperty("成本日期含税总成本")
     @JsonProperty("stock_sum_cost")
-    private Long stockSumCost;
+    private BigDecimal stockSumCost;
 
     @ApiModelProperty("成本日期含税成本")
     @JsonProperty("stock_tax_cost")
-    private Long stockTaxCost;
+    private BigDecimal stockTaxCost;
 
     @ApiModelProperty("创建时间")
     @JsonProperty("create_time")
     private Date createTime;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getTaxDate() {
-        return taxDate;
-    }
-
-    public void setTaxDate(String taxDate) {
-        this.taxDate = taxDate;
-    }
-
-    public String getSkuCode() {
-        return skuCode;
-    }
-
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode;
-    }
-
-    public String getSkuName() {
-        return skuName;
-    }
-
-    public void setSkuName(String skuName) {
-        this.skuName = skuName;
-    }
-
-    public Long getWarehousType() {
-        return warehousType;
-    }
-
-    public void setWarehousType(Long warehousType) {
-        this.warehousType = warehousType;
-    }
-
-    public String getWarehousName() {
-        return warehousName;
-    }
-
-    public void setWarehousName(String warehousName) {
-        this.warehousName = warehousName;
-    }
-
-    public Long getStockSumNum() {
-        return stockSumNum;
-    }
-
-    public void setStockSumNum(Long stockSumNum) {
-        this.stockSumNum = stockSumNum;
-    }
-
-    public Long getStockSumCost() {
-        return stockSumCost;
-    }
-
-    public void setStockSumCost(Long stockSumCost) {
-        this.stockSumCost = stockSumCost;
-    }
-
-    public Long getStockTaxCost() {
-        return stockTaxCost;
-    }
-
-    public void setStockTaxCost(Long stockTaxCost) {
-        this.stockTaxCost = stockTaxCost;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
 }
