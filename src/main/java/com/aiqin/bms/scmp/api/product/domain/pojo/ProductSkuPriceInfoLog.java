@@ -24,7 +24,7 @@ public class ProductSkuPriceInfoLog {
     private BigDecimal priceNoTax;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
@@ -50,7 +50,7 @@ public class ProductSkuPriceInfoLog {
     @ApiModelProperty("区域或门店信息")
     private String areaInfo;
 
-    public ProductSkuPriceInfoLog(String code, BigDecimal priceTax, BigDecimal priceNoTax, Long tax, Date effectiveTimeStart, Date effectiveTimeEnd, Integer status, String createBy, Date createTime) {
+    public ProductSkuPriceInfoLog(String code, BigDecimal priceTax, BigDecimal priceNoTax, BigDecimal tax, Date effectiveTimeStart, Date effectiveTimeEnd, Integer status, String createBy, Date createTime) {
         this.code = code;
         this.priceTax = priceTax;
         this.priceNoTax = priceNoTax;

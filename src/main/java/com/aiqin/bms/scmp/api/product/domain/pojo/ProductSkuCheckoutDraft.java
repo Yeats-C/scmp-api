@@ -27,16 +27,16 @@ public class ProductSkuCheckoutDraft extends CommonBean {
     private String settlementMethodName;
 
     @ApiModelProperty("销项税率")
-    private Long outputTaxRate;
+    private BigDecimal outputTaxRate;
 
     @ApiModelProperty("进项税率")
-    private Long inputTaxRate;
+    private BigDecimal inputTaxRate;
 
     @ApiModelProperty("积分系数")
-    private Long integralCoefficient;
+    private BigDecimal integralCoefficient;
 
     @ApiModelProperty(value = "返点", hidden = true)
-    private Long rebate;
+    private BigDecimal rebate;
 
     @ApiModelProperty("物流费奖励比例")
     private BigDecimal logisticsFeeAwardRatio;

@@ -215,7 +215,7 @@ public class PurchaseApplyDetailResponse {
 
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value="库房编码")
     @JsonProperty("warehouse_code")

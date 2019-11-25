@@ -116,14 +116,14 @@ public class ProductSkuChangePriceInfo {
     private Integer beSynchronize;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin;
+    private BigDecimal oldGrossProfitMargin;
 
     @ApiModelProperty("现毛利率")
-    private Long newGrossProfitMargin;
+    private BigDecimal newGrossProfitMargin;
 
     @ApiModelProperty("进项税率")
-    private Long inTax;
+    private BigDecimal inTax;
 
     @ApiModelProperty("销项税率")
-    private Long outTax;
+    private BigDecimal outTax;
 }

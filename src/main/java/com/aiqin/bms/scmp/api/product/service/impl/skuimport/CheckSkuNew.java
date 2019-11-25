@@ -285,7 +285,7 @@ public class CheckSkuNew {
             error.add("厂家指导价不能为空");
         } else {
             try {
-                productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
+                productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseBigDecimal(importVo.getManufacturerGuidePrice()));
             } catch (NumberFormatException e) {
                 error.add("厂家指导价格式不正确");
             }
@@ -747,7 +747,7 @@ public class CheckSkuNew {
             error.add("进项税率不能为空");
         } else {
             try {
-                draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getInputTaxRate()));
+                draft.setInputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getInputTaxRate()));
             } catch (Exception e) {
                 error.add("进项税率格式不正确");
             }
@@ -757,7 +757,7 @@ public class CheckSkuNew {
             error.add("销项税率不能为空");
         } else {
             try {
-                draft.setOutputTaxRate(NumberConvertUtils.stringParseLong(importVo.getOutputTaxRate()));
+                draft.setOutputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getOutputTaxRate()));
             } catch (Exception e) {
                 error.add("销项税率格式不正确");
             }
@@ -767,7 +767,7 @@ public class CheckSkuNew {
 //            error.add("积分系数不能为空");
         } else {
             try {
-                draft.setIntegralCoefficient(Long.parseLong(importVo.getIntegralCoefficient()));
+                draft.setIntegralCoefficient(NumberConvertUtils.stringParseBigDecimal(importVo.getIntegralCoefficient()));
             } catch (Exception e) {
                 error.add("积分系数格式不正确");
             }
@@ -777,7 +777,7 @@ public class CheckSkuNew {
 //            error.add("物流费奖励比例不能为空");
         } else {
             try {
-                draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
+                draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(1)));
             } catch (Exception e) {
                 error.add("物流费奖励比例格式不正确");
             }
@@ -824,7 +824,7 @@ public class CheckSkuNew {
         //联营扣点
         if (Objects.nonNull(importVo.getJointFranchiseRate())) {
             try {
-                supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getJointFranchiseRate().trim()));
+                supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseBigDecimal(importVo.getJointFranchiseRate().trim()));
             } catch (Exception e) {
                 error.add("联营扣点格式不正确");
             }
@@ -832,7 +832,7 @@ public class CheckSkuNew {
         //返点
         if (Objects.nonNull(importVo.getPoint())) {
             try {
-                supplyUnitDraft.setPoint(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+                supplyUnitDraft.setPoint(NumberConvertUtils.stringParseBigDecimal(importVo.getPoint().trim()));
             } catch (Exception e) {
                 error.add("返点格式不正确");
             }
@@ -866,7 +866,9 @@ public class CheckSkuNew {
             error.add("爱亲渠道价不能为空");
         } else {
             SkuPriceDraftReqVO aiqinChannel1 = price.get("爱亲渠道价");
-            SkuPriceDraftReqVO aiqinChannel = BeanCopyUtils.copy(aiqinChannel1, SkuPriceDraftReqVO.class);
+            SkuPriceDraftReqVO aiqinChannel =  new SkuPriceDraftReqVO();
+
+                    BeanCopyUtils.copy(aiqinChannel1, aiqinChannel);
             try {
                 aiqinChannel.setPriceTax(new BigDecimal(importVo.getReadyCol67()));
             } catch (Exception e) {

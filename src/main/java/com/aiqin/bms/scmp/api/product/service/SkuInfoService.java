@@ -283,8 +283,6 @@ public interface SkuInfoService{
 
     /**
      * 新增保存
-     * @param addSkuList
-     * @param purchaseGroupCode
      * @return
      */
     Boolean importSkuNewSave(SkuImportReq reqVO);

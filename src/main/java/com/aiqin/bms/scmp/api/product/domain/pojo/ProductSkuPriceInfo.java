@@ -53,7 +53,7 @@ public class ProductSkuPriceInfo {
     private BigDecimal priceNoTax;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("开始生效时间")
     private Date effectiveTimeStart;

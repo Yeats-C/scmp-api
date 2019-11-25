@@ -377,7 +377,7 @@
       #{updateBy,jdbcType=VARCHAR}, #{goodsGifts,jdbcType=TINYINT}, #{spuCode,jdbcType=VARCHAR}, 
       #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT}, 
-      #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT}, 
+      #{manufacturerGuidePrice,jdbcType=DECIMAL}, #{zeroRemovalCoefficient,jdbcType=BIGINT},
       #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR},
       #{seasonalGoods,jdbcType=TINYINT},#{structuralGoods,jdbcType=TINYINT},
       #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},

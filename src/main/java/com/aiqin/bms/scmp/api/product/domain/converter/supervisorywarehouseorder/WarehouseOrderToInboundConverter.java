@@ -102,7 +102,7 @@ public class WarehouseOrderToInboundConverter implements Converter<SupervisoryWa
             preInboundNum += record.getNum().intValue();
             preInboundMainNum += record.getSingleCount().intValue();
             preTaxAmount = record.getProductTotalAmount().add(preTaxAmount);
-            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getProductTotalAmount(), record.getTaxRate().longValue()).add(preNoTaxAmount);
+            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getProductTotalAmount(), BigDecimal.valueOf(record.getTaxRate().longValue())).add(preNoTaxAmount);
             list.add(reqVo1);
             inboundBatchReqVos.add(batch);
         }

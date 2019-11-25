@@ -145,7 +145,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setLinenum(item.getLinnum().longValue());
                     //计算不含税单价
                     Long aLong = map.get(item.getSkuCode());
-                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), aLong);
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), BigDecimal.valueOf(aLong));
                     outboundProduct.setOutboundBaseContent("1");
                     outboundProduct.setOutboundBaseUnit("1");
                     //计算不含税总价 (现在是主单位数量 * 单价）

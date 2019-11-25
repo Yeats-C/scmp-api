@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.google.common.collect.Lists;
 import org.springframework.core.convert.converter.Converter;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class OrderToOutBoundConverter extends BaseServiceImpl implements Convert
             outbound.setPreOutboundNum(dto.getProductNum());
             outbound.setPreMainUnitNum(dto.getProductNum());
             outbound.setPreTaxAmount(dto.getProductTotalAmount());
-            outbound.setPreAmount(Calculate.computeNoTaxPrice(dto.getProductTotalAmount(), Long.valueOf(101)));
+            outbound.setPreAmount(Calculate.computeNoTaxPrice(dto.getProductTotalAmount(), BigDecimal.valueOf(101)));
             outbound.setPreTax(outbound.getPreTaxAmount().subtract(outbound.getPreAmount()));
             List<OutboundProductReqVo> reqVos = BeanCopyUtils.copyList(dto.getItemList(), OutboundProductReqVo.class);
             outbound.setList(reqVos);

@@ -21,6 +21,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -120,10 +121,10 @@ public class SynPriceImpl implements SynPrice {
                     ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                     priceInfo.setApplyCode(info.getCode());
                     priceInfo.setPriceTax(info.getPurchasePriceNew());
-                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), 0L));
+                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), BigDecimal.ZERO));
                     priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                     priceInfo.setUpdateTime(new Date());
-                    priceInfo.setTax(0L); //TODO 需要从商品上取
+                    priceInfo.setTax(BigDecimal.ZERO); //TODO 需要从商品上取
                     ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                     ProductSkuPriceInfoLog log2 = new ProductSkuPriceInfoLog(copy.getCode(),copy.getPriceTax(),copy.getPriceNoTax(),copy.getTax(),priceInfo.getEffectiveTimeStart(),new Date(),2,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
                     logs.add(log);
@@ -137,8 +138,8 @@ public class SynPriceImpl implements SynPrice {
                     ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
                     priceInfo.setApplyCode(info.getCode());
                     priceInfo.setPriceTax(info.getNewPrice());
-                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), 0L));
-                    priceInfo.setTax(0L); //TODO 需要从商品上取
+                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getNewPrice(), BigDecimal.ZERO));
+                    priceInfo.setTax(BigDecimal.ZERO); //TODO 需要从商品上取
                     priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
                     priceInfo.setUpdateTime(new Date());
                     ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());

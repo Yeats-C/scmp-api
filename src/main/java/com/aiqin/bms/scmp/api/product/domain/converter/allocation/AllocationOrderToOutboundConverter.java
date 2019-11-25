@@ -115,7 +115,7 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
             preTaxAmount = record.getTaxAmount().add(preTaxAmount);
-            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getTaxAmount(), record.getTax().longValue()).add(preNoTaxAmount);
+            preNoTaxAmount = Calculate.computeNoTaxPrice(record.getTaxAmount(), BigDecimal.valueOf(record.getTax().longValue())).add(preNoTaxAmount);
             list.add(reqVo1);
         }
         List<AllocationProductBatch> list1 = order.getList();

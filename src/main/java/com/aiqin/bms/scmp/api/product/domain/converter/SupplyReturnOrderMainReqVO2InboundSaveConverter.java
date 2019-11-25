@@ -110,7 +110,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
                     product.setPreInboundMainNum(vo.getNum());
                     //计算不含税单价
                     Long aLong = map.get(vo.getSkuCode());
-                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), BigDecimal.valueOf(aLong));
 
                     //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();

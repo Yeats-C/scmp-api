@@ -28,13 +28,13 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
     private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("联营扣率")
-    private Long jointFranchiseRate;
+    private BigDecimal jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    private Long point;
+    private BigDecimal point;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("厂商SKU编码")
     private String factorySkuCode;

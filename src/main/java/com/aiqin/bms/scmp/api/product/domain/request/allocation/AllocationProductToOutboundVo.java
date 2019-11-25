@@ -59,7 +59,7 @@ public class AllocationProductToOutboundVo {
     private Long inventory;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税单价")
     private BigDecimal taxPrice;

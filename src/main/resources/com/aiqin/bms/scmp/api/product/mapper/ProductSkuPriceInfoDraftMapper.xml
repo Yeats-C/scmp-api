@@ -14,9 +14,9 @@
     <result column="price_type_name" jdbcType="VARCHAR" property="priceTypeName" />
     <result column="price_attribute_code" jdbcType="VARCHAR" property="priceAttributeCode" />
     <result column="price_attribute_name" jdbcType="VARCHAR" property="priceAttributeName" />
-    <result column="price_tax" jdbcType="BIGINT" property="priceTax" />
-    <result column="price_no_tax" jdbcType="BIGINT" property="priceNoTax" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="price_tax" jdbcType="DECIMAL" property="priceTax" />
+    <result column="price_no_tax" jdbcType="DECIMAL" property="priceNoTax" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
     <result column="effective_time_start" jdbcType="TIMESTAMP" property="effectiveTimeStart" />
     <result column="effective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
@@ -53,7 +53,7 @@
     select 
     <include refid="Base_Column_List" />
     from product_sku_price_info_draft
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=DECIMAL}
   </select>
   <select id="selectBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
     select
@@ -66,7 +66,7 @@
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_price_info_draft
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=DECIMAL}
   </delete>
   <delete id="deleteBySkuCodes" parameterType="java.util.List">
     delete from product_sku_price_info_draft
@@ -90,11 +90,11 @@
       product_time, apply_code, company_code, 
       company_name, be_synchronous,
       be_contain_area)
-    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=DECIMAL}, #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
       #{skuName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, 
       #{priceItemCode,jdbcType=VARCHAR}, #{priceItemName,jdbcType=VARCHAR}, #{priceTypeCode,jdbcType=VARCHAR}, 
       #{priceTypeName,jdbcType=VARCHAR}, #{priceAttributeCode,jdbcType=VARCHAR}, #{priceAttributeName,jdbcType=VARCHAR}, 
-      #{priceTax,jdbcType=BIGINT}, #{priceNoTax,jdbcType=BIGINT}, #{tax,jdbcType=BIGINT}, 
+      #{priceTax,jdbcType=DECIMAL}, #{priceNoTax,jdbcType=DECIMAL}, #{tax,jdbcType=DECIMAL},
       #{effectiveTimeStart,jdbcType=TIMESTAMP}, #{effectiveTimeEnd,jdbcType=TIMESTAMP}, 
       #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{beDefault,jdbcType=INTEGER}, 
       #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
@@ -222,7 +222,7 @@
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
-        #{id,jdbcType=BIGINT},
+        #{id,jdbcType=DECIMAL},
       </if>
       <if test="code != null">
         #{code,jdbcType=VARCHAR},
@@ -258,13 +258,13 @@
         #{priceAttributeName,jdbcType=VARCHAR},
       </if>
       <if test="priceTax != null">
-        #{priceTax,jdbcType=BIGINT},
+        #{priceTax,jdbcType=DECIMAL},
       </if>
       <if test="priceNoTax != null">
-        #{priceNoTax,jdbcType=BIGINT},
+        #{priceNoTax,jdbcType=DECIMAL},
       </if>
       <if test="tax != null">
-        #{tax,jdbcType=BIGINT},
+        #{tax,jdbcType=DECIMAL},
       </if>
       <if test="effectiveTimeStart != null">
         #{effectiveTimeStart,jdbcType=TIMESTAMP},
@@ -351,11 +351,11 @@
       be_contain_area)
     values
     <foreach collection="list" open="" close="" separator="," item="item">
-    (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+    (#{item.id,jdbcType=DECIMAL}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.purchaseGroupCode,jdbcType=VARCHAR}, #{item.purchaseGroupName,jdbcType=VARCHAR},
       #{item.priceItemCode,jdbcType=VARCHAR}, #{item.priceItemName,jdbcType=VARCHAR}, #{item.priceTypeCode,jdbcType=VARCHAR},
       #{item.priceTypeName,jdbcType=VARCHAR}, #{item.priceAttributeCode,jdbcType=VARCHAR}, #{item.priceAttributeName,jdbcType=VARCHAR},
-      #{item.priceTax,jdbcType=BIGINT}, #{item.priceNoTax,jdbcType=BIGINT}, #{item.tax,jdbcType=BIGINT},
+      #{item.priceTax,jdbcType=DECIMAL}, #{item.priceNoTax,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL},
       #{item.effectiveTimeStart,jdbcType=TIMESTAMP}, #{item.effectiveTimeEnd,jdbcType=TIMESTAMP},
       #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.beDefault,jdbcType=INTEGER},
       #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
@@ -404,13 +404,13 @@
         price_attribute_name = #{priceAttributeName,jdbcType=VARCHAR},
       </if>
       <if test="priceTax != null">
-        price_tax = #{priceTax,jdbcType=BIGINT},
+        price_tax = #{priceTax,jdbcType=DECIMAL},
       </if>
       <if test="priceNoTax != null">
-        price_no_tax = #{priceNoTax,jdbcType=BIGINT},
+        price_no_tax = #{priceNoTax,jdbcType=DECIMAL},
       </if>
       <if test="tax != null">
-        tax = #{tax,jdbcType=BIGINT},
+        tax = #{tax,jdbcType=DECIMAL},
       </if>
       <if test="effectiveTimeStart != null">
         effective_time_start = #{effectiveTimeStart,jdbcType=TIMESTAMP},
@@ -479,7 +479,7 @@
         be_contain_area = #{beContainArea,jdbcType=INTEGER},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=DECIMAL}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft">
     update product_sku_price_info_draft
@@ -494,9 +494,9 @@
       price_type_name = #{priceTypeName,jdbcType=VARCHAR},
       price_attribute_code = #{priceAttributeCode,jdbcType=VARCHAR},
       price_attribute_name = #{priceAttributeName,jdbcType=VARCHAR},
-      price_tax = #{priceTax,jdbcType=BIGINT},
-      price_no_tax = #{priceNoTax,jdbcType=BIGINT},
-      tax = #{tax,jdbcType=BIGINT},
+      price_tax = #{priceTax,jdbcType=DECIMAL},
+      price_no_tax = #{priceNoTax,jdbcType=DECIMAL},
+      tax = #{tax,jdbcType=DECIMAL},
       effective_time_start = #{effectiveTimeStart,jdbcType=TIMESTAMP},
       effective_time_end = #{effectiveTimeEnd,jdbcType=TIMESTAMP},
       supplier_code = #{supplierCode,jdbcType=VARCHAR},
@@ -519,6 +519,6 @@
       company_name = #{companyName,jdbcType=VARCHAR},
       be_synchronous = #{beSynchronous,jdbcType=INTEGER},
       be_contain_area = #{beContainArea,jdbcType=INTEGER}
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=DECIMAL}
   </update>
 </mapper>

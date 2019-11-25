@@ -68,7 +68,7 @@ public class SkuPriceDraftReqVO {
     private BigDecimal priceNoTax;
 
     @ApiModelProperty(value = "税率",hidden = true)
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")

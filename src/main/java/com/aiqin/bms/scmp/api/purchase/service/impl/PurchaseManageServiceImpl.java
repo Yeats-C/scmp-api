@@ -900,7 +900,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer num = singleCount - actualSingleCount;
                 BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
                 preTaxAmount = totalAmount.add(preTaxAmount);
-                BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, product.getTaxRate().longValue());
+                BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
                 preNoTaxAmount = noTax.add(preNoTaxAmount);
                 list.add(reqVo);
                 //出库加入供应商与商品关系
