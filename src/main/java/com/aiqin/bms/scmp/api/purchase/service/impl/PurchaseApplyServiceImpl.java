@@ -522,7 +522,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if (supplier == null) {
                         HandleResponse(response, record, "未查询到供应商信息；", i);
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
