@@ -40,7 +40,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
-
 /**
  * Description:
  *
@@ -51,6 +50,7 @@ import java.util.Set;
 @Service
 @Slf4j
 public class ProductBrandServiceImpl implements ProductBrandService {
+
     @Autowired
     ProductBrandTypeDao productBrandTypeDao;
     @Autowired
@@ -64,8 +64,6 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;
 
-
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer save(ProductBrandReqVO s) {
@@ -76,11 +74,14 @@ public class ProductBrandServiceImpl implements ProductBrandService {
 //            String s1 = ((ProductBrandService) AopContext.currentProxy()).uploadImage(s.getBrandLogo());
 //            t.setBrandLogo(s1);
 //        }
-
         String companyCode = "";
-        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
-            companyCode = authToken.getCompanyCode();
+        if(StringUtils.isBlank(s.getCompanyCode())){
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if(null != authToken){
+                companyCode = authToken.getCompanyCode();
+            }
+        }else {
+            companyCode = s.getCompanyCode();
         }
         ProductBrandType brand = productBrandTypeDao.selectByBrandName(s.getBrandName(),companyCode);
         if(Objects.nonNull(brand)){
@@ -97,6 +98,7 @@ public class ProductBrandServiceImpl implements ProductBrandService {
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
         return ((ProductBrandService)AopContext.currentProxy()).saveBrandData(t);
     }
+
     @Override
     public String uploadImage(String base64) {
         if (!base64.startsWith(ContentTpye.DATA_IMAGE) && !base64.startsWith(ContentTpye.DATA_IMG)) {
@@ -120,7 +122,6 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             BeanUtils.copyProperties(s, t);
             //默认禁用
 //            t.setBrandStatus(1);
-
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 t.setCompanyCode(authToken.getCompanyCode());
@@ -147,9 +148,13 @@ public class ProductBrandServiceImpl implements ProductBrandService {
         t.setOldBrandLogoUrl(productBrandType.getBrandLogo());
         if(!Objects.equals(s.getBrandName(),productBrandType.getBrandName())){
             String companyCode = "";
-            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
-                companyCode = authToken.getCompanyCode();
+            if(StringUtils.isNotBlank(s.getCompanyCode())){
+                companyCode= s.getCompanyCode();
+            }else {
+                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if(null != authToken){
+                    companyCode = authToken.getCompanyCode();
+                }
             }
             ProductBrandType brand = productBrandTypeDao.selectByBrandName(s.getBrandName(),companyCode);
             if(Objects.nonNull(brand)){
