@@ -357,7 +357,7 @@
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
       apply_type,apply_type_name,inventory_model,use_time,unique_code,
-      inventory_allocation,price_model,change_content,pic_folder_code,product_desc
+      inventory_allocation,price_model,change_content,pic_folder_code,product_desc,item_number
       )
     values ( #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
       #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
@@ -384,7 +384,8 @@
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
       #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
       #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
-      #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR},#{productDesc,jdbcType=VARCHAR}
+      #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR},#{productDesc,jdbcType=VARCHAR},
+      #{itemNumber,jdbcType=TINYINT}
       )
   </insert>
 

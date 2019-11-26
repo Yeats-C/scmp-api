@@ -24,6 +24,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProje
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
+import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaForSkuRespVO;
@@ -1335,6 +1337,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         ProductSkuRespVo skuRespVo = productSkuDao.getSkuInfoResp(skuCode);
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
+        }
+        // spu信息
+        NewProductResponseVO productResponseVO = newProductService.getDetail(skuRespVo.getProductCode());
+        if (Objects.isNull(productResponseVO)) {
+            detailResp.setSpuInfo(productResponseVO);
         }
         //查询所有父节点
         List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());

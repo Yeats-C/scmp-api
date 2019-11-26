@@ -164,5 +164,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         return newProductMapper.selectBySpuName(list,companyCode);
     }
 
+    @Override
+    public NewProductResponseVO getDetail(String productCode) {
+        return newProductMapper.selectByProdutCode(productCode);
+    }
 
 }

@@ -218,4 +218,6 @@ public class ProductSkuDraft extends CommonBean {
     @ApiModelProperty("商品描述")
     private String productDesc;
 
+    @ApiModelProperty("货号")
+    private String itemNumber;
 }
