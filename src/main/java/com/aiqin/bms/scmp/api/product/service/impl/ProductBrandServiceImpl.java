@@ -111,7 +111,6 @@ public class ProductBrandServiceImpl implements ProductBrandService {
         }
     }
     @Override
-    @Save
     @Transactional(rollbackFor = Exception.class)
     public Integer saveBrandData(ProductBrandReqDTO s) {
         Integer temp;
