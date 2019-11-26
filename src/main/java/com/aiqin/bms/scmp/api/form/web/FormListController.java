@@ -47,11 +47,11 @@ public class FormListController {
         return formListService.findMyTaskListTaskDefinitionKeyWithzhsp(formListRequest);
     }
 
-    @GetMapping("/count")
-    @ApiOperation("查询数量")
-    HttpResponse findTaskListCount(@RequestParam("person_id") String personId, @RequestParam(value = "process_key", required = false) String processKey) {
-        return formListService.findTaskListCount(personId,2, processKey);
-    }
+//    @GetMapping("/count")
+//    @ApiOperation("查询数量")
+//    HttpResponse findTaskListCount(@RequestParam("person_id") String personId, @RequestParam(value = "process_key", required = false) String processKey) {
+//        return formListService.findTaskListCount(personId,2, processKey);
+//    }
 
     @GetMapping("/process")
     @ApiOperation("审批类型列表")
