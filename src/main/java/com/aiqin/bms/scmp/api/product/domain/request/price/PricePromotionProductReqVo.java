@@ -45,15 +45,23 @@ public class PricePromotionProductReqVo extends PageReq {
      * 商品编码
      * 表字段 : price_promotion_product.product_code
      */
-    @ApiModelProperty("商品编码")
+    @ApiModelProperty("sku编码")
     private String productCode;
 
     /**
      * 商品名称
      * 表字段 : price_promotion_product.product_name
      */
-    @ApiModelProperty("商品名称")
+    @ApiModelProperty("sku名称")
     private String productName;
+
+
+    /**
+     * 商品品牌名称
+     * 表字段 : price_promotion_product.category
+     */
+    @ApiModelProperty("商品品牌名称")
+    private String brand;
 
     /**
      * 商品品类
@@ -105,4 +113,10 @@ public class PricePromotionProductReqVo extends PageReq {
      */
     @ApiModelProperty("补贴成本")
     private BigDecimal subsidyCost;
+
+    /**
+     * 当前登录人
+     */
+    @ApiModelProperty(value = "当前登录人",hidden = true)
+    private String personId;
 }

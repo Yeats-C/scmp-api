@@ -73,7 +73,50 @@
              business_id= #{businessId,jdbcType=BIGINT}
          </where>
     </select>
+    <resultMap id="skuListMap"
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="category"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="brand"/>
+        <result column="product_property_name" jdbcType="INTEGER" property="attribute"/>
+        <result column="goods_gifts" jdbcType="INTEGER" property="skuType"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="spec" jdbcType="INTEGER" property="spec"/>
+    </resultMap>
 
+    <select id="skuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo"
+            resultMap="skuListMap">
+   SELECT
+      a.*, c.spec
+    FROM
+      product_sku a
+      LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+      <where>
+      a.del_flag=0
+          <if test="productCode != null and productCode != ''">
+           and   sku_code = #{productCode,jdbcType=VARCHAR}
+          </if>
+          <if test="productName != null">--
+              and   sku_name = #{productName,jdbcType=VARCHAR}
+          </if>
+
+          <if test="brand != null">
+              and   product_brand_name = #{brand,jdbcType=VARCHAR}
+          </if>
+          <if test="category != null">--
+              and  product_category_name = #{category,jdbcType=VARCHAR}
+          </if>
+          <if test="attribute != null">
+              and product_property_name = #{attribute,jdbcType=VARCHAR}
+          </if>
+           <if test="personId != null and personId != '' ">
+               and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+           </if>
+       </where>
+    </select>
 
 
     <delete id="deteleByBusinessId" parameterType="java.lang.Long">
