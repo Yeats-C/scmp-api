@@ -540,6 +540,13 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         }
         PageHelper.startPage(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize());
         List<PricePromotionProductRespVo>  pricePromotionProductRespVoBasePage =  pricePromotionProductMapper.skuList(priceApplyPromotionReqVo);
+        for (PricePromotionProductRespVo pricePromotionProductRespVo:
+        pricePromotionProductRespVoBasePage ) {
+            //设置库存
+            pricePromotionProductRespVo.setStockNum(stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode())==null?0:stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode()));
+
+        }
+
         return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize(),pricePromotionProductRespVoBasePage.size(),pricePromotionProductRespVoBasePage);
 
     }
