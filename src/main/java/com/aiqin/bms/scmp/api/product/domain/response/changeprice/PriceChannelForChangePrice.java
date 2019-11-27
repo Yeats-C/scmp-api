@@ -59,12 +59,16 @@ public class PriceChannelForChangePrice {
 
     public BigDecimal getOldGrossProfitMargin() {
         this.avgTaxCost = this.oldPrice;
+      BigDecimal num=  this.oldPrice;
+        BigDecimal num2=  this.taxCost;
         //销售类的变价
-        if(Objects.isNull(this.oldPrice)||this.oldPrice==BigDecimal.ZERO){
+        if(Objects.isNull(this.oldPrice)||this.oldPrice.equals(BigDecimal.ZERO)){
             return BigDecimal.ZERO;
+        }else if(this.taxCost.equals(BigDecimal.ZERO)) {
+            return  this.oldGrossProfitMargin = new BigDecimal(100);
         }else {
-            BigDecimal divide = this.oldPrice.subtract(this.taxCost).divide(this.oldPrice, 4, BigDecimal.ROUND_HALF_UP);
-            return this.oldGrossProfitMargin = divide.multiply(BigDecimal.valueOf(100));
+            BigDecimal divide = (num.subtract(num2)).divide(num, 4, BigDecimal.ROUND_HALF_UP);
+            return   this.oldGrossProfitMargin = divide.multiply(new BigDecimal(100));
         }
     }
 }
