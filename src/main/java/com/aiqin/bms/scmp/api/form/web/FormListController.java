@@ -20,28 +20,28 @@ public class FormListController {
     @PostMapping("/send")
     @ApiOperation("查询我的已发")
     HttpResponse findActBaseList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType("2");
+        formListRequest.setReceiptType(2);
         return formListService.findActBaseList(formListRequest);
     }
 
     @PostMapping("/wait")
     @ApiOperation("查询我的待办")
     HttpResponse findMyTaskList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType("2");
+        formListRequest.setReceiptType(2);
         return formListService.findMyTaskList(formListRequest);
     }
 
     @PostMapping("/done")
     @ApiOperation("查询我的已办")
     HttpResponse findMyDoTaskList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType("2");
+        formListRequest.setReceiptType(2);
         return formListService.findMyDoTaskList(formListRequest);
     }
 
     @PostMapping("/relate")
     @ApiOperation("查询抄送我的")
     HttpResponse findMyTaskListTaskDefinitionKeyWithzhsp(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType("2");
+        formListRequest.setReceiptType(2);
         return formListService.findMyTaskListTaskDefinitionKeyWithzhsp(formListRequest);
     }
 
@@ -54,7 +54,7 @@ public class FormListController {
     @GetMapping("/process")
     @ApiOperation("审批类型列表")
     HttpResponse getProcessListByType() {
-        return formListService.getProcessListByType("2");
+        return formListService.getProcessListByType(2);
     }
 
 }

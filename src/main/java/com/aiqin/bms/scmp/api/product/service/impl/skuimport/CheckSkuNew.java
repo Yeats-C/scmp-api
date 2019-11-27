@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.PurchaseSaleStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
@@ -87,7 +88,7 @@ public class CheckSkuNew {
         return this;
     }
 
-    //检查基础数据
+    //检查基础数据和spu
     public CheckSkuNew checkBaseDate() {
         ProductSkuDraft productSkuDraft = this.resp.getProductSkuDraft();
         //类型
@@ -168,6 +169,12 @@ public class CheckSkuNew {
                 spuMap.put(importVo.getProductName().trim(), new NewProduct());
             } else {
                 productSkuDraft.setProductCode(newProduct.getProductCode());
+            }
+            NewProduct spuInfo = BeanCopyUtils.copy(importVo, NewProduct.class);
+            if (spuInfo != null) {
+                spuInfo.setAbbreviation(importVo.getSpuAbbreviation());
+                spuInfo.setBarCode(importVo.getSpuMnemonicCode());
+                this.resp.setSpuInfo(spuInfo);
             }
         }
         //商品属性
@@ -346,6 +353,28 @@ public class CheckSkuNew {
                 error.add("唯一码管理请填写是或者否");
             } else {
                 productSkuDraft.setUniqueCode(generals.getType());
+            }
+        }
+        //特征
+        if(Objects.isNull(importVo.getFeatureName())) {
+            error.add("特征不能为空");
+        } else {
+            StatusTypeCode typeCode = StatusTypeCode.getAll().get(importVo.getFeatureName());
+            if (Objects.isNull(typeCode)) {
+                error.add("特征格式不正确");
+            } else {
+                productSkuDraft.setFeatureCode(typeCode.getStatus().toString());
+            }
+        }
+        //通货等级
+        if(Objects.isNull(importVo.getCurrencyLevelName())) {
+            error.add("通货等级不能为空");
+        } else {
+            StatusTypeCode typeCode = StatusTypeCode.getAll().get(importVo.getCurrencyLevelName());
+            if (Objects.isNull(typeCode)) {
+                error.add("通货等级格式不正确");
+            } else {
+                productSkuDraft.setCurrencyLevelCode(typeCode.getStatus().toString());
             }
         }
         //覆盖渠道

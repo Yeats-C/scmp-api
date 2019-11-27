@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.request.sku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -23,6 +24,9 @@ public class AddSkuInfoReqVO {
     @ApiModelProperty(value = "sku基本信息",name = "productSkuInfo",position = 1)
     @JsonProperty("productSkuInfo")
     private ProductSkuDraft productSkuDraft;
+
+    @ApiModelProperty(value = "spu信息", position = 1)
+    private NewProduct spuInfo;
 
     @ApiModelProperty("商品标签信息")
     private List<SaveUseTagRecordItemReqVo> tagInfoList;

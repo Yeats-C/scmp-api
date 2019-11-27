@@ -1490,6 +1490,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
+        //spu信息
+        NewProductResponseVO spuResponseVO = newProductService.getDetail(skuRespVo.getProductCode());
+        if (spuResponseVO != null) {
+            detailResp.setSpuInfo(spuResponseVO);
+        }
         //查询所有父节点
         List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());
         List<String> categoryIds = parentCategoryList.stream().map(ProductCategory :: getCategoryId).sorted().collect(Collectors.toList());
@@ -2185,7 +2190,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 CheckSkuNew checkSku = new CheckSkuNew(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
                         .checkRepeat() //检查重复
                         .checkSKuNew() //新增检查sku
-                        .checkBaseDate() //检查基础数据
+                        .checkBaseDate() //检查基础数据和spu
                         .checkInvoice() //检查进销存包装
                         .checkSettlement() //检查结算信息
                         .checkSupplier() //检查供应商
@@ -2390,12 +2395,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (StringUtils.isNotBlank(o.getProductCategoryName())) {
                     categoryNameList.add(o.getProductCategoryName().trim());
                 }
-                if (StringUtils.isNotBlank(o.getPriceChannelName())) {
-                    channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
-                }
-                if (StringUtils.isNotBlank(o.getTagName())) {
-                    skuTagList.addAll(Arrays.asList(o.getTagName().split(",")));
-                }
+                // if (StringUtils.isNotBlank(o.getPriceChannelName())) {
+                //     channelList.addAll(Arrays.asList(o.getPriceChannelName().split(",")));
+                // }
+                // if (StringUtils.isNotBlank(o.getTagName())) {
+                //     skuTagList.addAll(Arrays.asList(o.getTagName().split(",")));
+                // }
                 if (StringUtils.isNotBlank(o.getManufacturerName())) {
                     manufactureList.add(o.getManufacturerName());
                 }
@@ -2506,6 +2511,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
                         saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
                         saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
+                        saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
+                        saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
                         String s = newProductService.insertProduct(saveReqVO);
                         reqVO.getProductSkuDraft().setProductCode(s);
                         spuMap.put(reqVO.getProductSkuDraft().getProductName(), s);
@@ -2538,6 +2545,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
                         saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
                         saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
+                        saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
+                        saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
                         String s = newProductService.insertProduct(saveReqVO);
                         reqVO.getProductSkuDraft().setProductCode(s);
                         spuMap.put(reqVO.getProductSkuDraft().getProductName(), s);

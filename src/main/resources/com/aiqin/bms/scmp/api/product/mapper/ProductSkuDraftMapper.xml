@@ -71,23 +71,30 @@
     <result column="change_content" jdbcType="VARCHAR" property="changeContent" />
     <result column="pic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
     <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+    <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+    <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+    <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+    <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, product_code, product_name, product_category_code, product_category_name, sku_code, 
-    spec, unit_code, sku_status, del_flag, product_property_code, product_property_name, 
-    product_brand_code, product_brand_name, sku_abbreviation, color_code, color_name, 
-    model_number, unit_name, quality_assurance_management, product_sort_code, product_sort_name, 
-    quality_number, quality_date, management_style_code, management_style_name, categories_supply_channels_code, 
-    on_sale, categories_supply_channels_name, box_gauge, applicable_month_age, point, 
-    bar_code, mnemonic_code, selection_effective_time, selection_effective_start_time, 
-    selection_effective_end_time, create_time, create_by, update_time, update_by, goods_gifts, 
-    spu_code, logo, images, itro_images, sku_name, is_main_push, new_product, manufacturer_guide_price, 
+    id, product_code, product_name, product_category_code, product_category_name, sku_code,
+    spec, unit_code, sku_status, del_flag, product_property_code, product_property_name,
+    product_brand_code, product_brand_name, sku_abbreviation, color_code, color_name,
+    model_number, unit_name, quality_assurance_management, product_sort_code, product_sort_name,
+    quality_number, quality_date, management_style_code, management_style_name, categories_supply_channels_code,
+    on_sale, categories_supply_channels_name, box_gauge, applicable_month_age, point,
+    bar_code, mnemonic_code, selection_effective_time, selection_effective_start_time,
+    selection_effective_end_time, create_time, create_by, update_time, update_by, goods_gifts,
+    spu_code, logo, images, itro_images, sku_name, is_main_push, new_product, manufacturer_guide_price,
     zero_removal_coefficient, procurement_section_code, procurement_section_name,company_code,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
     apply_type,apply_type_name,use_time,unique_code,inventory_model,price_model,inventory_allocation,product_desc
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from product_sku_draft
     where id = #{id,jdbcType=BIGINT}
@@ -335,49 +342,50 @@
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft">
     insert into product_sku_draft ( product_code, product_name,
-      product_category_code, product_category_name, 
-      sku_code, spec, unit_code, 
-      sku_status, del_flag, product_property_code, 
-      product_property_name, product_brand_code, 
-      product_brand_name, sku_abbreviation, color_code, 
-      color_name, model_number, unit_name, 
-      quality_assurance_management, product_sort_code, 
-      product_sort_name, quality_number, quality_date, 
-      management_style_code, management_style_name, 
-      categories_supply_channels_code, on_sale, categories_supply_channels_name, 
-      box_gauge, applicable_month_age, point, 
-      bar_code, mnemonic_code, selection_effective_time, 
-      selection_effective_start_time, selection_effective_end_time, 
-      create_time, create_by, update_time, 
-      update_by, goods_gifts, spu_code, 
-      logo, images, itro_images, 
-      sku_name, is_main_push, new_product, 
-      manufacturer_guide_price, zero_removal_coefficient, 
+      product_category_code, product_category_name,
+      sku_code, spec, unit_code,
+      sku_status, del_flag, product_property_code,
+      product_property_name, product_brand_code,
+      product_brand_name, sku_abbreviation, color_code,
+      color_name, model_number, unit_name,
+      quality_assurance_management, product_sort_code,
+      product_sort_name, quality_number, quality_date,
+      management_style_code, management_style_name,
+      categories_supply_channels_code, on_sale, categories_supply_channels_name,
+      box_gauge, applicable_month_age, point,
+      bar_code, mnemonic_code, selection_effective_time,
+      selection_effective_start_time, selection_effective_end_time,
+      create_time, create_by, update_time,
+      update_by, goods_gifts, spu_code,
+      logo, images, itro_images,
+      sku_name, is_main_push, new_product,
+      manufacturer_guide_price, zero_removal_coefficient,
       procurement_section_code, procurement_section_name,
       seasonal_goods,structural_goods,warehouse_type_code,
       warehouse_type_name,company_code,company_name,remark,
       apply_type,apply_type_name,inventory_model,use_time,unique_code,
-      inventory_allocation,price_model,change_content,pic_folder_code,product_desc,item_number
+      inventory_allocation,price_model,change_content,pic_folder_code,product_desc,item_number,
+      season_band,level,feature_code,feature_name,currency_level_code,currency_level_name
       )
     values ( #{productCode,jdbcType=VARCHAR}, #{productName,jdbcType=VARCHAR},
-      #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR}, 
-      #{skuCode,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR}, 
-      #{skuStatus,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, #{productPropertyCode,jdbcType=VARCHAR}, 
-      #{productPropertyName,jdbcType=VARCHAR}, #{productBrandCode,jdbcType=VARCHAR}, 
-      #{productBrandName,jdbcType=VARCHAR}, #{skuAbbreviation,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
-      #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
-      #{qualityAssuranceManagement,jdbcType=TINYINT}, #{productSortCode,jdbcType=VARCHAR}, 
-      #{productSortName,jdbcType=VARCHAR}, #{qualityNumber,jdbcType=VARCHAR}, #{qualityDate,jdbcType=VARCHAR}, 
-      #{managementStyleCode,jdbcType=VARCHAR}, #{managementStyleName,jdbcType=VARCHAR}, 
-      #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{onSale,jdbcType=TINYINT}, #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, 
-      #{boxGauge,jdbcType=VARCHAR}, #{applicableMonthAge,jdbcType=VARCHAR}, #{point,jdbcType=VARCHAR}, 
-      #{barCode,jdbcType=VARCHAR}, #{mnemonicCode,jdbcType=VARCHAR}, #{selectionEffectiveTime,jdbcType=TINYINT}, 
-      #{selectionEffectiveStartTime,jdbcType=VARCHAR}, #{selectionEffectiveEndTime,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateBy,jdbcType=VARCHAR}, #{goodsGifts,jdbcType=TINYINT}, #{spuCode,jdbcType=VARCHAR}, 
-      #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR}, 
-      #{skuName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT}, 
-      #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT}, 
+      #{productCategoryCode,jdbcType=VARCHAR}, #{productCategoryName,jdbcType=VARCHAR},
+      #{skuCode,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR},
+      #{skuStatus,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, #{productPropertyCode,jdbcType=VARCHAR},
+      #{productPropertyName,jdbcType=VARCHAR}, #{productBrandCode,jdbcType=VARCHAR},
+      #{productBrandName,jdbcType=VARCHAR}, #{skuAbbreviation,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR},
+      #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR},
+      #{qualityAssuranceManagement,jdbcType=TINYINT}, #{productSortCode,jdbcType=VARCHAR},
+      #{productSortName,jdbcType=VARCHAR}, #{qualityNumber,jdbcType=VARCHAR}, #{qualityDate,jdbcType=VARCHAR},
+      #{managementStyleCode,jdbcType=VARCHAR}, #{managementStyleName,jdbcType=VARCHAR},
+      #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{onSale,jdbcType=TINYINT}, #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{boxGauge,jdbcType=VARCHAR}, #{applicableMonthAge,jdbcType=VARCHAR}, #{point,jdbcType=VARCHAR},
+      #{barCode,jdbcType=VARCHAR}, #{mnemonicCode,jdbcType=VARCHAR}, #{selectionEffectiveTime,jdbcType=TINYINT},
+      #{selectionEffectiveStartTime,jdbcType=VARCHAR}, #{selectionEffectiveEndTime,jdbcType=VARCHAR},
+      #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR}, #{goodsGifts,jdbcType=TINYINT}, #{spuCode,jdbcType=VARCHAR},
+      #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR},
+      #{skuName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT},
+      #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT},
       #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR},
       #{seasonalGoods,jdbcType=TINYINT},#{structuralGoods,jdbcType=TINYINT},
       #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},
@@ -385,7 +393,8 @@
       #{applyType,jdbcType=TINYINT},#{applyTypeName,jdbcType=VARCHAR},#{inventoryModel,jdbcType=TINYINT},
       #{useTime,jdbcType=INTEGER},#{uniqueCode,jdbcType=TINYINT},#{inventoryAllocation,jdbcType=TINYINT},
       #{priceModel,jdbcType=TINYINT},#{changeContent,jdbcType=VARCHAR},#{picFolderCode,jdbcType=VARCHAR},#{productDesc,jdbcType=VARCHAR},
-      #{itemNumber,jdbcType=TINYINT}
+      #{itemNumber,jdbcType=VARCHAR},#{seasonBand,jdbcType=VARCHAR},#{level,jdbcType=VARCHAR},#{featureCode,jdbcType=VARCHAR},
+      #{featureName,jdbcType=VARCHAR},#{currencyLevelCode,jdbcType=VARCHAR},#{currencyLevelName,jdbcType=VARCHAR}
       )
   </insert>
 
@@ -1020,7 +1029,7 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="selectProductByFolderCode" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List"></include>
     from
     product_sku_draft

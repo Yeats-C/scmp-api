@@ -180,6 +180,12 @@ public class CheckSkuUpdate {
             } else {
                 productSkuDraft.setProductCode(newProduct.getProductCode());
             }
+            NewProduct spuInfo = BeanCopyUtils.copy(importVo, NewProduct.class);
+            if (spuInfo != null) {
+                spuInfo.setAbbreviation(importVo.getSpuAbbreviation());
+                spuInfo.setBarCode(importVo.getSpuMnemonicCode());
+                this.resp.setSpuInfo(spuInfo);
+            }
         }
         //商品属性
         if (Objects.isNull(importVo.getProductPropertyName())) {
