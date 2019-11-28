@@ -539,8 +539,23 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         List<PricePromotionProductRespVo>  pricePromotionProductRespVoBasePage =  pricePromotionProductMapper.skuList(priceApplyPromotionReqVo);
         for (PricePromotionProductRespVo pricePromotionProductRespVo:
         pricePromotionProductRespVoBasePage ) {
+
+            List<BigDecimal> prices =   taxCostLogDao.loadPriceByProductCode(pricePromotionProductRespVo.getProductCode());
+            if (CollectionUtils.isNotEmptyCollection(prices)){
+                //设置库存价格
+                pricePromotionProductRespVo.setStockPrice(prices.get(0));
+            }else {
+                //设置库存价格
+                pricePromotionProductRespVo.setStockPrice(BigDecimal.ZERO);
+            }
+
             //设置可用库存
             pricePromotionProductRespVo.setStockNum(stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
+            //设置库存金额
+            pricePromotionProductRespVo.setStockMoney(BigDecimal.valueOf(pricePromotionProductRespVo.getStockNum()==null?0:pricePromotionProductRespVo.getStockNum()).multiply(pricePromotionProductRespVo.getStockPrice()));
+            //设置月平均销量
+            Long num= proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(pricePromotionProductRespVo.getProductCode())==null?0:proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(pricePromotionProductRespVo.getProductCode());
+            pricePromotionProductRespVo.setAverageNumLastThreeMouth(BigDecimal.valueOf(num).multiply(BigDecimal.valueOf(30)));
             //设置销售库存
             pricePromotionProductRespVo.setSaleStockNum(stockDao.selectSkuCodeBySaleSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuCodeBySaleSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
             //设置特卖库存
