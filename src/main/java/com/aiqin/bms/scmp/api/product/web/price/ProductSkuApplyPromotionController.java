@@ -64,7 +64,7 @@ public class ProductSkuApplyPromotionController {
     }
 
     @PostMapping("/skuList")
-    @ApiOperation("获取申请促销列表")
+    @ApiOperation("获取申请sku列表")
     public HttpResponse<BasePage<PricePromotionProductRespVo>> skuList(@RequestBody PricePromotionProductReqVo PricePromotionProductReqVo) {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(PricePromotionProductReqVo));
         try {

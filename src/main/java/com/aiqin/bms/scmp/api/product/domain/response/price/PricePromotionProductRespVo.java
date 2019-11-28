@@ -59,6 +59,27 @@ public class PricePromotionProductRespVo  extends BaseRowModel {
     private String productCode;
 
     /**
+     * spu编码
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("spu编码")
+    private String spuCode;
+
+
+    /**
+     * spu名称
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("spu名称")
+    private String spuName;
+
+    /**
+     * 采购组名称
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("采购组名称")
+    private String sectionName;
+    /**
      * 商品名称
      * 表字段 : price_promotion_product.product_name
      */
@@ -140,6 +161,20 @@ public class PricePromotionProductRespVo  extends BaseRowModel {
      */
     @ApiModelProperty("可用库存数量")
     private Long stockNum;
+
+
+    /**
+     *销售库存数量
+     */
+    @ApiModelProperty("销售库存数量")
+    private Long saleStockNum;
+
+
+    /**
+     *特卖数量
+     */
+    @ApiModelProperty("特卖数量")
+    private Long specialStockNum;
 
     /**
      * 近三个月月均销量

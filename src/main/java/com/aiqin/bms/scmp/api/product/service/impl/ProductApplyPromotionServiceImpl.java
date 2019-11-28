@@ -104,7 +104,8 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         PageHelper.startPage(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize());
         priceApplyPromotionReqVo.setPurchaseGroupCodes(purchaseGroupCodes);
         List<PriceApplyPromotionRespVo> priceApplyPromotionRespVoBasePage= productApplyPromotionMapper.list(priceApplyPromotionReqVo);
-        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize(),priceApplyPromotionRespVoBasePage.size(),priceApplyPromotionRespVoBasePage);
+        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionRespVoBasePage);
+
     }
 
     @Override
@@ -217,8 +218,10 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
            //设置库存价格
            pricePromotionProductRespVo.setDistributionPrice(BigDecimal.ZERO);
        }
-       //设置库存
-       pricePromotionProductRespVo.setStockNum(stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode())==null?0:stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode()));
+       //获取当前用户
+       AuthToken authToken = getUser();
+       //设置可用库存
+       pricePromotionProductRespVo.setStockNum(stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
        //设置库存金额
        pricePromotionProductRespVo.setStockMoney(BigDecimal.valueOf(pricePromotionProductRespVo.getStockNum()==null?0:pricePromotionProductRespVo.getStockNum()).multiply(pricePromotionProductRespVo.getStockPrice()));
        //设置月平均销量
@@ -424,8 +427,8 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
             priceApplyPromotionReqVo.setStatus(1);
             productApplyPromotionMapper.updateById(priceApplyPromotionReqVo);
         }
-//        workFlow(pricePromotionReqVo.getApprovalNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
-//                ,pricePromotionReqVo.getDirectSupervisorCode(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
+        workFlow(pricePromotionReqVo.getApprovalNo(),pricePromotionReqVo.getApplyPromotionNo(),authToken.getPersonName()
+                ,pricePromotionReqVo.getDirectSupervisorCode(),pricePromotionReqVo.getPromotionName(),pricePromotionReqVo.getRemark());
        return true;
     }
 
@@ -517,12 +520,6 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
                 Long num= proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(priceApplyPromotionRespVo.getProductCode())==null?0:proSuggestReplenishmentDao.biAppSuggestReplenishmentAllForPromotion(priceApplyPromotionRespVo.getProductCode());
                 priceApplyPromotionRespVo.setAverageNumLastThreeMouth(BigDecimal.valueOf(num).multiply(BigDecimal.valueOf(30)));
 
-                //促销分销价
-                BigDecimal promotionDistributionPrice=priceApplyPromotionRespVo.getPromotionDistributionPrice();
-                //库存成本
-                BigDecimal stockPrice = priceApplyPromotionRespVo.getStockPrice();
-                //补贴后成本
-                BigDecimal subsidyCost = priceApplyPromotionRespVo.getSubsidyCost();
             }
 
 
@@ -542,12 +539,15 @@ public class ProductApplyPromotionServiceImpl extends BaseServiceImpl implements
         List<PricePromotionProductRespVo>  pricePromotionProductRespVoBasePage =  pricePromotionProductMapper.skuList(priceApplyPromotionReqVo);
         for (PricePromotionProductRespVo pricePromotionProductRespVo:
         pricePromotionProductRespVoBasePage ) {
-            //设置库存
-            pricePromotionProductRespVo.setStockNum(stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode())==null?0:stockDao.selectSkuCodeByQueryAvailableSum(pricePromotionProductRespVo.getProductCode()));
+            //设置可用库存
+            pricePromotionProductRespVo.setStockNum(stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuAndCompanyByQueryAvailableSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
+            //设置销售库存
+            pricePromotionProductRespVo.setSaleStockNum(stockDao.selectSkuCodeBySaleSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuCodeBySaleSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
+            //设置特卖库存
+            pricePromotionProductRespVo.setSpecialStockNum(stockDao.selectSkuCodeBySpecialSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode())==null?0:stockDao.selectSkuCodeBySpecialSum(pricePromotionProductRespVo.getProductCode(),authToken.getCompanyCode()));
 
         }
-
-        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),priceApplyPromotionReqVo.getPageSize(),pricePromotionProductRespVoBasePage.size(),pricePromotionProductRespVoBasePage);
+        return PageUtil.getPageList(priceApplyPromotionReqVo.getPageNo(),pricePromotionProductRespVoBasePage);
 
     }
 

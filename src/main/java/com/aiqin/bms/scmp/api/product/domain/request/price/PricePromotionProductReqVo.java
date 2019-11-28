@@ -57,6 +57,28 @@ public class PricePromotionProductReqVo extends PageReq {
 
 
     /**
+     * 采购组名称
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("采购组名称")
+    private String sectionName;
+    /**
+     * 商品编码
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("spu编码")
+    private String spuCode;
+
+    /**
+     * 商品名称
+     * 表字段 : price_promotion_product.product_name
+     */
+    @ApiModelProperty("spu名称")
+    private String spuName;
+
+
+
+    /**
      * 商品品牌名称
      * 表字段 : price_promotion_product.category
      */

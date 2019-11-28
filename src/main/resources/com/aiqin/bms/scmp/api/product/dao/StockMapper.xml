@@ -2668,4 +2668,35 @@
         FROM stock
         WHERE sku_code = #{skuCode}
     </select>
+    <select id="selectSkuCodeBySaleSum" resultType="java.lang.Long">
+          SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            warehouse_type = 1 and
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
+    </select>
+
+    <select id="selectSkuCodeBySpecialSum" resultType="java.lang.Long">
+        SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            warehouse_type = 2 and
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
+    </select>
+
+    <select id="selectSkuAndCompanyByQueryAvailableSum" resultType="java.lang.Long">
+        SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
+    </select>
 </mapper>
