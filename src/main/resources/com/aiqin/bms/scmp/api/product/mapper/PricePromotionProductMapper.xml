@@ -100,28 +100,28 @@
       <where>
       a.del_flag=0
           <if test="productCode != null and productCode != ''">
-           and   sku_code like concat('%',#{productCode},'%')
+             and   a.sku_code like concat('%',#{productCode},'%')
           </if>
           <if test="productName != null and productName != ''">--
-              and   sku_name like concat('%',#{productName},'%')
+              and   a.sku_name like concat('%',#{productName},'%')
           </if>
           <if test="spuCode != null and spuCode != ''">
-              and   product_code like concat('%',#{spuCode},'%')
+              and   a.product_code like concat('%',#{spuCode},'%')
           </if>
           <if test="spuName != null and spuName != ''">--
-              and   product_name like concat('%',#{spuName},'%')
+              and   a.product_name like concat('%',#{spuName},'%')
           </if>
           <if test="sectionName != null and sectionName != ''">
-              and   procurement_section_name like concat('%',#{sectionName},'%')
+              and   a.procurement_section_name like concat('%',#{sectionName},'%')
           </if>
           <if test="brand != null and brand != ''">
-              and   product_brand_name like concat('%',#{brand},'%')
+              and   a.product_brand_name like concat('%',#{brand},'%')
           </if>
           <if test="category != null and category != ''">--
-              and  product_category_name like concat('%',#{category},'%')
+              and  a.product_category_code like concat('%',#{category},'%')
           </if>
           <if test="attribute != null and attribute != ''">
-              and product_property_name like concat('%',#{attribute},'%')
+              and a.product_property_name like concat('%',#{attribute},'%')
           </if>
            <if test="personId != null and personId != '' ">
                and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
