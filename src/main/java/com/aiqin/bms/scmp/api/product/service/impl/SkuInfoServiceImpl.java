@@ -2469,7 +2469,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         .checkBaseDate() //检查基础数据
                         .checkInvoice() //检查进销存包装
                         .checkSettlement() //检查结算信息
-//                        .checkSupplier() //检查供应商
+                       // .checkSupplier() //检查供应商
 //                        .checkPrice() //检查价格
 //                        .checkConfig() //检查配置
                         .checkManufacturer() //检查厂家
