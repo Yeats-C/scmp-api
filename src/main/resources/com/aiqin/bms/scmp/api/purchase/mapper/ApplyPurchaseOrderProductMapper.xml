@@ -21,7 +21,7 @@
     <result column="base_product_content" jdbcType="INTEGER" property="baseProductContent" />
     <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
     <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
@@ -61,7 +61,7 @@
       #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR}, #{item.productSpec,jdbcType=VARCHAR}, 
       #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, 
       #{item.purchaseWhole,jdbcType=INTEGER}, #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, 
-      #{item.boxGauge,jdbcType=VARCHAR}, #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=INTEGER}, 
+      #{item.boxGauge,jdbcType=VARCHAR}, #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=DECIMAL},
       #{item.productAmount,jdbcType=DECIMAL}, #{item.productTotalAmount,jdbcType=DECIMAL}, #{item.stockCount,jdbcType=INTEGER},
       #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR}, now(), 
       #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=DECIMAL},

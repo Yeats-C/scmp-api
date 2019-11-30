@@ -141,7 +141,7 @@ public class RejectApplyDetailHandleRequest {
 
     @ApiModelProperty(value = "税率")
     @JsonProperty("input_tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value = "仓编码(物流中心编码)")
     @JsonProperty("transport_center_code")
