@@ -104,7 +104,7 @@ public class SupplierServiceImpl implements SupplierService {
             operationLogVo.setObjectId(supplier.getSupplierCode());
             BasePage<LogData> pageList = operationLogService.getLogType(operationLogVo,62);
             List<LogData> logDataList = new ArrayList<>();
-            if (CollectionUtils.isEmptyCollection(pageList.getDataList())){
+            if (CollectionUtils.isNotEmptyCollection(pageList.getDataList())){
                 logDataList = pageList.getDataList();
             }
             supplierDetailRespVO.setLogDataList(logDataList);

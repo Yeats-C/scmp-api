@@ -46,7 +46,19 @@ public enum StatusTypeCode {
     STOCK((byte)0,"库存"),
     PURCHASE((byte)1,"采购"),
     SALE((byte)2,"销售"),
-    STORE_SALE((byte)3,"门店销售");
+    STORE_SALE((byte)3,"门店销售"),
+
+    CURRENCY((byte)1,"通货"),
+    GENERAL_CARGO((byte)2,"普货"),
+    BIG_CARGO((byte)3,"大货"),
+
+    NOT_CURRENCY((byte)1,"非通货"),
+    ONE_CURRENCY((byte)2,"一级通货"),
+    TWO_CURRENCY((byte)3,"二级通货"),
+    THREE_CURRENCY((byte)4,"三级通货"),
+    ;
+
+
 
     private Byte status;
     private String name;

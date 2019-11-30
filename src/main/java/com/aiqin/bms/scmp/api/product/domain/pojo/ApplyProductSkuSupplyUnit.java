@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("")
@@ -96,5 +97,14 @@ public class ApplyProductSkuSupplyUnit extends CommonBean {
 
     @ApiModelProperty("公司编码")
     private String companyName;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
 
 }

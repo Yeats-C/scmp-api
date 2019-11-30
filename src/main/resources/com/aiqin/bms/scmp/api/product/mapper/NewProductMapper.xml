@@ -187,6 +187,12 @@
             <if test="purchasingGroupName != null">
                 purchasing_group_name,
             </if>
+            <if test="styleNumber != null">
+                style_number
+            </if>
+            <if test="abbreviation != null">
+                abbreviation
+            </if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="id != null">
@@ -284,6 +290,12 @@
             </if>
             <if test="purchasingGroupName != null">
                 #{purchasingGroupName,jdbcType=VARCHAR},
+            </if>
+            <if test="styleNumber != null">
+                #{styleNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="abbreviation != null">
+                #{abbreviation,jdbcType=VARCHAR},
             </if>
         </trim>
     </insert>
@@ -434,6 +446,12 @@
             <if test="purchasingGroupName != null">
                 purchasing_group_name = #{purchasingGroupName,jdbcType=VARCHAR},
             </if>
+            <if test="styleNumber != null">
+                style_number = #{styleNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="abbreviation != null">
+                abbreviation = #{abbreviation,jdbcType=VARCHAR},
+            </if>
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>
@@ -477,7 +495,8 @@
         pro.update_by as updateBy,pro.create_time as createTime,
         pro.create_by as createBy,pro.bar_code as barCode,
         pro.purchasing_group_code as purchasingGroupCode,
-        pro.purchasing_group_name as purchasingGroupName
+        pro.purchasing_group_name as purchasingGroupName,
+        pro.style_number as styleNumber, pro.abbreviation as abbreviation
         FROM product pro
         WHERE pro.del_flag=0
         <if test="createTimeStart != null">
@@ -531,5 +550,18 @@
         <if test="code != null and code != '' ">
           and product_code != #{code}
         </if>
+    </select>
+    <select id="selectByProdutCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO">
+        SELECT
+            pro.id,pro.product_code as productCode,pro.product_name as productName,
+                   pro.update_time as updateTime,
+                   pro.update_by as updateBy,pro.create_time as createTime,
+                   pro.create_by as createBy,pro.bar_code as barCode,
+                   pro.purchasing_group_code as purchasingGroupCode,
+                   pro.purchasing_group_name as purchasingGroupName,
+                   pro.style_number as styleNumber, pro.abbreviation as abbreviation
+        FROM product pro
+        WHERE pro.del_flag=0 and pro.product_code=#{productCode}
     </select>
 </mapper>

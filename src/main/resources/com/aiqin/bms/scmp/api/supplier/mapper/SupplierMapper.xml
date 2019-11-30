@@ -197,8 +197,6 @@
     set supplier_name = #{supplierName,jdbcType=VARCHAR},
       supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
       supplier_code = #{supplierCode,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      create_by = #{createBy,jdbcType=VARCHAR},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
       apply_supplier_code = #{applySupplierCode,jdbcType=BIGINT},

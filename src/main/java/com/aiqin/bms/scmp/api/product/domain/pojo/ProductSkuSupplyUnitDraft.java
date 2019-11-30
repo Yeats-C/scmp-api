@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApiModel("供应商信息")
@@ -74,4 +75,13 @@ public class ProductSkuSupplyUnitDraft extends CommonBean {
 
     @ApiModelProperty("是否显示此条记录(0:显示 1:不显示)")
     private Byte applyShow;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
 }

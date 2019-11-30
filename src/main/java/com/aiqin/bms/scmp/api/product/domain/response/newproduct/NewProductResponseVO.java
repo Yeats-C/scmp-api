@@ -45,6 +45,12 @@ public class NewProductResponseVO{
     @ApiModelProperty("采购组名称")
     private String purchasingGroupName;
 
+    @ApiModelProperty("款号")
+    private String styleNumber;
+
+    @ApiModelProperty("简称")
+    private String abbreviation;
+
 
 
 }

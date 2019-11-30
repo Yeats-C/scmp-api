@@ -42,6 +42,18 @@ public class SkuInfoImport{
     @ExcelProperty(index = 5, value = "所属SPU")
     private String productName;
 
+    @ApiModelProperty("SPU简称")
+    @ExcelProperty(index = 5, value = "SPU简称")
+    private String spuAbbreviation;
+
+    @ApiModelProperty("SPU助记码")
+    @ExcelProperty(index = 5, value = "SPU助记码")
+    private String spuMnemonicCode;
+
+    @ApiModelProperty("款号")
+    @ExcelProperty(index = 5, value = "款号")
+    private String styleNumber;
+
     @ApiModelProperty("商品属性名称")
     @ExcelProperty(index = 6, value = "商品属性")
     private String productPropertyName;
@@ -52,6 +64,10 @@ public class SkuInfoImport{
 
     @ApiModelProperty("采购组名称")
     private String procurementSectionName;
+
+    @ApiModelProperty("货号")
+    @ExcelProperty(index = 8, value = "货号")
+    private String itemNumber;
 
     @ApiModelProperty("颜色名称")
     @ExcelProperty(index = 8, value = "颜色")
@@ -78,7 +94,7 @@ public class SkuInfoImport{
     private String categoriesSupplyChannelsName;
 
     @ApiModelProperty("助记码")
-    @ExcelProperty(index = 14, value = "助记码")
+    @ExcelProperty(index = 14, value = "SKU助记码")
     private String mnemonicCode;
 
     @ApiModelProperty("厂家指导价")
@@ -109,9 +125,31 @@ public class SkuInfoImport{
     @ExcelProperty(index = 21, value = "库存模式")
     private String inventoryModelDesc;
 
+    @ApiModelProperty("季节波段")
+    @ExcelProperty(index = 22, value = "季节波段")
+    private String seasonBand;
+
     @ApiModelProperty("唯一码管理(0:是 1:否)")
     @ExcelProperty(index = 22, value = "唯一码管理")
     private String uniqueCodeDesc;
+
+    @ApiModelProperty("等级")
+    @ExcelProperty(index = 22, value = "等级")
+    private String level;
+
+    @ApiModelProperty("特征编码")
+    private String featureCode;
+
+    @ApiModelProperty("特征名称")
+    @ExcelProperty(index = 22, value = "特征")
+    private String featureName;
+
+    @ApiModelProperty("通货等级编码")
+    private String currencyLevelCode;
+
+    @ApiModelProperty("通货等级")
+    @ExcelProperty(index = 22, value = "通货等级")
+    private String currencyLevelName;
 
     @ApiModelProperty("价格渠道名称")
     @ExcelProperty(index = 23, value = "覆盖渠道")

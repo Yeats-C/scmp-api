@@ -180,6 +180,12 @@ public class CheckSkuUpdate {
             } else {
                 productSkuDraft.setProductCode(newProduct.getProductCode());
             }
+            NewProduct spuInfo = BeanCopyUtils.copy(importVo, NewProduct.class);
+            if (spuInfo != null) {
+                spuInfo.setAbbreviation(importVo.getSpuAbbreviation());
+                spuInfo.setBarCode(importVo.getSpuMnemonicCode());
+                this.resp.setSpuInfo(spuInfo);
+            }
         }
         //商品属性
         if (Objects.isNull(importVo.getProductPropertyName())) {
@@ -253,23 +259,23 @@ public class CheckSkuUpdate {
         }
 
         //供货渠道类别
-        if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
-//            error.add("供货渠道类别不能为空");
-        } else {
-            SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
-            if (Objects.isNull(info)) {
-                error.add("无对应的名称的供货渠道类别");
-            } else {
-                productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
-                //库存模式
-                boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
-                if (b) {
-                    productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
-                } else {
-                    productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
-                }
-            }
-        }
+        // if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
+        //    error.add("供货渠道类别不能为空");
+        // } else {
+        //     SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
+        //     if (Objects.isNull(info)) {
+        //         error.add("无对应的名称的供货渠道类别");
+        //     } else {
+        //         productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+        //         //库存模式
+        //         boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
+        //         if (b) {
+        //             productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
+        //         } else {
+        //             productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
+        //         }
+        //     }
+        // }
         //助记码
         if (false) {
         }

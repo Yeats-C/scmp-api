@@ -44,7 +44,7 @@ public class SkuSupplierController {
         }
     }
 
-    @GetMapping("/detai")
+    @GetMapping("/detail")
     @ApiOperation("正式详情")
     public HttpResponse<SkuSupplierDetailRepsVo> detail(@RequestParam("skuCode") String skuCode) {
         try {

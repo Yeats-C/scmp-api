@@ -176,4 +176,25 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("sku商品文件管理采购组编码")
     private String purchaseGroupCode;
+
+    @ApiModelProperty("货号")
+    private String itemNumber;
+
+    @ApiModelProperty("季节波段")
+    private String seasonBand;
+
+    @ApiModelProperty("等级")
+    private String level;
+
+    @ApiModelProperty("特征编码")
+    private String featureCode;
+
+    @ApiModelProperty("特征名称")
+    private String featureName;
+
+    @ApiModelProperty("通货等级编码")
+    private String currencyLevelCode;
+
+    @ApiModelProperty("通货等级名称")
+    private String currencyLevelName;
 }

@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
+import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
@@ -20,6 +22,9 @@ import java.util.List;
 public class ProductSkuDetailResp {
     @ApiModelProperty(value = "sku基本信息",position = 1)
     private ProductSkuRespVo productSkuInfo;
+
+    @ApiModelProperty(value = "spu信息",position = 1)
+    private NewProductResponseVO spuInfo;
 
     @ApiModelProperty(value = "商品标签信息",position = 2)
     List<ApplyUseTagRecord> tagInfoList;
