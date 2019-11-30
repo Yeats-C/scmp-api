@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -92,4 +93,16 @@ public class QueryProductSkuSupplyUnitsRespVo extends CommonBean {
 
     @ApiModelProperty("产能")
     private List<ProductSkuSupplyUnitCapacityRespVo> capacityList;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
+
+    @ApiModelProperty("分销价")
+    private BigDecimal distributionPrice;
 }

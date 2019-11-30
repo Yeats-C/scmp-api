@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -95,6 +96,9 @@ public class SkuSupplierDetailRepsVo {
 
     @ApiModelProperty("供应商列表")
     private List<ProductSkuSupplyUnitRespVo> supplierList;
+
+    @ApiModelProperty("分销价")
+    private BigDecimal distributionPrice;
 
     public String getSkuTypeName() {
        if (Objects.equals(StatusTypeCode.GOOD.getStatus(),skuType)) {

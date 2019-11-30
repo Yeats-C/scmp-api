@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,7 +29,7 @@ public class UpdateProductSkuSupplyUnitReqVo {
     private Byte isDefault;
 
     @ApiModelProperty("含税进价")
-    private Long taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("无税进价")
     private Long noTaxPurchasePrice;
@@ -57,4 +58,13 @@ public class UpdateProductSkuSupplyUnitReqVo {
     @ApiModelProperty(value = "供应商产能信息",name = "productSkuSupplyUnitCapacities",position = 7)
     @JsonProperty("productSkuSupplyUnitCapacities")
     private List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
 }

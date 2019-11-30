@@ -88,7 +88,8 @@
           b.product_brand_name,
           b.product_property_code,
           b.product_property_name,
-          a.apply_type
+          a.apply_type,
+          a.origin_tax_included_price,a.origin_rate_of_margin,a.rate_of_margin
         from product_sku_supply_unit_draft a
         left join product_sku b
         on a.product_sku_code = b.sku_code
