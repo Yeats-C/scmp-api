@@ -35,46 +35,46 @@
         <where>
             1=1
             <if test="promotionNo != null and promotionNo != ''">
-                promotion_no = #{promotionNo,jdbcType=VARCHAR}
+              and  promotion_no like concat('%',#{promotionNo},'%')
             </if>
             <if test="promotionName != null and promotionName != '' ">
-                promotion_name = #{promotionName,jdbcType=VARCHAR}
+                and  promotion_name like concat('%',#{promotionName},'%')
             </if>
             <if test="departmentCode != null and departmentCode != '' ">
-                department_code = #{departmentCode,jdbcType=VARCHAR}
+                and   department_code like concat('%',#{departmentCode},'%')
             </if>
             <if test="departmentName != null and departmentName != '' ">
-                department_name = #{departmentName,jdbcType=VARCHAR}
+                and  department_name like concat('%',#{departmentName},'%')
             </if>
             <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
-                categories_supply_channels_code = #{categoriesSupplyChannelsCode,jdbcType=VARCHAR}
+                and  categories_supply_channels_code like concat('%',#{categoriesSupplyChannelsCode},'%')
             </if>
             <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
-                categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR}
+                and  categories_supply_channels_name like concat('%',#{categoriesSupplyChannelsName},'%')
             </if>
             <if test="status != null and status != '' ">
-                status = #{status,jdbcType=VARCHAR}
+                and  status like concat('%',#{status},'%')
             </if>
             <if test="remark != null and remark != '' ">
-                remark = #{remark,jdbcType=VARCHAR}
+                and  remark like concat('%',#{remark},'%')
             </if>
             <if test="createName != null and createName != '' ">
-                create_name = #{createName,jdbcType=VARCHAR}
+                and   create_name like concat('%',#{createName},'%')
             </if>
             <if test="createTimestamp != null and createTimestamp != '' ">
-                create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP}
+                and  create_timestamp like concat('%',#{createTimestamp},'%')
             </if>
             <if test="operateName != null and operateName != '' ">
-                operate_name = #{operateName,jdbcType=VARCHAR}
+                and  operate_name like concat('%',#{operateName},'%')
             </if>
             <if test="operateTimestamp != null and operateTimestamp != '' ">
-                operate_timestamp = #{operateTimestamp,jdbcType=TIMESTAMP}
+                and  operate_timestamp like concat('%',#{operateTimestamp},'%')
             </if>
             <if test="approvalNo != null and approvalNo != '' ">
-                approval_no = #{approvalNo,jdbcType=VARCHAR}
+                and   approval_no like concat('%',#{approvalNo},'%')
             </if>
             <if test="applyPromotionNo != null and applyPromotionNo != '' ">
-                apply_promotion_no = #{applyPromotionNo,jdbcType=INTEGER}
+                and  apply_promotion_no like concat('%',#{applyPromotionNo},'%')
             </if>
             order By create_timestamp desc
         </where>

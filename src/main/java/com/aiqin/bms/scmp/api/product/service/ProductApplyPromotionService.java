@@ -2,8 +2,11 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -63,6 +66,20 @@ public interface ProductApplyPromotionService {
      * @param userName
      */
     void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark);
+
+    /**
+     * 导入返回接口
+     * @param file
+     * @return
+     */
+    List<PricePromotionProductRespVo> importSkuNew(MultipartFile file);
+
+    /**
+     * sku商品的接口
+     * @param priceApplyPromotionReqVo
+     * @return
+     */
+    BasePage<PricePromotionProductRespVo> skuList(PricePromotionProductReqVo priceApplyPromotionReqVo);
 
 
 //    LoadGeneratePromotionRespVo loadGeneratePromotion(List<PriceApplyPromotionReqVo> priceApplyPromotionReqVoList);

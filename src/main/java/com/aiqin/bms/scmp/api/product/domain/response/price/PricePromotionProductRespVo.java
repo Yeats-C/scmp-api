@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.price;
 
+import com.alibaba.excel.annotation.ExcelProperty;
+import com.alibaba.excel.metadata.BaseRowModel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -17,7 +19,8 @@ import java.util.Date;
  */
 @Data
 @ApiModel("促销规则规则实体Vo")
-public class PricePromotionProductRespVo {
+public class PricePromotionProductRespVo  extends BaseRowModel {
+//    public static final String HEAD = "SkuInfoImportNew(productCode=sku编码,productName=sku名称)";
 
     /**
      * 
@@ -42,19 +45,57 @@ public class PricePromotionProductRespVo {
     private Integer productType;
 
     /**
+     * skuleix商品/赠品(0:商品，1:赠品)
+     * 表字段 : price_promotion_product.product_type
+     */
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品")
+    private Integer skuType;
+    /**
      * 商品编码
      * 表字段 : price_promotion_product.product_code
      */
-    @ApiModelProperty("商品编码")
+    @ApiModelProperty("sku编码")
+    @ExcelProperty(index = 0, value = "sku编码")
     private String productCode;
 
+    /**
+     * spu编码
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("spu编码")
+    private String spuCode;
+
+
+    /**
+     * spu名称
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("spu名称")
+    private String spuName;
+
+    /**
+     * 采购组名称
+     * 表字段 : price_promotion_product.product_code
+     */
+    @ApiModelProperty("采购组名称")
+    private String sectionName;
     /**
      * 商品名称
      * 表字段 : price_promotion_product.product_name
      */
-    @ApiModelProperty("商品名称")
+    @ApiModelProperty("sku名称")
+    @ExcelProperty(index = 1, value = "sku名称")
     private String productName;
 
+    /**
+     * 颜色名称
+     * 表字段 : price_promotion_product.product_name
+     */
+    @ApiModelProperty("颜色名称")
+    private String colorName;
+
+    @ApiModelProperty("规格")
+    private String spec;
     /**
      * 商品品类
      * 表字段 : price_promotion_product.category
@@ -62,6 +103,18 @@ public class PricePromotionProductRespVo {
     @ApiModelProperty("商品品类")
     private String category;
 
+    /**
+     * 单位名称
+     * 表字段 : price_promotion_product.category
+     */
+    @ApiModelProperty("单位名称")
+    private String unitName;
+    /**
+     * 商品品牌名称
+     * 表字段 : price_promotion_product.category
+     */
+    @ApiModelProperty("商品品牌名称")
+    private String brand;
     /**
      * 商品属性
      * 表字段 : price_promotion_product.attribute
@@ -108,6 +161,20 @@ public class PricePromotionProductRespVo {
      */
     @ApiModelProperty("可用库存数量")
     private Long stockNum;
+
+
+    /**
+     *销售库存数量
+     */
+    @ApiModelProperty("销售库存数量")
+    private Long saleStockNum;
+
+
+    /**
+     *特卖数量
+     */
+    @ApiModelProperty("特卖数量")
+    private Long specialStockNum;
 
     /**
      * 近三个月月均销量
