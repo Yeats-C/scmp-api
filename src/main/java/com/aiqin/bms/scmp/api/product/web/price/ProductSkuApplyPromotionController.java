@@ -3,9 +3,13 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PriceApplyPromotionReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.PriceApplyPromotionRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyPromotionService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
@@ -14,6 +18,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -49,6 +54,21 @@ public class ProductSkuApplyPromotionController {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(priceApplyPromotionReqVo));
         try {
             return HttpResponse.success(productApplyPromotionService.list(priceApplyPromotionReqVo));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/skuList")
+    @ApiOperation("获取申请sku列表")
+    public HttpResponse<BasePage<PricePromotionProductRespVo>> skuList(@RequestBody PricePromotionProductReqVo PricePromotionProductReqVo) {
+        log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(PricePromotionProductReqVo));
+        try {
+            return HttpResponse.success(productApplyPromotionService.skuList(PricePromotionProductReqVo));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -99,6 +119,23 @@ public class ProductSkuApplyPromotionController {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception ex) {
             ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
+
+
+    @PostMapping("/importSkuNew")
+    @ApiOperation("新增导入sku商品")
+    public HttpResponse<List<PricePromotionProductRespVo>> importSkuNew(MultipartFile file) {
+        log.info("SkuInfoController---importSkuNew---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        try {
+            return HttpResponse.successGenerics(productApplyPromotionService.importSkuNew(file));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
