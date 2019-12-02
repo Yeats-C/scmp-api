@@ -1372,7 +1372,7 @@ public class StockServiceImpl implements StockService {
             stock.setAllocationWayNum(0L);
             stock.setTotalWayNum(0L);
             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
-            stock.setTaxRate(0L);
+            stock.setTaxRate(BigDecimal.ZERO);
             stock.setTaxCost(BigDecimal.valueOf(0));
             stock.setUpdateBy(stockVoRequest.getOperator());
             stock.setCreateBy(stockVoRequest.getOperator());

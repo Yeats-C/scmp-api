@@ -123,5 +123,5 @@ public class ReturnOrderInfoItem {
     private String supplyName;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 }

@@ -35,7 +35,7 @@ import java.math.BigDecimal;
 public class OrderProductSkuResponse {
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("商品品牌code")
     private String brandCode;

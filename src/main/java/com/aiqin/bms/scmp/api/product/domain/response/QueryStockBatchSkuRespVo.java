@@ -94,7 +94,7 @@ public class QueryStockBatchSkuRespVo implements Serializable {
 
     @ApiModelProperty("税率")
     @JsonProperty("input_tax_rate")
-    private Integer inputTaxRate;
+    private BigDecimal inputTaxRate;
 
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")

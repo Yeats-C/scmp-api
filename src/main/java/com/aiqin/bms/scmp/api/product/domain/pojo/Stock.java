@@ -59,7 +59,6 @@ public class Stock extends CommonBean {
     @JsonProperty(value = "inventory_num")
     private Long inventoryNum;
 
-
     @ApiModelProperty("可用库存数")
     @JsonProperty(value = "available_num")
     private Long availableNum;
@@ -114,7 +113,7 @@ public class Stock extends CommonBean {
 
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("销售库存数")
     @JsonProperty(value = "sale_num")

@@ -71,7 +71,7 @@ public class InboundItemReqVo {
     private String productSortName;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("含税单价")
     private BigDecimal price;

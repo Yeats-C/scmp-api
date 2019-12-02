@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -92,7 +93,7 @@ public class ProfitLossDetailRequest {
     private String type;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税成本")
     private Long taxPrice;

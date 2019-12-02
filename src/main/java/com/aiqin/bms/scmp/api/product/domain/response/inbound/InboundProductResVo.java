@@ -100,7 +100,7 @@ public class InboundProductResVo {
     private Long linenum;
 
     @ApiModelProperty("进项税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty(value = "实际零数 展示用")
     private Long praSingleCount;

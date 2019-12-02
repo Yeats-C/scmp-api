@@ -47,7 +47,7 @@ public class AllocationProduct extends CommonBean {
     private String type;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税成本")
     private BigDecimal taxPrice;

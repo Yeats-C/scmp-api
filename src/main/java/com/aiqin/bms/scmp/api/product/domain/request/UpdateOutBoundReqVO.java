@@ -45,7 +45,7 @@ public class UpdateOutBoundReqVO implements Serializable {
     private BigDecimal praAmount;
 
     @ApiModelProperty("实际税额")
-    private Long praTax;
+    private BigDecimal praTax;
 
     @ApiModelProperty("操作人")
     private String operator;
