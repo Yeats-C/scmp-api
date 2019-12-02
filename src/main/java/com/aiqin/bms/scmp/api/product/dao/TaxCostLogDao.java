@@ -12,7 +12,7 @@ public interface TaxCostLogDao {
 
     void insertOne(TaxCostLog log);
 
-    void updateStockTaxCost(@Param("id") Long id, @Param("taxCost") long taxCost);
+    void updateStockTaxCost(@Param("id") Long id, @Param("taxCost") BigDecimal taxCost);
 
     TaxCostLogStock selectTimeByTaxDate(@Param("taxDate") String taxDate);
 

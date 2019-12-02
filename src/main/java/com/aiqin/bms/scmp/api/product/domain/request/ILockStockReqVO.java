@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import io.swagger.annotations.ApiModel;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -49,13 +50,13 @@ public interface ILockStockReqVO {
 
     Long getPreOutboundNum();
 
-    Long getPreTaxAmount();
+    BigDecimal getPreTaxAmount();
 
     String getOperator();
 
     Long getPreMainUnitNum();
 
-    Long getPreAmount();
+    BigDecimal getPreAmount();
 
     List<? extends ILockStockItemReqVo> getItemReqVos();
 

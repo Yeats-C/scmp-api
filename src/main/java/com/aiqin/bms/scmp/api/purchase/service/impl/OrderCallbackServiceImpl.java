@@ -97,6 +97,8 @@ import java.util.stream.Collectors;
 public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OrderCallbackServiceImpl.class);
+
+    private static final BigDecimal big = BigDecimal.valueOf(0);
     /**
      * 宁波熙耘
      */
@@ -254,10 +256,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfoItem.setSkuCode(outboundDetailRequest.getSkuCode());
             orderInfoItem.setChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
             orderInfoItem.setGivePromotion(outboundDetailRequest.getGiftType());
-            orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getNum());
+            orderInfoItem.setTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(outboundDetailRequest.getNum())).setScale(4 , BigDecimal.ROUND_HALF_UP));
             orderInfoItem.setOrderCode(orderInfo.getOrderCode());
             orderInfoItem.setActualChannelUnitPrice(outboundDetailRequest.getChannelUnitPrice());
-            orderInfoItem.setActualTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice() * outboundDetailRequest.getActualDeliverNum());
+            orderInfoItem.setActualTotalChannelPrice(outboundDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(outboundDetailRequest.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
             detailList.add(orderInfoItem);
         }
         //已支付
@@ -512,16 +514,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     returnOrderInfoItem.setPrice(returnDetailRequest.getChannelUnitPrice());
                     //渠道价格
                     returnOrderInfoItem.setChannelUnitPrice(returnDetailRequest.getChannelUnitPrice());
-                    returnOrderInfoItem.setTotalChannelPrice(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
+                    returnOrderInfoItem.setTotalChannelPrice(returnDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(returnDetailRequest.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                     //实际渠道价格
                     returnOrderInfoItem.setActualChannelUnitPrice(returnDetailRequest.getChannelUnitPrice());
-                    returnOrderInfoItem.setActualTotalChannelPrice(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
+                    returnOrderInfoItem.setActualTotalChannelPrice(returnDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(returnDetailRequest.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                     returnOrderInfoItem.setActualInboundNum(returnDetailRequest.getActualDeliverNum().intValue());
-                    returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
+                    returnOrderInfoItem.setAmount(returnDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(returnDetailRequest.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                     //实际单价
                     returnOrderInfoItem.setActualAmount(returnDetailRequest.getChannelUnitPrice());
                     //实际总价
-                    returnOrderInfoItem.setActualPrice(returnDetailRequest.getChannelUnitPrice() * returnDetailRequest.getActualDeliverNum());
+                    returnOrderInfoItem.setActualPrice(returnDetailRequest.getChannelUnitPrice().multiply(BigDecimal.valueOf(returnDetailRequest.getActualDeliverNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                     returnOrderInfoItem.setCompanyCode(COMPANY_CODE);
                     returnOrderInfoItem.setCompanyName(COMPANY_NAME);
                     returnOrderInfoItem.setWarehouseCode(returnDetailRequest.getWarehouseCode());
@@ -594,13 +596,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Map<String, List<ReturnOrderInfoItem>> detailMap = detailList.stream().collect(Collectors.groupingBy(ReturnOrderInfoItem::getReturnOrderCode));
         for (ReturnOrderInfo reqVo : returnOrderInfoList) {
             //实际含税金额
-            Long praTaxAmount = 0L;
+            BigDecimal praTaxAmount = big;
             //实际入库数量
             Long praInboundNum = 0L;
             //实际入库主数量
             Long praMainUnitNum = 0L;
             //预计含税金额
-            Long preTaxAmount = 0L;
+            BigDecimal preTaxAmount = big;
             //预计入库数量
             Long preInboundNum = 0L;
             //预计入库主数量
@@ -660,17 +662,17 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 product.setPreInboundMainNum(returnOrderInfoItem.getNum());
                 product.setPreInboundNum(returnOrderInfoItem.getNum());
                 product.setPreTaxPurchaseAmount(returnOrderInfoItem.getPrice());
-                product.setPreTaxAmount(returnOrderInfoItem.getPrice() * product.getPreInboundNum());
+                product.setPreTaxAmount(returnOrderInfoItem.getPrice().multiply(BigDecimal.valueOf(product.getPreInboundNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                 product.setPraInboundMainNum(returnOrderInfoItem.getActualInboundNum().longValue());
                 product.setPraInboundNum(returnOrderInfoItem.getActualInboundNum().longValue());
                 product.setPraTaxPurchaseAmount(returnOrderInfoItem.getPrice());
-                product.setPraTaxAmount(returnOrderInfoItem.getPrice() * product.getPraInboundNum());
+                product.setPraTaxAmount(returnOrderInfoItem.getPrice().multiply(BigDecimal.valueOf(product.getPraInboundNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
                 praInboundNum += returnOrderInfoItem.getActualInboundNum();
                 praMainUnitNum += returnOrderInfoItem.getActualInboundNum();
-                praTaxAmount += returnOrderInfoItem.getPrice() * praInboundNum;
+                praTaxAmount = returnOrderInfoItem.getPrice().multiply(BigDecimal.valueOf(praInboundNum)).setScale(4, BigDecimal.ROUND_HALF_UP).add(praTaxAmount);
                 preInboundNum += returnOrderInfoItem.getNum();
                 preMainUnitNum += returnOrderInfoItem.getNum();
-                preTaxAmount += returnOrderInfoItem.getPrice() * preInboundNum;
+                preTaxAmount = returnOrderInfoItem.getPrice().multiply(BigDecimal.valueOf(preInboundNum)).setScale(4, BigDecimal.ROUND_HALF_UP).add(preTaxAmount);;
                 inbound.setWarehouseCode(returnOrderInfoItem.getWarehouseCode());
                 inbound.setWarehouseName(returnOrderInfoItem.getWarehouseName());
                 //规格.

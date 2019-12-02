@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.util.DayUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -112,8 +113,8 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
             log.setWarehouseCode(st.getWarehouseCode());
             log.setWarehouseName(st.getWarehouseName());
             log.setStockCode(st.getStockCode());
-            log.setTaxCost(0L);
-            log.setTaxCostLastDay(0L);
+            log.setTaxCost(BigDecimal.valueOf(0));
+            log.setTaxCostLastDay(BigDecimal.valueOf(0));
         }
         for (StockFlow stockFlow : stockFlows) {
             if(stockFlow.getDocumentType() != null){
@@ -189,23 +190,23 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
     private void cost(Stock st, String yesterday, StockFlow stockFlow, TaxCostLog yesterdayLog) {
         // ==null 说明当天没有采购入库操作，拿前天的数据去算，!=null 说明当天已经有入库操作了，那当前的数据去算
         // 上次的正品含税总成本
-        long total = yesterdayLog.getStockNum() * yesterdayLog.getTaxCost();
+        BigDecimal total =  yesterdayLog.getTaxCost().multiply(BigDecimal.valueOf(yesterdayLog.getStockNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
         // 本次采购入库数量
         long changeNum = stockFlow.getChangeNum();
         // 本次的采购入库总成本
-        long price;
+        BigDecimal price;
         if(stockFlow.getStockCost() != null){
-            price = changeNum * stockFlow.getStockCost();
+            price = stockFlow.getStockCost().multiply(BigDecimal.valueOf(changeNum)).setScale(4, BigDecimal.ROUND_HALF_UP);
         }else{
-            price = stockFlow.getChangeNum() * 0;
+            price = BigDecimal.valueOf(0);
         }
         // 本次的最终含税成本
         long num = yesterdayLog.getStockNum() + changeNum;
-        long taxCost;
+        BigDecimal taxCost;
         if (num==0){
-            taxCost=0;
+            taxCost = BigDecimal.valueOf(0);
         }else {
-            taxCost = (total + price) / num;
+            taxCost = (total.add(price)).divide(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
         }
         common(taxCost,yesterdayLog.getTaxCost(),st,yesterday,changeNum,num);
     }
@@ -213,21 +214,21 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
 
     private void noCost(Stock st, String yesterday, TaxCostLog log, StockFlow stockFlow) {
         // 前天的正品含税总成本
-        long total = log.getStockNum() * log.getTaxCost();
+        BigDecimal total = log.getTaxCost().multiply(BigDecimal.valueOf(log.getStockNum())).setScale(4, BigDecimal.ROUND_HALF_UP);;
         // 本次的采购入库总成本
-        long price;
+        BigDecimal price;
         if(stockFlow.getStockCost() != null){
-            price = stockFlow.getChangeNum() * stockFlow.getStockCost();
+            price = stockFlow.getStockCost().multiply(BigDecimal.valueOf(stockFlow.getChangeNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
         }else{
-            price = stockFlow.getChangeNum() * 0;
+            price = BigDecimal.valueOf(0);
         }
         // 本次的最终含税成本
         long num = log.getStockNum() + stockFlow.getChangeNum();
-        long taxCost;
+        BigDecimal taxCost;
         if (num==0){
-            taxCost=0;
+            taxCost=BigDecimal.valueOf(0);
         }else {
-            taxCost = (total + price) / num;
+            taxCost = (total.add(price)).divide(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
         }
         common(taxCost,log.getTaxCost(),st,yesterday,stockFlow.getChangeNum(),num);
     }
@@ -242,7 +243,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         }
     }
 
-    public void common(Long taxCost,Long logTaxCost,Stock st,String yesterday,Long changeNum,Long num){
+    public void common(BigDecimal taxCost,BigDecimal logTaxCost,Stock st,String yesterday,Long changeNum,Long num){
         if(!taxCost.equals(logTaxCost)){
             TaxCostLog yesterLog = new TaxCostLog();
             yesterLog.setCreateTime(new Date());

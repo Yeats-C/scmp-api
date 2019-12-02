@@ -35,7 +35,6 @@ import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
-import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
@@ -61,6 +60,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -77,7 +77,6 @@ import java.util.stream.Collectors;
 @Slf4j
 public class StockServiceImpl implements StockService {
 
-
     private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
 
     @Autowired
@@ -89,8 +88,6 @@ public class StockServiceImpl implements StockService {
     @Autowired
     private SkuService skuService;
     @Autowired
-    private EncodingRuleDao encodingRuleDao;
-    @Autowired
     private StockFlowDao stockFlowDao;
     @Autowired
     private ProductSkuDao productSkuDao;
@@ -98,7 +95,6 @@ public class StockServiceImpl implements StockService {
     private WarehouseService supplierApiService;
     @Autowired
     private PurchaseGroupService purchaseGroupService;
-
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -242,7 +238,6 @@ public class StockServiceImpl implements StockService {
             throw new GroundRuntimeException(ex.getMessage());
         }
     }
-
 
     @Override
     public PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest) {
@@ -663,7 +658,6 @@ public class StockServiceImpl implements StockService {
 
     /**
      * 根据公司编码和sku集合查询商品库存
-     *
      * @param reqVo
      * @return
      */
@@ -674,7 +668,6 @@ public class StockServiceImpl implements StockService {
 
     /**
      * 门店库存锁定
-     *
      * @param vo
      * @return
      */
@@ -1380,12 +1373,12 @@ public class StockServiceImpl implements StockService {
             stock.setTotalWayNum(0L);
             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
             stock.setTaxRate(0L);
-            stock.setTaxCost(0L);
+            stock.setTaxCost(BigDecimal.valueOf(0));
             stock.setUpdateBy(stockVoRequest.getOperator());
             stock.setCreateBy(stockVoRequest.getOperator());
         }
         stock.setUpdateBy(stockVoRequest.getOperator());
-        if(stockVoRequest.getNewPurchasePrice() != null && stockVoRequest.getNewPurchasePrice() != 0){
+        if(stockVoRequest.getNewPurchasePrice() != null && stockVoRequest.getNewPurchasePrice() != BigDecimal.valueOf(0)){
             stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
         }
         stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());

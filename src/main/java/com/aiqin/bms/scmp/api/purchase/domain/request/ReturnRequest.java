@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.request;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -117,7 +118,7 @@ public class ReturnRequest {
     private Long productNum;
 
     @ApiModelProperty("退货金额")
-    private Long returnOrderAmount;
+    private BigDecimal returnOrderAmount;
 
     @ApiModelProperty("发货时间")
     private Date deliveryTime;

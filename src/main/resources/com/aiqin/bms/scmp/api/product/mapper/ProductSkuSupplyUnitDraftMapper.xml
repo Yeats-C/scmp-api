@@ -26,6 +26,9 @@
     <result column="apply_show"  property="applyShow" />
     <result column="company_code"  property="companyCode" />
     <result column="company_name"  property="companyName" />
+    <result column="origin_tax_included_price" jdbcType="DECIMAL" property="originTaxIncludedPrice"/>
+    <result column="origin_rate_of_margin" jdbcType="DECIMAL" property="originRateOfMargin"/>
+    <result column="rate_of_margin" jdbcType="DECIMAL" property="rateOfMargin"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price, 
@@ -37,6 +40,7 @@
   <select id="selectByIds" parameterType="java.util.List" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
+      ,origin_tax_included_price,rate_of_margin,origin_rate_of_margin
     from product_sku_supply_unit_draft
     where id in
     <foreach collection="list" item="id" separator="," open="(" close=")">

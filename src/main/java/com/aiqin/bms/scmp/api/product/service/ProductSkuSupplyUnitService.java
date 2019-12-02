@@ -144,6 +144,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     BasePage<QueryProductSkuSupplyUnitsRespVo> getDraftListPage(QuerySkuSupplyUnitReqVo reqVo);
 
     /**
+     * 分局条件获取SKU供应商管理,不分页
+     * @param reqVo
+     * @return
+     */
+    List<QueryProductSkuSupplyUnitsRespVo> getDraftListNoPage(QuerySkuSupplyUnitReqVo reqVo);
+
+    /**
      * SKU供应商管理-待审请详情
      * @param id
      * @return

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -32,10 +33,10 @@ public class UpdateOutboundProductReqVO implements Serializable {
     private Long praOutboundMainNum;
 
     @ApiModelProperty("实际含税进价")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
     @ApiModelProperty("实际含税总价")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("操作人")
     private String operator;

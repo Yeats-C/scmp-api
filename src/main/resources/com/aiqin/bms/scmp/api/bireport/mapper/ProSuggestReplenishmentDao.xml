@@ -67,7 +67,9 @@
         FROM bi_app_suggest_replenishment_all
         where sku_code = #{skuCode,jdbcType=VARCHAR}
         and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} limit 1
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+        order by create_time desc
+        limit 1
     </select>
 
     <select id="biAppSuggestReplenishmentAllForPromotion" resultType="java.lang.Long">

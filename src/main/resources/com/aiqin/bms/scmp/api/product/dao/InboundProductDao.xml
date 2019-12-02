@@ -18,12 +18,12 @@
     <result column="inbound_base_content" jdbcType="VARCHAR" property="inboundBaseContent" />
     <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
     <result column="pre_inbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
-    <result column="pre_tax_purchase_amount" jdbcType="BIGINT" property="preTaxPurchaseAmount" />
-    <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
+    <result column="pre_tax_purchase_amount" jdbcType="DECIMAL" property="preTaxPurchaseAmount" />
+    <result column="pre_tax_amount" jdbcType="DECIMAL" property="preTaxAmount" />
     <result column="pra_inbound_num" jdbcType="BIGINT" property="praInboundNum" />
     <result column="pra_inbound_main_num" jdbcType="BIGINT" property="praInboundMainNum" />
-    <result column="pra_tax_purchase_amount" jdbcType="BIGINT" property="praTaxPurchaseAmount" />
-    <result column="pra_tax_amount" jdbcType="BIGINT" property="praTaxAmount" />
+    <result column="pra_tax_purchase_amount" jdbcType="DECIMAL" property="praTaxPurchaseAmount" />
+    <result column="pra_tax_amount" jdbcType="DECIMAL" property="praTaxAmount" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
@@ -33,14 +33,12 @@
   </resultMap>
 
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
-
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="pre_inbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
     <result column="product_type" jdbcType="INTEGER" property="productType" />
-    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
+    <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
     <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
-
   </resultMap>
   <sql id="Base_Column_List">
     id, inbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code, 
@@ -66,12 +64,12 @@
     <result column="inbound_base_content" jdbcType="VARCHAR" property="inboundBaseContent" />
     <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
     <result column="pre_inbound_main_num" jdbcType="BIGINT" property="preInboundMainNum" />
-    <result column="pre_tax_purchase_amount" jdbcType="BIGINT" property="preTaxPurchaseAmount" />
-    <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
+    <result column="pre_tax_purchase_amount" jdbcType="DECIMAL" property="preTaxPurchaseAmount" />
+    <result column="pre_tax_amount" jdbcType="DECIMAL" property="preTaxAmount" />
     <result column="pra_inbound_num" jdbcType="BIGINT" property="praInboundNum" />
     <result column="pra_inbound_main_num" jdbcType="BIGINT" property="praInboundMainNum" />
-    <result column="pra_tax_purchase_amount" jdbcType="BIGINT" property="praTaxPurchaseAmount" />
-    <result column="pra_tax_amount" jdbcType="BIGINT" property="praTaxAmount" />
+    <result column="pra_tax_purchase_amount" jdbcType="DECIMAL" property="praTaxPurchaseAmount" />
+    <result column="pra_tax_amount" jdbcType="DECIMAL" property="praTaxAmount" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
@@ -116,9 +114,9 @@
       #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, 
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{inboundNorms,jdbcType=VARCHAR}, 
       #{inboundBaseContent,jdbcType=VARCHAR}, #{preInboundNum,jdbcType=BIGINT}, #{preInboundMainNum,jdbcType=BIGINT}, 
-      #{preTaxPurchaseAmount,jdbcType=BIGINT}, #{preTaxAmount,jdbcType=BIGINT}, #{praInboundNum,jdbcType=BIGINT}, 
-      #{praInboundMainNum,jdbcType=BIGINT}, #{praTaxPurchaseAmount,jdbcType=BIGINT}, 
-      #{praTaxAmount,jdbcType=BIGINT}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{preTaxPurchaseAmount,jdbcType=DECIMAL}, #{preTaxAmount,jdbcType=DECIMAL}, #{praInboundNum,jdbcType=BIGINT},
+      #{praInboundMainNum,jdbcType=BIGINT}, #{praTaxPurchaseAmount,jdbcType=DECIMAL},
+      #{praTaxAmount,jdbcType=DECIMAL}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{linenum,jdbcType=BIGINT})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
@@ -250,10 +248,10 @@
         #{preInboundMainNum,jdbcType=BIGINT},
       </if>
       <if test="preTaxPurchaseAmount != null">
-        #{preTaxPurchaseAmount,jdbcType=BIGINT},
+        #{preTaxPurchaseAmount,jdbcType=DECIMAL},
       </if>
       <if test="preTaxAmount != null">
-        #{preTaxAmount,jdbcType=BIGINT},
+        #{preTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="praInboundNum != null">
         #{praInboundNum,jdbcType=BIGINT},
@@ -262,10 +260,10 @@
         #{praInboundMainNum,jdbcType=BIGINT},
       </if>
       <if test="praTaxPurchaseAmount != null">
-        #{praTaxPurchaseAmount,jdbcType=BIGINT},
+        #{praTaxPurchaseAmount,jdbcType=DECIMAL},
       </if>
       <if test="praTaxAmount != null">
-        #{praTaxAmount,jdbcType=BIGINT},
+        #{praTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="createBy != null">
         #{createBy,jdbcType=VARCHAR},
@@ -336,10 +334,10 @@
         pre_inbound_main_num = #{preInboundMainNum,jdbcType=BIGINT},
       </if>
       <if test="preTaxPurchaseAmount != null">
-        pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=BIGINT},
+        pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=DECIMAL},
       </if>
       <if test="preTaxAmount != null">
-        pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+        pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="praInboundNum != null">
         pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
@@ -348,10 +346,10 @@
         pra_inbound_main_num = #{praInboundMainNum,jdbcType=BIGINT},
       </if>
       <if test="praTaxPurchaseAmount != null">
-        pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=BIGINT},
+        pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=DECIMAL},
       </if>
       <if test="praTaxAmount != null">
-        pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+        pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="createBy != null">
         create_by = #{createBy,jdbcType=VARCHAR},
@@ -387,12 +385,12 @@
       inbound_base_content = #{inboundBaseContent,jdbcType=VARCHAR},
       pre_inbound_num = #{preInboundNum,jdbcType=BIGINT},
       pre_inbound_main_num = #{preInboundMainNum,jdbcType=BIGINT},
-      pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=BIGINT},
-      pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+      pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=DECIMAL},
+      pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
       pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
       pra_inbound_main_num = #{praInboundMainNum,jdbcType=BIGINT},
-      pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=BIGINT},
-      pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+      pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=DECIMAL},
+      pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       create_by = #{createBy,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
@@ -423,12 +421,12 @@
       #{item.inboundBaseContent,jdbcType=VARCHAR},
       #{item.preInboundNum,jdbcType=BIGINT},
       #{item.preInboundMainNum,jdbcType=BIGINT},
-      #{item.preTaxPurchaseAmount,jdbcType=BIGINT},
-      #{item.preTaxAmount,jdbcType=BIGINT},
+      #{item.preTaxPurchaseAmount,jdbcType=DECIMAL},
+      #{item.preTaxAmount,jdbcType=DECIMAL},
       #{item.praInboundNum,jdbcType=BIGINT},
       #{item.praInboundMainNum,jdbcType=BIGINT},
-      #{item.praTaxPurchaseAmount,jdbcType=BIGINT},
-      #{item.praTaxAmount,jdbcType=BIGINT},
+      #{item.praTaxPurchaseAmount,jdbcType=DECIMAL},
+      #{item.praTaxAmount,jdbcType=DECIMAL},
       #{item.createBy,jdbcType=VARCHAR},
       #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR},

@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.request.allocation;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -58,16 +59,16 @@ public class AllocationProductToOutboundVo {
     private Long inventory;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税单价")
-    private Long taxPrice;
+    private BigDecimal taxPrice;
 
     @ApiModelProperty("数量")
     private Long quantity;
 
     @ApiModelProperty("含税总价")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("删除标记，0未删除 1已删除")
     private Byte delFlag;

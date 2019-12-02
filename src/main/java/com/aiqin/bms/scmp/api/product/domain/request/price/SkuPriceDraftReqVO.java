@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -61,13 +62,13 @@ public class SkuPriceDraftReqVO {
     private String priceAttributeName;
 
     @ApiModelProperty("含税金额")
-    private Long priceTax;
+    private BigDecimal priceTax;
 
     @ApiModelProperty(value = "未税金额",hidden = true)
-    private Long priceNoTax;
+    private BigDecimal priceNoTax;
 
     @ApiModelProperty(value = "税率",hidden = true)
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")

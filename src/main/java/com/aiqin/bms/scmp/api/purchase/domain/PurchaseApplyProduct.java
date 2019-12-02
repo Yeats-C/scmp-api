@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -112,11 +113,11 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="含税采购价")
     @JsonProperty("product_purchase_amount")
-    private Long productPurchaseAmount;
+    private BigDecimal productPurchaseAmount;
 
     @ApiModelProperty(value="最新采购价格")
     @JsonProperty("new_purchase_price")
-    private Long newPurchasePrice;
+    private BigDecimal newPurchasePrice;
 
     @ApiModelProperty(value="采购件数（整数）")
     @JsonProperty("purchase_whole")
@@ -166,7 +167,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="最高采购价")
     @JsonProperty("purchase_max")
-    private Long purchaseMax;
+    private BigDecimal purchaseMax;
 
     @ApiModelProperty(value="规格")
     @JsonProperty("product_spec")
@@ -182,7 +183,7 @@ public class PurchaseApplyProduct {
 
     @ApiModelProperty(value="缺货影响的销售额")
     @JsonProperty("shortage_number")
-    private Integer shortageNumber;
+    private BigDecimal shortageNumber;
 
     @ApiModelProperty(value="缺货天数")
     @JsonProperty("shortage_day")

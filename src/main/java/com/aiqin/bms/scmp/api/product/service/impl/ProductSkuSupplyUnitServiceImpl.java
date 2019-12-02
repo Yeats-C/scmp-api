@@ -342,11 +342,11 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             throw new BizException(ResultCode.REQUIRED_PARAMETER);
         }
         SkuSupplierDetailRepsVo repsVo = productSkuSupplyUnitDao.detail(skuCode);
-        // 设置获取分销价
-        repsVo.setDistributionPrice(getDistributionPrice(skuCode));
         if (null == repsVo) {
             throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
         }
+        // 设置获取分销价
+        repsVo.setDistributionPrice(getDistributionPrice(skuCode));
         return repsVo;
     }
 
@@ -384,6 +384,15 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 addList.forEach(item->{
                     if(supplyCodeMap.containsKey(item.getSupplyUnitCode())){
                         throw new BizException(ResultCode.REPEAT_DATA);
+                    } else {
+                        Date now = new Date();
+                        item.setDelFlag((byte) 0);
+                        item.setCreateTime(now);
+                        item.setUpdateTime(now);
+                        if(AuthenticationInterceptor.getCurrentAuthToken() != null ) {
+                            item.setCreateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                            item.setUpdateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                        }
                     }
                 });
                 list.addAll(addList);
@@ -392,6 +401,10 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 //比较修改
                 updateList.forEach(item -> {
                     if (diffData(item, reqVo.getSkuCode(),item.getSupplyUnitCode())) {
+                        item.setUpdateTime(new Date());
+                        if(AuthenticationInterceptor.getCurrentAuthToken() != null ) {
+                            item.setUpdateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                        }
                         list.add(item);
                     }
                 });
@@ -485,6 +498,11 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     }
 
     @Override
+    public List<QueryProductSkuSupplyUnitsRespVo> getDraftListNoPage(QuerySkuSupplyUnitReqVo reqVo) {
+        return draftMapper.getListPage(reqVo);
+    }
+
+    @Override
     public SkuSupplierDetailRepsVo draftDetail(Long id) {
         ProductSkuSupplyUnitRespVo productSkuSupplyUnitRespVo = productSkuSupplyUnitDao.selectDraftById(id);
         if(null == productSkuSupplyUnitRespVo) {
@@ -494,8 +512,24 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         if(null == detail){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
-        // 商品的供货渠道类别，根据商品供应商的供货渠道类别的变化而变化。
-        List<String> codeList = detail.getSupplierList().stream().map(ProductSkuSupplyUnitRespVo::getCategoriesSupplyChannelsCode).collect(Collectors.toList());
+        // 设置商品的供货渠道类别，根据商品供应商的供货渠道类别的变化而变化。
+        // List<String> codeList = detail.getSupplierList().stream().map(ProductSkuSupplyUnitRespVo::getCategoriesSupplyChannelsCode).collect(Collectors.toList());
+        // if(CollectionUtils.isNotEmptyCollection(codeList)) {
+        //     // 商品供应商的供货渠道类别有直送有配送，全部
+        //     if (codeList.contains(StatusTypeCode.DELIVERY.getStatus().toString()) &&
+        //             codeList.contains(StatusTypeCode.DIRECT_DELIVERY.getStatus().toString())) {
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.ALL.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.ALL.getName());
+        //     } else if (codeList.contains(StatusTypeCode.DELIVERY.getStatus().toString())) {
+        //         // 配送
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.DELIVERY.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.DELIVERY.getName());
+        //     } else {
+        //         // 直送
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.DIRECT_DELIVERY.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.DIRECT_DELIVERY.getName());
+        //     }
+        // }
         String skuCode = detail.getSkuCode();
         // 设置获取分销价
         detail.setDistributionPrice(getDistributionPrice(skuCode));
@@ -720,6 +754,12 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     }
 
     private ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> dealApplyViewData(List<ProductSkuSupplyUnitRespVo> unitRespVos) {
+        unitRespVos.forEach(item -> {
+            // 设置分销价
+            if (StringUtils.isNotBlank(item.getProductSkuCode())) {
+                item.setDistributionPrice(this.getDistributionPrice(item.getProductSkuCode()));
+            }
+        });
         ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
         SkuSupplierDetailRepsVo repsVo = new SkuSupplierDetailRepsVo();
         ProductSkuSupplyUnitRespVo respVo = unitRespVos.get(0);
@@ -807,21 +847,13 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 for (ProductSkuPriceRespVo item : productSkuPriceInfos) {
                     if (StringUtils.equals(item.getPriceItemCode(), "1007")) {
                         // 爱亲分销价
-                        if (item.getPriceTax() != null) {
-                            return BigDecimal.valueOf(item.getPriceTax());
-                        }
+                        return item.getPriceTax();
                     } else if (StringUtils.equals(item.getPriceItemCode(), "1008")) {
                         // 萌贝树分销价
-                        if (item.getPriceTax() != null) {
-                            return BigDecimal.valueOf(item.getPriceTax());
-                        }
-                        return BigDecimal.valueOf(item.getPriceTax());
+                        return item.getPriceTax();
                     } else if (StringUtils.equals(item.getPriceItemCode(), "1009")) {
                         // 小红马分销价
-                        if (item.getPriceTax() != null) {
-                            return BigDecimal.valueOf(item.getPriceTax());
-                        }
-                        return BigDecimal.valueOf(item.getPriceTax());
+                        return item.getPriceTax();
                     } else {
                         throw new BizException("分销价为空");
                     }

@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @Api(tags = "sku供应商管理api")
@@ -125,6 +126,18 @@ public class SkuSupplierController {
             return HttpResponse.successGenerics( productSkuSupplyUnitService.applySave(reqVo));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @PostMapping("/draft/idList")
+    @ApiOperation("根据条件获取临时表id列表")
+    public HttpResponse draftCodeList(@RequestBody QuerySkuSupplyUnitReqVo reqVo) {
+        try {
+            List<Long> ids = productSkuSupplyUnitService.getDraftListNoPage(reqVo).stream().map(QueryProductSkuSupplyUnitsRespVo::getId).collect(Collectors.toList());
+            return HttpResponse.successGenerics(ids);
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

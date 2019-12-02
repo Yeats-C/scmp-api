@@ -1558,7 +1558,7 @@
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
     <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
-    <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice"/>
+    <result column="manufacturer_guide_price" jdbcType="DECIMAL" property="manufacturerGuidePrice"/>
     <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
     <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods"/>
     <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode"/>

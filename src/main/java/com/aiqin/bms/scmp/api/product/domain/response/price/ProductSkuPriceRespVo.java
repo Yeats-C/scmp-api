@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -41,7 +42,7 @@ public class ProductSkuPriceRespVo {
     private String priceAttributeName;
 
     @ApiModelProperty("含税金额")
-    private Long priceTax;
+    private BigDecimal priceTax;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -72,11 +73,11 @@ public class PurchaseOrderResponse {
 
     @ApiModelProperty(value="含税采购金额")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value="实物返金额")
     @JsonProperty("return_amount")
-    private Long returnAmount;
+    private BigDecimal returnAmount;
 
     @ApiModelProperty(value="采购方式 0 配送  1.铺采直送")
     @JsonProperty("purchase_mode")
@@ -110,11 +111,11 @@ public class PurchaseOrderResponse {
 
     @ApiModelProperty(value="实际含税采购金额")
     @JsonProperty("actual_total_amount")
-    private Long actualTotalAmount;
+    private BigDecimal actualTotalAmount;
 
     @ApiModelProperty(value="实际实物返金额")
     @JsonProperty("actual_return_amount")
-    private Long actualReturnAmount;
+    private BigDecimal actualReturnAmount;
 
     @ApiModelProperty(value="预计到货时间")
     @JsonProperty("expect_arrival_time")
@@ -140,11 +141,11 @@ public class PurchaseOrderResponse {
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
-    private Long giftTaxSum;
+    private BigDecimal giftTaxSum;
 
     @ApiModelProperty(value="实际赠品含税金额")
     @JsonProperty("actual_gift_tax_sum")
-    private Long actualGiftTaxSum;
+    private BigDecimal actualGiftTaxSum;
 
     @ApiModelProperty(value="关联审批单")
     @JsonProperty("approval_code")

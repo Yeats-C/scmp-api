@@ -284,7 +284,7 @@ public class CheckSkuUpdate {
 //            error.add("厂家指导价不能为空");
         } else {
             try {
-                productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
+                productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseBigDecimal(importVo.getManufacturerGuidePrice()));
             } catch (NumberFormatException e) {
                 error.add("厂家指导价格式不正确");
             }
@@ -693,7 +693,7 @@ public class CheckSkuUpdate {
 //            error.add("进项税率不能为空");
         } else {
             try {
-                draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getInputTaxRate()));
+                draft.setInputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getInputTaxRate()));
             } catch (Exception e) {
                 error.add("进项税率格式不正确");
             }
@@ -703,7 +703,7 @@ public class CheckSkuUpdate {
 //            error.add("销项税率不能为空");
         } else {
             try {
-                draft.setOutputTaxRate(NumberConvertUtils.stringParseLong(importVo.getOutputTaxRate()));
+                draft.setOutputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getOutputTaxRate()));
             } catch (Exception e) {
                 error.add("销项税率格式不正确");
             }
@@ -713,7 +713,7 @@ public class CheckSkuUpdate {
 //            error.add("积分系数不能为空");
         } else {
             try {
-                draft.setIntegralCoefficient(Long.parseLong(importVo.getIntegralCoefficient()));
+                draft.setIntegralCoefficient(NumberConvertUtils.stringParseBigDecimal(importVo.getIntegralCoefficient()));
             } catch (Exception e) {
                 error.add("积分系数格式不正确");
             }

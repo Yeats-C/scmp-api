@@ -39,7 +39,7 @@ public class UpdateSkuSupplyUnitReqVo {
     private String companyName;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("分销价")
     private BigDecimal distributionPrice;

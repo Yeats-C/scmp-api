@@ -56,6 +56,10 @@ public enum StatusTypeCode {
     ONE_CURRENCY((byte)2,"一级通货"),
     TWO_CURRENCY((byte)3,"二级通货"),
     THREE_CURRENCY((byte)4,"三级通货"),
+
+    ALL((byte)1,"全部"),
+    DIRECT_DELIVERY((byte)2,"直送"),
+    DELIVERY((byte)3,"配送"),
     ;
 
 

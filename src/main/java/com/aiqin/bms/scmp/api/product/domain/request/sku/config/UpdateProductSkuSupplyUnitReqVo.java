@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku.config;
 
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -7,6 +8,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -17,7 +19,7 @@ import java.util.List;
  */
 @ApiModel("修改SKU供应商信息VO")
 @Data
-public class UpdateProductSkuSupplyUnitReqVo {
+public class UpdateProductSkuSupplyUnitReqVo extends CommonBean {
 
     @ApiModelProperty("供应商code")
     private String supplyUnitCode;
@@ -32,13 +34,13 @@ public class UpdateProductSkuSupplyUnitReqVo {
     private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("无税进价")
-    private Long noTaxPurchasePrice;
+    private BigDecimal noTaxPurchasePrice;
 
     @ApiModelProperty("联营扣率")
-    private Long jointFranchiseRate;
+    private BigDecimal jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    private Long point;
+    private BigDecimal point;
 
     @ApiModelProperty("厂商SKU编码")
     private String factorySkuCode;

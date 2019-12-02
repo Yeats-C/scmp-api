@@ -78,7 +78,7 @@ public class SkuSupplierDetailRepsVo {
     private String skuTypeName;
 
     @ApiModelProperty("进项税率")
-    private Long inputTaxRate;
+    private BigDecimal inputTaxRate;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
