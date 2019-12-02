@@ -86,7 +86,7 @@
 
   <sql  id="Base_Column_MmsReq">
       a.sku_code,a.sku_name,a.pre_inbound_main_num,a.unit_name,a.linenum,c.product_type,ifnull(c.product_amount, 0) as product_amount,
-      ifnull(c._rate, 0) as _rate
+      ifnull(c.tax_rate, 0) as tax_rate
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
