@@ -95,6 +95,6 @@ public class OutboundProduct {
     private Long linenum;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
 }

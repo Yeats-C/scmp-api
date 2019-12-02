@@ -29,7 +29,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
   </resultMap>
 
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
@@ -75,7 +75,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="tax"/>
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="tax"/>
   </resultMap>
   <sql id="Base_Column_ByLinenum">
     a.id, a.inbound_oder_code, a.sku_code, a.sku_name, a.picture_url, a.norms, a.color_name, a.color_code,
@@ -86,7 +86,7 @@
 
   <sql  id="Base_Column_MmsReq">
       a.sku_code,a.sku_name,a.pre_inbound_main_num,a.unit_name,a.linenum,c.product_type,ifnull(c.product_amount, 0) as product_amount,
-      ifnull(c.tax_rate, 0) as tax_rate
+      ifnull(c._rate, 0) as _rate
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -105,17 +105,17 @@
       color_name, color_code, model, 
       unit_code, unit_name, inbound_norms, 
       inbound_base_content, pre_inbound_num, pre_inbound_main_num, 
-      pre_tax_purchase_amount, pre_tax_amount, pra_inbound_num, 
-      pra_inbound_main_num, pra_tax_purchase_amount, 
-      pra_tax_amount, create_by, create_time, 
+      pre__purchase_amount, pre__amount, pra_inbound_num,
+      pra_inbound_main_num, pra__purchase_amount,
+      pra__amount, create_by, create_time,
       update_by, update_time,linenum)
     values (#{id,jdbcType=BIGINT}, #{inboundOderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, 
       #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{norms,jdbcType=VARCHAR}, 
       #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, 
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{inboundNorms,jdbcType=VARCHAR}, 
       #{inboundBaseContent,jdbcType=VARCHAR}, #{preInboundNum,jdbcType=BIGINT}, #{preInboundMainNum,jdbcType=BIGINT}, 
-      #{preTaxPurchaseAmount,jdbcType=DECIMAL}, #{preTaxAmount,jdbcType=DECIMAL}, #{praInboundNum,jdbcType=BIGINT},
-      #{praInboundMainNum,jdbcType=BIGINT}, #{praTaxPurchaseAmount,jdbcType=DECIMAL},
+      #{prePurchaseAmount,jdbcType=DECIMAL}, #{preAmount,jdbcType=DECIMAL}, #{praInboundNum,jdbcType=BIGINT},
+      #{praInboundMainNum,jdbcType=BIGINT}, #{praPurchaseAmount,jdbcType=DECIMAL},
       #{praTaxAmount,jdbcType=DECIMAL}, #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{linenum,jdbcType=BIGINT})
   </insert>
@@ -432,7 +432,7 @@
       #{item.updateBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.linenum,jdbcType=BIGINT},
-      #{item.tax,jdbcType=BIGINT}
+      #{item.tax,jdbcType=DECIMAL}
       )
     </foreach>
   </insert>

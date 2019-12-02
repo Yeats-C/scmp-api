@@ -27,7 +27,7 @@
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
         <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -84,7 +84,7 @@
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
         <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -117,7 +117,7 @@
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
         <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
@@ -234,7 +234,7 @@
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
         <result column="available_num" jdbcType="BIGINT" property="stock"/>
-        <result column="Input_tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="Input_tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_price" jdbcType="DECIMAL" property="price"/>
         <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
     </resultMap>
@@ -257,7 +257,7 @@
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate"/>
+        <result column="input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate"/>
         <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
@@ -292,7 +292,7 @@
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
         <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>

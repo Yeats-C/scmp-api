@@ -92,7 +92,7 @@ public class InboundProduct {
     private Long linenum;
 
     @ApiModelProperty("进项税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty(value="品牌id")
     private String brandId;

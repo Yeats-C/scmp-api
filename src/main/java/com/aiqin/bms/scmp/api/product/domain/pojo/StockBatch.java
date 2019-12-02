@@ -143,7 +143,7 @@ public class StockBatch extends PagesRequest {
 
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("创建人")
     @JsonProperty(value = "create_by")

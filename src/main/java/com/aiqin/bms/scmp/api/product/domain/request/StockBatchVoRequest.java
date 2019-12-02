@@ -82,7 +82,7 @@ public class StockBatchVoRequest {
 
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("单据类型")
     @JsonProperty(value = "document_type")

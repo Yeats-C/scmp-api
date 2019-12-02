@@ -12,6 +12,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -132,7 +133,7 @@ StockVoRequest(companyCode=04, companyName=北京天佳辰宇科技有限公司,
 
         stockVoRequest1.setNewDelivery("10000062");
         stockVoRequest1.setNewDeliveryName("我的供应商3");
-        stockVoRequest1.setTaxRate(1600L);
+        stockVoRequest1.setTaxRate(BigDecimal.valueOf(1600));
 
         stockVoRequest1.setDocumentType(4);
         stockVoRequest1.setDocumentNum("103988");

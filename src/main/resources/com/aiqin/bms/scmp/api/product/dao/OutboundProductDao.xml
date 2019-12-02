@@ -29,7 +29,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
   </resultMap>
   <resultMap id="MmsReq" type="com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO">
 
@@ -74,8 +74,8 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="linenum" jdbcType="BIGINT" property="linenum" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
+    <result column="output_tax_rate" jdbcType="DECIMAL" property="outputTaxRate" />
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
   </resultMap>
   <sql id="Base_Column_ReturnOutboundProduct">
     a.id, a.outbound_oder_code, a.sku_code, a.sku_name, a.picture_url, a.norms, a.color_name, a.color_code,
@@ -427,7 +427,7 @@
       #{item.updateBy,jdbcType=VARCHAR},
       #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.linenum,jdbcType=BIGINT},
-      #{item.tax,jdbcType=BIGINT}
+      #{item.tax,jdbcType=DECIMAL}
       )
     </foreach>
   </insert>
