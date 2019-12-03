@@ -93,7 +93,7 @@ public class QueryStockSkuListRespVo implements Serializable {
 
     @ApiModelProperty("税率")
     @JsonProperty("tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("昨天含税成本")
     @JsonProperty("tax_cost")

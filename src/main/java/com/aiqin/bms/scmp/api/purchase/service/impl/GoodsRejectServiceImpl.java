@@ -458,8 +458,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 if (detailResponse.getTaxRate() == null) {
                     untaxedAmount = detailResponse.getProductTotalAmount();
                 } else {
-                    Integer tax = 100 + detailResponse.getTaxRate();
-                    BigDecimal amount = detailResponse.getProductTotalAmount().divide(BigDecimal.valueOf(tax), 4, BigDecimal.ROUND_HALF_UP).
+                    BigDecimal tax = detailResponse.getTaxRate().add(BigDecimal.valueOf(100));
+                    BigDecimal amount = detailResponse.getProductTotalAmount().divide(tax, 4, BigDecimal.ROUND_HALF_UP).
                             divide(BigDecimal.valueOf(100), 4, BigDecimal.ROUND_HALF_UP);
                     untaxedAmount = amount.add(untaxedAmount);
                 }

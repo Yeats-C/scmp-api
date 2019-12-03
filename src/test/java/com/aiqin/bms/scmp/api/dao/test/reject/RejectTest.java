@@ -159,7 +159,7 @@ public class RejectTest extends SpringBootTestContext {
         detail.setStockCount(10);
         detail.setSingleCount(5);
         detail.setProductCount(5);
-        detail.setTaxRate(10);
+        detail.setTaxRate(BigDecimal.valueOf(10));
         detail.setTransportCenterCode("1025");
         detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");
@@ -197,7 +197,7 @@ public class RejectTest extends SpringBootTestContext {
         detail1.setStockCount(10);
         detail1.setSingleCount(5);
         detail1.setProductCount(5);
-        detail1.setTaxRate(10);
+        detail1.setTaxRate(BigDecimal.valueOf(10));
         detail.setTransportCenterCode("1025");
         detail.setTransportCenterName("华北");
         detail.setWarehouseCode("1026");

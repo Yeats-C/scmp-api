@@ -524,7 +524,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                     if (supplier == null) {
                         HandleResponse(response, record, "未查询到供应商信息；", i);
                         errorCount++;
-                        list.add(response);
+                        errorList.add(response);
                         continue;
                     }
                     logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
@@ -556,11 +556,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                             applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? big : vo.getOutStockAffectMoney());
                             applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
                             applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
-                        }
-                        // 获取最高采购价(价格管理中供应商的含税价格)
-                        if (StringUtils.isNotBlank(applyProduct.getSkuCode()) && StringUtils.isNotBlank(applyProduct.getSupplierCode())) {
-                            BigDecimal priceTax = productSkuPriceInfoDao.selectPriceTax(applyProduct.getSkuCode(), applyProduct.getSupplierCode());
-                            applyProduct.setPurchaseMax(priceTax == null ? big : priceTax);
                         }
                         Integer baseProductContent = applyProduct.getBaseProductContent();
                         if (StringUtils.isNotBlank(record[4]) && baseProductContent != 0) {

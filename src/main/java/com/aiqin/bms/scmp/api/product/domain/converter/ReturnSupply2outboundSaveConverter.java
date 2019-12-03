@@ -116,7 +116,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 for (RejectRecordDetail item : items) {
                     OutboundProductReqVo outboundProduct = new OutboundProductReqVo();
                     //税率
-                    outboundProduct.setTax(item.getTaxRate().longValue());
+                    outboundProduct.setTax(item.getTaxRate());
                     //sku
                     outboundProduct.setSkuCode(item.getSkuCode());
                     outboundProduct.setSkuName(item.getSkuName());

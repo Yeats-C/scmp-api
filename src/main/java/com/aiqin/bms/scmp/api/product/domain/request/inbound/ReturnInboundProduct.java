@@ -97,7 +97,7 @@ public class ReturnInboundProduct {
     private Long linenum;
 
     @ApiModelProperty("进项税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("入库拆零系数")
     private String inboundBaseUnit;

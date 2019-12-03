@@ -56,7 +56,7 @@ public class StockVoRequest {
 
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("变化数")
     @JsonProperty(value = "change_num")

@@ -51,4 +51,22 @@ public class ProductBrandReqDTO extends CommonBean {
 
     @ApiModelProperty(value = "旧的logoUrl连接")
     private String oldBrandLogoUrl;
+
+    @ApiModelProperty(value = "创建人员工号")
+    private String createById;
+
+    @ApiModelProperty(value = "创建人员名称")
+    private String createBy;
+
+    @ApiModelProperty(value = "修改人员工号")
+    private String updateById;
+
+    @ApiModelProperty(value = "修改人员名称")
+    private String updateBy;
+
+    @ApiModelProperty(value = "公司编码")
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
 }

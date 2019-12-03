@@ -121,4 +121,11 @@ public class StorageDetail {
     @JsonProperty("supplier_name")
     @ApiModelProperty("供应商名称")
     private String supplierName;
+
+    /**
+     * 商品类型
+     */
+    @JsonProperty("product_type")
+    @ApiModelProperty("商品类型")
+    private Integer productType;
 }

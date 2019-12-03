@@ -72,4 +72,16 @@ public class ApplySupplyCompanyAcctReqVO{
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
+    @ApiModelProperty(value = "修改人员工号")
+    private String updateById;
+
+    @ApiModelProperty(value = "修改人员名称")
+    private String updateBy;
+
+    @ApiModelProperty(value = "公司编码")
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
 }
