@@ -50,7 +50,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
 //            Map<String, Long> map = skuService.getSkuConvertNumBySkuCodes(skuCodes);
 //            InboundSavePo po = new InboundSavePo();
             List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
-            Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
+            Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
             InboundReqSave inbound = new InboundReqSave();
             SupplyReturnOrderInfoReqVO mainOrderInfo = reqVo.getMainOrderInfo();
             BeanUtils.copyProperties(mainOrderInfo,inbound);
@@ -109,8 +109,8 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
                 try {
                     product.setPreInboundMainNum(vo.getNum());
                     //计算不含税单价
-                    Long aLong = map.get(vo.getSkuCode());
-                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), BigDecimal.valueOf(aLong));
+                    BigDecimal aLong = map.get(vo.getSkuCode());
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
 
                     //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();

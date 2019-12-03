@@ -20,16 +20,16 @@ public class ProductSkuCheckout extends CommonBean {
     private String skuName;
 
     @ApiModelProperty("销项税率")
-    private Long outputTaxRate;
+    private BigDecimal outputTaxRate;
 
     @ApiModelProperty("进项税率")
-    private Long inputTaxRate;
+    private BigDecimal inputTaxRate;
 
     @ApiModelProperty("积分系数")
-    private Long integralCoefficient;
+    private BigDecimal integralCoefficient;
 
     @ApiModelProperty("返点")
-    private Long rebate;
+    private BigDecimal rebate;
 
     @ApiModelProperty("申请编码")
     private String applyCode;
