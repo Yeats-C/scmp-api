@@ -674,7 +674,7 @@ public class StockServiceImpl implements StockService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public List<MerchantLockStockRespVo> lockMerchantStock(MerchantLockStockReqVo vo) {
-        //1.通过省市查询物流中心
+        // 1.通过省市查询物流中心
         WarehouseListReqVo warehouseReq = new WarehouseListReqVo();
         warehouseReq.setProvinceCode(vo.getProvinceId());
         warehouseReq.setCityCode(vo.getCityId());
@@ -686,7 +686,7 @@ public class StockServiceImpl implements StockService {
         List<String> centerCodes = Lists.newArrayList();
         List<String> warehouseCodes = Lists.newArrayList();
         List<WarehouseApiResVo> warehouseApiResVos = Lists.newArrayList();
-        //拿到物流中心和库房
+        // 拿到物流中心和库房
         warehouseApi.forEach(o -> {
             centerCodes.add(o.getLogisticsCenterCode());
             List<String> collect = o.getList().stream().map(WarehouseApiResVo::getWarehouseCode).collect(Collectors.toList());
@@ -846,34 +846,6 @@ public class StockServiceImpl implements StockService {
         return respVos;
     }
 
-    //    /**
-//     * 门店库存锁定
-//     *
-//     * @param vo
-//     * @return
-//     */
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public List<MerchantLockStockRespVo> lockMerchantStock(MerchantLockStockReqVo vo) {
-//        //1.通过省市查询物流中心
-//        //2.通过物流中心找到对应仓库
-//        //3.根据仓库和skuList查询是否有库存
-//        //4.验证,进行锁库操作
-//        List<MerchantLockStockRespVo> respVos = Lists.newLinkedList();
-//        MerchantLockStockRespVo respVo = null;
-//
-//        for (MerchantLockStockItemReqVo itemReqVo : vo.getSkuList()) {
-//            respVo = new MerchantLockStockRespVo();
-//            respVo.setSkuCode(itemReqVo.getSkuCode());
-//            respVo.setLockNum(itemReqVo.getNum());
-//            respVo.setTransportCenterCode("1025");
-//            respVo.setWarehouseCode("1026");
-//            respVo.setProductType(itemReqVo.getProductType());
-//            respVo.setLineNum(itemReqVo.getLineNum());
-//            respVos.add(respVo);
-//
-//        return respVos;
-//    }
     @Override
     public List<Stock> selectByQueryList(List<String> centerCodes, List<String> warehouseCodes, List<String> skuCodes, String companyCode) {
         return stockDao.selectByQueryList(centerCodes, warehouseCodes, skuCodes, companyCode);

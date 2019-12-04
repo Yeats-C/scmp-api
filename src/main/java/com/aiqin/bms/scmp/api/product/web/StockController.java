@@ -78,11 +78,6 @@ public class StockController {
     @PostMapping("/search/sku/page")
     @ApiOperation(value = "查询库存商品(分页)")
     public HttpResponse<PageInfo<QueryStockSkuRespVo>> selectStockSkuByPage(@RequestBody QueryStockSkuReqVo reqVO) {
-        //数据不全，暂时不传 TODO
-//        reqVO.setCompanyCode(null);
-//        reqVO.setSupplyCode(null);
-//        reqVO.setTransportCenterCode(null);
-//        reqVO.setWarehouseCode(null);
         reqVO.setCompanyCode(null != AuthenticationInterceptor.getCurrentAuthToken() ? AuthenticationInterceptor.getCurrentAuthToken().getCompanyCode() : null);
         PageInfo<QueryStockSkuRespVo> queryStockSkuRespVoPageInfo = stockService.selectStockSkuPage(reqVO);
         return HttpResponse.success(queryStockSkuRespVoPageInfo);
@@ -91,10 +86,6 @@ public class StockController {
     @PostMapping("/search/sku/nopage")
     @ApiOperation(value = "查询库存商品")
     public HttpResponse<List<QueryStockSkuRespVo>> selectStockSku(@RequestBody QueryStockSkuReqVo reqVO) {
-        //数据不全，暂时不传 TODO
-//        reqVO.setCompanyCode(null);
-//        reqVO.setSupplyCode(null);
-//        stockService.selectStockSku(reqVO);
         return HttpResponse.success(stockService.selectStockSku(reqVO));
     }
 
@@ -110,11 +101,13 @@ public class StockController {
     public HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
         return stockService.verifyReturnSupply(reqVO);
     }
+
     @PostMapping("/unLock/returnSupply")
     @ApiOperation(value = "审核失败解锁库存")
     public HttpResponse<Boolean> unLockReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
         return HttpResponse.success(stockService.returnSupplyUnLockStock(reqVO));
     }
+
     @PostMapping("/unLock")
     @ApiOperation(value = "库存解锁")
     public HttpResponse unLockStock(@RequestBody UnLockStockReqVo reqVo) {
@@ -147,6 +140,7 @@ public class StockController {
         List<MerchantLockStockRespVo> queryMerchantStockRepVos = stockService.lockMerchantStock(reqVo);
         return HttpResponse.success(queryMerchantStockRepVos);
     }
+
     //因为目前对接中心没介入,所以直接接收采购单 这里传之前锁定生成的出库单号
     @ApiOperation(value = "退供供应商确认后,出库单")
     @GetMapping("/outBound/save")
@@ -155,16 +149,19 @@ public class StockController {
         updateOutBoundReqVO.setSourceOrderCode(outBoundCode);
         return HttpResponse.success(stockService.reduceUnlockStock(updateOutBoundReqVO));
     }
+
     @PostMapping("/lock/flow")
     @ApiOperation(value = "解锁库存并加流水")
     public HttpResponse lockFlow(@RequestBody StockFlowRequest reqVo){
         return HttpResponse.success(stockService.stockFlow(reqVo));
     }
+
     @PostMapping("change")
     @ApiOperation(value = "库存修改")
     public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
         return stockService.changeStock(stockChangeRequest);
     }
+
     @PostMapping("/logs")
     public HttpResponse logs(@RequestBody StockLogsRequest stockLogsRequest){
         return stockService.logs(stockLogsRequest);
@@ -217,11 +214,8 @@ public class StockController {
         return HttpResponse.success(queryStockBatchSkuRespVoPageInfo);
     }
 
-    /**
-     *  库房管理新增调拨,移库,报废列表查询
-     */
     @GetMapping("/search/stock/sku/page")
-    @ApiOperation(value = "库房管理新增列表查询")
+    @ApiOperation(value = "库房管理新增调拨,移库,报废列表查询")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "out_transport_center_code", value = "调出仓库", type = "String"),
             @ApiImplicitParam(name = "out_warehouse_code", value = "调出库房", type = "String"),
@@ -235,7 +229,6 @@ public class StockController {
             @ApiImplicitParam(name = "product_property_code", value = "商品属性", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
-
     })
     public HttpResponse<List<QueryStockSkuListRespVo>> selectStockSkuList(@RequestParam(value = "out_transport_center_code", required = false) String outTransportCenterCode,
                                                                           @RequestParam(value = "out_warehouse_code", required = false) String outWarehouseCode,
@@ -255,10 +248,6 @@ public class StockController {
         return HttpResponse.success(stockService.selectStockSkuList(reqVO));
     }
 
-    /**
-     * 库房库存数据保存
-     * @return
-     */
     @PostMapping("/update/storehouse")
     @ApiOperation(value = "库房管理列表数据保存")
     public HttpResponse updateStorehouseById(@RequestBody List<StockRespVO> stockRespVO){
@@ -272,9 +261,6 @@ public class StockController {
         return stockService.changeStockBatch(stockChangeRequest);
     }
 
-    /**
-     *  库房管理新增调拨,移库,报废列表导入操作
-     */
     @GetMapping("/search/stock/sku/import")
     @ApiOperation(value = "库房管理新增列表查询导入操作")
     @ApiImplicitParams({
