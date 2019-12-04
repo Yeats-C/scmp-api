@@ -41,7 +41,7 @@ public class SkuSupplierImport extends BaseRowModel {
 
     @ApiModelProperty("含税采购价")
     @ExcelProperty(index = 5 , value = "含税采购价")
-    private BigDecimal taxIncludedPrice;
+    private String taxIncludedPrice;
 
     @ApiModelProperty("联营扣率")
     @ExcelProperty(index = 6 , value = "联营扣点(%)")
