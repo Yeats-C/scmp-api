@@ -17,7 +17,7 @@ product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 wms:
-  url: http://abutment.api.aiqin.com
+  url: http://qa-004
 ground:
   druid:
     url: jdbc:mysql://39.96.85.170:3306/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
