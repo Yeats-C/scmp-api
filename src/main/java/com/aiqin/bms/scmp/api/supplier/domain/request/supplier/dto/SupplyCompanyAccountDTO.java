@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -30,7 +31,7 @@ public class SupplyCompanyAccountDTO {
     private String account;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;

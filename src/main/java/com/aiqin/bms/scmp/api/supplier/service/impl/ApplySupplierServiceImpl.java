@@ -265,6 +265,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
         try {
 
             WorkFlowVO workFlowVO = new WorkFlowVO();
+            workFlowVO.setPositionCode(applySupplierReqDTO.getPositionCode());
             workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierGroupUrl+"?applyType="+applySupplierReqDTO.getApplyType()+"&applyCode="+applySupplierReqDTO.getApplySupplierCode()+"&id="+applySupplierReqDTO.getId()+"&itemCode=2"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo(applySupplierReqDTO.getFormNo());

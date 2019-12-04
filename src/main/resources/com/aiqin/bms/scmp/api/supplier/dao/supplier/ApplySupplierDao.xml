@@ -65,13 +65,15 @@
   <!--新增供应商申请-->
   <insert id="insertApply" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplierReqDTO">
     insert into apply_supplier (supplier_name, supplier_abbreviation,del_flag, create_time,create_by,
-            update_time,update_by,apply_supplier_code,apply_type,form_no,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name)
+            update_time,update_by,apply_supplier_code,apply_type,form_no,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name,
+            position_code,position_name)
     values (#{supplierName,jdbcType=VARCHAR}, #{supplierAbbreviation,jdbcType=VARCHAR},
       #{delFlag,jdbcType=TINYINT},#{createTime,jdbcType=TIMESTAMP},#{createBy,jdbcType=VARCHAR},
       #{updateTime,jdbcType=TIMESTAMP},#{updateBy,jdbcType=VARCHAR},
       #{applySupplierCode,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},#{formNo,jdbcType=VARCHAR},
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR},#{companyName,jdbcType=VARCHAR},
-      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR}
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
+      #{positionCode,jdbcType=VARCHAR},#{positionName,jdbcType=VARCHAR}
       )
   </insert>
   <!--申请供应商管理-->

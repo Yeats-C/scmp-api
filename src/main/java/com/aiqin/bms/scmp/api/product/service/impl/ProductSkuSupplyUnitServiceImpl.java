@@ -588,13 +588,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         //保存审批附件信息
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),String.valueOf(code),formNo, ApprovalFileTypeEnum.GOODS_COMPANY.getType());
-        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName());
+        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName(),reqVo.getPositionCode());
         return num;
     }
 
     @Override
-    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName) {
+    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuSupplier + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);

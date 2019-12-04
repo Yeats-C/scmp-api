@@ -234,7 +234,7 @@
         account = #{account,jdbcType=VARCHAR},
       </if>
       <if test="maxPaymentAmount != null">
-        max_payment_amount = #{maxPaymentAmount,jdbcType=BIGINT},
+        max_payment_amount = #{maxPaymentAmount,jdbcType=DECIMAL},
       </if>
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=TINYINT},

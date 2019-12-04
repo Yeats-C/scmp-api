@@ -184,4 +184,10 @@ public class UpdateApplyContractReqVo {
 
     @ApiModelProperty("文件信息")
     private List<UpdateApplyContractFileReqVo> fileReqVos;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

@@ -35,5 +35,9 @@ public class SupplierUpdateReqVO {
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
+    @ApiModelProperty("职位编码")
+    private String positionCode;
 
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

@@ -29,4 +29,14 @@ public class ApplySupplierReqVO{
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
 
+    @ApiModelProperty("职位编码")
+    @NotEmpty(message = "职位编码不能为空！")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    @NotEmpty(message = "职位名称不能为空！")
+    private String positionName;
+
+
+
 }
