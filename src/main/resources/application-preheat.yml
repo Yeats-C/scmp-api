@@ -1,0 +1,56 @@
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password: aiqin123456
+server:
+  tomcat:
+    basedir: /tmp/dir
+web:
+  host-url: http://scmp.bms.aiqin.com
+center:
+  main:
+  #中控服务端
+    url: http://control.api.aiqin.com
+    #url: http://39.106.215.2:9003
+  #中控前端
+    host: http://control.mgs.aiqin.com
+product:
+  info:
+    url: http://com.aiqin.bms.scmp.api.api.aiqin.com
+wms:
+  url: http://abutment.api.aiqin.com
+ground:
+  druid:
+    url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: p_scmp_write
+    password: grg4y4cDWA7XM8jraDnt7Q
+    initial-size: 5
+    min-idle: 3
+    max-active: 20
+    max-wait: 6000
+    time-between-eviction-runs-millis: 60000
+    min-evictable-idle-time-millis: 300000
+    filters: stat,slf4j
+    connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+
+oss:
+  end:
+    point: http://oss-cn-beijing.aliyuncs.com
+  access:
+    key:
+      id: LTAIYOvtCIluSvwO
+      secret: BpkZWSEPnBHdVwi2ZQvKX06u6JruaF
+  bucket:
+    name: aq-scmp
+  dir: release/
+evn: release
+Encryption:
+  key: 16#t%9@AJ6DYaeRp
+#  dZ3@k!KMhq!Tqeh3%RYm83cX&JmvYyY!
+UserName:
+  key: 11921
+CurrentPositionCode:
+  key: GW00566
+
+
