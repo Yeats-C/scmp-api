@@ -78,14 +78,12 @@ public class SkuManufacturerController {
             Date now = new Date();
             manufacturerList.forEach(item -> {
                 if(Objects.isNull(item.getCreateTime())) {
-                    item.setCreateTime(now);
-                }
-                if(Objects.isNull(item.getCreateBy())) {
+                    //新增保存
                     item.setCreateBy(currentAuthToken.getPersonName());
+                    item.setCreateTime(now);
+                    item.setDelFlag((byte) 0);
                 }
                 item.setUpdateTime(now);
-                item.setDelFlag((byte) 0);
-                item.setCreateBy(currentAuthToken.getPersonName());
                 item.setUpdateBy(currentAuthToken.getPersonName());
             });
         }

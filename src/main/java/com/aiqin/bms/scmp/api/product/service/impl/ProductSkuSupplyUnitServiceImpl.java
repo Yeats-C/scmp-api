@@ -238,6 +238,20 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         return delNum;
     }
 
+    @Override
+    public Integer batchDeleteDraftById(List<Long> ids) {
+        Integer delNum = 0;
+        for (Long id : ids) {
+            ProductSkuSupplyUnitDraft productSkuSupplyUnitDraft = draftMapper.selectById(id);
+            if (null == productSkuSupplyUnitDraft) {
+                throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+            }
+            delNum += draftMapper.deleteDraftById(id);
+            productSkuSupplyUnitCapacityService.deleteDraftBySkuCodeAndSupplierCode(productSkuSupplyUnitDraft.getProductSkuCode(), productSkuSupplyUnitDraft.getSupplyUnitCode());
+        }
+        return delNum;
+    }
+
     /**
      * 功能描述: 获取申请数据
      *

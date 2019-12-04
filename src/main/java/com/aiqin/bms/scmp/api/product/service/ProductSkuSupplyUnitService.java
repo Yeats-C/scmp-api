@@ -90,6 +90,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     Integer deleteDraftById(Long id);
 
     /**
+     * 批量删除
+     * @param ids
+     * @return
+     */
+    Integer batchDeleteDraftById(List<Long> ids);
+
+    /**
      *
      * 功能描述: 获取申请数据
      *

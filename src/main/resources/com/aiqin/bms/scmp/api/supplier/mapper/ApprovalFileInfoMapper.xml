@@ -21,7 +21,7 @@
   </sql>
   <insert id="insertBatch" parameterType="java.util.List">
     insert into approval_file_info(approval_type, apply_code,  file_path, file_name, form_no, del_flag, create_time, create_by, update_time,
-    update_by,)
+    update_by)
     values
     <foreach collection="list" item="item" separator=",">
       (#{item.approvalType},#{item.applyCode},#{item.filePath},#{item.fileName},#{item.formNo},#{item.delFlag},
