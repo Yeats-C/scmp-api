@@ -266,6 +266,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                 productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                 productSkuDraft.setChangeContent("新增SKU");
+                log.info(JSON.toJSONString(productSkuDraft));
                 ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 encodingRuleDao.updateNumberValue(thisCode,encodingRule.getId());
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.ADD_SKU.getName(),HandleTypeCoce.ADD.getName());
@@ -330,7 +331,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             }
             //初始化销项税率
             BigDecimal outputTaxRate = BigDecimal.ONE;
-            Long outputTaxRateL = 100L;
+            BigDecimal outputTaxRateL = BigDecimal.ONE;
             List<SkuPriceDraftReqVO> productSkuPrices = Lists.newArrayList();
             //非组合商品才有库存/采购/门店销售
             if(!Objects.equals(SkuTypeEnum.COMBINATION,skuTypeEnum)){
@@ -435,7 +436,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
                 //结算信息
                 BigDecimal inputTaxRate = BigDecimal.ONE;
-                Long inputTaxRateL = 100L;
+                BigDecimal inputTaxRateL = BigDecimal.ONE;
                 if (null != addSkuInfoReqVO.getProductSkuCheckoutDraft()) {
                     ProductSkuCheckoutDraft productSkuCheckoutDraft = addSkuInfoReqVO.getProductSkuCheckoutDraft();
                     productSkuCheckoutDraft.setSkuCode(productSkuDraft.getSkuCode());
@@ -447,8 +448,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuCheckoutService.insertDraft(productSkuCheckoutDraft);
                     inputTaxRateL = productSkuCheckoutDraft.getInputTaxRate();
                     outputTaxRateL = productSkuCheckoutDraft.getOutputTaxRate();
-                    inputTaxRate = new BigDecimal(productSkuCheckoutDraft.getInputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
-                    outputTaxRate = new BigDecimal(productSkuCheckoutDraft.getOutputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+                    inputTaxRate = productSkuCheckoutDraft.getInputTaxRate().divide(new BigDecimal(100), 4, BigDecimal.ROUND_DOWN);
+                    outputTaxRate = productSkuCheckoutDraft.getOutputTaxRate().divide(new BigDecimal(100), 4, BigDecimal.ROUND_DOWN);
                 }
                     //供应商信息
                     if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
@@ -459,7 +460,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                             throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
                         }
                         final BigDecimal finalInputTaxRate = inputTaxRate;
-                        final Long finalInputTaxRateL = inputTaxRateL;
+                        final BigDecimal finalInputTaxRateL = inputTaxRateL;
 
                         List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts = Lists.newArrayList();
                         productSkuSupplyUnitDrafts.forEach(item->{
@@ -470,7 +471,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                             item.setCreateTime(productSkuDraft.getCreateTime());
                             item.setUpdateTime(productSkuDraft.getUpdateTime());
                             //先把含税金额除以100兑换成元,含税金额/(1+税率) = 未税金额,最终结果*100转换成分,舍弃分以后的数字
-                            Long taxNoPrice = new BigDecimal(item.getTaxIncludedPrice()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalInputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
+                            BigDecimal taxNoPrice = item.getTaxIncludedPrice().divide(BigDecimal.ONE.add(finalInputTaxRate),4,BigDecimal.ROUND_HALF_UP);
                             item.setNoTaxPurchasePrice(taxNoPrice);
                             item.setTaxRate(finalInputTaxRateL);
                             item.setUsageStatus(StatusTypeCode.USE.getStatus());
@@ -577,7 +578,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 //根据skuCode获取正式结算信息
                 ProductSkuCheckoutRespVo productSkuCheckoutRespVo = productSkuCheckoutService.getBySkuCode(skuCode);
                 outputTaxRateL = productSkuCheckoutRespVo.getOutputTaxRate();
-                outputTaxRate = new BigDecimal(productSkuCheckoutRespVo.getOutputTaxRate()).divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
+                outputTaxRate = productSkuCheckoutRespVo.getOutputTaxRate().divide(new BigDecimal(10000), 4, BigDecimal.ROUND_DOWN);
             }
             //获取分销信息
             List<PurchaseSaleStockReqVo> saleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.SALE.getStatus(),item.getType())).collect(Collectors.toList());
@@ -607,7 +608,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (null != addSkuInfoReqVO.getProductSkuPrices() && addSkuInfoReqVO.getProductSkuPrices().size() > 0){
                     List<SkuPriceDraftReqVO> temps = addSkuInfoReqVO.getProductSkuPrices();
                     final BigDecimal finalOutputTaxRate = outputTaxRate;
-                    final Long finalOutputTaxRateL = outputTaxRateL;
+                    final BigDecimal finalOutputTaxRateL = outputTaxRateL;
                     temps.forEach(item->{
                         //SKU编码
                         item.setSkuCode(productSkuDraft.getSkuCode());
@@ -621,7 +622,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         //税率
                         item.setTax(finalOutputTaxRateL);
                         //含税价
-                        Long taxIncludedPrice = new BigDecimal(item.getPriceTax()).divide(new BigDecimal(100)).divide(BigDecimal.ONE.add(finalOutputTaxRate),2,BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)).longValue();
+                        BigDecimal taxIncludedPrice = item.getPriceTax().divide(BigDecimal.ONE.add(finalOutputTaxRate),4,BigDecimal.ROUND_HALF_UP);
                         item.setPriceNoTax(taxIncludedPrice);
                         //创建/修改时间/人
                         item.setCreateBy(productSkuDraft.getCreateBy());
@@ -1968,7 +1969,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         Map<String,ProductSkuPriceInfo> priceMap = productSkuPriceInfoMapper.selectChannelPriceBySkuCode(respVos);
         for (QuerySkuInfoRespVO respVo : respVos) {
             ProductSkuPriceInfo productSkuPriceInfo = priceMap.get(respVo.getSkuCode());
-            Long price = 0L;
+            BigDecimal price = BigDecimal.ZERO;
             if(Objects.nonNull(productSkuPriceInfo)){
                 price = productSkuPriceInfo.getPriceTax();
             }
@@ -3060,7 +3061,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("厂家指导价不能为空");
             } else {
                 try {
-                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseLong(importVo.getManufacturerGuidePrice()));
+                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseBigDecimal(importVo.getManufacturerGuidePrice()));
                 } catch (NumberFormatException e) {
                     error.add("厂家指导价格式不正确");
                 }
@@ -3546,7 +3547,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("进项税率不能为空");
             } else {
                 try {
-                    draft.setInputTaxRate(NumberConvertUtils.stringParseLong(importVo.getInputTaxRate()));
+                    draft.setInputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getInputTaxRate()));
                 } catch (Exception e) {
                     error.add("进项税率格式不正确");
                 }
@@ -3556,7 +3557,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("销项税率不能为空");
             } else {
                 try {
-                    draft.setOutputTaxRate(NumberConvertUtils.stringParseLong(importVo.getOutputTaxRate()));
+                    draft.setOutputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getOutputTaxRate()));
                 } catch (Exception e) {
                     error.add("销项税率格式不正确");
                 }
@@ -3566,7 +3567,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("积分系数不能为空");
             } else {
                 try {
-                    draft.setIntegralCoefficient(Long.parseLong(importVo.getIntegralCoefficient()));
+                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseBigDecimal(importVo.getIntegralCoefficient()));
                 } catch (Exception e) {
                     error.add("积分系数格式不正确");
                 }
@@ -3615,7 +3616,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("含税采购价不能为空");
             } else {
                 try {
-                    supplyUnitDraft.setTaxIncludedPrice(NumberConvertUtils.stringParseLong(importVo.getTaxIncludedPrice()));
+                    supplyUnitDraft.setTaxIncludedPrice(new BigDecimal(importVo.getTaxIncludedPrice()));
                 } catch (Exception e) {
                     error.add("含税采购价格式不正确");
                 }
@@ -3623,7 +3624,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //联营扣点
             if (Objects.nonNull(importVo.getJointFranchiseRate())) {
                 try {
-                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getJointFranchiseRate().trim()));
+                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseBigDecimal(importVo.getJointFranchiseRate().trim()));
                 } catch (Exception e) {
                     error.add("联营扣点格式不正确");
                 }
@@ -3631,7 +3632,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //返点
             if (Objects.nonNull(importVo.getPoint())) {
                 try {
-                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseBigDecimal(importVo.getPoint().trim()));
                 } catch (Exception e) {
                     error.add("返点格式不正确");
                 }
@@ -3696,7 +3697,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("含税采购价不能为空");
             } else {
                 try {
-                    supplyUnitDraft.setTaxIncludedPrice(NumberConvertUtils.stringParseLong(importVo.getTaxIncludedPrice()));
+                    supplyUnitDraft.setTaxIncludedPrice(new BigDecimal(importVo.getTaxIncludedPrice()));
                 } catch (Exception e) {
                     error.add("含税采购价格式不正确");
                 }
@@ -3704,7 +3705,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //联营扣点
             if (Objects.nonNull(importVo.getJointFranchiseRate())) {
                 try {
-                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseLong(importVo.getJointFranchiseRate().trim()));
+                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseBigDecimal(importVo.getJointFranchiseRate().trim()));
                 } catch (Exception e) {
                     error.add("联营扣点格式不正确");
                 }
@@ -3712,7 +3713,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //返点
             if (Objects.nonNull(importVo.getPoint())) {
                 try {
-                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseLong(importVo.getPoint().trim()));
+                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseBigDecimal(importVo.getPoint().trim()));
                 } catch (Exception e) {
                     error.add("返点格式不正确");
                 }
@@ -3749,7 +3750,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO aiqinChannel1 = price.get("爱亲渠道价");
                 SkuPriceDraftReqVO aiqinChannel = BeanCopyUtils.copy(aiqinChannel1, SkuPriceDraftReqVO.class);
                 try {
-                    aiqinChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol67()));
+                    aiqinChannel.setPriceTax(new BigDecimal(importVo.getReadyCol67()));
                 } catch (Exception e) {
                     error.add("爱亲渠道价格式不正确");
                 }
@@ -3762,7 +3763,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO mengbeishuChannel1 = price.get("萌贝树渠道价");
                 SkuPriceDraftReqVO mengbeishuChannel = BeanCopyUtils.copy(mengbeishuChannel1, SkuPriceDraftReqVO.class);
                 try {
-                    mengbeishuChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol68()));
+                    mengbeishuChannel.setPriceTax(new BigDecimal(importVo.getReadyCol68()));
                 } catch (Exception e) {
                     error.add("萌贝树渠道价格式不正确");
                 }
@@ -3775,7 +3776,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO xiaohongmaChannel1 = price.get("小红马渠道价");
                 SkuPriceDraftReqVO xiaohongmaChannel = BeanCopyUtils.copy(xiaohongmaChannel1, SkuPriceDraftReqVO.class);
                 try {
-                    xiaohongmaChannel.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol69()));
+                    xiaohongmaChannel.setPriceTax(new BigDecimal(importVo.getReadyCol69()));
                 } catch (Exception e) {
                     error.add("小红马渠道价格式不正确");
                 }
@@ -3788,7 +3789,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO aiqinDistribution1 = price.get("爱亲分销价");
                 SkuPriceDraftReqVO aiqinDistribution = BeanCopyUtils.copy(aiqinDistribution1, SkuPriceDraftReqVO.class);
                 try {
-                    aiqinDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol70()));
+                    aiqinDistribution.setPriceTax(new BigDecimal(importVo.getReadyCol70()));
                 } catch (Exception e) {
                     error.add("爱亲分销价格式不正确");
                 }
@@ -3801,7 +3802,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO mengbeishuDistribution1 = price.get("萌贝树分销价");
                 SkuPriceDraftReqVO mengbeishuDistribution = BeanCopyUtils.copy(mengbeishuDistribution1, SkuPriceDraftReqVO.class);
                 try {
-                    mengbeishuDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol71()));
+                    mengbeishuDistribution.setPriceTax(new BigDecimal(importVo.getReadyCol71()));
                 } catch (Exception e) {
                     error.add("萌贝树分销价格式不正确");
                 }
@@ -3814,7 +3815,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO xiaohongmaDistribution1 = price.get("小红马分销价");
                 SkuPriceDraftReqVO xiaohongmaDistribution = BeanCopyUtils.copy(xiaohongmaDistribution1, SkuPriceDraftReqVO.class);
                 try {
-                    xiaohongmaDistribution.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol72()));
+                    xiaohongmaDistribution.setPriceTax(new BigDecimal(importVo.getReadyCol72()));
                 } catch (Exception e) {
                     error.add("小红马分销价格式不正确");
                 }
@@ -3827,7 +3828,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO aiqinSale1 = price.get("爱亲售价");
                 SkuPriceDraftReqVO aiqinSale = BeanCopyUtils.copy(aiqinSale1, SkuPriceDraftReqVO.class);
                 try {
-                    aiqinSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol73()));
+                    aiqinSale.setPriceTax(new BigDecimal(importVo.getReadyCol73()));
                 } catch (Exception e) {
                     error.add("爱亲售价格式不正确");
                 }
@@ -3840,7 +3841,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO mengbeishuSale1 = price.get("萌贝树售价");
                 SkuPriceDraftReqVO mengbeishuSale = BeanCopyUtils.copy(mengbeishuSale1, SkuPriceDraftReqVO.class);
                 try {
-                    mengbeishuSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol74()));
+                    mengbeishuSale.setPriceTax(new BigDecimal(importVo.getReadyCol74()));
                 } catch (Exception e) {
                     error.add("萌贝树售价格式不正确");
                 }
@@ -3853,7 +3854,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 SkuPriceDraftReqVO xiaohongmaSale1 = price.get("小红马售价");
                 SkuPriceDraftReqVO xiaohongmaSale = BeanCopyUtils.copy(xiaohongmaSale1, SkuPriceDraftReqVO.class);
                 try {
-                    xiaohongmaSale.setPriceTax(NumberConvertUtils.stringParseLong(importVo.getReadyCol75()));
+                    xiaohongmaSale.setPriceTax(new BigDecimal(importVo.getReadyCol75()));
                 } catch (Exception e) {
                     error.add("小红马售价格式不正确");
                 }

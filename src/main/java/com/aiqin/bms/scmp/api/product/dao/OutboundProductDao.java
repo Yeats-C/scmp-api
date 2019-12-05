@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundProd
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.OutboundProductWmsResVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OutboundProductDao {
@@ -62,7 +63,7 @@ public interface OutboundProductDao {
     /**
      * 回显出库库存成本
      */
-    Integer updateStockCost(@Param("productStockCost")Long productStockCost, @Param("outboundOderCode")String outboundOderCode, @Param("skuCode")String skuCode);
+    Integer updateStockCost(@Param("productStockCost") BigDecimal productStockCost, @Param("outboundOderCode")String outboundOderCode, @Param("skuCode")String skuCode);
 
     List<ReturnOutboundProduct> selectBySkuCode(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
 

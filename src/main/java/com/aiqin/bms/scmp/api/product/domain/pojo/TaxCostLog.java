@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("库存成本日志")
@@ -56,15 +57,15 @@ public class TaxCostLog {
 
     @ApiModelProperty("昨天采购价")
     @JsonProperty("new_purchase_price")
-    private Long newPurchasePrice;
+    private BigDecimal newPurchasePrice;
 
     @ApiModelProperty("前天含税成本价")
     @JsonProperty("tax_cost_last_day")
-    private Long taxCostLastDay;
+    private BigDecimal taxCostLastDay;
 
     @ApiModelProperty("昨天含税成本价")
     @JsonProperty("tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty("创建时间")
     @JsonProperty("create_time")

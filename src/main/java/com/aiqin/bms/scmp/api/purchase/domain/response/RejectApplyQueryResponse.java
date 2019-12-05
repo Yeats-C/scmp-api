@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -63,15 +64,15 @@ public class RejectApplyQueryResponse {
 
     @ApiModelProperty(value="商品含税金额")
     @JsonProperty("sum_amount")
-    private Long sumAmount;
+    private BigDecimal sumAmount;
 
     @ApiModelProperty(value="实物返含税金额")
     @JsonProperty("sum_return_amount")
-    private Long sumReturnAmount;
+    private BigDecimal sumReturnAmount;
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("sum_gift_amount")
-    private Long sumGiftAmount;
+    private BigDecimal sumGiftAmount;
 
     @ApiModelProperty(value="创建人")
     @JsonProperty("create_by_name")

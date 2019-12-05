@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.response.outbound;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -65,10 +66,10 @@ public class OutboundProductResVo {
     private Long preOutboundMainNum;
 
     @ApiModelProperty("预计含税进价")
-    private Long preTaxPurchaseAmount;
+    private BigDecimal preTaxPurchaseAmount;
 
     @ApiModelProperty("预计含税总价")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("实际出库数量")
     private Long praOutboundNum;
@@ -77,10 +78,10 @@ public class OutboundProductResVo {
     private Long praOutboundMainNum;
 
     @ApiModelProperty("实际含税进价")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
     @ApiModelProperty("实际含税总价")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("创建人")
     private String createBy;
@@ -98,7 +99,7 @@ public class OutboundProductResVo {
     private Long linenum;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty(value = "实际零数 展示用")
     private Long praSingleCount;

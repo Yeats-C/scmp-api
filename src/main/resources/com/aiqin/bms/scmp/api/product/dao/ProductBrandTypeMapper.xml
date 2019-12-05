@@ -93,8 +93,8 @@
     values (#{id,jdbcType=BIGINT}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
       #{brandStatus,jdbcType=TINYINT}, #{brandLogo,jdbcType=VARCHAR}, #{brandTop,jdbcType=TINYINT},
       #{brandTag,jdbcType=VARCHAR}, #{brandCode,jdbcType=VARCHAR}, #{brandLogoName,jdbcType=VARCHAR},
-      #{brandInitials,jdbcType=VARCHAR}, #{brandIntroduction,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-      #{updateTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR},
+      #{brandInitials,jdbcType=VARCHAR}, #{brandIntroduction,jdbcType=VARCHAR}, now(),
+      now(), #{createBy,jdbcType=VARCHAR}, #{updateBy,jdbcType=VARCHAR},
       #{delFlag,jdbcType=TINYINT}, #{holder,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR})
   </insert>
@@ -166,14 +166,8 @@
             <if test="brandIntroduction != null">
                 brand_introduction = #{brandIntroduction,jdbcType=VARCHAR},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                create_by = #{createBy,jdbcType=VARCHAR},
+                update_time = now(),
             </if>
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},

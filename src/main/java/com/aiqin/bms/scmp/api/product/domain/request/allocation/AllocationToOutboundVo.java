@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +73,7 @@ public class AllocationToOutboundVo {
     private Long quantity;
 
     @ApiModelProperty("含税调拨金额")
-    private Long taxRefundAmount;
+    private BigDecimal taxRefundAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

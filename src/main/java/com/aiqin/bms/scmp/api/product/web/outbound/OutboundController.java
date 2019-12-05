@@ -43,22 +43,13 @@ public class OutboundController {
 
     @Autowired
     private OutboundService outboundService;
-    /**
-     * 查询出库单列表详情
-     * @return
-     */
+
     @ApiOperation("查询出库单列表详情")
     @PostMapping("/getOutboundList")
     public HttpResponse<BasePage<QueryOutboundResVo>> getOutboundList(@RequestBody QueryOutboundReqVo vo) {
         return HttpResponse.success(outboundService.getOutboundList(vo));
     }
 
-    /**
-     * 查询出库信息
-     *
-     * @param boundRequest
-     * @return
-     */
     @ApiOperation("查询出库信息")
     @PostMapping("/info/by/search")
     public HttpResponse<OutboundResponse> selectOutBoundInfoByBoundSearch(@RequestBody BoundRequest boundRequest) {
@@ -79,7 +70,6 @@ public class OutboundController {
     @PostMapping("/save")
     public HttpResponse<Integer>save(@RequestBody OutboundReqVo stockReqVO){
         return HttpResponse.success(outboundService.saveOutBoundInfo(stockReqVO));
-
     }
 
     @ApiOperation("查询出库类型")
@@ -91,18 +81,14 @@ public class OutboundController {
     @ApiOperation("退供生成出库单")
     @PostMapping("/returnSupply/save")
     public HttpResponse<Integer>returnSupplySave(@RequestBody ReturnSupplyToOutBoundReqVo req){
-
         return HttpResponse.success(outboundService.returnSupplySave(req));
-
     }
+
     @ApiOperation("订单生成出库单")
     @PostMapping("/order/save")
     public HttpResponse<Integer>orderSave(@RequestBody List<OrderInfo> req){
-
         return HttpResponse.success(outboundService.orderSave(req));
-
     }
-
 
     @ApiOperation("出库单回调接口")
      @PostMapping("/workFlowCallBack")

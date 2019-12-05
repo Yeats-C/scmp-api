@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("sku价格表")
@@ -46,13 +47,13 @@ public class ProductSkuPriceInfoDraft {
     private String priceAttributeName;
 
     @ApiModelProperty("含税金额")
-    private Long priceTax;
+    private BigDecimal priceTax;
 
     @ApiModelProperty("未税金额")
-    private Long priceNoTax;
+    private BigDecimal priceNoTax;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("开始生效时间")
     private Date effectiveTimeStart;

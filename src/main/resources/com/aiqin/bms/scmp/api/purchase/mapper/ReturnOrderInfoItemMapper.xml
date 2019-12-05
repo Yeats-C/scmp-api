@@ -19,9 +19,9 @@
     <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
     <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
     <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="num" jdbcType="BIGINT" property="num" />
-    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="activity_code" jdbcType="VARCHAR" property="activityCode" />
     <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
     <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
@@ -29,13 +29,13 @@
     <result column="actual_inbound_num" jdbcType="INTEGER" property="actualInboundNum" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
-    <result column="channel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
-    <result column="total_channel_price" jdbcType="BIGINT" property="totalChannelPrice" />
-    <result column="actual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
-    <result column="actual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
-    <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
-    <result column="actual_price" jdbcType="BIGINT" property="actualPrice" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
+    <result column="channel_unit_price" jdbcType="DECIMAL" property="channelUnitPrice" />
+    <result column="total_channel_price" jdbcType="DECIMAL" property="totalChannelPrice" />
+    <result column="actual_channel_unit_price" jdbcType="DECIMAL" property="actualChannelUnitPrice" />
+    <result column="actual_total_channel_price" jdbcType="DECIMAL" property="actualTotalChannelPrice" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
@@ -73,12 +73,12 @@
       #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR},
       #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER},
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
-      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT},
-      #{num,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR},
+      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+      #{num,jdbcType=BIGINT}, #{amount,jdbcType=DECIMAL}, #{activityCode,jdbcType=VARCHAR},
       #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, #{productStatus,jdbcType=INTEGER},
       #{actualInboundNum,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
-      #{channelUnitPrice,jdbcType=BIGINT}, #{totalChannelPrice,jdbcType=BIGINT}, #{actualChannelUnitPrice,jdbcType=BIGINT},
-      #{actualTotalChannelPrice,jdbcType=BIGINT}, #{actualAmount,jdbcType=BIGINT}, #{actualPrice,jdbcType=BIGINT}
+      #{channelUnitPrice,jdbcType=DECIMAL}, #{totalChannelPrice,jdbcType=DECIMAL}, #{actualChannelUnitPrice,jdbcType=DECIMAL},
+      #{actualTotalChannelPrice,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, #{actualPrice,jdbcType=DECIMAL}
       )
   </insert>
   <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem">
@@ -112,9 +112,9 @@
       #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER},
       #{item.givePromotion,jdbcType=INTEGER},
       #{item.batchNumber,jdbcType=VARCHAR},
-      #{item.price,jdbcType=BIGINT},
+      #{item.price,jdbcType=DECIMAL},
       #{item.num,jdbcType=BIGINT},
-      #{item.amount,jdbcType=BIGINT},
+      #{item.amount,jdbcType=DECIMAL},
       #{item.activityCode,jdbcType=VARCHAR},
       #{item.productLineNum,jdbcType=BIGINT},
       #{item.promotionLineNum,jdbcType=BIGINT},
@@ -122,13 +122,13 @@
       #{item.actualInboundNum,jdbcType=INTEGER},
       #{item.companyName,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR},
-      #{item.channelUnitPrice,jdbcType=VARCHAR},
-      #{item.totalChannelPrice,jdbcType=VARCHAR},
-      #{item.actualChannelUnitPrice,jdbcType=VARCHAR},
-      #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
-      #{item.actualAmount,jdbcType=VARCHAR},
-      #{item.actualPrice,jdbcType=VARCHAR},
-      #{item.tax,jdbcType=VARCHAR}
+      #{item.channelUnitPrice,jdbcType=DECIMAL},
+      #{item.totalChannelPrice,jdbcType=DECIMAL},
+      #{item.actualChannelUnitPrice,jdbcType=DECIMAL},
+      #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
+      #{item.actualAmount,jdbcType=DECIMAL},
+      #{item.actualPrice,jdbcType=DECIMAL},
+      #{item.tax,jdbcType=DECIMAL}
       )
     </foreach>
 
@@ -289,13 +289,13 @@
               #{batchNumber,jdbcType=VARCHAR},
           </if>
           <if test="price != null">
-              #{price,jdbcType=BIGINT},
+              #{price,jdbcType=DECIMAL},
           </if>
           <if test="num != null">
               #{num,jdbcType=BIGINT},
           </if>
           <if test="amount != null">
-              #{amount,jdbcType=BIGINT},
+              #{amount,jdbcType=DECIMAL},
           </if>
           <if test="activityCode != null">
               #{activityCode,jdbcType=VARCHAR},
@@ -319,22 +319,22 @@
               #{companyCode,jdbcType=VARCHAR},
           </if>
           <if test="channelUnitPrice != null">
-              #{channelUnitPrice,jdbcType=BIGINT},
+              #{channelUnitPrice,jdbcType=DECIMAL},
           </if>
           <if test="totalChannelPrice != null">
-              #{totalChannelPrice,jdbcType=BIGINT},
+              #{totalChannelPrice,jdbcType=DECIMAL},
           </if>
           <if test="actualChannelUnitPrice != null">
-              #{actualChannelUnitPrice,jdbcType=BIGINT},
+              #{actualChannelUnitPrice,jdbcType=DECIMAL},
           </if>
           <if test="actualTotalChannelPrice != null">
-              #{actualTotalChannelPrice,jdbcType=BIGINT},
+              #{actualTotalChannelPrice,jdbcType=DECIMAL},
           </if>
           <if test="actualAmount != null">
-              #{actualAmount,jdbcType=BIGINT},
+              #{actualAmount,jdbcType=DECIMAL},
           </if>
           <if test="actualPrice != null">
-              #{actualPrice,jdbcType=BIGINT},
+              #{actualPrice,jdbcType=DECIMAL},
           </if>
       </trim>
   </insert>
@@ -358,12 +358,12 @@
       #{item.specCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
       #{item.model,jdbcType=VARCHAR}, #{item.modelCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
       #{item.unitCode,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER},
-      #{item.givePromotion,jdbcType=INTEGER}, #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT},
-      #{item.num,jdbcType=BIGINT}, #{item.amount,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR},
+      #{item.givePromotion,jdbcType=INTEGER}, #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL},
+      #{item.num,jdbcType=BIGINT}, #{item.amount,jdbcType=DECIMAL}, #{item.activityCode,jdbcType=VARCHAR},
       #{item.productLineNum,jdbcType=BIGINT}, #{item.promotionLineNum,jdbcType=BIGINT}, #{item.productStatus,jdbcType=INTEGER},
       #{item.actualInboundNum,jdbcType=INTEGER}, #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.channelUnitPrice,jdbcType=BIGINT}, #{item.totalChannelPrice,jdbcType=BIGINT}, #{item.actualChannelUnitPrice,jdbcType=BIGINT},
-      #{item.actualTotalChannelPrice,jdbcType=BIGINT}, #{item.actualAmount,jdbcType=BIGINT}, #{item.actualPrice,jdbcType=BIGINT}
+      #{item.channelUnitPrice,jdbcType=DECIMAL}, #{item.totalChannelPrice,jdbcType=DECIMAL}, #{item.actualChannelUnitPrice,jdbcType=DECIMAL},
+      #{item.actualTotalChannelPrice,jdbcType=DECIMAL}, #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}
       )
     </foreach>
     </insert>
@@ -419,13 +419,13 @@
                 batch_number = #{batchNumber,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
-                price = #{price,jdbcType=BIGINT},
+                price = #{price,jdbcType=DECIMAL},
             </if>
             <if test="num != null">
                 num = #{num,jdbcType=BIGINT},
             </if>
             <if test="amount != null">
-                amount = #{amount,jdbcType=BIGINT},
+                amount = #{amount,jdbcType=DECIMAL},
             </if>
             <if test="activityCode != null">
                 activity_code = #{activityCode,jdbcType=VARCHAR},
@@ -449,22 +449,22 @@
                 company_code = #{companyCode,jdbcType=VARCHAR},
             </if>
             <if test="channelUnitPrice != null">
-                channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
+                channel_unit_price = #{channelUnitPrice,jdbcType=DECIMAL},
             </if>
             <if test="totalChannelPrice != null">
-                total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
+                total_channel_price = #{totalChannelPrice,jdbcType=DECIMAL},
             </if>
             <if test="actualChannelUnitPrice != null">
-                actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
+                actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=DECIMAL},
             </if>
             <if test="actualTotalChannelPrice != null">
-                actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
+                actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=DECIMAL},
             </if>
             <if test="actualAmount != null">
-                actual_amount = #{actualAmount,jdbcType=BIGINT},
+                actual_amount = #{actualAmount,jdbcType=DECIMAL},
             </if>
             <if test="actualPrice != null">
-                actual_price = #{actualPrice,jdbcType=BIGINT},
+                actual_price = #{actualPrice,jdbcType=DECIMAL},
             </if>
         </set>
     where id = #{id,jdbcType=BIGINT}
@@ -487,9 +487,9 @@
       zero_disassembly_coefficient = #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
       give_promotion = #{givePromotion,jdbcType=INTEGER},
       batch_number = #{batchNumber,jdbcType=VARCHAR},
-      price = #{price,jdbcType=BIGINT},
+      price = #{price,jdbcType=DECIMAL},
       num = #{num,jdbcType=BIGINT},
-      amount = #{amount,jdbcType=BIGINT},
+      amount = #{amount,jdbcType=DECIMAL},
       activity_code = #{activityCode,jdbcType=VARCHAR},
       product_line_num = #{productLineNum,jdbcType=BIGINT},
       promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},
@@ -497,12 +497,12 @@
       actual_inbound_num = #{actualInboundNum,jdbcType=INTEGER},
       company_name = #{companyName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
-      total_channel_price = #{totalChannelPrice,jdbcType=BIGINT},
-      actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
-      actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
-      actual_amount = #{actualAmount,jdbcType=BIGINT},
-      actual_price = #{actualPrice,jdbcType=BIGINT}
+      channel_unit_price = #{channelUnitPrice,jdbcType=DECIMAL},
+      total_channel_price = #{totalChannelPrice,jdbcType=DECIMAL},
+      actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=DECIMAL},
+      actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=DECIMAL},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      actual_price = #{actualPrice,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateActualInboundNumByIdAndReturnOrderCode">
@@ -517,11 +517,9 @@
         select
           <include refid="Base_Column_List" />
         from return_order_info_item
-        where
-            return_order_code in
+        where return_order_code in
             <foreach collection="orderCodeList" separator="," item="item" open="(" close=")">
                 #{item}
             </foreach>
-
     </select>
 </mapper>

@@ -62,9 +62,8 @@ public class StockFlowRequest {
     @JsonProperty(value = "operation_type")
     private String operationType;
 
-
-
     public StockFlowRequest(){}
+
     public StockFlowRequest(String lockCode,String companyCode,String companyName,String transportCenterCode,String transportCenterName,String warehouseCode,String warehouseName,String skuCode,String skuName,Long changeNum,Integer changeType,Integer lockType,Long lockNum,String operationType){
         this.lockCode=lockCode;
         this.companyCode=companyCode;

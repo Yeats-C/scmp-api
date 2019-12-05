@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -82,13 +83,13 @@ public class OutboundResVo  {
     private Long preMainUnitNum;
 
     @ApiModelProperty("预计含税总金额")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("预计无税总金额")
-    private Long preAmount;
+    private BigDecimal preAmount;
 
     @ApiModelProperty("预计税额")
-    private Long preTax;
+    private BigDecimal preTax;
 
     @ApiModelProperty("实际出库数量")
     private Long praOutboundNum;
@@ -97,13 +98,13 @@ public class OutboundResVo  {
     private Long praMainUnitNum;
 
     @ApiModelProperty("实际含税总金额")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("实际无税总金额")
-    private Long praAmount;
+    private BigDecimal praAmount;
 
     @ApiModelProperty("实际税额")
-    private Long praTax;
+    private BigDecimal praTax;
 
     @ApiModelProperty("收货人")
     private String consignee;

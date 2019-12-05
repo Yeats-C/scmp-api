@@ -21,13 +21,13 @@
         <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
         <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
         <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -47,7 +47,7 @@
         <result column="bad_num" jdbcType="BIGINT" property="badNum"/>
         <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
-        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
         <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
     </resultMap>
@@ -83,8 +83,8 @@
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -111,13 +111,13 @@
         <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
         <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
         <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
@@ -147,7 +147,7 @@
         <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
         <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
         <result column="stockupfinish_time" jdbcType="TIMESTAMP" property="stockupfinishTime"/>
-        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -187,7 +187,7 @@
         <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
+        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
         <result column="flow_batch_code" jdbcType="VARCHAR" property="flowBatchCode"/>
         <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
         <result column="order_type" jdbcType="BIGINT" property="orderType"/>
@@ -234,8 +234,8 @@
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
         <result column="available_num" jdbcType="BIGINT" property="stock"/>
-        <result column="Input_tax_rate" jdbcType="BIGINT" property="taxRate"/>
-        <result column="tax_price" jdbcType="BIGINT" property="price"/>
+        <result column="Input_tax_rate" jdbcType="DECIMAL" property="taxRate"/>
+        <result column="tax_price" jdbcType="DECIMAL" property="price"/>
         <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
     </resultMap>
     <resultMap id="QueryStockBatchSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo">
@@ -257,7 +257,7 @@
         <result column="spec" jdbcType="VARCHAR" property="spec"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate"/>
+        <result column="input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate"/>
         <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
@@ -292,8 +292,8 @@
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
-        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
+        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
         <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
     </resultMap>
@@ -398,12 +398,12 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
         st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
-        st.warehouse_code,st.warehouse_name,st.warehouse_type,
-        st.sku_code,st.sku_name,SUM(st.inventory_num) AS inventory_num,SUM(st.available_num) AS available_num,SUM(st.lock_num) AS lock_num,SUM(st.purchase_way_num) AS purchase_way_num,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type, st.sku_code,st.sku_name,SUM(st.inventory_num) AS inventory_num,
+        SUM(st.available_num) AS available_num,SUM(st.lock_num) AS lock_num,SUM(st.purchase_way_num) AS purchase_way_num,
         SUM(st.allocation_way_num) AS allocation_way_num,SUM(st.total_way_num) AS total_way_num,st.new_delivery,st.new_delivery_name,
-        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.stockup_num,st.stockupfinish_time,st.create_time,st.create_by,st.update_time,st.update_by
+        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code, st.stock_unit_name,st.tax_price,
+        st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,
+        ps.product_category_code,ps.product_category_name,st.stockup_num,st.stockupfinish_time,st.create_time,st.create_by,st.update_time,st.update_by
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
@@ -417,7 +417,7 @@
             and st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            and st.sku_name like concat('', #{skuName}, '%')
+            and st.sku_name like concat(#{skuName}, '%')
         </if>
         <if test="configStatus!=null">
             and psc.config_status = #{configStatus}
@@ -460,8 +460,8 @@
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
         st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
-        st.warehouse_code,st.warehouse_name,st.warehouse_type,
-        st.sku_code,st.sku_name,sum(ifnull(st.inventory_num,0)) AS inventory_num,sum(ifnull(st.available_num,0)) AS available_num,sum(ifnull(st.lock_num,0)) AS lock_num,sum(st.purchase_way_num) AS purchase_way_num,
+        st.warehouse_code,st.warehouse_name,st.warehouse_type, st.sku_code,st.sku_name,
+        sum(ifnull(st.inventory_num,0)) AS inventory_num,sum(ifnull(st.available_num,0)) AS available_num,sum(ifnull(st.lock_num,0)) AS lock_num,sum(st.purchase_way_num) AS purchase_way_num,
         sum(st.allocation_way_num) AS allocation_way_num,sum(st.total_way_num) AS total_way_num,st.new_delivery,st.new_delivery_name,
         st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,
         st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
@@ -757,16 +757,16 @@
         <where>
             1 = 1
             <if test="companyCode != null and companyCode != ''">
-                and   a.company_code  =  #{companyCode, jdbcType=VARCHAR}
+                and a.company_code = #{companyCode, jdbcType=VARCHAR}
             </if>
             <if test="supplyCode != null and supplyCode != ''">
-                and a.new_delivery  = #{supplyCode, jdbcType=VARCHAR}
+                and a.new_delivery = #{supplyCode, jdbcType=VARCHAR}
             </if>
             <if test="transportCenterCode != null and transportCenterCode != ''">
-                and a.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
+                and a.transport_center_code = #{transportCenterCode, jdbcType=VARCHAR}
             </if>
             <if test="warehouseCode != null and warehouseCode != ''">
-                and a.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
+                and a.warehouse_code = #{warehouseCode, jdbcType=VARCHAR}
             </if>
             <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
                 and a.purchase_group_code = #{purchaseGroupCode, jdbcType=VARCHAR}
@@ -775,16 +775,16 @@
                 and a.sku_code = #{skuCode, jdbcType=VARCHAR}
             </if>
             <if test="skuName != null and skuName != ''">
-                and a.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
+                and a.sku_name like concat(#{skuName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productPropertyName != null and productPropertyName != ''">
-                and c.product_property_name like concat('', #{productPropertyName, jdbcType=VARCHAR}, '%')
+                and c.product_property_name like concat(#{productPropertyName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productCategoryName != null and productCategoryName != ''">
-                and c.product_category_name like concat('', #{productCategoryName, jdbcType=VARCHAR}, '%')
+                and c.product_category_name like concat(#{productCategoryName, jdbcType=VARCHAR}, '%')
             </if>
             <if test="productBrandName != null and productBrandName != ''">
-                and c.product_brand_name like concat('', #{productBrandName, jdbcType=VARCHAR}, '%')
+                and c.product_brand_name like concat(#{productBrandName, jdbcType=VARCHAR}, '%')
             </if>
             and a.available_num > 0
             <if test="skuList != null">
@@ -909,13 +909,13 @@
             #{item.purchaseGroupCode,jdbcType=VARCHAR}
         </foreach>
         <if test="skuCode!=null and skuCode!=''">
-            AND st.sku_code=#{skuCode}
+            AND st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat( #{skuName, jdbcType=VARCHAR}, '%')
+            AND st.sku_name LIKE concat(#{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
-            AND psc.config_status=#{configStatus}
+            AND psc.config_status = #{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
             AND ps.product_property_code = #{propertyText}
@@ -942,7 +942,7 @@
             AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
-            AND st.company_code=#{companyCode}
+            AND st.company_code = #{companyCode}
         </if>
         <if test="saleBeginNum!=null">
             AND st.sale_num <![CDATA[>=]]> #{saleBeginNum}
@@ -963,10 +963,10 @@
             AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
         <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-            AND ps.procurement_section_code=#{procurementSectionCode}
+            AND ps.procurement_section_code = #{procurementSectionCode}
         </if>
         <if test="procurementSectionName!=null and procurementSectionName!=''">
-            AND ps.procurement_section_name=#{procurementSectionName}
+            AND ps.procurement_section_name = #{procurementSectionName}
         </if>
         GROUP BY st.transport_center_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
@@ -1146,13 +1146,13 @@
             #{item.purchaseGroupCode,jdbcType=VARCHAR}
         </foreach>
         <if test="skuCode!=null and skuCode!=''">
-            AND st.sku_code=#{skuCode}
+            AND st.sku_code = #{skuCode}
         </if>
         <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, '%')
+            AND st.sku_name LIKE concat(#{skuName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="configStatus!=null">
-            AND psc.config_status=#{configStatus}
+            AND psc.config_status = #{configStatus}
         </if>
         <if test="propertyText !=null and propertyText!=''">
             AND ps.product_property_code = #{propertyText}
@@ -1179,7 +1179,7 @@
             AND st.transport_center_code = #{transportCenterText}
         </if>
         <if test="companyCode!=null and companyCode!=''">
-            AND st.company_code=#{companyCode}
+            AND st.company_code = #{companyCode}
         </if>
         <if test="warehouseText!=null and warehouseText!=''">
             AND st.warehouse_code = #{warehouseText}
@@ -1203,10 +1203,10 @@
             AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
         </if>
         <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-            AND ps.procurement_section_code=#{procurementSectionCode}
+            AND ps.procurement_section_code = #{procurementSectionCode}
         </if>
         <if test="procurementSectionName!=null and procurementSectionName!=''">
-            AND ps.procurement_section_name=#{procurementSectionName}
+            AND ps.procurement_section_name = #{procurementSectionName}
         </if>
         GROUP BY st.warehouse_code,st.sku_code
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
@@ -2153,112 +2153,112 @@
             update stock_batch
             <set>
                 <if test="item.stockBatchCode!=null and item.stockBatchCode!=''">
-                    stock_batch_code=#{item.stockBatchCode},
+                    stock_batch_code = #{item.stockBatchCode},
                 </if>
                 <if test="item.companyCode!=null and item.companyCode!=''">
-                    company_code=#{item.companyCode},
+                    company_code = #{item.companyCode},
                 </if>
                 <if test="item.companyName!=null and item.companyName!=''">
-                    company_name=#{item.companyName},
+                    company_name = #{item.companyName},
                 </if>
                 <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
-                    transport_center_code=#{item.transportCenterCode},
+                    transport_center_code = #{item.transportCenterCode},
                 </if>
                 <if test="item.transportCenterName!=null and item.transportCenterName!=''">
-                    transport_center_name=#{item.transportCenterName},
+                    transport_center_name = #{item.transportCenterName},
                 </if>
                 <if test="item.warehouseCode!=null and item.warehouseCode!=''">
-                    warehouse_code=#{item.warehouseCode},
+                    warehouse_code = #{item.warehouseCode},
                 </if>
                 <if test="item.warehouseName!=null and item.warehouseName!=''">
-                    warehouse_name=#{item.warehouseName},
+                    warehouse_name = #{item.warehouseName},
                 </if>
                 <if test="item.warehouseType!=null and item.warehouseType!=''">
-                    warehouse_type=#{item.warehouseType},
+                    warehouse_type = #{item.warehouseType},
                 </if>
                 <if test="item.skuCode!=null and item.skuCode!=''">
-                    sku_code=#{item.skuCode},
+                    sku_code = #{item.skuCode},
                 </if>
                 <if test="item.skuName!=null and item.skuName!=''">
-                    sku_name=#{item.skuName},
+                    sku_name = #{item.skuName},
                 </if>
                 <if test="item.batchCode!=null and item.batchCode!=''">
-                    batch_code=#{item.batchCode},
+                    batch_code = #{item.batchCode},
                 </if>
                 <if test="item.productionDate!=null and item.productionDate!=''">
-                    production_date=#{item.productionDate},
+                    production_date = #{item.productionDate},
                 </if>
                 <if test="item.batchRemark!=null and item.batchRemark!=''">
-                    batch_remark=#{item.batchRemark},
+                    batch_remark = #{item.batchRemark},
                 </if>
                 <if test="item.categoryTypeCode!=null and item.categoryTypeCode!=''">
-                    category_type_code=#{item.categoryTypeCode},
+                    category_type_code = #{item.categoryTypeCode},
                 </if>
                 <if test="item.categoryTypeName!=null and item.categoryTypeName!=''">
-                    category_type_name=#{item.categoryTypeName},
+                    category_type_name = #{item.categoryTypeName},
                 </if>
                 <if test="item.spec!=null and item.spec!=''">
-                    spec=#{item.spec},
+                    spec = #{item.spec},
                 </if>
                 <if test="item.colorCode!=null and item.colorCode!=''">
-                    color_code=#{item.colorCode},
+                    color_code = #{item.colorCode},
                 </if>
                 <if test="item.colorName!=null and item.colorName!=''">
-                    color_name=#{item.colorName},
+                    color_name = #{item.colorName},
                 </if>
                 <if test="item.modelNumber!=null and item.modelNumber!=''">
-                    model_number=#{item.modelNumber},
+                    model_number = #{item.modelNumber},
                 </if>
                 <if test="item.unitCode!=null and item.unitCode!=''">
-                    unit_code=#{item.unitCode},
+                    unit_code = #{item.unitCode},
                 </if>
                 <if test="item.unitName!=null and item.unitName!=''">
-                    unit_name=#{item.unitName},
+                    unit_name = #{item.unitName},
                 </if>
                 <if test="item.configStatus!=null and item.configStatus!=''">
-                    pack=#{item.configStatus},
+                    pack = #{item.configStatus},
                 </if>
                 <if test="item.unitName!=null and item.unitName!=''">
-                    config_status=#{item.unitName},
+                    config_status = #{item.unitName},
                 </if>
                 <if test="item.inventoryNum!=null">
-                    inventory_num=#{item.inventoryNum},
+                    inventory_num = #{item.inventoryNum},
                 </if>
                 <if test="item.availableNum!=null">
-                    available_num=#{item.availableNum},
+                    available_num = #{item.availableNum},
                 </if>
                 <if test="item.lockNum!=null">
-                    lock_num=#{item.lockNum},
+                    lock_num = #{item.lockNum},
                 </if>
                 <if test="item.supplierCode!=null and item.supplierCode!=''">
-                    supplier_code=#{item.supplierCode},
+                    supplier_code = #{item.supplierCode},
                 </if>
                 <if test="item.supplierName!=null and item.supplierName!=''">
-                    supplier_name=#{item.supplierName},
+                    supplier_name = #{item.supplierName},
                 </if>
                 <if test="item.newDelivery!=null and item.newDelivery!=''">
-                    new_delivery=#{item.newDelivery},
+                    new_delivery = #{item.newDelivery},
                 </if>
                 <if test="item.newDeliveryName!=null and item.newDeliveryName!=''">
-                    new_delivery_name=#{item.newDeliveryName},
+                    new_delivery_name = #{item.newDeliveryName},
                 </if>
                 <if test="item.purchasePrice!=null">
-                    purchase_price=#{item.purchasePrice},
+                    purchase_price = #{item.purchasePrice},
                 </if>
                 <if test="item.taxRate!=null">
-                    tax_rate=#{item.tax_Rate},
+                    tax_rate = #{item.tax_Rate},
                 </if>
                 <if test="item.createTime!=null">
-                    create_time=#{item.createTime},
+                    create_time = #{item.createTime},
                 </if>
                 <if test="item.createBy!=null and item.createBy!=''">
-                    create_by=#{item.createBy},
+                    create_by = #{item.createBy},
                 </if>
                 <if test="item.updateTime!=null">
-                    update_time=#{item.updateTime},
+                    update_time = #{item.updateTime},
                 </if>
                 <if test="item.updateBy!=null and item.updateBy!=''">
-                    update_by=#{item.updateBy},
+                    update_by = #{item.updateBy},
                 </if>
             </set>
             where id=#{item.id}
@@ -2667,5 +2667,36 @@
         sum(available_num) as availableNum
         FROM stock
         WHERE sku_code = #{skuCode}
+    </select>
+    <select id="selectSkuCodeBySaleSum" resultType="java.lang.Long">
+          SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            warehouse_type = 1 and
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
+    </select>
+
+    <select id="selectSkuCodeBySpecialSum" resultType="java.lang.Long">
+        SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            warehouse_type = 2 and
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
+    </select>
+
+    <select id="selectSkuAndCompanyByQueryAvailableSum" resultType="java.lang.Long">
+        SELECT
+        sum(available_num) as availableNum
+        FROM stock
+        <where>
+            sku_code = #{skuCode} and
+            company_code=#{companyCode}
+        </where>
     </select>
 </mapper>

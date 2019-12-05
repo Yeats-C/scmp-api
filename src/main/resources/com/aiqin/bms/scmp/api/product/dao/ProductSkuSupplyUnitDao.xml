@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao">
   <resultMap id="DraftMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft">
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="DECIMAL" property="id" />
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="no_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
-    <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
-    <result column="point" jdbcType="BIGINT" property="point" />
-    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="no_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="tax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
+    <result column="joint_franchise_rate" jdbcType="DECIMAL" property="jointFranchiseRate" />
+    <result column="point" jdbcType="DECIMAL" property="point" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
@@ -22,14 +22,14 @@
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
   </resultMap>
   <resultMap id="SkuSupplyUnitMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit">
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="DECIMAL" property="id" />
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="no_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
-    <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
-    <result column="point" jdbcType="BIGINT" property="point" />
-    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="no_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="tax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
+    <result column="joint_franchise_rate" jdbcType="DECIMAL" property="jointFranchiseRate" />
+    <result column="point" jdbcType="DECIMAL" property="point" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
@@ -44,14 +44,14 @@
   </resultMap>
 
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo">
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="DECIMAL" property="id" />
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="no_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
-    <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
-    <result column="point" jdbcType="BIGINT" property="point" />
-    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="no_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="tax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
+    <result column="joint_franchise_rate" jdbcType="DECIMAL" property="jointFranchiseRate" />
+    <result column="point" jdbcType="DECIMAL" property="point" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
@@ -84,12 +84,12 @@
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
-      #{item.noTaxPurchasePrice,jdbcType=BIGINT}, #{item.taxIncludedPrice,jdbcType=BIGINT}, #{item.jointFranchiseRate,jdbcType=BIGINT},
-      #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.noTaxPurchasePrice,jdbcType=DECIMAL}, #{item.taxIncludedPrice,jdbcType=DECIMAL}, #{item.jointFranchiseRate,jdbcType=DECIMAL},
+      #{item.point,jdbcType=DECIMAL}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.productSkuName,jdbcType=VARCHAR},#{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
-      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=BIGINT},
+      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=DECIMAL},
       #{item.factorySkuCode,jdbcType=VARCHAR},
       #{item.applyShow},
       #{item.applyType},
@@ -108,12 +108,12 @@
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
-      #{item.noTaxPurchasePrice,jdbcType=BIGINT}, #{item.taxIncludedPrice,jdbcType=BIGINT}, #{item.jointFranchiseRate,jdbcType=BIGINT},
-      #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.noTaxPurchasePrice,jdbcType=DECIMAL}, #{item.taxIncludedPrice,jdbcType=DECIMAL}, #{item.jointFranchiseRate,jdbcType=DECIMAL},
+      #{item.point,jdbcType=DECIMAL}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},#{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
-      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=BIGINT},
+      #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=DECIMAL},
       #{item.factorySkuCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
@@ -135,13 +135,13 @@
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
-      #{item.noTaxPurchasePrice,jdbcType=BIGINT}, #{item.taxIncludedPrice,jdbcType=BIGINT}, #{item.jointFranchiseRate,jdbcType=BIGINT},
-      #{item.point,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
+      #{item.noTaxPurchasePrice,jdbcType=DECIMAL}, #{item.taxIncludedPrice,jdbcType=DECIMAL}, #{item.jointFranchiseRate,jdbcType=DECIMAL},
+      #{item.point,jdbcType=DECIMAL}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
       #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR}, #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},
-      #{item.taxRate,jdbcType=BIGINT},#{item.factorySkuCode,jdbcType=VARCHAR},
+      #{item.taxRate,jdbcType=DECIMAL},#{item.factorySkuCode,jdbcType=VARCHAR},
       #{item.beEffective},
       #{item.selectionEffectiveTime},
       #{item.selectionEffectiveStartTime},
@@ -268,14 +268,14 @@
   </select>
 
   <resultMap id="selectBySkuCode" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo">
-    <id column="aid" jdbcType="BIGINT" property="id" />
+    <id column="aid" jdbcType="DECIMAL" property="id" />
     <result column="asupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="asupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="ano_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="atax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
-    <result column="ajoint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
-    <result column="apoint" jdbcType="BIGINT" property="point" />
-    <result column="atax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="ano_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="atax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
+    <result column="ajoint_franchise_rate" jdbcType="DECIMAL" property="jointFranchiseRate" />
+    <result column="apoint" jdbcType="DECIMAL" property="point" />
+    <result column="atax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="afactory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="ais_default" jdbcType="TINYINT" property="isDefault" />
     <result column="ausage_status" jdbcType="TINYINT" property="usageStatus" />
@@ -299,13 +299,13 @@
     <result column="aapply_type"  property="applyType" />
     <result column="aprocurement_section_name"  property="purchaseGroupName" />
     <collection property="productSkuSupplyUnitCapacities" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
-      <id column="bid" jdbcType="BIGINT" property="id" />
+      <id column="bid" jdbcType="DECIMAL" property="id" />
       <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
       <result column="bsupply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
       <result column="bproduct_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
       <result column="bproduct_sku_name" jdbcType="VARCHAR" property="productSkuName" />
-      <result column="bout_put" jdbcType="BIGINT" property="outPut" />
-      <result column="bneed_days" jdbcType="BIGINT" property="needDays" />
+      <result column="bout_put" jdbcType="DECIMAL" property="outPut" />
+      <result column="bneed_days" jdbcType="DECIMAL" property="needDays" />
       <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
       <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
       <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />
@@ -627,7 +627,7 @@
             and b.sku_name like CONCAT('%',#{skuName},'%')
         </if>
         <if test="supplierCode != null and supplierCode != '' ">
-            and a.supply_unit_code CONCAT('%',#{supplierCode},'%')
+            and a.supply_unit_code like CONCAT('%',#{supplierCode},'%')
         </if>
         <if test="supplierName != null and supplierName != '' ">
             and a.supply_unit_name like CONCAT('%',#{supplierName},'%')
@@ -639,7 +639,7 @@
             and a.tax_included_price >= #{maxPurchasePrice} * 100
         </if>
         <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
-            and a.categories_supply_channels_code like CONCAT('%',#{categoriesSupplyChannelsCode},'%')
+            and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
         </if>
         <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
             and a.categories_supply_channels_name like CONCAT('%',#{categoriesSupplyChannelsName},'%')
@@ -704,7 +704,7 @@
         <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
         <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
         <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
-        <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
+        <result column="Input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
         <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
         <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
         <result column="goods_gifts" jdbcType="TINYINT" property="skuType" />

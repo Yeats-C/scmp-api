@@ -181,7 +181,7 @@
     <foreach collection="list" item="pc" index="index" separator=",">
       (#{pc.categoryId,jdbcType=VARCHAR}, #{pc.categoryName,jdbcType=VARCHAR},
       #{pc.categoryStatus,jdbcType=TINYINT}, #{pc.parentId,jdbcType=VARCHAR}, #{pc.categoryLevel,jdbcType=TINYINT},
-      #{pc.createTime,jdbcType=TIMESTAMP}, #{pc.createBy,jdbcType=VARCHAR},
+      now(), #{pc.createBy,jdbcType=VARCHAR},
       #{pc.weight,jdbcType=INTEGER},#{pc.picturePath,jdbcType=VARCHAR},#{pc.pictureName,jdbcType=VARCHAR},
       #{pc.companyCode,jdbcType=VARCHAR},#{pc.companyName,jdbcType=VARCHAR}
       )
@@ -218,14 +218,8 @@
       <if test="categoryLevel != null">
         category_level = #{categoryLevel,jdbcType=TINYINT},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
+        update_time = now(),
       </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},

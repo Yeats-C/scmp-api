@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -67,13 +68,13 @@ public class InboundCallBackReqVo extends BaseDateRequest {
     private Long praMainUnitNum;
 
     @ApiModelProperty("实际含税总金额")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("实际无税总金额")
-    private Long praAmount;
+    private BigDecimal praAmount;
 
     @ApiModelProperty("实际税额")
-    private Long praTax;
+    private BigDecimal praTax;
 
     @ApiModelProperty("sku 列表")
     private List<InboundProductCallBackReqVo> list;

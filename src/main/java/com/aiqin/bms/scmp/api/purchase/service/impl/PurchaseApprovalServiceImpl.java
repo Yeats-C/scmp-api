@@ -44,6 +44,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApprovalServiceImpl.class);
 
+    private static final BigDecimal big = BigDecimal.valueOf(0);
+
     @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Resource
@@ -139,17 +141,9 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         order.setPurchaseOrderCode(formNo);
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrderInfo(order);
         if(purchaseOrder != null){
-            Long productAmount = purchaseOrder.getProductTotalAmount() == null ? 0 : purchaseOrder.getProductTotalAmount();
-            Long giftAmount = purchaseOrder.getGiftTaxSum() == null ? 0 : purchaseOrder.getGiftTaxSum();
-            Long num = productAmount + giftAmount;
-            Double amount;
-            if(num == 0){
-                amount = 0D;
-            }else {
-                BigDecimal big = new BigDecimal(num).divide(new BigDecimal(100));
-                amount = big.setScale(2, BigDecimal.ROUND_HALF_UP).doubleValue();
-            }
-            jsonObject.addProperty("purchaseAmount", amount);
+            BigDecimal productAmount = purchaseOrder.getProductTotalAmount() == null ? big : purchaseOrder.getProductTotalAmount();
+            BigDecimal giftAmount = purchaseOrder.getGiftTaxSum() == null ? big : purchaseOrder.getGiftTaxSum();
+            jsonObject.addProperty("purchaseAmount", productAmount.add(giftAmount));
         }
         workFlowVO.setVariables(jsonObject.toString());
         WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_PURCHASE);
@@ -195,7 +189,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 stockVo.setChangeNum(singleCount);
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
-                stockVo.setTaxRate(product.getTaxRate().longValue());
+                stockVo.setTaxRate(product.getTaxRate());
                 stockVo.setCompanyName(order.getCompanyName());
                 stockVo.setCompanyCode(order.getCompanyCode());
                 list.add(stockVo);

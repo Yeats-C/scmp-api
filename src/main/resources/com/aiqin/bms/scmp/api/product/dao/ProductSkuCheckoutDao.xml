@@ -12,9 +12,9 @@
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
-    <result column="integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
+    <result column="output_tax_rate" jdbcType="DECIMAL" property="outputTaxRate" />
+    <result column="input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
+    <result column="integral_coefficient" jdbcType="DECIMAL" property="integralCoefficient" />
     <result column="logistics_fee_award_ratio" jdbcType="DECIMAL" property="logisticsFeeAwardRatio" />
 
 
@@ -51,9 +51,9 @@
       <foreach collection="applyProductSkuCheckouts" item="item" index="index" separator=",">
         ( #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.delFlag,jdbcType=TINYINT},
-        #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=BIGINT},
-        #{item.inputTaxRate,jdbcType=BIGINT}, #{item.integralCoefficient,jdbcType=BIGINT}, #{item.applyCode,jdbcType=VARCHAR},
-        #{item.rebate,jdbcType=BIGINT},  #{item.logisticsFeeAwardRatio,jdbcType=DECIMAL},
+        #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=DECIMAL},
+        #{item.inputTaxRate,jdbcType=DECIMAL}, #{item.integralCoefficient,jdbcType=DECIMAL}, #{item.applyCode,jdbcType=VARCHAR},
+        #{item.rebate,jdbcType=DECIMAL},  #{item.logisticsFeeAwardRatio,jdbcType=DECIMAL},
         #{item.settlementMethodCode,jdbcType=VARCHAR}, #{item.settlementMethodName,jdbcType=VARCHAR})
       </foreach>
   </insert>
@@ -66,8 +66,8 @@
       <foreach collection="productSkuCheckouts" item="item" index="index" separator=",">
         (#{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
         #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.delFlag,jdbcType=TINYINT},
-        #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=BIGINT},
-        #{item.inputTaxRate,jdbcType=BIGINT}, #{item.integralCoefficient,jdbcType=BIGINT}, #{item.rebate,jdbcType=BIGINT},
+        #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, #{item.outputTaxRate,jdbcType=DECIMAL},
+        #{item.inputTaxRate,jdbcType=DECIMAL}, #{item.integralCoefficient,jdbcType=DECIMAL}, #{item.rebate,jdbcType=DECIMAL},
         #{item.applyCode,jdbcType=VARCHAR})
       </foreach>
   </insert>

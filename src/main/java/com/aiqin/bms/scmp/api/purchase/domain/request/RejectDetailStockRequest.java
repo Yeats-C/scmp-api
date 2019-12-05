@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -42,7 +44,7 @@ public class RejectDetailStockRequest {
 
     @ApiModelProperty(value="wms 传回来的实际金额")
     @JsonProperty("actual_amount")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
 
 }

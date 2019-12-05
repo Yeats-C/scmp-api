@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("订单商品信息")
 @Data
 public class ReturnOrderInfoItem {
@@ -59,13 +61,13 @@ public class ReturnOrderInfoItem {
     private String batchNumber;
 
     @ApiModelProperty("分销单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("数量")
     private Long num;
 
     @ApiModelProperty("分销总价")
-    private Long amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("活动编码(多个，隔开）")
     private String activityCode;
@@ -89,22 +91,22 @@ public class ReturnOrderInfoItem {
     private String companyCode;
 
     @ApiModelProperty("渠道单价")
-    private Long channelUnitPrice;
+    private BigDecimal channelUnitPrice;
 
     @ApiModelProperty("渠道总价")
-    private Long totalChannelPrice;
+    private BigDecimal totalChannelPrice;
 
     @ApiModelProperty("实际渠道单价")
-    private Long actualChannelUnitPrice;
+    private BigDecimal actualChannelUnitPrice;
 
     @ApiModelProperty("实际渠道总价")
-    private Long actualTotalChannelPrice;
+    private BigDecimal actualTotalChannelPrice;
 
     @ApiModelProperty("实际单价")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty("实际总价")
-    private Long actualPrice;
+    private BigDecimal actualPrice;
 
     /**以下字段为了dl回调销售单生成出库单和库存变动需要*/
 
@@ -121,5 +123,5 @@ public class ReturnOrderInfoItem {
     private String supplyName;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 }

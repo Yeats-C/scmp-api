@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 SupplyOrderInfo reqVo = reqMainVo.getOrderInfo();
                 List<String> skuCodes = reqMainVo.getProductItem().stream().map(SupplyOrderProductItem::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
-                Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
+                Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
 //              InboundSavePo po = new InboundSavePo();
                 OutboundReqVo outbound = new OutboundReqVo();
                 BeanUtils.copyProperties(reqVo, outbound);
@@ -72,7 +73,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 outbound.setPreMainUnitNum(reqVo.getProductNum());
                 outbound.setPreTaxAmount(reqVo.getOrderAmount());
                 outbound.setPreAmount(reqVo.getOrderAmount());
-                outbound.setPreTax(0L);
+                outbound.setPreTax(BigDecimal.valueOf(0));
 //                order.setPraTax(order.getPreTax());
 //                order.setPraAmount(order.getPreAmount());
 //                order.setPraTaxAmount(order.getPreTaxAmount());
@@ -95,7 +96,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
 //            if(StringUtils.isNotBlank(inbound.getUpdateBy())){
 //                inbound.setUpdateTime(new Date());
 //            }
-                long noTaxTotalAmount = 0L;
+                BigDecimal noTaxTotalAmount = BigDecimal.valueOf(0);
                 List<OutboundProductReqVo> products = Lists.newArrayList();
                 for (SupplyOrderProductItem vo : reqMainVo.getProductItem()) {
                     OutboundProductReqVo product = BeanCopyUtils.copy(vo, OutboundProductReqVo.class);
@@ -103,13 +104,13 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                     product.setPreOutboundNum(vo.getNum());
                     try {
                         //计算不含税单价
-                        Long aLong = map.get(vo.getSkuCode());
-                        Long noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
+                        BigDecimal aLong = map.get(vo.getSkuCode());
+                        BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
 
                         //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();
-                        long noTaxTotalPrice = noTaxPrice * vo.getNum();
-                        noTaxTotalAmount += noTaxTotalPrice;
+                        BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(vo.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
+                        noTaxTotalAmount = noTaxTotalPrice.add(noTaxTotalAmount);
 //                        product.setPreInboundMainNum(vo.getNum() * map.get(vo.getSkuCode()));
                     } catch (Exception e) {
                         log.error(Global.ERROR, e);
@@ -130,7 +131,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                     products.add(product);
                 }
                 outbound.setPreAmount(noTaxTotalAmount);
-                outbound.setPreTax(reqVo.getOrderAmount()-noTaxTotalAmount);
+                outbound.setPreTax(reqVo.getOrderAmount().subtract(noTaxTotalAmount));
 //            po.setInbound(inbound);
                 outbound.setList(products);
                 list.add(outbound);

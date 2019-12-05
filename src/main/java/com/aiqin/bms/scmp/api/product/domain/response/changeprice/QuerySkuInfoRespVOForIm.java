@@ -13,7 +13,7 @@ import java.util.Date;
 public class QuerySkuInfoRespVOForIm extends QuerySkuInfoRespVO {
 
     @ApiModelProperty("最新采购价")
-    private Long purchasePriceNewest=0L;
+    private BigDecimal purchasePriceNewest = BigDecimal.ZERO;
 
     @ApiModelProperty("供应商编码")
     private String supplierCode;
@@ -25,7 +25,7 @@ public class QuerySkuInfoRespVOForIm extends QuerySkuInfoRespVO {
     private Integer beDefault;
 
     @ApiModelProperty("原含税采购价")
-    private Long purchasePriceOld=0L;
+    private BigDecimal purchasePriceOld = BigDecimal.ZERO;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
@@ -36,19 +36,19 @@ public class QuerySkuInfoRespVOForIm extends QuerySkuInfoRespVO {
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")
-    private Long purchasePriceNew=0L;
+    private BigDecimal purchasePriceNew=BigDecimal.ZERO;
 
     @ApiModelProperty("原含税价")
-    private Long oldPrice=0L;
+    private BigDecimal oldPrice=BigDecimal.ZERO;
 
     @ApiModelProperty("新含税价")
-    private Long newPrice=0L;
+    private BigDecimal newPrice=BigDecimal.ZERO;
 
     @ApiModelProperty("原毛利率")
     private BigDecimal oldGrossProfitMargin=BigDecimal.ZERO;
 
     @ApiModelProperty("现毛利率")
-    private Long newGrossProfitMargin = 0L;
+    private BigDecimal newGrossProfitMargin = BigDecimal.ZERO;
 
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
@@ -63,7 +63,7 @@ public class QuerySkuInfoRespVOForIm extends QuerySkuInfoRespVO {
     private String changePriceReasonName;
 
     @ApiModelProperty("临时含税价")
-    private Long temporaryPrice;
+    private BigDecimal temporaryPrice;
 
     @ApiModelProperty("价格项目编码")
     private String priceItemCode;

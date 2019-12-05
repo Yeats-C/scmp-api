@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -83,15 +85,15 @@ public class RejectRecordDetailResponse {
 
     @ApiModelProperty(value = "税率")
     @JsonProperty("tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value = "含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value = "wms 传回来的实际数量")
     @JsonProperty("actual_count")
@@ -99,6 +101,6 @@ public class RejectRecordDetailResponse {
 
     @ApiModelProperty(value = "wms 传回来的实际金额")
     @JsonProperty("actual_amount")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
 }

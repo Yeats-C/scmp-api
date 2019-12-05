@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,13 +59,13 @@ public class ProductPriceJob {
         List<Stock> stocks = stockService.selectSkuCost();
         List<TaxCostLogStock> list = new ArrayList();
         for (Stock stock : stocks) {
-            Long stockSumCost = stock.getTaxCost();
+            BigDecimal stockSumCost = stock.getTaxCost();
             Long stockSumNum = stock.getInventoryNum();
-            Long stockTaxCost;
+            BigDecimal stockTaxCost;
             if (stockSumNum == 0 || stockSumNum == null){
-                stockTaxCost = 0L;
+                stockTaxCost = BigDecimal.valueOf(0);
             }else{
-                stockTaxCost =  stockSumCost / stockSumNum;
+                stockTaxCost =  stockSumCost.divide(BigDecimal.valueOf(stockSumNum)).setScale(4, BigDecimal.ROUND_HALF_UP);
             }
             TaxCostLogStock taxCostLogStock = new TaxCostLogStock();
             taxCostLogStock.setTaxDate(DayUtil.getDayStr(-1));

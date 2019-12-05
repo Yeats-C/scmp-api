@@ -1551,7 +1551,7 @@
     <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
     <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
-    <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice"/>
+    <result column="manufacturer_guide_price" jdbcType="DECIMAL" property="manufacturerGuidePrice"/>
     <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
     <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods"/>
     <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode"/>
@@ -2252,7 +2252,8 @@
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, pi.spec as productSpec,
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
-    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice
+    pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
+    ifnull(su.tax_included_price, 0) as purchaseMax
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code

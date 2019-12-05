@@ -96,7 +96,7 @@ public class InboundReqVo2InboundSaveConverter implements Converter<InboundReqVo
             //预计无税总金额
             inbound.setPreAmount(reqVo.getNoTaxTotalAmount());
             //预计税额
-            inbound.setPreTax(reqVo.getTotalAmount()-reqVo.getNoTaxTotalAmount());
+            inbound.setPreTax(reqVo.getTotalAmount().subtract(reqVo.getNoTaxTotalAmount()));
             //下面是实际的，现在不用
 //            inbound.setPraTax(inbound.getPreTax());
 //            inbound.setPraAmount(inbound.getPreAmount());

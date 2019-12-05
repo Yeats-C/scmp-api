@@ -87,5 +87,4 @@ public class QueryImportStockSkuListReqVo extends PageReq implements Serializabl
     public QueryImportStockSkuListReqVo() {
     }
 
-
 }

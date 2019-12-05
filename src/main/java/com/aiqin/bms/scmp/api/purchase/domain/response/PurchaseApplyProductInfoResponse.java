@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author: zhao shuai
  * @create: 2019-06-18
@@ -21,7 +23,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="普通商品含税总金额")
     @JsonProperty("product_tax_sum")
-    private Long productTaxSum;
+    private BigDecimal productTaxSum;
 
     @ApiModelProperty(value="实物采购件数")
     @JsonProperty("matter_piece_sum")
@@ -33,7 +35,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实物返含税总金额")
     @JsonProperty("matter_tax_sum")
-    private Long matterTaxSum;
+    private BigDecimal matterTaxSum;
 
     @ApiModelProperty(value="赠品采购件数")
     @JsonProperty("gift_piece_sum")
@@ -45,7 +47,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="赠品含税总金额")
     @JsonProperty("gift_tax_sum")
-    private Long giftTaxSum;
+    private BigDecimal giftTaxSum;
 
     @ApiModelProperty(value="总件数")
     @JsonProperty("piece_sum")
@@ -69,7 +71,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际普通商品含税总金额")
     @JsonProperty("actual_product_tax_sum")
-    private Long actualProductTaxSum;
+    private BigDecimal actualProductTaxSum;
 
     @ApiModelProperty(value="实际实物采购件数")
     @JsonProperty("actual_matter_piece_sum")
@@ -81,7 +83,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际实物返含税总金额")
     @JsonProperty("actual_matter_tax_sum")
-    private Long actualMatterTaxSum;
+    private BigDecimal actualMatterTaxSum;
 
     @ApiModelProperty(value="实际赠品采购件数")
     @JsonProperty("actual_gift_piece_sum")
@@ -93,7 +95,7 @@ public class PurchaseApplyProductInfoResponse {
 
     @ApiModelProperty(value="实际赠品含税总金额")
     @JsonProperty("actual_gift_tax_sum")
-    private Long actualGiftTaxSum;
+    private BigDecimal actualGiftTaxSum;
 
     @ApiModelProperty(value="实际总件数")
     @JsonProperty("actual_piece_sum")

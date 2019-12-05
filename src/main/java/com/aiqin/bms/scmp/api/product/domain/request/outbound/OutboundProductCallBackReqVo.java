@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * @Classname: OutboundProductCallBackReqVo
@@ -30,8 +31,6 @@ public class OutboundProductCallBackReqVo {
 //    @ApiModelProperty("行号")
 //    private Long linenum;
 
-
-
     @ApiModelProperty("出库单号")
     private String outboundOderCode;
 
@@ -48,10 +47,10 @@ public class OutboundProductCallBackReqVo {
     private Long preOutboundMainNum;
 
     @ApiModelProperty("预计含税进价")
-    private Long preTaxPurchaseAmount;
+    private BigDecimal preTaxPurchaseAmount;
 
     @ApiModelProperty("预计含税总价")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("实际出库数量")
     private Long praOutboundNum;
@@ -61,11 +60,11 @@ public class OutboundProductCallBackReqVo {
 
     @ApiModelProperty("实际含税进价")
     @NotNull(message = "实际含税进价")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
     @ApiModelProperty("实际含税总价")
     @NotNull(message = "实际含税总价")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("行号")
     private Long linenum;
