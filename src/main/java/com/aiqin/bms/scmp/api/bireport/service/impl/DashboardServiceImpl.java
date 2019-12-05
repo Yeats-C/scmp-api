@@ -199,9 +199,9 @@ public class DashboardServiceImpl implements DashboardService {
         DashboardReturnAmountRespVo dashboardReturnAmountRespVo = dashboardDao.selectAmountChannelRefund(channelSectorMonthSalesReqVo);
 
         //插入数据
-        if(dashboardDepMonthlyHomocyclicRatioRespVoAll != null && dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount() != 0){
-            Long salesContributionRate = dashboardDepMonthlyHomocyclicRatioRespVo.getChannelSalesAmount() / dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount();
-            channelSectorMonthSalesRespVo.setSalesContributionRate(salesContributionRate);
+        if(dashboardDepMonthlyHomocyclicRatioRespVoAll != null && dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount().intValue() != 0){
+            Long salesContributionRate = dashboardDepMonthlyHomocyclicRatioRespVo.getChannelSalesAmount().longValue() / dashboardDepMonthlyHomocyclicRatioRespVoAll.getChannelSalesAmount().longValue();
+            channelSectorMonthSalesRespVo.setSalesContributionRate(new BigDecimal(salesContributionRate));
         }
         if(dashboardNegativeMarginRespVo != null){
             channelSectorMonthSalesRespVo.setNegativeMarginSkuNumber(dashboardNegativeMarginRespVo.getNegativeMarginSkuNum());
@@ -229,44 +229,44 @@ public class DashboardServiceImpl implements DashboardService {
         if(dashboardHomepageMonthlyHomocyclicRatioRespVos != null && dashboardHomepageMonthlyHomocyclicRatioRespVos.size()>0){
             for (DashboardHomepageMonthlyHomocyclicRatioRespVo dashboardHomepageMonthlyHomocyclicRatioRespVo : dashboardHomepageMonthlyHomocyclicRatioRespVos) {
 
-                if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(0.00);
+                if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin().longValue()){
+                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(new BigDecimal(0));
                 }else {
-                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear() == 0){
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(0.00);
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(new BigDecimal(0));
                     }else {
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear());
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginYearonyear(new BigDecimal(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin().longValue() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginYearonyear().longValue()));
                     }
 
                 }
 
-                if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin()){
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(0.00);
+                if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin().longValue()){
+                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(new BigDecimal(0));
                 }else {
-                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative() == 0){
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(0.00);
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(new BigDecimal(0));
                     }else {
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative());
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelMarginLinkRelative(new BigDecimal(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMargin().longValue() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelMarginLinkRelative().longValue()));
                     }
                 }
 
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(0L);
+                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(new BigDecimal(0));
                 }else {
-                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear() == 0){
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(0L);
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear().longValue() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(new BigDecimal(0));
                     }else {
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear());
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsYearonyear(new BigDecimal(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts().longValue() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsYearonyear().longValue()));
                     }
                 }
 
                 if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative() == dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts()){
-                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(0L);
+                    dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(new BigDecimal(0));
                 }else {
-                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative() == 0){
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(0L);
+                    if(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative().longValue() == 0){
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(new BigDecimal(0));
                     }else {
-                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative());
+                        dashboardHomepageMonthlyHomocyclicRatioRespVo.setChannelCostsLinkRelative(new BigDecimal(dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCosts().longValue() / dashboardHomepageMonthlyHomocyclicRatioRespVo.getChannelCostsLinkRelative().longValue()));
                     }
                 }
 

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -50,7 +51,7 @@ public class SupplierReturnRespVo {
 
     @ApiModelProperty("退货金额")
     @JsonProperty("sum_amount")
-    private Long sumAmount;
+    private BigDecimal sumAmount;
 
     @ApiModelProperty("退货单日期")
     @JsonProperty("return_goods_create_time")
@@ -90,7 +91,7 @@ public class SupplierReturnRespVo {
 
     @ApiModelProperty("退货金额合计")
     @JsonProperty("sum_amounts")
-    private Long sumAmounts;
+    private BigDecimal sumAmounts;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

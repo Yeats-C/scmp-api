@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("缺货率respVo")
 @Data
 public class DashboardStockoutRateRespVo {
@@ -28,7 +30,7 @@ public class DashboardStockoutRateRespVo {
 
     @ApiModelProperty("缺货率")
     @JsonProperty("stockout_rate")
-    private Long stockoutRate;
+    private BigDecimal stockoutRate;
 
     @ApiModelProperty("部门code")
     @JsonProperty("product_sort_code")

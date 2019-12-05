@@ -56,11 +56,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="上期全国库存总金额")
     @JsonProperty("pre_stock_amount_total")
-    private Long preStockAmountTotal;
+    private BigDecimal preStockAmountTotal;
 
     @ApiModelProperty(value="上期全国库存金额")
     @JsonProperty("pre_stock_amount")
-    private Long preStockAmount;
+    private BigDecimal preStockAmount;
 
     @ApiModelProperty(value="上期全国库存金额占比")
     @JsonProperty("pre_stock_amount_rate")
@@ -80,11 +80,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="本期全国库存总金额")
     @JsonProperty("stock_amount_total")
-    private Long stockAmountTotal;
+    private BigDecimal stockAmountTotal;
 
     @ApiModelProperty(value="本期全国库存金额")
     @JsonProperty("stock_amount")
-    private Long stockAmount;
+    private BigDecimal stockAmount;
 
     @ApiModelProperty(value="本期全国库存金额占比")
     @JsonProperty("stock_amount_rate")
@@ -104,11 +104,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="华北库存总金额")
     @JsonProperty("hb_stock_amount_total")
-    private Long hbStockAmountTotal;
+    private BigDecimal hbStockAmountTotal;
 
     @ApiModelProperty(value="华北库存金额")
     @JsonProperty("hb_stock_amount")
-    private Long hbStockAmount;
+    private BigDecimal hbStockAmount;
 
     @ApiModelProperty(value="华北库存金额占比")
     @JsonProperty("hb_stock_amount_rate")
@@ -128,11 +128,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="华东库存总金额")
     @JsonProperty("hd_stock_amount_total")
-    private Long hdStockAmountTotal;
+    private BigDecimal hdStockAmountTotal;
 
     @ApiModelProperty(value="华东库存金额")
     @JsonProperty("hd_stock_amount")
-    private Long hdStockAmount;
+    private BigDecimal hdStockAmount;
 
     @ApiModelProperty(value="华东库存金额占比")
     @JsonProperty("hd_stock_amount_rate")
@@ -152,11 +152,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="华中库存总金额")
     @JsonProperty("hz_stock_amount_total")
-    private Long hzStockAmountTotal;
+    private BigDecimal hzStockAmountTotal;
 
     @ApiModelProperty(value="华中库存金额")
     @JsonProperty("hz_stock_amount")
-    private Long hzStockAmount;
+    private BigDecimal hzStockAmount;
 
     @ApiModelProperty(value="华中库存金额占比")
     @JsonProperty("hz_stock_amount_rate")
@@ -176,11 +176,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="西南库存总金额")
     @JsonProperty("xn_stock_amount_total")
-    private Long xnStockAmountTotal;
+    private BigDecimal xnStockAmountTotal;
 
     @ApiModelProperty(value="西南库存金额")
     @JsonProperty("xn_stock_amount")
-    private Long xnStockAmount;
+    private BigDecimal xnStockAmount;
 
     @ApiModelProperty(value="西南库存金额占比")
     @JsonProperty("xn_stock_amount_rate")
@@ -200,11 +200,11 @@ public class InventoryStatisticsResponse {
 
     @ApiModelProperty(value="华南库存总金额")
     @JsonProperty("hn_stock_amount_total")
-    private Long hnStockAmountTotal;
+    private BigDecimal hnStockAmountTotal;
 
     @ApiModelProperty(value="华南库存金额")
     @JsonProperty("hn_stock_amount")
-    private Long hnStockAmount;
+    private BigDecimal hnStockAmount;
 
     @ApiModelProperty(value="华南库存金额占比")
     @JsonProperty("hn_stock_amount_rate")

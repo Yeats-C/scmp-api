@@ -59,15 +59,15 @@ public class MonthlyGrossMarginRespVo {
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
-    private Long salesCost;
+    private BigDecimal salesCost;
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_amount")
-    private Long channelAmount;
+    private BigDecimal channelAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private Long channelMaori;
+    private BigDecimal channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -87,11 +87,11 @@ public class MonthlyGrossMarginRespVo {
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
-    private Long distributionAmount;
+    private BigDecimal distributionAmount;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private Long distributionMaori;
+    private BigDecimal distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")

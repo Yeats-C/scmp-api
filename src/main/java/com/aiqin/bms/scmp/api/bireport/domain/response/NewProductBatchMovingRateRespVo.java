@@ -99,11 +99,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("含税进价")
     @JsonProperty("purchase_price")
-    private Long purchasePrice;
+    private BigDecimal purchasePrice;
 
     @ApiModelProperty("厂商指导价")
     @JsonProperty("manufacturer_guide_price")
-    private Long manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("库存数量")
     @JsonProperty("available_num")
@@ -111,7 +111,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("num")
@@ -119,7 +119,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_costs")
-    private Long salesCosts;
+    private BigDecimal salesCosts;
 
     @ApiModelProperty("销售渠道code")
     @JsonProperty("order_code")
@@ -131,11 +131,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_amount")
-    private Long channelAmount;
+    private BigDecimal channelAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private Long channelMaori;
+    private BigDecimal channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -143,11 +143,11 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("分销销售成本")
     @JsonProperty("distribution_sales_costs")
-    private Long distributionSalesCosts;
+    private BigDecimal distributionSalesCosts;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private Long distributionMaori;
+    private BigDecimal distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
@@ -159,7 +159,7 @@ public class NewProductBatchMovingRateRespVo {
 
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_coses_one_month")
-    private Long salesCosesOneMonth;
+    private BigDecimal salesCosesOneMonth;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

@@ -35,11 +35,11 @@ public class inventoryInfoResponse {
 
     @ApiModelProperty(value="上期库存总金额")
     @JsonProperty("pre_stock_amount_total")
-    private Long preStockAmountTotal;
+    private BigDecimal preStockAmountTotal;
 
     @ApiModelProperty(value="上期库存金额")
     @JsonProperty("pre_stock_amount")
-    private Long preStockAmount;
+    private BigDecimal preStockAmount;
 
     @ApiModelProperty(value="上期库存金额占比")
     @JsonProperty("pre_stock_amount_rate")
@@ -59,11 +59,11 @@ public class inventoryInfoResponse {
 
     @ApiModelProperty(value="本期库存总金额")
     @JsonProperty("stock_amount_total")
-    private Long stockAmountTotal;
+    private BigDecimal stockAmountTotal;
 
     @ApiModelProperty(value="本期库存金额")
     @JsonProperty("stock_amount")
-    private Long stockAmount;
+    private BigDecimal stockAmount;
 
     @ApiModelProperty(value="本期库存金额占比")
     @JsonProperty("stock_amount_rate")

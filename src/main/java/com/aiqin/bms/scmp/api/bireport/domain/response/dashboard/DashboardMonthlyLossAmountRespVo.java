@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("月亏损")
 @Data
 public class DashboardMonthlyLossAmountRespVo {
@@ -23,21 +25,21 @@ public class DashboardMonthlyLossAmountRespVo {
 
     @ApiModelProperty("次品影响金额")
     @JsonProperty("defective_effect_amount_monthly")
-    private Long defectiveEffectAmountMonthly;
+    private BigDecimal defectiveEffectAmountMonthly;
 
     @ApiModelProperty("次品影响金额累计值")
     @JsonProperty("defective_effect_amount_acc")
-    private Long defectiveEffectAmountAcc;
+    private BigDecimal defectiveEffectAmountAcc;
 
     @ApiModelProperty("缺货影响金额")
     @JsonProperty("stockout_sales_amount_monthly")
-    private Long stockoutSalesAmountMonthly;
+    private BigDecimal stockoutSalesAmountMonthly;
 
     @ApiModelProperty("缺货影响金额累计值")
     @JsonProperty("stockout_sales_amount_monthly_acc")
-    private Long stockoutSalesAmountMonthlyAcc;
+    private BigDecimal stockoutSalesAmountMonthlyAcc;
 
     @ApiModelProperty("月亏损总额")
     @JsonProperty("monthly_loss_amount")
-    private Long monthlyLossAmount;
+    private BigDecimal monthlyLossAmount;
 }

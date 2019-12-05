@@ -65,7 +65,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计渠道成本")
     @JsonProperty("channel_sales_cost_acc")
-    private Long channelSalesCostAcc;
+    private BigDecimal channelSalesCostAcc;
 
     @ApiModelProperty(value="累计渠道成本同比")
     @JsonProperty("channel_sales_cost_acc_yearonyear")
@@ -77,7 +77,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计渠道销售额")
     @JsonProperty("channel_sales_amount_acc")
-    private Long channelSalesAmountAcc;
+    private BigDecimal channelSalesAmountAcc;
 
     @ApiModelProperty(value="累计渠道销售额同比")
     @JsonProperty("channel_sales_amount_acc_yearonyear")
@@ -89,7 +89,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计渠道毛利")
     @JsonProperty("channel_margin_acc")
-    private Long channelMarginAcc;
+    private BigDecimal channelMarginAcc;
 
     @ApiModelProperty(value="累计渠道毛利同比")
     @JsonProperty("channel_margin_acc_yearonyear")
@@ -113,7 +113,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计分销成本")
     @JsonProperty("distribution_sales_cost_acc")
-    private Long distributionSalesCostAcc;
+    private BigDecimal distributionSalesCostAcc;
 
     @ApiModelProperty(value="累计分销成本同比")
     @JsonProperty("distribution_sales_cost_acc_yearonyear")
@@ -125,7 +125,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计分销销售额")
     @JsonProperty("distribution_sales_amount_acc")
-    private Long distributionSalesAmountAcc;
+    private BigDecimal distributionSalesAmountAcc;
 
     @ApiModelProperty(value="累计分销销售额同比")
     @JsonProperty("distribution_sales_amount_acc_yearonyear")
@@ -137,7 +137,7 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计分销毛利")
     @JsonProperty("distribution_margin_acc")
-    private Long distributionMarginAcc;
+    private BigDecimal distributionMarginAcc;
 
     @ApiModelProperty(value="累计分销毛利同比")
     @JsonProperty("distribution_margin_acc_yearonyear")
@@ -161,11 +161,11 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="累计渠道预算")
     @JsonProperty("channel_budget_acc")
-    private Long channelBudgetAcc;
+    private BigDecimal channelBudgetAcc;
 
     @ApiModelProperty(value="累计分销预算")
     @JsonProperty("distribution_budget_acc")
-    private Long distributionBudgetAcc;
+    private BigDecimal distributionBudgetAcc;
 
     @ApiModelProperty(value="渠道累计达成率")
     @JsonProperty("channel_acc_achievement")
@@ -185,35 +185,35 @@ public class StatDeptMonthAccSales {
 
     @ApiModelProperty(value="渠道同比月累计销售金额")
     @JsonProperty("channel_amount_acc_last_year")
-    private Long channelAmountAccLastYear;
+    private BigDecimal channelAmountAccLastYear;
 
     @ApiModelProperty(value="渠道环比月累计销售金额")
     @JsonProperty("channel_amount_acc_last_month")
-    private Long channelAmountAccLastMonth;
+    private BigDecimal channelAmountAccLastMonth;
 
     @ApiModelProperty(value="渠道同比月累计毛利额")
     @JsonProperty("channel_margin_acc_last_year")
-    private Long channelMarginAccLastYear;
+    private BigDecimal channelMarginAccLastYear;
 
     @ApiModelProperty(value="渠道环比月累计毛利额")
     @JsonProperty("channel_margin_acc_last_month")
-    private Long channelMarginAccLastMonth;
+    private BigDecimal channelMarginAccLastMonth;
 
     @ApiModelProperty(value="分销同比月累计销售金额")
     @JsonProperty("distribution_amount_acc_last_year")
-    private Long distributionAmountAccLastYear;
+    private BigDecimal distributionAmountAccLastYear;
 
     @ApiModelProperty(value="分销环比月累计销售金额")
     @JsonProperty("distribution_amount_acc_last_month")
-    private Long distributionAmountAccLastMonth;
+    private BigDecimal distributionAmountAccLastMonth;
 
     @ApiModelProperty(value="分销同比月累计毛利额")
     @JsonProperty("distribution_margin_acc_last_year")
-    private Long distributionMarginAccLastYear;
+    private BigDecimal distributionMarginAccLastYear;
 
     @ApiModelProperty(value="分销环比月累计毛利额")
     @JsonProperty("distribution_margin_acc_last_month")
-    private Long distributionMarginAccLastMonth;
+    private BigDecimal distributionMarginAccLastMonth;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")

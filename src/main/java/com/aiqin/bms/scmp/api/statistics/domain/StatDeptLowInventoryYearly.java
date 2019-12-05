@@ -65,11 +65,11 @@ public class StatDeptLowInventoryYearly {
 
     @ApiModelProperty(value="上期库存总金额")
     @JsonProperty("pre_stock_amount_total")
-    private Long preStockAmountTotal;
+    private BigDecimal preStockAmountTotal;
 
     @ApiModelProperty(value="上期低库存金额")
     @JsonProperty("pre_low_inventory_amount")
-    private Long preLowInventoryAmount;
+    private BigDecimal preLowInventoryAmount;
 
     @ApiModelProperty(value="上期低库存金额占比")
     @JsonProperty("pre_low_inventory_amount_rate")
@@ -89,11 +89,11 @@ public class StatDeptLowInventoryYearly {
 
     @ApiModelProperty(value="库存总金额")
     @JsonProperty("stock_amount_total")
-    private Long stockAmountTotal;
+    private BigDecimal stockAmountTotal;
 
     @ApiModelProperty(value="低库存金额")
     @JsonProperty("low_inventory_amount")
-    private Long lowInventoryAmount;
+    private BigDecimal lowInventoryAmount;
 
     @ApiModelProperty(value="低库存金额占比")
     @JsonProperty("low_inventory_amount_rate")

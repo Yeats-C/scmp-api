@@ -48,7 +48,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="全国初始库存成本")
     @JsonProperty("sum_ini_stock_sku_cost")
-    private Long sumIniStockSkuCost;
+    private BigDecimal sumIniStockSkuCost;
 
     @ApiModelProperty(value="全国期中新采购sku数")
     @JsonProperty("sum_mid_purchase_sku_num")
@@ -60,11 +60,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="全国渠道销售额")
     @JsonProperty("sum_channel_sales_amount")
-    private Long sumChannelSalesAmount;
+    private BigDecimal sumChannelSalesAmount;
 
     @ApiModelProperty(value="全国分销销售额")
     @JsonProperty("sum_distributionsales_amount")
-    private Long sumDistributionsalesAmount;
+    private BigDecimal sumDistributionsalesAmount;
 
     @ApiModelProperty(value="全国新品动销率")
     @JsonProperty("sum_new_pro_moving_sales_rate")
@@ -76,7 +76,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华北初始库存成本")
     @JsonProperty("hb_ini_stock_sku_cost")
-    private Long hbIniStockSkuCost;
+    private BigDecimal hbIniStockSkuCost;
 
     @ApiModelProperty(value="华北期中新采购sku数")
     @JsonProperty("hb_mid_purchase_sku_num")
@@ -88,11 +88,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华北渠道销售额")
     @JsonProperty("hb_channel_sales_amount")
-    private Long hbChannelSalesAmount;
+    private BigDecimal hbChannelSalesAmount;
 
     @ApiModelProperty(value="华北分销销售额")
     @JsonProperty("hb_distributionsales_amount")
-    private Long hbDistributionsalesAmount;
+    private BigDecimal hbDistributionsalesAmount;
 
     @ApiModelProperty(value="华北新品动销率")
     @JsonProperty("hb_new_pro_moving_sales_rate")
@@ -104,7 +104,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华东初始库存成本")
     @JsonProperty("hd_ini_stock_sku_cost")
-    private Long hdIniStockSkuCost;
+    private BigDecimal hdIniStockSkuCost;
 
     @ApiModelProperty(value="华东期中新采购sku数")
     @JsonProperty("hd_mid_purchase_sku_num")
@@ -116,11 +116,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华东渠道销售额")
     @JsonProperty("hd_channel_sales_amount")
-    private Long hdChannelSalesAmount;
+    private BigDecimal hdChannelSalesAmount;
 
     @ApiModelProperty(value="华东分销销售额")
     @JsonProperty("hd_distributionsales_amount")
-    private Long hdDistributionsalesAmount;
+    private BigDecimal hdDistributionsalesAmount;
 
     @ApiModelProperty(value="华东新品动销率")
     @JsonProperty("hd_new_pro_moving_sales_rate")
@@ -132,7 +132,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华南初始库存成本")
     @JsonProperty("hn_ini_stock_sku_cost")
-    private Long hnIniStockSkuCost;
+    private BigDecimal hnIniStockSkuCost;
 
     @ApiModelProperty(value="华南期中新采购sku数")
     @JsonProperty("hn_mid_purchase_sku_num")
@@ -144,11 +144,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华南渠道销售额")
     @JsonProperty("hn_channel_sales_amount")
-    private Long hnChannelSalesAmount;
+    private BigDecimal hnChannelSalesAmount;
 
     @ApiModelProperty(value="华南分销销售额")
     @JsonProperty("hn_distributionsales_amount")
-    private Long hnDistributionsalesAmount;
+    private BigDecimal hnDistributionsalesAmount;
 
     @ApiModelProperty(value="华南新品动销率")
     @JsonProperty("hn_new_pro_moving_sales_rate")
@@ -160,7 +160,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="西南初始库存成本")
     @JsonProperty("xn_ini_stock_sku_cost")
-    private Long xnIniStockSkuCost;
+    private BigDecimal xnIniStockSkuCost;
 
     @ApiModelProperty(value="西南期中新采购sku数")
     @JsonProperty("xn_mid_purchase_sku_num")
@@ -172,11 +172,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="西南渠道销售额")
     @JsonProperty("xn_channel_sales_amount")
-    private Long xnChannelSalesAmount;
+    private BigDecimal xnChannelSalesAmount;
 
     @ApiModelProperty(value="西南分销销售额")
     @JsonProperty("xn_distributionsales_amount")
-    private Long xnDistributionsalesAmount;
+    private BigDecimal xnDistributionsalesAmount;
 
     @ApiModelProperty(value="西南新品动销率")
     @JsonProperty("xn_new_pro_moving_sales_rate")
@@ -188,7 +188,7 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华中初始库存成本")
     @JsonProperty("hz_ini_stock_sku_cost")
-    private Long hzIniStockSkuCost;
+    private BigDecimal hzIniStockSkuCost;
 
     @ApiModelProperty(value="华中期中新采购sku数")
     @JsonProperty("hz_mid_purchase_sku_num")
@@ -200,11 +200,11 @@ public class ProductMovableResponse {
 
     @ApiModelProperty(value="华中渠道销售额")
     @JsonProperty("hz_channel_sales_amount")
-    private Long hzChannelSalesAmount;
+    private BigDecimal hzChannelSalesAmount;
 
     @ApiModelProperty(value="华中分销销售额")
     @JsonProperty("hz_distributionsales_amount")
-    private Long hzDistributionsalesAmount;
+    private BigDecimal hzDistributionsalesAmount;
 
     @ApiModelProperty(value="华中新品动销率")
     @JsonProperty("hz_new_pro_moving_sales_rate")
