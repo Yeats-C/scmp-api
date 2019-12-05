@@ -21,11 +21,11 @@ public class DashboardAllKindsLossRatioRespVo {
 
     @ApiModelProperty("残次品影响金额")
     @JsonProperty("defective_effect_amount")
-    private Long defectiveEffectAmount;
+    private BigDecimal defectiveEffectAmount;
 
     @ApiModelProperty("缺货影响金额")
     @JsonProperty("stockout_sales_amount")
-    private Long stockoutSalesAmount;
+    private BigDecimal stockoutSalesAmount;
 
     @ApiModelProperty("残次品金额占比")
     @JsonProperty("defective_effect_ratio")

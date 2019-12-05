@@ -255,8 +255,8 @@ public class StatisticsServiceImpl implements StatisticsService {
         // 渠道销售金额同比
         BigDecimal big = new BigDecimal(0);
         Long rate = 0L;
-        Long channelSalesAmount = rateResponse.getChannelSalesAmount() == null ? rate : rateResponse.getChannelSalesAmount();
-        Long preChannelSalesAmount = rateResponse.getPreChannelSalesAmount() == null ? rate : rateResponse.getPreChannelSalesAmount();
+        Long channelSalesAmount = rateResponse.getChannelSalesAmount() == null ? rate : rateResponse.getChannelSalesAmount().longValue();
+        Long preChannelSalesAmount = rateResponse.getPreChannelSalesAmount() == null ? rate : rateResponse.getPreChannelSalesAmount().longValue();
         if(channelSalesAmount == rate || preChannelSalesAmount == rate){
             rateResponse.setChannelSalesAmountYearonyear(big);
         }else {
@@ -264,8 +264,8 @@ public class StatisticsServiceImpl implements StatisticsService {
                     divide(new BigDecimal(preChannelSalesAmount), 4, BigDecimal.ROUND_HALF_UP));
         }
         // 渠道毛利同比
-        Long channelMargin = rateResponse.getChannelMargin() == null ? rate : rateResponse.getChannelMargin();
-        Long preChannelMargin = rateResponse.getPreChannelMargin() == null ? rate : rateResponse.getPreChannelMargin();
+        Long channelMargin = rateResponse.getChannelMargin() == null ? rate : rateResponse.getChannelMargin().longValue();
+        Long preChannelMargin = rateResponse.getPreChannelMargin() == null ? rate : rateResponse.getPreChannelMargin().longValue();
         if(channelMargin == rate || preChannelMargin == rate){
             rateResponse.setChannelMarginYearonyear(big);
         }else {
@@ -274,8 +274,8 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         // 分销销售额同比
-        Long distributionSalesAmount = rateResponse.getDistributionSalesAmount() == null ? rate : rateResponse.getDistributionSalesAmount();
-        Long preDistributionSalesAmount = rateResponse.getPreDistributionSalesAmount() == null ? rate : rateResponse.getPreDistributionSalesAmount();
+        Long distributionSalesAmount = rateResponse.getDistributionSalesAmount() == null ? rate : rateResponse.getDistributionSalesAmount().longValue();
+        Long preDistributionSalesAmount = rateResponse.getPreDistributionSalesAmount() == null ? rate : rateResponse.getPreDistributionSalesAmount().longValue();
         if(distributionSalesAmount == rate || preDistributionSalesAmount == rate){
             rateResponse.setDistributionSalesAmountYearonyear(big);
         }else {
@@ -284,8 +284,8 @@ public class StatisticsServiceImpl implements StatisticsService {
         }
 
         // 分销毛利同比
-        Long distributionMargin = rateResponse.getDistributionMargin() == null ? rate : rateResponse.getDistributionMargin();
-        Long preDistributionMargin = rateResponse.getPreDistributionMargin() == null ? rate : rateResponse.getPreDistributionMargin();
+        Long distributionMargin = rateResponse.getDistributionMargin() == null ? rate : rateResponse.getDistributionMargin().longValue();
+        Long preDistributionMargin = rateResponse.getPreDistributionMargin() == null ? rate : rateResponse.getPreDistributionMargin().longValue();
         if(distributionMargin == rate || preDistributionMargin == null){
             rateResponse.setDistributionMarginYearonyear(big);
         }else {

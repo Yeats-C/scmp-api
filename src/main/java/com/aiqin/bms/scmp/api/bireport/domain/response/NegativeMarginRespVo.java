@@ -55,15 +55,15 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
-    private Long salesCost;
+    private BigDecimal salesCost;
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_order_amount")
-    private Long channelOrderAmount;
+    private BigDecimal channelOrderAmount;
 
     @ApiModelProperty("渠道毛利额")
     @JsonProperty("channel_maori")
-    private Long channelMaori;
+    private BigDecimal channelMaori;
 
     @ApiModelProperty("渠道毛利率")
     @JsonProperty("channel_maori_rate")
@@ -71,11 +71,11 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("distribution_order_amount")
-    private Long distributionOrderAmount;
+    private BigDecimal distributionOrderAmount;
 
     @ApiModelProperty("分销毛利额")
     @JsonProperty("distribution_maori")
-    private Long distributionMaori;
+    private BigDecimal distributionMaori;
 
     @ApiModelProperty("分销毛利率")
     @JsonProperty("distribution_maori_rate")
@@ -103,15 +103,15 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("销售成本合计")
     @JsonProperty("sales_costs")
-    private Long salesCosts;
+    private BigDecimal salesCosts;
 
     @ApiModelProperty("渠道销售金额合计")
     @JsonProperty("channel_order_amounts")
-    private Long channelOrderAmounts;
+    private BigDecimal channelOrderAmounts;
 
     @ApiModelProperty("渠道毛利额合计")
     @JsonProperty("channel_maoris")
-    private Long channelMaoris;
+    private BigDecimal channelMaoris;
 
     @ApiModelProperty("渠道毛利率合计")
     @JsonProperty("channel_maori_rates")
@@ -119,11 +119,11 @@ public class NegativeMarginRespVo {
 
     @ApiModelProperty("分销销售金额合计")
     @JsonProperty("distribution_order_amounts")
-    private Long distributionOrderAmounts;
+    private BigDecimal distributionOrderAmounts;
 
     @ApiModelProperty("分销毛利额合计")
     @JsonProperty("distribution_maoris")
-    private Long distributionMaoris;
+    private BigDecimal distributionMaoris;
 
     @ApiModelProperty("分销毛利率合计")
     @JsonProperty("distribution_maori_rates")

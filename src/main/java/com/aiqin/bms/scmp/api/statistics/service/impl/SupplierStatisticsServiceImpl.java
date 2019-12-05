@@ -126,7 +126,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
             Long sumGoodsCount = 0L, sumGoodsAmount = 0L, sumWarehouseCount = 0L, sumWarehouseAmount = 0L;
             for (StatSupplierArrivalRateResponse supplier : responseList) {
                 Long preInboundNum = supplier.getPreInboundNum() == null ? amount : supplier.getPreInboundNum();
-                Long preTaxAmount = supplier.getPreTaxAmount() == null ? amount : supplier.getPreTaxAmount();
+                Long preTaxAmount = supplier.getPreTaxAmount() == null ? amount : supplier.getPreTaxAmount().longValue();
                 Long praInboundNum = supplier.getPraInboundNum() == null ? amount : supplier.getPraInboundNum();
                 Long praTaxAmount = supplier.getPraTaxAmount() == null ? amount : supplier.getPraInboundNum();
                 sumGoodsCount += preInboundNum;
@@ -136,14 +136,14 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华北仓
                 if (supplier.getTransportCenterCode().equals(Global.HB_CODE)) {
                     response.setHbGoodsCount(preInboundNum);
-                    response.setHbGoodsAmount(preTaxAmount);
+                    response.setHbGoodsAmount(new BigDecimal(preTaxAmount));
                     if (praInboundNum == amount || preInboundNum == amount) {
                         response.setHbGoodsRate(big);
                     } else {
                         response.setHbGoodsRate(new BigDecimal(praInboundNum).divide(new BigDecimal(preInboundNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     response.setHbWarehouseCount(praInboundNum);
-                    response.setHbWarehouseAmount(praTaxAmount);
+                    response.setHbWarehouseAmount(new BigDecimal(praTaxAmount));
                     if (praTaxAmount == amount || preInboundNum == amount) {
                         response.setHbAmountRate(big);
                     } else {
@@ -153,14 +153,14 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华南仓
                 if (supplier.getTransportCenterCode().equals(Global.HN_CODE)) {
                     response.setHnGoodsCount(preInboundNum);
-                    response.setHnGoodsAmount(preTaxAmount);
+                    response.setHnGoodsAmount(new BigDecimal(preTaxAmount));
                     if (praInboundNum == amount || preInboundNum == amount) {
                         response.setHnGoodsRate(big);
                     } else {
                         response.setHnGoodsRate(new BigDecimal(praInboundNum).divide(new BigDecimal(preInboundNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     response.setHnWarehouseCount(praInboundNum);
-                    response.setHnWarehouseAmount(praTaxAmount);
+                    response.setHnWarehouseAmount(new BigDecimal(praTaxAmount));
                     if (praTaxAmount == amount || preInboundNum == amount) {
                         response.setHnAmountRate(big);
                     } else {
@@ -170,14 +170,14 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 西南仓
                 if (supplier.getTransportCenterCode().equals(Global.XN_CODE)) {
                     response.setXnGoodsCount(preInboundNum);
-                    response.setXnGoodsAmount(preTaxAmount);
+                    response.setXnGoodsAmount(new BigDecimal(preTaxAmount));
                     if (praInboundNum == amount || preInboundNum == amount) {
                         response.setXnGoodsRate(big);
                     } else {
                         response.setXnGoodsRate(new BigDecimal(praInboundNum).divide(new BigDecimal(preInboundNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     response.setXnWarehouseCount(praInboundNum);
-                    response.setXnWarehouseAmount(praTaxAmount);
+                    response.setXnWarehouseAmount(new BigDecimal(praTaxAmount));
                     if (praTaxAmount == amount || preInboundNum == amount) {
                         response.setXnAmountRate(big);
                     } else {
@@ -187,14 +187,14 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华中仓
                 if (supplier.getTransportCenterCode().equals(Global.HZ_CODE)) {
                     response.setHzGoodsCount(preInboundNum);
-                    response.setHzGoodsAmount(preTaxAmount);
+                    response.setHzGoodsAmount(new BigDecimal(preTaxAmount));
                     if (praInboundNum == amount || preInboundNum == amount) {
                         response.setHzGoodsRate(big);
                     } else {
                         response.setHzGoodsRate(new BigDecimal(praInboundNum).divide(new BigDecimal(preInboundNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     response.setHzWarehouseCount(praInboundNum);
-                    response.setHzWarehouseAmount(praTaxAmount);
+                    response.setHzWarehouseAmount(new BigDecimal(praTaxAmount));
                     if (praTaxAmount == amount || preInboundNum == amount) {
                         response.setHzAmountRate(big);
                     } else {
@@ -204,14 +204,14 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华东仓
                 if (supplier.getTransportCenterCode().equals(Global.HD_CODE)) {
                     response.setHdGoodsCount(preInboundNum);
-                    response.setHdGoodsAmount(preTaxAmount);
+                    response.setHdGoodsAmount(new BigDecimal(preTaxAmount));
                     if (praInboundNum == amount || preInboundNum == amount) {
                         response.setHdGoodsRate(big);
                     } else {
                         response.setHdGoodsRate(new BigDecimal(praInboundNum).divide(new BigDecimal(preInboundNum), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     response.setHdWarehouseCount(praInboundNum);
-                    response.setHdWarehouseAmount(praTaxAmount);
+                    response.setHdWarehouseAmount(new BigDecimal(praTaxAmount));
                     if (praTaxAmount == amount || preInboundNum == amount) {
                         response.setHdAmountRate(big);
                     } else {
@@ -220,9 +220,9 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 }
             }
             response.setSumGoodsCount(sumGoodsCount);
-            response.setSumGoodsAmount(sumGoodsAmount);
+            response.setSumGoodsAmount(new BigDecimal(sumGoodsAmount));
             response.setSumWarehouseCount(sumWarehouseCount);
-            response.setSumWarehouseAmount(sumWarehouseAmount);
+            response.setSumWarehouseAmount(new BigDecimal(sumWarehouseAmount));
             if (sumGoodsCount == amount || sumWarehouseCount == amount) {
                 response.setSumGoodsRate(big);
             } else {
@@ -300,15 +300,15 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
             Long sumSingleCount = 0L, sumAmt = 0L, sumSalesAmount = 0L;
             for (StatSupplierReturnRateResponse supplier:suppliers){
                 Long singleCount = supplier.getSingleCount() == null ? amount : supplier.getSingleCount();
-                Long amt = supplier.getAmt() == null ? amount : supplier.getAmt();
-                Long salesAmount = supplier.getSalesAmount() == null ? amount : supplier.getSalesAmount();
+                Long amt = supplier.getAmt() == null ? amount : supplier.getAmt().longValue();
+                Long salesAmount = supplier.getSalesAmount() == null ? amount : supplier.getSalesAmount().longValue();
                 sumSingleCount += singleCount;
                 sumAmt += amt;
                 sumSalesAmount += salesAmount;
                 // 华北仓
                 if (supplier.getTransportCenterCode().equals(Global.HB_CODE)) {
                     response.setHbSingleCount(singleCount);
-                    response.setHbAmt(amt);
+                    response.setHbAmt(new BigDecimal(amt));
                     if (amt == amount || salesAmount == amount) {
                         response.setHbReturnRate(big);
                     } else {
@@ -318,7 +318,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华东仓
                 if (supplier.getTransportCenterCode().equals(Global.HD_CODE)) {
                     response.setHdSingleCount(singleCount);
-                    response.setHdAmt(amt);
+                    response.setHdAmt(new BigDecimal(amt));
                     if (amt == amount || salesAmount == amount) {
                         response.setHdReturnRate(big);
                     } else {
@@ -328,7 +328,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华南仓
                 if (supplier.getTransportCenterCode().equals(Global.HN_CODE)) {
                     response.setHnSingleCount(singleCount);
-                    response.setHnAmt(amt);
+                    response.setHnAmt(new BigDecimal(amt));
                     if (amt == amount || salesAmount == amount) {
                         response.setHnReturnRate(big);
                     } else {
@@ -338,7 +338,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 西南仓
                 if (supplier.getTransportCenterCode().equals(Global.XN_CODE)) {
                     response.setXnSingleCount(singleCount);
-                    response.setXnAmt(amt);
+                    response.setXnAmt(new BigDecimal(amt));
                     if (amt == amount || salesAmount == amount) {
                         response.setXnReturnRate(big);
                     } else {
@@ -348,7 +348,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 // 华中仓
                 if (supplier.getTransportCenterCode().equals(Global.HZ_CODE)) {
                     response.setHzSingleCount(singleCount);
-                    response.setHzAmt(amt);
+                    response.setHzAmt(new BigDecimal(amt));
                     if (amt == amount || salesAmount == amount) {
                         response.setHzReturnRate(big);
                     } else {
@@ -357,7 +357,7 @@ public class SupplierStatisticsServiceImpl implements SupplierStatisticsService 
                 }
             }
             response.setSumSingleCount(sumSingleCount);
-            response.setSumAmt(sumAmt);
+            response.setSumAmt(new BigDecimal(sumAmt));
             if(sumAmt == amount || sumSalesAmount == amount){
                 response.setSumReturnRate(big);
             }else {

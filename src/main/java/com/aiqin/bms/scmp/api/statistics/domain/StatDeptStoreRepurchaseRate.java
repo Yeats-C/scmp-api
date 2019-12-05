@@ -46,11 +46,11 @@ public class StatDeptStoreRepurchaseRate {
 
     @ApiModelProperty(value="渠道销售金额")
     @JsonProperty("channel_sales_amount")
-    private Long channelSalesAmount;
+    private BigDecimal channelSalesAmount;
 
     @ApiModelProperty(value="分销销售金额")
     @JsonProperty("distribution_sales_amount")
-    private Long distributionSalesAmount;
+    private BigDecimal distributionSalesAmount;
 
     @ApiModelProperty(value="购物频次")
     @JsonProperty("shopping_frequency")

@@ -52,7 +52,7 @@ public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("订货金额")
     @JsonProperty("pre_tax_amount")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("入库数量")
     @JsonProperty("pra_inbound_num")
@@ -60,7 +60,7 @@ public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("入库金额")
     @JsonProperty("pra_tax_amount")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty("入库金额满足率")
     @JsonProperty("pra_tax_amount_rate")
@@ -84,7 +84,7 @@ public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("订货金额合计")
     @JsonProperty("pre_tax_amounts")
-    private Long preTaxAmounts;
+    private BigDecimal preTaxAmounts;
 
     @ApiModelProperty("入库数量合计")
     @JsonProperty("pra_inbound_nums")
@@ -92,7 +92,7 @@ public class SupplierArrivalRateRespVo {
 
     @ApiModelProperty("入库金额合计")
     @JsonProperty("pra_tax_amounts")
-    private Long praTaxAmounts;
+    private BigDecimal praTaxAmounts;
 
     @ApiModelProperty("入库金额满足率合计")
     @JsonProperty("pra_tax_amount_rates")

@@ -62,23 +62,23 @@ public class CategorySaleRespVo {
 
     @ApiModelProperty("当前销售(出库)成本")
     @JsonProperty("stock_cost")
-    private String stockCost;
+    private BigDecimal stockCost;
 
     @ApiModelProperty("当前渠道销售(出库)金额")
     @JsonProperty("channel_amount_daily")
-    private Long channelAmountDaily;
+    private BigDecimal channelAmountDaily;
 
     @ApiModelProperty("上月渠道销售(出库)金额")
     @JsonProperty("last_month_channel_amount_daily")
-    private Long lastMonthChannelAmountDaily;
+    private BigDecimal lastMonthChannelAmountDaily;
 
     @ApiModelProperty("当前渠道销售毛利额")
     @JsonProperty("channel_maori")
-    private Long channelMaori;
+    private BigDecimal channelMaori;
 
     @ApiModelProperty("上月渠道销售毛利额")
     @JsonProperty("last_month_channel_maori")
-    private Long lastMonthChannelMaori;
+    private BigDecimal lastMonthChannelMaori;
 
     @ApiModelProperty("渠道销售(出库)金额环比增长%")
     @JsonProperty("channel_sales_sequential_add")
@@ -90,19 +90,19 @@ public class CategorySaleRespVo {
 
     @ApiModelProperty("当前分销销售(出库)金额")
     @JsonProperty("distribution_amount_daily")
-    private Long distributionAmountDaily;
+    private BigDecimal distributionAmountDaily;
 
     @ApiModelProperty("上月分销销售(出库)金额")
     @JsonProperty("last_month_distribution_amount_daily")
-    private Long lastMonthDistributionAmountDaily;
+    private BigDecimal lastMonthDistributionAmountDaily;
 
     @ApiModelProperty("当前分销销售毛利额")
     @JsonProperty("distribution_amount")
-    private Long distributionAmount;
+    private BigDecimal distributionAmount;
 
     @ApiModelProperty("上月分销销售毛利额")
     @JsonProperty("last_month_distribution_amount")
-    private Long lastMonthDistributionAmount;
+    private BigDecimal lastMonthDistributionAmount;
 
     @ApiModelProperty("分销销售(出库)金额环比增长%")
     @JsonProperty("distribution_sales_sequential_add")

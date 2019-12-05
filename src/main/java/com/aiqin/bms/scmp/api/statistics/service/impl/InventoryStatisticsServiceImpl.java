@@ -263,12 +263,12 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
             for(inventoryInfoResponse info:infoList){
                 Long preTotalSku = info.getPreTotalSku() == null ? num : info.getPreTotalSku();
                 Long preSkuCount = info.getPreSkuCount() == null ? num : info.getPreSkuCount();
-                Long preStockAmountTotal = info.getPreStockAmountTotal() == null ? num : info.getPreStockAmountTotal();
-                Long preStockAmount = info.getPreStockAmount() == null ? num : info.getPreStockAmount();
+                Long preStockAmountTotal = info.getPreStockAmountTotal() == null ? num : info.getPreStockAmountTotal().longValue();
+                Long preStockAmount = info.getPreStockAmount() == null ? num : info.getPreStockAmount().longValue();
                 Long totalSku = info.getTotalSku() == null ? num : info.getTotalSku();
                 Long skuCount = info.getSkuCount() == null ? num : info.getSkuCount();
-                Long stockAmountTotal = info.getStockAmountTotal() == null ? num : info.getStockAmountTotal();
-                Long stockAmount = info.getStockAmount() == null ? num : info.getStockAmount();
+                Long stockAmountTotal = info.getStockAmountTotal() == null ? num : info.getStockAmountTotal().longValue();
+                Long stockAmount = info.getStockAmount() == null ? num : info.getStockAmount().longValue();
                 preTotalSkuSum += preTotalSku;
                 preSkuCountSum += preSkuCount;
                 preStockAmountTotalSum += preStockAmountTotal;
@@ -285,8 +285,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
                     }else {
                         response.setHbSkuRate(new BigDecimal(skuCount).divide(new BigDecimal(totalSku), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    response.setHbStockAmount(stockAmount);
-                    response.setHbStockAmountTotal(stockAmountTotal);
+                    response.setHbStockAmount(new BigDecimal(stockAmount));
+                    response.setHbStockAmountTotal(new BigDecimal(stockAmountTotal));
                     if(stockAmount == 0 || stockAmountTotal == 0){
                         response.setHbStockAmountRate(big);
                     }else {
@@ -300,8 +300,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
                     }else {
                         response.setHdSkuRate(new BigDecimal(skuCount).divide(new BigDecimal(totalSku), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    response.setHdStockAmount(stockAmount);
-                    response.setHdStockAmountTotal(stockAmountTotal);
+                    response.setHdStockAmount(new BigDecimal(stockAmount));
+                    response.setHdStockAmountTotal(new BigDecimal(stockAmountTotal));
                     if(stockAmount == 0 || stockAmountTotal == 0){
                         response.setHdStockAmountRate(big);
                     }else {
@@ -315,8 +315,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
                     }else {
                         response.setHnSkuRate(new BigDecimal(skuCount).divide(new BigDecimal(totalSku), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    response.setHnStockAmount(stockAmount);
-                    response.setHnStockAmountTotal(stockAmountTotal);
+                    response.setHnStockAmount(new BigDecimal(stockAmount));
+                    response.setHnStockAmountTotal(new BigDecimal(stockAmountTotal));
                     if(stockAmount == 0 || stockAmountTotal == 0){
                         response.setHnStockAmountRate(big);
                     }else {
@@ -330,8 +330,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
                     }else {
                         response.setXnSkuRate(new BigDecimal(skuCount).divide(new BigDecimal(totalSku), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    response.setXnStockAmount(stockAmount);
-                    response.setXnStockAmountTotal(stockAmountTotal);
+                    response.setXnStockAmount(new BigDecimal(stockAmount));
+                    response.setXnStockAmountTotal(new BigDecimal(stockAmountTotal));
                     if(stockAmount == 0 || stockAmountTotal == 0){
                         response.setXnStockAmountRate(big);
                     }else {
@@ -345,8 +345,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
                     }else {
                         response.setHzSkuRate(new BigDecimal(skuCount).divide(new BigDecimal(totalSku), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    response.setHzStockAmount(stockAmount);
-                    response.setHzStockAmountTotal(stockAmountTotal);
+                    response.setHzStockAmount(new BigDecimal(stockAmount));
+                    response.setHzStockAmountTotal(new BigDecimal(stockAmountTotal));
                     if(stockAmount == 0 || stockAmountTotal == 0){
                         response.setHzStockAmountRate(big);
                     }else {
@@ -361,8 +361,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
             }else {
                 response.setPreSkuRate(new BigDecimal(preSkuCountSum).divide(new BigDecimal(preTotalSkuSum), 4, BigDecimal.ROUND_HALF_UP));
             }
-            response.setPreStockAmount(preStockAmountSum);
-            response.setPreStockAmountTotal(preStockAmountTotalSum);
+            response.setPreStockAmount(new BigDecimal(preStockAmountSum));
+            response.setPreStockAmountTotal(new BigDecimal(preStockAmountTotalSum));
             if(preStockAmountSum == 0 || preStockAmountTotalSum == 0){
                 response.setPreStockAmountRate(big);
             }else {
@@ -375,8 +375,8 @@ public class InventoryStatisticsServiceImpl implements InventoryStatisticsServic
             }else {
                 response.setSkuRate(new BigDecimal(skuCountSum).divide(new BigDecimal(totalSkuSum), 4, BigDecimal.ROUND_HALF_UP));
             }
-            response.setStockAmount(stockAmountSum);
-            response.setStockAmountTotal(stockAmountTotalSum);
+            response.setStockAmount(new BigDecimal(stockAmountSum));
+            response.setStockAmountTotal(new BigDecimal(stockAmountTotalSum));
             if(stockAmountSum == 0 || stockAmountTotalSum == 0){
                 response.setStockAmountRate(big);
             }else {

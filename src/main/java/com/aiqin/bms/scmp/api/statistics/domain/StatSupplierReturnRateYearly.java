@@ -57,11 +57,11 @@ public class StatSupplierReturnRateYearly {
 
     @ApiModelProperty(value="退货金额")
     @JsonProperty("amt")
-    private Long amt;
+    private BigDecimal amt;
 
     @ApiModelProperty(value="销售金额")
     @JsonProperty("sales_amount")
-    private Long salesAmount;
+    private BigDecimal salesAmount;
 
     @ApiModelProperty(value="退货率")
     @JsonProperty("return_rate")

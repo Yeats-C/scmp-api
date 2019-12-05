@@ -50,7 +50,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华北仓订货金额")
     @JsonProperty("hb_goods_amount")
-    private Long hbGoodsAmount;
+    private BigDecimal hbGoodsAmount;
 
     @ApiModelProperty(value="华北仓入库数量")
     @JsonProperty("hb_warehouse_count")
@@ -58,7 +58,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华北仓入库金额")
     @JsonProperty("hb_warehouse_amount")
-    private Long hbWarehouseAmount;
+    private BigDecimal hbWarehouseAmount;
 
     @ApiModelProperty(value="华北仓金额满足率")
     @JsonProperty("hb_amount_rate")
@@ -74,7 +74,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华南仓订货金额")
     @JsonProperty("hn_goods_amount")
-    private Long hnGoodsAmount;
+    private BigDecimal hnGoodsAmount;
 
     @ApiModelProperty(value="华南仓入库数量")
     @JsonProperty("hn_warehouse_count")
@@ -82,7 +82,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华南仓入库金额")
     @JsonProperty("hn_warehouse_amount")
-    private Long hnWarehouseAmount;
+    private BigDecimal hnWarehouseAmount;
 
     @ApiModelProperty(value="华南仓金额满足率")
     @JsonProperty("hn_amount_rate")
@@ -98,7 +98,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="西南仓订货金额")
     @JsonProperty("xn_goods_amount")
-    private Long xnGoodsAmount;
+    private BigDecimal xnGoodsAmount;
 
     @ApiModelProperty(value="西南仓入库数量")
     @JsonProperty("xn_warehouse_count")
@@ -106,7 +106,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="西南仓入库金额")
     @JsonProperty("xn_warehouse_amount")
-    private Long xnWarehouseAmount;
+    private BigDecimal xnWarehouseAmount;
 
     @ApiModelProperty(value="西南仓金额满足率")
     @JsonProperty("xn_amount_rate")
@@ -122,7 +122,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华中仓订货金额")
     @JsonProperty("hz_goods_amount")
-    private Long hzGoodsAmount;
+    private BigDecimal hzGoodsAmount;
 
     @ApiModelProperty(value="华中仓入库数量")
     @JsonProperty("hz_warehouse_count")
@@ -130,7 +130,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华中仓入库金额")
     @JsonProperty("hz_warehouse_amount")
-    private Long hzWarehouseAmount;
+    private BigDecimal hzWarehouseAmount;
 
     @ApiModelProperty(value="华中仓金额满足率")
     @JsonProperty("hz_amount_rate")
@@ -146,7 +146,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华东仓订货金额")
     @JsonProperty("hd_goods_amount")
-    private Long hdGoodsAmount;
+    private BigDecimal hdGoodsAmount;
 
     @ApiModelProperty(value="华东仓入库数量")
     @JsonProperty("hd_warehouse_count")
@@ -154,7 +154,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="华东仓入库金额")
     @JsonProperty("hd_warehouse_amount")
-    private Long hdWarehouseAmount;
+    private BigDecimal hdWarehouseAmount;
 
     @ApiModelProperty(value="华东仓金额满足率")
     @JsonProperty("hd_amount_rate")
@@ -170,7 +170,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="全国仓订货金额")
     @JsonProperty("sum_goods_amount")
-    private Long sumGoodsAmount;
+    private BigDecimal sumGoodsAmount;
 
     @ApiModelProperty(value="全国仓入库数量")
     @JsonProperty("sum_warehouse_count")
@@ -178,7 +178,7 @@ public class SupplierDeliveryResponse{
 
     @ApiModelProperty(value="全国仓入库金额")
     @JsonProperty("sum_warehouse_amount")
-    private Long sumWarehouseAmount;
+    private BigDecimal sumWarehouseAmount;
 
     @ApiModelProperty(value="全国仓金额满足率")
     @JsonProperty("sum_amount_rate")

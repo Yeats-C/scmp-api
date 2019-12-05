@@ -69,11 +69,11 @@ public class StatSupplierArrivalRateYearly {
 
     @ApiModelProperty(value="预计含税金额")
     @JsonProperty("pre_tax_amount")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty(value="实际含税金额")
     @JsonProperty("pra_tax_amount")
-    private Long praTaxAmount;
+    private BigDecimal praTaxAmount;
 
     @ApiModelProperty(value="入库金额满足率")
     @JsonProperty("inbound_amount_fill_rate")
