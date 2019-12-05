@@ -187,5 +187,13 @@ public class RejectRequest {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty("职位编码")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
 }
 

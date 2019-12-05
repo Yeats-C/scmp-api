@@ -132,14 +132,15 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void workFlow(String formNo, String userName, String directSupervisorCode) {
+    public void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
         workFlowVO.setFormUrl(workFlowBaseUrl.applyRefund + "?code=" + formNo + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_REFUND.getNum());
         workFlowVO.setFormNo(formNo);
-        workFlowVO.setTitle(userName + "创建退供申请单审批");
+        workFlowVO.setFormNo(positionCode);
+        workFlowVO.setTitle(userName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);
         workFlowVO.setVariables(jsonObject.toString());
