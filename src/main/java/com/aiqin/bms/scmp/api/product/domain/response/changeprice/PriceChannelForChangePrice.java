@@ -62,9 +62,9 @@ public class PriceChannelForChangePrice {
       BigDecimal num=  this.oldPrice;
         BigDecimal num2=  this.taxCost;
         //销售类的变价
-        if(Objects.isNull(this.oldPrice)||this.oldPrice.equals(BigDecimal.ZERO)){
+        if(Objects.isNull(this.oldPrice.stripTrailingZeros())||this.oldPrice.stripTrailingZeros().equals(BigDecimal.ZERO)){
             return BigDecimal.ZERO;
-        }else if(this.taxCost.equals(BigDecimal.ZERO)) {
+        }else if(this.taxCost.stripTrailingZeros().equals(BigDecimal.ZERO)) {
             return  this.oldGrossProfitMargin = new BigDecimal(100);
         }else {
             BigDecimal divide = (num.subtract(num2)).divide(num, 4, BigDecimal.ROUND_HALF_UP);

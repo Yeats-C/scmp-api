@@ -596,6 +596,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setPositionCode(positionCode);
+      //回调地址
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuSupplier + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);

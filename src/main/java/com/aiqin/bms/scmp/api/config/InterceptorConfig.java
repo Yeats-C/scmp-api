@@ -29,8 +29,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/asset/info/detail/no_controller/*",
                         "/ding/**",
                         "/synchronization/stock",
-                        "/probe.status.go",
-                        "/dl/**")
+                        "/probe.status.go")
                 .excludePathPatterns("/workFlow/workFlowCallBack/**")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/swagger-ui.htm/**");
         super.addInterceptors(registry);

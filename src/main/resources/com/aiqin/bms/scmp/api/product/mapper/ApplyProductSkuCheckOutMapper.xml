@@ -10,9 +10,9 @@
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
-    <result column="Integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
+    <result column="output_tax_rate" jdbcType="DECIMAL" property="outputTaxRate" />
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
+    <result column="Integral_coefficient" jdbcType="DECIMAL" property="integralCoefficient" />
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />

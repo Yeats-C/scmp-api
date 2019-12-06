@@ -627,7 +627,7 @@
             and b.sku_name like CONCAT('%',#{skuName},'%')
         </if>
         <if test="supplierCode != null and supplierCode != '' ">
-            and a.supply_unit_code CONCAT('%',#{supplierCode},'%')
+            and a.supply_unit_code like CONCAT('%',#{supplierCode},'%')
         </if>
         <if test="supplierName != null and supplierName != '' ">
             and a.supply_unit_name like CONCAT('%',#{supplierName},'%')
@@ -639,7 +639,7 @@
             and a.tax_included_price >= #{maxPurchasePrice} * 100
         </if>
         <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != '' ">
-            and a.categories_supply_channels_code like CONCAT('%',#{categoriesSupplyChannelsCode},'%')
+            and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
         </if>
         <if test="categoriesSupplyChannelsName != null and categoriesSupplyChannelsName != '' ">
             and a.categories_supply_channels_name like CONCAT('%',#{categoriesSupplyChannelsName},'%')

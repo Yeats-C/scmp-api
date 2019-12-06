@@ -38,7 +38,7 @@ public class ProductSkuCheckoutRespVo extends CommonBean {
     private BigDecimal inputTaxRate;
 
     @ApiModelProperty("积分系数")
-    private Long integralCoefficient;
+    private BigDecimal integralCoefficient;
 
     @ApiModelProperty("物流费奖励比例")
     private BigDecimal logisticsFeeAwardRatio;
