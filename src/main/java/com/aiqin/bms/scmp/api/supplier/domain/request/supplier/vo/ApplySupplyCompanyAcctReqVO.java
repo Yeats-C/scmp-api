@@ -7,6 +7,7 @@ import lombok.Data;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * @功能说明:
@@ -38,7 +39,7 @@ public class ApplySupplyCompanyAcctReqVO{
     @NotNull
     @Min(1)
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("银联编号")
     private String unionpayNumber;
@@ -71,5 +72,23 @@ public class ApplySupplyCompanyAcctReqVO{
     @ApiModelProperty("直属上级名称")
     @NotEmpty(message = "直属上级名称不能为空！")
     private String directSupervisorName;
+
+    @ApiModelProperty(value = "修改人员工号")
+    private String updateById;
+
+    @ApiModelProperty(value = "修改人员名称")
+    private String updateBy;
+
+    @ApiModelProperty(value = "公司编码")
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 
 }

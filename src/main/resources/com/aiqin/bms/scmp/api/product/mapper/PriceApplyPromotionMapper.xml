@@ -99,6 +99,12 @@
     <update id="deteleById" parameterType="java.lang.Long">
         update  price_promotion_apply
         set status = '2'
+        <if test="updateName != null">
+            update_name = #{updateName,jdbcType=VARCHAR},
+        </if>
+        <if test="updateTimestamp != null">
+            update_timestamp = #{updateTimestamp,jdbcType=TIMESTAMP},
+        </if>
         where id = #{id,jdbcType=BIGINT}
     </update>
 
@@ -256,9 +262,6 @@
             </if>
             <if test="createName != null">
                 create_name = #{createName,jdbcType=VARCHAR},
-            </if>
-            <if test="createTimestamp != null">
-                create_timestamp = #{createTimestamp,jdbcType=TIMESTAMP},
             </if>
             <if test="updateName != null">
                 update_name = #{updateName,jdbcType=VARCHAR},

@@ -90,10 +90,12 @@ public class GetChangeValueUtil<T> {
                 if (o1 == null && o2 == null ) {
                     continue;
                 }
-                if (o1 == null && o2 != null) {
-                    str =  "从\"空\"改为\"" + o2+"\"";
-                } else if(o1 != null && o2 == null){
+                if (o1 == null) {
+                    str =  "从\"\"改为\"" + o2+"\"";
+                } else if(o2 == null){
                     str =  "从\"" + o1 + "\"改为\"\"";
+                } else if(StringUtils.isBlank(o1.toString().trim()) || StringUtils.isBlank(o2.toString().trim())){
+                    continue;
                 } else if (!o1.toString().trim().equals(o2.toString().trim())) {
                     if("goodsGifts".equals(field.getName())){
                        o1 = SkuTypeEnum.getSkuTypeEnumByType((Byte) o1).getName();

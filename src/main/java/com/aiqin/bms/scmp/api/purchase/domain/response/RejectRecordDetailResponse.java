@@ -85,7 +85,7 @@ public class RejectRecordDetailResponse {
 
     @ApiModelProperty(value = "税率")
     @JsonProperty("tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")

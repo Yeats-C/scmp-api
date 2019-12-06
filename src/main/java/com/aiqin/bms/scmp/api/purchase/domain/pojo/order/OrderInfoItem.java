@@ -112,5 +112,5 @@ public class OrderInfoItem {
     private BigDecimal actualPrice;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 }

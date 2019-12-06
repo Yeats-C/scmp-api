@@ -16,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @ApiModel("查询职位信息请求VO")
-public class PositionRespVo implements Serializable {
+public class PositionRespVo {
 
     // private static final long serialVersionUID = -447331905703381983L;
     //"id":1713,"username":"0911182","account_id":"c0ee64bff2e54c639447d458f08935f2","person_id":"11182","person_name":"徐学浩",
@@ -64,6 +64,17 @@ public class PositionRespVo implements Serializable {
 
     @JsonProperty("position_level_name")
     private String positionLevelName;
+    /// "department_code":"090400004","department_name":"供应链中心管理办公室","user_position_status":0,"begin_time":"2019-09-01 00:00:00",
+    //     // "finish_time":"2035-01-01 00:00:00","create_time":"2019-08-13 21:09:34","position_level_code":"002","position_level_name":"总监"
+    @JsonProperty("begin_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String beginTime;
 
+    @JsonProperty("finish_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String finishTime;
 
+    @JsonProperty("create_time")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private String createTime;
 }

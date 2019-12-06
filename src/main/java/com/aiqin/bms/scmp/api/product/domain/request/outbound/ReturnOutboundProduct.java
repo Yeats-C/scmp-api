@@ -97,13 +97,13 @@ public class ReturnOutboundProduct {
     private Long linenum;
 
     @ApiModelProperty("销项税率")
-    private Long outputTaxRate;
+    private BigDecimal outputTaxRate;
 
     @ApiModelProperty("进项税率")
-    private Long inputTaxRate;
+    private BigDecimal inputTaxRate;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("出库拆零系数")
     private String outboundBaseUnit;

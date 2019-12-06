@@ -71,19 +71,19 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("销售成本累计")
     @JsonProperty("total_stock_cost")
-    private Long totalStockCost;
+    private BigDecimal totalStockCost;
 
     @ApiModelProperty("渠道销售额累计")
     @JsonProperty("total_channel_amount_daily")
-    private Long totalChannelAmountDaily;
+    private BigDecimal totalChannelAmountDaily;
 
     @ApiModelProperty("去年同期渠道销售额累计")
     @JsonProperty("total_last_year_channel_amount_daily")
-    private Long totalLastYearChannelAmountDaily;
+    private BigDecimal totalLastYearChannelAmountDaily;
 
     @ApiModelProperty("上期渠道销售额累计")
     @JsonProperty("total_last_month_channel_amount_daily")
-    private Long totalLastMonthChannelAmountDaily;
+    private BigDecimal totalLastMonthChannelAmountDaily;
 
     @ApiModelProperty("渠道销售额累计同比")
     @JsonProperty("total_channel_amount_daily_compared_same")
@@ -95,7 +95,7 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("渠道毛利额累计")
     @JsonProperty("total_channel_maori")
-    private Long totalChannelMaori;
+    private BigDecimal totalChannelMaori;
 
     @ApiModelProperty("渠道毛利率累计")
     @JsonProperty("total_channel_maori_rate")
@@ -119,15 +119,15 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("分销销售额累计")
     @JsonProperty("total_distribution_amount_daily")
-    private Long totalDistributionAmountDaily;
+    private BigDecimal totalDistributionAmountDaily;
 
     @ApiModelProperty("去年同期分销销售额累计")
     @JsonProperty("total_last_year_distribution_amount_daily")
-    private Long totalLastYearDistributionAmountDaily;
+    private BigDecimal totalLastYearDistributionAmountDaily;
 
     @ApiModelProperty("上期分销销售额累计")
     @JsonProperty("total_last_month_distribution_amount_daily")
-    private Long totalLastMonthDistributionAmountDaily;
+    private BigDecimal totalLastMonthDistributionAmountDaily;
 
     @ApiModelProperty("分销销售额累计同比")
     @JsonProperty("total_distribution_amount_daily_compared_same")
@@ -139,7 +139,7 @@ public class MonthCumulativeBrandSalesRespVo {
 
     @ApiModelProperty("分销毛利额累计")
     @JsonProperty("total_distribution_amount")
-    private Long totalDistributionAmount;
+    private BigDecimal totalDistributionAmount;
 
     @ApiModelProperty("分销毛利率累计")
     @JsonProperty("total_distribution_maori_rate")

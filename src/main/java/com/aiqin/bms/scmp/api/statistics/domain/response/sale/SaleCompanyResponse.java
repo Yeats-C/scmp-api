@@ -38,11 +38,11 @@ public class SaleCompanyResponse {
 
     @ApiModelProperty(value="渠道成本")
     @JsonProperty("channel_sales_cost")
-    private Long channelSalesCost;
+    private BigDecimal channelSalesCost;
 
     @ApiModelProperty(value="渠道销售额")
     @JsonProperty("channel_sales_amount")
-    private Long channelSalesAmount;
+    private BigDecimal channelSalesAmount;
 
     @ApiModelProperty(value="渠道销售额同比")
     @JsonProperty("channel_sales_amount_yearonyear")
@@ -54,7 +54,7 @@ public class SaleCompanyResponse {
 
     @ApiModelProperty(value="渠道毛利")
     @JsonProperty("channel_margin")
-    private Long channelMargin;
+    private BigDecimal channelMargin;
 
     @ApiModelProperty(value="渠道毛利同比")
     @JsonProperty("channel_margin_yearonyear")
@@ -70,11 +70,11 @@ public class SaleCompanyResponse {
 
     @ApiModelProperty(value="分销成本")
     @JsonProperty("distribution_sales_cost")
-    private Long distributionSalesCost;
+    private BigDecimal distributionSalesCost;
 
     @ApiModelProperty(value="分销销售额")
     @JsonProperty("distribution_sales_amount")
-    private Long distributionSalesAmount;
+    private BigDecimal distributionSalesAmount;
 
     @ApiModelProperty(value="分销销售额同比")
     @JsonProperty("distribution_sales_amount_yearonyear")
@@ -86,7 +86,7 @@ public class SaleCompanyResponse {
 
     @ApiModelProperty(value="分销毛利")
     @JsonProperty("distribution_margin")
-    private Long distributionMargin;
+    private BigDecimal distributionMargin;
 
     @ApiModelProperty(value="分销毛利同比")
     @JsonProperty("distribution_margin_yearonyear")
@@ -110,34 +110,34 @@ public class SaleCompanyResponse {
 
     @ApiModelProperty(value="渠道同比销售金额")
     @JsonProperty("channel_amount_last_year")
-    private Long channelAmountLastYear;
+    private BigDecimal channelAmountLastYear;
 
     @ApiModelProperty(value="渠道环比销售金额")
     @JsonProperty("channel_amount_last_month")
-    private Long channelAmountLastMonth;
+    private BigDecimal channelAmountLastMonth;
 
     @ApiModelProperty(value="渠道同比毛利额")
     @JsonProperty("channel_margin_last_year")
-    private Long channelMarginLastYear;
+    private BigDecimal channelMarginLastYear;
 
     @ApiModelProperty(value="渠道环比毛利额")
     @JsonProperty("channel_margin_last_month")
-    private Long channelMarginLastMonth;
+    private BigDecimal channelMarginLastMonth;
 
     @ApiModelProperty(value="分销同比销售金额")
     @JsonProperty("distribution_amount_last_year")
-    private Long distributionAmountLastYear;
+    private BigDecimal distributionAmountLastYear;
 
     @ApiModelProperty(value="分销环比销售金额")
     @JsonProperty("distribution_amount_last_month")
-    private Long distributionAmountLastMonth;
+    private BigDecimal distributionAmountLastMonth;
 
     @ApiModelProperty(value="分销同比毛利额")
     @JsonProperty("distribution_margin_last_year")
-    private Long distributionMarginLastYear;
+    private BigDecimal distributionMarginLastYear;
 
     @ApiModelProperty(value="分销环比毛利额")
     @JsonProperty("distribution_margin_last_month")
-    private Long distributionMarginLastMonth;
+    private BigDecimal distributionMarginLastMonth;
 
 }

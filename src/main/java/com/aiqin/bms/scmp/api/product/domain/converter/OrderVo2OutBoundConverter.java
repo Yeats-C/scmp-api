@@ -52,7 +52,7 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                 SupplyOrderInfo reqVo = reqMainVo.getOrderInfo();
                 List<String> skuCodes = reqMainVo.getProductItem().stream().map(SupplyOrderProductItem::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
-                Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
+                Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
 //              InboundSavePo po = new InboundSavePo();
                 OutboundReqVo outbound = new OutboundReqVo();
                 BeanUtils.copyProperties(reqVo, outbound);
@@ -104,8 +104,8 @@ public class OrderVo2OutBoundConverter implements Converter<List<OrderInfo>, Lis
                     product.setPreOutboundNum(vo.getNum());
                     try {
                         //计算不含税单价
-                        Long aLong = map.get(vo.getSkuCode());
-                        BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), BigDecimal.valueOf(aLong));
+                        BigDecimal aLong = map.get(vo.getSkuCode());
+                        BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
 
                         //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();

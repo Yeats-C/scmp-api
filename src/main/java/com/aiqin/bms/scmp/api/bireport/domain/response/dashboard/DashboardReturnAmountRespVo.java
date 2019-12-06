@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("渠道退货金额respVo")
 @Data
 public class DashboardReturnAmountRespVo {
@@ -23,7 +25,7 @@ public class DashboardReturnAmountRespVo {
 
     @ApiModelProperty("退货金额")
     @JsonProperty("amt")
-    private Long amt;
+    private BigDecimal amt;
 
     @ApiModelProperty("部门code")
     @JsonProperty("product_sort_code")

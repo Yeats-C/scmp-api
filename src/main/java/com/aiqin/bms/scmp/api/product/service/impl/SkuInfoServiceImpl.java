@@ -673,7 +673,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 log.error(Global.ERROR, e);
                 throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
             }
-            if (!flag) {
+            // if (!flag) {
                 //价格
                 if (null != addSkuInfoReqVO.getProductSkuPrices() && addSkuInfoReqVO.getProductSkuPrices().size() > 0){
                     List<SkuPriceDraftReqVO> temps = addSkuInfoReqVO.getProductSkuPrices();
@@ -701,7 +701,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                     });
                     productSkuPrices.addAll(temps);
-                }
+                // }
                 if(CollectionUtils.isNotEmpty(productSkuPrices)){
                     productSkuPriceInfoService.saveSkuPriceDraft(productSkuPrices);
                 }
@@ -1346,7 +1346,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //调用审批接口
-            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
+            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName,saveSkuApplyInfoReqVO.getPositionCode());
         }
         return formNo;
     }
@@ -1704,9 +1704,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName) {
+    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
@@ -1833,7 +1834,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                             stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
                             stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
                             stock.setNewPurchasePrice(new BigDecimal(0));
-                            stock.setTaxRate(0L);
+                            stock.setTaxRate(new BigDecimal(0));
                             stock.setTaxCost(new BigDecimal(0));
                             stock.setTaxPrice(new BigDecimal(0));
                             stockList.add(stock);

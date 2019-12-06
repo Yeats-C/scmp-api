@@ -47,7 +47,7 @@ public class NegativeCategoryResponse {
 
     @ApiModelProperty(value="渠道销售额")
     @JsonProperty("channel_sales_amount")
-    private Long channelSalesAmount;
+    private BigDecimal channelSalesAmount;
 
     @ApiModelProperty(value="渠道销售额同比")
     @JsonProperty("channel_sales_amount_yearonyear")
@@ -55,11 +55,11 @@ public class NegativeCategoryResponse {
 
     @ApiModelProperty(value="渠道成本")
     @JsonProperty("channel_sales_cost")
-    private Long channelSalesCost;
+    private BigDecimal channelSalesCost;
 
     @ApiModelProperty(value="渠道毛利")
     @JsonProperty("channel_margin")
-    private Long channelMargin;
+    private BigDecimal channelMargin;
 
     @ApiModelProperty(value="渠道毛利同比")
     @JsonProperty("channel_margin_yearonyear")
@@ -67,7 +67,7 @@ public class NegativeCategoryResponse {
 
     @ApiModelProperty(value="分销销售额")
     @JsonProperty("distribution_sales_amount")
-    private Long distributionSalesAmount;
+    private BigDecimal distributionSalesAmount;
 
     @ApiModelProperty(value="分销销售额同比")
     @JsonProperty("distribution_sales_amount_yearonyear")
@@ -75,7 +75,7 @@ public class NegativeCategoryResponse {
 
     @ApiModelProperty(value="分销毛利")
     @JsonProperty("distribution_margin")
-    private Long distributionMargin;
+    private BigDecimal distributionMargin;
 
     @ApiModelProperty(value="分销毛利同比")
     @JsonProperty("distribution_margin_yearonyear")

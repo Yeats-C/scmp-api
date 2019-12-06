@@ -61,7 +61,7 @@ public class StatDeptNewProductMovingRate {
 
     @ApiModelProperty(value="初始库存成本")
     @JsonProperty("ini_stock_sku_cost")
-    private Long iniStockSkuCost;
+    private BigDecimal iniStockSkuCost;
 
     @ApiModelProperty(value="期中新采购sku数")
     @JsonProperty("mid_purchase_sku_num")
@@ -73,11 +73,11 @@ public class StatDeptNewProductMovingRate {
 
     @ApiModelProperty(value="渠道销售额")
     @JsonProperty("channel_sales_amount")
-    private Long channelSalesAmount;
+    private BigDecimal channelSalesAmount;
 
     @ApiModelProperty(value="分销销售额")
     @JsonProperty("distributionsales_amount")
-    private Long distributionsalesAmount;
+    private BigDecimal distributionsalesAmount;
 
     @ApiModelProperty(value="新品动销率")
     @JsonProperty("new_pro_moving_sales_rate")

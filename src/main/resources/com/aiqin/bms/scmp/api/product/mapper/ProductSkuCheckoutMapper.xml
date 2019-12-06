@@ -132,16 +132,16 @@
         #{skuName,jdbcType=VARCHAR},
       </if>
       <if test="outputTaxRate != null">
-        #{outputTaxRate,jdbcType=BIGINT},
+        #{outputTaxRate,jdbcType=DECIMAL},
       </if>
       <if test="inputTaxRate != null">
-        #{inputTaxRate,jdbcType=BIGINT},
+        #{inputTaxRate,jdbcType=DECIMAL},
       </if>
       <if test="integralCoefficient != null">
-        #{integralCoefficient,jdbcType=BIGINT},
+        #{integralCoefficient,jdbcType=DECIMAL},
       </if>
       <if test="rebate != null">
-        #{rebate,jdbcType=BIGINT},
+        #{rebate,jdbcType=DECIMAL},
       </if>
       <if test="applyCode != null">
         #{applyCode,jdbcType=VARCHAR},

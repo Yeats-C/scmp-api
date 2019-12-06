@@ -37,4 +37,10 @@ public interface PricePromotionProductMapper {
      */
     List<String> getGiveCodes(Long businessId);
 
+    /**
+     * 商品接口
+     * @param priceApplyPromotionReqVo
+     * @return
+     */
+    List<PricePromotionProductRespVo> skuList(PricePromotionProductReqVo priceApplyPromotionReqVo);
 }

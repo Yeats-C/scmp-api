@@ -143,4 +143,10 @@ public class ContractReqVo {
     @ApiModelProperty("进货额")
     @Valid
     private List<ContractPurchaseVolumeReqVo> purchaseCount;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

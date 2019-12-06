@@ -126,7 +126,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String userName, String directSupervisorCode) {
+    public void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode){
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
         workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?purchase_order_code=" + formNo + "&" + workFlowBaseUrl.authority);
@@ -134,6 +134,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_PURCHASE.getNum());
         workFlowVO.setFormNo(formNo);
         workFlowVO.setTitle(userName);
+        workFlowVO.setPositionCode(positionCode);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);
         // 查询采购价格
@@ -189,7 +190,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 stockVo.setChangeNum(singleCount);
                 stockVo.setDocumentNum(product.getPurchaseOrderCode());
                 stockVo.setDocumentType(3);
-                stockVo.setTaxRate(product.getTaxRate().longValue());
+                stockVo.setTaxRate(product.getTaxRate());
                 stockVo.setCompanyName(order.getCompanyName());
                 stockVo.setCompanyCode(order.getCompanyCode());
                 list.add(stockVo);

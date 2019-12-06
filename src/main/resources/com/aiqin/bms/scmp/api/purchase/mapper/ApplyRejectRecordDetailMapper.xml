@@ -24,7 +24,7 @@
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
-    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
     <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="actual_count" jdbcType="INTEGER" property="actualCount" />
@@ -106,7 +106,7 @@
       #{item.productSpec,jdbcType=VARCHAR},
       #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR},
-      #{item.taxRate,jdbcType=INTEGER},
+      #{item.taxRate,jdbcType=DECIMAL},
       #{item.productAmount,jdbcType=DECIMAL},
       #{item.productTotalAmount,jdbcType=DECIMAL},
       #{item.actualCount,jdbcType=INTEGER},
@@ -165,7 +165,7 @@
       #{productType,jdbcType=BIT}, #{singleCount,jdbcType=INTEGER}, #{productCount,jdbcType=INTEGER}, 
       #{colorCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, 
       #{factorySkuCode,jdbcType=VARCHAR}, #{productSpec,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
-      #{unitCode,jdbcType=VARCHAR}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=DECIMAL},
+      #{unitCode,jdbcType=VARCHAR}, #{taxRate,jdbcType=DECIMAL}, #{productAmount,jdbcType=DECIMAL},
       #{productTotalAmount,jdbcType=DECIMAL}, #{actualCount,jdbcType=INTEGER}, #{actualAmount,jdbcType=DECIMAL},
       #{batchNo,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{batchCreateTime,jdbcType=TIMESTAMP}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
@@ -352,7 +352,7 @@
         #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
-        #{taxRate,jdbcType=INTEGER},
+        #{taxRate,jdbcType=DECIMAL},
       </if>
       <if test="productAmount != null">
         #{productAmount,jdbcType=DECIMAL},
@@ -462,7 +462,7 @@
         unit_code = #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
-        tax_rate = #{taxRate,jdbcType=INTEGER},
+        tax_rate = #{taxRate,jdbcType=DECIMAL},
       </if>
       <if test="productAmount != null">
         product_amount = #{productAmount,jdbcType=DECIMAL},
@@ -529,7 +529,7 @@
       product_spec = #{productSpec,jdbcType=VARCHAR},
       unit_name = #{unitName,jdbcType=VARCHAR},
       unit_code = #{unitCode,jdbcType=VARCHAR},
-      tax_rate = #{taxRate,jdbcType=INTEGER},
+      tax_rate = #{taxRate,jdbcType=DECIMAL},
       product_amount = #{productAmount,jdbcType=DECIMAL},
       product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
       actual_count = #{actualCount,jdbcType=INTEGER},

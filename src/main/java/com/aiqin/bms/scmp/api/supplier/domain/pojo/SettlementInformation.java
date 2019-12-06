@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("结算信息")
@@ -27,7 +28,7 @@ public class SettlementInformation extends CommonBean {
     private Long maxOrderAmount;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("所属供货单位名称")
     private String supplyCompanyName;
@@ -113,11 +114,11 @@ public class SettlementInformation extends CommonBean {
         this.maxOrderAmount = maxOrderAmount;
     }
 
-    public Long getMaxPaymentAmount() {
+    public BigDecimal getMaxPaymentAmount() {
         return maxPaymentAmount;
     }
 
-    public void setMaxPaymentAmount(Long maxPaymentAmount) {
+    public void setMaxPaymentAmount(BigDecimal maxPaymentAmount) {
         this.maxPaymentAmount = maxPaymentAmount;
     }
 

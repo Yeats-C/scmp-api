@@ -108,7 +108,7 @@ public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("厂商指导价")
     @JsonProperty("manufacturer_guide_price")
-    private Long manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("可用库存数量")
     @JsonProperty("available_num")
@@ -116,7 +116,7 @@ public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("库存成本")
     @JsonProperty("tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty("近一个月销售数量")
     @JsonProperty("sales_num_one_month")
@@ -124,15 +124,15 @@ public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("近一个月销售成本")
     @JsonProperty("sales_cost_one_month")
-    private Long salesCostOneMonth;
+    private BigDecimal salesCostOneMonth;
 
     @ApiModelProperty("近一个月分销销售金额")
     @JsonProperty("distribution_sales_money_one_month")
-    private Long distributionSalesMoneyOneMonth;
+    private BigDecimal distributionSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月分销毛利额")
     @JsonProperty("distribution_sales_maori_one_month")
-    private Long distributionSalesMaoriOneMonth;
+    private BigDecimal distributionSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月分销毛利率")
     @JsonProperty("distribution_sales_maori_one_month_rate")
@@ -140,11 +140,11 @@ public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("近一个月渠道销售金额")
     @JsonProperty("channel_sales_money_one_month")
-    private Long channelSalesMoneyOneMonth;
+    private BigDecimal channelSalesMoneyOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利额")
     @JsonProperty("channel_sales_maori_one_month")
-    private Long channelSalesMaoriOneMonth;
+    private BigDecimal channelSalesMaoriOneMonth;
 
     @ApiModelProperty("近一个月渠道毛利率")
     @JsonProperty("channel_sales_maori_one_month_rate")
@@ -188,7 +188,7 @@ public class GoodsBuySalesRespVo {
 
     @ApiModelProperty("库存成本合计")
     @JsonProperty("tax_costs")
-    private Long taxCosts;
+    private BigDecimal taxCosts;
 
     @ApiModelProperty("返回列名")
     @JsonProperty("column_list")

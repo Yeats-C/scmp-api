@@ -23,7 +23,7 @@ public class MonthlySalesRespVo {
 
     @ApiModelProperty("销售成本")
     @JsonProperty("sales_cost")
-    private String salesCost;
+    private BigDecimal salesCost;
 
     @ApiModelProperty("渠道编码")
     @JsonProperty("price_channel_code")
@@ -59,15 +59,15 @@ public class MonthlySalesRespVo {
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_order_amount")
-    private Long channelOrderAmount;
+    private BigDecimal channelOrderAmount;
 
     @ApiModelProperty("去年同期渠道销售额")
     @JsonProperty("channel_last_year_sales")
-    private Long channelLastYearSales;
+    private BigDecimal channelLastYearSales;
 
     @ApiModelProperty("上月渠道销售额")
     @JsonProperty("channel_last_month_sales")
-    private Long channelLastMonthSales;
+    private BigDecimal channelLastMonthSales;
 
     @ApiModelProperty("渠道同比")
     @JsonProperty("channel_compared_same")
@@ -79,15 +79,15 @@ public class MonthlySalesRespVo {
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_order_amount")
-    private Long distributionOrderAmount;
+    private BigDecimal distributionOrderAmount;
 
     @ApiModelProperty("分销去年同期销售额")
     @JsonProperty("distribution_last_year_sales")
-    private Long distributionLastYearSales;
+    private BigDecimal distributionLastYearSales;
 
     @ApiModelProperty("分销上月销售额")
     @JsonProperty("distribution_last_month_sales")
-    private Long distributionLastMonthSales;
+    private BigDecimal distributionLastMonthSales;
 
     @ApiModelProperty("分销同比")
     @JsonProperty("distribution_compared_same")

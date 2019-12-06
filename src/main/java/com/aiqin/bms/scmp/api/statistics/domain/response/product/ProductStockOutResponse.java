@@ -57,7 +57,7 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="全国缺货影响金额")
     @JsonProperty("sum_stockout_effect_amount")
-    private Long sumStockoutEffectAmount;
+    private BigDecimal sumStockoutEffectAmount;
 
     @ApiModelProperty(value="华北总sku数")
     @JsonProperty("hb_sku_num_total")
@@ -73,7 +73,7 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="华北缺货影响金额")
     @JsonProperty("hb_stockout_effect_amount")
-    private Long hbStockoutEffectAmount;
+    private BigDecimal hbStockoutEffectAmount;
 
     @ApiModelProperty(value="华东总sku数")
     @JsonProperty("hd_sku_num_total")
@@ -89,7 +89,7 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="华东缺货影响金额")
     @JsonProperty("hd_stockout_effect_amount")
-    private Long hdStockoutEffectAmount;
+    private BigDecimal hdStockoutEffectAmount;
 
     @ApiModelProperty(value="华南总sku数")
     @JsonProperty("hn_sku_num_total")
@@ -105,7 +105,7 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="华南缺货影响金额")
     @JsonProperty("hn_stockout_effect_amount")
-    private Long hnStockoutEffectAmount;
+    private BigDecimal hnStockoutEffectAmount;
 
     @ApiModelProperty(value="西南总sku数")
     @JsonProperty("xn_sku_num_total")
@@ -121,7 +121,7 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="西南缺货影响金额")
     @JsonProperty("xn_stockout_effect_amount")
-    private Long xnStockoutEffectAmount;
+    private BigDecimal xnStockoutEffectAmount;
 
     @ApiModelProperty(value="华中总sku数")
     @JsonProperty("hz_sku_num_total")
@@ -137,6 +137,6 @@ public class ProductStockOutResponse {
 
     @ApiModelProperty(value="华中缺货影响金额")
     @JsonProperty("hz_stockout_effect_amount")
-    private Long hzStockoutEffectAmount;
+    private BigDecimal hzStockoutEffectAmount;
 
 }

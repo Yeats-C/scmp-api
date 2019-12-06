@@ -648,7 +648,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //进行图片上传
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),code,formNo,ApprovalFileTypeEnum.GOODS_WARHOUSE.getType());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode(),reqVo.getApprovalName(),reqVo.getApprovalRemark());
+        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode(),reqVo.getApprovalName(),reqVo.getApprovalRemark(),reqVo.getPositionCode());
         return 1;
     }
 
@@ -700,8 +700,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     //把数据传输给审批流
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark) {
+    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         //流程编号
@@ -1409,7 +1410,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("含税金额不能为空");
         }else {
             try {
-                BigDecimal i = skuSupplierImport.getTaxIncludedPrice();
+                BigDecimal i =new BigDecimal(skuSupplierImport.getTaxIncludedPrice()) ;
                 ProductSkuCheckoutRespVo productSkuCheckout = productSkuCheckoutMap.get(skuSupplierImport.getProductSkuCode().trim());
                 if(null == productSkuCheckout){
                     errorList.add("该sku编码在库中找不到对应的进项税率");
@@ -1427,11 +1428,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("联营扣点(%)不能为空");
         }else {
             try {
-              Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getJointFranchiseRate());
-              if (i < 0 || i > 10000) {
+              BigDecimal  i = NumberConvertUtils.stringParseBigDecimal(skuSupplierImport.getJointFranchiseRate());
+              if (i.compareTo(BigDecimal.ZERO)==-1  || i.compareTo(new BigDecimal(100))== 1) {
                   errorList.add("联营扣点(%)应在0-100之间");
               }else {
-                  copy.setJointFranchiseRate(BigDecimal.valueOf(i));
+                  copy.setJointFranchiseRate(i);
               }
             } catch (Exception e) {
                 errorList.add("联营扣点(%)格式不正确");
@@ -1442,11 +1443,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("返点(%)不能为空");
         }else {
             try {
-                Long  i = NumberConvertUtils.stringParseLong(skuSupplierImport.getPoint());
-                if (i < 0 || i > 10000) {
+                BigDecimal  i = NumberConvertUtils.stringParseBigDecimal(skuSupplierImport.getPoint());
+                if (i.compareTo(BigDecimal.ZERO)==-1  || i.compareTo(new BigDecimal(100))== 1) {
                     errorList.add("联营扣点(%)应在0-100之间");
                 }else {
-                    copy.setPoint(BigDecimal.valueOf(i));
+                    copy.setPoint(i);
                 }
             } catch (Exception e) {
                 errorList.add("返点(%)格式不正确");

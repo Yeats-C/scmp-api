@@ -37,7 +37,7 @@ public class ProductSkuCheckoutDraft extends CommonBean {
     private BigDecimal inputTaxRate;
 
     @ApiModelProperty("积分系数")
-    @PropertyMsg("积分系数")
+    // @PropertyMsg("积分系数")
     private BigDecimal integralCoefficient;
 
     @ApiModelProperty(value = "返点", hidden = true)

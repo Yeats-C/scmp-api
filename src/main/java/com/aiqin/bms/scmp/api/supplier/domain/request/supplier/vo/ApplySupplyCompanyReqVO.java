@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo;
 
-import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import io.swagger.annotations.ApiModel;
@@ -12,10 +11,10 @@ import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
-
 @ApiModel("申请供应商信息")
 @Data
 public class ApplySupplyCompanyReqVO {
+
     @ApiModelProperty(value = "供应商code",notes = "进行数据修改时必须传的参数")
     private String applySupplyCode;
 
@@ -122,8 +121,6 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("供货单位账户")
     private ApplySupplyCompanyAcctReqVO applySupplyCompanyAccountReq;
 
-
-
     @ApiModelProperty("营业执照")
     private String businessLicense;
 
@@ -176,5 +173,10 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("审批附件")
     private List<ApprovalFileInfoReqVo> approvalFileInfos;
 
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 
 }

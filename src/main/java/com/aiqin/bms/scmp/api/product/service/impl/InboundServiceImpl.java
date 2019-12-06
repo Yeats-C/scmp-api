@@ -369,7 +369,7 @@ public class InboundServiceImpl implements InboundService {
             inboundWmsReqVO.setCreateByName(order.getCreateByName());
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
-            HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO).timeout(10000);
+            HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO).timeout(200000);
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
                 ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
@@ -475,7 +475,7 @@ public class InboundServiceImpl implements InboundService {
             inbound.setPraMainUnitNum(inbound.getPraMainUnitNum() + inboundProduct.getPraInboundMainNum());
             //实际含税总金额
             inbound.setPraTaxAmount(inbound.getPraTaxAmount().add(inboundProduct.getPraTaxAmount()));
-            BigDecimal amount = Calculate.computeNoTaxPrice(inboundProduct.getPraTaxAmount(),BigDecimal.valueOf(returnInboundProduct.getTax()));
+            BigDecimal amount = Calculate.computeNoTaxPrice(inboundProduct.getPraTaxAmount(), returnInboundProduct.getTax());
             inbound.setPraAmount(inbound.getPraAmount().add(amount));
             //实际税额
             inbound.setPraTax(inbound.getPraTaxAmount().subtract(inbound.getPraAmount()));

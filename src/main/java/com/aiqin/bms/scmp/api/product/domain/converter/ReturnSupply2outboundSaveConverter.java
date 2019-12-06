@@ -107,7 +107,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
 
                 List<String> skuCodes = reqMainVo.getRejectRecordDetails().stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
-                Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getInputTaxRate, (k1, k2) -> k2));
+                Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getInputTaxRate, (k1, k2) -> k2));
                 Map<String, PurchaseItemRespVo> map2 = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
                 List<RejectRecordDetail> items = reqMainVo.getRejectRecordDetails();
                 List<OutboundProductReqVo> parts = Lists.newArrayList();
@@ -116,7 +116,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 for (RejectRecordDetail item : items) {
                     OutboundProductReqVo outboundProduct = new OutboundProductReqVo();
                     //税率
-                    outboundProduct.setTax(item.getTaxRate().longValue());
+                    outboundProduct.setTax(item.getTaxRate());
                     //sku
                     outboundProduct.setSkuCode(item.getSkuCode());
                     outboundProduct.setSkuName(item.getSkuName());
@@ -144,8 +144,8 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setUpdateTime(new Date());
                     outboundProduct.setLinenum(item.getLinnum().longValue());
                     //计算不含税单价
-                    Long aLong = map.get(item.getSkuCode());
-                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), BigDecimal.valueOf(aLong));
+                    BigDecimal aLong = map.get(item.getSkuCode());
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), aLong);
                     outboundProduct.setOutboundBaseContent("1");
                     outboundProduct.setOutboundBaseUnit("1");
                     //计算不含税总价 (现在是主单位数量 * 单价）

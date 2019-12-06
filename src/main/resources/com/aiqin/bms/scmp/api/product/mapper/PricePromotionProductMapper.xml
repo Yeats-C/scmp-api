@@ -73,7 +73,61 @@
              business_id= #{businessId,jdbcType=BIGINT}
          </where>
     </select>
+    <resultMap id="skuListMap"
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.PricePromotionProductRespVo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sku_code" jdbcType="VARCHAR" property="productCode"/>
+        <result column="sku_name" jdbcType="VARCHAR" property="productName"/>
+        <result column="product_code" jdbcType="VARCHAR" property="spuCode"/>
+        <result column="product_name" jdbcType="VARCHAR" property="spuName"/>
+        <result column="product_category_name" jdbcType="VARCHAR" property="category"/>
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="sectionName"/>
+        <result column="product_brand_name" jdbcType="VARCHAR" property="brand"/>
+        <result column="product_property_name" jdbcType="INTEGER" property="attribute"/>
+        <result column="goods_gifts" jdbcType="INTEGER" property="skuType"/>
+        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
+        <result column="spec" jdbcType="INTEGER" property="spec"/>
+    </resultMap>
 
+    <select id="skuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo"
+            resultMap="skuListMap">
+   SELECT
+      a.*, c.spec
+    FROM
+      product_sku a
+      LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+      <where>
+      a.del_flag=0
+          <if test="productCode != null and productCode != ''">
+             and   a.sku_code like concat('%',#{productCode},'%')
+          </if>
+          <if test="productName != null and productName != ''">--
+              and   a.sku_name like concat('%',#{productName},'%')
+          </if>
+          <if test="spuCode != null and spuCode != ''">
+              and   a.product_code like concat('%',#{spuCode},'%')
+          </if>
+          <if test="spuName != null and spuName != ''">--
+              and   a.product_name like concat('%',#{spuName},'%')
+          </if>
+          <if test="sectionName != null and sectionName != ''">
+              and   a.procurement_section_name like concat('%',#{sectionName},'%')
+          </if>
+          <if test="brand != null and brand != ''">
+              and   a.product_brand_name like concat('%',#{brand},'%')
+          </if>
+          <if test="category != null and category != ''">--
+              and  a.product_category_code like concat('%',#{category},'%')
+          </if>
+          <if test="attribute != null and attribute != ''">
+              and a.product_property_name like concat('%',#{attribute},'%')
+          </if>
+           <if test="personId != null and personId != '' ">
+               and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+           </if>
+       </where>
+    </select>
 
 
     <delete id="deteleByBusinessId" parameterType="java.lang.Long">
