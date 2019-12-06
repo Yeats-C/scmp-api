@@ -184,4 +184,9 @@ public class ApplyContractReqVo{
     @ApiModelProperty("判断来源 0:非导入 1:导入, 如果从导入新增/修改 不进入审批流,审批状态待提交")
     private Byte source = 0;
 
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

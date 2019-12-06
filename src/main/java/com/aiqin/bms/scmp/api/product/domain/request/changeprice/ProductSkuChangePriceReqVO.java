@@ -111,4 +111,10 @@ public class ProductSkuChangePriceReqVO {
 
     @ApiModelProperty("区域信息")
     private List<ProductSkuChangePriceAreaInfoReqVO> areaList;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

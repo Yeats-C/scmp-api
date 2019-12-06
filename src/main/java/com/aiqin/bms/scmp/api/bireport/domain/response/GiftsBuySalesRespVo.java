@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -74,7 +75,7 @@ public class GiftsBuySalesRespVo {
 
     @ApiModelProperty("厂商指导价")
     @JsonProperty("manufacturer_guide_price")
-    private Integer manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
@@ -102,7 +103,7 @@ public class GiftsBuySalesRespVo {
 
     @ApiModelProperty("近一个月销售金额")
     @JsonProperty("sales_money_one_month")
-    private Long salesMoneyOneMonth;
+    private BigDecimal salesMoneyOneMonth;
 
     @ApiModelProperty("周转天数")
     @JsonProperty("turnover_days")

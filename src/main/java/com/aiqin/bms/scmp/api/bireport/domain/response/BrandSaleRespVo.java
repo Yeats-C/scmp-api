@@ -71,23 +71,23 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("当前销售(出库)成本")
     @JsonProperty("stock_cost")
-    private String stockCost;
+    private BigDecimal stockCost;
 
     @ApiModelProperty("当前渠道销售(出库)金额")
     @JsonProperty("channel_sale_amount")
-    private Long channelSaleAmount;
+    private BigDecimal channelSaleAmount;
 
     @ApiModelProperty("上月渠道销售(出库)金额")
     @JsonProperty("last_month_channel_amount_daily")
-    private Long lastMonthChannelAmountDaily;
+    private BigDecimal lastMonthChannelAmountDaily;
 
     @ApiModelProperty("当前渠道销售毛利额")
     @JsonProperty("channel_gross_margin")
-    private Long channelGrossMargin;
+    private BigDecimal channelGrossMargin;
 
     @ApiModelProperty("上月渠道销售毛利额")
     @JsonProperty("last_month_channel_gross_margin")
-    private Long lastMonthChannelGrossMargin;
+    private BigDecimal lastMonthChannelGrossMargin;
 
     @ApiModelProperty("渠道销售(出库)金额环比增长%")
     @JsonProperty("channel_sales_sequential_add")
@@ -99,19 +99,19 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("当前分销销售(出库)金额")
     @JsonProperty("distribution_amount_daily")
-    private Long distributionAmountDaily;
+    private BigDecimal distributionAmountDaily;
 
     @ApiModelProperty("上月分销销售(出库)金额")
     @JsonProperty("last_month_distribution_amount_daily")
-    private Long lastMonthDistributionAmountDaily;
+    private BigDecimal lastMonthDistributionAmountDaily;
 
     @ApiModelProperty("当前分销销售毛利额")
     @JsonProperty("distribution_amount")
-    private Long distributionAmount;
+    private BigDecimal distributionAmount;
 
     @ApiModelProperty("上月分销销售毛利额")
     @JsonProperty("last_month_distribution_amount")
-    private Long lastMonthDistributionAmount;
+    private BigDecimal lastMonthDistributionAmount;
 
     @ApiModelProperty("分销销售(出库)金额环比增长%")
     @JsonProperty("distribution_sales_sequential_add")
@@ -132,19 +132,19 @@ public class BrandSaleRespVo {
     // 下面 暂时 没用
     @ApiModelProperty("当期渠道销售金额合计")
     @JsonProperty("channel_current_sale_amounts")
-    private Long channelCurrentSaleAmounts;
+    private BigDecimal channelCurrentSaleAmounts;
 
     @ApiModelProperty("上期渠道销售金额合计")
     @JsonProperty("channel_previous_sales_amounts")
-    private Long channelPreviousSalesAmounts;
+    private BigDecimal channelPreviousSalesAmounts;
 
     @ApiModelProperty("当期渠道毛利额合计")
     @JsonProperty("channel_current_gross_margins")
-    private Long channelCurrentGrossMargins;
+    private BigDecimal channelCurrentGrossMargins;
 
     @ApiModelProperty("上期渠道毛利额合计")
     @JsonProperty("channel_previous_gross_margins")
-    private Long channelPreviousGrossMargins;
+    private BigDecimal channelPreviousGrossMargins;
 
     @ApiModelProperty("渠道销售额环比增长%合计")
     @JsonProperty("channel_sale_link_ratios")
@@ -156,19 +156,19 @@ public class BrandSaleRespVo {
 
     @ApiModelProperty("当期分销销售金额合计")
     @JsonProperty("distribution_current_sale_amounts")
-    private Long distributionCurrentSaleAmounts;
+    private BigDecimal distributionCurrentSaleAmounts;
 
     @ApiModelProperty("上期分销销售金额合计")
     @JsonProperty("distribution_previous_sales_amounts")
-    private Long distributionPreviousSalesAmounts;
+    private BigDecimal distributionPreviousSalesAmounts;
 
     @ApiModelProperty("当期分销毛利额合计")
     @JsonProperty("distribution_current_gross_margins")
-    private Long distributionCurrentGrossMargins;
+    private BigDecimal distributionCurrentGrossMargins;
 
     @ApiModelProperty("上期分销毛利额合计")
     @JsonProperty("distribution_previous_gross_margins")
-    private Long distributionPreviousGrossMargins;
+    private BigDecimal distributionPreviousGrossMargins;
 
     @ApiModelProperty("分销销售额环比增长%合计")
     @JsonProperty("distribution_sale_link_ratios")

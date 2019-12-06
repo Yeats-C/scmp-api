@@ -52,6 +52,10 @@ public class SaveReqVo<T> {
     @ApiModelProperty("附件信息")
     private List<ApprovalFileInfoReqVo> approvalFileInfos;
 
+    @ApiModelProperty("职位编码")
+    private String positionCode;
 
+    @ApiModelProperty("职位名称")
+    private String positionName;
 
 }

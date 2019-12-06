@@ -69,7 +69,7 @@ public class StatDeptStockout {
 
     @ApiModelProperty(value="缺货影响金额")
     @JsonProperty("stockout_effect_amount")
-    private Long stockoutEffectAmount;
+    private BigDecimal stockoutEffectAmount;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")

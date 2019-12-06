@@ -648,7 +648,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         //进行图片上传
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),code,formNo,ApprovalFileTypeEnum.GOODS_WARHOUSE.getType());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode(),reqVo.getApprovalName(),reqVo.getApprovalRemark());
+        workFlow(formNo, code, currentAuthToken.getPersonName(), reqVo.getDirectSupervisorCode(),reqVo.getApprovalName(),reqVo.getApprovalRemark(),reqVo.getPositionCode());
         return 1;
     }
 
@@ -700,8 +700,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     //把数据传输给审批流
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark) {
+    public void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuConfig + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         //流程编号

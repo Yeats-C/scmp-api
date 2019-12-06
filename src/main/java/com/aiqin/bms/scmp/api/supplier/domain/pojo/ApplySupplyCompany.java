@@ -179,4 +179,10 @@ public class ApplySupplyCompany extends CommonBean {
 
     @ApiModelProperty("审批备注")
     private String approvalRemark;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

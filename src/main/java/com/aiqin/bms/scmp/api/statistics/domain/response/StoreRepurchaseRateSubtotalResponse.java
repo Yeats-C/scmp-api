@@ -33,11 +33,11 @@ public class StoreRepurchaseRateSubtotalResponse {
 
     @ApiModelProperty(value="渠道销售金额小计")
     @JsonProperty("channel_sales_amount")
-    private Long channelSalesAmount;
+    private BigDecimal channelSalesAmount;
 
     @ApiModelProperty(value="分销销售金额小计")
     @JsonProperty("distribution_sales_amount")
-    private Long distributionSalesAmount;
+    private BigDecimal distributionSalesAmount;
 
     @ApiModelProperty(value="购物频次小计")
     @JsonProperty("shopping_frequency")

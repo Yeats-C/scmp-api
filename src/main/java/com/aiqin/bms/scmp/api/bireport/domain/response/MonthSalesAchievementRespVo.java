@@ -71,7 +71,7 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("渠道销售额")
     @JsonProperty("channel_amount")
-    private Long channelAmount;
+    private BigDecimal channelAmount;
 
     @ApiModelProperty("渠道预算额")
     @JsonProperty("channel_budget")
@@ -83,7 +83,7 @@ public class MonthSalesAchievementRespVo {
 
     @ApiModelProperty("分销销售额")
     @JsonProperty("distribution_amount")
-    private Long distributionlAmount;
+    private BigDecimal distributionlAmount;
 
     @ApiModelProperty("分销预算额")
     @JsonProperty("distribution_budget")
