@@ -452,7 +452,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     outputTaxRate = productSkuCheckoutDraft.getOutputTaxRate().divide(new BigDecimal(100), 4, BigDecimal.ROUND_DOWN);
                 }
                     //供应商信息
-                    if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
+                    if (!flag && CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
                         List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = addSkuInfoReqVO.getProductSkuSupplyUnitDrafts();
                         //获取采购价格项目
                         QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
