@@ -998,15 +998,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         long in = 0L;
         long de = 0L;
         for (PriceMeasurementReqVO priceMeasurementReqVO : req) {
-            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO) .compareTo(Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==1) {
                 in++;
             }
-            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(0L)) {
+            if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO) .compareTo( Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==-1) {
                 de++;
             }
         }
-        long deAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) < Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
-        long inAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) > Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(0L)).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() * Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(0L) * Optional.ofNullable(o.getPrice()).orElse(0L)).sum();
+        long deAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO)
+                .compareTo(Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==-1).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() .multiply(Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO) .multiply(Optional.ofNullable(o.getPrice()).orElse(BigDecimal.ZERO)) ).longValue()).sum();
+        long inAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO).compareTo(Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==1).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() .multiply(Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO).multiply(Optional.ofNullable(o.getPrice()).orElse(BigDecimal.ZERO)) ).longValue()).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
         respVO.setDecreaseGrossProfit(deAmount);
