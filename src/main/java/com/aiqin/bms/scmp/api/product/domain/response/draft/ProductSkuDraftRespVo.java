@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -83,29 +84,29 @@ public class ProductSkuDraftRespVo {
     @ApiModelProperty("结算方式")
     private String settlementMethodName;
     @ApiModelProperty("厂商指导价")
-    private Integer manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
     @ApiModelProperty("含税采购价")
-    private Integer taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
     @ApiModelProperty("爱亲渠道价")
-    private Integer aiqinDistributionPrice;
+    private BigDecimal aiqinDistributionPrice;
     @ApiModelProperty("萌贝树渠道价")
-    private Integer mengbeishuDistributionPrice;
+    private BigDecimal mengbeishuDistributionPrice;
     @ApiModelProperty("小红马渠道价")
-    private Integer xiaohongmaDistributionPrice;
+    private BigDecimal xiaohongmaDistributionPrice;
     @ApiModelProperty("爱亲分销价")
-    private Integer aiqinChannelPrice;
+    private BigDecimal aiqinChannelPrice;
     @ApiModelProperty("萌贝树分销价")
-    private Integer mengbeishuChannelPrice;
+    private BigDecimal mengbeishuChannelPrice;
     @ApiModelProperty("小红马分销价")
-    private Integer xiaohongmaChannelPrice;
+    private BigDecimal xiaohongmaChannelPrice;
     @ApiModelProperty("售价")
-    private Integer salePrice;
+    private BigDecimal salePrice;
     @ApiModelProperty("会员价")
-    private Integer memberPrice;
+    private BigDecimal memberPrice;
     @ApiModelProperty("进项税率")
-    private Integer outputTaxRate;
+    private BigDecimal outputTaxRate;
     @ApiModelProperty("销项税率")
-    private Integer inputTaxRate;
+    private BigDecimal inputTaxRate;
     @ApiModelProperty("颜色")
     private String colorName;
     @ApiModelProperty("型号")
