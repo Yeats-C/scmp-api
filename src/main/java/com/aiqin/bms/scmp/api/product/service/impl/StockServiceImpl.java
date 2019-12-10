@@ -2184,9 +2184,13 @@ public class StockServiceImpl implements StockService {
                     // 主仓库存大于等于锁库数量，不需要分库锁
                     stockTemp = new StockVoRequest();
                     stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
+                    stockTemp.setWarehouseName(centerList.get(0).getWarehouseName());
                     stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
+                    stockTemp.setTransportCenterName(centerList.get(0).getTransportCenterName());
                     stockTemp.setSkuCode(sku.getSkuCode());
+                    stockTemp.setSkuName(sku.getSkuName());
                     stockTemp.setCompanyCode(vo.getCompanyCode());
+                    stockTemp.setCompanyName(vo.getCompanyCode());
                     stockTemp.setChangeNum(sku.getNum());
                     stockVoRequests.add(stockTemp);
                 }else {
@@ -2212,30 +2216,6 @@ public class StockServiceImpl implements StockService {
         HttpResponse httpResponse = changeStock(lock);
         if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
             return HttpResponse.failure(ResultCode.ERP_LOCK_FAIL);
-        }
-        return HttpResponse.success();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse unlockErpStock(List<StockFlowRequest> requests){
-        if(CollectionUtils.isEmpty(requests)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        for(StockFlowRequest request:requests) {
-            Stock stock = stockFlowDao.selectOneStockInfoByStockFlow(request);
-            if (null == stock) {
-                LOGGER.info("未查询到锁库流水：" +  request.getSkuCode());
-                return HttpResponse.failure(ResultCode.STOCK_UNLOCK_ERROR);
-            }
-            StockFlow stockFlow = new StockFlow();
-            BeanCopyUtils.copy(request, stockFlow);
-            long id = IdSequenceUtils.getInstance().nextId();
-            stockFlow.setBeforeLockNum(stock.getLockNum());
-            stockFlow.setAfterLockNum(stock.getLockNum() - request.getChangeNum());
-            stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
-            stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
-
         }
         return HttpResponse.success();
     }

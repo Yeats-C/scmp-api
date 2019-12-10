@@ -25,6 +25,10 @@ public class MerchantLockStockItemReqVo implements Serializable {
     @JsonProperty("sku_code")
     private String skuCode;
 
+    @ApiModelProperty("sku名称")
+    @JsonProperty("sku_name")
+    private String skuName;
+
     @ApiModelProperty("数量")
     private Long num;
 
