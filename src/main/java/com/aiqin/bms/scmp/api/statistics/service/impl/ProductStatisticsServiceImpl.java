@@ -152,84 +152,86 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 sumChannelSalesAmount += channelSalesAmount;
                 sumDistributionsalesAmount += distributionsalesAmount;
                 Long newSkuNum = iniStockSkuNum + midPurchaseSkuNum;
-                if(mov.getTransportCenterCode().equals(Global.HB_CODE)){
-                    response.setHbIniStockSkuNum(iniStockSkuNum);
-                    response.setHbIniStockSkuCost(iniStockSkuCost);
-                    response.setHbMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHbMidSalesSkuNum(midSalesSkuNum);
-                    response.setHbChannelSalesAmount(channelSalesAmount);
-                    response.setHbDistributionsalesAmount(distributionsalesAmount);
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHbNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHbNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                if(StringUtils.isNotBlank(mov.getTransportCenterCode())) {
+                    if (mov.getTransportCenterCode().equals(Global.HB_CODE)) {
+                        response.setHbIniStockSkuNum(iniStockSkuNum);
+                        response.setHbIniStockSkuCost(iniStockSkuCost);
+                        response.setHbMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHbMidSalesSkuNum(midSalesSkuNum);
+                        response.setHbChannelSalesAmount(channelSalesAmount);
+                        response.setHbDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num || newSkuNum == num) {
+                            response.setHbNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHbNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HD_CODE)){
-                    response.setHdIniStockSkuNum(iniStockSkuNum);
-                    response.setHdIniStockSkuCost(iniStockSkuCost);
-                    response.setHdMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHdMidSalesSkuNum(midSalesSkuNum);
-                    response.setHdChannelSalesAmount(channelSalesAmount);
-                    response.setHdDistributionsalesAmount(distributionsalesAmount);
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHdNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHdNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HD_CODE)) {
+                        response.setHdIniStockSkuNum(iniStockSkuNum);
+                        response.setHdIniStockSkuCost(iniStockSkuCost);
+                        response.setHdMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHdMidSalesSkuNum(midSalesSkuNum);
+                        response.setHdChannelSalesAmount(channelSalesAmount);
+                        response.setHdDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num || newSkuNum == num) {
+                            response.setHdNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHdNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HN_CODE)){
-                    response.setHnIniStockSkuNum(iniStockSkuNum);
-                    response.setHnIniStockSkuCost(iniStockSkuCost);
-                    response.setHnMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHnMidSalesSkuNum(midSalesSkuNum);
-                    response.setHnChannelSalesAmount(channelSalesAmount);
-                    response.setHnDistributionsalesAmount(distributionsalesAmount);
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHnNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHnNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HN_CODE)) {
+                        response.setHnIniStockSkuNum(iniStockSkuNum);
+                        response.setHnIniStockSkuCost(iniStockSkuCost);
+                        response.setHnMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHnMidSalesSkuNum(midSalesSkuNum);
+                        response.setHnChannelSalesAmount(channelSalesAmount);
+                        response.setHnDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num || newSkuNum == num) {
+                            response.setHnNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHnNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.XN_CODE)){
-                    response.setXnIniStockSkuNum(iniStockSkuNum);
-                    response.setXnIniStockSkuCost(iniStockSkuCost);
-                    response.setXnMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setXnMidSalesSkuNum(midSalesSkuNum);
-                    response.setXnChannelSalesAmount(channelSalesAmount);
-                    response.setXnDistributionsalesAmount(distributionsalesAmount);
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setXnNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setXnNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.XN_CODE)) {
+                        response.setXnIniStockSkuNum(iniStockSkuNum);
+                        response.setXnIniStockSkuCost(iniStockSkuCost);
+                        response.setXnMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setXnMidSalesSkuNum(midSalesSkuNum);
+                        response.setXnChannelSalesAmount(channelSalesAmount);
+                        response.setXnDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num || newSkuNum == num) {
+                            response.setXnNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setXnNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HZ_CODE)){
-                    response.setHzIniStockSkuNum(iniStockSkuNum);
-                    response.setHzIniStockSkuCost(iniStockSkuCost);
-                    response.setHzMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHzMidSalesSkuNum(midSalesSkuNum);
-                    response.setHzChannelSalesAmount(channelSalesAmount);
-                    response.setHzDistributionsalesAmount(distributionsalesAmount);
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHzNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHzNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HZ_CODE)) {
+                        response.setHzIniStockSkuNum(iniStockSkuNum);
+                        response.setHzIniStockSkuCost(iniStockSkuCost);
+                        response.setHzMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHzMidSalesSkuNum(midSalesSkuNum);
+                        response.setHzChannelSalesAmount(channelSalesAmount);
+                        response.setHzDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num || newSkuNum == num) {
+                            response.setHzNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHzNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
                     }
                 }
