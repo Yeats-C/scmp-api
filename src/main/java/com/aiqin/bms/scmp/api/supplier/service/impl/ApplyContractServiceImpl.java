@@ -767,6 +767,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
          ApplyContractDTO applyContractDTO = applyContractDao.selectByPrimaryKey(id);
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
+//            workFlowVO.setPositionCode(positionCode);
             workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?applyType="+applyContractDTO.getApplyType()+"&applyCode="+applyContractDTO.getApplyContractCode()+"&id="+applyContractDTO.getId()+"&itemCode=4"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo("HT"+IdSequenceUtils.getInstance().nextId());

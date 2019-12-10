@@ -59,11 +59,11 @@ public class StoreRepurchaseRateRespVo {
 
     @ApiModelProperty("渠道销售金额")
     @JsonProperty("channel_order_amount")
-    private Long channelOrderAmount;
+    private BigDecimal channelOrderAmount;
 
     @ApiModelProperty("分销销售金额")
     @JsonProperty("distribution_order_amount")
-    private Long distributionOrderAmount;
+    private BigDecimal distributionOrderAmount;
 
     @ApiModelProperty("购物频次")
     @JsonProperty("shopping_frequency")

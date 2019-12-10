@@ -114,17 +114,17 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                         saleRequest.setProductSortCode(dept.getProductSortCode());
                         deptResponse = this.deptSale(saleRequest, i);
                         if(deptResponse != null){
-                            if(sumResponse.getChannelSalesAmount() == 0){
+                            if(sumResponse.getChannelSalesAmount().longValue() == 0){
                                 deptResponse.setChanneRate(new BigDecimal(0));
                             }else{
-                                deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
-                                        divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                deptResponse.setChanneRate(deptResponse.getChannelSalesAmount().
+                                        divide(sumResponse.getChannelSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                             }
-                            if(sumResponse.getDistributionSalesAmount() == 0){
+                            if(sumResponse.getDistributionSalesAmount().longValue() == 0){
                                 deptResponse.setDistributionRate(new BigDecimal(0));
                             }else{
-                                deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
-                                        divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                deptResponse.setDistributionRate(deptResponse.getDistributionSalesAmount().
+                                        divide(sumResponse.getDistributionSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                             }
                         }
                         deptList.add(deptResponse);
@@ -192,17 +192,17 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                     BeanUtils.copyProperties(companyResponse, saleResponse);
                     SaleResponse rate = this.saleRate(saleResponse, 0);
                     BeanUtils.copyProperties(rate, companyResponse);
-                    if(deptResponse.getChannelSalesAmount() == 0){
+                    if(deptResponse.getChannelSalesAmount().longValue() == 0){
                         companyResponse.setChanneRate(new BigDecimal(0));
                     }else {
-                        companyResponse.setChanneRate(new BigDecimal(companyResponse.getChannelSalesAmount()).
-                                divide(new BigDecimal(deptResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        companyResponse.setChanneRate(companyResponse.getChannelSalesAmount().
+                                divide(deptResponse.getChannelSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                     }
-                    if(deptResponse.getDistributionSalesAmount() == 0){
+                    if(deptResponse.getDistributionSalesAmount().longValue() == 0){
                         companyResponse.setDistributionRate(new BigDecimal(0));
                     }else {
-                        companyResponse.setDistributionRate(new BigDecimal(companyResponse.getDistributionSalesAmount()).
-                                divide(new BigDecimal(deptResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        companyResponse.setDistributionRate(companyResponse.getDistributionSalesAmount().
+                                divide(deptResponse.getDistributionSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     companyList.add(companyResponse);
                 }
@@ -222,28 +222,28 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 BeanUtils.copyProperties(sale, saleResponse);
                 SaleResponse rate = this.saleRate(saleResponse, 0);
                 BeanUtils.copyProperties(rate, sale);
-                if(companyResponse.getChannelSalesAmount() == 0){
+                if(companyResponse.getChannelSalesAmount().longValue() == 0){
                     sale.setChanneRate(new BigDecimal(0));
                 }else {
-                    if(companyResponse.getChannelSalesAmount() == 0){
+                    if(companyResponse.getChannelSalesAmount().longValue() == 0){
                         sale.setChanneRate(new BigDecimal(0));
                     }else {
-                        if(companyResponse.getChannelSalesAmount() == 0){
+                        if(companyResponse.getChannelSalesAmount().longValue() == 0){
                             sale.setChanneRate(new BigDecimal(0));
                         }else{
-                            sale.setChanneRate(new BigDecimal(sale.getChannelSalesAmount()).
-                                    divide(new BigDecimal(companyResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                            sale.setChanneRate(sale.getChannelSalesAmount().
+                                    divide(companyResponse.getChannelSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                         }
                     }
                 }
-                if(companyResponse.getDistributionSalesAmount() == 0){
+                if(companyResponse.getDistributionSalesAmount().longValue() == 0){
                     sale.setDistributionRate(new BigDecimal(0));
                 }else {
-                    if(companyResponse.getDistributionSalesAmount() == 0){
+                    if(companyResponse.getDistributionSalesAmount().longValue() == 0){
                         sale.setDistributionRate(new BigDecimal(0));
                     }else{
-                        sale.setDistributionRate(new BigDecimal(sale.getDistributionSalesAmount()).
-                                divide(new BigDecimal(companyResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        sale.setDistributionRate(sale.getDistributionSalesAmount().
+                                divide(companyResponse.getDistributionSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                     }
                 }
             }
@@ -255,8 +255,8 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             BigDecimal big = new BigDecimal(0);
             // 计算渠道销售金额的同比
             Long amount = 0L;
-            Long channelSalesAmount = sale.getChannelSalesAmount() == null ? amount : sale.getChannelSalesAmount();
-            Long channelAmountLastYear = sale.getChannelAmountLastYear() == null ? amount : sale.getChannelAmountLastYear();
+            Long channelSalesAmount = sale.getChannelSalesAmount() == null ? amount : sale.getChannelSalesAmount().longValue();
+            Long channelAmountLastYear = sale.getChannelAmountLastYear() == null ? amount : sale.getChannelAmountLastYear().longValue();
             if(channelSalesAmount == amount || channelAmountLastYear == amount){
                 sale.setChannelSalesAmountYearonyear(big);
             }else {
@@ -268,7 +268,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算渠道销售金额的环比
-            Long channelAmountLastMonth = sale.getChannelAmountLastMonth() == null ? amount : sale.getChannelAmountLastMonth();
+            Long channelAmountLastMonth = sale.getChannelAmountLastMonth() == null ? amount : sale.getChannelAmountLastMonth().longValue();
             if(channelSalesAmount == amount || channelAmountLastMonth == amount){
                 sale.setChannelSalesAmountLinkRela(big);
             }else {
@@ -280,7 +280,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算渠道毛利率
-            Long channelSalesCost = sale.getChannelSalesCost() == null ? amount : sale.getChannelSalesCost();
+            Long channelSalesCost = sale.getChannelSalesCost() == null ? amount : sale.getChannelSalesCost().longValue();
             if(channelSalesCost == amount || channelSalesAmount == amount){
                 sale.setChannelMarginRate(big);
             }else {
@@ -293,8 +293,8 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
 
             // 计算渠道毛利同比
-            Long channelMargin = sale.getChannelMargin() == null ? amount : sale.getChannelMargin();
-            Long channelMarginLastYear = sale.getChannelMarginLastYear() == null ? amount : sale.getChannelMarginLastYear();
+            Long channelMargin = sale.getChannelMargin() == null ? amount : sale.getChannelMargin().longValue();
+            Long channelMarginLastYear = sale.getChannelMarginLastYear() == null ? amount : sale.getChannelMarginLastYear().longValue();
             if(channelMargin == amount || channelMarginLastYear == amount){
                 sale.setChannelMarginYearonyear(big);
             }else {
@@ -306,7 +306,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算渠道毛利环比
-            Long channelMarginLastMonth  = sale.getChannelMarginLastMonth() == null ? amount : sale.getChannelMarginLastMonth();
+            Long channelMarginLastMonth  = sale.getChannelMarginLastMonth() == null ? amount : sale.getChannelMarginLastMonth().longValue();
             if(channelMargin == amount || channelMarginLastMonth == amount){
                 sale.setChannelMarginLinkRela(big);
             }else {
@@ -319,8 +319,8 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
 
             // 计算分销销售额同比
-            Long distributionSalesAmount = sale.getDistributionSalesAmount() == null ? amount : sale.getDistributionSalesAmount();
-            Long distributionAmountLastYear = sale.getDistributionAmountLastYear() == null ? amount : sale.getDistributionAmountLastYear();
+            Long distributionSalesAmount = sale.getDistributionSalesAmount() == null ? amount : sale.getDistributionSalesAmount().longValue();
+            Long distributionAmountLastYear = sale.getDistributionAmountLastYear() == null ? amount : sale.getDistributionAmountLastYear().longValue();
             if(distributionSalesAmount == amount || distributionAmountLastYear == amount){
                 sale.setDistributionSalesAmountYearonyear(big);
             }else {
@@ -332,7 +332,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算分销销售额环比
-            Long distributionAmountLastMonth = sale.getDistributionAmountLastMonth() == null ? amount : sale.getDistributionAmountLastMonth();
+            Long distributionAmountLastMonth = sale.getDistributionAmountLastMonth() == null ? amount : sale.getDistributionAmountLastMonth().longValue();
             if(distributionSalesAmount == amount || distributionAmountLastMonth == amount){
                 sale.setDistributionSalesAmountLinkRela(big);
             }else {
@@ -344,7 +344,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算分销毛利额
-            Long distributionSalesCost = sale.getDistributionSalesCost() == null ? amount : sale.getDistributionSalesCost();
+            Long distributionSalesCost = sale.getDistributionSalesCost() == null ? amount : sale.getDistributionSalesCost().longValue();
             if(distributionSalesCost == amount || distributionSalesAmount == amount){
                 sale.setDistributionMarginRate(big);
             }else {
@@ -356,8 +356,8 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算分销毛利额同比
-            Long distributionMargin = sale.getDistributionMargin() == null ? amount : sale.getDistributionMargin();
-            Long distributionMarginLastYear = sale.getDistributionMarginLastYear() == null ? amount : sale.getDistributionMarginLastYear();
+            Long distributionMargin = sale.getDistributionMargin() == null ? amount : sale.getDistributionMargin().longValue();
+            Long distributionMarginLastYear = sale.getDistributionMarginLastYear() == null ? amount : sale.getDistributionMarginLastYear().longValue();
             if(distributionMargin == amount || distributionMarginLastYear == amount){
                 sale.setDistributionMarginYearonyear(big);
             }else {
@@ -369,7 +369,7 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                 }
             }
             // 计算分销毛利额同比
-            Long distributionMarginLastMonth = sale.getDistributionMarginLastMonth() == null ? amount : sale.getDistributionMarginLastMonth();
+            Long distributionMarginLastMonth = sale.getDistributionMarginLastMonth() == null ? amount : sale.getDistributionMarginLastMonth().longValue();
             if(distributionMargin == amount || distributionMarginLastMonth == amount){
                 sale.setDistributionMarginLinkRela(big);
             }else {
@@ -382,8 +382,8 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
             }
             if(i == 1){
                 // 计算渠道的达成率
-                Long channelBudget = sale.getChannelBudget() == null ? amount : sale.getChannelBudget();
-                Long distributionBudget = sale.getDistributionBudget() == null ? amount : sale.getDistributionBudget();
+                Long channelBudget = sale.getChannelBudget() == null ? amount : sale.getChannelBudget().longValue();
+                Long distributionBudget = sale.getDistributionBudget() == null ? amount : sale.getDistributionBudget().longValue();
                 if(channelSalesAmount == amount || channelBudget == amount){
                     sale.setChannelAchievement(big);
                 }else {
@@ -452,17 +452,17 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                         saleRequest.setProductSortCode(dept.getProductSortCode());
                         deptResponse = this.deptSale(saleRequest, 3);
                         if(deptResponse != null){
-                            if(sumResponse.getChannelSalesAmount() == 0){
+                            if(sumResponse.getChannelSalesAmount().longValue() == 0){
                                 deptResponse.setChanneRate(new BigDecimal(0));
                             }else {
-                                deptResponse.setChanneRate(new BigDecimal(deptResponse.getChannelSalesAmount()).
-                                        divide(new BigDecimal(sumResponse.getChannelSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                deptResponse.setChanneRate(deptResponse.getChannelSalesAmount().
+                                        divide(sumResponse.getChannelSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                             }
-                            if(sumResponse.getDistributionSalesAmount() == 0){
+                            if(sumResponse.getDistributionSalesAmount().longValue() == 0){
                                 deptResponse.setDistributionRate(new BigDecimal(0));
                             }else {
-                                deptResponse.setDistributionRate(new BigDecimal(deptResponse.getDistributionSalesAmount()).
-                                        divide(new BigDecimal(sumResponse.getDistributionSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                deptResponse.setDistributionRate(deptResponse.getDistributionSalesAmount().
+                                        divide(sumResponse.getDistributionSalesAmount(), 4, BigDecimal.ROUND_HALF_UP));
                             }
                         }
                         deptList.add(deptResponse);
@@ -519,18 +519,18 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                     saleRequest.setPriceChannelCode(null);
                     saleRequest.setStoreTypeCode(null);
                     deptSum = this.deptCategory(saleRequest);
-                    if(sum.getCurrSalesAmount() == 0){
+                    if(sum.getCurrSalesAmount().longValue() == 0){
                         deptSum.setRate(new BigDecimal(0));
                     }else {
-                        deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount()).
-                                divide(new BigDecimal(sum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        deptSum.setRate(new BigDecimal(deptSum.getCurrSalesAmount().longValue()).
+                                divide(new BigDecimal(sum.getCurrSalesAmount().longValue()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     deptList.add(deptSum);
                 }
             }
             sum.setCategoryList(deptList);
-            sum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(sum.getCurrSalesAmount(), sum.getPreSalesAmount()));
-            sum.setMarginLinkRelaGrowthRate(this.categoryRatio(sum.getCurrMargin(), sum.getPreMargin()));
+            sum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(sum.getCurrSalesAmount().longValue(), sum.getPreSalesAmount().longValue()));
+            sum.setMarginLinkRelaGrowthRate(this.categoryRatio(sum.getCurrMargin().longValue(), sum.getPreMargin().longValue()));
             sum.setRate(new BigDecimal(1));
         }
         return sum;
@@ -554,31 +554,31 @@ public class SalesStatisticsServiceImpl implements SalesStatisticsService {
                     categoryList = statDeptCategorySalesDao.categoryList(saleRequest);
                     if (CollectionUtils.isNotEmptyCollection(categoryList)) {
                         for (CategoryResponse category : categoryList) {
-                            category.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(category.getCurrSalesAmount(), category.getPreSalesAmount()));
-                            category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin(), category.getPreMargin()));
-                            if(companySum.getCurrSalesAmount() == 0){
+                            category.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(category.getCurrSalesAmount().longValue(), category.getPreSalesAmount().longValue()));
+                            category.setMarginLinkRelaGrowthRate(this.categoryRatio(category.getCurrMargin().longValue(), category.getPreMargin().longValue()));
+                            if(companySum.getCurrSalesAmount().longValue() == 0){
                                 category.setRate(new BigDecimal(0));
                             }else {
-                                category.setRate(new BigDecimal(category.getCurrSalesAmount()).
-                                        divide(new BigDecimal(companySum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                                category.setRate(new BigDecimal(category.getCurrSalesAmount().longValue()).
+                                        divide(new BigDecimal(companySum.getCurrSalesAmount().longValue()), 4, BigDecimal.ROUND_HALF_UP));
                             }
                         }
                     }
                     companySum.setCategoryList(categoryList);
-                    companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount(), companySum.getPreSalesAmount()));
-                    companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin(), companySum.getPreMargin()));
-                    if(deptSum.getCurrSalesAmount() == 0){
+                    companySum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrSalesAmount().longValue(), companySum.getPreSalesAmount().longValue()));
+                    companySum.setMarginLinkRelaGrowthRate(this.categoryRatio(companySum.getCurrMargin().longValue(), companySum.getPreMargin().longValue()));
+                    if(deptSum.getCurrSalesAmount().longValue() == 0){
                         companySum.setRate(new BigDecimal(0));
                     }else {
-                        companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount()).
-                                divide(new BigDecimal(deptSum.getCurrSalesAmount()), 4, BigDecimal.ROUND_HALF_UP));
+                        companySum.setRate(new BigDecimal(companySum.getCurrSalesAmount().longValue()).
+                                divide(new BigDecimal(deptSum.getCurrSalesAmount().longValue()), 4, BigDecimal.ROUND_HALF_UP));
                     }
                     companyList.add(companySum);
                 }
             }
             deptSum.setCategoryList(companyList);
-            deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount(), deptSum.getPreSalesAmount()));
-            deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin(), deptSum.getPreMargin()));
+            deptSum.setSalesAmountLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrSalesAmount().longValue(), deptSum.getPreSalesAmount().longValue()));
+            deptSum.setMarginLinkRelaGrowthRate(this.categoryRatio(deptSum.getCurrMargin().longValue(), deptSum.getPreMargin().longValue()));
         }
         return deptSum;
     }

@@ -76,6 +76,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setRemark(null);
         paramVO.setFormUrl(vo.getFormUrl());
         paramVO.setFormUpdateUrl(vo.getUpdateUrl());
+//        paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
         paramVO.setReceiptType(2); // 2代表供应链
         paramVO.setSignTicket(IdUtil.uuid());

@@ -56,19 +56,19 @@ public class CategoryResponse {
 
     @ApiModelProperty(value="当前销售额")
     @JsonProperty("curr_sales_amount")
-    private Long currSalesAmount;
+    private BigDecimal currSalesAmount;
 
     @ApiModelProperty(value="上期销售额")
     @JsonProperty("pre_sales_amount")
-    private Long preSalesAmount;
+    private BigDecimal preSalesAmount;
 
     @ApiModelProperty(value="当前毛利")
     @JsonProperty("curr_margin")
-    private Long currMargin;
+    private BigDecimal currMargin;
 
     @ApiModelProperty(value="上期毛利")
     @JsonProperty("pre_margin")
-    private Long preMargin;
+    private BigDecimal preMargin;
 
     @ApiModelProperty(value="销售额环比增长率")
     @JsonProperty("sales_amount_link_rela_growth_rate")

@@ -112,6 +112,8 @@
         ddcpsa.product_property_code as productPropertyCode,
         ddcpsa.product_property_name as productPropertyName,
         sum(ddcpsa.channel_costs) as channelCosts,
+        sum(ddcpsa.channel_costs_yearonyear) as channelCostsYearonyear,
+        sum(ddcpsa.channel_costs_link_relative) as channelCostsLinkRelative,
         sum(ddcpsa.channel_sales_amount) as channelSalesAmount,
         sum(ddcpsa.channel_sales_yearonyear) as channelSalesYearonyear,
         sum(ddcpsa.channel_sales_link_relative) as channelSalesLinkRelative,

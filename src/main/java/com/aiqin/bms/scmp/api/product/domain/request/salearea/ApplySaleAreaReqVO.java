@@ -38,4 +38,10 @@ public class ApplySaleAreaReqVO {
     @ApiModelProperty("需要提交申请的编码集合")
     @NotEmpty(message = "编码不能为空！")
     List<String> areaCodes;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

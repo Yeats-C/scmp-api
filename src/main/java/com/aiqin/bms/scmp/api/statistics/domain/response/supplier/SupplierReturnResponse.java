@@ -40,7 +40,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="全国退货金额")
     @JsonProperty("sum_amt")
-    private Long sumAmt;
+    private BigDecimal sumAmt;
 
     @ApiModelProperty(value="全国退货率")
     @JsonProperty("sum_return_rate")
@@ -52,7 +52,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="华北退货金额")
     @JsonProperty("hb_amt")
-    private Long hbAmt;
+    private BigDecimal hbAmt;
 
     @ApiModelProperty(value="华北退货率")
     @JsonProperty("hb_return_rate")
@@ -64,7 +64,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="华东退货金额")
     @JsonProperty("hd_amt")
-    private Long hdAmt;
+    private BigDecimal hdAmt;
 
     @ApiModelProperty(value="华东退货率")
     @JsonProperty("hd_return_rate")
@@ -76,7 +76,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="华南退货金额")
     @JsonProperty("hn_amt")
-    private Long hnAmt;
+    private BigDecimal hnAmt;
 
     @ApiModelProperty(value="华南退货率")
     @JsonProperty("hn_return_rate")
@@ -88,7 +88,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="西南退货金额")
     @JsonProperty("xn_amt")
-    private Long xnAmt;
+    private BigDecimal xnAmt;
 
     @ApiModelProperty(value="西南退货率")
     @JsonProperty("xn_return_rate")
@@ -100,7 +100,7 @@ public class SupplierReturnResponse {
 
     @ApiModelProperty(value="华中退货金额")
     @JsonProperty("hz_amt")
-    private Long hzAmt;
+    private BigDecimal hzAmt;
 
     @ApiModelProperty(value="华中退货率")
     @JsonProperty("hz_return_rate")

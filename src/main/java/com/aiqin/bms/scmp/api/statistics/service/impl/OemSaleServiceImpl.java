@@ -220,8 +220,8 @@ public class OemSaleServiceImpl implements OemSaleService {
                 response.setSalesNumWow(new BigDecimal(salesNum).divide(new BigDecimal(preSalesNum), 4, BigDecimal.ROUND_HALF_UP).subtract(subtract));
             }
             // 含税销售金额
-            Long salesAmount = response.getSalesAmount() == null ? num : response.getSalesAmount();
-            Long preSalesAmount = response.getPreSalesAmount() == null ? num : response.getPreSalesAmount();
+            Long salesAmount = response.getSalesAmount() == null ? num : response.getSalesAmount().longValue();
+            Long preSalesAmount = response.getPreSalesAmount() == null ? num : response.getPreSalesAmount().longValue();
             response.setSalesAmountVs(new BigDecimal(salesAmount).subtract(new BigDecimal(preSalesAmount)));
             if(salesAmount == num || preSalesAmount == num){
                 response.setSalesAmountWow(big);
@@ -229,8 +229,8 @@ public class OemSaleServiceImpl implements OemSaleService {
                 response.setSalesAmountWow(new BigDecimal(salesAmount).divide(new BigDecimal(preSalesAmount), 4, BigDecimal.ROUND_HALF_UP).subtract(subtract));
             }
             // 分类销售占比
-            Long comSalesAmount = response.getComSalesAmount() == null ? num : response.getComSalesAmount();
-            Long preComSalesAmount = response.getPreComSalesAmount() == null ? num : response.getPreComSalesAmount();
+            Long comSalesAmount = response.getComSalesAmount() == null ? num : response.getComSalesAmount().longValue();
+            Long preComSalesAmount = response.getPreComSalesAmount() == null ? num : response.getPreComSalesAmount().longValue();
             if(salesAmount == num || comSalesAmount == num){
                 response.setSalesRate(big);
             }else {
@@ -243,16 +243,16 @@ public class OemSaleServiceImpl implements OemSaleService {
             }
             response.setSalesRateWow(response.getSalesRate().subtract(response.getPreSalesRate()));
             // 含税毛利额
-            Long salesMargin = response.getSalesMargin() == null ? num : response.getSalesMargin();
-            Long preSalesMargin = response.getPreSalesMargin() == null ? num : response.getPreSalesMargin();
+            Long salesMargin = response.getSalesMargin() == null ? num : response.getSalesMargin().longValue();
+            Long preSalesMargin = response.getPreSalesMargin() == null ? num : response.getPreSalesMargin().longValue();
             if(salesMargin == num || preSalesMargin == num){
                 response.setSalesMarginWow(big);
             }else {
                 response.setSalesMarginWow(new BigDecimal(salesMargin).divide(new BigDecimal(preSalesMargin), 4, BigDecimal.ROUND_HALF_UP).subtract(subtract));
             }
             // 分类毛利占比
-            Long comSalesMargin = response.getComSalesMargin() == null ? num : response.getComSalesMargin();
-            Long preComSalesMargin = response.getPreComSalesMargin() == null ? num : response.getPreComSalesMargin();
+            Long comSalesMargin = response.getComSalesMargin() == null ? num : response.getComSalesMargin().longValue();
+            Long preComSalesMargin = response.getPreComSalesMargin() == null ? num : response.getPreComSalesMargin().longValue();
             if(salesMargin == num || comSalesMargin == num){
                 response.setSalesMarginRatio(big);
             }else {

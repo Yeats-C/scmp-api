@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * @功能说明:
@@ -36,7 +37,7 @@ public class ApplySupplyCompanyAcctReqDTO extends CommonBean {
     @NotNull
     @Min(1)
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("银联编号")
     private String unionpayNumber;
@@ -76,4 +77,10 @@ public class ApplySupplyCompanyAcctReqDTO extends CommonBean {
 
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

@@ -452,7 +452,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     outputTaxRate = productSkuCheckoutDraft.getOutputTaxRate().divide(new BigDecimal(100), 4, BigDecimal.ROUND_DOWN);
                 }
                     //供应商信息
-                    if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
+                    if (!flag && CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
                         List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = addSkuInfoReqVO.getProductSkuSupplyUnitDrafts();
                         //获取采购价格项目
                         QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
@@ -1224,7 +1224,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //调用审批接口
-            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName);
+            workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName,saveSkuApplyInfoReqVO.getPositionCode());
         }
         return formNo;
     }
@@ -1572,9 +1572,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName) {
+    public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
+//        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);

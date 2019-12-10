@@ -288,4 +288,6 @@ public interface StockService {
     List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 
     List<Stock> selectSkuCost();
+
+    List<StockBatchRespVO> byCityCodeAndprovinceCode(String provinceCode, String cityCode);
 }

@@ -108,11 +108,11 @@ public class BiGoodsSalesReport {
 
     @ApiModelProperty(value="实销金额")
     @JsonProperty("real_sales_amount")
-    private Long realSalesAmount;
+    private BigDecimal realSalesAmount;
 
     @ApiModelProperty(value="实销毛利")
     @JsonProperty("real_sales_margin")
-    private Long realSalesMargin;
+    private BigDecimal realSalesMargin;
 
     @ApiModelProperty(value="毛利率")
     @JsonProperty("margin_rate")
@@ -124,11 +124,11 @@ public class BiGoodsSalesReport {
 
     @ApiModelProperty(value="同比实销金额")
     @JsonProperty("real_sales_amount_yearonyear")
-    private Long realSalesAmountYearonyear;
+    private BigDecimal realSalesAmountYearonyear;
 
     @ApiModelProperty(value="同比实销毛利")
     @JsonProperty("real_sales_margin_yearonyear")
-    private Long realSalesMarginYearonyear;
+    private BigDecimal realSalesMarginYearonyear;
 
     @ApiModelProperty(value="同比毛利率")
     @JsonProperty("margin_rate_yearonyear")
@@ -144,7 +144,7 @@ public class BiGoodsSalesReport {
 
     @ApiModelProperty(value="同比实销毛利增长率")
     @JsonProperty("real_sales_margin_yearonyear_growth_rate")
-    private Long realSalesMarginYearonyearGrowthRate;
+    private BigDecimal realSalesMarginYearonyearGrowthRate;
 
     @ApiModelProperty(value="同比毛利率增长率")
     @JsonProperty("margin_rate_yearonyear_growth_rate")

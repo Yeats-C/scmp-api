@@ -24,6 +24,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -176,8 +177,8 @@ public class StockController {
     @GetMapping("/search/batch/one/info")
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
     public HttpResponse<List<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId,
-                                                                                             @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                             @RequestParam(value = "page_size", required = false) Integer page_size) {
+                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
         return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId,page_no,page_size));
     }
 
@@ -197,16 +198,16 @@ public class StockController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<List<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestParam(value = "supplier_code", required = false) String supplierCode,
-                                                                                      @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
-                                                                                      @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
-                                                                                      @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
-                                                                                      @RequestParam(value = "sku_code", required = false) String skuCode,
-                                                                                      @RequestParam(value = "sku_name", required = false) String skuName,
-                                                                                      @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-                                                                                      @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-                                                                                      @RequestParam(value = "product_property_name", required = false) String productPropertyName,
-                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
+                                                                                  @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                                                  @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                                                  @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                                                                  @RequestParam(value = "sku_code", required = false) String skuCode,
+                                                                                  @RequestParam(value = "sku_name", required = false) String skuName,
+                                                                                  @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+                                                                                  @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+                                                                                  @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+                                                                                  @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                  @RequestParam(value = "page_size", required = false) Integer page_size) {
         QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
@@ -295,5 +296,12 @@ public class StockController {
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
         return HttpResponse.success(stockService.importStockSkuList(reqVO));
+    }
+
+
+    @PostMapping("/search/byCityAndProvince")
+    @ApiOperation(value = "总库存管理列表")
+    public HttpResponse<List<StockBatchRespVO>> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode,@Param("cityCode") String cityCode) {
+        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode));
     }
 }

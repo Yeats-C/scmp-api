@@ -69,19 +69,19 @@ public class StatOemBrandSalesMonthly {
 
     @ApiModelProperty(value="本期销售金额(OEM)")
     @JsonProperty("sales_amount")
-    private Long salesAmount;
+    private BigDecimal salesAmount;
 
     @ApiModelProperty(value="同期销售金额(OEM)")
     @JsonProperty("pre_sales_amount")
-    private Long preSalesAmount;
+    private BigDecimal preSalesAmount;
 
     @ApiModelProperty(value="本期销售金额(公司)")
     @JsonProperty("com_sales_amount")
-    private Long comSalesAmount;
+    private BigDecimal comSalesAmount;
 
     @ApiModelProperty(value="同期销售金额(公司)")
     @JsonProperty("pre_com_sales_amount")
-    private Long preComSalesAmount;
+    private BigDecimal preComSalesAmount;
 
     @ApiModelProperty(value="本期-同期")
     @JsonProperty("sales_amount_vs")
@@ -105,19 +105,19 @@ public class StatOemBrandSalesMonthly {
 
     @ApiModelProperty(value="销售毛利")
     @JsonProperty("sales_margin")
-    private Long salesMargin;
+    private BigDecimal salesMargin;
 
     @ApiModelProperty(value="同期销售毛利")
     @JsonProperty("pre_sales_margin")
-    private Long preSalesMargin;
+    private BigDecimal preSalesMargin;
 
     @ApiModelProperty(value="本期毛利额(公司)")
     @JsonProperty("com_sales_margin")
-    private Long comSalesMargin;
+    private BigDecimal comSalesMargin;
 
     @ApiModelProperty(value="同期毛利额(公司)")
     @JsonProperty("pre_com_sales_margin")
-    private Long preComSalesMargin;
+    private BigDecimal preComSalesMargin;
 
     @ApiModelProperty(value="本期/同期-1")
     @JsonProperty("sales_margin_wow")

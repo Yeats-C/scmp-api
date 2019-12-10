@@ -69,11 +69,11 @@ public class StatDeptHighInventoryMonthly {
 
     @ApiModelProperty(value="上期库存总金额")
     @JsonProperty("pre_stock_amount_total")
-    private Long preStockAmountTotal;
+    private BigDecimal preStockAmountTotal;
 
     @ApiModelProperty(value="上期高库存金额")
     @JsonProperty("pre_high_inventory_amount")
-    private Long preHighInventoryAmount;
+    private BigDecimal preHighInventoryAmount;
 
     @ApiModelProperty(value="上期高库存金额占比")
     @JsonProperty("pre_high_inventory_amount_rate")
@@ -93,11 +93,11 @@ public class StatDeptHighInventoryMonthly {
 
     @ApiModelProperty(value="库存总金额")
     @JsonProperty("stock_amount_total")
-    private Long stockAmountTotal;
+    private BigDecimal stockAmountTotal;
 
     @ApiModelProperty(value="高库存金额")
     @JsonProperty("high_inventory_amount")
-    private Long highInventoryAmount;
+    private BigDecimal highInventoryAmount;
 
     @ApiModelProperty(value="高库存金额占比")
     @JsonProperty("high_inventory_amount_rate")

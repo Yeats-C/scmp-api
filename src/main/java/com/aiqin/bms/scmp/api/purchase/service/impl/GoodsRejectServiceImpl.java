@@ -529,7 +529,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 throw new GroundRuntimeException("锁定库存异常 ");
             }
             //提交退供审批
-            goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId());
+            goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(), request.getDictionaryId(), request.getPositionCode());
         } catch (GroundRuntimeException e) {
             LOGGER.error("新增退供单异常:{}", e);
             throw new GroundRuntimeException(String.format("新增退供单异常:{%s}", e.getMessage()));

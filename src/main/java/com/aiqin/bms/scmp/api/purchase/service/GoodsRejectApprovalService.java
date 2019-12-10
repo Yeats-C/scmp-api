@@ -28,5 +28,5 @@ package com.aiqin.bms.scmp.api.purchase.service;
  */
 public interface GoodsRejectApprovalService {
 
-    void workFlow(String formNo, String userName, String directSupervisorCode);
+    void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode);
 }

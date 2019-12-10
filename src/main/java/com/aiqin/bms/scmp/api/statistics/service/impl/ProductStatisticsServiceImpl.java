@@ -140,11 +140,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                     sumChannelSalesAmount = 0L, sumDistributionsalesAmount = 0L;
             for(NewProductMovingRateResponse mov:movingList){
                 Long iniStockSkuNum = mov.getIniStockSkuNum() == null ? num : mov.getIniStockSkuNum();
-                Long iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost();
+                Long iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost().longValue();
                 Long midPurchaseSkuNum = mov.getMidPurchaseSkuNum() == null ? num : mov.getMidPurchaseSkuNum();
                 Long midSalesSkuNum = mov.getMidSalesSkuNum() == null ? num : mov.getMidSalesSkuNum();
-                Long channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount();
-                Long distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount();
+                Long channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount().longValue();
+                Long distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount().longValue();
                 sumIniStockSkuNum += iniStockSkuNum;
                 sumIniStockSkuCost += iniStockSkuCost;
                 sumMidPurchaseSkuNum += midPurchaseSkuNum;
@@ -237,11 +237,11 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }
             }
             response.setSumIniStockSkuNum(sumIniStockSkuNum);
-            response.setSumIniStockSkuCost(sumIniStockSkuCost);
+            response.setSumIniStockSkuCost(new BigDecimal(sumIniStockSkuCost));
             response.setSumMidPurchaseSkuNum(sumMidPurchaseSkuNum);
             response.setSumMidSalesSkuNum(sumMidSalesSkuNum);
-            response.setSumChannelSalesAmount(sumChannelSalesAmount);
-            response.setSumDistributionsalesAmount(sumDistributionsalesAmount);
+            response.setSumChannelSalesAmount(new BigDecimal(sumChannelSalesAmount));
+            response.setSumDistributionsalesAmount(new BigDecimal(sumDistributionsalesAmount));
             Long sumNewSkuNum = sumIniStockSkuNum + sumMidPurchaseSkuNum;
             if(sumMidSalesSkuNum == num || sumNewSkuNum == num){
                 response.setSumNewProMovingSalesRate(big);
@@ -349,14 +349,14 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             for(StatDeptStockout stock:stockList){
                 Long stockoutSkuNum = stock.getStockoutSkuNum() == null ? num : stock.getStockoutSkuNum();
                 Long skuNumTotal = stock.getSkuNumTotal() == null ? num : stock.getSkuNumTotal();
-                Long stockoutEffectAmount = stock.getStockoutEffectAmount() == null ? num : stock.getStockoutEffectAmount();
+                Long stockoutEffectAmount = stock.getStockoutEffectAmount() == null ? num : stock.getStockoutEffectAmount().longValue();
                 sumSkuNumTotal += skuNumTotal;
                 sumStockoutSkuNum += stockoutSkuNum;
                 sumStockoutEffectAmount += stockoutEffectAmount;
                 if(stock.getTransportCenterCode().equals(Global.HB_CODE)){
                     response.setHbSkuNumTotal(skuNumTotal);
                     response.setHbStockoutSkuNum(stockoutSkuNum);
-                    response.setHbStockoutEffectAmount(stockoutEffectAmount);
+                    response.setHbStockoutEffectAmount(new BigDecimal(stockoutEffectAmount));
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHbStockoutRate(big);
                     }else {
@@ -370,7 +370,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }else if(stock.getTransportCenterCode().equals(Global.HD_CODE)){
                     response.setHdSkuNumTotal(skuNumTotal);
                     response.setHdStockoutSkuNum(stockoutSkuNum);
-                    response.setHdStockoutEffectAmount(stockoutEffectAmount);
+                    response.setHdStockoutEffectAmount(new BigDecimal(stockoutEffectAmount));
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHdStockoutRate(big);
                     }else {
@@ -384,7 +384,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }else if(stock.getTransportCenterCode().equals(Global.HN_CODE)){
                     response.setHnSkuNumTotal(skuNumTotal);
                     response.setHnStockoutSkuNum(stockoutSkuNum);
-                    response.setHnStockoutEffectAmount(stockoutEffectAmount);
+                    response.setHnStockoutEffectAmount(new BigDecimal(stockoutEffectAmount));
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHnStockoutRate(big);
                     }else {
@@ -398,7 +398,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }else if(stock.getTransportCenterCode().equals(Global.XN_CODE)){
                     response.setXnSkuNumTotal(skuNumTotal);
                     response.setXnStockoutSkuNum(stockoutSkuNum);
-                    response.setXnStockoutEffectAmount(stockoutEffectAmount);
+                    response.setXnStockoutEffectAmount(new BigDecimal(stockoutEffectAmount));
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setXnStockoutRate(big);
                     }else {
@@ -412,7 +412,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }else if(stock.getTransportCenterCode().equals(Global.HZ_CODE)){
                     response.setHzSkuNumTotal(skuNumTotal);
                     response.setHzStockoutSkuNum(stockoutSkuNum);
-                    response.setHzStockoutEffectAmount(stockoutEffectAmount);
+                    response.setHzStockoutEffectAmount(new BigDecimal(stockoutEffectAmount));
                     if(stockoutSkuNum == 0 || skuNumTotal == 0){
                         response.setHzStockoutRate(big);
                     }else {
@@ -427,7 +427,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             }
             response.setSumSkuNumTotal(sumSkuNumTotal);
             response.setSumStockoutSkuNum(sumStockoutSkuNum);
-            response.setSumStockoutEffectAmount(sumStockoutEffectAmount);
+            response.setSumStockoutEffectAmount(new BigDecimal(sumStockoutEffectAmount));
             if(sumSkuNumTotal == 0 || sumStockoutSkuNum == 0){
                 response.setSumStockoutRate(big);
             }else {
