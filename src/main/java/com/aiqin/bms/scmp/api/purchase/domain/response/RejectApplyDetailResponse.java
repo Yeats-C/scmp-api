@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -106,7 +107,7 @@ public class RejectApplyDetailResponse {
 
     @ApiModelProperty(value = "税率")
     @JsonProperty("tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value = "仓编码(物流中心编码)")
     @JsonProperty("transport_center_code")
@@ -126,15 +127,15 @@ public class RejectApplyDetailResponse {
 
     @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value = "含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "含税成本")
     @JsonProperty("product_cost")
-    private Long productCost;
+    private BigDecimal productCost;
 
     @ApiModelProperty(value = "商品批次号")
     @JsonProperty("batch_no")
@@ -195,7 +196,7 @@ public class RejectApplyDetailResponse {
 
     @ApiModelProperty(value="wms 传回来的实际金额")
     @JsonProperty("actual_amount")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
 
 }

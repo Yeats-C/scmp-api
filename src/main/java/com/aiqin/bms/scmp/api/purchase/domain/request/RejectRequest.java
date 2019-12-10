@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -88,7 +89,7 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "退供总金额 --")
     @JsonProperty("sum_amount")
-    private Long sumAmount;
+    private BigDecimal sumAmount;
 
     @ApiModelProperty(value = "单品数量 --")
     @JsonProperty("single_count")
@@ -96,7 +97,7 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "单品金额 --")
     @JsonProperty("untaxed_amount")
-    private Long untaxedAmount;
+    private BigDecimal untaxedAmount;
 
     @ApiModelProperty(value = "实物返回数量 --")
     @JsonProperty("return_count")
@@ -104,7 +105,7 @@ public class RejectRequest {
 
     @ApiModelProperty(value = "实物返回金额 --")
     @JsonProperty("return_amount")
-    private Long returnAmount;
+    private BigDecimal returnAmount;
 
     @ApiModelProperty(value = "负责人")
     @JsonProperty("duty_person")
@@ -185,6 +186,14 @@ public class RejectRequest {
     @ApiModelProperty("创建人公司名称")
     @JsonProperty("company_name")
     private String companyName;
+
+    @ApiModelProperty("职位编码")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    @JsonProperty("position_name")
+    private String positionName;
 
 }
 

@@ -46,7 +46,7 @@
       apply_supply_company_name,form_no,apply_show,company_code,company_name,
       direct_supervisor_code,direct_supervisor_name,update_time,update_by)
     values (#{accountOpeningBranch,jdbcType=VARCHAR}, #{bankAccount,jdbcType=VARCHAR},
-      #{account,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{maxPaymentAmount,jdbcType=BIGINT},
+      #{account,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{maxPaymentAmount,jdbcType=DECIMAL},
       #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, #{unionpayNumber,jdbcType=VARCHAR},
       #{bankNumber,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},#{applyStatus,jdbcType=TINYINT},
       #{applySupplyCompanyCode,jdbcType=VARCHAR},#{applyCode,jdbcType=VARCHAR},#{applySupplyCompanyName,jdbcType=VARCHAR},

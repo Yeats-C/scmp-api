@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -106,7 +107,7 @@ public class ProductSkuRespVo extends CommonBean {
     private String mnemonicCode;
 
     @ApiModelProperty("厂家指导价")
-    private Long manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("适用起始月龄")
     private String applicableMonthAge;
@@ -171,4 +172,9 @@ public class ProductSkuRespVo extends CommonBean {
     @ApiModelProperty("所属文件列表")
     private List<ProductSkuFile> productSkuFileList;
 
+    @ApiModelProperty("sku商品文件管理采购组名称")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("sku商品文件管理采购组编码")
+    private String purchaseGroupCode;
 }

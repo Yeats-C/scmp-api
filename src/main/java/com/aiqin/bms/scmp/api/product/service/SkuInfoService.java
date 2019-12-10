@@ -150,7 +150,7 @@ public interface SkuInfoService{
     int cancelApply(ApplyProductSku applyProductSku);
 
 
-    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName);
+    void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName, String positionCode);
 
     String skuWorkFlowCallback(WorkFlowCallbackVO vo1);
 
@@ -283,8 +283,6 @@ public interface SkuInfoService{
 
     /**
      * 新增保存
-     * @param addSkuList
-     * @param purchaseGroupCode
      * @return
      */
     Boolean importSkuNewSave(SkuImportReq reqVO);

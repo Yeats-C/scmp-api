@@ -5,11 +5,11 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName" />
-    <result column="no_tax_purchase_price" jdbcType="BIGINT" property="noTaxPurchasePrice" />
-    <result column="tax_included_price" jdbcType="BIGINT" property="taxIncludedPrice" />
-    <result column="joint_franchise_rate" jdbcType="BIGINT" property="jointFranchiseRate" />
-    <result column="point" jdbcType="BIGINT" property="point" />
-    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="no_tax_purchase_price" jdbcType="DECIMAL" property="noTaxPurchasePrice" />
+    <result column="tax_included_price" jdbcType="DECIMAL" property="taxIncludedPrice" />
+    <result column="joint_franchise_rate" jdbcType="DECIMAL" property="jointFranchiseRate" />
+    <result column="point" jdbcType="DECIMAL" property="point" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />

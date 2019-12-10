@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -140,7 +141,7 @@ public class RejectApplyDetailHandleResponse {
 
     @ApiModelProperty(value = "税率")
     @JsonProperty("input_tax_rate")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty(value = "仓编码(物流中心编码)")
     @JsonProperty("transport_center_code")
@@ -160,15 +161,15 @@ public class RejectApplyDetailHandleResponse {
 
     @ApiModelProperty(value = "含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value = "含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty(value = "含税成本")
     @JsonProperty("tax_cost")
-    private Long productCost;
+    private BigDecimal productCost;
 
     @ApiModelProperty(value = "商品批次号")
     @JsonProperty("batch_code")

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -46,7 +47,12 @@ public class FileProductController {
     @PostMapping("/load")
     @ApiOperation("商品下属文件详情")
     public HttpResponse<ProductSkuRespVo> loadFileProduct(@RequestParam("skuCode") String skuCode) {
-        return productFileService.loadFileProduct(skuCode);
+        try {
+            return productFileService.loadFileProduct(skuCode);
+        } catch (ParseException e) {
+            e.printStackTrace();
+                return  HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 
     @PostMapping("/updateoradd")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -19,11 +20,11 @@ public class PurchaseFlowPathResponse{
 
     @ApiModelProperty(value="采购价格")
     @JsonProperty("purchase_amount")
-    private Long purchaseAmount;
+    private BigDecimal purchaseAmount;
 
     @ApiModelProperty(value="采购总价")
     @JsonProperty("purchase_amount_sum")
-    private Long purchaseAmountSum;
+    private BigDecimal purchaseAmountSum;
 
     @ApiModelProperty("物流中心(仓库)编码")
     @JsonProperty("transport_center_code")

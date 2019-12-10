@@ -29,5 +29,10 @@ public class ProductCategoryAddReqVO {
     @ApiModelProperty("下级分类集合")
     List<ProductCategoryReqVO> lowerLevelList;
 
+    @ApiModelProperty(value = "公司编码")
+    private String companyCode;
+
+    @ApiModelProperty(value = "公司名称")
+    private String companyName;
 
 }

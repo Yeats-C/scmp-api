@@ -174,4 +174,10 @@ public class ApplyContractDTO extends CommonBean {
     @ApiModelProperty("最下面的备注")
     private String comment;
 
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
+
 }

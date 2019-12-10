@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -103,7 +104,7 @@ public class SupervisoryWarehouseOrderServiceImpl extends BaseServiceImpl implem
             item.setOrderTypeName(typeName.getName());
             item.setOrderType(order.getOrderType());
             if(Objects.isNull(item.getProductTotalAmount())){
-                item.setProductTotalAmount(item.getProductAmount() * item.getNum());
+                item.setProductTotalAmount(item.getProductAmount().multiply(BigDecimal.valueOf(item.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
             }
             item.setLineNum(i.getAndIncrement()*10);
         });

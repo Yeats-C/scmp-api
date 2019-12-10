@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author sunx
  * @description 采购单明细
@@ -76,7 +78,7 @@ public class PurchaseDetail {
      */
     @JsonProperty("input_rate")
     @ApiModelProperty("进项税率")
-    private Integer inputRate;
+    private BigDecimal inputRate;
     /**
      * 库存数量
      */

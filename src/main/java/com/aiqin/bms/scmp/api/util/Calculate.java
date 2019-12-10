@@ -16,8 +16,8 @@ public class Calculate {
      * @param taxRate
      * @return
      */
-    public static Long computeNoTaxPrice(Long price,Long taxRate){
+    public static BigDecimal computeNoTaxPrice(BigDecimal price,BigDecimal taxRate){
         //不含税单价=含税单价/(1+税率)
-        return BigDecimal.valueOf(price).divide(BigDecimal.valueOf(1).add(BigDecimal.valueOf(taxRate ).divide(BigDecimal.valueOf(10000),4,BigDecimal.ROUND_HALF_UP)), 0, BigDecimal.ROUND_HALF_UP).setScale(2).longValue();
+        return price.divide(BigDecimal.valueOf(1).add(taxRate).divide(BigDecimal.valueOf(100),4,BigDecimal.ROUND_HALF_UP), 4, BigDecimal.ROUND_HALF_UP);
     }
 }

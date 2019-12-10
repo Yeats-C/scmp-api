@@ -29,9 +29,9 @@
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
-    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
-    <result column="product_cost" jdbcType="BIGINT" property="productCost" />
+    <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
+    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
+    <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
@@ -225,9 +225,9 @@
       #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.warehouseCode,jdbcType=VARCHAR},
       #{item.warehouseName,jdbcType=VARCHAR},
-      #{item.productAmount,jdbcType=BIGINT},
-      #{item.productTotalAmount,jdbcType=BIGINT},
-      #{item.productCost,jdbcType=BIGINT},
+      #{item.productAmount,jdbcType=DECIMAL},
+      #{item.productTotalAmount,jdbcType=DECIMAL},
+      #{item.productCost,jdbcType=DECIMAL},
       #{item.batchNo,jdbcType=VARCHAR},
       #{item.batchRemark,jdbcType=VARCHAR},
       #{item.batchCreateTime,jdbcType=TIMESTAMP},
@@ -317,13 +317,13 @@
         warehouse_name = #{warehouseName,jdbcType=VARCHAR},
       </if>
       <if test="productAmount != null">
-        product_amount = #{productAmount,jdbcType=BIGINT},
+        product_amount = #{productAmount,jdbcType=DECIMAL},
       </if>
       <if test="productTotalAmount != null">
-        product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
+        product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
       </if>
       <if test="productCost != null">
-        product_cost = #{productCost,jdbcType=BIGINT},
+        product_cost = #{productCost,jdbcType=DECIMAL},
       </if>
       <if test="batchNo != null">
         batch_no = #{batchNo,jdbcType=VARCHAR},
@@ -417,14 +417,14 @@
     <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
     <result column="product_count" jdbcType="INTEGER" property="productCount" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
-    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
-    <result column="product_cost" jdbcType="BIGINT" property="productCost" />
+    <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
+    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
+    <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
@@ -456,9 +456,9 @@
          apply_record_status = 1
          where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
   </update>
-  <select id="selectReturnAmount" resultType="java.lang.Long">
+  <select id="selectReturnAmount" resultType="java.math.BigDecimal">
     select
-      ifnull(sum(product_amount*product_count),'0 ')
+      ifnull(sum(product_amount*product_count),0)
     from
       reject_apply_record_detail
     where

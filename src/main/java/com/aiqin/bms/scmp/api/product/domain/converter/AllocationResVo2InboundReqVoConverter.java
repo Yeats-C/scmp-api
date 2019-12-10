@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.*;
 
 /**
@@ -91,7 +92,7 @@ public class AllocationResVo2InboundReqVoConverter implements Converter<Allocati
             outbound.setUpdateBy(source.getUpdateBy());
             outbound.setUpdateTime(source.getUpdateTime());
             List<InboundProductReqVo> products = Lists.newArrayList();
-            long totalNoRateAmount = 0L;
+            BigDecimal totalNoRateAmount = BigDecimal.valueOf(0);
             for (AllocationProductToOutboundVo vo : source.getSkuList()){
                 InboundProductReqVo product = BeanCopyUtils.copy(vo, InboundProductReqVo.class);
                 // 设置图片地址
@@ -113,12 +114,13 @@ public class AllocationResVo2InboundReqVoConverter implements Converter<Allocati
                 product.setPreTaxAmount(vo.getTaxAmount());
                 // 设置行号
                 product.setLinenum(vo.getLinenum());
-                totalNoRateAmount += (Calculate.computeNoTaxPrice(vo.getTaxPrice(), vo.getTax())*vo.getQuantity());
+                BigDecimal num = Calculate.computeNoTaxPrice(vo.getTaxPrice(), vo.getTax());
+                totalNoRateAmount = num.multiply(BigDecimal.valueOf(vo.getQuantity())).setScale(4, BigDecimal.ROUND_HALF_UP).add(totalNoRateAmount);
                 products.add(product);
             }
             outbound.setList(products);
             outbound.setPreAmount(totalNoRateAmount);
-            outbound.setPreTax(source.getTaxRefundAmount()-totalNoRateAmount);
+            outbound.setPreTax(source.getTaxRefundAmount().subtract(totalNoRateAmount));
             return outbound;
     }
 }

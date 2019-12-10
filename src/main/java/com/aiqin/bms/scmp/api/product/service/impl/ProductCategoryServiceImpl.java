@@ -58,11 +58,17 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         int num = 1;
         String companyCode = null;
         String companyName = null;
-        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (null != authToken) {
-            companyCode = authToken.getCompanyCode();
-            companyName = authToken.getCompanyName();
+        if(StringUtils.isBlank(productCategoryAddReqVO.getCompanyCode())){
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if (null != authToken) {
+                companyCode = authToken.getCompanyCode();
+                companyName = authToken.getCompanyName();
+            }
+        }else {
+            companyCode = productCategoryAddReqVO.getCompanyCode();
+            companyName = productCategoryAddReqVO.getCompanyName();
         }
+
         //验证提交的数据中是否存在五级分类
         List<ProductCategoryReqVO> productCategoryTmps = Lists.newArrayList();
         productCategoryTmps.addAll(productCategoryAddReqVO.getSameLevelList());
@@ -175,11 +181,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int updateProductCategory(ProductCategoryReqVO productCategoryReqVO) {
         int num;
-        String companyCode = null;
-        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (null != authToken) {
-            companyCode = authToken.getCompanyCode();
-        }
+        String companyCode = this.company(productCategoryReqVO.getCompanyCode());
         int count = productCategoryDao.checkNameByNameAndCode(productCategoryReqVO.getCategoryName(), productCategoryReqVO.getCategoryId(), companyCode);
         if (count > 0) {
             throw new BizException(MessageId.create(Project.SCMP_API, 99, "在数据库中存在相同名称"));
@@ -193,6 +195,19 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         //删除品类缓存信息
         dataManageService.deleteCategoryName();
         return num;
+    }
+
+    private String company(String companyCode){
+        String code = null;
+        if(StringUtils.isNotBlank(companyCode)){
+            code = companyCode;
+        }else {
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if (null != authToken) {
+                code = authToken.getCompanyCode();
+            }
+        }
+        return code;
     }
 
     @Override

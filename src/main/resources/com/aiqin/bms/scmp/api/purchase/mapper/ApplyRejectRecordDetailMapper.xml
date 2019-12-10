@@ -24,11 +24,11 @@
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
-    <result column="tax_rate" jdbcType="INTEGER" property="taxRate" />
-    <result column="product_amount" jdbcType="BIGINT" property="productAmount" />
-    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
+    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="actual_count" jdbcType="INTEGER" property="actualCount" />
-    <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
     <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
@@ -38,6 +38,7 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="linnum" jdbcType="INTEGER" property="linnum" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_record_id, reject_record_detail_id, reject_record_code, barcode, sku_code, 
@@ -45,7 +46,7 @@
     single_count, product_count, color_code, color_name, model_number, factory_sku_code, 
     product_spec, unit_name, unit_code, tax_rate, product_amount, product_total_amount, 
     actual_count, actual_amount, batch_no, batch_remark, batch_create_time, create_by_id, 
-    create_by_name, update_by_id, update_by_name, create_time, update_time
+    create_by_name, update_by_id, update_by_name, create_time, update_time, linnum
   </sql>
   <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
     SELECT
@@ -83,7 +84,7 @@
     color_code,color_name,model_number,factory_sku_code,
     batch_no, batch_remark, batch_create_time,
     create_by_id, create_by_name,update_by_id, update_by_name,
-    create_time, update_time
+    create_time, update_time, linnum
     )
     values
     <foreach collection="list" separator="," item="item">
@@ -105,11 +106,11 @@
       #{item.productSpec,jdbcType=VARCHAR},
       #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR},
-      #{item.taxRate,jdbcType=INTEGER},
-      #{item.productAmount,jdbcType=BIGINT},
-      #{item.productTotalAmount,jdbcType=BIGINT},
+      #{item.taxRate,jdbcType=DECIMAL},
+      #{item.productAmount,jdbcType=DECIMAL},
+      #{item.productTotalAmount,jdbcType=DECIMAL},
       #{item.actualCount,jdbcType=INTEGER},
-      #{item.actualAmount,jdbcType=BIGINT},
+      #{item.actualAmount,jdbcType=DECIMAL},
       #{item.colorCode,jdbcType=VARCHAR},
       #{item.colorName,jdbcType=VARCHAR},
       #{item.modelNumber,jdbcType=VARCHAR},
@@ -121,7 +122,7 @@
       #{createByName,jdbcType=VARCHAR},
       #{createById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR},
-      now(),now()
+      now(),now(), #{item.linnum,jdbcType=INTEGER}
       )
     </foreach>
   </insert>
@@ -164,8 +165,8 @@
       #{productType,jdbcType=BIT}, #{singleCount,jdbcType=INTEGER}, #{productCount,jdbcType=INTEGER}, 
       #{colorCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{modelNumber,jdbcType=VARCHAR}, 
       #{factorySkuCode,jdbcType=VARCHAR}, #{productSpec,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, 
-      #{unitCode,jdbcType=VARCHAR}, #{taxRate,jdbcType=INTEGER}, #{productAmount,jdbcType=BIGINT}, 
-      #{productTotalAmount,jdbcType=BIGINT}, #{actualCount,jdbcType=INTEGER}, #{actualAmount,jdbcType=BIGINT}, 
+      #{unitCode,jdbcType=VARCHAR}, #{taxRate,jdbcType=DECIMAL}, #{productAmount,jdbcType=DECIMAL},
+      #{productTotalAmount,jdbcType=DECIMAL}, #{actualCount,jdbcType=INTEGER}, #{actualAmount,jdbcType=DECIMAL},
       #{batchNo,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{batchCreateTime,jdbcType=TIMESTAMP}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
       #{updateByName,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
@@ -351,19 +352,19 @@
         #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
-        #{taxRate,jdbcType=INTEGER},
+        #{taxRate,jdbcType=DECIMAL},
       </if>
       <if test="productAmount != null">
-        #{productAmount,jdbcType=BIGINT},
+        #{productAmount,jdbcType=DECIMAL},
       </if>
       <if test="productTotalAmount != null">
-        #{productTotalAmount,jdbcType=BIGINT},
+        #{productTotalAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualCount != null">
         #{actualCount,jdbcType=INTEGER},
       </if>
       <if test="actualAmount != null">
-        #{actualAmount,jdbcType=BIGINT},
+        #{actualAmount,jdbcType=DECIMAL},
       </if>
       <if test="batchNo != null">
         #{batchNo,jdbcType=VARCHAR},
@@ -461,19 +462,19 @@
         unit_code = #{unitCode,jdbcType=VARCHAR},
       </if>
       <if test="taxRate != null">
-        tax_rate = #{taxRate,jdbcType=INTEGER},
+        tax_rate = #{taxRate,jdbcType=DECIMAL},
       </if>
       <if test="productAmount != null">
-        product_amount = #{productAmount,jdbcType=BIGINT},
+        product_amount = #{productAmount,jdbcType=DECIMAL},
       </if>
       <if test="productTotalAmount != null">
-        product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
+        product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualCount != null">
         actual_count = #{actualCount,jdbcType=INTEGER},
       </if>
       <if test="actualAmount != null">
-        actual_amount = #{actualAmount,jdbcType=BIGINT},
+        actual_amount = #{actualAmount,jdbcType=DECIMAL},
       </if>
       <if test="batchNo != null">
         batch_no = #{batchNo,jdbcType=VARCHAR},
@@ -528,11 +529,11 @@
       product_spec = #{productSpec,jdbcType=VARCHAR},
       unit_name = #{unitName,jdbcType=VARCHAR},
       unit_code = #{unitCode,jdbcType=VARCHAR},
-      tax_rate = #{taxRate,jdbcType=INTEGER},
-      product_amount = #{productAmount,jdbcType=BIGINT},
-      product_total_amount = #{productTotalAmount,jdbcType=BIGINT},
+      tax_rate = #{taxRate,jdbcType=DECIMAL},
+      product_amount = #{productAmount,jdbcType=DECIMAL},
+      product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
       actual_count = #{actualCount,jdbcType=INTEGER},
-      actual_amount = #{actualAmount,jdbcType=BIGINT},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
       batch_no = #{batchNo,jdbcType=VARCHAR},
       batch_remark = #{batchRemark,jdbcType=VARCHAR},
       batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},

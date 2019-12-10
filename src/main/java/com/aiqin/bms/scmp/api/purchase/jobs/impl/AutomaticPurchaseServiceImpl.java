@@ -30,6 +30,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +44,8 @@ import java.util.Map;
 public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AutomaticPurchaseServiceImpl.class);
+
+    private static final BigDecimal big = BigDecimal.valueOf(0);
 
     @Resource
     private BiSmartReplenishmentDao biSmartReplenishmentDao;
@@ -110,7 +113,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                       applyProduct.setPurchaseApplyId(purchaseApply.getPurchaseApplyId());
                       applyProduct.setPurchaseApplyCode(purchaseApply.getPurchaseApplyCode());
                       applyProduct.setProductType(Global.PRODUCT_TYPE_0);
-                      Long price  = product.getNewPurchasePrice() == null ? 0 : product.getNewPurchasePrice();
+                      BigDecimal price  = product.getNewPurchasePrice() == null ? big : product.getNewPurchasePrice();
                       applyProduct.setProductPurchaseAmount(price);
                       applyProduct.setNewPurchasePrice(price);
                       applyProduct.setCreateByName("系统");
@@ -119,23 +122,23 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                       applyProduct.setApplyProductStatus(Global.USER_ON);
                       // 获取最高采购价(价格管理中供应商的含税价格)
                       String key;
-                      Map<String, Long> productTax = new HashMap<>();
+                      Map<String, BigDecimal> productTax = new HashMap<>();
                       if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
                           key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                          Long priceTax = productTax.get(key);
-                          applyProduct.setPurchaseMax(priceTax == null ? 0 : priceTax);
+                          BigDecimal priceTax = productTax.get(key);
+                          applyProduct.setPurchaseMax(priceTax == null ? big : priceTax);
                       }
                       // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                       Map<String, PurchaseApplyRespVo> purchase = new HashMap<>();
                       key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
                       PurchaseApplyRespVo vo = purchase.get(key);
                       if(vo != null){
-                          applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0: vo.getAdviceOrders().intValue());
+                          applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0 : vo.getAdviceOrders().intValue());
                           applyProduct.setReceiptTime(DateUtils.getDate(vo.getPredictedArrival()));
-                          applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0: vo.getAverageAmount().intValue() * 90);
-                          applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? 0: vo.getOutStockAffectMoney().intValue());
-                          applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0: vo.getOutStockContinuousDays().intValue());
-                          applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0: vo.getArrivalCycle().intValue());
+                          applyProduct.setSalesVolume(vo.getAverageAmount() == null ? 0 : vo.getAverageAmount().intValue() * 90);
+                          applyProduct.setShortageNumber(vo.getOutStockAffectMoney() == null ? big : vo.getOutStockAffectMoney());
+                          applyProduct.setShortageDay(vo.getOutStockContinuousDays() == null ? 0 : vo.getOutStockContinuousDays().intValue());
+                          applyProduct.setStockTurnover(vo.getArrivalCycle() == null ? 0 : vo.getArrivalCycle().intValue());
                       }
                       productList.add(applyProduct);
                   }

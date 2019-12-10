@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("库存流水实体Model")
 @Data
 public class StockFlow extends CommonBean {
@@ -123,5 +125,5 @@ public class StockFlow extends CommonBean {
 
     @ApiModelProperty("库存成本")
     @JsonProperty(value = "stock_cost")
-    private Long stockCost;
+    private BigDecimal stockCost;
 }

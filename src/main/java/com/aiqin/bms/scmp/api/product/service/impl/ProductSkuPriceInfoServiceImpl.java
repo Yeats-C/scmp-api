@@ -263,6 +263,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
 
     @Override
     public List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForDraft(String skuCode) {
+      String a=  getUser().getCompanyCode();
         return productSkuPriceInfoMapper.selectBySkuCodeForDraft(skuCode,getUser().getCompanyCode());
     }
 }

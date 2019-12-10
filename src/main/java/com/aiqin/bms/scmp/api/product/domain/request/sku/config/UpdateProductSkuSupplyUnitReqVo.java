@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -28,16 +29,16 @@ public class UpdateProductSkuSupplyUnitReqVo {
     private Byte isDefault;
 
     @ApiModelProperty("含税进价")
-    private Long taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("无税进价")
-    private Long noTaxPurchasePrice;
+    private BigDecimal noTaxPurchasePrice;
 
     @ApiModelProperty("联营扣率")
-    private Long jointFranchiseRate;
+    private BigDecimal jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    private Long point;
+    private BigDecimal point;
 
     @ApiModelProperty("厂商SKU编码")
     private String factorySkuCode;

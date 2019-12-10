@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("库存修改model")
 @Data
 public class StockVoRequest {
@@ -54,7 +56,7 @@ public class StockVoRequest {
 
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("变化数")
     @JsonProperty(value = "change_num")
@@ -70,7 +72,7 @@ public class StockVoRequest {
 
     @ApiModelProperty("最新采购价")
     @JsonProperty(value = "new_purchase_price")
-    private Long newPurchasePrice;
+    private BigDecimal newPurchasePrice;
 
     @ApiModelProperty("单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库 11报损  12报溢")
     @JsonProperty(value = "document_type")
@@ -98,5 +100,5 @@ public class StockVoRequest {
 
     @ApiModelProperty("库存成本")
     @JsonProperty(value = "stock_cost")
-    private Long stockCost;
+    private BigDecimal stockCost;
 }

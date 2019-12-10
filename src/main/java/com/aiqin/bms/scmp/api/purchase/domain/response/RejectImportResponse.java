@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -39,11 +41,11 @@ public class RejectImportResponse extends RejectApplyDetailHandleResponse {
 
     @ApiModelProperty("退供含税单价")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty("退供含税总价")
     @JsonProperty("product_total_amount")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("退供含税数量")
     @JsonProperty("product_count")

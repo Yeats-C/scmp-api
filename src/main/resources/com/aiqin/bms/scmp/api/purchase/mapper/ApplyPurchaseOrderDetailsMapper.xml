@@ -19,9 +19,9 @@
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
     <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
     <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
-    <result column="advance_payment" jdbcType="BIGINT" property="advancePayment" />
-    <result column="amount_payable" jdbcType="BIGINT" property="amountPayable" />
-    <result column="month_amount" jdbcType="BIGINT" property="monthAmount" />
+    <result column="advance_payment" jdbcType="DECIMAL" property="advancePayment" />
+    <result column="amount_payable" jdbcType="DECIMAL" property="amountPayable" />
+    <result column="month_amount" jdbcType="DECIMAL" property="monthAmount" />
     <result column="payable_time" jdbcType="INTEGER" property="payableTime" />
     <result column="month_time" jdbcType="INTEGER" property="monthTime" />
     <result column="receipt" jdbcType="VARCHAR" property="receipt" />
@@ -68,8 +68,8 @@
       #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, 
       #{chargePerson,jdbcType=VARCHAR}, #{contactPerson,jdbcType=VARCHAR}, #{mobile,jdbcType=VARCHAR}, 
       #{expectArrivalTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{directSupervisorCode,jdbcType=VARCHAR}, 
-      #{directSupervisorName,jdbcType=VARCHAR}, #{paymentCode,jdbcType=VARCHAR}, #{paymentName,jdbcType=VARCHAR}, #{advancePayment,jdbcType=BIGINT},
-      #{amountPayable,jdbcType=BIGINT}, #{monthAmount,jdbcType=BIGINT}, #{payableTime,jdbcType=INTEGER},
+      #{directSupervisorName,jdbcType=VARCHAR}, #{paymentCode,jdbcType=VARCHAR}, #{paymentName,jdbcType=VARCHAR}, #{advancePayment,jdbcType=DECIMAL},
+      #{amountPayable,jdbcType=DECIMAL}, #{monthAmount,jdbcType=DECIMAL}, #{payableTime,jdbcType=INTEGER},
       #{monthTime,jdbcType=INTEGER}, #{receipt,jdbcType=VARCHAR}, #{receiptAddress,jdbcType=VARCHAR}, 
       #{delivery,jdbcType=VARCHAR}, #{deliveryAddress,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, 
       #{warehouseTime,jdbcType=TIMESTAMP}, #{remark,jdbcType=VARCHAR}, #{detailsStatus,jdbcType=INTEGER}, 

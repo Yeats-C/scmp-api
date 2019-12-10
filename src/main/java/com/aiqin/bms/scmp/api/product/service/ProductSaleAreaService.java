@@ -111,7 +111,7 @@ public interface ProductSaleAreaService {
      * @param userName 登录人
      * @return void
      */
-    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode, String positionCOde);
     /**
      * 处理保存或修改正式数据
      * @author NullPointException

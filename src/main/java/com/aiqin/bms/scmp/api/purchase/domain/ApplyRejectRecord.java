@@ -3,10 +3,13 @@ package com.aiqin.bms.scmp.api.purchase.domain;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
+@Data
 public class ApplyRejectRecord {
     @ApiModelProperty(value="")
     @JsonProperty("id")
@@ -158,7 +161,7 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="普通商品含税金额")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value="单品数量")
     @JsonProperty("single_count")
@@ -170,7 +173,7 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_amount")
-    private Long giftAmount;
+    private BigDecimal giftAmount;
 
     @ApiModelProperty(value="实物返回数量")
     @JsonProperty("return_count")
@@ -178,7 +181,7 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="实物返金额")
     @JsonProperty("return_amount")
-    private Long returnAmount;
+    private BigDecimal returnAmount;
 
     @ApiModelProperty(value="实际普通商品数量")
     @JsonProperty("actual_product_count")
@@ -186,7 +189,7 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="实际普通商品含税金额")
     @JsonProperty("actual_product_amount")
-    private Long actualProductAmount;
+    private BigDecimal actualProductAmount;
 
     @ApiModelProperty(value="实际单品数量")
     @JsonProperty("actual_single_count")
@@ -198,7 +201,7 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="实际赠品含税金额")
     @JsonProperty("actual_gift_amount")
-    private Long actualGiftAmount;
+    private BigDecimal actualGiftAmount;
 
     @ApiModelProperty(value="实际实物返回数量")
     @JsonProperty("actual_return_count")
@@ -206,11 +209,11 @@ public class ApplyRejectRecord {
 
     @ApiModelProperty(value="实际实物返金额")
     @JsonProperty("actual_return_amount")
-    private Long actualReturnAmount;
+    private BigDecimal actualReturnAmount;
 
     @ApiModelProperty(value="未税金额")
     @JsonProperty("untaxed_amount")
-    private Long untaxedAmount;
+    private BigDecimal untaxedAmount;
 
     @ApiModelProperty(value="")
     @JsonProperty("create_by_id")
@@ -236,459 +239,4 @@ public class ApplyRejectRecord {
     @JsonProperty("update_time")
     private Date updateTime;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getRejectRecordId() {
-        return rejectRecordId;
-    }
-
-    public void setRejectRecordId(String rejectRecordId) {
-        this.rejectRecordId = rejectRecordId;
-    }
-
-    public String getRejectRecordCode() {
-        return rejectRecordCode;
-    }
-
-    public void setRejectRecordCode(String rejectRecordCode) {
-        this.rejectRecordCode = rejectRecordCode;
-    }
-
-    public String getApprovalCode() {
-        return approvalCode;
-    }
-
-    public void setApprovalCode(String approvalCode) {
-        this.approvalCode = approvalCode;
-    }
-
-    public String getDutyPerson() {
-        return dutyPerson;
-    }
-
-    public void setDutyPerson(String dutyPerson) {
-        this.dutyPerson = dutyPerson;
-    }
-
-    public String getContactsPerson() {
-        return contactsPerson;
-    }
-
-    public void setContactsPerson(String contactsPerson) {
-        this.contactsPerson = contactsPerson;
-    }
-
-    public String getContactsPersonPhone() {
-        return contactsPersonPhone;
-    }
-
-    public void setContactsPersonPhone(String contactsPersonPhone) {
-        this.contactsPersonPhone = contactsPersonPhone;
-    }
-
-    public String getCompanyCode() {
-        return companyCode;
-    }
-
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName;
-    }
-
-    public String getProvinceId() {
-        return provinceId;
-    }
-
-    public void setProvinceId(String provinceId) {
-        this.provinceId = provinceId;
-    }
-
-    public String getProvinceName() {
-        return provinceName;
-    }
-
-    public void setProvinceName(String provinceName) {
-        this.provinceName = provinceName;
-    }
-
-    public String getCityId() {
-        return cityId;
-    }
-
-    public void setCityId(String cityId) {
-        this.cityId = cityId;
-    }
-
-    public String getCityName() {
-        return cityName;
-    }
-
-    public void setCityName(String cityName) {
-        this.cityName = cityName;
-    }
-
-    public String getDistrictId() {
-        return districtId;
-    }
-
-    public void setDistrictId(String districtId) {
-        this.districtId = districtId;
-    }
-
-    public String getDistrictName() {
-        return districtName;
-    }
-
-    public void setDistrictName(String districtName) {
-        this.districtName = districtName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public Date getExpectTime() {
-        return expectTime;
-    }
-
-    public void setExpectTime(Date expectTime) {
-        this.expectTime = expectTime;
-    }
-
-    public Date getValidDay() {
-        return validDay;
-    }
-
-    public void setValidDay(Date validDay) {
-        this.validDay = validDay;
-    }
-
-    public String getDictionaryId() {
-        return dictionaryId;
-    }
-
-    public void setDictionaryId(String dictionaryId) {
-        this.dictionaryId = dictionaryId;
-    }
-
-    public String getDictionaryName() {
-        return dictionaryName;
-    }
-
-    public void setDictionaryName(String dictionaryName) {
-        this.dictionaryName = dictionaryName;
-    }
-
-    public String getSupplierCode() {
-        return supplierCode;
-    }
-
-    public void setSupplierCode(String supplierCode) {
-        this.supplierCode = supplierCode;
-    }
-
-    public String getSettlementMethodCode() {
-        return settlementMethodCode;
-    }
-
-    public void setSettlementMethodCode(String settlementMethodCode) {
-        this.settlementMethodCode = settlementMethodCode;
-    }
-
-    public String getSettlementMethodName() {
-        return settlementMethodName;
-    }
-
-    public void setSettlementMethodName(String settlementMethodName) {
-        this.settlementMethodName = settlementMethodName;
-    }
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getPurchaseGroupCode() {
-        return purchaseGroupCode;
-    }
-
-    public void setPurchaseGroupCode(String purchaseGroupCode) {
-        this.purchaseGroupCode = purchaseGroupCode;
-    }
-
-    public String getPurchaseGroupName() {
-        return purchaseGroupName;
-    }
-
-    public void setPurchaseGroupName(String purchaseGroupName) {
-        this.purchaseGroupName = purchaseGroupName;
-    }
-
-    public String getTransportCenterCode() {
-        return transportCenterCode;
-    }
-
-    public void setTransportCenterCode(String transportCenterCode) {
-        this.transportCenterCode = transportCenterCode;
-    }
-
-    public String getTransportCenterName() {
-        return transportCenterName;
-    }
-
-    public void setTransportCenterName(String transportCenterName) {
-        this.transportCenterName = transportCenterName;
-    }
-
-    public String getWarehouseCode() {
-        return warehouseCode;
-    }
-
-    public void setWarehouseCode(String warehouseCode) {
-        this.warehouseCode = warehouseCode;
-    }
-
-    public String getWarehouseName() {
-        return warehouseName;
-    }
-
-    public void setWarehouseName(String warehouseName) {
-        this.warehouseName = warehouseName;
-    }
-
-    public Integer getRejectStatus() {
-        return rejectStatus;
-    }
-
-    public void setRejectStatus(Integer rejectStatus) {
-        this.rejectStatus = rejectStatus;
-    }
-
-    public String getScoreCode() {
-        return scoreCode;
-    }
-
-    public void setScoreCode(String scoreCode) {
-        this.scoreCode = scoreCode;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
-    public String getTransportUrl() {
-        return transportUrl;
-    }
-
-    public void setTransportUrl(String transportUrl) {
-        this.transportUrl = transportUrl;
-    }
-
-    public String getTransportRemark() {
-        return transportRemark;
-    }
-
-    public void setTransportRemark(String transportRemark) {
-        this.transportRemark = transportRemark;
-    }
-
-    public Date getOutStockTime() {
-        return outStockTime;
-    }
-
-    public void setOutStockTime(Date outStockTime) {
-        this.outStockTime = outStockTime;
-    }
-
-    public Integer getProductCount() {
-        return productCount;
-    }
-
-    public void setProductCount(Integer productCount) {
-        this.productCount = productCount;
-    }
-
-    public Long getProductAmount() {
-        return productAmount;
-    }
-
-    public void setProductAmount(Long productAmount) {
-        this.productAmount = productAmount;
-    }
-
-    public Integer getSingleCount() {
-        return singleCount;
-    }
-
-    public void setSingleCount(Integer singleCount) {
-        this.singleCount = singleCount;
-    }
-
-    public Integer getGiftCount() {
-        return giftCount;
-    }
-
-    public void setGiftCount(Integer giftCount) {
-        this.giftCount = giftCount;
-    }
-
-    public Long getGiftAmount() {
-        return giftAmount;
-    }
-
-    public void setGiftAmount(Long giftAmount) {
-        this.giftAmount = giftAmount;
-    }
-
-    public Integer getReturnCount() {
-        return returnCount;
-    }
-
-    public void setReturnCount(Integer returnCount) {
-        this.returnCount = returnCount;
-    }
-
-    public Long getReturnAmount() {
-        return returnAmount;
-    }
-
-    public void setReturnAmount(Long returnAmount) {
-        this.returnAmount = returnAmount;
-    }
-
-    public Integer getActualProductCount() {
-        return actualProductCount;
-    }
-
-    public void setActualProductCount(Integer actualProductCount) {
-        this.actualProductCount = actualProductCount;
-    }
-
-    public Long getActualProductAmount() {
-        return actualProductAmount;
-    }
-
-    public void setActualProductAmount(Long actualProductAmount) {
-        this.actualProductAmount = actualProductAmount;
-    }
-
-    public Integer getActualSingleCount() {
-        return actualSingleCount;
-    }
-
-    public void setActualSingleCount(Integer actualSingleCount) {
-        this.actualSingleCount = actualSingleCount;
-    }
-
-    public Integer getActualGiftCount() {
-        return actualGiftCount;
-    }
-
-    public void setActualGiftCount(Integer actualGiftCount) {
-        this.actualGiftCount = actualGiftCount;
-    }
-
-    public Long getActualGiftAmount() {
-        return actualGiftAmount;
-    }
-
-    public void setActualGiftAmount(Long actualGiftAmount) {
-        this.actualGiftAmount = actualGiftAmount;
-    }
-
-    public Integer getActualReturnCount() {
-        return actualReturnCount;
-    }
-
-    public void setActualReturnCount(Integer actualReturnCount) {
-        this.actualReturnCount = actualReturnCount;
-    }
-
-    public Long getActualReturnAmount() {
-        return actualReturnAmount;
-    }
-
-    public void setActualReturnAmount(Long actualReturnAmount) {
-        this.actualReturnAmount = actualReturnAmount;
-    }
-
-    public Long getUntaxedAmount() {
-        return untaxedAmount;
-    }
-
-    public void setUntaxedAmount(Long untaxedAmount) {
-        this.untaxedAmount = untaxedAmount;
-    }
-
-    public String getCreateById() {
-        return createById;
-    }
-
-    public void setCreateById(String createById) {
-        this.createById = createById;
-    }
-
-    public String getCreateByName() {
-        return createByName;
-    }
-
-    public void setCreateByName(String createByName) {
-        this.createByName = createByName;
-    }
-
-    public String getUpdateById() {
-        return updateById;
-    }
-
-    public void setUpdateById(String updateById) {
-        this.updateById = updateById;
-    }
-
-    public String getUpdateByName() {
-        return updateByName;
-    }
-
-    public void setUpdateByName(String updateByName) {
-        this.updateByName = updateByName;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public Date getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(Date updateTime) {
-        this.updateTime = updateTime;
-    }
 }

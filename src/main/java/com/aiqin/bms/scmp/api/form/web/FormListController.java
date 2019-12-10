@@ -16,6 +16,8 @@ public class FormListController {
 
     @Resource
     private FormListService formListService;
+    
+//    private final String receiptType = "scmp-system";
 
     @PostMapping("/send")
     @ApiOperation("查询我的已发")

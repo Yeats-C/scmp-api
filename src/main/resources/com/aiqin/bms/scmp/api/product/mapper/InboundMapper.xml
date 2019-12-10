@@ -22,14 +22,14 @@
     <result column="wms_document_code" jdbcType="VARCHAR" property="wmsDocumentCode" />
     <result column="pre_inbound_num" jdbcType="BIGINT" property="preInboundNum" />
     <result column="pre_main_unit_num" jdbcType="BIGINT" property="preMainUnitNum" />
-    <result column="pre_tax_amount" jdbcType="BIGINT" property="preTaxAmount" />
-    <result column="pre_amount" jdbcType="BIGINT" property="preAmount" />
-    <result column="pre_tax" jdbcType="BIGINT" property="preTax" />
+    <result column="pre_tax_amount" jdbcType="DECIMAL" property="preTaxAmount" />
+    <result column="pre_amount" jdbcType="DECIMAL" property="preAmount" />
+    <result column="pre_tax" jdbcType="DECIMAL" property="preTax" />
     <result column="pra_inbound_num" jdbcType="BIGINT" property="praInboundNum" />
     <result column="pra_main_unit_num" jdbcType="BIGINT" property="praMainUnitNum" />
-    <result column="pra_tax_amount" jdbcType="BIGINT" property="praTaxAmount" />
-    <result column="pra_amount" jdbcType="BIGINT" property="praAmount" />
-    <result column="pra_tax" jdbcType="BIGINT" property="praTax" />
+    <result column="pra_tax_amount" jdbcType="DECIMAL" property="praTaxAmount" />
+    <result column="pra_amount" jdbcType="DECIMAL" property="praAmount" />
+    <result column="pra_tax" jdbcType="DECIMAL" property="praTax" />
     <result column="shipper" jdbcType="VARCHAR" property="shipper" />
     <result column="shipper_number" jdbcType="VARCHAR" property="shipperNumber" />
     <result column="shipper_rate" jdbcType="VARCHAR" property="shipperRate" />
@@ -90,10 +90,10 @@
       #{inboundTime,jdbcType=TIMESTAMP}, #{logisticsCenterCode,jdbcType=VARCHAR}, #{logisticsCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP}, #{wmsDocumentCode,jdbcType=VARCHAR}, 
-      #{preInboundNum,jdbcType=BIGINT}, #{preMainUnitNum,jdbcType=BIGINT}, #{preTaxAmount,jdbcType=BIGINT}, 
-      #{preAmount,jdbcType=BIGINT}, #{preTax,jdbcType=BIGINT}, #{praInboundNum,jdbcType=BIGINT}, 
-      #{praMainUnitNum,jdbcType=BIGINT}, #{praTaxAmount,jdbcType=BIGINT}, #{praAmount,jdbcType=BIGINT}, 
-      #{praTax,jdbcType=BIGINT}, #{shipper,jdbcType=VARCHAR}, #{shipperNumber,jdbcType=VARCHAR}, 
+      #{preInboundNum,jdbcType=BIGINT}, #{preMainUnitNum,jdbcType=BIGINT}, #{preTaxAmount,jdbcType=DECIMAL},
+      #{preAmount,jdbcType=DECIMAL}, #{preTax,jdbcType=DECIMAL}, #{praInboundNum,jdbcType=BIGINT},
+      #{praMainUnitNum,jdbcType=BIGINT}, #{praTaxAmount,jdbcType=DECIMAL}, #{praAmount,jdbcType=DECIMAL},
+      #{praTax,jdbcType=DECIMAL}, #{shipper,jdbcType=VARCHAR}, #{shipperNumber,jdbcType=VARCHAR},
       #{shipperRate,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{countyCode,jdbcType=VARCHAR}, 
       #{countyName,jdbcType=VARCHAR}, #{detailedAddress,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, 
@@ -292,13 +292,13 @@
         #{preMainUnitNum,jdbcType=BIGINT},
       </if>
       <if test="preTaxAmount != null">
-        #{preTaxAmount,jdbcType=BIGINT},
+        #{preTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="preAmount != null">
-        #{preAmount,jdbcType=BIGINT},
+        #{preAmount,jdbcType=DECIMAL},
       </if>
       <if test="preTax != null">
-        #{preTax,jdbcType=BIGINT},
+        #{preTax,jdbcType=DECIMAL},
       </if>
       <if test="praInboundNum != null">
         #{praInboundNum,jdbcType=BIGINT},
@@ -307,13 +307,13 @@
         #{praMainUnitNum,jdbcType=BIGINT},
       </if>
       <if test="praTaxAmount != null">
-        #{praTaxAmount,jdbcType=BIGINT},
+        #{praTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="praAmount != null">
-        #{praAmount,jdbcType=BIGINT},
+        #{praAmount,jdbcType=DECIMAL},
       </if>
       <if test="praTax != null">
-        #{praTax,jdbcType=BIGINT},
+        #{praTax,jdbcType=DECIMAL},
       </if>
       <if test="shipper != null">
         #{shipper,jdbcType=VARCHAR},
@@ -420,13 +420,13 @@
         pre_main_unit_num = #{preMainUnitNum,jdbcType=BIGINT},
       </if>
       <if test="preTaxAmount != null">
-        pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
+        pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="preAmount != null">
-        pre_amount = #{preAmount,jdbcType=BIGINT},
+        pre_amount = #{preAmount,jdbcType=DECIMAL},
       </if>
       <if test="preTax != null">
-        pre_tax = #{preTax,jdbcType=BIGINT},
+        pre_tax = #{preTax,jdbcType=DECIMAL},
       </if>
       <if test="praInboundNum != null">
         pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
@@ -435,13 +435,13 @@
         pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
       </if>
       <if test="praTaxAmount != null">
-        pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
+        pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="praAmount != null">
-        pra_amount = #{praAmount,jdbcType=BIGINT},
+        pra_amount = #{praAmount,jdbcType=DECIMAL},
       </if>
       <if test="praTax != null">
-        pra_tax = #{praTax,jdbcType=BIGINT},
+        pra_tax = #{praTax,jdbcType=DECIMAL},
       </if>
       <if test="shipper != null">
         shipper = #{shipper,jdbcType=VARCHAR},
@@ -509,14 +509,14 @@
       wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
       pre_inbound_num = #{preInboundNum,jdbcType=BIGINT},
       pre_main_unit_num = #{preMainUnitNum,jdbcType=BIGINT},
-      pre_tax_amount = #{preTaxAmount,jdbcType=BIGINT},
-      pre_amount = #{preAmount,jdbcType=BIGINT},
-      pre_tax = #{preTax,jdbcType=BIGINT},
+      pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
+      pre_amount = #{preAmount,jdbcType=DECIMAL},
+      pre_tax = #{preTax,jdbcType=DECIMAL},
       pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
       pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
-      pra_tax_amount = #{praTaxAmount,jdbcType=BIGINT},
-      pra_amount = #{praAmount,jdbcType=BIGINT},
-      pra_tax = #{praTax,jdbcType=BIGINT},
+      pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
+      pra_amount = #{praAmount,jdbcType=DECIMAL},
+      pra_tax = #{praTax,jdbcType=DECIMAL},
       shipper = #{shipper,jdbcType=VARCHAR},
       shipper_number = #{shipperNumber,jdbcType=VARCHAR},
       shipper_rate = #{shipperRate,jdbcType=VARCHAR},

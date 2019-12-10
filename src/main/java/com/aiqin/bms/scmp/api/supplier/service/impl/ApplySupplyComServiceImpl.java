@@ -55,6 +55,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -452,6 +453,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
+        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
@@ -1784,7 +1786,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     flag = false;
                 }else {
                     try {
-                        this.acctReqVO.setMaxPaymentAmount(NumberConvertUtils.stringParseLong(supplierImport.getMaxPaymentAmount().trim()));
+                        this.acctReqVO.setMaxPaymentAmount(new BigDecimal(supplierImport.getMaxPaymentAmount().trim()));
                     } catch (Exception e) {
                         error.add("最高付款金额格式不正确");
                         flag = false;

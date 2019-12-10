@@ -10,9 +10,9 @@
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
-    <result column="Integral_coefficient" jdbcType="BIGINT" property="integralCoefficient" />
+    <result column="output_tax_rate" jdbcType="DECIMAL" property="outputTaxRate" />
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
+    <result column="Integral_coefficient" jdbcType="DECIMAL" property="integralCoefficient" />
     <result column="rebate" jdbcType="BIGINT" property="rebate" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
@@ -41,8 +41,8 @@
       )
     values (#{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{delFlag,jdbcType=TINYINT}, 
-      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{outputTaxRate,jdbcType=BIGINT}, 
-      #{inputTaxRate,jdbcType=BIGINT}, #{integralCoefficient,jdbcType=BIGINT}, #{rebate,jdbcType=BIGINT},
+      #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{outputTaxRate,jdbcType=DECIMAL},
+      #{inputTaxRate,jdbcType=DECIMAL}, #{integralCoefficient,jdbcType=DECIMAL}, #{rebate,jdbcType=BIGINT},
       #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, #{logisticsFeeAwardRatio,jdbcType=DECIMAL}
       )
   </insert>

@@ -20,6 +20,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
 //            Map<String, Long> map = skuService.getSkuConvertNumBySkuCodes(skuCodes);
 //            InboundSavePo po = new InboundSavePo();
             List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
-            Map<String, Long> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
+            Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getOutputTaxRate, (k1, k2) -> k2));
             InboundReqSave inbound = new InboundReqSave();
             SupplyReturnOrderInfoReqVO mainOrderInfo = reqVo.getMainOrderInfo();
             BeanUtils.copyProperties(mainOrderInfo,inbound);
@@ -72,7 +73,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
             inbound.setPreMainUnitNum(mainOrderInfo.getProductNum());
             inbound.setPreTaxAmount(mainOrderInfo.getProductTotalAmount());
             inbound.setPreAmount(mainOrderInfo.getProductTotalAmount());
-            inbound.setPreTax(0L);
+            inbound.setPreTax(BigDecimal.valueOf(0));
 //            inbound.setPraTax(inbound.getPreTax());
 //            inbound.setPraAmount(inbound.getPreAmount());
 //            inbound.setPraTaxAmount(inbound.getPreTaxAmount());
@@ -98,7 +99,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
 //            if(StringUtils.isNotBlank(inbound.getUpdateBy())){
 //                inbound.setUpdateTime(new Date());
 //            }
-            long noTaxTotalAmount = 0L;
+            BigDecimal noTaxTotalAmount = BigDecimal.valueOf(0);
             List<InboundProductReqVo> products= Lists.newArrayList();
             for (SupplyReturnOrderProductItemReqVO vo : reqVo.getOrderItems()){
 //                InboundProduct product = BeanCopyUtils.copy(vo, InboundProduct.class);
@@ -108,13 +109,13 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
                 try {
                     product.setPreInboundMainNum(vo.getNum());
                     //计算不含税单价
-                    Long aLong = map.get(vo.getSkuCode());
-                    Long noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
+                    BigDecimal aLong = map.get(vo.getSkuCode());
+                    BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(vo.getPrice(), aLong);
 
                     //计算不含税总价 (现在是主单位数量 * 单价）
 //                long noTaxTotalPrice = noTaxPrice * o.getNum();
-                    long noTaxTotalPrice = noTaxPrice * vo.getNum();
-                    noTaxTotalAmount += noTaxTotalPrice;
+                    BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(vo.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
+                    noTaxTotalAmount = noTaxTotalPrice.add(noTaxTotalAmount);
                 } catch (Exception e) {
                     log.error(Global.ERROR, e);
                     throw new BizException("sku编码:"+vo.getSkuCode()+",对应的转换单位系数不存在");
@@ -133,7 +134,7 @@ public class SupplyReturnOrderMainReqVO2InboundSaveConverter implements Converte
             }
 //            po.setInbound(inbound);
             inbound.setPreAmount(noTaxTotalAmount);
-            inbound.setPreTax(mainOrderInfo.getProductTotalAmount()-noTaxTotalAmount);
+            inbound.setPreTax(mainOrderInfo.getProductTotalAmount().subtract(noTaxTotalAmount));
             inbound.setList(products);
             return inbound;
         } catch (Exception e) {

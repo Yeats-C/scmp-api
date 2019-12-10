@@ -179,6 +179,8 @@ public interface StockDao {
 
     Long selectSkuCodeByQueryAvailableNum(@Param("skuCode") String skuCode);
 
+    Long selectSkuCodeByQueryAvailableSum(@Param("skuCode") String skuCode);
+
     List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode") String skuCode);
 
     List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
@@ -210,4 +212,28 @@ public interface StockDao {
     Stock stockInfo(Stock stock);
 
     List<Stock> stockInfoList(@Param("skuList") List<String> skuList);
+
+    /**
+     * 销售库存量
+     *
+     * @param
+     * @param
+     * @return
+     */
+    Long selectSkuCodeBySaleSum(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+    /**
+     * 销售特卖库存量
+     *
+     * @param
+     * @param
+     * @return
+     */
+    Long selectSkuCodeBySpecialSum(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
+    /**
+     * 销售可用
+     * @param
+     * @param productCode
+     * @return
+     */
+    Long selectSkuAndCompanyByQueryAvailableSum(@Param("skuCode")String skuCode,@Param("companyCode") String companyCode);
 }

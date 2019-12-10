@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Size;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel
@@ -138,7 +139,7 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "普通商品金额")
     @JsonProperty("product_amount")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty(value = "单品数量")
     @JsonProperty("single_count")
@@ -150,7 +151,7 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "赠品金额")
     @JsonProperty("gift_amount")
-    private Long giftAmount;
+    private BigDecimal giftAmount;
 
     @ApiModelProperty(value = "实物返回数量")
     @JsonProperty("return_count")
@@ -158,7 +159,7 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "实物返回金额")
     @JsonProperty("return_amount")
-    private Long returnAmount;
+    private BigDecimal returnAmount;
 
     @ApiModelProperty(value = "实际普通商品数量")
     @JsonProperty("actual_product_count")
@@ -166,7 +167,7 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "实际普通商品金额")
     @JsonProperty("actual_product_amount")
-    private Long actualProductAmount;
+    private BigDecimal actualProductAmount;
 
     @ApiModelProperty(value = "实际单品数量")
     @JsonProperty("actual_single_count")
@@ -178,7 +179,7 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "实际赠品金额")
     @JsonProperty("actual_gift_amount")
-    private Long actualGiftAmount;
+    private BigDecimal actualGiftAmount;
 
     @ApiModelProperty(value = "实际实物返回数量")
     @JsonProperty("actual_return_count")
@@ -186,11 +187,11 @@ public class RejectRecord extends ApplyRejectRecord {
 
     @ApiModelProperty(value = "实际实物返回金额")
     @JsonProperty("actual_return_amount")
-    private Long actualReturnAmount;
+    private BigDecimal actualReturnAmount;
 
     @ApiModelProperty(value = "未税金额")
     @JsonProperty("untaxed_amount")
-    private Long untaxedAmount;
+    private BigDecimal untaxedAmount;
 
     @ApiModelProperty(value = "")
     @JsonProperty("create_by_id")

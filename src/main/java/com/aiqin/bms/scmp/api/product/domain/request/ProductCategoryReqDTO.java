@@ -40,4 +40,16 @@ public class ProductCategoryReqDTO extends CommonBean{
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty(value = "创建人员工号")
+    private String createById;
+
+    @ApiModelProperty(value = "创建人员名称")
+    private String createBy;
+
+    @ApiModelProperty(value = "修改人员工号")
+    private String updateById;
+
+    @ApiModelProperty(value = "修改人员名称")
+    private String updateBy;
 }

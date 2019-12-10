@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("商品sku 供货单位")
 @Data
 public class ProductSkuSupplyUnit extends CommonBean {
@@ -18,16 +20,16 @@ public class ProductSkuSupplyUnit extends CommonBean {
     private String supplyUnitName;
 
     @ApiModelProperty("无税进价")
-    private Long noTaxPurchasePrice;
+    private BigDecimal noTaxPurchasePrice;
 
     @ApiModelProperty("含税进价")
-    private Long taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty("联营扣率")
-    private Long jointFranchiseRate;
+    private BigDecimal jointFranchiseRate;
 
     @ApiModelProperty("返点")
-    private Long point;
+    private BigDecimal point;
 
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;

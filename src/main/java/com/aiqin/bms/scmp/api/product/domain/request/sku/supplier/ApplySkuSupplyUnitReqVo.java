@@ -47,4 +47,10 @@ public class ApplySkuSupplyUnitReqVo {
     @ApiModelProperty("需要提交申请的编码集合")
     @NotEmpty(message = "编码不能为空！")
     List<Long> supplierId;
+
+    @ApiModelProperty("职位编码")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    private String positionName;
 }

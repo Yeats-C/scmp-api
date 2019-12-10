@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPrice
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -91,7 +92,7 @@ public interface ProductSkuPriceInfoMapper {
      */
     ProductSkuPriceInfoRespVO selectInfoByCode(String code);
 
-    Long selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
+    BigDecimal selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
     /**
      * 通过sku编码查询sku信息
      * @author NullPointException
@@ -130,4 +131,12 @@ public interface ProductSkuPriceInfoMapper {
     List<PriceJog> getPriceJog(@Param("skuCode") String skuCode, @Param("year") int year);
     @MapKey("skuCode")
     Map<String, ProductSkuPriceInfo> selectChannelPriceBySkuCode(List<QuerySkuInfoRespVO> respVos);
+
+    /**
+     * 获取分销价格
+     * @param productCode
+     * @param categoriesSupplyChannelsCode
+     * @return
+     */
+    List<BigDecimal> getDistributionPriceByProductCode(@Param("productCode")String productCode, @Param("categoriesSupplyChannelsCode")String categoriesSupplyChannelsCode);
 }

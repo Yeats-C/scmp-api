@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Classname: InboundProductWmsReqVO
  * 描述:WMS传入入库单sku实体
@@ -29,7 +31,7 @@ public class InboundProductWmsReqVO {
     private int productType;
 
     @ApiModelProperty("采购单价")
-    private Long productAmount;
+    private BigDecimal productAmount;
 
     @ApiModelProperty("税率")
     private int taxRate;

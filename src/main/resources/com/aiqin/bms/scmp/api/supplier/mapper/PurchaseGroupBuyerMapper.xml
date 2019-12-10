@@ -29,7 +29,25 @@
     from purchase_group_buyer
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+
+
+    <select id="loadCodesByPersonId" resultType="java.lang.String" parameterType="java.lang.String">
+      select  purchase_group_code from  purchase_group_buyer
+        <where>
+            buyer_code=#{personId,jdbcType=BIGINT}
+        </where>
+    </select>
+
+    <select id="loadNamesByPersonId" resultType="java.lang.String" parameterType="java.lang.String">
+         select  g.purchase_group_name from  purchase_group_buyer b
+         left join  purchase_group g on g.purchase_group_code = b.purchase_group_code
+        <where>
+            b.buyer_code=#{personId,jdbcType=BIGINT}
+        </where>
+    </select>
+
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from purchase_group_buyer
     where id = #{id,jdbcType=BIGINT}
   </delete>

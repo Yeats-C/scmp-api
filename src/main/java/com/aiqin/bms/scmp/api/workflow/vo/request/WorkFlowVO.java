@@ -38,4 +38,7 @@ public class WorkFlowVO {
     //条件
     private String variables;
 
+    //当前人所选职位
+    private String positionCode;
+
 }
