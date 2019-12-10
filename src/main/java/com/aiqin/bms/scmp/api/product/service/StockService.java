@@ -38,7 +38,6 @@ import java.util.Map;
  */
 public interface StockService {
 
-
     /**
      *
      * 功能描述: =查询库存商品(采购退供使用) 分页
@@ -288,4 +287,6 @@ public interface StockService {
     List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 
     List<Stock> selectSkuCost();
+
+    HttpResponse lockErpStock(MerchantLockStockReqVo vo);
 }

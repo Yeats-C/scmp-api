@@ -113,11 +113,13 @@ public class StockController {
     public HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
         return stockService.verifyReturnSupply(reqVO);
     }
+
     @PostMapping("/unLock/returnSupply")
     @ApiOperation(value = "审核失败解锁库存")
     public HttpResponse<Boolean> unLockReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
         return HttpResponse.success(stockService.returnSupplyUnLockStock(reqVO));
     }
+
     @PostMapping("/unLock")
     @ApiOperation(value = "库存解锁")
     public HttpResponse unLockStock(@RequestBody UnLockStockReqVo reqVo) {
@@ -129,7 +131,6 @@ public class StockController {
     public HttpResponse reduceUnlockStock(@RequestBody UpdateOutBoundReqVO reqVo){
         return stockService.reduceUnlockStock(reqVo);
     }
-
 
     @PostMapping("/search/merchant")
     @ApiOperation(value = "门店库存查询")
@@ -151,6 +152,7 @@ public class StockController {
         List<MerchantLockStockRespVo> queryMerchantStockRepVos = stockService.lockMerchantStock(reqVo);
         return HttpResponse.success(queryMerchantStockRepVos);
     }
+
     //因为目前对接中心没介入,所以直接接收采购单 这里传之前锁定生成的出库单号
     @ApiOperation(value = "退供供应商确认后,出库单")
     @GetMapping("/outBound/save")
@@ -159,16 +161,19 @@ public class StockController {
         updateOutBoundReqVO.setSourceOrderCode(outBoundCode);
         return HttpResponse.success(stockService.reduceUnlockStock(updateOutBoundReqVO));
     }
+
     @PostMapping("/lock/flow")
     @ApiOperation(value = "解锁库存并加流水")
     public HttpResponse lockFlow(@RequestBody StockFlowRequest reqVo){
         return HttpResponse.success(stockService.stockFlow(reqVo));
     }
+
     @PostMapping("change")
     @ApiOperation(value = "库存修改")
     public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
         return stockService.changeStock(stockChangeRequest);
     }
+
     @PostMapping("/logs")
     public HttpResponse logs(@RequestBody StockLogsRequest stockLogsRequest){
         return stockService.logs(stockLogsRequest);
@@ -312,5 +317,18 @@ public class StockController {
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
         return HttpResponse.success(stockService.importStockSkuList(reqVO));
+    }
+
+    @PostMapping("/lock/merchant")
+    @ApiOperation(value = "门店库存锁定")
+    public HttpResponse lockErpStock(@RequestBody MerchantLockStockReqVo vo) {
+        return stockService.lockErpStock(vo);
+    }
+
+    @PostMapping("/unlock/merchant")
+    @ApiOperation(value = "解锁门店库存并加流水")
+    public HttpResponse unlockErpStock(@RequestBody List<StockFlowRequest> reqVo){
+        // stockService.unlockErpStock(reqVo)
+        return HttpResponse.success();
     }
 }

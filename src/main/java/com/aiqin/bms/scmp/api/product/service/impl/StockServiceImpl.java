@@ -24,10 +24,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.*;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -853,34 +850,6 @@ public class StockServiceImpl implements StockService {
         return respVos;
     }
 
-    //    /**
-//     * 门店库存锁定
-//     *
-//     * @param vo
-//     * @return
-//     */
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public List<MerchantLockStockRespVo> lockMerchantStock(MerchantLockStockReqVo vo) {
-//        //1.通过省市查询物流中心
-//        //2.通过物流中心找到对应仓库
-//        //3.根据仓库和skuList查询是否有库存
-//        //4.验证,进行锁库操作
-//        List<MerchantLockStockRespVo> respVos = Lists.newLinkedList();
-//        MerchantLockStockRespVo respVo = null;
-//
-//        for (MerchantLockStockItemReqVo itemReqVo : vo.getSkuList()) {
-//            respVo = new MerchantLockStockRespVo();
-//            respVo.setSkuCode(itemReqVo.getSkuCode());
-//            respVo.setLockNum(itemReqVo.getNum());
-//            respVo.setTransportCenterCode("1025");
-//            respVo.setWarehouseCode("1026");
-//            respVo.setProductType(itemReqVo.getProductType());
-//            respVo.setLineNum(itemReqVo.getLineNum());
-//            respVos.add(respVo);
-//
-//        return respVos;
-//    }
     @Override
     public List<Stock> selectByQueryList(List<String> centerCodes, List<String> warehouseCodes, List<String> skuCodes, String companyCode) {
         return stockDao.selectByQueryList(centerCodes, warehouseCodes, skuCodes, companyCode);
@@ -2186,5 +2155,52 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<Stock> selectSkuCost() {
         return  stockDao.selectSkuCost();
+    }
+
+    @Override
+    public HttpResponse lockErpStock(MerchantLockStockReqVo vo) {
+        if (vo == null) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        StockChangeRequest lock = new StockChangeRequest();
+        lock.setOperationType(1);
+        lock.setOrderCode(vo.getOrderCode());
+        List<StockVoRequest> stockVoRequests = Lists.newArrayList();
+        lock.setStockVoRequests(stockVoRequests);
+        // 运营中台需要锁库存的sku集合
+        List<MerchantLockStockItemReqVo> skuList = vo.getSkuList();
+        if (CollectionUtils.isNotEmpty(skuList)) {
+            for (MerchantLockStockItemReqVo sku : skuList) {
+                List<StockTransportResponse> centerList = sku.getTransportCenterList();
+                if(CollectionUtils.isEmpty(centerList)){
+                    // 此sku没有查询到对应的仓库
+                    //return ;
+                }
+                // 计算主备仓的库存总数
+                Long stockCount = centerList.get(0).getStockCount() + centerList.get(1).getStockCount();
+                if(sku.getNum() > stockCount){
+                   // 无法锁库存 sku锁库存的数量大于实际主备仓的库存总和
+
+                }
+                // 把仓库按类型排序
+                List<StockTransportResponse> list = centerList.stream().sorted((c1, c2) -> c1.getTransportCenterType()
+                        .compareTo(c2.getTransportCenterType())).collect(Collectors.toList());
+                // 判断是否分仓锁库
+                if(list.get(0).getStockCount() >= sku.getNum()){
+                    // 主仓库存大于等于锁库数量，不需要分库锁
+                    
+                }else {
+                   // 优先锁主库库存，在锁备库库存
+
+                }
+
+            }
+        }
+        //调用库存接口锁库
+        HttpResponse httpResponse = changeStock(lock);
+        if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+            //return HttpResponse.failure()"调用库存接口锁定库存失败";
+        }
+        return null;
     }
 }
