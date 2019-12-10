@@ -134,23 +134,25 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
     private ProductMovableResponse movablePin(List<NewProductMovingRateResponse> movingList){
         ProductMovableResponse response = new ProductMovableResponse();
         if(CollectionUtils.isNotEmpty(movingList)){
-            Long num = 0L;
+            BigDecimal num = BigDecimal.ZERO;
+            Long num1 = 0L;
             BigDecimal big = new BigDecimal(0);
-            Long sumIniStockSkuNum = 0L, sumIniStockSkuCost = 0L, sumMidPurchaseSkuNum = 0L, sumMidSalesSkuNum = 0L,
-                    sumChannelSalesAmount = 0L, sumDistributionsalesAmount = 0L;
+            Long sumIniStockSkuNum = 0L,  sumMidPurchaseSkuNum = 0L, sumMidSalesSkuNum = 0L;
+
+            BigDecimal  sumIniStockSkuCost = BigDecimal.ZERO,sumChannelSalesAmount = BigDecimal.ZERO,sumDistributionsalesAmount = BigDecimal.ZERO;
             for(NewProductMovingRateResponse mov:movingList){
-                Long iniStockSkuNum = mov.getIniStockSkuNum() == null ? num : mov.getIniStockSkuNum();
-                Long iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost().longValue();
-                Long midPurchaseSkuNum = mov.getMidPurchaseSkuNum() == null ? num : mov.getMidPurchaseSkuNum();
-                Long midSalesSkuNum = mov.getMidSalesSkuNum() == null ? num : mov.getMidSalesSkuNum();
-                Long channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount().longValue();
-                Long distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount().longValue();
+                Long iniStockSkuNum = mov.getIniStockSkuNum() == null ? num1 : mov.getIniStockSkuNum();
+                BigDecimal iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost();
+                Long midPurchaseSkuNum = mov.getMidPurchaseSkuNum() == null ? num1 : mov.getMidPurchaseSkuNum();
+                Long midSalesSkuNum = mov.getMidSalesSkuNum() == null ? num1 : mov.getMidSalesSkuNum();
+                BigDecimal channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount();
+                BigDecimal distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount();
                 sumIniStockSkuNum += iniStockSkuNum;
-                sumIniStockSkuCost += iniStockSkuCost;
+                sumIniStockSkuCost = sumIniStockSkuCost.add(iniStockSkuCost);
                 sumMidPurchaseSkuNum += midPurchaseSkuNum;
                 sumMidSalesSkuNum += midSalesSkuNum;
-                sumChannelSalesAmount += channelSalesAmount;
-                sumDistributionsalesAmount += distributionsalesAmount;
+                sumChannelSalesAmount = sumChannelSalesAmount.add(channelSalesAmount);
+                sumDistributionsalesAmount = sumDistributionsalesAmount.add(distributionsalesAmount);
                 Long newSkuNum = iniStockSkuNum + midPurchaseSkuNum;
                 if(StringUtils.isNotBlank(mov.getTransportCenterCode())) {
                     if (mov.getTransportCenterCode().equals(Global.HB_CODE)) {
@@ -160,7 +162,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                         response.setHbMidSalesSkuNum(midSalesSkuNum);
                         response.setHbChannelSalesAmount(channelSalesAmount);
                         response.setHbDistributionsalesAmount(distributionsalesAmount);
-                        if (midSalesSkuNum == num || newSkuNum == num) {
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
                             response.setHbNewProMovingSalesRate(big);
                         } else {
                             if (newSkuNum == 0) {
@@ -176,7 +178,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                         response.setHdMidSalesSkuNum(midSalesSkuNum);
                         response.setHdChannelSalesAmount(channelSalesAmount);
                         response.setHdDistributionsalesAmount(distributionsalesAmount);
-                        if (midSalesSkuNum == num || newSkuNum == num) {
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
                             response.setHdNewProMovingSalesRate(big);
                         } else {
                             if (newSkuNum == 0) {
@@ -192,7 +194,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                         response.setHnMidSalesSkuNum(midSalesSkuNum);
                         response.setHnChannelSalesAmount(channelSalesAmount);
                         response.setHnDistributionsalesAmount(distributionsalesAmount);
-                        if (midSalesSkuNum == num || newSkuNum == num) {
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
                             response.setHnNewProMovingSalesRate(big);
                         } else {
                             if (newSkuNum == 0) {
@@ -208,7 +210,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                         response.setXnMidSalesSkuNum(midSalesSkuNum);
                         response.setXnChannelSalesAmount(channelSalesAmount);
                         response.setXnDistributionsalesAmount(distributionsalesAmount);
-                        if (midSalesSkuNum == num || newSkuNum == num) {
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
                             response.setXnNewProMovingSalesRate(big);
                         } else {
                             if (newSkuNum == 0) {
@@ -224,7 +226,7 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                         response.setHzMidSalesSkuNum(midSalesSkuNum);
                         response.setHzChannelSalesAmount(channelSalesAmount);
                         response.setHzDistributionsalesAmount(distributionsalesAmount);
-                        if (midSalesSkuNum == num || newSkuNum == num) {
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
                             response.setHzNewProMovingSalesRate(big);
                         } else {
                             if (newSkuNum == 0) {
@@ -237,13 +239,13 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
                 }
             }
             response.setSumIniStockSkuNum(sumIniStockSkuNum);
-            response.setSumIniStockSkuCost(new BigDecimal(sumIniStockSkuCost));
+            response.setSumIniStockSkuCost(sumIniStockSkuCost);
             response.setSumMidPurchaseSkuNum(sumMidPurchaseSkuNum);
             response.setSumMidSalesSkuNum(sumMidSalesSkuNum);
-            response.setSumChannelSalesAmount(new BigDecimal(sumChannelSalesAmount));
-            response.setSumDistributionsalesAmount(new BigDecimal(sumDistributionsalesAmount));
+            response.setSumChannelSalesAmount(sumChannelSalesAmount);
+            response.setSumDistributionsalesAmount(sumDistributionsalesAmount);
             Long sumNewSkuNum = sumIniStockSkuNum + sumMidPurchaseSkuNum;
-            if(sumMidSalesSkuNum == num || sumNewSkuNum == num){
+            if(sumMidSalesSkuNum == num1 || sumNewSkuNum == num1){
                 response.setSumNewProMovingSalesRate(big);
             }else {
                 if(sumNewSkuNum == 0){
