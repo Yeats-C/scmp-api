@@ -27,4 +27,12 @@ public class StockTransportResponse {
     @JsonProperty("transport_center_type")
     private Integer transportCenterType;
 
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value="库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
 }

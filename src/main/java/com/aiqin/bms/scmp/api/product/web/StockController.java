@@ -327,8 +327,7 @@ public class StockController {
 
     @PostMapping("/unlock/merchant")
     @ApiOperation(value = "解锁门店库存并加流水")
-    public HttpResponse unlockErpStock(@RequestBody List<StockFlowRequest> reqVo){
-        // stockService.unlockErpStock(reqVo)
-        return HttpResponse.success();
+    public HttpResponse unlockErpStock(@RequestBody List<StockFlowRequest> requests){
+        return stockService.unlockErpStock(requests);
     }
 }

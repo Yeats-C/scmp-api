@@ -289,4 +289,6 @@ public interface StockService {
     List<Stock> selectSkuCost();
 
     HttpResponse lockErpStock(MerchantLockStockReqVo vo);
+
+    HttpResponse unlockErpStock(List<StockFlowRequest> requests);
 }

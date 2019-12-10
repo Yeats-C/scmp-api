@@ -2158,6 +2158,7 @@ public class StockServiceImpl implements StockService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse lockErpStock(MerchantLockStockReqVo vo) {
         if (vo == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -2170,37 +2171,81 @@ public class StockServiceImpl implements StockService {
         // 运营中台需要锁库存的sku集合
         List<MerchantLockStockItemReqVo> skuList = vo.getSkuList();
         if (CollectionUtils.isNotEmpty(skuList)) {
+            StockVoRequest stockTemp;
+            StockVoRequest stockTemp1;
             for (MerchantLockStockItemReqVo sku : skuList) {
                 List<StockTransportResponse> centerList = sku.getTransportCenterList();
                 if(CollectionUtils.isEmpty(centerList)){
-                    // 此sku没有查询到对应的仓库
-                    //return ;
+                    LOGGER.info("此sku没有查询到对应的仓库:" + sku.getSkuCode());
+                    return HttpResponse.failure(ResultCode.ERP_NO_TRANSPORT);
                 }
                 // 计算主备仓的库存总数
                 Long stockCount = centerList.get(0).getStockCount() + centerList.get(1).getStockCount();
                 if(sku.getNum() > stockCount){
-                   // 无法锁库存 sku锁库存的数量大于实际主备仓的库存总和
-
+                    LOGGER.info("无法锁库存 sku锁库存的数量大于实际主备仓的库存总和:" + sku.getSkuCode());
+                    return HttpResponse.failure(ResultCode.STOCK_LOCK_ERROR);
                 }
                 // 把仓库按类型排序
-                List<StockTransportResponse> list = centerList.stream().sorted((c1, c2) -> c1.getTransportCenterType()
-                        .compareTo(c2.getTransportCenterType())).collect(Collectors.toList());
+                centerList = centerList.stream().sorted(Comparator.comparing(StockTransportResponse::getTransportCenterType))
+                        .collect(Collectors.toList());
                 // 判断是否分仓锁库
-                if(list.get(0).getStockCount() >= sku.getNum()){
+                if(centerList.get(0).getStockCount() >= sku.getNum()){
                     // 主仓库存大于等于锁库数量，不需要分库锁
-                    
+                    stockTemp = new StockVoRequest();
+                    stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
+                    stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
+                    stockTemp.setSkuCode(sku.getSkuCode());
+                    stockTemp.setCompanyCode(vo.getCompanyCode());
+                    stockTemp.setChangeNum(sku.getNum());
+                    stockVoRequests.add(stockTemp);
                 }else {
-                   // 优先锁主库库存，在锁备库库存
-
+                    // 优先锁主库库存，在锁备库库存
+                    stockTemp = new StockVoRequest();
+                    stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
+                    stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
+                    stockTemp.setSkuCode(sku.getSkuCode());
+                    stockTemp.setCompanyCode(vo.getCompanyCode());
+                    stockTemp.setChangeNum(centerList.get(0).getStockCount());
+                    stockVoRequests.add(stockTemp);
+                    stockTemp1 = new StockVoRequest();
+                    stockTemp1.setWarehouseCode(centerList.get(1).getWarehouseCode());
+                    stockTemp1.setTransportCenterCode(centerList.get(1).getTransportCenterCode());
+                    stockTemp1.setSkuCode(sku.getSkuCode());
+                    stockTemp1.setCompanyCode(vo.getCompanyCode());
+                    stockTemp1.setChangeNum(sku.getNum() - centerList.get(0).getStockCount());
+                    stockVoRequests.add(stockTemp1);
                 }
-
             }
         }
         //调用库存接口锁库
         HttpResponse httpResponse = changeStock(lock);
         if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-            //return HttpResponse.failure()"调用库存接口锁定库存失败";
+            return HttpResponse.failure(ResultCode.ERP_LOCK_FAIL);
         }
-        return null;
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse unlockErpStock(List<StockFlowRequest> requests){
+        if(CollectionUtils.isEmpty(requests)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        for(StockFlowRequest request:requests) {
+            Stock stock = stockFlowDao.selectOneStockInfoByStockFlow(request);
+            if (null == stock) {
+                LOGGER.info("未查询到锁库流水：" +  request.getSkuCode());
+                return HttpResponse.failure(ResultCode.STOCK_UNLOCK_ERROR);
+            }
+            StockFlow stockFlow = new StockFlow();
+            BeanCopyUtils.copy(request, stockFlow);
+            long id = IdSequenceUtils.getInstance().nextId();
+            stockFlow.setBeforeLockNum(stock.getLockNum());
+            stockFlow.setAfterLockNum(stock.getLockNum() - request.getChangeNum());
+            stockFlow.setBeforeAvailableNum(stock.getAvailableNum());
+            stockFlow.setBeforeInventoryNum(stock.getInventoryNum());
+
+        }
+        return HttpResponse.success();
     }
 }
