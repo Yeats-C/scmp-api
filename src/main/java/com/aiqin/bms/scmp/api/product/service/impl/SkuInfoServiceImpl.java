@@ -1575,7 +1575,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(positionCode);
+//        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);

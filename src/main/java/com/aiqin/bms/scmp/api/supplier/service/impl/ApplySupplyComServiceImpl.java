@@ -453,7 +453,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
+//        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());

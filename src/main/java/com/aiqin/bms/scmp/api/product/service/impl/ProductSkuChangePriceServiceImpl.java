@@ -204,7 +204,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     @Transactional(rollbackFor = Exception.class)
     public void callWorkflow(ProductSkuChangePriceReqVO reqVO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(reqVO.getPositionCode());
+//        workFlowVO.setPositionCode(reqVO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.variableUrl + "?code=" + reqVO.getCode() + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(reqVO.getFormNo());

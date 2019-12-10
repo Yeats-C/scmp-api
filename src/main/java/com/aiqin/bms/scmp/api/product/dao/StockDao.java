@@ -236,4 +236,14 @@ public interface StockDao {
      * @return
      */
     Long selectSkuAndCompanyByQueryAvailableSum(@Param("skuCode")String skuCode,@Param("companyCode") String companyCode);
+
+    /**
+     * 查询可以使用sku 以及库存数量
+     *
+     * @param provinceCode
+     * @param cityCode
+     * @return
+     */
+     List<StockBatchRespVO> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode);
+
 }

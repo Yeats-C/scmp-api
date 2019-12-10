@@ -2150,4 +2150,10 @@ public class StockServiceImpl implements StockService {
     public List<Stock> selectSkuCost() {
         return  stockDao.selectSkuCost();
     }
+
+
+    @Override
+    public List<StockBatchRespVO> byCityCodeAndprovinceCode(String provinceCode, String cityCode) {
+        return stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode);
+    }
 }
