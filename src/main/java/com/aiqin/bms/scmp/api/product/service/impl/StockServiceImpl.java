@@ -2180,34 +2180,38 @@ public class StockServiceImpl implements StockService {
                 centerList = centerList.stream().sorted(Comparator.comparing(StockTransportResponse::getTransportCenterType))
                         .collect(Collectors.toList());
                 // 判断是否分仓锁库
+                stockTemp = new StockVoRequest();
+                stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
+                stockTemp.setWarehouseName(centerList.get(0).getWarehouseName());
+                stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
+                stockTemp.setTransportCenterName(centerList.get(0).getTransportCenterName());
+                stockTemp.setSkuCode(sku.getSkuCode());
+                stockTemp.setSkuName(sku.getSkuName());
+                stockTemp.setCompanyCode(vo.getCompanyCode());
+                stockTemp.setCompanyName(vo.getCompanyCode());
+                stockTemp.setDocumentType(0);
+                stockTemp.setDocumentNum(vo.getOrderCode());
                 if(centerList.get(0).getStockCount() >= sku.getNum()){
                     // 主仓库存大于等于锁库数量，不需要分库锁
-                    stockTemp = new StockVoRequest();
-                    stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
-                    stockTemp.setWarehouseName(centerList.get(0).getWarehouseName());
-                    stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
-                    stockTemp.setTransportCenterName(centerList.get(0).getTransportCenterName());
-                    stockTemp.setSkuCode(sku.getSkuCode());
-                    stockTemp.setSkuName(sku.getSkuName());
-                    stockTemp.setCompanyCode(vo.getCompanyCode());
-                    stockTemp.setCompanyName(vo.getCompanyCode());
                     stockTemp.setChangeNum(sku.getNum());
                     stockVoRequests.add(stockTemp);
                 }else {
                     // 优先锁主库库存，在锁备库库存
-                    stockTemp = new StockVoRequest();
-                    stockTemp.setWarehouseCode(centerList.get(0).getWarehouseCode());
-                    stockTemp.setTransportCenterCode(centerList.get(0).getTransportCenterCode());
-                    stockTemp.setSkuCode(sku.getSkuCode());
-                    stockTemp.setCompanyCode(vo.getCompanyCode());
                     stockTemp.setChangeNum(centerList.get(0).getStockCount());
                     stockVoRequests.add(stockTemp);
+                    // 备库
                     stockTemp1 = new StockVoRequest();
                     stockTemp1.setWarehouseCode(centerList.get(1).getWarehouseCode());
+                    stockTemp1.setWarehouseName(centerList.get(1).getWarehouseName());
                     stockTemp1.setTransportCenterCode(centerList.get(1).getTransportCenterCode());
+                    stockTemp1.setTransportCenterName(centerList.get(1).getTransportCenterName());
                     stockTemp1.setSkuCode(sku.getSkuCode());
+                    stockTemp1.setSkuName(sku.getSkuName());
                     stockTemp1.setCompanyCode(vo.getCompanyCode());
+                    stockTemp1.setCompanyName(vo.getCompanyCode());
                     stockTemp1.setChangeNum(sku.getNum() - centerList.get(0).getStockCount());
+                    stockTemp1.setDocumentType(0);
+                    stockTemp1.setDocumentNum(vo.getOrderCode());
                     stockVoRequests.add(stockTemp1);
                 }
             }
