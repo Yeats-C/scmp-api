@@ -304,4 +304,10 @@ public class StockController {
     public HttpResponse<List<StockBatchRespVO>> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode,@Param("cityCode") String cityCode) {
         return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode));
     }
+
+    @PostMapping("/search/byCityAndProvinceAndskuCode")
+    @ApiOperation(value = "总库存管理列表")
+    public HttpResponse<List<StockBatchRespVO>> byCityAndProvinceAndskuCode(@Param("skuCode") String skuCode,@Param("provinceCode") String provinceCode,@Param("cityCode") String cityCode) {
+        return HttpResponse.success(stockService.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
+    }
 }

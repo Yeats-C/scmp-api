@@ -2156,4 +2156,9 @@ public class StockServiceImpl implements StockService {
     public List<StockBatchRespVO> byCityCodeAndprovinceCode(String provinceCode, String cityCode) {
         return stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode);
     }
+
+    @Override
+    public StockBatchRespVO byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode) {
+        return stockDao.byCityAndProvinceAndskuCode(provinceCode,cityCode);
+    }
 }

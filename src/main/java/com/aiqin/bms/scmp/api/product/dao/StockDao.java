@@ -245,5 +245,12 @@ public interface StockDao {
      * @return
      */
      List<StockBatchRespVO> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode);
-
+    /**
+     * 查询可以使用 sku以及仓库
+     *
+     * @param provinceCode
+     * @param cityCode
+     * @return
+     */
+    StockBatchRespVO byCityAndProvinceAndskuCode(String provinceCode, String cityCode);
 }

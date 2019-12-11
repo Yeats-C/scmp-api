@@ -2709,10 +2709,22 @@
         <where>
             l.del_flag=0 and
             l.province_code = #{provinceCode} and
-            s.available_num >0  and
             s.warehouse_type=1 and
             l.city_code=#{cityCode}
         </where>
 
+    </select>
+    <select id="byCityAndProvinceAndskuCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+        SELECT s.transport_center_code transportCenterCode
+        FROM logistics_center_area l
+        inner  join  stock s on l.logistics_center_code=s.transport_center_code
+        <where>
+            l.del_flag=0 and
+            l.province_code = #{provinceCode} and
+            s.warehouse_type=1 and
+            l.city_code=#{cityCode} and
+            s.sku_code== #{skuCode}
+        </where>
     </select>
 </mapper>

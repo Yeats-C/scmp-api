@@ -290,4 +290,6 @@ public interface StockService {
     List<Stock> selectSkuCost();
 
     List<StockBatchRespVO> byCityCodeAndprovinceCode(String provinceCode, String cityCode);
+
+    StockBatchRespVO byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode);
 }

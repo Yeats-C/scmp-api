@@ -86,7 +86,7 @@
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
       #{item.noTaxPurchasePrice,jdbcType=DECIMAL}, #{item.taxIncludedPrice,jdbcType=DECIMAL}, #{item.jointFranchiseRate,jdbcType=DECIMAL},
       #{item.point,jdbcType=DECIMAL}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+      Now(), #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.usageStatus,jdbcType=TINYINT},
       #{item.productSkuName,jdbcType=VARCHAR},#{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR},#{item.taxRate,jdbcType=DECIMAL},
