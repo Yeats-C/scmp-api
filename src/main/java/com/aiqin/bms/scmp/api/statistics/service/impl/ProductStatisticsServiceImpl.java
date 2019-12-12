@@ -100,29 +100,31 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             categorys = statDeptNewProductMovingRateDao.categoryList(request);
             if(CollectionUtils.isNotEmpty(categorys)){
                 for(MovableResponse category:categorys){
-                    request.setLv1(category.getLv1());
-                    request.setPriceChannelCode(null);
-                    categoryList = statDeptNewProductMovingRateDao.productMovingSum(request);
-                    if(CollectionUtils.isNotEmpty(categoryList)){
-                        categoryResponse = this.movablePin(categoryList);
-                        channels = statDeptNewProductMovingRateDao.channelList(request);
-                        channelSum = Lists.newArrayList();
-                        if(CollectionUtils.isNotEmpty(channels)){
-                            for(MovableResponse channel:channels){
-                                request.setPriceChannelCode(channel.getPriceChannelCode());
-                                channelList = statDeptNewProductMovingRateDao.productMovingSum(request);
-                                channelResponse = this.movablePin(channelList);
-                                channelResponse.setLv1(channel.getLv1());
-                                channelResponse.setLv1CategoryName(channel.getLv1CategoryName());
-                                channelResponse.setPriceChannelCode(channel.getPriceChannelCode());
-                                channelResponse.setPriceChannelName(channel.getPriceChannelName());
-                                channelSum.add(channelResponse);
+                    if(StringUtils.isNotBlank(category.getLv1())){
+                        request.setLv1(category.getLv1());
+                        request.setPriceChannelCode(null);
+                        categoryList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                        if(CollectionUtils.isNotEmpty(categoryList)){
+                            categoryResponse = this.movablePin(categoryList);
+                            channels = statDeptNewProductMovingRateDao.channelList(request);
+                            channelSum = Lists.newArrayList();
+                            if(CollectionUtils.isNotEmpty(channels)){
+                                for(MovableResponse channel:channels){
+                                    request.setPriceChannelCode(channel.getPriceChannelCode());
+                                    channelList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                                    channelResponse = this.movablePin(channelList);
+                                    channelResponse.setLv1(channel.getLv1());
+                                    channelResponse.setLv1CategoryName(channel.getLv1CategoryName());
+                                    channelResponse.setPriceChannelCode(channel.getPriceChannelCode());
+                                    channelResponse.setPriceChannelName(channel.getPriceChannelName());
+                                    channelSum.add(channelResponse);
+                                }
                             }
+                            categoryResponse.setSubsetList(channelSum);
+                            categoryResponse.setLv1(category.getLv1());
+                            categoryResponse.setLv1CategoryName(category.getLv1CategoryName());
+                            categorySum.add(categoryResponse);
                         }
-                        categoryResponse.setSubsetList(channelSum);
-                        categoryResponse.setLv1(category.getLv1());
-                        categoryResponse.setLv1CategoryName(category.getLv1CategoryName());
-                        categorySum.add(categoryResponse);
                     }
                 }
                 deptResponse.setSubsetList(categorySum);
