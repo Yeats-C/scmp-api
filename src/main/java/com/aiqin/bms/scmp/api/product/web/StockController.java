@@ -299,15 +299,17 @@ public class StockController {
     }
 
 
-    @PostMapping("/search/byCityAndProvince")
+    @GetMapping("/search/byCityAndProvince")
     @ApiOperation(value = "总库存管理列表")
-    public HttpResponse<List<StockBatchRespVO>> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode,@Param("cityCode") String cityCode) {
-        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode));
+    public HttpResponse<String> byCityCodeAndprovinceCode(@RequestParam("provinceCode") String provinceCode,
+                                                          @RequestParam("cityCode") String cityCode,
+                                                          @RequestParam("tagCode") String tagCode) {
+        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode));
     }
 
-    @PostMapping("/search/byCityAndProvinceAndskuCode")
+    @GetMapping("/search/byCityAndProvinceAndskuCode")
     @ApiOperation(value = "总库存管理列表")
-    public HttpResponse<List<StockBatchRespVO>> byCityAndProvinceAndskuCode(@Param("skuCode") String skuCode,@Param("provinceCode") String provinceCode,@Param("cityCode") String cityCode) {
+    public HttpResponse<List<StockBatchRespVO>> byCityAndProvinceAndskuCode(@RequestParam("skuCode") String skuCode,@RequestParam("provinceCode") String provinceCode,@RequestParam("cityCode") String cityCode) {
         return HttpResponse.success(stockService.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
     }
 }

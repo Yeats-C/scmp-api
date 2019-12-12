@@ -244,7 +244,7 @@ public interface StockDao {
      * @param cityCode
      * @return
      */
-     List<StockBatchRespVO> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode);
+     List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode);
     /**
      * 查询可以使用 sku以及仓库
      *

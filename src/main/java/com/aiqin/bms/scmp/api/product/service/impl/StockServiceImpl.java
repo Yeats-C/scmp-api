@@ -2153,8 +2153,18 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
-    public List<StockBatchRespVO> byCityCodeAndprovinceCode(String provinceCode, String cityCode) {
-        return stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode);
+    public String byCityCodeAndprovinceCode(String provinceCode, String cityCode,String tagCode) {
+       List<String> stockBatchRespVOList=  stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode);
+       StringBuffer stringBuffer=new StringBuffer();
+        for (int num =0;num<stockBatchRespVOList.size();num++){
+            if (num<stockBatchRespVOList.size()-1) {
+                stringBuffer.append(stockBatchRespVOList.get(num)).append(",");
+            }else {
+                stringBuffer.append(stockBatchRespVOList.get(num));
+            }
+        }
+      String str=  stringBuffer.toString();
+        return str;
     }
 
     @Override
