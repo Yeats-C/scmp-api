@@ -303,8 +303,10 @@ public class StockController {
     @ApiOperation(value = "总库存管理列表")
     public HttpResponse<String> byCityCodeAndprovinceCode(@RequestParam("provinceCode") String provinceCode,
                                                           @RequestParam("cityCode") String cityCode,
-                                                          @RequestParam("tagCode") String tagCode) {
-        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode));
+                                                          @RequestParam("tagCode") String tagCode,
+                                                          @RequestParam("exitStock") String exitStock,
+                                                          @RequestParam("orderByType") String orderByType) {
+        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode,exitStock,orderByType));
     }
 
     @GetMapping("/search/byCityAndProvinceAndskuCode")

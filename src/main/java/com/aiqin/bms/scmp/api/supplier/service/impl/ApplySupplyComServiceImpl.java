@@ -1605,15 +1605,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String minOrderAmount = supplierImport.getMinOrderAmount();
                     String maxOrderAmount = supplierImport.getMaxOrderAmount();
-                    long l = NumberConvertUtils.stringParseLong(minOrderAmount);
-                    long l2 = NumberConvertUtils.stringParseLong(maxOrderAmount);
-                    if(l<0){
+                    BigDecimal l = NumberConvertUtils.stringParseBigDecimal(minOrderAmount);
+                    BigDecimal l2 = NumberConvertUtils.stringParseBigDecimal(maxOrderAmount);
+                    if(l.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最小起订金额不能小于0");
                     }
-                    if(l2<0){
+                    if(l2.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最大起订金额不能小于0");
                     }
-                    if (l > l2) {
+                    if (l.compareTo(l2)==1) {
                         error.add("最小起订金额不能大于最大起订金额");
                     }
                     reqVO.setMinOrderAmount(l);
@@ -2090,15 +2090,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String minOrderAmount = supplierImport.getMinOrderAmount();
                     String maxOrderAmount = supplierImport.getMaxOrderAmount();
-                    long l = NumberConvertUtils.stringParseLong(minOrderAmount);
-                    long l2 = NumberConvertUtils.stringParseLong(maxOrderAmount);
-                    if(l<0){
+                    BigDecimal l = NumberConvertUtils.stringParseBigDecimal(minOrderAmount);
+                    BigDecimal l2 = NumberConvertUtils.stringParseBigDecimal(maxOrderAmount);
+                    if(l.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最小起订金额不能小于0");
                     }
-                    if(l2<0){
+                    if(l2.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最大起订金额不能小于0");
                     }
-                    if (l > l2) {
+                    if (l.compareTo(l2)==1) {
                         error.add("最小起订金额不能大于最大起订金额");
                     }
                     reqVO.setMinOrderAmount(l);

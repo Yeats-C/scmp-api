@@ -2707,18 +2707,33 @@
         FROM logistics_center_area l
         inner  join  stock s on l.logistics_center_code=s.transport_center_code
         left  join use_tag_record ut on ut.tag_code =s.sku_code
+        left  join  product_sku_price_info ps on ps.sku_code=s.sku_code
         <where>
             l.del_flag=0 and
             l.province_code = #{provinceCode} and
             s.warehouse_type=1 and
             l.city_code=#{cityCode}
+            <if test="exitStock == 0 and exitStock != '' ">
+                and s.available_num >0
+            </if>
             <if test="tagCode != null and tagCode != '' ">
                 and ut.tag_code = #{tagCode,jdbcType=VARCHAR}
-                 and   ut.tag_type_code='2'
+                and   ut.tag_type_code='2'
+            </if>
+            <if test="orderByType!=null and orderByType=='0' ">
+                and ps.company_code = #{companyCode}
+                and ps.be_contain_area = 0 and ps.price_attribute_code in (1,2) and  ps.price_type_code = '3'
             </if>
         </where>
+        <if test="orderByType!=null and orderByType=='1' ">
+           order by s.available_num desc
+        </if>
+        <if test="orderByType!=null and orderByType=='0' ">
+            order by  ps.price_tax  desc
+        </if>
         limit 100
     </select>
+
     <select id="byCityAndProvinceAndskuCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         SELECT s.transport_center_code transportCenterCode

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
@@ -52,6 +53,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -75,7 +77,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class StockServiceImpl implements StockService {
+public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
 
@@ -2153,8 +2155,8 @@ public class StockServiceImpl implements StockService {
 
 
     @Override
-    public String byCityCodeAndprovinceCode(String provinceCode, String cityCode,String tagCode) {
-       List<String> stockBatchRespVOList=  stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode);
+    public String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType) {
+       List<String> stockBatchRespVOList=  stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode,exitStock,orderByType,getUser().getCompanyCode());
        StringBuffer stringBuffer=new StringBuffer();
         for (int num =0;num<stockBatchRespVOList.size();num++){
             if (num<stockBatchRespVOList.size()-1) {

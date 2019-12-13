@@ -232,7 +232,6 @@ public interface StockDao {
     /**
      * 销售可用
      * @param
-     * @param productCode
      * @return
      */
     Long selectSkuAndCompanyByQueryAvailableSum(@Param("skuCode")String skuCode,@Param("companyCode") String companyCode);
@@ -242,9 +241,11 @@ public interface StockDao {
      *
      * @param provinceCode
      * @param cityCode
+     * @param orderByType
      * @return
      */
-     List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode);
+     List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode,
+                                            @Param("exitStock") String exitStock,@Param("orderByType") String orderByType,@Param("companyCode") String companyCode);
     /**
      * 查询可以使用 sku以及仓库
      *
