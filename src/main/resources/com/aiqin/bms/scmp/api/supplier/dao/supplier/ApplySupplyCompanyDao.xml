@@ -86,9 +86,9 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
-    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
-    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
-    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="min_order_amount" jdbcType="DECIMAL" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="DECIMAL" property="maxOrderAmount" />
+    <result column="max_payment_amount" jdbcType="DECIMAL" property="maxPaymentAmount" />
     <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
     <result column="star_score" jdbcType="DECIMAL" property="starScore" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
