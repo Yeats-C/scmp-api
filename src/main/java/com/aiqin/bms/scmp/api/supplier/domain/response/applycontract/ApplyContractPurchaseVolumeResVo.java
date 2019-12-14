@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * 描述:申请制造商关联进货额返回实体详情
  *
@@ -26,13 +28,13 @@ public class ApplyContractPurchaseVolumeResVo  extends CommonBean {
     private Byte tax;
 
     @ApiModelProperty("金额(以分为单位)")
-    private Long amountMoney;
+    private BigDecimal amountMoney;
 
     @ApiModelProperty("按比例")
-    private Long proportion;
+    private BigDecimal proportion;
 
     @ApiModelProperty("或者金额(以分为单位)")
-    private Long orAmountMoney;
+    private BigDecimal orAmountMoney;
 
     @ApiModelProperty("类型")
     private Byte planType;
