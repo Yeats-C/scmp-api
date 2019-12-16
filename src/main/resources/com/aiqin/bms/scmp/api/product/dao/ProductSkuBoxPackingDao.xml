@@ -70,8 +70,8 @@
       )
     values
     <foreach collection="applyProductSkuBoxPackings" item="item" index="index" separator=",">
-      (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength,jdbcType=BIGINT},
-      #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
+      (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength},
+      #{item.boxWidth}, #{item.boxHeight}, #{item.boxVolume},
       #{item.boxGrossWeight,jdbcType=DECIMAL}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
@@ -88,8 +88,8 @@
     )
     values
     <foreach collection="productSkuBoxPackings" item="item" index="index" separator=",">
-      (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength,jdbcType=BIGINT},
-      #{item.boxWidth,jdbcType=BIGINT}, #{item.boxHeight,jdbcType=BIGINT}, #{item.boxVolume,jdbcType=BIGINT},
+      (#{item.largeUnit,jdbcType=VARCHAR}, #{item.boxLength},
+      #{item.boxWidth}, #{item.boxHeight}, #{item.boxVolume},
       #{item.boxGrossWeight,jdbcType=DECIMAL}, #{item.delFlag,jdbcType=TINYINT}, #{item.productSkuCode,jdbcType=VARCHAR},
       #{item.productSkuName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
