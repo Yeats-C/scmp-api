@@ -67,10 +67,10 @@
     <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
-    <result column="sum_amount" jdbcType="INTEGER" property="sumAmount" />
-    <result column="single_amount" jdbcType="INTEGER" property="singleAmount" />
+    <result column="sum_amount" jdbcType="DECIMAL" property="sumAmount" />
+    <result column="single_amount" jdbcType="DECIMAL" property="singleAmount" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="product_total_amount" jdbcType="BIGINT" property="productTotalAmount" />
+    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />

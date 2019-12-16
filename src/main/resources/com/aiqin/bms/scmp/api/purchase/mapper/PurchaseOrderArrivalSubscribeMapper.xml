@@ -36,7 +36,7 @@
     <result column="expect_arrival_time" jdbcType="TIMESTAMP" property="expectArrivalTime" />
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
     <result column="pre_inbound_num" jdbcType="BIGINT" property="num" />
-    <result column="pre_tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="pre_tax_amount" jdbcType="DECIMAL" property="taxAmount" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />

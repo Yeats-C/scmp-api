@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -45,13 +46,13 @@ public class QueryOrderListRespVO {
     private Date createDate;
 
     @ApiModelProperty("订单金额")
-    private Long orderAmount;
+    private BigDecimal orderAmount;
 
     @ApiModelProperty("商品分销价总金额")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("商品渠道价总金额")
-    private Long productChannelTotalAmount;
+    private BigDecimal productChannelTotalAmount;
 
     @ApiModelProperty("商品数量")
     private Long productNum;
@@ -60,10 +61,10 @@ public class QueryOrderListRespVO {
     private Long actualProductNum;
 
     @ApiModelProperty("实际渠道总价")
-    private Long actualProductChannelTotalAmount;
+    private BigDecimal actualProductChannelTotalAmount;
 
     @ApiModelProperty("实际分销总价")
-    private Long actualProductTotalAmount;
+    private BigDecimal actualProductTotalAmount;
 
     @ApiModelProperty("创建人")
     private String createByName;

@@ -18,9 +18,9 @@
     <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
     <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
     <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="num" jdbcType="BIGINT" property="num" />
-    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="activity_apportionment" jdbcType="BIGINT" property="activityApportionment" />
     <result column="preferential_allocation" jdbcType="BIGINT" property="preferentialAllocation" />
     <result column="actual_deliver_num" jdbcType="BIGINT" property="actualDeliverNum" />
@@ -30,12 +30,12 @@
     <result column="return_num" jdbcType="BIGINT" property="returnNum" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
-    <result column="channel_unit_price" jdbcType="BIGINT" property="channelUnitPrice" />
+    <result column="channel_unit_price" jdbcType="DECIMAL" property="channelUnitPrice" />
     <result column="total_channel_price" jdbcType="INTEGER" property="totalChannelPrice" />
-    <result column="actual_channel_unit_price" jdbcType="BIGINT" property="actualChannelUnitPrice" />
-    <result column="actual_total_channel_price" jdbcType="BIGINT" property="actualTotalChannelPrice" />
-    <result column="actual_amount" jdbcType="BIGINT" property="actualAmount" />
-    <result column="actual_price" jdbcType="BIGINT" property="actualPrice" />
+    <result column="actual_channel_unit_price" jdbcType="DECIMAL" property="actualChannelUnitPrice" />
+    <result column="actual_total_channel_price" jdbcType="DECIMAL" property="actualTotalChannelPrice" />
+    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
+    <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
     <result column="tax" jdbcType="DECIMAL" property="tax" />
   </resultMap>
   <sql id="Base_Column_List">

@@ -48,7 +48,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
-    <result column="Input_tax_rate" jdbcType="BigDecimal" property="tax"/>
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="tax"/>
   </resultMap>
 
   <sql id="Base_Column_List">
