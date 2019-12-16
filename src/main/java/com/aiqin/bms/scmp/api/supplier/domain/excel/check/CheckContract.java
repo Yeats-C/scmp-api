@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.util.NumberConvertUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
@@ -123,8 +124,8 @@ public class CheckContract {
             error.add("最低起订金额不能为空");
         } else {
             try {
-                Long minAmount = NumberConvertUtils.stringParseLong(contractImportNew.getMinAmount().trim());
-                if (minAmount < 0) {
+                BigDecimal minAmount = new BigDecimal(contractImportNew.getMinAmount().trim());
+                if (minAmount.compareTo(BigDecimal.ZERO) < -1) {
                     error.add("最低起订金额不能小于0");
                 } else {
                     reqVo.setMinAmount(minAmount);
@@ -162,8 +163,7 @@ public class CheckContract {
             error.add("税率不能为空");
         } else {
             try {
-                Long taxRate = NumberConvertUtils.stringParseLong(contractImportNew.getTaxRate().trim());
-                reqVo.setTaxRate(taxRate);
+                reqVo.setTaxRate(new BigDecimal(contractImportNew.getTaxRate().trim()));
             } catch (Exception e) {
                 error.add("税率格式不正确");
             }
@@ -171,8 +171,7 @@ public class CheckContract {
         //折扣
         if (StringUtils.isNotBlank(contractImportNew.getDiscount())) {
             try {
-                Long discount = NumberConvertUtils.stringParseLong(contractImportNew.getTaxRate().trim());
-                reqVo.setDiscount(discount);
+                reqVo.setDiscount(new BigDecimal(contractImportNew.getDiscount().trim()));
             } catch (NumberFormatException e) {
                 error.add("折扣格式不正确");
             }
@@ -202,8 +201,7 @@ public class CheckContract {
                     error.add("质保金不能为空");
                 } else {
                     try {
-                        Long warranty = NumberConvertUtils.stringParseLong(contractImportNew.getWarranty().trim());
-                        reqVo.setWarranty(warranty);
+                        reqVo.setWarranty(new BigDecimal(contractImportNew.getWarranty().trim()));
                     } catch (NumberFormatException e) {
                         error.add("质保金数格式不正确");
                     }
@@ -312,8 +310,7 @@ public class CheckContract {
             error.add("配送费不能为空");
         } else {
             try {
-                Long shippingFee = NumberConvertUtils.stringParseLong(contractImportNew.getShippingFee().trim());
-                reqVo.setShippingFee(shippingFee);
+                reqVo.setShippingFee(new BigDecimal(contractImportNew.getShippingFee().trim()));
             } catch (NumberFormatException e) {
                 error.add("配送费格式不正确");
             }
@@ -343,8 +340,7 @@ public class CheckContract {
             error.add("固定返利比例不能为空");
         } else {
             try {
-                Long returnRate = NumberConvertUtils.stringParseLong(contractImportNew.getReturnRate().trim());
-                reqVo.setReturnRate(returnRate);
+                reqVo.setReturnRate(new BigDecimal(contractImportNew.getReturnRate().trim()));
             } catch (NumberFormatException e) {
                 error.add("固定返利比例格式不正确");
             }

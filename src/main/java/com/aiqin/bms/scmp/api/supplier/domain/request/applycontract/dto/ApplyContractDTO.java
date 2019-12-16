@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,10 +44,10 @@ public class ApplyContractDTO extends CommonBean {
     private Integer paymentPeriod;
 
     @ApiModelProperty("配送费")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("最小起订金额")
-    private Long minAmount;
+    private BigDecimal minAmount;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;
@@ -61,7 +62,7 @@ public class ApplyContractDTO extends CommonBean {
     private Byte fixedRebateType;
 
     @ApiModelProperty("返利率(按进货金额)")
-    private Long returnRate;
+    private BigDecimal returnRate;
 
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
@@ -115,13 +116,13 @@ public class ApplyContractDTO extends CommonBean {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
-    private Long shipPaymentRatio;
+    private BigDecimal shipPaymentRatio;
 
     @ApiModelProperty("到货付款比例")
-    private Long paymentOnDeliveryRatio;
+    private BigDecimal paymentOnDeliveryRatio;
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
@@ -142,16 +143,16 @@ public class ApplyContractDTO extends CommonBean {
     private String checkoutDate;
 
     @ApiModelProperty("最高起订金额")
-    private Long maxAmount;
+    private BigDecimal maxAmount;
 
     @ApiModelProperty("送货周期")
     private Integer deliveryCycle;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private Long discount;
+    private BigDecimal discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;
@@ -160,7 +161,7 @@ public class ApplyContractDTO extends CommonBean {
     private Integer returnGuaranteeDay;
 
     @ApiModelProperty("质保金")
-    private Long warranty;
+    private BigDecimal warranty;
 
     @ApiModelProperty("供货渠道编码")
     private String categoriesSupplyChannelsCode;

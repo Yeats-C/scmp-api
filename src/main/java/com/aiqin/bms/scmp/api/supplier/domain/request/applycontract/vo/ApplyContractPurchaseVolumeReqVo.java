@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * 描述: 新增申请合同接受进货额
@@ -24,13 +25,13 @@ public class ApplyContractPurchaseVolumeReqVo {
 
     @ApiModelProperty("金额(以分为单位)")
     @NotNull(message = "进货额不能为空")
-    private Long amountMoney;
+    private BigDecimal amountMoney;
 
     @ApiModelProperty("按比例")
-    private Long proportion;
+    private BigDecimal proportion;
 
     @ApiModelProperty("或者金额(以分为单位)")
-    private Long orAmountMoney;
+    private BigDecimal orAmountMoney;
 
     @ApiModelProperty("计划类型(月度,季度,半年,全年)")
     private Byte planType;
