@@ -996,14 +996,14 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         List<SaleCountDTO> list = productSkuChangePriceMapper.selectSaleNumBySkuCode(req,date);
         Map<String,SaleCountDTO> collect = list.stream().collect(Collectors.toMap(SaleCountDTO::getSkuCode,Function.identity(),(k1,k2)->k2));
         PriceMeasurementRespVO respVO = new PriceMeasurementRespVO();
-        long in = 0L;
-        long de = 0L;
+        BigDecimal in = BigDecimal.ZERO;
+        BigDecimal de = BigDecimal.ZERO;
         for (PriceMeasurementReqVO priceMeasurementReqVO : req) {
             if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO) .compareTo(Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==1) {
-                in++;
+                in=in.add(BigDecimal.ONE);
             }
             if (Optional.ofNullable(priceMeasurementReqVO.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO) .compareTo( Optional.ofNullable(priceMeasurementReqVO.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==-1) {
-                de++;
+                de=de.add(BigDecimal.ONE);
             }
         }
         long deAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO)
@@ -1011,8 +1011,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         long inAmount = req.stream().filter(o -> Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO).compareTo(Optional.ofNullable(o.getOldGrossProfitMargin()).orElse(BigDecimal.ZERO))==1).mapToLong(o -> Optional.ofNullable(collect.get(o.getSkuCode())).orElse(new SaleCountDTO()).getSaleNum() .multiply(Optional.ofNullable(o.getNewGrossProfitMargin()).orElse(BigDecimal.ZERO).multiply(Optional.ofNullable(o.getPrice()).orElse(BigDecimal.ZERO)) ).longValue()).sum();
         respVO.setDecreaseCount(de);
         respVO.setIncreaseCount(in);
-        respVO.setDecreaseGrossProfit(deAmount);
-        respVO.setIncreaseGrossProfit(inAmount);
+        respVO.setDecreaseGrossProfit(BigDecimal.valueOf(deAmount));
+        respVO.setIncreaseGrossProfit(BigDecimal.valueOf(inAmount));
         return respVO;
     }
 

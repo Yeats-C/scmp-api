@@ -37,6 +37,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -245,7 +246,7 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
         skuDataListResponses.stream().forEach(
                 skuDataListResponse -> {
                     if (HandlingExceptionCode.PURCHASE_PRICE.equals(priceTypeCode)) {
-                        skuDataListResponse.setNewPurchasingPrice(objectMap.get(skuDataListResponse.getSkuCode()));
+                        skuDataListResponse.setNewPurchasingPrice(BigDecimal.valueOf(objectMap.get(skuDataListResponse.getSkuCode())));
                     }
                 }
         );
@@ -454,7 +455,7 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
      * @return
      */
     @Override
-    public ErrorVariableResponse getSwitch(String priceType, ErrorVariableResponse errorVariableResponse, Long priceValue) {
+    public ErrorVariableResponse getSwitch(String priceType, ErrorVariableResponse errorVariableResponse, BigDecimal priceValue) {
         switch (priceType) {
             case HandlingExceptionCode.PURCHASE_PRICE:
                 errorVariableResponse.setNewPurchasingPrice(priceValue);

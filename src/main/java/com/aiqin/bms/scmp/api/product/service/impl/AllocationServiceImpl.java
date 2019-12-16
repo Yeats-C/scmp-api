@@ -152,9 +152,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         //转化调拨单sku列表
         List<AllocationProductBatch>list = BeanCopyUtils.copyList(vo.getList(), AllocationProductBatch.class);
         list.stream().forEach(allocationProduct->{
-            allocationProduct.setTaxAmount(null != allocationProduct.getTaxAmount()?allocationProduct.getTaxAmount():0L);
-            allocationProduct.setTax(null != allocationProduct.getTax()?allocationProduct.getTax():0L);
-            allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice()?allocationProduct.getTaxPrice():0L);
+            allocationProduct.setTaxAmount(null != allocationProduct.getTaxAmount()?allocationProduct.getTaxAmount():0);
+            allocationProduct.setTax(null != allocationProduct.getTax()?allocationProduct.getTax():BigDecimal.ZERO);
+            allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice()?allocationProduct.getTaxPrice():BigDecimal.ZERO);
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
         });
          int kp =  ((AllocationService) AopContext.currentProxy()).saveListBatch(list);

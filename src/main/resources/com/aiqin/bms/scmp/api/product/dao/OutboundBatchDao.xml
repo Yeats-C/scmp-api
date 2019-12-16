@@ -50,8 +50,8 @@
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
+    <result column="output_tax_rate" jdbcType="DECIMAL" property="outputTaxRate" />
+    <result column="Input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate" />
   </resultMap>
   <sql id="Base_Column_List">
     id, outbound_oder_code, sku_code, sku_name, outbound_batch_code, manufacture_time,

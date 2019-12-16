@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("变价主表")
@@ -46,7 +47,7 @@ public class ProductSkuChangePrice {
     private String costBearerName;
 
     @ApiModelProperty("预算")
-    private Long budget;
+    private BigDecimal budget;
 
     @ApiModelProperty("公司名称")
     private String companyCode;
@@ -91,11 +92,11 @@ public class ProductSkuChangePrice {
     private Integer beContainArea;
 
     @ApiModelProperty("毛利率增加数")
-    private Long increaseCount;
+    private BigDecimal increaseCount;
     @ApiModelProperty("毛利率减少数")
-    private Long decreaseCount;
+    private BigDecimal decreaseCount;
     @ApiModelProperty("毛利率增加额度")
-    private Long increaseGrossProfit;
+    private BigDecimal increaseGrossProfit;
     @ApiModelProperty("毛利率减少额度")
-    private Long decreaseGrossProfit;
+    private BigDecimal decreaseGrossProfit;
 }

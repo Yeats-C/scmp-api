@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -58,10 +59,10 @@ public class MovementProductReqVo {
     private Long inventory;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税成本")
-    private Long taxPrice;
+    private BigDecimal taxPrice;
 
     @ApiModelProperty("数量")
     private Long quantity;

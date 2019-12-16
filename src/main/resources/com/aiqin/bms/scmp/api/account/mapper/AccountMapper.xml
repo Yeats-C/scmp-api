@@ -291,7 +291,7 @@
       department_name = #{departmentName,jdbcType=VARCHAR},
       account_status = #{accountStatus,jdbcType=BIT},
       mobile = #{mobile,jdbcType=VARCHAR},
-      gender = #{gender,jdbcType=BIT},
+      gender = #{gender,jdbcType=BIGINT},
       remark = #{remark,jdbcType=VARCHAR},
       create_by_id = #{createById,jdbcType=VARCHAR},
       create_by_name = #{createByName,jdbcType=VARCHAR},

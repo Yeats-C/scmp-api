@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -65,13 +66,13 @@ public class MovementResVo {
     private Long  callInQuantity;
 
     @ApiModelProperty("含税总价")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("出库含税总成本")
-    private Long callOutTaxAmount;
+    private BigDecimal callOutTaxAmount;
 
     @ApiModelProperty("入库含税总成本")
-    private Long callInTaxAmount;
+    private BigDecimal callInTaxAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

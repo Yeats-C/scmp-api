@@ -13,7 +13,7 @@
         <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"></result>
         <result column="stock_num" jdbcType="BIGINT" property="stockNum"></result>
         <result column="stock_change_num" jdbcType="BIGINT" property="stockChangeNum"></result>
-        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"></result>
+        <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"></result>
         <result column="tax_cost_last_day" jdbcType="BIGINT" property="taxCostLastDay"></result>
         <result column="tax_cost" jdbcType="BIGINT" property="taxCost"></result>
         <result column="create_time" jdbcType="DATE" property="createTime"></result>

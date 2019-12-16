@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class QueryOmsSkusPageResp {
 
     @ApiModelProperty("动销价")
     @JsonProperty("sku_price")
-    private Long skuPrice;
+    private BigDecimal skuPrice;
 
     @ApiModelProperty("规格")
     @JsonProperty("spec")
@@ -82,7 +83,7 @@ public class QueryOmsSkusPageResp {
 
     @JsonProperty("special_price")
     @ApiModelProperty("特价价格")
-    private Long specialPrice;
+    private BigDecimal specialPrice;
 
     @ApiModelProperty(value = "供应单位编码")
     @JsonProperty("supply_company_code")

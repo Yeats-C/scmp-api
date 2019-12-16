@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("")
@@ -41,16 +42,16 @@ public class ApplyProductSkuSalesInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private Long zeroRemovalCoefficient;
+    private BigDecimal zeroRemovalCoefficient;
 
     @ApiModelProperty("宽")
-    private Long productWidth;
+    private BigDecimal productWidth;
 
     @ApiModelProperty("长")
-    private Long productLength;
+    private BigDecimal productLength;
 
     @ApiModelProperty("高度")
-    private Long productHeight;
+    private BigDecimal productHeight;
 
     @ApiModelProperty("是否缺省（0:否,1：是）")
     private Byte isDefault;

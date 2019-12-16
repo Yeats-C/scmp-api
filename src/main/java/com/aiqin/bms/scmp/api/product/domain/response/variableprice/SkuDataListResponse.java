@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.common.HandlingExceptionCode;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+
 @ApiModel("变价数据列表")
 public class SkuDataListResponse {
     @ApiModelProperty("sku编码")
@@ -60,7 +62,7 @@ public class SkuDataListResponse {
     private String priceTypeName;
 
     @ApiModelProperty("最新采购价")
-    private Long newPurchasingPrice;
+    private BigDecimal newPurchasingPrice;
 
     @ApiModelProperty("供应商code")
     private String supplierCode;
@@ -69,10 +71,10 @@ public class SkuDataListResponse {
     private Byte isDefault;
 
     @ApiModelProperty("原含税采购价")
-    private Long originalTaxPurchasePrice;
+    private BigDecimal originalTaxPurchasePrice;
 
     @ApiModelProperty("原会员价")
-    private Long originalMembershipPrice;
+    private BigDecimal originalMembershipPrice;
 
     public String getSkuCode() {
         return skuCode;
@@ -218,11 +220,11 @@ public class SkuDataListResponse {
         this.priceTypeName = priceTypeName;
     }
 
-    public Long getNewPurchasingPrice() {
+    public BigDecimal getNewPurchasingPrice() {
         return newPurchasingPrice;
     }
 
-    public void setNewPurchasingPrice(Long newPurchasingPrice) {
+    public void setNewPurchasingPrice(BigDecimal newPurchasingPrice) {
         this.newPurchasingPrice = newPurchasingPrice;
     }
 
@@ -241,17 +243,17 @@ public class SkuDataListResponse {
     public void setIsDefault(Byte isDefault) {
         this.isDefault = isDefault;
     }
-    public void setOriginalTaxPurchasePrice(Long originalTaxPurchasePrice) {
+    public void setOriginalTaxPurchasePrice(BigDecimal originalTaxPurchasePrice) {
         this.originalTaxPurchasePrice = originalTaxPurchasePrice;
     }
 
-    public Long getOriginalMembershipPrice() {
+    public BigDecimal getOriginalMembershipPrice() {
         return originalMembershipPrice;
     }
-    public void setOriginalMembershipPrice(Long originalMembershipPrice) {
+    public void setOriginalMembershipPrice(BigDecimal originalMembershipPrice) {
        this.originalMembershipPrice=originalMembershipPrice;
     }
-    public Long getOriginalTaxPurchasePrice() {
+    public BigDecimal getOriginalTaxPurchasePrice() {
         switch (priceTypeCode) {
             case HandlingExceptionCode.PURCHASE_PRICE:
                 this.originalTaxPurchasePrice=originalTaxPurchasePrice;

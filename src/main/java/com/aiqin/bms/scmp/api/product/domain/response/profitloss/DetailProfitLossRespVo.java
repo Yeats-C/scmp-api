@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -46,13 +47,13 @@ public class DetailProfitLossRespVo {
     private Long profitQuantity;
 
     @ApiModelProperty("报溢含税总成本")
-    private Long profitTotalCostRate;
+    private BigDecimal profitTotalCostRate;
 
     @ApiModelProperty("报损数量")
     private Long lossQuantity;
 
     @ApiModelProperty("报损含税总成本")
-    private Long lossTotalCostRate;
+    private BigDecimal lossTotalCostRate;
 
     @ApiModelProperty("备注")
     private String remark;

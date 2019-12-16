@@ -262,8 +262,8 @@
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
         <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
-        <result column="product_cost" jdbcType="BIGINT" property="productCost"/>
+        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
+        <result column="product_cost" jdbcType="DECIMAL" property="productCost"/>
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
         <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
         <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
@@ -2630,7 +2630,7 @@
     <resultMap id="SapProductStock" type="com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse">
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
-        <result column="tax_cost" jdbcType="BIGINT" property="taxCost"/>
+        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>

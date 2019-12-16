@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
 /**
@@ -48,7 +49,7 @@ public class SupervisoryWarehouseSkuRespVo {
     private String modelNumber;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("基商品含量")
     private Integer baseProductContent;

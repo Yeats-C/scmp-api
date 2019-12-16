@@ -36,7 +36,7 @@
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-    <result column="price" jdbcType="BIGINT" property="price"/>
+    <result column="price" jdbcType="DECIMAL" property="price"/>
     <result column="product_introduction" jdbcType="VARCHAR" property="description" />
     <result column="inventory_num" jdbcType="BIGINT" property="stockQuantity"/>
     <result column="product_picture_path" jdbcType="VARCHAR" property="skuImage"/>
@@ -58,8 +58,8 @@
       <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
       <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
       <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
-      <result column="purchase_price" jdbcType="BIGINT" property="purchasePrice"/>
-      <result column="sale_price" jdbcType="BIGINT" property="salePrice"/>
+      <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
+      <result column="sale_price" jdbcType="DECIMAL" property="salePrice"/>
       <result column="sku_image" jdbcType="VARCHAR" property="skuImage"/>
       <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode"/>
       <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyUnitName"/>
@@ -118,8 +118,8 @@
     <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
     <result column="product_name" jdbcType="VARCHAR" property="productName"/>
     <result column="product_image" jdbcType="VARCHAR" property="productImage"/>
-    <result column="lowest_price" jdbcType="BIGINT" property="lowestPrice"/>
-    <result column="highest_price" jdbcType="BIGINT" property="highestPrice"/>
+    <result column="lowest_price" jdbcType="DECIMAL" property="lowestPrice"/>
+    <result column="highest_price" jdbcType="DECIMAL" property="highestPrice"/>
   </resultMap>
   <resultMap id="CheckPurchaseSkuMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.CheckPurchaseItemRespVO">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
@@ -143,7 +143,7 @@
     <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
     <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
     <result column="zero_removal_coefficient" jdbcType="VARCHAR" property="convertNum" />
-    <result column="tax_rate" jdbcType="BIGINT" property="taxRate" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="pic_url" jdbcType="VARCHAR" property="picUrl" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="goods_gifts" jdbcType="VARCHAR" property="productTypeCode" />
@@ -211,8 +211,8 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
-    <result column="product_sort_name" jdbcType="BIGINT" property="productSort"/>
+    <result column="sale_price" jdbcType="DECIMAL" property="skuPrice"/>
+    <result column="product_sort_name" jdbcType="VARCHAR" property="productSort"/>
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="spec" jdbcType="VARCHAR" property="spec" />
@@ -263,8 +263,8 @@
     <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
     <result column="product_name" jdbcType="VARCHAR" property="productName"/>
     <result column="product_image" jdbcType="VARCHAR" property="imagePath"/>
-    <result column="low_price" jdbcType="BIGINT" property="lowPrice"/>
-    <result column="high_price" jdbcType="BIGINT" property="highPrice"/>
+    <result column="low_price" jdbcType="DECIMAL" property="lowPrice"/>
+    <result column="high_price" jdbcType="DECIMAL" property="highPrice"/>
   </resultMap>
   <resultMap id="ProductTagMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsSkuTagResp">
     <result column="is_main_push" jdbcType="TINYINT" property="mainPush"/>
@@ -286,8 +286,8 @@
     <result column="color_name" jdbcType="VARCHAR" property="colorName" />
     <result column="spec" jdbcType="VARCHAR" property="spec" />
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
-    <result column="sale_price" jdbcType="BIGINT" property="skuPrice" />
-    <result column="inventory_num" jdbcType="BIGINT" property="skuStock" />
+    <result column="sale_price" jdbcType="DECIMAL" property="skuPrice" />
+    <result column="inventory_num" jdbcType="DECIMAL" property="skuStock" />
   </resultMap>
   <resultMap id="OmsSkusListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.oms.QuerySkuListResp">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -305,7 +305,7 @@
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
+    <result column="sale_price" jdbcType="DECIMAL" property="skuPrice"/>
     <result column="product_picture_path" jdbcType="VARCHAR" property="imagePath"/>
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyCompanyCode"/>
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyCompanyName"/>
@@ -321,7 +321,7 @@
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-    <result column="sale_price" jdbcType="BIGINT" property="skuPrice"/>
+    <result column="sale_price" jdbcType="DECIMAL" property="skuPrice"/>
     <result column="product_picture_path" jdbcType="VARCHAR" property="productImage"/>
     <result column="supply_unit_code" jdbcType="VARCHAR" property="supplyCompanyCode"/>
     <result column="supply_unit_name" jdbcType="VARCHAR" property="supplyCompanyName"/>
@@ -1039,7 +1039,7 @@
      #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},#{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP},
       #{item.goodsGifts,jdbcType=TINYINT}, #{item.skuName,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
       #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.isMainPush,jdbcType=TINYINT},
-      #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=BIGINT}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
+      #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=DECIMAL}, #{item.zeroRemovalCoefficient,jdbcType=DECIMAL},
       #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
       #{item.formNo,jdbcType=VARCHAR}, #{item.inventoryModel,jdbcType=TINYINT}, #{item.useTime,jdbcType=INTEGER}, #{item.uniqueCode,jdbcType=TINYINT},
       #{item.companyCode,jdbcType=VARCHAR},#{item.companyName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},

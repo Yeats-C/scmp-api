@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -43,7 +45,7 @@ public class StockResponse {
 
     @ApiModelProperty("昨天含税成本")
     @JsonProperty(value = "tax_cost")
-    private Long taxCost;
+    private BigDecimal taxCost;
 
     @ApiModelProperty("物流中心编码")
     @JsonProperty(value = "transport_center_code")
