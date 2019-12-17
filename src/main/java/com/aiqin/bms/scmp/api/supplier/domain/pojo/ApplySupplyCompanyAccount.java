@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("申请供应商账号")
@@ -26,7 +27,7 @@ public class ApplySupplyCompanyAccount extends CommonBean {
     private String accountName;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("银联编号")
     private String unionpayNumber;

@@ -7,7 +7,7 @@
     <result column="bank_account" jdbcType="VARCHAR" property="bankAccount" />
     <result column="account" jdbcType="VARCHAR" property="account" />
     <result column="account_name" jdbcType="VARCHAR" property="accountName" />
-    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="max_payment_amount" jdbcType="DECIMAL" property="maxPaymentAmount" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
