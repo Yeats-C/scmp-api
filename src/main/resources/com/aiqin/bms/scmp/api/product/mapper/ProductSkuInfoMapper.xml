@@ -363,7 +363,7 @@ from product_sku a
       #{qualityAssuranceManagement,jdbcType=TINYINT}, #{qualityNumber,jdbcType=VARCHAR},
       #{qualityDate,jdbcType=VARCHAR}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{seasonalGoods,jdbcType=TINYINT},
-      #{structuralGoods,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=BIGINT},
+      #{structuralGoods,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=DECIMAL},
       #{applicableMonthAge,jdbcType=VARCHAR}, #{mnemonicCode,jdbcType=VARCHAR}, #{warehouseTypeCode,jdbcType=VARCHAR},
       #{warehouseTypeName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT},
       #{remark,jdbcType=VARCHAR}, #{selectionEffectiveTime,jdbcType=TINYINT}, #{selectionEffectiveStartTime,jdbcType=VARCHAR},
@@ -742,7 +742,7 @@ from product_sku a
         #{structuralGoods,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        #{manufacturerGuidePrice,jdbcType=BIGINT},
+        #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="applicableMonthAge != null">
         #{applicableMonthAge,jdbcType=VARCHAR},
@@ -954,7 +954,7 @@ from product_sku a
         structural_goods = #{structuralGoods,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="applicableMonthAge != null">
         applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
@@ -1109,7 +1109,7 @@ from product_sku a
       categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
       seasonal_goods = #{seasonalGoods,jdbcType=TINYINT},
       structural_goods = #{structuralGoods,jdbcType=TINYINT},
-      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
       mnemonic_code = #{mnemonicCode,jdbcType=VARCHAR},
       warehouse_type_code = #{warehouseTypeCode,jdbcType=VARCHAR},
