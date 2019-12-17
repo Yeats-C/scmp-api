@@ -3264,18 +3264,34 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 boolean flag = true;
                 try {
                     stockBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
+                    if (new BigDecimal(stockBox.getBoxLength().intValue()).compareTo(stockBox.getBoxLength())==0){}else {
+                        //小数
+                        throw  new BizException("库存长格式不正确");
+                    }
                 } catch (Exception e) {
                     error.add("库存长格式不正确");
                     flag = false;
                 }
                 try {
                     stockBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim()));
+                    if (!"".equals(stockBox.getBoxWidth()) && stockBox.getBoxWidth() != null){
+                        if (new BigDecimal(stockBox.getBoxWidth().intValue()).compareTo(stockBox.getBoxWidth())==0){}else {
+                            //小数
+                            throw  new BizException("库存宽格式不正确");
+                        }
+                    }
                 } catch (Exception e) {
                     error.add("库存宽格式不正确");
                     flag = false;
                 }
                 try {
                     stockBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim()));
+                    if (!"".equals(stockBox.getBoxHeight()) && stockBox.getBoxHeight() != null){
+                        if (new BigDecimal(stockBox.getBoxHeight().intValue()).compareTo(stockBox.getBoxHeight())==0){}else {
+                            //小数
+                            throw  new BizException("库存宽格式不正确");
+                        }
+                    }
                 } catch (Exception e) {
                     error.add("库存高格式不正确");
                     flag = false;
