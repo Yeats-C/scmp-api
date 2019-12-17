@@ -176,8 +176,8 @@
        a.management_style_name                    managementStyleName,
        e.sales_code                               salesCode,
        f.zero_removal_coefficient                 zeroRemovalCoefficient,
-       ROUND(g.output_tax_rate/100,2)             outputTaxRate,
-       ROUND(g.Input_tax_rate/100,2)              inputTaxRate,
+       g.output_tax_rate             outputTaxRate,
+       g.Input_tax_rate              inputTaxRate,
        g.settlement_method_name                   settlementMethodName,
        a.procurement_section_name                 procurementSectionName,
        case
@@ -187,18 +187,18 @@
              a.product_property_name
        end                                        productPropertyName,
        g.Integral_coefficient                     integralCoefficient,
-       ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
-       ROUND(h.price_tax/100,2)                   salePrice,
-       ROUND(i.price_tax/100,2)                   memberPrice,
+       a.manufacturer_guide_price    manufacturerGuidePrice,
+       h.price_tax                   salePrice,
+       i.price_tax                   memberPrice,
        j.categories_supply_channels_name          categoriesSupplyChannelsName,
-       ROUND(j.tax_included_price/100,2)                       basePrice,
-       ROUND(((i2.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints2,
-       ROUND(((i3.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints3,
-       ROUND(((i4.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints4,
-       ROUND(((i5.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints5,
-       ROUND(((i6.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints6,
-       ROUND(((i7.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints7,
-       ROUND(((i8.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints8,
+       j.tax_included_price                       basePrice,
+       ROUND(((i2.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints2,
+       ROUND(((i3.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints3,
+       ROUND(((i4.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints4,
+       ROUND(((i5.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints5,
+       ROUND(((i6.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints6,
+       ROUND(((i7.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints7,
+       ROUND(((i8.price_tax-j.tax_included_price)/j.tax_included_price),4)                               addPoints8,
        k.manufacturer_name                        manufacturerName,
        k.factory_product_number                   factoryProductNumber,
        k.address                                  address,
@@ -217,14 +217,14 @@
        e.small_unit                               saleUnit,
        e.sales_code                               salesCode2,
        e.base_product_content                     saleBaseProductContent,
-       ROUND(d.box_length/100,2)                  saleBoxLength,
-       ROUND(d.box_width/100,2)                   saleBoxWidth,
-       ROUND(d.box_height/100,2)                  saleBoxHeight,
+       d.box_length                 saleBoxLength,
+       d.box_width                   saleBoxWidth,
+       d.box_height                  saleBoxHeight,
        j.supply_unit_code                         supplyUnitCode,
        j.supply_unit_name                         supplyUnitName,
-       ROUND(j.tax_included_price/100,2)                  taxIncludedPrice,
-       ROUND(j.joint_franchise_rate/100,2)                     jointFranchiseRate,
-       ROUND(j.point/100,2)                                    point,
+       j.tax_included_price                  taxIncludedPrice,
+       j.joint_franchise_rate                     jointFranchiseRate,
+       j.point                                    point,
        case
            when a.sku_status = 0
                then '在用'
@@ -287,7 +287,7 @@ from product_sku a
                 else
                      a.product_property_name
                 end                                        productPropertyName,
-               ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
+               a.manufacturer_guide_price    manufacturerGuidePrice,
                case
                     when a.sku_status = 0
                         then '在用'
