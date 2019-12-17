@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class ApplySupplyComAcctInfo2RespVO {
     private String accountName;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("申请编码")
     private String applyCompanyAccountCode;

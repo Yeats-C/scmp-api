@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("申请结算信息")
@@ -21,13 +22,13 @@ public class ApplySettlementInformation extends CommonBean {
     private String settlementGroup;
 
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("申请所属供货单位code")
     private String applySupplyCompanyCode;
@@ -103,27 +104,27 @@ public class ApplySettlementInformation extends CommonBean {
         this.settlementGroup = settlementGroup == null ? null : settlementGroup.trim();
     }
 
-    public Long getMinOrderAmount() {
+    public BigDecimal getMinOrderAmount() {
         return minOrderAmount;
     }
 
-    public void setMinOrderAmount(Long minOrderAmount) {
+    public void setMinOrderAmount(BigDecimal minOrderAmount) {
         this.minOrderAmount = minOrderAmount;
     }
 
-    public Long getMaxOrderAmount() {
+    public BigDecimal getMaxOrderAmount() {
         return maxOrderAmount;
     }
 
-    public void setMaxOrderAmount(Long maxOrderAmount) {
+    public void setMaxOrderAmount(BigDecimal maxOrderAmount) {
         this.maxOrderAmount = maxOrderAmount;
     }
 
-    public Long getMaxPaymentAmount() {
+    public BigDecimal getMaxPaymentAmount() {
         return maxPaymentAmount;
     }
 
-    public void setMaxPaymentAmount(Long maxPaymentAmount) {
+    public void setMaxPaymentAmount(BigDecimal maxPaymentAmount) {
         this.maxPaymentAmount = maxPaymentAmount;
     }
 

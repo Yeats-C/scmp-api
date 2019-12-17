@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -29,13 +30,13 @@ public class UpdateApplyContractPurchaseVolumeReqVo {
 
     @ApiModelProperty("金额(以分为单位)")
     @NotNull(message = "金额不能为空")
-    private Long amountMoney;
+    private BigDecimal amountMoney;
 
     @ApiModelProperty("按比例")
-    private Long proportion;
+    private BigDecimal proportion;
 
     @ApiModelProperty("或者金额(以分为单位)")
-    private Long orAmountMoney;
+    private BigDecimal orAmountMoney;
 
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -31,7 +32,7 @@ public class QuerySupplierComAcctRespVo {
     private String accountName;
 
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;

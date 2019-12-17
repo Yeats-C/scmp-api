@@ -329,7 +329,7 @@ public class StockController {
     public HttpResponse<List<ApplyUseTagRecord>> getTagRecordList(@RequestParam String skuCode) {
         log.info("ProductSkuPriceInfoController---view---入参：[{}]", skuCode);
         try {
-            List<String> applyUseTagRecordList=applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()).stream().map(x->x.getTagTypeName()).collect(Collectors.toList());
+//            List<String> applyUseTagRecordList=applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()).stream().map(x->x.getTagTypeName()).collect(Collectors.toList());
             return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
