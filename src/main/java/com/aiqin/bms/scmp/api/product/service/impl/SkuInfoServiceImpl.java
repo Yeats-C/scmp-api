@@ -2173,7 +2173,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
             List<String> dicNameList2 = Lists.newArrayList();
-            dicNameList.add("全量供货渠道类别");
+            dicNameList2.add("全量供货渠道类别");
             Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
@@ -2317,7 +2317,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
             List<String> dicNameList2 = Lists.newArrayList();
-            dicNameList.add("全量供货渠道类别");
+            dicNameList2.add("全量供货渠道类别");
             Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
@@ -2455,7 +2455,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
             List<String> dicNameList2 = Lists.newArrayList();
-            dicNameList.add("全量供货渠道类别");
+            dicNameList2.add("全量供货渠道类别");
             Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
