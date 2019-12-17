@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 
 /**
  * @功能说明:
@@ -31,14 +32,14 @@ public class ApplySettlementVO {
 
     @NotEmpty(message = "最低订货金额不能为空")
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @NotEmpty(message = "最高订货金额不能为空")
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
     @NotEmpty(message = "最高付款额不能为空")
     @ApiModelProperty("最高付款额")
-    private Long maxPaymentAmount;
+    private BigDecimal maxPaymentAmount;
 
 }
