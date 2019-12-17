@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -52,7 +53,7 @@ public class ContractReqVo {
 
     @ApiModelProperty("配送费")
     @NotNull(message = "配送费不能为空")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     @NotNull(message = "送货费承担方不能为空")
@@ -60,7 +61,7 @@ public class ContractReqVo {
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
     @NotNull(message = "卸货费承担方不能为空")
-    private Long unloadingFee;
+    private BigDecimal unloadingFee;
 
     @ApiModelProperty("其他约定")
     private String otherConventions;
@@ -121,13 +122,13 @@ public class ContractReqVo {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
-    private Long shipPaymentRatio;
+    private BigDecimal shipPaymentRatio;
 
     @ApiModelProperty("到货付款比例")
-    private Long paymentOnDeliveryRatio;
+    private BigDecimal paymentOnDeliveryRatio;
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;

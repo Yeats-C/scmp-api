@@ -333,7 +333,7 @@ public class CheckContract {
             if (null == costUndertakes) {
                 error.add("未找到对应的卸货费承担方");
             }
-            reqVo.setUnloadingFee(costUndertakes.getType().longValue());
+            reqVo.setUnloadingFee(BigDecimal.valueOf(costUndertakes.getType()));
         }
         //固定返利比例
         if (StringUtils.isBlank(contractImportNew.getReturnRate())) {

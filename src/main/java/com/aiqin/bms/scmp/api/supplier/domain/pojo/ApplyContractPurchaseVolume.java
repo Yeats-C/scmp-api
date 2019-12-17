@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("申请合同进货额")
@@ -18,13 +19,13 @@ public class ApplyContractPurchaseVolume extends CommonBean {
     private Byte tax;
 
     @ApiModelProperty("金额(以分为单位)")
-    private Long amountMoney;
+    private BigDecimal amountMoney;
 
     @ApiModelProperty("按比例")
-    private Long proportion;
+    private BigDecimal proportion;
 
     @ApiModelProperty("或者金额(以分为单位)")
-    private Long orAmountMoney;
+    private BigDecimal orAmountMoney;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;
@@ -65,27 +66,27 @@ public class ApplyContractPurchaseVolume extends CommonBean {
         this.tax = tax;
     }
 
-    public Long getAmountMoney() {
+    public BigDecimal getAmountMoney() {
         return amountMoney;
     }
 
-    public void setAmountMoney(Long amountMoney) {
+    public void setAmountMoney(BigDecimal amountMoney) {
         this.amountMoney = amountMoney;
     }
 
-    public Long getProportion() {
+    public BigDecimal getProportion() {
         return proportion;
     }
 
-    public void setProportion(Long proportion) {
+    public void setProportion(BigDecimal proportion) {
         this.proportion = proportion;
     }
 
-    public Long getOrAmountMoney() {
+    public BigDecimal getOrAmountMoney() {
         return orAmountMoney;
     }
 
-    public void setOrAmountMoney(Long orAmountMoney) {
+    public void setOrAmountMoney(BigDecimal orAmountMoney) {
         this.orAmountMoney = orAmountMoney;
     }
 

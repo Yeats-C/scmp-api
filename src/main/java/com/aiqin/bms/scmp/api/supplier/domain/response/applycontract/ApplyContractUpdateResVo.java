@@ -9,6 +9,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class ApplyContractUpdateResVo {
     private Byte deliveryCharges;
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
-    private Long unloadingFee;
+    private BigDecimal unloadingFee;
 
     @ApiModelProperty("其他约定")
     private String otherConventions;

@@ -64,7 +64,7 @@ public class UpdateApplyContractReqVo {
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
     @NotNull(message = "卸货费不能为空")
-    private Long unloadingFee;
+    private BigDecimal unloadingFee;
 
     @ApiModelProperty("其他约定")
     private String otherConventions;

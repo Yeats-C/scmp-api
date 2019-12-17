@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @功能说明:
  * @author: wangxu
@@ -26,10 +28,10 @@ public class ApplySettlementDTO {
     private String settlementGroup;
 
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
     @ApiModelProperty("申请所属供货单位code")
     private String applySupplyCompanyCode;

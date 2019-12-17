@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @功能说明:结算信息返回
  * @author: wangxu
@@ -25,9 +27,9 @@ public class SettlementInfoRespVO {
     private String settlementGroup;
 
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
 }

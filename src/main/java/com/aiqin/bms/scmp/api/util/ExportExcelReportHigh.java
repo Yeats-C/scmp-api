@@ -186,12 +186,12 @@ public class ExportExcelReportHigh {
 
             // 全国上周
             if (highInventoryRespVo.getSzqgHighInventoryAmount() != null) {
-                row03.createCell(3).setCellValue(highInventoryRespVo.getSzqgHighInventoryAmount());
+                row03.createCell(3).setCellValue(String.valueOf(highInventoryRespVo.getSzqgHighInventoryAmount()));
             } else {
                 row03.createCell(3).setCellValue("");
             }
             if (highInventoryRespVo.getSzqgTotalInventoryAmount() != null) {
-                row03.createCell(4).setCellValue(highInventoryRespVo.getSzqgTotalInventoryAmount());
+                row03.createCell(4).setCellValue(String.valueOf(highInventoryRespVo.getSzqgTotalInventoryAmount()));
             } else {
                 row03.createCell(4).setCellValue("");
             }
@@ -204,12 +204,12 @@ public class ExportExcelReportHigh {
 
             // 全国本周
             if (highInventoryRespVo.getBzqgHighInventoryAmount() != null) {
-                row03.createCell(6).setCellValue(highInventoryRespVo.getBzqgHighInventoryAmount());
+                row03.createCell(6).setCellValue(String.valueOf(highInventoryRespVo.getBzqgHighInventoryAmount()));
             } else {
                 row03.createCell(6).setCellValue("");
             }
             if (highInventoryRespVo.getBzqgTotalInventoryAmount() != null) {
-                row03.createCell(7).setCellValue(highInventoryRespVo.getBzqgTotalInventoryAmount());
+                row03.createCell(7).setCellValue(String.valueOf(highInventoryRespVo.getBzqgTotalInventoryAmount()));
             } else {
                 row03.createCell(7).setCellValue("");
             }
@@ -221,12 +221,12 @@ public class ExportExcelReportHigh {
 
             // 华北仓
             if (highInventoryRespVo.getHbHighInventoryAmount() != null) {
-                row03.createCell(9).setCellValue(highInventoryRespVo.getHbHighInventoryAmount());
+                row03.createCell(9).setCellValue(String.valueOf(highInventoryRespVo.getHbHighInventoryAmount()));
             } else {
                 row03.createCell(9).setCellValue("");
             }
             if (highInventoryRespVo.getHbTotalInventoryAmount() != null) {
-                row03.createCell(10).setCellValue(highInventoryRespVo.getHbTotalInventoryAmount());
+                row03.createCell(10).setCellValue(String.valueOf(highInventoryRespVo.getHbTotalInventoryAmount()));
             } else {
                 row03.createCell(10).setCellValue("");
             }
@@ -238,12 +238,12 @@ public class ExportExcelReportHigh {
 
             // 华南仓
             if (highInventoryRespVo.getHnHighInventoryAmount() != null) {
-                row03.createCell(12).setCellValue(highInventoryRespVo.getHnHighInventoryAmount());
+                row03.createCell(12).setCellValue(String.valueOf(highInventoryRespVo.getHnHighInventoryAmount()));
             } else {
                 row03.createCell(12).setCellValue("");
             }
             if (highInventoryRespVo.getHnTotalInventoryAmount() != null) {
-                row03.createCell(13).setCellValue(highInventoryRespVo.getHnTotalInventoryAmount());
+                row03.createCell(13).setCellValue(String.valueOf(highInventoryRespVo.getHnTotalInventoryAmount()));
             } else {
                 row03.createCell(13).setCellValue("");
             }
@@ -255,12 +255,12 @@ public class ExportExcelReportHigh {
 
             // 西南仓
             if (highInventoryRespVo.getXnHighInventoryAmount() != null) {
-                row03.createCell(15).setCellValue(highInventoryRespVo.getXnHighInventoryAmount());
+                row03.createCell(15).setCellValue(String.valueOf(highInventoryRespVo.getXnHighInventoryAmount()));
             } else {
                 row03.createCell(15).setCellValue("");
             }
             if (highInventoryRespVo.getXnTotalInventoryAmount() != null) {
-                row03.createCell(16).setCellValue(highInventoryRespVo.getXnTotalInventoryAmount());
+                row03.createCell(16).setCellValue(String.valueOf(highInventoryRespVo.getXnTotalInventoryAmount()));
             } else {
                 row03.createCell(16).setCellValue("");
             }
@@ -272,12 +272,12 @@ public class ExportExcelReportHigh {
 
             // 华东仓
             if (highInventoryRespVo.getHdHhighInventoryAmount() != null) {
-                row03.createCell(18).setCellValue(highInventoryRespVo.getHdHhighInventoryAmount());
+                row03.createCell(18).setCellValue(String.valueOf(highInventoryRespVo.getHdHhighInventoryAmount()));
             } else {
                 row03.createCell(18).setCellValue("");
             }
             if (highInventoryRespVo.getHdTotalInventoryAmount() != null) {
-                row03.createCell(19).setCellValue(highInventoryRespVo.getHdTotalInventoryAmount());
+                row03.createCell(19).setCellValue(String.valueOf(highInventoryRespVo.getHdTotalInventoryAmount()));
             } else {
                 row03.createCell(19).setCellValue("");
             }

@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @功能说明:结算信息
  * @author: wangxu
@@ -27,10 +29,10 @@ public class ApplySettlementInfoReqDTO extends CommonBean{
     private String settlementGroup;
 
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
     @ApiModelProperty("所属供货单位")
     private String applySupplyCompanyCode;

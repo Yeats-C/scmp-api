@@ -54,7 +54,7 @@ public class ContractResVo {
     private Byte deliveryCharges;
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
-    private Long unloadingFee;
+    private BigDecimal unloadingFee;
 
     @ApiModelProperty("其他约定")
     private String otherConventions;
@@ -133,7 +133,7 @@ public class ContractResVo {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
     private BigDecimal shipPaymentRatio;
