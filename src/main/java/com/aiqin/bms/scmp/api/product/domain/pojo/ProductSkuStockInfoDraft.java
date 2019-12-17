@@ -43,6 +43,6 @@ public class ProductSkuStockInfoDraft extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 
 }

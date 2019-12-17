@@ -350,7 +350,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
                     productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
                     productSkuStockInfoDraft.setBaseProductContent(1);
-                    productSkuStockInfoDraft.setZeroRemovalCoefficient(BigDecimal.ZERO);
+                    productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
                     productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
                     productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
                     productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
@@ -410,7 +410,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                         item.setBaseProductContent(1);
-                        item.setZeroRemovalCoefficient(BigDecimal.ONE);
+                        item.setZeroRemovalCoefficient(1L);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -860,7 +860,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
             productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
             productSkuStockInfoDraft.setBaseProductContent(1);
-            productSkuStockInfoDraft.setZeroRemovalCoefficient(BigDecimal.ZERO);
+            productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
             productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
             productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
             productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
@@ -959,7 +959,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 item.setCreateTime(productSkuDraft.getCreateTime());
                 item.setUpdateTime(productSkuDraft.getUpdateTime());
                 item.setBaseProductContent(1);
-                item.setZeroRemovalCoefficient(BigDecimal.ONE);
+                item.setZeroRemovalCoefficient(1L);
                 item.setUsageStatus(StatusTypeCode.USE.getStatus());
             });
             productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -2172,12 +2172,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSkuNew checkSku = new CheckSkuNew(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
+                CheckSkuNew checkSku = new CheckSkuNew(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuNew() //新增检查sku
                         .checkBaseDate() //检查基础数据
@@ -2313,12 +2316,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,productSkuDraftMap,purchaseGroupMap)
+                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,productSkuDraftMap,purchaseGroupMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuUpdate1() //修改检查sku
                         .checkBaseDate() //检查基础数据
@@ -2448,12 +2454,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSkuUpdate checkSku = new CheckSkuUpdate(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
+                CheckSkuUpdate checkSku = new CheckSkuUpdate(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuUpdate() //修改检查sku
                         .checkBaseDate() //检查基础数据
@@ -2785,6 +2794,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         SkuInfoImport importVo;
         List<String> error;
         Map<String, SupplierDictionaryInfo> dicMap;
+        Map<String, SupplierDictionaryInfo> dicMap2;
         Map<String, Manufacturer> manufactureMap;
         Map<String, ProductSkuDraft> productSkuDraftMap;
         Map<String, PurchaseGroupDTO> purchaseGroupMap;
@@ -2792,7 +2802,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         private CheckSku() {
         }
 
-        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap, Map<String, SupplierDictionaryInfo> dicMap2) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -2805,10 +2815,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
             this.spuMap = spuMap;
             this.dicMap = dicMap;
+            this.dicMap2 = dicMap2;
             this.manufactureMap = manufactureMap;
         }
 
-        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroupDTO> purchaseGroupMap) {
+        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroupDTO> purchaseGroupMap,Map<String, SupplierDictionaryInfo> dicMap2) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -2821,6 +2832,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
             this.spuMap = spuMap;
             this.dicMap = dicMap;
+            this.dicMap2 = dicMap2;
 //            this.manufactureMap = manufactureMap;
             this.productSkuDraftMap = productSkuDraftMap;
             this.purchaseGroupMap = purchaseGroupMap;
@@ -3047,7 +3059,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
                 error.add("供货渠道类别不能为空");
             } else {
-                SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
+                SupplierDictionaryInfo info = dicMap2.get(importVo.getCategoriesSupplyChannelsName());
                 if (Objects.isNull(info)) {
                     error.add("无对应的名称的供货渠道类别");
                 } else {
