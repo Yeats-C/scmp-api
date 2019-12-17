@@ -2736,15 +2736,56 @@
 
     <select id="byCityAndProvinceAndskuCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        SELECT s.transport_center_code transportCenterCode
+        SELECT s.transport_center_code transportCenterCode,
+        ps.sku_code skuCode,
+        ps.sku_name skuName,
+        s.available_num availableNum
         FROM logistics_center_area l
         inner  join  stock s on l.logistics_center_code=s.transport_center_code
+        inner  join  product_sku ps on s.sku_code=ps.sku_code
         <where>
             l.del_flag=0 and
             l.province_code = #{provinceCode} and
             s.warehouse_type=1 and
             l.city_code=#{cityCode} and
-            s.sku_code== #{skuCode}
+            ps.sku_code = #{skuCode}
         </where>
+        order by s.logistics_center_code desc
+        limit 1
+    </select>
+
+
+    <select id="byCityAndProvinceAndtransportCenterCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+        SELECT s.transport_center_code transportCenterCode,
+        ps.sku_code skuCode,
+        ps.sku_name skuName,
+        s.available_num availableNum
+        FROM logistics_center_area l
+        inner  join  stock s on l.logistics_center_code=s.transport_center_code
+        inner  join  product_sku ps on s.sku_code=ps.sku_code
+        <where>
+            l.del_flag=0 and
+            l.province_code = #{provinceCode} and
+            s.warehouse_type=1 and
+            l.city_code=#{cityCode} and
+            s.transport_center_code= #{transportCenterCode}
+        </where>
+        order by s.logistics_center_code desc
+        limit 1
+    </select>
+
+    <select id="findSpareWarehouse"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+        select
+        <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
+        from product_sku_config a
+        left join product_sku_config_spare_warehouse b
+        on a.config_code = b.config_code
+        left join product_sku c
+        on a.sku_code = c.sku_code
+        where a.del_flag = 0
+        and a.sku_code = #{skuCode}
+        and a.transport_center_code= #{transportCenterCode}
     </select>
 </mapper>

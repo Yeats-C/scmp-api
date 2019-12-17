@@ -291,5 +291,5 @@ public interface StockService {
 
     String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType);
 
-    StockBatchRespVO byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode);
+    List<StockBatchRespVO>  byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode);
 }
