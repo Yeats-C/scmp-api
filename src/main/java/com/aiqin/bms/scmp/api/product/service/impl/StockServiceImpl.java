@@ -25,6 +25,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
@@ -2170,7 +2172,23 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     }
 
     @Override
-    public StockBatchRespVO byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode) {
-        return stockDao.byCityAndProvinceAndskuCode(provinceCode,cityCode);
+    public  List<StockBatchRespVO>  byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode) {
+        List<StockBatchRespVO> stockBatchRespVOList=Lists.newArrayList();
+        stockBatchRespVOList.add(stockDao.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
+        //得出备用仓库
+        SkuConfigsRepsVo respVO= stockDao.findSpareWarehouse(stockBatchRespVOList.get(0));
+        List<SpareWarehouseRepsVo> spareWarehouses=respVO.getSpareWarehouses();
+        //对仓库使用顺序进行排序
+        spareWarehouses.stream().sorted(Comparator.comparing(SpareWarehouseRepsVo::getUseOrder)).collect(Collectors.toList());
+
+        for (SpareWarehouseRepsVo spareWarehouseRepsVo:
+        spareWarehouses) {
+            StockBatchRespVO stockBatchRespVO=stockDao.byCityAndProvinceAndtransportCenterCode(spareWarehouseRepsVo.getTransportCenterCode(),provinceCode,cityCode);
+            if(stockBatchRespVO.getAvailableNum()>0){
+                stockBatchRespVOList.add(stockBatchRespVO);
+                break;
+            }
+        }
+        return stockBatchRespVOList;
     }
 }
