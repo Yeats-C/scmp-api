@@ -36,7 +36,7 @@ public class ApplyProductSkuDisInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;

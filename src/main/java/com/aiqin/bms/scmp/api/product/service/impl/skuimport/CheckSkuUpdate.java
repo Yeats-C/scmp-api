@@ -45,6 +45,7 @@ public class CheckSkuUpdate {
     SkuInfoImport importVo;
     List<String> error;
     Map<String, SupplierDictionaryInfo> dicMap;
+    Map<String, SupplierDictionaryInfo> dicMap2;
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
@@ -52,7 +53,7 @@ public class CheckSkuUpdate {
     public CheckSkuUpdate() {
     }
 
-    public CheckSkuUpdate(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+    public CheckSkuUpdate(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap, Map<String, SupplierDictionaryInfo> dicMap2) {
         this.error = Lists.newArrayList();
         this.resp = new AddSkuInfoReqVO();
         this.productSkuMap = productSkuMap;
@@ -65,6 +66,7 @@ public class CheckSkuUpdate {
         this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
         this.spuMap = spuMap;
         this.dicMap = dicMap;
+        this.dicMap2 = dicMap2;
         this.manufactureMap = manufactureMap;
     }
 
@@ -257,7 +259,7 @@ public class CheckSkuUpdate {
         if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
 //            error.add("供货渠道类别不能为空");
         } else {
-            SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
+            SupplierDictionaryInfo info = dicMap2.get(importVo.getCategoriesSupplyChannelsName());
             if (Objects.isNull(info)) {
                 error.add("无对应的名称的供货渠道类别");
             } else {

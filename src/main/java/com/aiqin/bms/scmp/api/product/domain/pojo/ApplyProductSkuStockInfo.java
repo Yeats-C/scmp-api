@@ -44,5 +44,5 @@ public class ApplyProductSkuStockInfo extends CommonBean {
     private String applyCode;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 }

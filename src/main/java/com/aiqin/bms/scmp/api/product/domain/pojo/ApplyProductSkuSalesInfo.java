@@ -42,7 +42,7 @@ public class ApplyProductSkuSalesInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 
     @ApiModelProperty("宽")
     private BigDecimal productWidth;

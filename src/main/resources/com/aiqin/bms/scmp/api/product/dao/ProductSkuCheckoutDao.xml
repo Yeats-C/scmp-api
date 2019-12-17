@@ -72,7 +72,7 @@
       </foreach>
   </insert>
   <select id="getDrafts" parameterType="java.util.List" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutDraftMapper.BaseResultMap">
-    SELECT * FROM product_sku_checkout_draft WHERE del_flag=0 AND sku_code IN
+    SELECT <include refid="Base_Column_List"/> FROM product_sku_checkout_draft WHERE del_flag=0 AND sku_code IN
     <foreach collection="productSkus" item="item" open="(" separator="," close=")">
       #{item.skuCode,jdbcType=VARCHAR}
     </foreach>

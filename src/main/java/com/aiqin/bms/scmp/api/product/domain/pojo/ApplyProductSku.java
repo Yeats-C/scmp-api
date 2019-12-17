@@ -159,7 +159,7 @@ public class ApplyProductSku extends CommonBean {
     private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 
     @ApiModelProperty("采购组编码")
     private String procurementSectionCode;
