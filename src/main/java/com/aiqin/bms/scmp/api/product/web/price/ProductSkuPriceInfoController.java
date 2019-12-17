@@ -3,11 +3,14 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
+import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -73,8 +76,9 @@ public class ProductSkuPriceInfoController {
     public HttpResponse<List<BigDecimal>> ByskuCode(@RequestParam String code) {
         log.info("ProductSkuPriceInfoController---view---入参：[{}]", code);
         try {
-            return HttpResponse.success(productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(code)
-                    .stream().filter(x->x.getPriceTypeCode().equals("3")).map(x->x.getPriceTax()).collect(Collectors.toList()));
+            List<BigDecimal> productSkuPriceRespVoList=productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(code)
+                    .stream().filter(x->x.getPriceTypeCode().equals("3")).map(x->x.getPriceTax()).collect(Collectors.toList());
+            return HttpResponse.success(productSkuPriceRespVoList);
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -83,4 +87,6 @@ public class ProductSkuPriceInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+
 }

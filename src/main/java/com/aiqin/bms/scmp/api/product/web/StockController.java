@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
@@ -17,6 +20,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
+import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -25,10 +30,12 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wuyongqiang
@@ -43,6 +50,8 @@ public class StockController {
 
     @Resource
     private StockService stockService;
+    @Autowired
+    private ApplyUseTagRecordService applyUseTagRecordService;
 
     @PostMapping("/search/page")
     @ApiOperation(value = "总库存管理列表")
@@ -313,5 +322,21 @@ public class StockController {
     @ApiOperation(value = "总库存管理列表")
     public HttpResponse<List<StockBatchRespVO>> byCityAndProvinceAndskuCode(@RequestParam("skuCode") String skuCode,@RequestParam("provinceCode") String provinceCode,@RequestParam("cityCode") String cityCode) {
         return HttpResponse.success(stockService.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
+    }
+
+    @GetMapping("/search/getTagRecordList")
+    @ApiOperation("查看")
+    public HttpResponse<List<ApplyUseTagRecord>> getTagRecordList(@RequestParam String skuCode) {
+        log.info("ProductSkuPriceInfoController---view---入参：[{}]", skuCode);
+        try {
+            List<String> applyUseTagRecordList=applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()).stream().map(x->x.getTagTypeName()).collect(Collectors.toList());
+            return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 }
