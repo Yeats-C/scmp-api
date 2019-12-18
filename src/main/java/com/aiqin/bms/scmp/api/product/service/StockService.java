@@ -208,7 +208,7 @@ public interface StockService {
     HttpResponse logs(StockLogsRequest stockLogsRequest);
 
     /**
-     * 
+     *
      * @return
      */
     List<Stock> selectGroup();
@@ -288,4 +288,8 @@ public interface StockService {
     List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 
     List<Stock> selectSkuCost();
+
+    String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType);
+
+    List<StockBatchRespVO>  byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode);
 }
