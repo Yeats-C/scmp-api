@@ -5,10 +5,10 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="large_unit" jdbcType="VARCHAR" property="largeUnit" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
-    <result column="box_length" jdbcType="BIGINT" property="boxLength" />
-    <result column="box_width" jdbcType="BIGINT" property="boxWidth" />
-    <result column="box_height" jdbcType="BIGINT" property="boxHeight" />
-    <result column="box_volume" jdbcType="BIGINT" property="boxVolume" />
+    <result column="box_length" jdbcType="DECIMAL" property="boxLength" />
+    <result column="box_width" jdbcType="DECIMAL" property="boxWidth" />
+    <result column="box_height" jdbcType="DECIMAL" property="boxHeight" />
+    <result column="box_volume" jdbcType="DECIMAL" property="boxVolume" />
     <result column="box_gross_weight" jdbcType="DECIMAL" property="boxGrossWeight" />
     <result column="net_weight" jdbcType="DECIMAL" property="netWeight" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
