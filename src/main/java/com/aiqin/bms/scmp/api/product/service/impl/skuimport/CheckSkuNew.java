@@ -484,43 +484,43 @@ public class CheckSkuNew {
             stockBox.setUnitCode(stock.getUnitCode());
             boolean flag = true;
             try {
-                stockBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
-                if (!"".equals(stockBox.getBoxLength()) && stockBox.getBoxLength() != null){
-                    if (new BigDecimal(stockBox.getBoxLength().intValue()).compareTo(stockBox.getBoxLength())==0){}else {
-                        //小数
-                       throw  new BizException("库存长格式不正确");
-                    }
+                BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                Long longLength = bigDecimalLength.longValue();
+                if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                    //小数
+                    throw  new BizException("库存长格式不正确");
                 }
+                stockBox.setBoxLength(longLength);
             } catch (Exception e) {
                 error.add("库存长格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim()));
-                if (!"".equals(stockBox.getBoxWidth()) && stockBox.getBoxWidth() != null){
-                    if (new BigDecimal(stockBox.getBoxWidth().intValue()).compareTo(stockBox.getBoxWidth())==0){}else {
-                        //小数
-                        throw  new BizException("库存宽格式不正确");
-                    }
+                BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                Long longWidth = bigDecimalWidth.longValue();
+                if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                    //小数
+                    throw  new BizException("库存宽格式不正确");
                 }
+                stockBox.setBoxWidth(longWidth);
             } catch (Exception e) {
                 error.add("库存宽格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim()));
-                if (!"".equals(stockBox.getBoxHeight()) && stockBox.getBoxHeight() != null){
-                    if (new BigDecimal(stockBox.getBoxHeight().intValue()).compareTo(stockBox.getBoxHeight())==0){}else {
-                        //小数
-                        throw  new BizException("库存高格式不正确");
-                    }
+                BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                Long longHeight = bigDecimalHeight.longValue();
+                if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                    //小数
+                    throw  new BizException("库存宽格式不正确");
                 }
+                stockBox.setBoxHeight(longHeight);
             } catch (Exception e) {
                 error.add("库存高格式不正确");
                 flag = false;
             }
             if (flag) {
-                stockBox.setBoxVolume(stockBox.getBoxLength() .multiply(stockBox.getBoxWidth()).multiply(stockBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)));
+                stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight()/10000);
             }
             try {
                 stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
@@ -576,25 +576,43 @@ public class CheckSkuNew {
                 purchaseBox.setUnitCode(purchase.getUnitCode());
                 boolean flag = true;
                 try {
-                    purchaseBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim()));
+                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    Long longLength = bigDecimalLength.longValue();
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        //小数
+                        throw  new BizException("库存长格式不正确");
+                    }
+                    purchaseBox.setBoxLength(longLength);
                 } catch (Exception e) {
                     error.add("采购长格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim()));
+                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    Long longWidth = bigDecimalWidth.longValue();
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    purchaseBox.setBoxWidth(longWidth);
                 } catch (Exception e) {
                     error.add("采购宽格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim()));
+                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    Long longHeight = bigDecimalHeight.longValue();
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    purchaseBox.setBoxHeight(longHeight);
                 } catch (Exception e) {
                     error.add("采购高格式不正确");
                     flag = false;
                 }
                 if (flag) {
-                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength().multiply(purchaseBox.getBoxWidth()).multiply(purchaseBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)) );
+                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight()/10000);
                 }
                 try {
                     purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));

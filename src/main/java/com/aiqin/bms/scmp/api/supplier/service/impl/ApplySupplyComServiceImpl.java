@@ -1220,6 +1220,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     throw new BizException(ResultCode.UPDATE_ERROR);
                 }
             }
+            //删除旧的
+            applySupplyCompanyAccountMapper.deleteByPrimaryKey(applySupplyCompanyReqVO.getApplySupplyCompanyAccountReq().getId());
             //判断是否需要新增供货单位账户申请
             //判断是否需要新增账户信息
             Boolean addAccount = null != applySupplyCompanyReqVO.getAddAccount() && applySupplyCompanyReqVO.getAddAccount().equals(StatusTypeCode.ADD_ACCOUNT.getStatus());
@@ -1232,9 +1234,6 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 applySupplyComAcctDTO.setApplyShow((byte)1);
                 applySupplyComAcctService.insideSaveApply(applySupplyComAcctDTO);
             }
-            //删除旧的
-            applySupplyCompanyAccountMapper.deleteByPrimaryKey(applySupplyCompanyReqVO.getApplySupplyCompanyAccountReq().getId());
-
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompanyReqDTO.getApplyCode(),applySupplyCompany.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
                 applySupplyCompanyReqDTO.setDirectSupervisorCode(applySupplyCompanyReqVO.getDirectSupervisorCode());
@@ -1817,22 +1816,23 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                             returnVO.setSendProvinceName(province);
                         }
                     }
-                    AreaInfo areaInfo = areaTree.get(province+city);
-                    if(Objects.isNull(areaInfo)||!areaInfo.getParentName().equals(province)){
-                        error.add(checkAreaEnum.getCity());
-                    }else {
-                        if (checkAreaEnum.getType() == 1) {
-                            reqVO.setCityId(areaInfo.getCode());
-                            reqVO.setCityName(city);
-                        } else if (checkAreaEnum.getType() == 2) {
-                            sendVO.setSendCityId(areaInfo.getCode());
-                            sendVO.setSendCityName(city);
-                        } else if (checkAreaEnum.getType() == 3) {
-                            returnVO.setSendCityId(areaInfo.getCode());
-                            returnVO.setSendCityName(city);
+                    if(StringUtils.isNotBlank(city)){
+                        AreaInfo areaInfo = areaTree.get(province+city);
+                        if(Objects.isNull(areaInfo)||!areaInfo.getParentName().equals(province)){
+                            error.add(checkAreaEnum.getCity());
+                        }else {
+                            if (checkAreaEnum.getType() == 1) {
+                                reqVO.setCityId(areaInfo.getCode());
+                                reqVO.setCityName(city);
+                            } else if (checkAreaEnum.getType() == 2) {
+                                sendVO.setSendCityId(areaInfo.getCode());
+                                sendVO.setSendCityName(city);
+                            } else if (checkAreaEnum.getType() == 3) {
+                                returnVO.setSendCityId(areaInfo.getCode());
+                                returnVO.setSendCityName(city);
+                            }
                         }
                     }
-
                 }else{
                     AreaInfo areaInfo = areaTree.get(province);
                     if(Objects.isNull(areaInfo)){
@@ -1866,7 +1866,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                         returnVO.setSendProvinceName(province);
                     }
                 }
-                if(city!=null){
+                if(StringUtils.isNotBlank(city)){
                     AreaInfo areaInfo = areaTree.get(province+city);
                     if (Objects.isNull(areaInfo)) {
                         error.add(checkAreaEnum.getCity());
@@ -1882,7 +1882,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                             returnVO.setSendCityName(city);
                         }
                     }
-                    if(district!=null) {
+                    if(StringUtils.isNotBlank(district)) {
                         AreaInfo areaInfo2 = areaTree.get(province + city + district);
                         if (Objects.isNull(areaInfo2)) {
                             error.add(checkAreaEnum.getDis());
