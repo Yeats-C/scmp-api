@@ -155,7 +155,7 @@ public class CheckContract {
                 Integer deliveryCycle = Integer.parseInt(contractImportNew.getDeliveryCycle().trim());
                 reqVo.setDeliveryCycle(deliveryCycle);
             } catch (NumberFormatException e) {
-                error.add("送货日格式不正确");
+                error.add("送货周期格式不正确");
             }
         }
         //税率
@@ -333,7 +333,7 @@ public class CheckContract {
             if (null == costUndertakes) {
                 error.add("未找到对应的卸货费承担方");
             }
-            reqVo.setUnloadingFee(BigDecimal.valueOf(costUndertakes.getType()));
+            reqVo.setUnloadingFee(costUndertakes.getType().longValue());
         }
         //固定返利比例
         if (StringUtils.isBlank(contractImportNew.getReturnRate())) {

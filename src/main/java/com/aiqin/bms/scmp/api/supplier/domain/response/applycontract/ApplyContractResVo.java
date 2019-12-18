@@ -49,7 +49,7 @@ public class ApplyContractResVo {
     private Byte deliveryCharges;
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
-    private BigDecimal unloadingFee;
+    private Long unloadingFee;
 
     @ApiModelProperty("其他约定")
     private String otherConventions;
