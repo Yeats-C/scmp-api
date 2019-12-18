@@ -1588,7 +1588,7 @@
   mnemonic_code,manufacturer_guide_price,applicable_month_age,seasonal_goods,warehouse_type_code,warehouse_type_name,
   structural_goods,is_main_push,new_product,remark,company_code,company_name,
   del_flag,create_time,create_by,update_time,update_by,use_time,unique_code,
-  inventory_model,price_model,inventory_allocation,sku_status,on_sale
+  inventory_model,price_model,inventory_allocation,sku_status,on_sale,product_desc
   </sql>
   <select id="getProductSkuInfos"  parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO" resultMap="Product_Sku_Resp_Map">
     select
