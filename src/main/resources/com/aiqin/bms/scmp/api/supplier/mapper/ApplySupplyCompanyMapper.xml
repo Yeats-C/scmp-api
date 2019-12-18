@@ -65,13 +65,36 @@
     business_license,star_score,direct_supervisor_code,direct_supervisor_name,payment_method,brand,delivery_area,remark,approval_name
   </sql>
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-      insert into apply_supply_company (apply_supply_name, apply_supply_type, apply_abbreviation, province_id, province_name, city_id, city_name, district_id, district_name, address, contact_name, mobile_phone, phone, fax, email, company_website, create_time, create_by, update_time, update_by, del_flag, apply_supply_company_code, apply_status, apply_type, auditor_by, auditor_time, purchasing_group_code, supplier_code, supplier_name, zip_code, form_no, supply_company_code, purchasing_group_name, tax_id, corporate_representative, registered_capital, enable,company_code, company_name, min_order_amount, max_order_amount, business_license, star_score, direct_supervisor_code, direct_supervisor_name,payment_method,brand,delivery_area,remark,approval_name,approval_remark) values
-      (#{applySupplyName},#{applySupplyType},#{applyAbbreviation},#{provinceId},#{provinceName},#{cityId},#{cityName}, #{districtId},#{districtName},#{address}, #{contactName}, #{mobilePhone}, #{phone},#{fax}, #{email},#{companyWebsite}, #{createTime},#{createBy},#{updateTime}, #{updateBy},#{delFlag},#{applySupplyCompanyCode},#{applyStatus}, #{applyType}, #{auditorBy},#{auditorTime}, #{purchasingGroupCode}, #{supplierCode},#{supplierName}, #{zipCode}, #{formNo}, #{supplyCompanyCode},#{purchasingGroupName},#{taxId},#{corporateRepresentative}, #{registeredCapital}, #{enable},#{companyCode}, #{companyName},#{minOrderAmount},#{maxOrderAmount},#{businessLicense}, #{starScore},#{directSupervisorCode},#{directSupervisorName},#{paymentMethod,jdbcType=VARCHAR},
-#{brand,jdbcType=VARCHAR},
-#{deliveryArea,jdbcType=VARCHAR},
-#{remark,jdbcType=VARCHAR},
-#{approvalName,jdbcType=VARCHAR},
-#{approvalRemark,jdbcType=VARCHAR})
+     insert into apply_supply_company (apply_supply_name,apply_supply_type,supplier_code,supplier_name,
+      apply_abbreviation, province_id, province_name,
+      city_id, city_name, district_id,
+      district_name,address,
+      contact_name, mobile_phone, phone,
+      fax, email, company_website,
+      create_time, create_by, del_flag,
+      apply_supply_company_code,apply_type,zip_code,purchasing_group_code,form_no,
+      purchasing_group_name,tax_id,corporate_representative,registered_capital,
+      enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
+      min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
+      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark
+    )
+    values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
+      #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR},
+      #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR},
+      #{districtName,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR},
+      #{contactName,jdbcType=VARCHAR}, #{mobilePhone,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR},
+      #{fax,jdbcType=VARCHAR}, #{email,jdbcType=VARCHAR}, #{companyWebsite,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
+      #{createBy,jdbcType=VARCHAR}, #{delFlag,jdbcType=TINYINT},
+      #{applyCode,jdbcType=VARCHAR},#{applyType,jdbcType=TINYINT},
+      #{zipCode,jdbcType=VARCHAR},#{purchasingGroupCode,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
+      #{purchasingGroupName, jdbcType=VARCHAR},#{taxId, jdbcType=VARCHAR},#{corporateRepresentative, jdbcType=VARCHAR},
+      #{registeredCapital, jdbcType=DECIMAL},#{enable, jdbcType=TINYINT},#{updateTime,jdbcType=TIMESTAMP},
+      #{updateBy,jdbcType=VARCHAR},#{addAccount, jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+      #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
+      #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},
+      #{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
+      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR}
+      )
     </insert>
   <delete id="delectById">
     delete from apply_supply_company where id = #{id}
