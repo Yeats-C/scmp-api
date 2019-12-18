@@ -20,16 +20,16 @@ public class ProductSkuBoxPacking extends CommonBean {
     private String unitCode;
 
     @ApiModelProperty("包装箱子长度")
-    private BigDecimal boxLength;
+    private Long boxLength;
 
     @ApiModelProperty("宽度（mm）")
-    private BigDecimal boxWidth;
+    private Long boxWidth;
 
     @ApiModelProperty("箱子高度")
-    private BigDecimal boxHeight;
+    private Long boxHeight;
 
     @ApiModelProperty("箱子体积")
-    private BigDecimal boxVolume;
+    private Long boxVolume;
 
     @ApiModelProperty("毛重")
     private BigDecimal boxGrossWeight;
