@@ -119,6 +119,7 @@ public class OrderInfoReqVO {
     private Long productNum;
 
     @ApiModelProperty("支付日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date paymentTime;
 
     @ApiModelProperty("不开、增普、增专")
@@ -127,7 +128,8 @@ public class OrderInfoReqVO {
     @ApiModelProperty("发票类型编码")
     private String invoiceTypeCode;
 
-    @ApiModelProperty("支付日期")
+    @ApiModelProperty("发运日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date transportTime;
 
     @ApiModelProperty("发票抬头")

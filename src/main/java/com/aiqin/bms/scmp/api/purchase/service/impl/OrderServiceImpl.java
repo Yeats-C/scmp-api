@@ -346,7 +346,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse insertSaleOrder(List<OrderInfoReqVO> vo) {
-        if (null == vo) {
+        if (CollectionUtils.isEmptyCollection(vo)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Date date = Calendar.getInstance().getTime();
@@ -355,14 +355,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
         vo.parallelStream().forEach(o -> {
-            OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
+            OrderInfo info = BeanCopyUtils.copy(o, OrderInfo.class);
             orders.add(info);
             List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
             orderItems.addAll(orderItem);
             // 拼装日志信息
             OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
-                    OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
-                    OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(), null,
+                    "a",
+                    "a", null,
                     info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
             logs.add(log);
         });
@@ -370,14 +370,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveData(orderItems, orders);
         //存日志
         saveLog(logs);
-        // 调用出库单生成销售的出库单信息
-        List<OrderInfoDTO> list = Lists.newArrayList();
-        OrderInfoDTO dto = new OrderInfoDTO();
-        List<OrderInfoItemDTO> dtoList = BeanCopyUtils.copyList(orderItems, OrderInfoItemDTO.class);
-        dto.setItemList(dtoList);
-        list.add(dto);
-        this.sendOrderToOutBound(list);
+        // 调用销售单生成出库单信息
+        OutboundReqVo outboundReqVo = new OutboundReqVo();
+        outboundService.saveOutBoundInfo(outboundReqVo);
         return HttpResponse.success();
+    }
+
+    // 出库单参数填充
+    private void insertOotbound(){
+
     }
 
 }
