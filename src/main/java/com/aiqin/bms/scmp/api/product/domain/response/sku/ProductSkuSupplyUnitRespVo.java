@@ -95,4 +95,16 @@ public class ProductSkuSupplyUnitRespVo extends CommonBean {
 
     @ApiModelProperty(value = "供应商产能信息",position = 7)
     private List<ProductSkuSupplyUnitCapacityRespVo> productSkuSupplyUnitCapacities;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
+
+    @ApiModelProperty("分销价")
+    private BigDecimal distributionPrice;
 }

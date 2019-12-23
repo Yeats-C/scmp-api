@@ -36,4 +36,6 @@ public interface NewProductService {
 
 
     Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode);
+
+    NewProductResponseVO getDetail(String productCode);
 }

@@ -39,7 +39,7 @@ public class PurchaseSaleStockRespVo extends CommonBean {
     @ApiModelProperty("单位code")
     private String unitCode;
 
-    @ApiModelProperty("单位名称")
+    @ApiModelProperty(value = "单位名称")
     private String unitName;
 
     @ApiModelProperty("条形码")

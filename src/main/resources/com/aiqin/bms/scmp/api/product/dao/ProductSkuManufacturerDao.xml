@@ -9,6 +9,7 @@
     <result column="is_default" jdbcType="TINYINT" property="isDefault" />
     <result column="address" jdbcType="VARCHAR" property="address" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+    <result column="usage_status" jdbcType="TINYINT" property="usageStatus" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
@@ -111,7 +112,7 @@
     SELECT id, manufacturer_name,manufacturer_code,
     factory_product_number, is_default, address,
     del_flag, create_time, create_by,
-    update_time, update_by, product_sku_code,
+    update_time, update_by, product_sku_code,usage_status,
     product_sku_name FROM product_sku_manufacturer where product_sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="getInfo" parameterType="java.lang.String" resultMap="SkuManufacturerMap">
@@ -132,7 +133,7 @@
   <delete id="deleteList" parameterType="java.lang.String">
     DELETE  from product_sku_manufacturer WHERE product_sku_code =#{skuCode,jdbcType=VARCHAR}
   </delete>
-  <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuManufacturerMapper.BaseResultMap">
+    <select id="getApply" parameterType="java.lang.String" resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuManufacturerMapper.BaseResultMap">
     SELECT * from apply_product_sku_manufacturer
     WHERE 1=1
     <if test="skuCode != null and skuCode != '' ">
@@ -152,4 +153,60 @@
     where product_sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code = #{applyCode,jdbcType=VARCHAR}
   </select>
+
+  <select id="getPageList" resultMap="DraftMap" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo">
+    SELECT psm.id, psm.manufacturer_name,psm.manufacturer_code,
+    psm.factory_product_number, psm.is_default, psm.address,
+    psm.create_time, psm.create_by,
+    psm.update_time, psm.update_by, psm.product_sku_code,
+    psm.product_sku_name,psm.usage_status
+    FROM product_sku_manufacturer as psm,product_sku as a
+    where psm.product_sku_code = a.sku_code
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND a.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="manufacturerCode!=null and manufacturerCode!=''">
+      AND psm.manufacturer_code = #{manufacturerCode,jdbcType=VARCHAR}
+    </if>
+    <if test="manufacturerName!=null and manufacturerName!=''">
+      AND psm.manufacturer_name like CONCAT('',#{manufacturerName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productPropertyName!=null and productPropertyName!=''">
+      AND a.product_property_name like CONCAT('',#{productPropertyName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryCode!=null and productCategoryCode!=''">
+      AND a.product_category_code like CONCAT('',#{productCategoryCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND a.product_category_name like CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandCode!=null and productBrandCode!=''">
+      AND a.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND a.product_brand_name like CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+      AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+      AND a.procurement_section_name like CONCAT('',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="usageStatus != null">
+      and psm.usage_status = #{usageStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    order by psm.update_time desc
+  </select>
+  <update id="deleteById">
+      delete from product_sku_manufacturer where id=#{id,jdbcType=BIGINT}
+  </update>
 </mapper>

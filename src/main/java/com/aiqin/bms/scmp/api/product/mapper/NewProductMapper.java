@@ -39,4 +39,7 @@ public interface NewProductMapper {
     List<NewSkuDetailsResponseVO> productSku(@Param("productCode") String productCode, @Param("productName") String productName);
 
     int checkName(@Param("name")String name, @Param("companyCode")String companyCode, @Param("code") String code);
+
+    NewProductResponseVO selectByProdutCode(@Param("productCode") String productCode);
+
 }
