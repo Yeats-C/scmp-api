@@ -17,6 +17,12 @@ import java.util.Date;
 @Data
 public class QueryOrderInfoItemBatchRespVO {
 
+    @ApiModelProperty("订单编码")
+    private String orderCode;
+
+    @ApiModelProperty("商品行号")
+    private Long productLineNum;
+
     @ApiModelProperty("sku编号")
     private String skuCode;
 

@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
@@ -232,8 +233,45 @@ public interface StockDao {
     /**
      * 销售可用
      * @param
-     * @param productCode
      * @return
      */
     Long selectSkuAndCompanyByQueryAvailableSum(@Param("skuCode")String skuCode,@Param("companyCode") String companyCode);
+
+    /**
+     * 查询可以使用sku 以及库存数量
+     *
+     * @param provinceCode
+     * @param cityCode
+     * @param orderByType
+     * @return
+     */
+    List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode,
+                                           @Param("exitStock") String exitStock,@Param("orderByType") String orderByType,@Param("companyCode") String companyCode);
+    /**
+     * 查询可以使用 sku以及仓库
+     *
+     *
+     * @param skuCode
+     * @param provinceCode
+     * @param cityCode
+     * @return
+     */
+    StockBatchRespVO byCityAndProvinceAndskuCode(@Param("skuCode") String skuCode,
+                                                 @Param("provinceCode")  String provinceCode,
+                                                 @Param("cityCode") String cityCode);
+
+    /**
+     * 查询可以使用 sku以及仓库
+     *
+     *
+     * @param skuCode
+     * @param provinceCode
+     * @param cityCode
+     * @return
+     */
+    StockBatchRespVO byCityAndProvinceAndtransportCenterCode(@Param("transportCenterCode") String transportCenterCode,
+                                                             @Param("provinceCode")  String provinceCode,
+                                                             @Param("cityCode") String cityCode);
+
+    SkuConfigsRepsVo findSpareWarehouse(StockBatchRespVO stockBatchRespVO);
 }

@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderServiceImpl;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -167,4 +168,6 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo
      */
     OrderInfo selectByOrderCode(String orderCode);
+
+    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
 }

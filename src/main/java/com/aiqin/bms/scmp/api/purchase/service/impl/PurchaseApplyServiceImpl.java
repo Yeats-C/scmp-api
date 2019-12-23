@@ -917,9 +917,9 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 map.put("type", type);
                 map.put("goodsCount", product.getPurchaseWhole());
                 map.put("goodsMin", product.getSingleCount());
-                map.put("price", product.getProductAmount());
+                map.put("price", product.getProductAmount().toString());
                 BigDecimal priceSum = product.getProductTotalAmount();
-                map.put("priceSum", priceSum);
+                map.put("priceSum", priceSum.toString());
                 amountSum = amountSum.add(priceSum);
                 productList.add(map);
             }
@@ -938,7 +938,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             productList.add(map);
         }
         dataMap.put("productList", productList);
-        dataMap.put("amountSum", amountSum);
+        dataMap.put("amountSum", amountSum.toString());
         dataMap.put("boxSum", box);
         try {
             response.setContentType("*/*");

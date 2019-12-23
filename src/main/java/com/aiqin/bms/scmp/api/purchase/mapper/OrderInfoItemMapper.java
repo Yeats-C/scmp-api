@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.DeliveryReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryProductUniqueCodeListReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 
 import java.util.List;
@@ -30,14 +31,6 @@ public interface OrderInfoItemMapper {
      */
     int insertBatch(List<OrderInfoItem> items);
     /**
-     * 订单商品查询
-     * @author NullPointException
-     * @date 2019/6/17
-     * @param reqVO
-     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
-     */
-    List<QueryOrderProductListRespVO> selectOrderProductList(QueryOrderProductListReqVO reqVO);
-    /**
      * 商品唯一码查询
      * @author NullPointException
      * @date 2019/6/18
@@ -45,6 +38,14 @@ public interface OrderInfoItemMapper {
      * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
      */
     List<QueryOrderProductListRespVO> selectproductUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
+    /**
+     * 订单商品查询
+     * @author NullPointException
+     * @date 2019/6/17
+     * @param reqVO
+     * @return java.util.List<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
+     */
+    List<QueryOrderProductListRespVO> selectOrderProductList(QueryOrderProductListReqVO reqVO);
     /**
      * 通过id批量更新实发数量
      * @author NullPointException
@@ -57,4 +58,6 @@ public interface OrderInfoItemMapper {
     Integer insertList(List<OrderInfoItem> list);
 
     List<OrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
+
+    List<QueryOrderInfoItemRespVO> productList(String orderCode);
 }

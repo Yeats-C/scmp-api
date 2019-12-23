@@ -200,4 +200,7 @@ public interface StockService {
 
     HttpResponse lockErpStock(MerchantLockStockReqVo vo);
 
+    String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType);
+
+    List<StockBatchRespVO>  byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode);
 }

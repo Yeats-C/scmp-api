@@ -307,4 +307,12 @@
     </foreach>
     )
   </select>
+  <select id="selectList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO">
+    select
+    order_code as orderCode, product_line_num as product_line_num, sku_code as skuCode, sku_name as skuName, num,
+    actual_deliver_num as actualDeliverNum, product_time as productTime, batch_remark as batchRemark,
+    batch_number as batchNumber, lock_type as lockType
+    from order_info_item_product_batch
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -992,7 +992,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundBatch> batchList = Lists.newArrayList();
         for (OutboundReqVo outboundReqVo : outboundReqVoList) {
             productList.addAll(BeanCopyUtils.copyList(outboundReqVo.getList(), OutboundProduct.class));
-            batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+            if(CollectionUtils.isNotEmpty(batchList)){
+                batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+            }
         }
         saveData(outbounds,productList,batchList);
         //TODo 保存日志
@@ -1011,10 +1013,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         if(i1!=productList.size()){
             throw new BizException(ResultCode.SAVE_OUT_BOUND_PRODUCT_FAILED);
         }
-        Integer integer = outboundBatchDao.insertInfo(batchList);
-        if(Objects.isNull(integer)||integer!=batchList.size()){
-            throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
+        if (CollectionUtils.isNotEmpty(batchList)){
+            Integer integer = outboundBatchDao.insertInfo(batchList);
+            if(Objects.isNull(integer)||integer!=batchList.size()){
+                throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
+            }
         }
+
     }
     /**
      * 补充出库单数据

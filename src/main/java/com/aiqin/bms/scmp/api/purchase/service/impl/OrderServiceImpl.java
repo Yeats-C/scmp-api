@@ -31,6 +31,7 @@ import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -40,10 +41,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import javax.swing.*;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -102,11 +101,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         service.lockBatchStock(orders,orderItems,service);
         return true;
     }
-    @Async("myTaskAsyncPool")
+
+    //@Async("myTaskAsyncPool")
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void sendOrderToOutBound(List< OrderInfoDTO> dtos) {
-        //TODO 调用库房接口传入库单
+    public void sendOrderToOutBound(List<OrderInfoDTO> dtos) {
+        log.info("生成出库单信息参数：{}" + dtos);
+        // 调用库房接口传出库单
         Date date = new Date();
         List<OutboundReqVo> outboundReqVoList = new OrderToOutBoundConverter().convert(dtos);
         Boolean b = outboundService.saveList(outboundReqVoList);
@@ -127,6 +128,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         //存日志
         saveLog(logs);
     }
+
     /**
      * 数据处理
      * @author NullPointException
@@ -339,6 +341,41 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     public OrderInfo selectByOrderCode(String orderCode) {
         return orderInfoMapper.selectByOrderCode2(orderCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse insertSaleOrder(OrderInfoReqVO vo) {
+        if (null == vo) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        Date date = Calendar.getInstance().getTime();
+        // 数据处理
+        List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
+        List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
+        List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
+        OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
+        orders.add(info);
+        List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
+        orderItems.addAll(orderItem);
+        // 拼装日志信息
+        OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
+                OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
+                OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(), null,
+                info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
+        logs.add(log);
+        // 保存订单和订单商品信息
+        saveData(orderItems, orders);
+        //存日志
+        saveLog(logs);
+        // 调用出库单生成销售的出库单信息
+        List<OrderInfoDTO> list = Lists.newArrayList();
+        OrderInfoDTO dto = new OrderInfoDTO();
+        List<OrderInfoItemDTO> dtoList = BeanCopyUtils.copyList(orderItem, OrderInfoItemDTO.class);
+        dto.setItemList(dtoList);
+        list.add(dto);
+        this.sendOrderToOutBound(list);
+        return HttpResponse.success();
     }
 
 }
