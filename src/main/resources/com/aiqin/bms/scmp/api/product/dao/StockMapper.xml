@@ -2700,7 +2700,6 @@
         </where>
     </select>
 
-
     <select id="byCityCodeAndprovinceCode"
             resultType="java.lang.String">
         SELECT distinct s.sku_code skuCode
@@ -2726,11 +2725,7 @@
             </if>
         </where>
         <if test="orderByType!=null and orderByType=='1' ">
-<<<<<<< HEAD
             order by s.available_num desc
-=======
-           order by s.available_num desc
->>>>>>> master
         </if>
         <if test="orderByType!=null and orderByType=='0' ">
             order by  ps.price_tax  desc
@@ -2740,7 +2735,6 @@
 
     <select id="byCityAndProvinceAndskuCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-<<<<<<< HEAD
         SELECT s.transport_center_code transportCenterCode,
         ps.sku_code skuCode,
         ps.sku_name skuName,
@@ -2748,17 +2742,11 @@
         FROM logistics_center_area l
         inner  join  stock s on l.logistics_center_code=s.transport_center_code
         inner  join  product_sku ps on s.sku_code=ps.sku_code
-=======
-        SELECT s.transport_center_code transportCenterCode
-        FROM logistics_center_area l
-        inner  join  stock s on l.logistics_center_code=s.transport_center_code
->>>>>>> master
         <where>
             l.del_flag=0 and
             l.province_code = #{provinceCode} and
             s.warehouse_type=1 and
             l.city_code=#{cityCode} and
-<<<<<<< HEAD
             ps.sku_code = #{skuCode}
         </where>
         order by s.logistics_center_code desc
@@ -2798,9 +2786,6 @@
         where a.del_flag = 0
         and a.sku_code = #{skuCode}
         and a.transport_center_code= #{transportCenterCode}
-=======
             s.sku_code== #{skuCode}
-        </where>
->>>>>>> master
     </select>
 </mapper>

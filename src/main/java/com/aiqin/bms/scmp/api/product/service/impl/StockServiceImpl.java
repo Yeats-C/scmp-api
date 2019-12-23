@@ -2240,7 +2240,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return HttpResponse.success();
     }
 
-
     @Override
     public String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType) {
         List<String> stockBatchRespVOList = stockDao.byCityCodeAndprovinceCode(provinceCode, cityCode, tagCode, exitStock, orderByType, getUser().getCompanyCode());
