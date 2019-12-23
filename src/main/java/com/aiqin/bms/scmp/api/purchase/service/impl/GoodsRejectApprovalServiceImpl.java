@@ -139,7 +139,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_REFUND.getNum());
         workFlowVO.setFormNo(formNo);
-        workFlowVO.setFormNo(positionCode);
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setTitle(userName);
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("auditPersonId", directSupervisorCode);

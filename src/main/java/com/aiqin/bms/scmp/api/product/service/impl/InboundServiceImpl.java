@@ -815,6 +815,7 @@ public class InboundServiceImpl implements InboundService {
             String data= JSON.toJSONString(orderDto.getData());
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
+            log.info("撤销采购单的dl回调参数：{}" + entiy);
             if("0".equals(orderDto.getCode())) {
                 if ("0".equals(entiy.getResultCode())) {
                     log.info("向dl发送撤销订单请求成功");

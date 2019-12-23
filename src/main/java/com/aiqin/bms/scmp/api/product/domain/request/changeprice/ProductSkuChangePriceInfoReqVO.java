@@ -26,7 +26,7 @@ public class ProductSkuChangePriceInfoReqVO {
     private String skuName;
 
     @ApiModelProperty("最新采购价")
-    private Long purchasePriceNewest;
+    private BigDecimal purchasePriceNewest;
 
     @ApiModelProperty("供应商编码")
     private String supplierCode;
@@ -38,7 +38,7 @@ public class ProductSkuChangePriceInfoReqVO {
     private Integer beDefault;
 
     @ApiModelProperty("原含税采购价")
-    private Long purchasePriceOld;
+    private BigDecimal purchasePriceOld;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
@@ -49,19 +49,19 @@ public class ProductSkuChangePriceInfoReqVO {
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")
-    private Long purchasePriceNew;
+    private BigDecimal purchasePriceNew;
 
     @ApiModelProperty("原含税价")
-    private Long oldPrice;
+    private BigDecimal oldPrice;
 
     @ApiModelProperty("新含税价")
-    private Long newPrice;
+    private BigDecimal newPrice;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin;
+    private BigDecimal oldGrossProfitMargin;
 
     @ApiModelProperty("现毛利率")
-    private Long newGrossProfitMargin;
+    private BigDecimal newGrossProfitMargin;
 
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
@@ -76,7 +76,7 @@ public class ProductSkuChangePriceInfoReqVO {
     private String changePriceReasonName;
 
     @ApiModelProperty("临时含税价")
-    private Long temporaryPrice;
+    private BigDecimal temporaryPrice;
 
     @ApiModelProperty("价格项目编码")
     private String priceItemCode;
@@ -122,5 +122,5 @@ public class ProductSkuChangePriceInfoReqVO {
     private Date productTime;
 
     @ApiModelProperty("含税成本")
-    private Long taxCost;
+    private BigDecimal taxCost;
 }
