@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Date;
 import java.util.List;
 
@@ -96,5 +97,7 @@ public class QuerySkuListReqVO extends PageReq {
     @ApiModelProperty("修改时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTimeEnd;
+
+    private HttpServletResponse httpServletResponse;
 
 }

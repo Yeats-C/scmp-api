@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -13,9 +14,11 @@ public class ProductSkuPicDescDraft extends CommonBean {
     private Long id;
 
     @ApiModelProperty("排序号")
+    @PropertyMsg("排序号")
     private Long sortingNumber;
 
     @ApiModelProperty("图片说明路径")
+    @PropertyMsg("图片说明路径")
     private String picDescPath;
 
     @ApiModelProperty("sku编码")

@@ -37,4 +37,7 @@ public class ProductSkuManufacturerRespVo extends CommonBean {
 
     @ApiModelProperty("商品sku 名称")
     private String productSkuName;
+
+    @ApiModelProperty("状态（0:禁用,1：在用）")
+    private Byte usageStatus;
 }

@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
@@ -17,6 +20,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
+import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.Api;
@@ -24,10 +29,13 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author wuyongqiang
@@ -42,6 +50,8 @@ public class StockController {
 
     @Resource
     private StockService stockService;
+    @Autowired
+    private ApplyUseTagRecordService applyUseTagRecordService;
 
     @PostMapping("/search/page")
     @ApiOperation(value = "总库存管理列表")
@@ -176,8 +186,8 @@ public class StockController {
     @GetMapping("/search/batch/one/info")
     @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
     public HttpResponse<List<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId,
-                                                                                             @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                             @RequestParam(value = "page_size", required = false) Integer page_size) {
+                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
         return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId,page_no,page_size));
     }
 
@@ -197,16 +207,16 @@ public class StockController {
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
     public HttpResponse<List<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestParam(value = "supplier_code", required = false) String supplierCode,
-                                                                                      @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
-                                                                                      @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
-                                                                                      @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
-                                                                                      @RequestParam(value = "sku_code", required = false) String skuCode,
-                                                                                      @RequestParam(value = "sku_name", required = false) String skuName,
-                                                                                      @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-                                                                                      @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-                                                                                      @RequestParam(value = "product_property_name", required = false) String productPropertyName,
-                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
+                                                                                  @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                                                  @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                                                  @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
+                                                                                  @RequestParam(value = "sku_code", required = false) String skuCode,
+                                                                                  @RequestParam(value = "sku_name", required = false) String skuName,
+                                                                                  @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+                                                                                  @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+                                                                                  @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+                                                                                  @RequestParam(value = "page_no", required = false) Integer page_no,
+                                                                                  @RequestParam(value = "page_size", required = false) Integer page_size) {
         QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
@@ -295,5 +305,38 @@ public class StockController {
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
         return HttpResponse.success(stockService.importStockSkuList(reqVO));
+    }
+
+
+    @GetMapping("/search/byCityAndProvince")
+    @ApiOperation(value = "总库存管理列表")
+    public HttpResponse<String> byCityCodeAndprovinceCode(@RequestParam("provinceCode") String provinceCode,
+                                                          @RequestParam("cityCode") String cityCode,
+                                                          @RequestParam("tagCode") String tagCode,
+                                                          @RequestParam("exitStock") String exitStock,
+                                                          @RequestParam("orderByType") String orderByType) {
+        return HttpResponse.success(stockService.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode,exitStock,orderByType));
+    }
+
+    @GetMapping("/search/byCityAndProvinceAndskuCode")
+    @ApiOperation(value = "总库存管理列表")
+    public HttpResponse<List<StockBatchRespVO>> byCityAndProvinceAndskuCode(@RequestParam("skuCode") String skuCode,@RequestParam("provinceCode") String provinceCode,@RequestParam("cityCode") String cityCode) {
+        return HttpResponse.success(stockService.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
+    }
+
+    @GetMapping("/search/getTagRecordList")
+    @ApiOperation("查看")
+    public HttpResponse<List<ApplyUseTagRecord>> getTagRecordList(@RequestParam String skuCode) {
+        log.info("ProductSkuPriceInfoController---view---入参：[{}]", skuCode);
+        try {
+//            List<String> applyUseTagRecordList=applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()).stream().map(x->x.getTagTypeName()).collect(Collectors.toList());
+            return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 }

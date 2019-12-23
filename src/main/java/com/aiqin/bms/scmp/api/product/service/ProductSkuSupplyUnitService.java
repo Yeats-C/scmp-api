@@ -90,6 +90,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     Integer deleteDraftById(Long id);
 
     /**
+     * 批量删除
+     * @param ids
+     * @return
+     */
+    Integer batchDeleteDraftById(List<Long> ids);
+
+    /**
      *
      * 功能描述: 获取申请数据
      *
@@ -142,6 +149,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
      * @return
      */
     BasePage<QueryProductSkuSupplyUnitsRespVo> getDraftListPage(QuerySkuSupplyUnitReqVo reqVo);
+
+    /**
+     * 分局条件获取SKU供应商管理,不分页
+     * @param reqVo
+     * @return
+     */
+    List<QueryProductSkuSupplyUnitsRespVo> getDraftListNoPage(QuerySkuSupplyUnitReqVo reqVo);
 
     /**
      * SKU供应商管理-待审请详情

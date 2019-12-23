@@ -64,14 +64,18 @@
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <collection property="productSkuSupplyUnitCapacities" column="{supplyUnitCode = supply_unit_code,productSkuCode = product_sku_code}"
+    <result column="origin_tax_included_price" jdbcType="DECIMAL" property="originTaxIncludedPrice"/>
+    <result column="origin_rate_of_margin" jdbcType="DECIMAL" property="originRateOfMargin"/>
+    <result column="rate_of_margin" jdbcType="DECIMAL" property="rateOfMargin"/>
+      <collection property="productSkuSupplyUnitCapacities" column="{supplyUnitCode = supply_unit_code,productSkuCode = product_sku_code}"
                 javaType="java.util.ArrayList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo" select="com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitCapacityDraftMapper.getDraftList"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, supply_unit_code, supply_unit_name, no_tax_purchase_price, tax_included_price,
     joint_franchise_rate, point, is_default, del_flag, create_time, create_by, update_time,
     update_by, product_sku_code, usage_status, product_sku_name,categories_supply_channels_code,
-    categories_supply_channels_name,tax_rate,factory_sku_code
+    categories_supply_channels_name,tax_rate,factory_sku_code,origin_tax_included_price,
+    origin_rate_of_margin,rate_of_margin
   </sql>
   <insert id="insertDraftList" parameterType="java.util.List" >
     insert into product_sku_supply_unit_draft (supply_unit_code, supply_unit_name,
@@ -80,7 +84,8 @@
     create_time, create_by, update_time,
     update_by, product_sku_code, usage_status,
     product_sku_name,categories_supply_channels_code,
-    categories_supply_channels_name,tax_rate,factory_sku_code,apply_show,apply_type,company_code,company_name)
+    categories_supply_channels_name,tax_rate,factory_sku_code,apply_show,apply_type,company_code,company_name,
+    origin_tax_included_price,rate_of_margin,origin_rate_of_margin)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -94,7 +99,8 @@
       #{item.applyShow},
       #{item.applyType},
       #{item.companyCode},
-      #{item.companyName})
+      #{item.companyName},
+      #{item.originTaxIncludedPrice},#{item.rateOfMargin},#{item.originRateOfMargin})
     </foreach>
   </insert>
   <insert id="insertList" parameterType="java.util.List" >
@@ -131,7 +137,8 @@
       direct_supervisor_code,
       direct_supervisor_name,
       form_no,
-      auditor_status,apply_show,apply_type,company_code,company_name,approval_name,approval_remark)
+      auditor_status,apply_show,apply_type,company_code,company_name,approval_name,approval_remark,
+      origin_tax_included_price,rate_of_margin,origin_rate_of_margin)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.supplyUnitCode,jdbcType=VARCHAR}, #{item.supplyUnitName,jdbcType=VARCHAR},
@@ -154,7 +161,10 @@
       #{item.companyCode},
       #{item.companyName},
       #{item.approvalName},
-      #{item.approvalRemark}
+      #{item.approvalRemark},
+      #{item.originTaxIncludedPrice},
+      #{item.rateOfMargin},
+      #{item.originRateOfMargin}
       )
     </foreach>
   </insert>
@@ -298,6 +308,9 @@
     <result column="aapproval_name"  property="approvalName" />
     <result column="aapply_type"  property="applyType" />
     <result column="aprocurement_section_name"  property="purchaseGroupName" />
+    <result column="origin_tax_included_price" jdbcType="DECIMAL" property="originTaxIncludedPrice"/>
+    <result column="origin_rate_of_margin" jdbcType="DECIMAL" property="originRateOfMargin"/>
+    <result column="rate_of_margin" jdbcType="DECIMAL" property="rateOfMargin"/>
     <collection property="productSkuSupplyUnitCapacities" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo">
       <id column="bid" jdbcType="DECIMAL" property="id" />
       <result column="bsupply_unit_code" jdbcType="VARCHAR" property="supplyUnitCode" />
@@ -474,7 +487,8 @@
            b.create_time bcreate_time,
            b.create_by bcreate_by,
            b.update_time bupdate_time,
-           b.update_by bupdate_by
+           b.update_by bupdate_by,
+           a.origin_tax_included_price,a.rate_of_margin,a.origin_rate_of_margin
     from apply_product_sku_supply_unit a
     left join apply_product_sku_supply_unit_capacity b
     on a.product_sku_code = b.product_sku_code and a.supply_unit_code = b.supply_unit_code and a.apply_code = b.apply_code
@@ -578,6 +592,9 @@
         <result column="product_property_code" property="productPropertyCode"/>
         <result column="product_property_name" property="productPropertyName"/>
         <result column="apply_type" property="applyType"/>
+        <result column="origin_tax_included_price" jdbcType="DECIMAL" property="originTaxIncludedPrice"/>
+        <result column="origin_rate_of_margin" jdbcType="DECIMAL" property="originRateOfMargin"/>
+        <result column="rate_of_margin" jdbcType="DECIMAL" property="rateOfMargin"/>
     </resultMap>
     <select id="getListPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo"
             resultMap="listPageMap">

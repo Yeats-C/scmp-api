@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.StockStatusEnum;
@@ -24,6 +25,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
@@ -52,6 +55,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.catalina.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -75,7 +79,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
-public class StockServiceImpl implements StockService {
+public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StockServiceImpl.class);
 
@@ -1555,9 +1559,9 @@ public class StockServiceImpl implements StockService {
         try {
             LOGGER.info("根据stockBatchId查询单个stockBatch信息");
             PageHelper.startPage(page_no, page_size);
-           // List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
-           // Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
-           // new PageResData<>(total.intValue(),stockBatchRespVOs);
+            // List<StockBatchRespVO> stockBatchRespVOs = stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId);
+            // Long total = stockDao.selectOneStockBatchInfoByStockBatchIdInfoByPage(stockBatchId);
+            // new PageResData<>(total.intValue(),stockBatchRespVOs);
             return  new PageInfo<StockBatchRespVO>(stockDao.selectOneStockBatchInfoByStockBatchId(stockBatchId));
         } catch (Exception e) {
             LOGGER.error("根据stockBatchId查询单个stockBatch信息失败", e);
@@ -1778,7 +1782,7 @@ public class StockServiceImpl implements StockService {
                 break;
             //锁定库存转移--暂时不会用到
             //case 6:
-               // break;
+            // break;
             //加库存并锁定库存
             case 7:
                 stockBatch.setInventoryNum(stockBatchCode.getInventoryNum() + stockBatchVoRequest.getChangeNum());
@@ -1856,10 +1860,10 @@ public class StockServiceImpl implements StockService {
      * 库房库存数据保存
      * @return
      */
-   @Override
+    @Override
     public HttpResponse updateStorehouseById(List<StockRespVO> stockRespVO){
-       stockDao.updateStorehouseById(stockRespVO);
-       return HttpResponse.success();
+        stockDao.updateStorehouseById(stockRespVO);
+        return HttpResponse.success();
     }
 
 
@@ -2149,5 +2153,42 @@ public class StockServiceImpl implements StockService {
     @Override
     public List<Stock> selectSkuCost() {
         return  stockDao.selectSkuCost();
+    }
+
+
+    @Override
+    public String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType) {
+        List<String> stockBatchRespVOList=  stockDao.byCityCodeAndprovinceCode(provinceCode,cityCode,tagCode,exitStock,orderByType,getUser().getCompanyCode());
+        StringBuffer stringBuffer=new StringBuffer();
+        for (int num =0;num<stockBatchRespVOList.size();num++){
+            if (num<stockBatchRespVOList.size()-1) {
+                stringBuffer.append(stockBatchRespVOList.get(num)).append(",");
+            }else {
+                stringBuffer.append(stockBatchRespVOList.get(num));
+            }
+        }
+        String str=  stringBuffer.toString();
+        return str;
+    }
+
+    @Override
+    public  List<StockBatchRespVO>  byCityAndProvinceAndskuCode(String skuCode, String provinceCode, String cityCode) {
+        List<StockBatchRespVO> stockBatchRespVOList=Lists.newArrayList();
+        stockBatchRespVOList.add(stockDao.byCityAndProvinceAndskuCode(skuCode,provinceCode,cityCode));
+        //得出备用仓库
+        SkuConfigsRepsVo respVO= stockDao.findSpareWarehouse(stockBatchRespVOList.get(0));
+        List<SpareWarehouseRepsVo> spareWarehouses=respVO.getSpareWarehouses();
+        //对仓库使用顺序进行排序
+        spareWarehouses.stream().sorted(Comparator.comparing(SpareWarehouseRepsVo::getUseOrder)).collect(Collectors.toList());
+
+        for (SpareWarehouseRepsVo spareWarehouseRepsVo:
+                spareWarehouses) {
+            StockBatchRespVO stockBatchRespVO=stockDao.byCityAndProvinceAndtransportCenterCode(spareWarehouseRepsVo.getTransportCenterCode(),provinceCode,cityCode);
+            if(stockBatchRespVO.getAvailableNum()>0){
+                stockBatchRespVOList.add(stockBatchRespVO);
+                break;
+            }
+        }
+        return stockBatchRespVOList;
     }
 }
