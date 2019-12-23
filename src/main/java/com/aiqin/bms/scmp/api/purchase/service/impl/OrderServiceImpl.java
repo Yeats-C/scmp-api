@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
@@ -345,8 +346,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertSaleOrder(List<OrderInfoReqVO> vo) {
-        if (CollectionUtils.isEmptyCollection(vo)) {
+    public HttpResponse insertSaleOrder(OrderInfoReqVO vo) {
+        if (null == vo) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         Date date = Calendar.getInstance().getTime();
@@ -354,31 +355,35 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
-        vo.parallelStream().forEach(o -> {
-            OrderInfo info = BeanCopyUtils.copy(o, OrderInfo.class);
-            orders.add(info);
-            List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
-            orderItems.addAll(orderItem);
-            // 拼装日志信息
-            OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
-                    "a",
-                    "a", null,
-                    info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
-            logs.add(log);
-        });
+        OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
+        orders.add(info);
+        List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
+        orderItems.addAll(orderItem);
+        // 拼装日志信息
+        OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
+                "a",
+                "a", null,
+                info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
+        logs.add(log);
         // 保存订单和订单商品信息
         saveData(orderItems, orders);
         //存日志
         saveLog(logs);
         // 调用销售单生成出库单信息
-        OutboundReqVo outboundReqVo = new OutboundReqVo();
-        outboundService.saveOutBoundInfo(outboundReqVo);
+        this.insertOutbound(vo);
         return HttpResponse.success();
     }
 
     // 出库单参数填充
-    private void insertOotbound(){
-
+    private void insertOutbound(OrderInfoReqVO vo){
+        OutboundReqVo outboundReqVo = new OutboundReqVo();
+        outboundReqVo.setCompanyCode(vo.getCompanyCode());
+        outboundReqVo.setCompanyName(vo.getCompanyName());
+        outboundReqVo.setOutboundStatusCode(vo.getOrderStatus().byteValue());
+        outboundReqVo.setOutboundStatusName(vo.getOrderStatusName());
+        outboundReqVo.setOutboundTypeCode(vo.getOrderTypeCode().byteValue());
+        outboundReqVo.setOutboundTypeName(vo.getOrderType());
+        outboundService.saveOutBoundInfo(outboundReqVo);
     }
 
 }

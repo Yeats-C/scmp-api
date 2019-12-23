@@ -168,5 +168,5 @@ public interface OrderService {
      */
     OrderInfo selectByOrderCode(String orderCode);
 
-    HttpResponse insertSaleOrder(List<OrderInfoReqVO> vo);
+    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
 }

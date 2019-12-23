@@ -37,6 +37,9 @@ public class OrderInfoReqVO {
     @ApiModelProperty("订单状态(状态有点多，后面补)")
     private Integer orderStatus;
 
+    @ApiModelProperty("订单状态名称")
+    private String orderStatusName;
+
     @ApiModelProperty("支付状态")
     private Integer paymentStatus;
 
