@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -53,7 +54,7 @@ public class ProductSkuChangePriceRespVO {
     private String costBearerName;
 
     @ApiModelProperty("预算")
-    private Long budget;
+    private BigDecimal budget;
 
     @ApiModelProperty("申请的表单号")
     private String formNo;
@@ -89,11 +90,11 @@ public class ProductSkuChangePriceRespVO {
     List<LogData> logData;
 
     @ApiModelProperty("毛利率增加数")
-    private Long increaseCount;
+    private BigDecimal increaseCount;
     @ApiModelProperty("毛利率减少数")
-    private Long decreaseCount;
+    private BigDecimal decreaseCount;
     @ApiModelProperty("毛利率增加额度")
-    private Long increaseGrossProfit;
+    private BigDecimal increaseGrossProfit;
     @ApiModelProperty("毛利率减少额度")
-    private Long decreaseGrossProfit;
+    private BigDecimal decreaseGrossProfit;
 }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("退供单主表")
@@ -69,16 +70,16 @@ public class ReturnSupply {
     private String companyName;
 
     @ApiModelProperty("退供总数量")
-    private Long totalNum;
+    private BigDecimal totalNum;
 
     @ApiModelProperty("含税退供总金额")
-    private Long totalAmount;
+    private BigDecimal totalAmount;
 
     @ApiModelProperty("实际退供数量")
-    private Long actualNum;
+    private BigDecimal actualNum;
 
     @ApiModelProperty("实际含税退供总金额")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty("退供单状态(0,待提交,1待审核,2,审核中,3,待供应商确认,4,待出库,5,完成,6,取消,7,审核不通过)")
     private Byte returnSupplyStatus;
@@ -104,13 +105,13 @@ public class ReturnSupply {
     private Long saleUnitTotalNum;
 
     @ApiModelProperty("不含税退供总金额")
-    private Long noTaxTotalAmount;
+    private BigDecimal noTaxTotalAmount;
 
     @ApiModelProperty("销售单位实际退供数量")
-    private Long saleUnitActualNum;
+    private BigDecimal saleUnitActualNum;
 
     @ApiModelProperty("不含税实际退供总数量")
-    private Long noTaxActualAmount;
+    private BigDecimal noTaxActualAmount;
 
     @ApiModelProperty("审批流id")
     private String formNo;
@@ -160,31 +161,31 @@ public class ReturnSupply {
         return saleUnitTotalNum;
     }
 
-    public void setSaleUnitTotalNum(Long saleUnitTotalNum) {
+    public void setSaleUnitTotalNum(Long  saleUnitTotalNum) {
         this.saleUnitTotalNum = saleUnitTotalNum;
     }
 
-    public Long getNoTaxTotalAmount() {
+    public BigDecimal getNoTaxTotalAmount() {
         return noTaxTotalAmount;
     }
 
-    public void setNoTaxTotalAmount(Long noTaxTotalAmount) {
+    public void setNoTaxTotalAmount(BigDecimal noTaxTotalAmount) {
         this.noTaxTotalAmount = noTaxTotalAmount;
     }
 
-    public Long getSaleUnitActualNum() {
+    public BigDecimal getSaleUnitActualNum() {
         return saleUnitActualNum;
     }
 
-    public void setSaleUnitActualNum(Long saleUnitActualNum) {
+    public void setSaleUnitActualNum(BigDecimal saleUnitActualNum) {
         this.saleUnitActualNum = saleUnitActualNum;
     }
 
-    public Long getNoTaxActualAmount() {
+    public BigDecimal getNoTaxActualAmount() {
         return noTaxActualAmount;
     }
 
-    public void setNoTaxActualAmount(Long noTaxActualAmount) {
+    public void setNoTaxActualAmount(BigDecimal noTaxActualAmount) {
         this.noTaxActualAmount = noTaxActualAmount;
     }
 
@@ -348,35 +349,35 @@ public class ReturnSupply {
         this.companyName = companyName == null ? null : companyName.trim();
     }
 
-    public Long getTotalNum() {
+    public BigDecimal getTotalNum() {
         return totalNum;
     }
 
-    public void setTotalNum(Long totalNum) {
+    public void setTotalNum(BigDecimal totalNum) {
         this.totalNum = totalNum;
     }
 
-    public Long getTotalAmount() {
+    public BigDecimal getTotalAmount() {
         return totalAmount;
     }
 
-    public void setTotalAmount(Long totalAmount) {
+    public void setTotalAmount(BigDecimal totalAmount) {
         this.totalAmount = totalAmount;
     }
 
-    public Long getActualNum() {
+    public BigDecimal getActualNum() {
         return actualNum;
     }
 
-    public void setActualNum(Long actualNum) {
+    public void setActualNum(BigDecimal actualNum) {
         this.actualNum = actualNum;
     }
 
-    public Long getActualAmount() {
+    public BigDecimal getActualAmount() {
         return actualAmount;
     }
 
-    public void setActualAmount(Long actualAmount) {
+    public void setActualAmount(BigDecimal actualAmount) {
         this.actualAmount = actualAmount;
     }
 

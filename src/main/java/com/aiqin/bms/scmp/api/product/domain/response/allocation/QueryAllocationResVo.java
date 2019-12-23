@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -64,8 +65,8 @@ public class QueryAllocationResVo {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
-    @ApiModelProperty("含税调拨金额(含税库存成本),展示时需要除以100")
-    private Long taxRefundAmount;
+    @ApiModelProperty("含税调拨金额(含税库存成本)")
+    private BigDecimal taxRefundAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

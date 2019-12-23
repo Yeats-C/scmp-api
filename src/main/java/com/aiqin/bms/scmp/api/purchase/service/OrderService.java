@@ -132,7 +132,6 @@ public interface OrderService {
      * TODO 订单完成后传状态给结算系统
      * @author NullPointException
      * @date 2019/6/15
-     * @param null
      * @return
      */
     void sendStatusToSettlement();
@@ -169,5 +168,5 @@ public interface OrderService {
      */
     OrderInfo selectByOrderCode(String orderCode);
 
-    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
+    HttpResponse insertSaleOrder(List<OrderInfoReqVO> vo);
 }

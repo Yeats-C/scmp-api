@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class ProductSkuChangePriceInfoRespVO {
     private String skuName;
 
     @ApiModelProperty("最新采购价")
-    private Long purchasePriceNewest;
+    private BigDecimal purchasePriceNewest;
 
     @ApiModelProperty("供应商编码")
     private String supplierCode;
@@ -38,7 +39,7 @@ public class ProductSkuChangePriceInfoRespVO {
     private Integer beDefault;
 
     @ApiModelProperty("原含税采购价")
-    private Long purchasePriceOld;
+    private BigDecimal purchasePriceOld;
 
     @ApiModelProperty("开始生效时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
@@ -49,13 +50,13 @@ public class ProductSkuChangePriceInfoRespVO {
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")
-    private Long purchasePriceNew;
+    private BigDecimal purchasePriceNew;
 
     @ApiModelProperty("原含税价")
-    private Long oldPrice;
+    private BigDecimal oldPrice;
 
     @ApiModelProperty("新含税价")
-    private Long newPrice;
+    private BigDecimal newPrice;
 
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
@@ -70,7 +71,7 @@ public class ProductSkuChangePriceInfoRespVO {
     private String changePriceReasonName;
 
     @ApiModelProperty("临时含税价")
-    private Long temporaryPrice;
+    private BigDecimal temporaryPrice;
 
     @ApiModelProperty("价格项目编码")
     private String priceItemCode;
@@ -107,10 +108,10 @@ public class ProductSkuChangePriceInfoRespVO {
     private Date productTime;
 
     @ApiModelProperty("原毛利率")
-    private Long oldGrossProfitMargin = 0L;
+    private BigDecimal oldGrossProfitMargin = BigDecimal.ZERO;
 
     @ApiModelProperty("现毛利率")
-    private Long newGrossProfitMargin = 0L;
+    private BigDecimal newGrossProfitMargin = BigDecimal.ZERO;
 
     @ApiModelProperty("价格项目集合")
     private List<PriceChannelForChangePrice> priceChannelList;

@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.variableprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.variableprice.*;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public interface VariablePriceService {
     ConfirmPriceList getConfirm(String variablePriceCode, String priceTypeCode);
 
 
-     ErrorVariableResponse getSwitch(String priceType, ErrorVariableResponse errorVariableResponse, Long priceValue);
+     ErrorVariableResponse getSwitch(String priceType, ErrorVariableResponse errorVariableResponse, BigDecimal priceValue);
 
 
     PriceDetailedResponse getPriceSku(Long priceSkuId);

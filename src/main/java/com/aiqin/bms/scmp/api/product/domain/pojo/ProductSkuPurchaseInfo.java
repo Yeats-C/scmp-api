@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("商品sku进货类信息")
 @Data
 public class ProductSkuPurchaseInfo extends CommonBean {
@@ -33,7 +35,7 @@ public class ProductSkuPurchaseInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private Long zeroRemovalCoefficient;
+    private BigDecimal zeroRemovalCoefficient;
 
     @ApiModelProperty("商品sku 编码")
     private String productSkuCode;

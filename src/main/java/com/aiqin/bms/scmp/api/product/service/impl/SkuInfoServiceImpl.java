@@ -350,7 +350,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
                     productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
                     productSkuStockInfoDraft.setBaseProductContent(1);
-                    productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
+                    productSkuStockInfoDraft.setZeroRemovalCoefficient(BigDecimal.ZERO);
                     productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
                     productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
                     productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
@@ -410,7 +410,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                         item.setBaseProductContent(1);
-                        item.setZeroRemovalCoefficient(1L);
+                        item.setZeroRemovalCoefficient(BigDecimal.ONE);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -860,7 +860,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
             productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
             productSkuStockInfoDraft.setBaseProductContent(1);
-            productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
+            productSkuStockInfoDraft.setZeroRemovalCoefficient(BigDecimal.ZERO);
             productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
             productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
             productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
@@ -959,7 +959,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 item.setCreateTime(productSkuDraft.getCreateTime());
                 item.setUpdateTime(productSkuDraft.getUpdateTime());
                 item.setBaseProductContent(1);
-                item.setZeroRemovalCoefficient(1L);
+                item.setZeroRemovalCoefficient(BigDecimal.ONE);
                 item.setUsageStatus(StatusTypeCode.USE.getStatus());
             });
             productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -1575,7 +1575,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(positionCode);
+//        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
@@ -3263,25 +3263,25 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 stockBox.setUnitCode(stock.getUnitCode());
                 boolean flag = true;
                 try {
-                    stockBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                    stockBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
                 } catch (Exception e) {
                     error.add("库存长格式不正确");
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getStockBoxWidth().trim()));
+                    stockBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim()));
                 } catch (Exception e) {
                     error.add("库存宽格式不正确");
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxHeight().trim()));
+                    stockBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim()));
                 } catch (Exception e) {
                     error.add("库存高格式不正确");
                     flag = false;
                 }
                 if (flag) {
-                    stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight()/10000);
+                    stockBox.setBoxVolume(stockBox.getBoxLength().multiply(stockBox.getBoxWidth()).multiply(stockBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)));
                 }
                 try {
                     stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
@@ -3337,25 +3337,25 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     purchaseBox.setUnitCode(purchase.getUnitCode());
                     boolean flag = true;
                     try {
-                        purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
+                        purchaseBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim()));
                     } catch (Exception e) {
                         error.add("采购长格式不正确");
                         flag = false;
                     }
                     try {
-                        purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
+                        purchaseBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim()));
                     } catch (Exception e) {
                         error.add("采购宽格式不正确");
                         flag = false;
                     }
                     try {
-                        purchaseBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxHeight().trim()));
+                        purchaseBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim()));
                     } catch (Exception e) {
                         error.add("采购高格式不正确");
                         flag = false;
                     }
                     if (flag) {
-                        purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight()/10000);
+                        purchaseBox.setBoxVolume(purchaseBox.getBoxLength().multiply(purchaseBox.getBoxWidth()).multiply(purchaseBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)));
                     }
                     try {
                         purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));

@@ -345,7 +345,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertSaleOrder(OrderInfoReqVO vo) {
+    public HttpResponse insertSaleOrder(List<OrderInfoReqVO> vo) {
         if (null == vo) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
@@ -354,16 +354,18 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
-        OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
-        orders.add(info);
-        List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
-        orderItems.addAll(orderItem);
-        // 拼装日志信息
-        OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
-                OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
-                OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(), null,
-                info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
-        logs.add(log);
+        vo.parallelStream().forEach(o -> {
+            OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
+            orders.add(info);
+            List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
+            orderItems.addAll(orderItem);
+            // 拼装日志信息
+            OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
+                    OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
+                    OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(), null,
+                    info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
+            logs.add(log);
+        });
         // 保存订单和订单商品信息
         saveData(orderItems, orders);
         //存日志
@@ -371,7 +373,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 调用出库单生成销售的出库单信息
         List<OrderInfoDTO> list = Lists.newArrayList();
         OrderInfoDTO dto = new OrderInfoDTO();
-        List<OrderInfoItemDTO> dtoList = BeanCopyUtils.copyList(orderItem, OrderInfoItemDTO.class);
+        List<OrderInfoItemDTO> dtoList = BeanCopyUtils.copyList(orderItems, OrderInfoItemDTO.class);
         dto.setItemList(dtoList);
         list.add(dto);
         this.sendOrderToOutBound(list);

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("")
@@ -35,7 +36,7 @@ public class ApplyProductSkuPurchaseInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private Long zeroRemovalCoefficient;
+    private BigDecimal zeroRemovalCoefficient;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;

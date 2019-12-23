@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @ApiModel("调拨主表")
@@ -53,7 +54,7 @@ public class Allocation extends CommonBean {
     private Long quantity;
 
     @ApiModelProperty("含税总成本")
-    private Long totalCostRate;
+    private BigDecimal totalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

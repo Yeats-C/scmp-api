@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -112,16 +113,16 @@ public class SupplyReturnOrderInfoReqVOReturn {
     private String consignee;
 
     @ApiModelProperty("运费")
-    private Long deliverAmount;
+    private BigDecimal deliverAmount;
 
     @ApiModelProperty("商品总金额")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("优惠额度")
-    private Long discountAmount;
+    private BigDecimal discountAmount;
 
     @ApiModelProperty("订单金额")
-    private Long orderAmount;
+    private BigDecimal orderAmount;
 
     @ApiModelProperty("商品数量")
     private Long productNum;

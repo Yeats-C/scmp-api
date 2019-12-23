@@ -14,7 +14,7 @@
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="tax_inventory_cost" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="tax_inventory_cost" jdbcType="DECIMAL" property="taxInventoryCost" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="movement_status_code" jdbcType="TINYINT" property="movementStatusCode" />
@@ -167,7 +167,7 @@
       #{calloutWarehouseName,jdbcType=VARCHAR}, #{callinWarehouseCode,jdbcType=VARCHAR}, 
       #{callinWarehouseName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
       #{purchaseGroupName,jdbcType=VARCHAR}, #{principal,jdbcType=VARCHAR}, #{quantity,jdbcType=BIGINT}, 
-      #{taxInventoryCost,jdbcType=BIGINT}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR}, 
+      #{taxInventoryCost,jdbcType=DECIMAL}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR},
       #{movementStatusCode,jdbcType=TINYINT}, #{movementStatusName,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{formNo,jdbcType=VARCHAR}, 
@@ -290,7 +290,7 @@
         #{quantity,jdbcType=BIGINT},
       </if>
       <if test="taxInventoryCost != null">
-        #{taxInventoryCost,jdbcType=BIGINT},
+        #{taxInventoryCost,jdbcType=DECIMAL},
       </if>
       <if test="outboundOderCode != null">
         #{outboundOderCode,jdbcType=VARCHAR},
@@ -367,7 +367,7 @@
         quantity = #{quantity,jdbcType=BIGINT},
       </if>
       <if test="taxInventoryCost != null">
-        tax_inventory_cost = #{taxInventoryCost,jdbcType=BIGINT},
+        tax_inventory_cost = #{taxInventoryCost,jdbcType=DECIMAL},
       </if>
       <if test="outboundOderCode != null">
         outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
@@ -421,7 +421,7 @@
       purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       principal = #{principal,jdbcType=VARCHAR},
       quantity = #{quantity,jdbcType=BIGINT},
-      tax_inventory_cost = #{taxInventoryCost,jdbcType=BIGINT},
+      tax_inventory_cost = #{taxInventoryCost,jdbcType=DECIMAL},
       outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
       inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
       movement_status_code = #{movementStatusCode,jdbcType=TINYINT},

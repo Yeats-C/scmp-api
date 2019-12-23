@@ -35,15 +35,13 @@
   </delete>
   <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
      insert into apply_supplier (supplier_name, supplier_abbreviation,del_flag, create_time,create_by,
-            update_time,update_by,apply_supplier_code,apply_type,form_no,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name,
-            position_code,position_name)
+            update_time,update_by,apply_supplier_code,apply_type,form_no,enable,company_code,company_name,direct_supervisor_code,direct_supervisor_name)
     values (#{supplierName}, #{supplierAbbreviation},
       #{delFlag},#{createTime},#{createBy},
       #{updateTime},#{updateBy},
       #{applySupplierCode},#{applyType},#{formNo},
       #{enable}, #{companyCode},#{companyName},
-      #{directSupervisorCode},#{directSupervisorName},
-      #{positionCode,jdbcType=VARCHAR},#{positionName,jdbcType=VARCHAR})
+      #{directSupervisorCode},#{directSupervisorName})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplier">
     insert into apply_supplier

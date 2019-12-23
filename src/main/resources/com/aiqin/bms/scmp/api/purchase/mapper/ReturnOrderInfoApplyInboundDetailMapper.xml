@@ -19,9 +19,9 @@
     <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
     <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
     <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-    <result column="price" jdbcType="BIGINT" property="price" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="num" jdbcType="BIGINT" property="num" />
-    <result column="amount" jdbcType="BIGINT" property="amount" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
     <result column="activity_code" jdbcType="VARCHAR" property="activityCode" />
     <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
     <result column="promotion_line_num" jdbcType="BIGINT" property="promotionLineNum" />
@@ -62,8 +62,8 @@
       #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
       #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER}, 
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, 
-      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, 
-      #{num,jdbcType=BIGINT}, #{amount,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, 
+      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+      #{num,jdbcType=BIGINT}, #{amount,jdbcType=DECIMAL}, #{activityCode,jdbcType=VARCHAR},
       #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, #{originalLineNum,jdbcType=INTEGER}, 
       #{productStatus,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}
       )
@@ -295,7 +295,7 @@
         num = #{num,jdbcType=BIGINT},
       </if>
       <if test="amount != null">
-        amount = #{amount,jdbcType=BIGINT},
+        amount = #{amount,jdbcType=DECIMAL},
       </if>
       <if test="activityCode != null">
         activity_code = #{activityCode,jdbcType=VARCHAR},
@@ -341,7 +341,7 @@
       batch_number = #{batchNumber,jdbcType=VARCHAR},
       price = #{price,jdbcType=BIGINT},
       num = #{num,jdbcType=BIGINT},
-      amount = #{amount,jdbcType=BIGINT},
+      amount = #{amount,jdbcType=DECIMAL},
       activity_code = #{activityCode,jdbcType=VARCHAR},
       product_line_num = #{productLineNum,jdbcType=BIGINT},
       promotion_line_num = #{promotionLineNum,jdbcType=BIGINT},

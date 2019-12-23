@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -23,7 +24,7 @@ public class VariablePriceListReqVo {
     private String supplierName;
 
     @ApiModelProperty("最新采购价")
-    private Long newPurchasingPrice;
+    private BigDecimal newPurchasingPrice;
 
     @ApiModelProperty("供应商code")
     private String supplierCode;
@@ -39,13 +40,13 @@ public class VariablePriceListReqVo {
     private Date takeEffectTime;
 
     @ApiModelProperty("新含税采购价")
-    private Long newTaxedPurchasingPrice;
+    private BigDecimal newTaxedPurchasingPrice;
 
     @ApiModelProperty("原会员价")
-    private Long originalMembershipPrice;
+    private BigDecimal originalMembershipPrice;
 
     @ApiModelProperty("新含税会员价")
-    private Long newTaxedMembershipPrice;
+    private BigDecimal newTaxedMembershipPrice;
 
     @ApiModelProperty("调价原因")
     private String updatePriceReason;
@@ -58,7 +59,7 @@ public class VariablePriceListReqVo {
     private Date failureTime;
 
     @ApiModelProperty("临时含税售价")
-    private Long temporaryTaxedPrice;
+    private BigDecimal temporaryTaxedPrice;
 
 
 }

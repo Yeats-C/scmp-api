@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -63,9 +64,9 @@ public class ReturnOutboundBatch {
     private Long lineNum;
 
     @ApiModelProperty("销项税率")
-    private Long outputTaxRate;
+    private BigDecimal outputTaxRate;
 
     @ApiModelProperty("进项税率")
-    private Long inputTaxRate;
+    private BigDecimal inputTaxRate;
 
 }

@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @功能说明:
  * @author wangxu
@@ -96,7 +98,7 @@ public class StoreSkuBaseInfo {
 
     @ApiModelProperty("售价")
     @JsonProperty("sale_price")
-    private Long salePrice;
+    private BigDecimal salePrice;
 
     @ApiModelProperty("助记码")
     @JsonProperty("mnemonic_code")

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -76,13 +77,13 @@ public class AllocationResVo {
     private Long  callInQuantity;
 
     @ApiModelProperty("含税总成本")
-    private Long totalCostRate;
+    private BigDecimal totalCostRate;
 
     @ApiModelProperty("出库含税总成本")
-    private Long callOutTotalCostRate;
+    private BigDecimal callOutTotalCostRate;
 
     @ApiModelProperty("入库含税总成本")
-    private Long callInTotalCostRate;
+    private BigDecimal callInTotalCostRate;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

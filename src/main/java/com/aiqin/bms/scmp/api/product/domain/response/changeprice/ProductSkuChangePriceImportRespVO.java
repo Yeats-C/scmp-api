@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -41,7 +42,7 @@ public class ProductSkuChangePriceImportRespVO {
     private Date effectiveTimeEnd;
 
     @ApiModelProperty("新的含税采购价")
-    private Long purchasePriceNew;
+    private BigDecimal purchasePriceNew;
 
     @ApiModelProperty("调价原因")
     private String reason;
@@ -49,7 +50,7 @@ public class ProductSkuChangePriceImportRespVO {
     @ApiModelProperty("错误原因")
     private String errorReason;
 
-    public ProductSkuChangePriceImportRespVO(String skuCode, String skuName, String supplierCode, String supplierName, Integer beDefault, String priceProjectName, Date effectiveTimeStart, Date effectiveTimeEnd, Long purchasePriceNew, String reason, String errorReason) {
+    public ProductSkuChangePriceImportRespVO(String skuCode, String skuName, String supplierCode, String supplierName, Integer beDefault, String priceProjectName, Date effectiveTimeStart, Date effectiveTimeEnd, BigDecimal purchasePriceNew, String reason, String errorReason) {
         this.skuCode = skuCode;
         this.skuName = skuName;
         this.supplierCode = supplierCode;

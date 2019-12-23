@@ -114,7 +114,7 @@ public class OrderInfo {
     private String paymentTypeCode;
 
     @ApiModelProperty("运费")
-    private Long deliverAmount;
+    private BigDecimal deliverAmount;
 
     @ApiModelProperty("商品分销价总金额")
     private BigDecimal productTotalAmount;
@@ -162,7 +162,7 @@ public class OrderInfo {
     private Date operatorTime;
 
     @ApiModelProperty("活动优惠")
-    private Long activityDiscount;
+    private BigDecimal activityDiscount;
 
     @ApiModelProperty("重量")
     private Long weight;

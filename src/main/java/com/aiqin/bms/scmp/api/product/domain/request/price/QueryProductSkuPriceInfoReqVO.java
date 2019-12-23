@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -27,10 +28,10 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
     private String priceItemCode;
 
     @ApiModelProperty("价格区间从")
-    private Long priceFrom;
+    private BigDecimal priceFrom;
 
     @ApiModelProperty("价格区间到")
-    private Long priceTo;
+    private BigDecimal priceTo;
 
     @ApiModelProperty("开始生效时间从")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")

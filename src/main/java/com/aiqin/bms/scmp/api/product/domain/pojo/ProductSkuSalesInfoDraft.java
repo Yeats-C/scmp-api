@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("门店销售/销售信息")
 @Data
 public class ProductSkuSalesInfoDraft extends CommonBean {
@@ -57,5 +59,5 @@ public class ProductSkuSalesInfoDraft extends CommonBean {
     private String productSkuName;
 
     @ApiModelProperty("拆零系数")
-    private Long zeroRemovalCoefficient;
+    private BigDecimal zeroRemovalCoefficient;
 }

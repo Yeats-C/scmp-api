@@ -171,7 +171,7 @@ public interface ProductSkuSupplyUnitService extends BaseService {
      * @param directSupervisorCode
      * @param approvalName
      */
-    void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode);
+    void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName);
 
     void updateApplyInfoByVO2(WorkFlowCallbackVO newVO, String applyCode);
 

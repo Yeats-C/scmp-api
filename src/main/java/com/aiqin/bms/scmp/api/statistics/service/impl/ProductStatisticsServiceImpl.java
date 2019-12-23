@@ -100,29 +100,31 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
             categorys = statDeptNewProductMovingRateDao.categoryList(request);
             if(CollectionUtils.isNotEmpty(categorys)){
                 for(MovableResponse category:categorys){
-                    request.setLv1(category.getLv1());
-                    request.setPriceChannelCode(null);
-                    categoryList = statDeptNewProductMovingRateDao.productMovingSum(request);
-                    if(CollectionUtils.isNotEmpty(categoryList)){
-                        categoryResponse = this.movablePin(categoryList);
-                        channels = statDeptNewProductMovingRateDao.channelList(request);
-                        channelSum = Lists.newArrayList();
-                        if(CollectionUtils.isNotEmpty(channels)){
-                            for(MovableResponse channel:channels){
-                                request.setPriceChannelCode(channel.getPriceChannelCode());
-                                channelList = statDeptNewProductMovingRateDao.productMovingSum(request);
-                                channelResponse = this.movablePin(channelList);
-                                channelResponse.setLv1(channel.getLv1());
-                                channelResponse.setLv1CategoryName(channel.getLv1CategoryName());
-                                channelResponse.setPriceChannelCode(channel.getPriceChannelCode());
-                                channelResponse.setPriceChannelName(channel.getPriceChannelName());
-                                channelSum.add(channelResponse);
+                    if(StringUtils.isNotBlank(category.getLv1())){
+                        request.setLv1(category.getLv1());
+                        request.setPriceChannelCode(null);
+                        categoryList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                        if(CollectionUtils.isNotEmpty(categoryList)){
+                            categoryResponse = this.movablePin(categoryList);
+                            channels = statDeptNewProductMovingRateDao.channelList(request);
+                            channelSum = Lists.newArrayList();
+                            if(CollectionUtils.isNotEmpty(channels)){
+                                for(MovableResponse channel:channels){
+                                    request.setPriceChannelCode(channel.getPriceChannelCode());
+                                    channelList = statDeptNewProductMovingRateDao.productMovingSum(request);
+                                    channelResponse = this.movablePin(channelList);
+                                    channelResponse.setLv1(channel.getLv1());
+                                    channelResponse.setLv1CategoryName(channel.getLv1CategoryName());
+                                    channelResponse.setPriceChannelCode(channel.getPriceChannelCode());
+                                    channelResponse.setPriceChannelName(channel.getPriceChannelName());
+                                    channelSum.add(channelResponse);
+                                }
                             }
+                            categoryResponse.setSubsetList(channelSum);
+                            categoryResponse.setLv1(category.getLv1());
+                            categoryResponse.setLv1CategoryName(category.getLv1CategoryName());
+                            categorySum.add(categoryResponse);
                         }
-                        categoryResponse.setSubsetList(channelSum);
-                        categoryResponse.setLv1(category.getLv1());
-                        categoryResponse.setLv1CategoryName(category.getLv1CategoryName());
-                        categorySum.add(categoryResponse);
                     }
                 }
                 deptResponse.setSubsetList(categorySum);
@@ -134,114 +136,118 @@ public class ProductStatisticsServiceImpl implements ProductStatisticsService {
     private ProductMovableResponse movablePin(List<NewProductMovingRateResponse> movingList){
         ProductMovableResponse response = new ProductMovableResponse();
         if(CollectionUtils.isNotEmpty(movingList)){
-            Long num = 0L;
+            BigDecimal num = BigDecimal.ZERO;
+            Long num1 = 0L;
             BigDecimal big = new BigDecimal(0);
-            Long sumIniStockSkuNum = 0L, sumIniStockSkuCost = 0L, sumMidPurchaseSkuNum = 0L, sumMidSalesSkuNum = 0L,
-                    sumChannelSalesAmount = 0L, sumDistributionsalesAmount = 0L;
+            Long sumIniStockSkuNum = 0L,  sumMidPurchaseSkuNum = 0L, sumMidSalesSkuNum = 0L;
+
+            BigDecimal  sumIniStockSkuCost = BigDecimal.ZERO,sumChannelSalesAmount = BigDecimal.ZERO,sumDistributionsalesAmount = BigDecimal.ZERO;
             for(NewProductMovingRateResponse mov:movingList){
-                Long iniStockSkuNum = mov.getIniStockSkuNum() == null ? num : mov.getIniStockSkuNum();
-                Long iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost().longValue();
-                Long midPurchaseSkuNum = mov.getMidPurchaseSkuNum() == null ? num : mov.getMidPurchaseSkuNum();
-                Long midSalesSkuNum = mov.getMidSalesSkuNum() == null ? num : mov.getMidSalesSkuNum();
-                Long channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount().longValue();
-                Long distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount().longValue();
+                Long iniStockSkuNum = mov.getIniStockSkuNum() == null ? num1 : mov.getIniStockSkuNum();
+                BigDecimal iniStockSkuCost = mov.getIniStockSkuCost() == null ? num : mov.getIniStockSkuCost();
+                Long midPurchaseSkuNum = mov.getMidPurchaseSkuNum() == null ? num1 : mov.getMidPurchaseSkuNum();
+                Long midSalesSkuNum = mov.getMidSalesSkuNum() == null ? num1 : mov.getMidSalesSkuNum();
+                BigDecimal channelSalesAmount = mov.getChannelSalesAmount() == null ? num : mov.getChannelSalesAmount();
+                BigDecimal distributionsalesAmount = mov.getDistributionsalesAmount() == null ? num : mov.getDistributionsalesAmount();
                 sumIniStockSkuNum += iniStockSkuNum;
-                sumIniStockSkuCost += iniStockSkuCost;
+                sumIniStockSkuCost = sumIniStockSkuCost.add(iniStockSkuCost);
                 sumMidPurchaseSkuNum += midPurchaseSkuNum;
                 sumMidSalesSkuNum += midSalesSkuNum;
-                sumChannelSalesAmount += channelSalesAmount;
-                sumDistributionsalesAmount += distributionsalesAmount;
+                sumChannelSalesAmount = sumChannelSalesAmount.add(channelSalesAmount);
+                sumDistributionsalesAmount = sumDistributionsalesAmount.add(distributionsalesAmount);
                 Long newSkuNum = iniStockSkuNum + midPurchaseSkuNum;
-                if(mov.getTransportCenterCode().equals(Global.HB_CODE)){
-                    response.setHbIniStockSkuNum(iniStockSkuNum);
-                    response.setHbIniStockSkuCost(new BigDecimal(iniStockSkuCost));
-                    response.setHbMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHbMidSalesSkuNum(midSalesSkuNum);
-                    response.setHbChannelSalesAmount(new BigDecimal(channelSalesAmount));
-                    response.setHbDistributionsalesAmount(new BigDecimal(distributionsalesAmount));
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHbNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHbNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                if(StringUtils.isNotBlank(mov.getTransportCenterCode())) {
+                    if (mov.getTransportCenterCode().equals(Global.HB_CODE)) {
+                        response.setHbIniStockSkuNum(iniStockSkuNum);
+                        response.setHbIniStockSkuCost(iniStockSkuCost);
+                        response.setHbMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHbMidSalesSkuNum(midSalesSkuNum);
+                        response.setHbChannelSalesAmount(channelSalesAmount);
+                        response.setHbDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
+                            response.setHbNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHbNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHbNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HD_CODE)){
-                    response.setHdIniStockSkuNum(iniStockSkuNum);
-                    response.setHdIniStockSkuCost(new BigDecimal(iniStockSkuCost));
-                    response.setHdMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHdMidSalesSkuNum(midSalesSkuNum);
-                    response.setHdChannelSalesAmount(new BigDecimal(channelSalesAmount));
-                    response.setHdDistributionsalesAmount(new BigDecimal(distributionsalesAmount));
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHdNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHdNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HD_CODE)) {
+                        response.setHdIniStockSkuNum(iniStockSkuNum);
+                        response.setHdIniStockSkuCost(iniStockSkuCost);
+                        response.setHdMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHdMidSalesSkuNum(midSalesSkuNum);
+                        response.setHdChannelSalesAmount(channelSalesAmount);
+                        response.setHdDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
+                            response.setHdNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHdNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHdNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HN_CODE)){
-                    response.setHnIniStockSkuNum(iniStockSkuNum);
-                    response.setHnIniStockSkuCost(new BigDecimal(iniStockSkuCost));
-                    response.setHnMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHnMidSalesSkuNum(midSalesSkuNum);
-                    response.setHnChannelSalesAmount(new BigDecimal(channelSalesAmount));
-                    response.setHnDistributionsalesAmount(new BigDecimal(distributionsalesAmount));
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHnNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHnNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HN_CODE)) {
+                        response.setHnIniStockSkuNum(iniStockSkuNum);
+                        response.setHnIniStockSkuCost(iniStockSkuCost);
+                        response.setHnMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHnMidSalesSkuNum(midSalesSkuNum);
+                        response.setHnChannelSalesAmount(channelSalesAmount);
+                        response.setHnDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
+                            response.setHnNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHnNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.XN_CODE)){
-                    response.setXnIniStockSkuNum(iniStockSkuNum);
-                    response.setXnIniStockSkuCost(new BigDecimal(iniStockSkuCost));
-                    response.setXnMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setXnMidSalesSkuNum(midSalesSkuNum);
-                    response.setXnChannelSalesAmount(new BigDecimal(channelSalesAmount));
-                    response.setXnDistributionsalesAmount(new BigDecimal(distributionsalesAmount));
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setXnNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setXnNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.XN_CODE)) {
+                        response.setXnIniStockSkuNum(iniStockSkuNum);
+                        response.setXnIniStockSkuCost(iniStockSkuCost);
+                        response.setXnMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setXnMidSalesSkuNum(midSalesSkuNum);
+                        response.setXnChannelSalesAmount(channelSalesAmount);
+                        response.setXnDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
+                            response.setXnNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setXnNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setXnNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
-                    }
-                }else if(mov.getTransportCenterCode().equals(Global.HZ_CODE)){
-                    response.setHzIniStockSkuNum(iniStockSkuNum);
-                    response.setHzIniStockSkuCost(new BigDecimal(iniStockSkuCost));
-                    response.setHzMidPurchaseSkuNum(midPurchaseSkuNum);
-                    response.setHzMidSalesSkuNum(midSalesSkuNum);
-                    response.setHzChannelSalesAmount(new BigDecimal(channelSalesAmount));
-                    response.setHzDistributionsalesAmount(new BigDecimal(distributionsalesAmount));
-                    if(midSalesSkuNum == num || newSkuNum == num){
-                        response.setHzNewProMovingSalesRate(big);
-                    }else {
-                        if(newSkuNum == 0){
-                            response.setHzNewProMovingSalesRate(new BigDecimal(0));
-                        }else{
-                            response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                    } else if (mov.getTransportCenterCode().equals(Global.HZ_CODE)) {
+                        response.setHzIniStockSkuNum(iniStockSkuNum);
+                        response.setHzIniStockSkuCost(iniStockSkuCost);
+                        response.setHzMidPurchaseSkuNum(midPurchaseSkuNum);
+                        response.setHzMidSalesSkuNum(midSalesSkuNum);
+                        response.setHzChannelSalesAmount(channelSalesAmount);
+                        response.setHzDistributionsalesAmount(distributionsalesAmount);
+                        if (midSalesSkuNum == num1 || newSkuNum == num1) {
+                            response.setHzNewProMovingSalesRate(big);
+                        } else {
+                            if (newSkuNum == 0) {
+                                response.setHzNewProMovingSalesRate(new BigDecimal(0));
+                            } else {
+                                response.setHzNewProMovingSalesRate(new BigDecimal(midSalesSkuNum).divide(new BigDecimal(newSkuNum), 4, BigDecimal.ROUND_HALF_UP));
+                            }
                         }
                     }
                 }
             }
             response.setSumIniStockSkuNum(sumIniStockSkuNum);
-            response.setSumIniStockSkuCost(new BigDecimal(sumIniStockSkuCost));
+            response.setSumIniStockSkuCost(sumIniStockSkuCost);
             response.setSumMidPurchaseSkuNum(sumMidPurchaseSkuNum);
             response.setSumMidSalesSkuNum(sumMidSalesSkuNum);
-            response.setSumChannelSalesAmount(new BigDecimal(sumChannelSalesAmount));
-            response.setSumDistributionsalesAmount(new BigDecimal(sumDistributionsalesAmount));
+            response.setSumChannelSalesAmount(sumChannelSalesAmount);
+            response.setSumDistributionsalesAmount(sumDistributionsalesAmount);
             Long sumNewSkuNum = sumIniStockSkuNum + sumMidPurchaseSkuNum;
-            if(sumMidSalesSkuNum == num || sumNewSkuNum == num){
+            if(sumMidSalesSkuNum == num1 || sumNewSkuNum == num1){
                 response.setSumNewProMovingSalesRate(big);
             }else {
                 if(sumNewSkuNum == 0){

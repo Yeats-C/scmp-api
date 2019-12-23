@@ -60,8 +60,8 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
-    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
-    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
+    <result column="min_order_amount" jdbcType="DECIMAL" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="DECIMAL" property="maxOrderAmount" />
     <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
     <result column="star_score" jdbcType="DECIMAL" property="starScore" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>

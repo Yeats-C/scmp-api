@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -150,11 +151,11 @@ public class ReadExcelUtil {
                                 }
                             }else if (c==2){
                                 if (cell.getCellType() == HSSFCell.CELL_TYPE_NUMERIC) {
-                                    Long price =new Double(cell.getNumericCellValue()).longValue();
+                                    BigDecimal price =new BigDecimal(cell.getNumericCellValue());
                                     user.setPriceValue(price);
                                 } else {
                                     String sexs = cell.getStringCellValue();
-                                    user.setPriceValue(Long.valueOf(sexs));//
+                                    user.setPriceValue(BigDecimal.valueOf(Float.valueOf(sexs)));//
                                 }
                             }
                         }

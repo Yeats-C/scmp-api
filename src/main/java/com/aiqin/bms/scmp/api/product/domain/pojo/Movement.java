@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("移库管理主表")
@@ -47,7 +48,7 @@ public class Movement extends CommonBean {
     private Long quantity;
 
     @ApiModelProperty("含税库存成本")
-    private Long taxInventoryCost;
+    private BigDecimal taxInventoryCost;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

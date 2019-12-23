@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -86,10 +87,10 @@ public class ReturnSupplyReqVo {
     private Long preMainUnitNum;
 
     @ApiModelProperty("预计含税总金额")
-    private Long preTaxAmount;
+    private BigDecimal preTaxAmount;
 
     @ApiModelProperty("预计无税总金额")
-    private Long preAmount;
+    private BigDecimal preAmount;
 
     @ApiModelProperty("操作人")
     private String operator;

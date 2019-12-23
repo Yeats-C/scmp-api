@@ -34,5 +34,5 @@ public class InboundProductWmsReqVO {
     private BigDecimal productAmount;
 
     @ApiModelProperty("税率")
-    private int taxRate;
+    private BigDecimal taxRate;
 }

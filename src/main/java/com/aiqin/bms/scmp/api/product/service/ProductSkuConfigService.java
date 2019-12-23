@@ -111,7 +111,7 @@ public interface ProductSkuConfigService {
      * @param applyCode
      * @param userName
      */
-    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark, String positionCode);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode,String approvalName,String approvalRemark);
 
 
     void tobeEffective(List<ApplyProductSkuConfig> list);

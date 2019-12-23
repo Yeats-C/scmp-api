@@ -396,7 +396,7 @@
     UPDATE reject_record_detail
     SET
       actual_count = #{actualCount,jdbcType=INTEGER},
-      actual_amount = #{actualAmount,jdbcType=BIGINT},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
       update_time = now()
     WHERE  id = #{id,jdbcType=VARCHAR}
   </update>

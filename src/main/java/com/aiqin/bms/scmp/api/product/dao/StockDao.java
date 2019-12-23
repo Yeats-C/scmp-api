@@ -245,13 +245,10 @@ public interface StockDao {
      * @param orderByType
      * @return
      */
-    List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode,
-                                           @Param("exitStock") String exitStock,@Param("orderByType") String orderByType,@Param("companyCode") String companyCode);
+     List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode,
+                                            @Param("exitStock") String exitStock,@Param("orderByType") String orderByType,@Param("companyCode") String companyCode);
     /**
      * 查询可以使用 sku以及仓库
-     *
-     *
-     * @param skuCode
      * @param provinceCode
      * @param cityCode
      * @return
@@ -262,9 +259,6 @@ public interface StockDao {
 
     /**
      * 查询可以使用 sku以及仓库
-     *
-     *
-     * @param skuCode
      * @param provinceCode
      * @param cityCode
      * @return
@@ -274,4 +268,8 @@ public interface StockDao {
                                                              @Param("cityCode") String cityCode);
 
     SkuConfigsRepsVo findSpareWarehouse(StockBatchRespVO stockBatchRespVO);
+
+    StockBatchRespVO byCityAndProvinceAndskuCode(String provinceCode, String cityCode);
+
+
 }

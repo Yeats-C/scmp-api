@@ -412,7 +412,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 }
             }
             // 调审批流
-            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getCheckoutName(), details.getDirectSupervisorCode(), purchaseOrderRequest.getPositionCode());
+            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getCheckoutName(), details.getDirectSupervisorCode());
         }
         return HttpResponse.success();
     }

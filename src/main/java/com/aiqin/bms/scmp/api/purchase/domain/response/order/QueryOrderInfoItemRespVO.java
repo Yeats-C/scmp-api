@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Description:
  *
@@ -49,13 +51,13 @@ public class QueryOrderInfoItemRespVO {
     private String batchNumber;
 
     @ApiModelProperty("分销单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("渠道单价")
-    private Long channelUnitPrice;
+    private BigDecimal channelUnitPrice;
 
     @ApiModelProperty("渠道总价")
-    private Long totalChannelPrice;
+    private BigDecimal totalChannelPrice;
 
     @ApiModelProperty("数量")
     private Long num;
@@ -64,10 +66,10 @@ public class QueryOrderInfoItemRespVO {
     private Long amount;
 
     @ApiModelProperty("活动分摊")
-    private Long activityApportionment;
+    private BigDecimal activityApportionment;
 
     @ApiModelProperty("优惠分摊")
-    private Long preferentialAllocation;
+    private BigDecimal preferentialAllocation;
 
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;
@@ -85,14 +87,14 @@ public class QueryOrderInfoItemRespVO {
     private Long returnNum;
 
     @ApiModelProperty("实际渠道单价")
-    private Long actualChannelUnitPrice;
+    private BigDecimal actualChannelUnitPrice;
 
     @ApiModelProperty("实际渠道总价")
-    private Long actualTotalChannelPrice;
+    private BigDecimal actualTotalChannelPrice;
 
     @ApiModelProperty("实际分销总价")
-    private Long actualAmount;
+    private BigDecimal actualAmount;
 
     @ApiModelProperty("实际分销单价")
-    private Long actualPrice;
+    private BigDecimal actualPrice;
 }

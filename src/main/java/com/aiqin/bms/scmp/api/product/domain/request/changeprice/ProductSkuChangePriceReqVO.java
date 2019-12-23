@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -94,13 +95,13 @@ public class ProductSkuChangePriceReqVO {
     private Integer beContainArea;
 
     @ApiModelProperty("毛利率增加数")
-    private Long increaseCount;
+    private BigDecimal increaseCount;
     @ApiModelProperty("毛利率减少数")
-    private Long decreaseCount;
+    private BigDecimal decreaseCount;
     @ApiModelProperty("毛利率增加额度")
-    private Long increaseGrossProfit;
+    private BigDecimal increaseGrossProfit;
     @ApiModelProperty("毛利率减少额度")
-    private Long decreaseGrossProfit;
+    private BigDecimal decreaseGrossProfit;
 
     @ApiModelProperty("sku列表信息")
     @NotEmpty(message = "sku信息不能为空")

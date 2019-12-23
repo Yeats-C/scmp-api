@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("商品变价sku集合")
@@ -21,7 +22,7 @@ public class VariablePriceSku extends CommonBean {
     private String supplierName;
 
     @ApiModelProperty("最新采购价")
-    private Long newPurchasingPrice;
+    private BigDecimal newPurchasingPrice;
 
     @ApiModelProperty("供应商code")
     private String supplierCode;
@@ -30,13 +31,13 @@ public class VariablePriceSku extends CommonBean {
     private Byte isDefault;
 
     @ApiModelProperty("原含税采购价")
-    private Long originalTaxPurchasePrice;
+    private BigDecimal originalTaxPurchasePrice;
 
     @ApiModelProperty("生效时间")
     private Date takeEffectTime;
 
     @ApiModelProperty("新含税采购价")
-    private Long newTaxedPurchasingPrice;
+    private BigDecimal newTaxedPurchasingPrice;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;
@@ -54,10 +55,10 @@ public class VariablePriceSku extends CommonBean {
     private String updateBy;
 
     @ApiModelProperty("原会员价")
-    private Long originalMembershipPrice;
+    private BigDecimal originalMembershipPrice;
 
     @ApiModelProperty("新含税会员价")
-    private Long newTaxedMembershipPrice;
+    private BigDecimal newTaxedMembershipPrice;
 
     @ApiModelProperty("调价原因")
     private String updatePriceReason;
@@ -69,7 +70,7 @@ public class VariablePriceSku extends CommonBean {
     private Date failureTime;
 
     @ApiModelProperty("临时含税售价")
-    private Long temporaryTaxedPrice;
+    private BigDecimal temporaryTaxedPrice;
 
     @ApiModelProperty("变价名称")
     private String variablePriceName;
@@ -119,11 +120,11 @@ public class VariablePriceSku extends CommonBean {
         this.supplierName = supplierName == null ? null : supplierName.trim();
     }
 
-    public Long getNewPurchasingPrice() {
+    public BigDecimal getNewPurchasingPrice() {
         return newPurchasingPrice;
     }
 
-    public void setNewPurchasingPrice(Long newPurchasingPrice) {
+    public void setNewPurchasingPrice(BigDecimal newPurchasingPrice) {
         this.newPurchasingPrice = newPurchasingPrice;
     }
 
@@ -143,11 +144,11 @@ public class VariablePriceSku extends CommonBean {
         this.isDefault = isDefault;
     }
 
-    public Long getOriginalTaxPurchasePrice() {
+    public BigDecimal getOriginalTaxPurchasePrice() {
         return originalTaxPurchasePrice;
     }
 
-    public void setOriginalTaxPurchasePrice(Long originalTaxPurchasePrice) {
+    public void setOriginalTaxPurchasePrice(BigDecimal originalTaxPurchasePrice) {
         this.originalTaxPurchasePrice = originalTaxPurchasePrice;
     }
 
@@ -159,11 +160,11 @@ public class VariablePriceSku extends CommonBean {
         this.takeEffectTime = takeEffectTime;
     }
 
-    public Long getNewTaxedPurchasingPrice() {
+    public BigDecimal getNewTaxedPurchasingPrice() {
         return newTaxedPurchasingPrice;
     }
 
-    public void setNewTaxedPurchasingPrice(Long newTaxedPurchasingPrice) {
+    public void setNewTaxedPurchasingPrice(BigDecimal newTaxedPurchasingPrice) {
         this.newTaxedPurchasingPrice = newTaxedPurchasingPrice;
     }
 
@@ -207,19 +208,19 @@ public class VariablePriceSku extends CommonBean {
         this.updateBy = updateBy == null ? null : updateBy.trim();
     }
 
-    public Long getOriginalMembershipPrice() {
+    public BigDecimal getOriginalMembershipPrice() {
         return originalMembershipPrice;
     }
 
-    public void setOriginalMembershipPrice(Long originalMembershipPrice) {
+    public void setOriginalMembershipPrice(BigDecimal originalMembershipPrice) {
         this.originalMembershipPrice = originalMembershipPrice;
     }
 
-    public Long getNewTaxedMembershipPrice() {
+    public BigDecimal getNewTaxedMembershipPrice() {
         return newTaxedMembershipPrice;
     }
 
-    public void setNewTaxedMembershipPrice(Long newTaxedMembershipPrice) {
+    public void setNewTaxedMembershipPrice(BigDecimal newTaxedMembershipPrice) {
         this.newTaxedMembershipPrice = newTaxedMembershipPrice;
     }
 
@@ -247,11 +248,11 @@ public class VariablePriceSku extends CommonBean {
         this.failureTime = failureTime;
     }
 
-    public Long getTemporaryTaxedPrice() {
+    public BigDecimal getTemporaryTaxedPrice() {
         return temporaryTaxedPrice;
     }
 
-    public void setTemporaryTaxedPrice(Long temporaryTaxedPrice) {
+    public void setTemporaryTaxedPrice(BigDecimal temporaryTaxedPrice) {
         this.temporaryTaxedPrice = temporaryTaxedPrice;
     }
 
