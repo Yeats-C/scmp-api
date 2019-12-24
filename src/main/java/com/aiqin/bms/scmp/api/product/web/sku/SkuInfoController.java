@@ -6,13 +6,17 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
+import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
+import com.aiqin.bms.scmp.api.product.service.NewProductService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -46,11 +50,19 @@ import java.util.stream.Collectors;
 public class SkuInfoController {
     @Autowired
     SkuInfoService skuInfoService;
+    @Autowired
+    private NewProductService productService;
+
 
     @PostMapping("/add")
     @ApiOperation("新增sku信息")
     public HttpResponse<Integer> addSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
         try {
+            // 修改spu
+            NewProduct spuInfo = addSkuInfoReqVO.getSpuInfo();
+            NewProductUpdateReqVO newProductUpdateReqVO = new NewProductUpdateReqVO();
+            BeanCopyUtils.copy(spuInfo, newProductUpdateReqVO);
+            productService.updateProduct(newProductUpdateReqVO);
             return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo(addSkuInfoReqVO));
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);

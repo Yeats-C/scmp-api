@@ -1216,8 +1216,8 @@ from product_sku a
         <if test="skuCode != null and skuCode != '' ">
             and sku_code != #{skuCode}
         </if>
-        <if test="skuName != null and skuName != '' ">
-            and sku_name = #{skuName}
-        </if>
+        <!--<if test="skuName != null and skuName != '' ">-->
+            <!--and sku_name = #{skuName}-->
+        <!--</if>-->
     </select>
 </mapper>

@@ -392,9 +392,9 @@ group by a.sku_code
     <if test="skuCode != null and skuCode != '' ">
       and sku_code != #{skuCode}
     </if>
-    <if test="skuName != null and skuName != '' ">
-      and sku_name = #{skuName}
-    </if>
+    <!--<if test="skuName != null and skuName != '' ">-->
+      <!--and sku_name = #{skuName}-->
+    <!--</if>-->
   </select>
     <select id="selectUnSynData" resultMap="BaseResultMap">
       select

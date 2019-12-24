@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
@@ -207,19 +208,19 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             StringBuilder changeStr = new StringBuilder();
             //判断SKU名称是否
             //临时表
-            int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
-            if(count > 0 ){
-                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
-            }
-            //申请表
-            count = applyProductSkuMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
-            if(count > 0 ){
-                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
-            }
-            count = productSkuInfoMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
-            if(count > 0 ){
-                throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经存在"));
-            }
+            // int count = productSkuDraftMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
+            // if(count > 0 ){
+            //     throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息在申请表中已存在"));
+            // }
+            // //申请表
+            // count = applyProductSkuMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
+            // if(count > 0 ){
+            //     throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经在审批中"));
+            // }
+            // count = productSkuInfoMapper.checkName(productSkuDraft.getSkuCode(), productSkuDraft.getSkuName());
+            // if(count > 0 ){
+            //     throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经存在"));
+            // }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
                 List<SkuConfigsRepsVo> skuConfigsRepsVos = BeanCopyUtils.copyList(addSkuInfoReqVO.getProductSkuConfigs(),SkuConfigsRepsVo.class);
@@ -272,7 +273,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
                 // 由于要添加修改的内容，基本信息的修改放到最后
                 // ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
-                // productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
+                productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
                 EncodingRule encodingRule=encodingRuleDao.getNumberingType("PRODUCT_SKU_CODE");
                 Long thisCode = encodingRule.getNumberingValue();
@@ -281,7 +282,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                 productSkuDraft.setChangeContent("新增SKU");
                 log.info(JSON.toJSONString(productSkuDraft));
-                ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
+                // ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 encodingRuleDao.updateNumberValue(thisCode,encodingRule.getId());
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.ADD_SKU.getName(),HandleTypeCoce.ADD.getName());
             }
@@ -846,11 +847,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 }
                 productSkuFileService.insertDraftList(productSkuFileDrafts);
             }
-            // 由于需要获得修改的内容，所以把添加基本信息放到最后
+            // 由于需要获得修改的内容，所以把修改基本信息放到最后
             productSkuDraft.setChangeContent(changeStr.toString());
             // log.info("=============================================================修改内容:" + changeStr.toString());
             ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
-            productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             return 1;
         } else {
             return 0;
@@ -1182,6 +1182,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.SKU_CODE_EMPTY);
         }
+        // 修改spu
+        NewProduct spuInfo = addSkuInfoReqVO.getSpuInfo();
+        NewProductUpdateReqVO newProductUpdateReqVO = new NewProductUpdateReqVO();
+        BeanCopyUtils.copy(spuInfo, newProductUpdateReqVO);
+        newProductService.updateProduct(newProductUpdateReqVO);
+
         addSkuInfoReqVO.getProductSkuDraft().setApplyType(skuRespVo.getApplyType());
         addSkuInfoReqVO.getProductSkuDraft().setApplyTypeName(skuRespVo.getApplyTypeName());
         List<String> skuCodes = Lists.newArrayList();
@@ -1369,6 +1375,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         if (null == skuRespVo) {
             throw new BizException(ResultCode.PRODUCT_NO_EXISTS);
         }
+        // spu信息
+        NewProductResponseVO productResponseVO = newProductService.getDetail(skuRespVo.getProductCode());
+        if (Objects.nonNull(productResponseVO)) {
+            detailResp.setSpuInfo(productResponseVO);
+        }
         //查询所有父节点
         List<ProductCategory> parentCategoryList = productCategoryService.getParentCategoryList(skuRespVo.getProductCategoryCode());
         List<String> categoryIds = parentCategoryList.stream().map(ProductCategory :: getCategoryId).sorted().collect(Collectors.toList());
@@ -1461,7 +1472,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         // spu信息
         NewProductResponseVO productResponseVO = newProductService.getDetail(skuRespVo.getProductCode());
-        if (Objects.isNull(productResponseVO)) {
+        if (Objects.nonNull(productResponseVO)) {
             detailResp.setSpuInfo(productResponseVO);
         }
         //查询所有父节点

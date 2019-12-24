@@ -1150,6 +1150,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //复制对象
             ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+            applySupplyCompany.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //根据供货单位code获取相应的三张申请表id
             applySupplyCompany.setId(s.getId());
@@ -1172,6 +1173,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //存日志
             Long id=applySupplyCompany.getId();
             ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
+            applySupplyCompanyReqDTO.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
             if(id!=null) {
                 ApplySupplyCompany applySupplyCompany1 = applySupplyCompanyMapper.selectByPrimaryKey(id);
                 BeanCopyUtils.copy(applySupplyCompany1, applySupplyCompanyReqDTO);
