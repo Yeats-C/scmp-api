@@ -52,6 +52,9 @@ public class InboundWmsReqVO {
     @ApiModelProperty("预计主单位数量")
     private Long preMainUnitNum;
 
+    @ApiModelProperty("备注")
+    private String remark;
+
     @ApiModelProperty(value = "明细信息 必填")
     private List<InboundProductWmsReqVO>  list;
 

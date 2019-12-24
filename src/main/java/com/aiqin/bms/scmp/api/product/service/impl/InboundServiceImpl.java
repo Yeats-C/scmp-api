@@ -26,6 +26,7 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -364,9 +365,10 @@ public class InboundServiceImpl implements InboundService {
                     purchaseManageService.addLog(operationLog);
                 }
             }
-            PurchaseOrder order = inboundDao.selectCreateById(inbound.getInboundOderCode());
+            PurchaseOrderDetails order = inboundDao.selectCreateById(inbound.getInboundOderCode());
             inboundWmsReqVO.setCreateById(order.getCreateById());
             inboundWmsReqVO.setCreateByName(order.getCreateByName());
+            inboundWmsReqVO.setRemark(order.getRemark());
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO).timeout(200000);
