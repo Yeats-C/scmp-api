@@ -40,7 +40,6 @@ public interface ProductSkuSaleAreaMapper {
      * 查询销售区域sku的列表
      * @author NullPointException
      * @date 2019/6/6
-     * @param reqVO
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaSkuRespVO>
      */
     List<QueryProductSaleAreaSkuRespVO> officialSkuList(List<Long> id);
@@ -52,4 +51,6 @@ public interface ProductSkuSaleAreaMapper {
      * @return java.util.List<java.lang.Long>
      */
     List<Long> officialSkuListCount(QueryProductSaleAreaReqVO reqVO);
+
+    String selectMainCode(String skuCode);
 }
