@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -217,7 +218,7 @@ public class ProductSkuResponse {
 
     @ApiModelProperty("价格")
     @JsonProperty("price")
-    private Integer price;
+    private BigDecimal price;
 
     @ApiModelProperty("图片路径")
     @JsonProperty("product_picture_path")
@@ -635,11 +636,11 @@ public class ProductSkuResponse {
         this.useStatus = useStatus;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

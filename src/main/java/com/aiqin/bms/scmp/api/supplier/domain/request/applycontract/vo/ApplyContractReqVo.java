@@ -9,6 +9,7 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class ApplyContractReqVo{
 
     @ApiModelProperty("配送费")
     @NotNull(message = "配送费不能为空")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     @NotNull(message = "送货费承担方不能为空")
@@ -67,7 +68,7 @@ public class ApplyContractReqVo{
     private Byte fixedRebateType;
 
     @ApiModelProperty("返利率(按进货金额)")
-    private Long returnRate;
+    private BigDecimal returnRate;
 
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
@@ -101,13 +102,13 @@ public class ApplyContractReqVo{
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
-    private Long shipPaymentRatio;
+    private BigDecimal shipPaymentRatio;
 
     @ApiModelProperty("到货付款比例")
-    private Long paymentOnDeliveryRatio;
+    private BigDecimal paymentOnDeliveryRatio;
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
@@ -130,19 +131,19 @@ public class ApplyContractReqVo{
     private String checkoutDate;
 
     @ApiModelProperty("最低起订金额")
-    private Long minAmount;
+    private BigDecimal minAmount;
 
     @ApiModelProperty("最高起订金额")
-    private Long maxAmount;
+    private BigDecimal maxAmount;
 
     @ApiModelProperty("送货周期")
     private Integer deliveryCycle;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private Long discount;
+    private BigDecimal discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;
@@ -151,7 +152,7 @@ public class ApplyContractReqVo{
     private Integer returnGuaranteeDay;
 
     @ApiModelProperty("质保金")
-    private Long warranty;
+    private BigDecimal warranty;
 
     @ApiModelProperty("供货渠道编码")
     private String categoriesSupplyChannelsCode;

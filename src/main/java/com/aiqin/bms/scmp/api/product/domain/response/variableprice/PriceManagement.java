@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("价格管理")
@@ -20,7 +21,7 @@ public class PriceManagement {
     @ApiModelProperty("价格类型")
     private String priceTypeName;
     @ApiModelProperty("含税金额")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("生效时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

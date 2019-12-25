@@ -1564,6 +1564,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
     }
 
+    @Override
+    public List<QueryProductSkuListResp> querySkuListNoPage(QuerySkuListReqVO querySkuListReqVO) {
+        if(StringUtils.isBlank(querySkuListReqVO.getCompanyCode())){
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if(null != authToken){
+                querySkuListReqVO.setCompanyCode(authToken.getCompanyCode());
+                querySkuListReqVO.setPersonId(authToken.getPersonId());
+            }
+        }
+        return productSkuDao.querySkuList(querySkuListReqVO);
+    }
+
     /**
      *  查询品类名称
      */
@@ -1718,7 +1730,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(positionCode);
+//        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
@@ -2340,12 +2352,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList2.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSkuNew checkSku = new CheckSkuNew(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
+                CheckSkuNew checkSku = new CheckSkuNew(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuNew() //新增检查sku
                         .checkBaseDate() //检查基础数据和spu
@@ -2481,12 +2496,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList2.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,productSkuDraftMap,purchaseGroupMap)
+                CheckSku checkSku = new CheckSku(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,productSkuDraftMap,purchaseGroupMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuUpdate1() //修改检查sku
                         .checkBaseDate() //检查基础数据
@@ -2616,12 +2634,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             dicNameList.add("单位");
             dicNameList.add("仓位类型");
             Map<String, SupplierDictionaryInfo> dicMap = supplierDictionaryInfoDao.selectByName(dicNameList, getUser().getCompanyCode());
+            List<String> dicNameList2 = Lists.newArrayList();
+            dicNameList2.add("全量供货渠道类别");
+            Map<String, SupplierDictionaryInfo> dicMap2 = supplierDictionaryInfoDao.selectByName(dicNameList2, getUser().getCompanyCode());
             List<AddSkuInfoReqVO> skuInfoList = Lists.newArrayList();
             List<SkuInfoImport> importList = Lists.newArrayList();
             Map<String, String> reaptMap = Maps.newHashMap();
             for (int i = 0; i < skuInfoImports.size(); i++) {
                 //检查信息
-                CheckSkuUpdate checkSku = new CheckSkuUpdate(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap)
+                CheckSkuUpdate checkSku = new CheckSkuUpdate(productSkuMap, supplyCompanyMap, brandMap , categoryMap, channelMap, skuTagMap, reaptMap, skuInfoImports.get(i),spuMap,dicMap,manufactureMap,dicMap2)
                         .checkRepeat() //检查重复
                         .checkSKuUpdate() //修改检查sku
                         .checkBaseDate() //检查基础数据
@@ -2807,35 +2828,35 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         switch (item.getPriceItemCode()) {
                             case "1001":
                                 // 爱亲渠道价
-                                skuInfoExport.setReadyCol67(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol67(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1002":
                                 // 萌贝树渠道价
-                                skuInfoExport.setReadyCol68(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol68(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1003":
                                 // 小红马渠道价
-                                skuInfoExport.setReadyCol69(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol69(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1007":
                                 // 爱亲分销价
-                                skuInfoExport.setReadyCol70(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol70(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1008":
                                 // 萌贝树分销价"
-                                skuInfoExport.setReadyCol71(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol71(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1009":
                                 // 小红马分销价
-                                skuInfoExport.setReadyCol72(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol72(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1013":
                                 // 售价
-                                skuInfoExport.setReadyCol73(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol73(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             case "1014":
                                 // 会员价
-                                skuInfoExport.setReadyCol74(item.getPriceTax().toString());
+                                skuInfoExport.setReadyCol74(item.getPriceTax() == null ? null : item.getPriceTax().toString());
                                 break;
                             default:
                                 break;
@@ -2892,7 +2913,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     // 进销存分销
                     List<PurchaseSaleStockRespVo> saleRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.SALE.getStatus(), item.getType())).collect(Collectors.toList());
                     if (CollectionUtils.isNotEmpty(saleRespVos)) {
-                        skuInfoExport.setDistributionZeroRemovalCoefficient(saleRespVos.get(0).getZeroRemovalCoefficient().toString());
+                        if(saleRespVos.get(0).getZeroRemovalCoefficient() != null) {
+                            skuInfoExport.setDistributionZeroRemovalCoefficient(saleRespVos.get(0).getZeroRemovalCoefficient().toString());
+                        }
                     }
                     // 进销存门店销售
                     List<PurchaseSaleStockRespVo> stockSaleRespVos = purchaseSaleStockReqVos.stream().filter(item -> Objects.equals(StatusTypeCode.STORE_SALE.getStatus(), item.getType())).collect(Collectors.toList());
@@ -3216,6 +3239,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         SkuInfoImport importVo;
         List<String> error;
         Map<String, SupplierDictionaryInfo> dicMap;
+        Map<String, SupplierDictionaryInfo> dicMap2;
         Map<String, Manufacturer> manufactureMap;
         Map<String, ProductSkuDraft> productSkuDraftMap;
         Map<String, PurchaseGroupDTO> purchaseGroupMap;
@@ -3223,7 +3247,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         private CheckSku() {
         }
 
-        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+        private CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap, Map<String, SupplierDictionaryInfo> dicMap2) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -3236,10 +3260,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
             this.spuMap = spuMap;
             this.dicMap = dicMap;
+            this.dicMap2 = dicMap2;
             this.manufactureMap = manufactureMap;
         }
 
-        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroupDTO> purchaseGroupMap) {
+        public CheckSku(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> reaptMap, ExportSkuInfo importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, ProductSkuDraft> productSkuDraftMap,Map<String,PurchaseGroupDTO> purchaseGroupMap,Map<String, SupplierDictionaryInfo> dicMap2) {
             this.error = Lists.newArrayList();
             this.resp = new AddSkuInfoReqVO();
             this.productSkuMap = productSkuMap;
@@ -3252,6 +3277,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
             this.spuMap = spuMap;
             this.dicMap = dicMap;
+            this.dicMap2 = dicMap2;
 //            this.manufactureMap = manufactureMap;
             this.productSkuDraftMap = productSkuDraftMap;
             this.purchaseGroupMap = purchaseGroupMap;
@@ -3478,7 +3504,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
                 error.add("供货渠道类别不能为空");
             } else {
-                SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
+                SupplierDictionaryInfo info = dicMap2.get(importVo.getCategoriesSupplyChannelsName());
                 if (Objects.isNull(info)) {
                     error.add("无对应的名称的供货渠道类别");
                 } else {
@@ -3694,19 +3720,37 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 stockBox.setUnitCode(stock.getUnitCode());
                 boolean flag = true;
                 try {
-                    stockBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    Long longLength = bigDecimalLength.longValue();
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        //小数
+                        throw  new BizException("库存长格式不正确");
+                    }
+                    stockBox.setBoxLength(longLength);
                 } catch (Exception e) {
                     error.add("库存长格式不正确");
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getStockBoxWidth().trim()));
+                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    Long longWidth = bigDecimalWidth.longValue();
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    stockBox.setBoxWidth(longWidth);
                 } catch (Exception e) {
                     error.add("库存宽格式不正确");
                     flag = false;
                 }
                 try {
-                    stockBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxHeight().trim()));
+                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    Long longHeight = bigDecimalHeight.longValue();
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    stockBox.setBoxHeight(longHeight);
                 } catch (Exception e) {
                     error.add("库存高格式不正确");
                     flag = false;
@@ -3768,19 +3812,37 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     purchaseBox.setUnitCode(purchase.getUnitCode());
                     boolean flag = true;
                     try {
-                        purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
+                        BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                        Long longLength = bigDecimalLength.longValue();
+                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                            //小数
+                            throw  new BizException("库存长格式不正确");
+                        }
+                        purchaseBox.setBoxLength(longLength);
                     } catch (Exception e) {
                         error.add("采购长格式不正确");
                         flag = false;
                     }
                     try {
-                        purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
+                        BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                        Long longWidth = bigDecimalWidth.longValue();
+                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                            //小数
+                            throw  new BizException("库存宽格式不正确");
+                        }
+                        purchaseBox.setBoxWidth(longWidth);
                     } catch (Exception e) {
                         error.add("采购宽格式不正确");
                         flag = false;
                     }
                     try {
-                        purchaseBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxHeight().trim()));
+                        BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                        Long longHeight = bigDecimalHeight.longValue();
+                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                            //小数
+                            throw  new BizException("库存宽格式不正确");
+                        }
+                        purchaseBox.setBoxHeight(longHeight);
                     } catch (Exception e) {
                         error.add("采购高格式不正确");
                         flag = false;

@@ -106,10 +106,10 @@ public class SupplyComDetailRespVO {
     private Byte enable;
 
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
     @ApiModelProperty("营业执照")
     private String businessLicense;

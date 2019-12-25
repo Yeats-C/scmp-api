@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -52,10 +53,10 @@ public class QueryScrapResVo {
     private Long callOutQuantity;
 
     @ApiModelProperty("含税库存成本，展示时需要除以100")
-    private Long taxInventoryCost;
+    private BigDecimal taxInventoryCost;
 
     @ApiModelProperty("实际出库库存成本，展示时需要除以100")
-    private Long callOutTaxAmount;
+    private BigDecimal callOutTaxAmount;
 
     @ApiModelProperty("出库单号")
     private String outboundOderCode;

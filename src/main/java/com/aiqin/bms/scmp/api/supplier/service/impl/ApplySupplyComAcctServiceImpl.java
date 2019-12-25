@@ -161,7 +161,7 @@ public class ApplySupplyComAcctServiceImpl extends BaseServiceImpl implements Ap
         log.info("ApplySupplyComAcctServiceImpl-workFlow-传入参数是：[{}]", JSON.toJSONString(applySupplyCompanyAcctReqDTO));
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
-            workFlowVO.setPositionCode(applySupplyCompanyAcctReqDTO.getPositionCode());
+//            workFlowVO.setPositionCode(applySupplyCompanyAcctReqDTO.getPositionCode());
             workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierAccountUrl+"?applyType="+applySupplyCompanyAcctReqDTO.getApplyType()+"&applyCode="+applySupplyCompanyAcctReqDTO.getApplyCode()+"&id="+applySupplyCompanyAcctReqDTO.getId()+"&itemCode=3"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo(applySupplyCompanyAcctReqDTO.getFormNo());

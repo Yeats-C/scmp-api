@@ -34,6 +34,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -309,16 +312,43 @@ public class SkuInfoController {
 
     @GetMapping("/exportSkuInfo")
     @ApiOperation("导出审批通过的sku信息,多个skuCode通过逗号隔开")
-    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String skuCode) {
-        List<String> list;
-        if (StringUtils.isNotBlank(skuCode)) {
-            String[] split = skuCode.split(",");
-            list = Lists.newArrayList(split);
-        } else {
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String productBrandCode, String productBrandName,
+                                                    String productCategoryCode, String productCategoryName, String productCode, String productName,
+                                                    String productPropertyCode, String productPropertyName, String purchaseGroupCode, String purchaseGroupName,
+                                                    String skuCode, String skuName, Byte skuStatus, String createTimeStart, String createTimeEnd,
+                                                    String updateTimeStart, String updateTimeEnd) throws ParseException {
+
+        QuerySkuListReqVO querySkuListReqVO = new QuerySkuListReqVO();
+        querySkuListReqVO.setProductBrandCode(productBrandCode);
+        querySkuListReqVO.setProductBrandName(productBrandName);
+        querySkuListReqVO.setProductCategoryCode(productCategoryCode);
+        querySkuListReqVO.setProductCategoryName(productCategoryName);
+        querySkuListReqVO.setProductCode(productCode);
+        querySkuListReqVO.setProductName(productName);
+        querySkuListReqVO.setProductPropertyCode(productPropertyCode);
+        querySkuListReqVO.setProductPropertyName(productPropertyName);
+        querySkuListReqVO.setPurchaseGroupCode(purchaseGroupCode);
+        querySkuListReqVO.setPurchaseGroupName(purchaseGroupName);
+        querySkuListReqVO.setSkuCode(skuCode);
+        querySkuListReqVO.setSkuName(skuName);
+        querySkuListReqVO.setSkuStatus(skuStatus);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (StringUtils.isNotBlank(createTimeStart)) {
+            querySkuListReqVO.setCreateTimeStart(formatter.parse(createTimeStart));
         }
+        if (StringUtils.isNotBlank(createTimeEnd)) {
+            querySkuListReqVO.setCreateTimeEnd(formatter.parse(createTimeEnd));
+        }
+        if (StringUtils.isNotBlank(updateTimeStart)) {
+            querySkuListReqVO.setUpdateTimeStart(formatter.parse(updateTimeStart));
+        }
+        if (StringUtils.isNotBlank(updateTimeEnd)) {
+            querySkuListReqVO.setUpdateTimeEnd(formatter.parse(updateTimeEnd));
+        }
+        List<String> skuCodeList = skuInfoService.querySkuListNoPage(querySkuListReqVO).stream().map(QueryProductSkuListResp::getSkuCode).collect(Collectors.toList());
+
         try {
-            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, list));
+            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCodeList));
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

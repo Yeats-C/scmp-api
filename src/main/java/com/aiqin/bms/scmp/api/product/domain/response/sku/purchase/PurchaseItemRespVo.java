@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author HuangLong
  * @date 2018/12/25
@@ -78,22 +80,22 @@ public class PurchaseItemRespVo {
     private String productSortName;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("含税单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("采购数量")
     private Long num;
 
 
     @ApiModelProperty("采购含税总价")
-    private Long totalPrice;
+    private BigDecimal totalPrice;
     @ApiModelProperty("实际到货数量")
     private Long actualNum;
 
     @ApiModelProperty("实际到货含税总价")
-    private Long actualTotalPrice;
+    private BigDecimal actualTotalPrice;
 
     @ApiModelProperty("主单位和采购单位间的转换系数(第一个对应基础信息的，第二个对应进货信息的）")
     private String convertNum;

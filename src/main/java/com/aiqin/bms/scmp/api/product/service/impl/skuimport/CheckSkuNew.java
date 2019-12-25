@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl.skuimport;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
@@ -45,6 +46,7 @@ public class CheckSkuNew {
     SkuInfoImport importVo;
     List<String> error;
     Map<String, SupplierDictionaryInfo> dicMap;
+    Map<String, SupplierDictionaryInfo> dicMap2;
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
@@ -52,7 +54,7 @@ public class CheckSkuNew {
     private CheckSkuNew() {
     }
 
-    public CheckSkuNew(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+    public CheckSkuNew(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap, Map<String, SupplierDictionaryInfo> dicMap2) {
         this.error = Lists.newArrayList();
         this.resp = new AddSkuInfoReqVO();
         this.productSkuMap = productSkuMap;
@@ -65,6 +67,7 @@ public class CheckSkuNew {
         this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
         this.spuMap = spuMap;
         this.dicMap = dicMap;
+        this.dicMap2 = dicMap2;
         this.manufactureMap = manufactureMap;
     }
 
@@ -265,25 +268,25 @@ public class CheckSkuNew {
             }
         }
 
-        // 供货渠道类别
-        // if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
-        //     error.add("供货渠道类别不能为空");
-        // } else {
-        //     SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
-        //     if (Objects.isNull(info)) {
-        //         error.add("无对应的名称的供货渠道类别");
-        //     } else {
-        //         productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
-        //         //库存模式
-        //         boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
-        //         if (b) {
-        //             productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
-        //         } else {
-        //             productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
-        //         }
-        //     }
-        //
-        // }
+        //供货渠道类别
+        if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
+            error.add("供货渠道类别不能为空");
+        } else {
+            SupplierDictionaryInfo info = dicMap2.get(importVo.getCategoriesSupplyChannelsName());
+            if (Objects.isNull(info)) {
+                error.add("无对应的名称的供货渠道类别");
+            } else {
+                productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+                //库存模式
+                boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
+                if (b) {
+                    productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
+                } else {
+                    productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
+                }
+            }
+
+        }
         //助记码
         if (false) {
         }
@@ -510,19 +513,37 @@ public class CheckSkuNew {
             stockBox.setUnitCode(stock.getUnitCode());
             boolean flag = true;
             try {
-                stockBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getStockBoxLength().trim()));
+                BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                Long longLength = bigDecimalLength.longValue();
+                if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                    //小数
+                    throw  new BizException("库存长格式不正确");
+                }
+                stockBox.setBoxLength(longLength);
             } catch (Exception e) {
                 error.add("库存长格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getStockBoxWidth().trim()));
+                BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                Long longWidth = bigDecimalWidth.longValue();
+                if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                    //小数
+                    throw  new BizException("库存宽格式不正确");
+                }
+                stockBox.setBoxWidth(longWidth);
             } catch (Exception e) {
                 error.add("库存宽格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getStockBoxHeight().trim()));
+                BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                Long longHeight = bigDecimalHeight.longValue();
+                if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                    //小数
+                    throw  new BizException("库存宽格式不正确");
+                }
+                stockBox.setBoxHeight(longHeight);
             } catch (Exception e) {
                 error.add("库存高格式不正确");
                 flag = false;
@@ -584,19 +605,37 @@ public class CheckSkuNew {
                 purchaseBox.setUnitCode(purchase.getUnitCode());
                 boolean flag = true;
                 try {
-                    purchaseBox.setBoxLength(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxLength().trim()));
+                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    Long longLength = bigDecimalLength.longValue();
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        //小数
+                        throw  new BizException("库存长格式不正确");
+                    }
+                    purchaseBox.setBoxLength(longLength);
                 } catch (Exception e) {
                     error.add("采购长格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxWidth().trim()));
+                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    Long longWidth = bigDecimalWidth.longValue();
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    purchaseBox.setBoxWidth(longWidth);
                 } catch (Exception e) {
                     error.add("采购宽格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxHeight(NumberConvertUtils.stringParseLong(importVo.getPurchaseBoxHeight().trim()));
+                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    Long longHeight = bigDecimalHeight.longValue();
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    purchaseBox.setBoxHeight(longHeight);
                 } catch (Exception e) {
                     error.add("采购高格式不正确");
                     flag = false;

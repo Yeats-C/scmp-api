@@ -391,7 +391,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             StorageDetail storageDetail;
             List<StorageDetail> storageDetailList;
             List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            Map<String, BigDecimal> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
             Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();
             Storage storage;
             for (ProfitLossProductBatch profitLossProductBatch : profitLossProductBatches) {
@@ -529,7 +529,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             List<InboundBatch> batchList = inboundBatchDao.listByOrderCode(sapOrderRequest);
             List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
             List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            Map<String, BigDecimal> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
             StorageDetail storageDetail;
             List<StorageDetail> storageDetailList;
             InboundProduct inboundProduct;
@@ -656,7 +656,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Map<String, OutboundProduct> outboundProductMap = outboundProducts.stream().collect(Collectors.toMap(outboundProduct -> outboundProduct.getOutboundOderCode() + outboundProduct.getSkuCode(), Function.identity()));
             List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
             List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
-            Map<String, Long> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
+            Map<String, BigDecimal> productMap = productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, ProductSkuInfo::getManufacturerGuidePrice));
             StorageDetail storageDetail;
             List<StorageDetail> storageDetailList;
             Map<String, List<StorageDetail>> storageDetailMap = new HashMap<>();

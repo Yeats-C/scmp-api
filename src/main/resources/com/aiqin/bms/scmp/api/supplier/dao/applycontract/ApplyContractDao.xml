@@ -139,14 +139,14 @@
       direct_supervisor_code,direct_supervisor_name,contract_type_code,
       contract_type_name,checkout_date,min_amount,max_amount,delivery_cycle,
       tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-      categories_supply_channels_code,categories_supply_channels_name,remark,comment,contract_code,
-      position_code,position_name
+      categories_supply_channels_code,categories_supply_channels_name,remark,comment,contract_code
+
     )
     values ( #{year,jdbcType=VARCHAR}, #{yearName,jdbcType=VARCHAR},
       #{supplierName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{purchasingGroupCode,jdbcType=VARCHAR}, 
-      #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee,jdbcType=BIGINT}, 
-      #{deliveryCharges,jdbcType=TINYINT}, #{unloadingFee,jdbcType=BIGINT}, #{otherConventions,jdbcType=VARCHAR}, 
-      #{fixedRebateType,jdbcType=TINYINT}, #{returnRate,jdbcType=BIGINT}, #{targetRebate,jdbcType=TINYINT}, 
+      #{settlementMethod,jdbcType=TINYINT}, #{paymentPeriod,jdbcType=INTEGER}, #{shippingFee},
+      #{deliveryCharges,jdbcType=TINYINT}, #{unloadingFee}, #{otherConventions,jdbcType=VARCHAR},
+      #{fixedRebateType,jdbcType=TINYINT}, #{returnRate}, #{targetRebate,jdbcType=TINYINT},
       #{planType,jdbcType=TINYINT}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{purchasePriceStandard,jdbcType=TINYINT}, #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
@@ -154,12 +154,11 @@
       #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP},  #{formNo ,jdbcType=VARCHAR},
       #{companyCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{purchasingGroupName,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},#{earlyWarnNum,jdbcType=INTEGER},
-      #{prePaymentRatio,jdbcType=BIGINT},#{shipPaymentRatio,jdbcType=BIGINT},#{paymentOnDeliveryRatio,jdbcType=BIGINT},
+      #{prePaymentRatio},#{shipPaymentRatio},#{paymentOnDeliveryRatio},
       #{rebateClause,jdbcType=TINYINT},#{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},
       #{contractTypeCode,jdbcType=VARCHAR},#{contractTypeName,jdbcType=VARCHAR},#{checkoutDate,jdbcType=VARCHAR},#{minAmount},
       #{maxAmount},#{deliveryCycle},#{taxRate},#{discount},#{returnGuarantee},#{returnGuaranteeDay},
-      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark},#{comment},#{contractCode},
-      #{positionCode,jdbcType=VARCHAR},#{positionName,jdbcType=VARCHAR}
+      #{warranty},#{categoriesSupplyChannelsCode},#{categoriesSupplyChannelsName},#{remark},#{comment},#{contractCode}
       )
   </insert>
 

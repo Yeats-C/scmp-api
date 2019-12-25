@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("采购信息")
 @Data
 public class ProductSkuPurchaseInfoDraft extends CommonBean {

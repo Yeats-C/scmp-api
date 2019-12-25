@@ -18,7 +18,7 @@
       #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
       #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},#{item.unitCode,jdbcType=VARCHAR},
-      #{item.zeroRemovalCoefficient,jdbcType=BIGINT})
+      #{item.zeroRemovalCoefficient,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <insert id="insertList" parameterType="java.util.List" >
@@ -40,7 +40,7 @@
       #{item.productHeight,jdbcType=BIGINT}, #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
-      #{item.unitCode,jdbcType=VARCHAR},#{item.zeroRemovalCoefficient,jdbcType=BIGINT}
+      #{item.unitCode,jdbcType=VARCHAR},#{item.zeroRemovalCoefficient,jdbcType=DECIMAL}
       )
     </foreach>
   </insert>
@@ -62,7 +62,7 @@
       #{item.isDefault,jdbcType=TINYINT}, #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP},
       #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateBy,jdbcType=VARCHAR},
       #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR}, #{item.applyCode,jdbcType=VARCHAR},
-      #{item.zeroRemovalCoefficient,jdbcType=BIGINT}, #{item.unitCode,jdbcType=VARCHAR}
+      #{item.zeroRemovalCoefficient,jdbcType=DECIMAL}, #{item.unitCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

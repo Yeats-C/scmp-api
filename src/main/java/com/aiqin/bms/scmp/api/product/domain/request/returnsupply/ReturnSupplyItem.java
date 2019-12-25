@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.product.domain.request.returnsupply;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+
 @ApiModel("退供单商品表")
 public class ReturnSupplyItem {
     @ApiModelProperty("主键id")
@@ -63,16 +65,16 @@ public class ReturnSupplyItem {
     private String productSortName;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("含税单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("退供数量(库存)")
     private Long num;
 
     @ApiModelProperty("退供含税总价")
-    private Long totalPrice;
+    private BigDecimal totalPrice;
 
     @ApiModelProperty("实际退供数量")
     private Long actualNum;
@@ -93,10 +95,10 @@ public class ReturnSupplyItem {
     private String saleUnitName;
 
     @ApiModelProperty("不含税单价")
-    private Long noTaxPrice;
+    private BigDecimal noTaxPrice;
 
     @ApiModelProperty("不含税总价")
-    private Long noTaxTotalPrice;
+    private BigDecimal noTaxTotalPrice;
 
     public String getModelNumber() {
         return modelNumber;
@@ -122,19 +124,19 @@ public class ReturnSupplyItem {
         this.saleUnitName = saleUnitName;
     }
 
-    public Long getNoTaxPrice() {
+    public BigDecimal getNoTaxPrice() {
         return noTaxPrice;
     }
 
-    public void setNoTaxPrice(Long noTaxPrice) {
+    public void setNoTaxPrice(BigDecimal noTaxPrice) {
         this.noTaxPrice = noTaxPrice;
     }
 
-    public Long getNoTaxTotalPrice() {
+    public BigDecimal getNoTaxTotalPrice() {
         return noTaxTotalPrice;
     }
 
-    public void setNoTaxTotalPrice(Long noTaxTotalPrice) {
+    public void setNoTaxTotalPrice(BigDecimal noTaxTotalPrice) {
         this.noTaxTotalPrice = noTaxTotalPrice;
     }
 
@@ -298,19 +300,19 @@ public class ReturnSupplyItem {
         this.productSortName = productSortName == null ? null : productSortName.trim();
     }
 
-    public Long getTaxRate() {
+    public BigDecimal getTaxRate() {
         return taxRate;
     }
 
-    public void setTaxRate(Long taxRate) {
+    public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -322,11 +324,11 @@ public class ReturnSupplyItem {
         this.num = num;
     }
 
-    public Long getTotalPrice() {
+    public BigDecimal getTotalPrice() {
         return totalPrice;
     }
 
-    public void setTotalPrice(Long totalPrice) {
+    public void setTotalPrice(BigDecimal totalPrice) {
         this.totalPrice = totalPrice;
     }
 

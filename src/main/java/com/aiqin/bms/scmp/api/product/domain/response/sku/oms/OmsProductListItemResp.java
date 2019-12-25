@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -29,11 +30,11 @@ public class OmsProductListItemResp {
 
     @ApiModelProperty("最低价")
     @JsonProperty("low_price")
-    private Long lowPrice;
+    private BigDecimal lowPrice;
 
     @ApiModelProperty("最高价")
     @JsonProperty("high_price")
-    private Long highPrice;
+    private BigDecimal highPrice;
 
     @ApiModelProperty("图片路径")
     @JsonProperty("image_path")

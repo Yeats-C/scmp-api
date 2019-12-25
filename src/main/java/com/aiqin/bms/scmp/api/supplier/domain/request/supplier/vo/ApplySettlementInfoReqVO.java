@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * @功能说明:
@@ -30,10 +31,10 @@ public class ApplySettlementInfoReqVO{
 
     @NotNull(message = "最低订货金额不能为空")
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
     @NotNull(message = "最高订货金额不能为空")
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
 
 }

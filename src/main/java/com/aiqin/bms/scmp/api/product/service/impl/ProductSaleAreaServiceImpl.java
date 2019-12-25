@@ -339,7 +339,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //存日志
         supplierCommonService.getInstance(formNo, HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.WAIT_SALE_AREA.getName(), null, HandleTypeCoce.PENDING.getName(), getUser().getPersonName());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode(),reqVO.getPositionCode());
+        workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode());
         return true;
     }
     @Override
@@ -390,9 +390,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode, String positionCode) {
+    public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-        workFlowVO.setPositionCode(positionCode);
+//        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySaleArea + "?approvalType=3&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);

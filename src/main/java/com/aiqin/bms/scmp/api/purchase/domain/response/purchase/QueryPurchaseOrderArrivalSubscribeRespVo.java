@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -76,7 +77,7 @@ public class QueryPurchaseOrderArrivalSubscribeRespVo {
     private Integer num;
 
     @ApiModelProperty("含税金额")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("采购组编码")
     private String purchaseGroupCode;

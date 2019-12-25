@@ -101,13 +101,11 @@ public class ApplySupplyCompanyReqVO {
     @ApiModelProperty("公司网址")
     private String companyWebsite;
 
-    @NotNull(message = "最低订货金额不能为空")
     @ApiModelProperty("最低订货金额")
-    private Long minOrderAmount;
+    private BigDecimal minOrderAmount;
 
-    @NotNull(message = "最高订货金额不能为空")
     @ApiModelProperty("最高订货金额")
-    private Long maxOrderAmount;
+    private BigDecimal maxOrderAmount;
     
     @ApiModelProperty("发货信息")
     private List<ApplyDeliveryInfoReqVO> deliveryInfoList;

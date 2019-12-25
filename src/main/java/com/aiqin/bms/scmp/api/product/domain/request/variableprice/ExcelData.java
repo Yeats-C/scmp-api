@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 @ApiModel("Excel处理")
 @Data
 public class ExcelData {
@@ -12,7 +14,7 @@ public class ExcelData {
     @ApiModelProperty("sku名称")
     private String skuName;
     @ApiModelProperty("含税单价")
-    private Long priceValue;
+    private BigDecimal priceValue;
 
 
 }

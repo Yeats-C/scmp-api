@@ -86,9 +86,9 @@
     <result column="corporate_representative" jdbcType="VARCHAR" property="corporateRepresentative" />
     <result column="registered_capital" jdbcType="DECIMAL" property="registeredCapital" />
     <result column="company_website" jdbcType="VARCHAR" property="companyWebsite" />
-    <result column="min_order_amount" jdbcType="BIGINT" property="minOrderAmount" />
-    <result column="max_order_amount" jdbcType="BIGINT" property="maxOrderAmount" />
-    <result column="max_payment_amount" jdbcType="BIGINT" property="maxPaymentAmount" />
+    <result column="min_order_amount" jdbcType="DECIMAL" property="minOrderAmount" />
+    <result column="max_order_amount" jdbcType="DECIMAL" property="maxOrderAmount" />
+    <result column="max_payment_amount" jdbcType="DECIMAL" property="maxPaymentAmount" />
     <result column="business_license" jdbcType="VARCHAR" property="businessLicense" />
     <result column="star_score" jdbcType="DECIMAL" property="starScore" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
@@ -135,7 +135,7 @@
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
       enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
       min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
-      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark,position_code,position_name
+      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark
     )
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
@@ -152,8 +152,7 @@
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
       #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},
       #{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
-      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR},
-      #{positionCode,jdbcType=VARCHAR},#{positionName,jdbcType=VARCHAR}
+      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">

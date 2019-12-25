@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("")
@@ -66,7 +67,7 @@ public class ApplyProductSkuPrice extends CommonBean {
     private Byte isDefault;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     public Long getId() {
         return id;
@@ -220,11 +221,11 @@ public class ApplyProductSkuPrice extends CommonBean {
         this.isDefault = isDefault;
     }
 
-    public Long getTaxRate() {
+    public BigDecimal getTaxRate() {
         return taxRate;
     }
 
-    public void setTaxRate(Long taxRate) {
+    public void setTaxRate(BigDecimal taxRate) {
         this.taxRate = taxRate;
     }
 }

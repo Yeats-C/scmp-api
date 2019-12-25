@@ -14,10 +14,10 @@
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="classes" jdbcType="VARCHAR" property="classes" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
-    <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
+    <result column="tax_price" jdbcType="DECIMAL" property="taxPrice" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
+    <result column="tax_amount" jdbcType="DECIMAL" property="taxAmount" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -50,14 +50,14 @@
     <result column="unit" jdbcType="VARCHAR" property="unit" />
     <result column="classes" jdbcType="VARCHAR" property="classes" />
     <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
-    <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
+    <result column="tax" jdbcType="DECIMAL" property="tax" />
+    <result column="tax_price" jdbcType="DECIMAL" property="taxPrice" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
     <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
     <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
-    <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
-    <result column="callout_tax_amount" jdbcType="BIGINT" property="callOutTaxAmount" />
-    <result column="callin_tax_amount" jdbcType="BIGINT" property="callInTaxAmount" />
+    <result column="tax_amount" jdbcType="DECIMAL" property="taxAmount" />
+    <result column="callout_tax_amount" jdbcType="DECIMAL" property="callOutTaxAmount" />
+    <result column="callin_tax_amount" jdbcType="DECIMAL" property="callInTaxAmount" />
     <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by" jdbcType="VARCHAR" property="createBy" />
@@ -103,10 +103,10 @@
       #{t.unit,jdbcType=VARCHAR},
       #{t.classes,jdbcType=VARCHAR},
       #{t.type,jdbcType=VARCHAR},
-      #{t.tax,jdbcType=BIGINT},
-      #{t.taxPrice,jdbcType=BIGINT},
+      #{t.tax,jdbcType=DECIMAL},
+      #{t.taxPrice,jdbcType=DECIMAL},
       #{t.quantity,jdbcType=BIGINT},
-      #{t.taxAmount,jdbcType=BIGINT},
+      #{t.taxAmount,jdbcType=DECIMAL},
       #{t.delFlag,jdbcType=TINYINT},
       #{t.createTime,jdbcType=TIMESTAMP},
       #{t.createBy,jdbcType=VARCHAR},
@@ -237,19 +237,19 @@
         #{inventoryUnit,jdbcType=VARCHAR},
       </if>
       <if test="inventory != null">
-        #{inventory,jdbcType=BIGINT},
+        #{inventory,jdbcType=DECIMAL},
       </if>
       <if test="tax != null">
-        #{tax,jdbcType=BIGINT},
+        #{tax,jdbcType=DECIMAL},
       </if>
       <if test="taxPrice != null">
-        #{taxPrice,jdbcType=BIGINT},
+        #{taxPrice,jdbcType=DECIMAL},
       </if>
       <if test="quantity != null">
         #{quantity,jdbcType=BIGINT},
       </if>
       <if test="taxAmount != null">
-        #{taxAmount,jdbcType=BIGINT},
+        #{taxAmount,jdbcType=DECIMAL},
       </if>
       <if test="delFlag != null">
         #{delFlag,jdbcType=TINYINT},
@@ -317,16 +317,16 @@
         inventory = #{inventory,jdbcType=BIGINT},
       </if>
       <if test="tax != null">
-        tax = #{tax,jdbcType=BIGINT},
+        tax = #{tax,jdbcType=DECIMAL},
       </if>
       <if test="taxPrice != null">
-        tax_price = #{taxPrice,jdbcType=BIGINT},
+        tax_price = #{taxPrice,jdbcType=DECIMAL},
       </if>
       <if test="quantity != null">
         quantity = #{quantity,jdbcType=BIGINT},
       </if>
       <if test="taxAmount != null">
-        tax_amount = #{taxAmount,jdbcType=BIGINT},
+        tax_amount = #{taxAmount,jdbcType=DECIMAL},
       </if>
       <if test="delFlag != null">
         del_flag = #{delFlag,jdbcType=TINYINT},
@@ -367,10 +367,10 @@
       type = #{type,jdbcType=VARCHAR},
       inventory_unit = #{inventoryUnit,jdbcType=VARCHAR},
       inventory = #{inventory,jdbcType=BIGINT},
-      tax = #{tax,jdbcType=BIGINT},
-      tax_price = #{taxPrice,jdbcType=BIGINT},
+      tax = #{tax,jdbcType=DECIMAL},
+      tax_price = #{taxPrice,jdbcType=DECIMAL},
       quantity = #{quantity,jdbcType=BIGINT},
-      tax_amount = #{taxAmount,jdbcType=BIGINT},
+      tax_amount = #{taxAmount,jdbcType=DECIMAL},
       del_flag = #{delFlag,jdbcType=TINYINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       create_by = #{createBy,jdbcType=VARCHAR},

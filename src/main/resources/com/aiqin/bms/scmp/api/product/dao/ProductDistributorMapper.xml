@@ -32,8 +32,8 @@
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
         <result column="show_name" jdbcType="VARCHAR" property="showName"/>
-        <result column="price" jdbcType="BIGINT" property="price"/>
-        <result column="member_price" jdbcType="BIGINT" property="memberPrice"/>
+        <result column="price" jdbcType="DECIMAL" property="price"/>
+        <result column="member_price" jdbcType="DECIMAL" property="memberPrice"/>
         <result column="logo" jdbcType="VARCHAR" property="logo"/>
         <result column="images" jdbcType="VARCHAR" property="images"/>
         <result column="itro_images" jdbcType="VARCHAR" property="itroImages"/>
@@ -121,10 +121,10 @@
                 show_name = #{showName,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
-                price = #{price,jdbcType=BIGINT},
+                price = #{price,jdbcType=DECIMAL},
             </if>
             <if test="memberPrice != null">
-                member_price = #{memberPrice,jdbcType=BIGINT},
+                member_price = #{memberPrice,jdbcType=DECIMAL},
             </if>
             <if test="colorCode != null">
                 color_code = #{colorCode}

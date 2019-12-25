@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -33,15 +34,15 @@ public class ProductPriceRequest implements Serializable {
 
     @ApiModelProperty(value = "零售价")
     @JsonProperty("price")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty(value = "会员价格")
     @JsonProperty("member_price")
-    private Long memberPrice;
+    private BigDecimal memberPrice;
 
     @ApiModelProperty(value = "进货价")
     @JsonProperty("purchase_price")
-    private Long purchasePrice;
+    private BigDecimal purchasePrice;
 
     @ApiModelProperty(value = "sku_code")
     @JsonProperty("sku_code")

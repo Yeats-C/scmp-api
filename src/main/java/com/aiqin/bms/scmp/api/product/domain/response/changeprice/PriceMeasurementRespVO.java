@@ -10,24 +10,24 @@ import java.math.BigDecimal;
 @ApiModel("变价测算返回vo")
 public class PriceMeasurementRespVO {
     @ApiModelProperty("毛利率增加数")
-    private Long increaseCount;
+    private BigDecimal increaseCount;
     @ApiModelProperty("毛利率减少数")
-    private Long decreaseCount;
+    private BigDecimal decreaseCount;
     @ApiModelProperty("毛利率增加额度")
-    private Long increaseGrossProfit;
+    private BigDecimal increaseGrossProfit;
     @ApiModelProperty("毛利率减少额度")
-    private Long decreaseGrossProfit;
+    private BigDecimal decreaseGrossProfit;
 
     public String getIncreaseGrossProfit() {
-        return "+"+BigDecimal.valueOf(increaseGrossProfit).divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
+        return "+"+increaseGrossProfit.divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
     }
-    public Long getIncreaseGrossProfit2(){
+    public BigDecimal getIncreaseGrossProfit2(){
         return increaseGrossProfit;
     }
-    public Long getDecreaseGrossProfit2(){
+    public BigDecimal getDecreaseGrossProfit2(){
         return increaseGrossProfit;
     }
     public String getDecreaseGrossProfit() {
-        return "-"+BigDecimal.valueOf(decreaseGrossProfit).divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
+        return "-"+decreaseGrossProfit.divide(BigDecimal.valueOf(100),2, BigDecimal.ROUND_HALF_UP).toString();
     }
 }

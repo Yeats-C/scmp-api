@@ -30,7 +30,7 @@
         <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
         <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
         <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="stock_cost" jdbcType="VARCHAR" property="stockCost"/>
+        <result column="stock_cost" jdbcType="DECIMAL" property="stockCost"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
@@ -56,13 +56,13 @@
         <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="new_purchase_price" jdbcType="BIGINT" property="newPurchasePrice"/>
+        <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
         <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
         <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
         <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
         <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="BIGINT" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
+        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
+        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>

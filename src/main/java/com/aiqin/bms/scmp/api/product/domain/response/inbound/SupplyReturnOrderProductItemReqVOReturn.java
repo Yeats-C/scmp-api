@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Description:
  * 退货订单的商品信息
@@ -90,7 +92,7 @@ public class SupplyReturnOrderProductItemReqVOReturn {
     private String supplyCompanyCode;
 
     @ApiModelProperty("活动分摊")
-    private Long activityApportionment;
+    private BigDecimal activityApportionment;
 
     @ApiModelProperty("活动编码(多个，隔开）")
     private String activityCode;

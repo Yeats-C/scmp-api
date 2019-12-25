@@ -43,11 +43,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("上周全国合计_高库存金额")
     @JsonProperty("szqg_high_inventory_amount")
-    private Long szqgHighInventoryAmount;
+    private BigDecimal szqgHighInventoryAmount;
 
     @ApiModelProperty("上周全国合计_库存总金额")
     @JsonProperty("szqg_total_inventory_amount")
-    private Long szqgTotalInventoryAmount;
+    private BigDecimal szqgTotalInventoryAmount;
 
     @ApiModelProperty("上周全国合计_高库存占比")
     @JsonProperty("szqg_rate")
@@ -55,11 +55,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("本周全国合计_高库存金额")
     @JsonProperty("bzqg_high_inventory_amount")
-    private Long bzqgHighInventoryAmount;
+    private BigDecimal bzqgHighInventoryAmount;
 
     @ApiModelProperty("本周全国合计_库存总金额")
     @JsonProperty("bzqg_total_inventory_amount")
-    private Long bzqgTotalInventoryAmount;
+    private BigDecimal bzqgTotalInventoryAmount;
 
     @ApiModelProperty("本周全国合计_高库存占比")
     @JsonProperty("bzqg_rate")
@@ -67,11 +67,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华北仓_高库存金额")
     @JsonProperty("hb_high_inventory_amount")
-    private Long hbHighInventoryAmount;
+    private BigDecimal hbHighInventoryAmount;
 
     @ApiModelProperty("华北仓_库存总金额")
     @JsonProperty("hb_total_inventory_amount")
-    private Long hbTotalInventoryAmount;
+    private BigDecimal hbTotalInventoryAmount;
 
     @ApiModelProperty("华北仓_高库存占比")
     @JsonProperty("hb_rate")
@@ -79,11 +79,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华南仓_高库存金额")
     @JsonProperty("hn_high_inventory_amount")
-    private Long hnHighInventoryAmount;
+    private BigDecimal hnHighInventoryAmount;
 
     @ApiModelProperty("华南仓_库存总金额")
     @JsonProperty("hn_total_inventory_amount")
-    private Long hnTotalInventoryAmount;
+    private BigDecimal hnTotalInventoryAmount;
 
     @ApiModelProperty("华南仓_高库存占比")
     @JsonProperty("hn_rate")
@@ -91,11 +91,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("西南仓_高库存金额")
     @JsonProperty("xn_high_inventory_amount")
-    private Long xnHighInventoryAmount;
+    private BigDecimal xnHighInventoryAmount;
 
     @ApiModelProperty("西南仓_库存总金额")
     @JsonProperty("xn_total_inventory_amount")
-    private Long xnTotalInventoryAmount;
+    private BigDecimal xnTotalInventoryAmount;
 
     @ApiModelProperty("西南仓_高库存占比")
     @JsonProperty("xn_rate")
@@ -103,11 +103,11 @@ public class HighInventoryRespVo {
 
     @ApiModelProperty("华东仓_高库存金额")
     @JsonProperty("hd_high_inventory_amount")
-    private Long hdHhighInventoryAmount;
+    private BigDecimal hdHhighInventoryAmount;
 
     @ApiModelProperty("华东仓_库存总金额")
     @JsonProperty("hd_total_inventory_amount")
-    private Long hdTotalInventoryAmount;
+    private BigDecimal hdTotalInventoryAmount;
 
     @ApiModelProperty("华东仓_高库存占比")
     @JsonProperty("hd_rate")

@@ -3,6 +3,8 @@ package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
+
 @ApiModel("订单商品信息")
 public class ReturnOrderInfoApplyInboundDetail {
     @ApiModelProperty("商品主键")
@@ -57,13 +59,13 @@ public class ReturnOrderInfoApplyInboundDetail {
     private String batchNumber;
 
     @ApiModelProperty("单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("数量")
     private Long num;
 
     @ApiModelProperty("总价")
-    private Long amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("活动编码(多个，隔开）")
     private String activityCode;
@@ -222,11 +224,11 @@ public class ReturnOrderInfoApplyInboundDetail {
         this.batchNumber = batchNumber == null ? null : batchNumber.trim();
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -238,11 +240,11 @@ public class ReturnOrderInfoApplyInboundDetail {
         this.num = num;
     }
 
-    public Long getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 
-    public void setAmount(Long amount) {
+    public void setAmount(BigDecimal amount) {
         this.amount = amount;
     }
 

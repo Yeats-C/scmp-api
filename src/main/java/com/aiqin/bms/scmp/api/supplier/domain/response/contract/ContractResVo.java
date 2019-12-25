@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -62,7 +63,7 @@ public class ContractResVo {
     private Byte fixedRebateType;
 
     @ApiModelProperty("返利率(按进货金额)")
-    private Long returnRate;
+    private BigDecimal returnRate;
 
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
@@ -132,16 +133,16 @@ public class ContractResVo {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
-    private Long shipPaymentRatio;
+    private BigDecimal shipPaymentRatio;
 
     @ApiModelProperty("到货付款比例")
-    private Long paymentOnDeliveryRatio;
+    private BigDecimal paymentOnDeliveryRatio;
 
     @ApiModelProperty("最小起订额")
-    private Long minAmount;
+    private BigDecimal minAmount;
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
@@ -173,16 +174,16 @@ public class ContractResVo {
     private String checkoutDate;
 
     @ApiModelProperty("最高起订金额")
-    private Long maxAmount;
+    private BigDecimal maxAmount;
 
     @ApiModelProperty("送货周期")
     private Integer deliveryCycle;
 
     @ApiModelProperty("税率")
-    private Long taxRate;
+    private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private Long discount;
+    private BigDecimal discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;
@@ -191,7 +192,7 @@ public class ContractResVo {
     private Integer returnGuaranteeDay;
 
     @ApiModelProperty("质保金")
-    private Long warranty;
+    private BigDecimal warranty;
 
     @ApiModelProperty("供货渠道编码")
     private String categoriesSupplyChannelsCode;

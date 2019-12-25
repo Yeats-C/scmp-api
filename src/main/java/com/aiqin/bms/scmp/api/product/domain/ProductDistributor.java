@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("商品分销机构")
@@ -144,11 +145,11 @@ public class ProductDistributor extends PagesRequest {
 
     @ApiModelProperty(value = "价格")
     @JsonProperty("price")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty(value = "会员价格")
     @JsonProperty("member_price")
-    private Long memberPrice;
+    private BigDecimal memberPrice;
 
     @ApiModelProperty(value = "列表图")
     @JsonProperty("logo")
@@ -415,11 +416,11 @@ public class ProductDistributor extends PagesRequest {
         this.showName = showName;
     }
 
-    public Long getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Long price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

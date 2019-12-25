@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 
 /**
  * @功能说明:
@@ -29,11 +31,11 @@ public class ProductItemStoreRespVO {
 
     @ApiModelProperty("最低动销价")
     @JsonProperty("lowest_price")
-    private Long lowestPrice;
+    private BigDecimal lowestPrice;
 
     @ApiModelProperty("最高动销价")
     @JsonProperty("highest_price")
-    private Long highestPrice;
+    private BigDecimal highestPrice;
 
    /* @ApiModelProperty("商品标签")
     @JsonProperty("product_label")

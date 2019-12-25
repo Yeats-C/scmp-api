@@ -169,7 +169,7 @@
         <if test="productPropertyName!=null and productPropertyName!=''">
           AND b.product_property_name like CONCAT('%',#{productPropertyName,jdbcType=VARCHAR},'%')
         </if>
-        order by create_time desc
+        order by a.create_time desc
   </select>
     <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
         select

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -53,7 +54,7 @@ public class ErrorVariableResponse {
     private Byte isDefault;
 
     @ApiModelProperty("新含税采购价")
-    private Long newTaxedPurchasingPrice;
+    private BigDecimal newTaxedPurchasingPrice;
 
     @ApiModelProperty("生效时间")
     private Date takeEffectTime;
@@ -66,10 +67,10 @@ public class ErrorVariableResponse {
 
 
     @ApiModelProperty("最新采购价")
-    private Long newPurchasingPrice;
+    private BigDecimal newPurchasingPrice;
 
     @ApiModelProperty("原含税采购价")
-    private Long originalTaxPurchasePrice;
+    private BigDecimal originalTaxPurchasePrice;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;
@@ -87,10 +88,10 @@ public class ErrorVariableResponse {
     private String updateBy;
 
     @ApiModelProperty("原会员价")
-    private Long originalMembershipPrice;
+    private BigDecimal originalMembershipPrice;
 
     @ApiModelProperty("新含税会员价")
-    private Long newTaxedMembershipPrice;
+    private BigDecimal newTaxedMembershipPrice;
 
     @ApiModelProperty("调价原因")
     private String updatePriceReason;
@@ -102,7 +103,7 @@ public class ErrorVariableResponse {
     private Date failureTime;
 
     @ApiModelProperty("临时含税售价")
-    private Long temporaryTaxedPrice;
+    private BigDecimal temporaryTaxedPrice;
 
     public void setPriceTypeCode(String priceTypeCode) {
         switch (priceTypeCode) {

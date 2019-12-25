@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -56,10 +57,10 @@ public class AllocationProductResVo {
     private Long inventory;
 
     @ApiModelProperty("税率")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税单价")
-    private Long taxPrice;
+    private BigDecimal taxPrice;
 
     @ApiModelProperty("数量")
     private Long quantity;
@@ -71,13 +72,13 @@ public class AllocationProductResVo {
     private Long  callInQuantity;
 
     @ApiModelProperty("含税总价")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("出库含税总成本")
-    private Long callOutTaxAmount;
+    private BigDecimal callOutTaxAmount;
 
     @ApiModelProperty("入库含税总成本")
-    private Long callInTaxAmount;
+    private BigDecimal callInTaxAmount;
 
     @ApiModelProperty("删除标记，0未删除 1已删除")
     private Byte delFlag;

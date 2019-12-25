@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * 描述:调拨sku接受实体
@@ -59,11 +60,11 @@ public class AllocationProductReqVo {
 
     @ApiModelProperty("税率")
     @NotNull(message = "税率不能为空")
-    private Long tax;
+    private BigDecimal tax;
 
     @ApiModelProperty("含税成本")
     @NotNull(message = "含税成本不能为空")
-    private Long taxPrice;
+    private BigDecimal taxPrice;
 
     @ApiModelProperty("数量")
     @NotNull(message = "数量不能为空")
@@ -71,7 +72,7 @@ public class AllocationProductReqVo {
 
     @ApiModelProperty("含税总成本")
     @NotNull(message = "含税总成本不能为空")
-    private Long taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty(value = "图片地址",hidden = true)
     private String pictureUrl;

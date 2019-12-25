@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -64,19 +65,19 @@ public class ProductPriceChange implements Serializable {
 
     @ApiModelProperty(value = "变动前销售价格")
     @JsonProperty("before_change_price")
-    private Long beforeChangePrice;
+    private BigDecimal beforeChangePrice;
 
     @ApiModelProperty(value = "变动后销售价格")
     @JsonProperty("after_change_price")
-    private Long afterChangePrice;
+    private BigDecimal afterChangePrice;
 
     @ApiModelProperty(value = "变动前会员价格")
     @JsonProperty("before_change_member_price")
-    private Long beforeChangeMemberPrice;
+    private BigDecimal beforeChangeMemberPrice;
 
     @ApiModelProperty(value = "变动后会员价格")
     @JsonProperty("after_change_member_price")
-    private Long afterChangeMemberPrice;
+    private BigDecimal afterChangeMemberPrice;
 
     @ApiModelProperty(value = "列表图")
     @JsonProperty("logo")
@@ -117,6 +118,6 @@ public class ProductPriceChange implements Serializable {
 
     @ApiModelProperty(value = "进货价")
     @JsonProperty("purchase_price")
-    private Long purchasePrice;
+    private BigDecimal purchasePrice;
 
 }

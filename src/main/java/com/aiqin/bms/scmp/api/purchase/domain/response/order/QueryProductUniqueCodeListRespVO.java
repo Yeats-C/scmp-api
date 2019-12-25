@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -43,13 +44,13 @@ public class QueryProductUniqueCodeListRespVO {
     private String unitName;
 
     @ApiModelProperty("单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("数量")
     private Long num;
 
     @ApiModelProperty("总价")
-    private Long amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("订单编码(订单号)")
     private String orderCode;

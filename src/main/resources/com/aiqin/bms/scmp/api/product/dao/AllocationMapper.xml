@@ -16,7 +16,7 @@
     <result column="callin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+    <result column="total_cost_rate" jdbcType="DECIMAL" property="totalCostRate" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
@@ -209,7 +209,7 @@
       #{purchaseGroupName,jdbcType=VARCHAR}, #{callInLogisticsCenterCode,jdbcType=VARCHAR}, 
       #{callInLogisticsCenterName,jdbcType=VARCHAR}, #{callInWarehouseCode,jdbcType=VARCHAR}, 
       #{callInWarehouseName,jdbcType=VARCHAR}, #{principal,jdbcType=VARCHAR}, #{quantity,jdbcType=BIGINT},
-      #{totalCostRate,jdbcType=BIGINT}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR},
+      #{totalCostRate,jdbcType=DECIMAL}, #{outboundOderCode,jdbcType=VARCHAR}, #{inboundOderCode,jdbcType=VARCHAR},
       #{allocationStatusCode,jdbcType=TINYINT}, #{allocationStatusName,jdbcType=VARCHAR}, 
       #{delFlag,jdbcType=TINYINT}, #{createTime,jdbcType=TIMESTAMP}, #{createBy,jdbcType=VARCHAR},
       #{updateTime,jdbcType=TIMESTAMP}, #{update,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
@@ -373,7 +373,7 @@
         #{quantity,jdbcType=BIGINT},
       </if>
       <if test="totalCostRate != null">
-        #{totalCostRate,jdbcType=BIGINT},
+        #{totalCostRate,jdbcType=DECIMAL},
       </if>
       <if test="outboundOderCode != null">
         #{outboundOderCode,jdbcType=VARCHAR},
@@ -471,7 +471,7 @@
         quantity = #{quantity,jdbcType=BIGINT},
       </if>
       <if test="totalCostRate != null">
-        total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
+        total_cost_rate = #{totalCostRate,jdbcType=DECIMAL},
       </if>
       <if test="outboundOderCode != null">
         outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
@@ -542,7 +542,7 @@
       callin_warehouse_name = #{callInWarehouseName,jdbcType=VARCHAR},
       principal = #{principal,jdbcType=VARCHAR},
       quantity = #{quantity,jdbcType=BIGINT},
-      total_cost_rate = #{totalCostRate,jdbcType=BIGINT},
+      total_cost_rate = #{totalCostRate,jdbcType=DECIMAL},
       outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
       inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
       allocation_status_code = #{allocationStatusCode,jdbcType=TINYINT},
@@ -613,7 +613,7 @@
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
     <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
     <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="taxRefundAmount" />
+    <result column="total_cost_rate" jdbcType="DECIMAL" property="taxRefundAmount" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
@@ -713,7 +713,7 @@
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
     <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
     <result column="callin_quantity" jdbcType="BIGINT" property="callInQuantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
+    <result column="total_cost_rate" jdbcType="DECIMAL" property="taxInventoryCost" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="movementStatusCode" />
@@ -809,8 +809,8 @@
     <result column="principal" jdbcType="VARCHAR" property="principal" />
     <result column="quantity" jdbcType="BIGINT" property="quantity" />
     <result column="callout_quantity" jdbcType="BIGINT" property="callOutQuantity" />
-    <result column="total_cost_rate" jdbcType="BIGINT" property="taxInventoryCost" />
-    <result column="callout_tax_amount" jdbcType="BIGINT" property="callOutTaxAmount" />
+    <result column="total_cost_rate" jdbcType="DECIMAL" property="taxInventoryCost" />
+    <result column="callout_tax_amount" jdbcType="DECIMAL" property="callOutTaxAmount" />
     <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
     <result column="allocation_status_code" jdbcType="TINYINT" property="scrapStatusCode" />
     <result column="allocation_status_name" jdbcType="VARCHAR" property="scrapStatusName" />
@@ -892,7 +892,7 @@
         <result column="acallin_warehouse_name" jdbcType="VARCHAR" property="callInWarehouseName" />
         <result column="aprincipal" jdbcType="VARCHAR" property="principal" />
         <result column="aquantity" jdbcType="BIGINT" property="quantity" />
-        <result column="atotal_cost_rate" jdbcType="BIGINT" property="totalCostRate" />
+        <result column="atotal_cost_rate" jdbcType="DECIMAL" property="totalCostRate" />
         <result column="aoutbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
         <result column="ainbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
         <result column="aallocation_status_code" jdbcType="TINYINT" property="allocationStatusCode" />
@@ -928,9 +928,9 @@
           <result column="cinventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
           <result column="cinventory" jdbcType="BIGINT" property="inventory" />
           <result column="ctax" jdbcType="BIGINT" property="tax" />
-          <result column="ctax_price" jdbcType="BIGINT" property="taxPrice" />
+          <result column="ctax_price" jdbcType="DECIMAL" property="taxPrice" />
           <result column="cquantity" jdbcType="BIGINT" property="quantity" />
-          <result column="ctax_amount" jdbcType="BIGINT" property="taxAmount" />
+          <result column="ctax_amount" jdbcType="FLOAT" property="taxAmount" />
           <result column="cdel_flag" jdbcType="TINYINT" property="delFlag" />
           <result column="ccreate_time" jdbcType="TIMESTAMP" property="createTime" />
           <result column="ccreate_by" jdbcType="VARCHAR" property="createBy" />
@@ -957,9 +957,9 @@
            <result column="bclasses" jdbcType="VARCHAR" property="classes" />
            <result column="btype" jdbcType="VARCHAR" property="type" />
            <result column="btax" jdbcType="BIGINT" property="tax" />
-           <result column="btax_price" jdbcType="BIGINT" property="taxPrice" />
+           <result column="btax_price" jdbcType="DECIMAL" property="taxPrice" />
            <result column="bquantity" jdbcType="BIGINT" property="quantity" />
-           <result column="btax_amount" jdbcType="BIGINT" property="taxAmount" />
+           <result column="btax_amount" jdbcType="DECIMAL" property="taxAmount" />
            <result column="bdel_flag" jdbcType="TINYINT" property="delFlag" />
            <result column="bcreate_time" jdbcType="TIMESTAMP" property="createTime" />
            <result column="bcreate_by" jdbcType="VARCHAR" property="createBy" />

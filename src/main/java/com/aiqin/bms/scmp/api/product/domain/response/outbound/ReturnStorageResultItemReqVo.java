@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author HuangLong
  * @date 2018/12/27
@@ -26,7 +28,7 @@ public class ReturnStorageResultItemReqVo {
 
     @ApiModelProperty("实际价格")
     @JsonProperty("price")
-    private Long praTaxPurchaseAmount;
+    private BigDecimal praTaxPurchaseAmount;
 
 
 

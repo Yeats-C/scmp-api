@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -45,13 +46,13 @@ public class QueryProfitLossRespVo {
     private Long profitQuantity;
 
     @ApiModelProperty("报溢含税总成本")
-    private Long profitTotalCostRate;
+    private BigDecimal profitTotalCostRate;
 
     @ApiModelProperty("报损数量")
     private Long lossQuantity;
 
     @ApiModelProperty("报损含税总成本")
-    private Long lossTotalCostRate;
+    private BigDecimal lossTotalCostRate;
 
     @ApiModelProperty("创建时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

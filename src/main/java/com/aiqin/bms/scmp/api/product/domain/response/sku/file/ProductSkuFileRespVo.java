@@ -8,6 +8,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class ProductSkuFileRespVo {
 
     @JsonProperty("sku_price")
     @ApiModelProperty("动销价")
-    private Long skuPrice;
+    private BigDecimal skuPrice;
 
     @ApiModelProperty("类别")
     private String productSort;

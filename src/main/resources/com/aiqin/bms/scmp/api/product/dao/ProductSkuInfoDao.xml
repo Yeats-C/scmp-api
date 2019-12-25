@@ -102,7 +102,7 @@
     <result column="production_date" jdbcType="TIMESTAMP" property="productionDate" />
     <result column="Inspection_report_path" jdbcType="VARCHAR" property="inspectionReportPath" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="price_value" jdbcType="BIGINT" property="price" />
+    <result column="price_value" jdbcType="DECIMAL" property="price" />
     <result column="product_picture_path" jdbcType="VARCHAR" property="productPicturePath" />
     <result column="product_picture_name" jdbcType="VARCHAR" property="productPictureName" />
   </resultMap>

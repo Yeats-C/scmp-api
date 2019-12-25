@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 public class ProductSku {
@@ -29,7 +30,7 @@ public class ProductSku {
 
     private String itroImages;
 
-    private Integer price;
+    private BigDecimal price;
 
     private Date createTime;
 
@@ -143,11 +144,11 @@ public class ProductSku {
         this.itroImages = itroImages;
     }
 
-    public Integer getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Integer price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

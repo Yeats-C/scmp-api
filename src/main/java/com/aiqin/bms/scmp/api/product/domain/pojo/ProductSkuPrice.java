@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("商品sku价格管理")
@@ -12,10 +13,10 @@ public class ProductSkuPrice extends CommonBean {
     private Long id;
 
     @ApiModelProperty("加点数值")
-    private Long addPointsValue;
+    private BigDecimal addPointsValue;
 
     @ApiModelProperty("毛利率值")
-    private Long grossProfitMarginValue;
+    private BigDecimal grossProfitMarginValue;
 
     @ApiModelProperty("删除标记(0:正常 1:删除)")
     private Byte delFlag;
@@ -39,7 +40,7 @@ public class ProductSkuPrice extends CommonBean {
     private String priceTypeName;
 
     @ApiModelProperty("金额")
-    private Long priceValue;
+    private BigDecimal priceValue;
 
     @ApiModelProperty("生效时间")
     private Date effectiveTime;
@@ -72,19 +73,19 @@ public class ProductSkuPrice extends CommonBean {
         this.id = id;
     }
 
-    public Long getAddPointsValue() {
+    public BigDecimal getAddPointsValue() {
         return addPointsValue;
     }
 
-    public void setAddPointsValue(Long addPointsValue) {
+    public void setAddPointsValue(BigDecimal addPointsValue) {
         this.addPointsValue = addPointsValue;
     }
 
-    public Long getGrossProfitMarginValue() {
+    public BigDecimal getGrossProfitMarginValue() {
         return grossProfitMarginValue;
     }
 
-    public void setGrossProfitMarginValue(Long grossProfitMarginValue) {
+    public void setGrossProfitMarginValue(BigDecimal grossProfitMarginValue) {
         this.grossProfitMarginValue = grossProfitMarginValue;
     }
 
@@ -144,11 +145,11 @@ public class ProductSkuPrice extends CommonBean {
         this.priceTypeName = priceTypeName == null ? null : priceTypeName.trim();
     }
 
-    public Long getPriceValue() {
+    public BigDecimal getPriceValue() {
         return priceValue;
     }
 
-    public void setPriceValue(Long priceValue) {
+    public void setPriceValue(BigDecimal priceValue) {
         this.priceValue = priceValue;
     }
 
