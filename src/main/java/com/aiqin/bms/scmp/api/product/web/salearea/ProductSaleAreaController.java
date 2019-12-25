@@ -192,6 +192,7 @@ public class ProductSaleAreaController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
     @PostMapping("/store/list")
     @ApiOperation("门店列表查询")
     public HttpResponse<BasePage<StoreInfo>> storeList(@RequestBody QueryStoreReqVO req) {
@@ -205,5 +206,13 @@ public class ProductSaleAreaController {
             ex.printStackTrace();
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @GetMapping("/area/sale")
+    @ApiOperation("查询商品是否在指定的区域可以销售")
+    public HttpResponse skuAreaSale(@RequestParam("sku_code") String skuCode,
+                                    @RequestParam("province_code") String provinceCode,
+                                    @RequestParam("store_code") String storeCode) {
+        return productSaleAreaService.skuAreaSale(skuCode, provinceCode, storeCode);
     }
 }

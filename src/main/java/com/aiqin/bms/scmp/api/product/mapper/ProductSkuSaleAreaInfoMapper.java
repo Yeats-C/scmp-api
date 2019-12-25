@@ -34,4 +34,8 @@ public interface ProductSkuSaleAreaInfoMapper {
      * @return int
      */
     int deleteByCodes(@Param("items") Set<String> codes);
+
+    Integer selectAreaStatus(@Param("mainCode") String mainCode, @Param("code") String code,
+                             @Param("status") Integer status,
+                             @Param("type") Integer type);
 }
