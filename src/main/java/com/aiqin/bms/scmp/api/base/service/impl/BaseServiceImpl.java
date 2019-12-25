@@ -86,6 +86,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setReceiptType(2); // 2代表供应链  HUANGZY删除标识
 //        paramVO.setReceiptType(systemCode);
         
+        paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(vo.getVariables())) {
             Map map = JSON.parseObject(vo.getVariables(), Map.class);
