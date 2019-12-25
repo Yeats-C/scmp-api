@@ -5,6 +5,8 @@ import com.aiqin.platform.flows.client.domain.FormListRequest;
 import com.aiqin.platform.flows.client.service.FormListService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -18,6 +20,9 @@ public class FormListController {
     private FormListService formListService;
     
 //    private final String receiptType = "scmp-system";
+    
+    @Value("${mgs.control.system-code}")
+    private String systemCode;
 
     @PostMapping("/send")
     @ApiOperation("查询我的已发")
@@ -56,7 +61,7 @@ public class FormListController {
     @GetMapping("/process")
     @ApiOperation("审批类型列表")
     HttpResponse getProcessListByType() {
-        return formListService.getProcessListByType(2);
+        return formListService.getProcessListByType(systemCode);
     }
 
 }
