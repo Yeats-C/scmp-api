@@ -269,16 +269,16 @@ public class CheckSkuNew {
         }
 
         //供货渠道类别
-        if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
+        if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
             error.add("供货渠道类别不能为空");
         } else {
-            SupplierDictionaryInfo info = dicMap2.get(importVo.getCategoriesSupplyChannelsName());
+            SupplierDictionaryInfo info = dicMap2.get(importVo.getSupplyCategoriesSupplyChannelsName());
             if (Objects.isNull(info)) {
                 error.add("无对应的名称的供货渠道类别");
             } else {
                 productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
                 //库存模式
-                boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
+                boolean b = "直送".equals(importVo.getSupplyCategoriesSupplyChannelsName());
                 if (b) {
                     productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
                 } else {
@@ -605,11 +605,11 @@ public class CheckSkuNew {
                 purchaseBox.setUnitCode(purchase.getUnitCode());
                 boolean flag = true;
                 try {
-                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
                     if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
                         //小数
-                        throw  new BizException("库存长格式不正确");
+                        throw  new BizException("采购长格式不正确");
                     }
                     purchaseBox.setBoxLength(longLength);
                 } catch (Exception e) {
@@ -617,11 +617,11 @@ public class CheckSkuNew {
                     flag = false;
                 }
                 try {
-                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
                     if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
                         //小数
-                        throw  new BizException("库存宽格式不正确");
+                        throw  new BizException("采购宽格式不正确");
                     }
                     purchaseBox.setBoxWidth(longWidth);
                 } catch (Exception e) {
@@ -629,11 +629,11 @@ public class CheckSkuNew {
                     flag = false;
                 }
                 try {
-                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
                     if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
                         //小数
-                        throw  new BizException("库存宽格式不正确");
+                        throw  new BizException("采购高格式不正确");
                     }
                     purchaseBox.setBoxHeight(longHeight);
                 } catch (Exception e) {
@@ -1159,13 +1159,13 @@ public class CheckSkuNew {
                 draft.setIsDefault((byte)1);
                 //厂方商品编号
                 if (Objects.isNull(importVo.getFactoryProductNumber())) {
-                    error.add("厂方商品编号不能为空");
+                    // error.add("厂方商品编号不能为空");
                 } else {
                     draft.setFactoryProductNumber(importVo.getFactoryProductNumber());
                 }
                 //保修地址
                 if (Objects.isNull(importVo.getAddress())) {
-                    error.add("保修地址不能为空");
+                    // error.add("保修地址不能为空");
                 } else {
                     draft.setAddress(importVo.getAddress());
                 }

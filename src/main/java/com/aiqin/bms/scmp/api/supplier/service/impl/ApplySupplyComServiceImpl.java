@@ -453,7 +453,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
+        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
@@ -1173,7 +1173,6 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //存日志
             Long id=applySupplyCompany.getId();
             ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO = new ApplySupplyCompanyReqDTO();
-            applySupplyCompanyReqDTO.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
             if(id!=null) {
                 ApplySupplyCompany applySupplyCompany1 = applySupplyCompanyMapper.selectByPrimaryKey(id);
                 BeanCopyUtils.copy(applySupplyCompany1, applySupplyCompanyReqDTO);
@@ -1244,6 +1243,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 applySupplyCompanyReqDTO.setId(applySupplyCompany.getId());
                 applySupplyCompanyReqDTO.setApprovalName(applySupplyCompany.getApprovalName());
                 applySupplyCompanyReqDTO.setApprovalRemark(applySupplyCompany.getApprovalRemark());
+                applySupplyCompanyReqDTO.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
                 workFlow(applySupplyCompanyReqDTO);
             }
             //审批附件

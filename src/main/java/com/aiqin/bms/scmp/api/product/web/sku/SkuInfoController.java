@@ -345,8 +345,7 @@ public class SkuInfoController {
         if (StringUtils.isNotBlank(updateTimeEnd)) {
             querySkuListReqVO.setUpdateTimeEnd(formatter.parse(updateTimeEnd));
         }
-        List<String> skuCodeList = skuInfoService.querySkuListNoPage(querySkuListReqVO).stream().map(QueryProductSkuListResp::getSkuCode).collect(Collectors.toList());
-
+        List<String> skuCodeList = skuInfoService.querySkuCodeList(querySkuListReqVO);
         try {
             return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCodeList));
         } catch (BizException e) {
@@ -358,6 +357,7 @@ public class SkuInfoController {
     }
 
     @GetMapping("/exportAddSku")
+    @ApiOperation("审批新增导出")
     public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {

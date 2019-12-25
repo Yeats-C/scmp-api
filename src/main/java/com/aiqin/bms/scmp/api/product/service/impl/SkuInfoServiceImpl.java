@@ -1565,7 +1565,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     }
 
     @Override
-    public List<QueryProductSkuListResp> querySkuListNoPage(QuerySkuListReqVO querySkuListReqVO) {
+    public List<String> querySkuCodeList(QuerySkuListReqVO querySkuListReqVO) {
         if(StringUtils.isBlank(querySkuListReqVO.getCompanyCode())){
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
@@ -1573,7 +1573,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 querySkuListReqVO.setPersonId(authToken.getPersonId());
             }
         }
-        return productSkuDao.querySkuList(querySkuListReqVO);
+        return productSkuDao.querySkuCodeList(querySkuListReqVO);
     }
 
     /**
@@ -1730,7 +1730,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     public void workFlow(String applyCode, String form, List<ApplyProductSku> applyProductSkus, String directSupervisorCode, String approvalName,String positionCode) {
 
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(positionCode);
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySku+"?approvalType=1&code="+applyCode+"&"+workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(form);
