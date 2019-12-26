@@ -1,35 +1,41 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku;
 
 import com.aiqin.bms.scmp.api.base.PageReq;
+import com.aiqin.bms.scmp.api.supplier.domain.request.approvalfile.ApprovalFileInfoReqVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 import java.util.List;
 
 /**
- * @功能说明:
- * @author wangxu
- * @date 2018/12/27 0027 16:06
+ * @className ProductSkuManufacturerReqVO
+ * @date 2019/11/19
  */
+@ApiModel("sku商品制造商管理列表查询VO")
 @Data
-@ApiModel("sku列表请求条件")
-public class QuerySkuListReqVO extends PageReq {
-
-    @ApiModelProperty("商品(SPU)名称")
-    private String productName;
-
-    @ApiModelProperty("商品(SPU编码")
-    private String productCode;
+public class ProductSkuManufacturerReqVO extends PageReq {
 
     @ApiModelProperty("sku编码")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
     private String skuName;
+
+    @ApiModelProperty("采购组编码")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty("采购组名称")
+    private String purchaseGroupName;
+
+    @ApiModelProperty("制造商名称")
+    private String manufacturerName;
+
+    @ApiModelProperty("制造商编号")
+    private String manufacturerCode;
 
     @ApiModelProperty("属性名称")
     private String productPropertyName;
@@ -64,40 +70,17 @@ public class QuerySkuListReqVO extends PageReq {
     @ApiModelProperty("品牌编码")
     private String productBrandCode;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
-
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
-
     @ApiModelProperty("状态(0:再用 1:停止进货 2:停止配送 3:停止销售)")
     private Byte skuStatus;
 
-    @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填")
-    private String companyCode;
+    @ApiModelProperty("状态(0禁止 1可用)")
+    private Byte usageStatus;
+
+    @ApiModelProperty("是否缺省（0:否,1：是）")
+    private Byte isDefault;
 
     @ApiModelProperty(value = "当前登录人",hidden = true)
     private String personId;
 
-    @ApiModelProperty(value = "监管仓开单类型")
-    private String orderType;
-
-    @ApiModelProperty("创建时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTimeStart;
-
-    @ApiModelProperty("创建时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date createTimeEnd;
-
-    @ApiModelProperty("修改时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateTimeStart;
-
-    @ApiModelProperty("修改时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date updateTimeEnd;
-
-    private HttpServletResponse httpServletResponse;
 
 }

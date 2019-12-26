@@ -72,6 +72,13 @@
     <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+      <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+      <result column="level" jdbcType="VARCHAR" property="level" />
+      <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+      <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+      <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+      <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+      <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, sku_code, sku_name, sku_abbreviation, product_code, product_name, product_brand_code,
@@ -649,8 +656,29 @@ from product_sku a
       <if test="priceModel != null">
         price_model,
       </if>
-     <if test="productDesc != null">
+      <if test="productDesc != null">
         product_desc,
+      </if>
+      <if test="itemNumber != null">
+         item_number,
+      </if>
+      <if test="seasonBand != null">
+          season_band,
+      </if>
+      <if test="level != null">
+         `level`,
+      </if>
+      <if test="featureCode != null">
+          feature_code,
+      </if>
+      <if test="featureName != null">
+          feature_name,
+      </if>
+      <if test="currencyLevelCode != null">
+          currency_level_code,
+      </if>
+      <if test="currencyLevelCode != null">
+          currency_level_name
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -863,6 +891,27 @@ from product_sku a
       </if>
         <if test="productDesc != null">
         #{productDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNumber != null">
+        #{itemNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="seasonBand != null">
+          #{seasonBand,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+          #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="featureCode != null">
+          #{featureCode,jdbcType=VARCHAR}
+      </if>
+      <if test="featureName != null">
+          #{featureName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyLevelCode != null">
+          #{currencyLevelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyLevelCode != null">
+          #{currencyLevelName,jdbcType=VARCHAR}
       </if>
     </trim>
   </insert>

@@ -225,4 +225,25 @@ public class ProductSkuInfo extends CommonBean {
 
     @ApiModelProperty("商品描述")
     private String productDesc;
+
+    @ApiModelProperty("货号")
+    private String itemNumber;
+
+    @ApiModelProperty("季节波段")
+    private String seasonBand;
+
+    @ApiModelProperty("等级")
+    private String level;
+
+    @ApiModelProperty("特征编码")
+    private String featureCode;
+
+    @ApiModelProperty("特征名称")
+    private String featureName;
+
+    @ApiModelProperty("通货等级编码")
+    private String currencyLevelCode;
+
+    @ApiModelProperty("通货等级名称")
+    private String currencyLevelName;
 }

@@ -70,7 +70,7 @@ public class CheckContract {
             reqVo.setYear(contractImportNew.getYear().trim());
         }
         //供应商
-        if (StringUtils.isBlank(contractImportNew.getSupplierName())) {
+        if (StringUtils.isBlank(contractImportNew.getSupplierName().trim())) {
             error.add("供应商名称不能为空");
         } else {
             SupplyCompany supplyCompany = supplyCompanyNames.get(contractImportNew.getSupplierName().trim());

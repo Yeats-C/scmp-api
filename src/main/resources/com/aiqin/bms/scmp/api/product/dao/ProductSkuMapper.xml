@@ -839,7 +839,9 @@
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
       apply_type_name,
-      product_desc
+      product_desc,
+      item_number,
+      season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -847,6 +849,7 @@
   <select id="getSkuInfoResp" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
     SELECT
     <include refid="Product_Sku_Resp_Column"/>
+    ,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
@@ -855,7 +858,8 @@
     <include refid="Product_Sku_Resp_Column"/>,
     apply_type,
     apply_type_name,
-    product_desc
+    product_desc,item_number,
+    season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
@@ -1019,7 +1023,8 @@
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc,approval_remark,approval_name)
+    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc,approval_remark,approval_name,
+    item_number,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1046,7 +1051,9 @@
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
       #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT},#{item.skuStatus,jdbcType=TINYINT},
-      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR},#{item.approvalName,jdbcType=VARCHAR}
+      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR},#{item.approvalName,jdbcType=VARCHAR},
+      #{item.itemNumber,jdbcType=VARCHAR},#{item.seasonBand,jdbcType=VARCHAR},#{item.level,jdbcType=VARCHAR},#{item.featureCode,jdbcType=VARCHAR},
+      #{item.featureName,jdbcType=VARCHAR},#{item.currencyLevelCode,jdbcType=VARCHAR},#{item.currencyLevelName,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -1579,6 +1586,13 @@
     <result column="apply_type" jdbcType="TINYINT" property="applyType" />
     <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
     <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+    <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+    <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+    <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+    <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,

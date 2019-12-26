@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.sku.config;
 
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 @ApiModel("修改SKU供应商信息VO")
 @Data
-public class UpdateProductSkuSupplyUnitReqVo {
+public class UpdateProductSkuSupplyUnitReqVo extends CommonBean {
 
     @ApiModelProperty("供应商code")
     private String supplyUnitCode;
@@ -58,4 +59,13 @@ public class UpdateProductSkuSupplyUnitReqVo {
     @ApiModelProperty(value = "供应商产能信息",name = "productSkuSupplyUnitCapacities",position = 7)
     @JsonProperty("productSkuSupplyUnitCapacities")
     private List<ProductSkuSupplyUnitCapacityDraft> productSkuSupplyUnitCapacityDrafts;
+
+    @ApiModelProperty("原含税采购价")
+    private BigDecimal originTaxIncludedPrice;
+
+    @ApiModelProperty("原毛利率")
+    private BigDecimal originRateOfMargin;
+
+    @ApiModelProperty("毛利率")
+    private BigDecimal rateOfMargin;
 }

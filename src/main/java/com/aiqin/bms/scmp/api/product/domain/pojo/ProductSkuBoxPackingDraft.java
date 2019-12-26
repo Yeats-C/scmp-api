@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,6 +22,7 @@ public class ProductSkuBoxPackingDraft extends CommonBean {
     private String productSkuName;
 
     @ApiModelProperty("整箱商品包装 单位名称")
+    @PropertyMsg(value = "单位", delete = true)
     private String largeUnit;
 
     @ApiModelProperty("整箱商品包装 单位编码")
@@ -39,9 +41,11 @@ public class ProductSkuBoxPackingDraft extends CommonBean {
     private BigDecimal boxVolume;
 
     @ApiModelProperty("毛重")
+    @PropertyMsg("毛重")
     private BigDecimal boxGrossWeight;
 
     @ApiModelProperty("净重")
+    @PropertyMsg("净重")
     private BigDecimal netWeight;
 
 

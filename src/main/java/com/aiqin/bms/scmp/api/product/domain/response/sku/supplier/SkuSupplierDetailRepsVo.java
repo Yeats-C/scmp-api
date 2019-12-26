@@ -97,6 +97,9 @@ public class SkuSupplierDetailRepsVo {
     @ApiModelProperty("供应商列表")
     private List<ProductSkuSupplyUnitRespVo> supplierList;
 
+    @ApiModelProperty("分销价")
+    private BigDecimal distributionPrice;
+
     public String getSkuTypeName() {
        if (Objects.equals(StatusTypeCode.GOOD.getStatus(),skuType)) {
             return StatusTypeCode.GOOD.getName();
