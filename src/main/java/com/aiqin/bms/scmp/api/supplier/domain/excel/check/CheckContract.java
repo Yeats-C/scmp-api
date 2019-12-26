@@ -171,7 +171,7 @@ public class CheckContract {
         //折扣
         if (StringUtils.isNotBlank(contractImportNew.getDiscount())) {
             try {
-                reqVo.setDiscount(new BigDecimal(contractImportNew.getDiscount().trim()));
+                reqVo.setDiscount(contractImportNew.getDiscount().trim());
             } catch (NumberFormatException e) {
                 error.add("折扣格式不正确");
             }

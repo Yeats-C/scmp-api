@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Data
 @ApiModel("查看详情返回实体")
-public class ApplyContractViewResVo {
+public class  ApplyContractViewResVo {
 
     @ApiModelProperty("主键id")
     private Long id;
@@ -194,7 +194,7 @@ public class ApplyContractViewResVo {
     private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private BigDecimal discount;
+    private String discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;

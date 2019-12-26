@@ -3161,7 +3161,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
         String  head = SkuInfoImportNew.HEAD;
-        boolean equals = skuInfoImports.get(1).toString().equals(head);
+        boolean equals = StringUtils.equals(head,skuInfoImports.get(1).toString());
         if(!equals){
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
         }
