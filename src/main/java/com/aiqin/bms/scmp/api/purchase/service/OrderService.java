@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderServiceImpl;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -131,7 +132,6 @@ public interface OrderService {
      * TODO 订单完成后传状态给结算系统
      * @author NullPointException
      * @date 2019/6/15
-     * @param null
      * @return
      */
     void sendStatusToSettlement();
@@ -167,4 +167,6 @@ public interface OrderService {
      * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo
      */
     OrderInfo selectByOrderCode(String orderCode);
+
+    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
 }

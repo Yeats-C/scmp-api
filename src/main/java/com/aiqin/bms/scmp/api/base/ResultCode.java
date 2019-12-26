@@ -9,8 +9,8 @@ public interface ResultCode {
     MessageId NAME_REPEAT = MessageId.create(Project.SCMP_API, 2, "名称重复");
     MessageId NOT_HAVE_PARAM = MessageId.create(Project.SCMP_API, 3, "参数信息错误");
     //系统相关异常
-    MessageId BEAN_COPY_ERROR = MessageId.create(Project.PURCHASE_API,599,"对象拷贝异常");
-    MessageId USER_NOT_FOUND = MessageId.create(Project.PURCHASE_API,403,"获取登录用户失败！");
+    MessageId BEAN_COPY_ERROR = MessageId.create(Project.PURCHASE_API, 599, "对象拷贝异常");
+    MessageId USER_NOT_FOUND = MessageId.create(Project.PURCHASE_API, 403, "获取登录用户失败！");
     MessageId SELECT_WEI_SHOP_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 3, "未查询到微商城sku");
     MessageId SELECT_WEI_SHOP_TOP_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 4, "未查询到微商城已上架sku");
     MessageId SELECT_WARNING_STOCK_SKU_ERROR = MessageId.create(Project.PRODUCT_API, 5, "未查询到库存预警sku");
@@ -22,7 +22,7 @@ public interface ResultCode {
     MessageId ADD_ERROR = MessageId.create(Project.ZERO, 13, "新增失败");
     MessageId UPDATE_ERROR = MessageId.create(Project.ZERO, 14, "修改失败");
     MessageId SEARCH_ERROR = MessageId.create(Project.ZERO, 14, "查询数据失败");
-    MessageId DELETE_ERROR = MessageId.create(Project.ZERO,15,"删除失败");
+    MessageId DELETE_ERROR = MessageId.create(Project.ZERO, 15, "删除失败");
     MessageId CANCEL_ERROR = MessageId.create(Project.ZERO, 16, "撤销失败");
 
     MessageId FILE_UPLOAD_ERROR = MessageId.create(Project.ZERO, 20, "文件上传失败");
@@ -96,55 +96,53 @@ public interface ResultCode {
     MessageId DELETE_PRODUCT_DICTIONARY_ERROR = MessageId.create(Project.PRODUCT_API, 36, "商品字典删除修改失败");
 
     /**
-     *
      * sku销量/进货量返回
      */
-    MessageId SAVE_BATCH_SKU_SALE_VOLIME_ERROR = MessageId.create(Project.PRODUCT_API,41,"sku销量批量新增失败");
-    MessageId SAVE_BATCH_SKU_SALE_VOLIME_SKU_EMPTY = MessageId.create(Project.PRODUCT_API,42,"sku销量批量新增失败,有为空的SKU数据,请检查");
-    MessageId SAVE_BATCH_SKU_PURCHASE_VOLIME_ERROR = MessageId.create(Project.PRODUCT_API,43,"sku进货量批量新增失败");
-    MessageId SAVE_BATCH_SKU_PURCHASE_VOLIME_SKU_EMPTY = MessageId.create(Project.PRODUCT_API,44,"sku进货量批量新增失败,有为空的SKU数据,请检查");
+    MessageId SAVE_BATCH_SKU_SALE_VOLIME_ERROR = MessageId.create(Project.PRODUCT_API, 41, "sku销量批量新增失败");
+    MessageId SAVE_BATCH_SKU_SALE_VOLIME_SKU_EMPTY = MessageId.create(Project.PRODUCT_API, 42, "sku销量批量新增失败,有为空的SKU数据,请检查");
+    MessageId SAVE_BATCH_SKU_PURCHASE_VOLIME_ERROR = MessageId.create(Project.PRODUCT_API, 43, "sku进货量批量新增失败");
+    MessageId SAVE_BATCH_SKU_PURCHASE_VOLIME_SKU_EMPTY = MessageId.create(Project.PRODUCT_API, 44, "sku进货量批量新增失败,有为空的SKU数据,请检查");
 
     /**
-     *
      * 库存相关返回
      */
-    MessageId STOCK_RETURN_SUPPLY_SKU_EMPTY = MessageId.create(Project.PRODUCT_API,45,"退供商品信息为空");
-    MessageId STOCK_RETURN_SUPPLY_COMPANY_EMPTY = MessageId.create(Project.PRODUCT_API,46,"退供公司信息为空");
-    MessageId STOCK_RETURN_SUPPLY_SUPPLY_EMPTY = MessageId.create(Project.PRODUCT_API,47,"退供供货单位信息为空");
-    MessageId STOCK_RETURN_SUPPLY_TRANSPORT_CENTER_EMPTY = MessageId.create(Project.PRODUCT_API,48,"退供物流中心信息为空");
-    MessageId STOCK_RETURN_SUPPLY_WAREHOUSE_EMPTY = MessageId.create(Project.PRODUCT_API,49,"退供库房信息为空");
-    MessageId STOCK_RETURN_SUPPLY_PURCHASE_GROUP_EMPTY = MessageId.create(Project.PRODUCT_API,50,"退供采购组信息为空");
-    MessageId STOCK_RETURN_SUPPLY_VERIFY_ERROR = MessageId.create(Project.PRODUCT_API,51,"退供商品信息验证失败");
-    MessageId STOCK_LOCK_ERROR = MessageId.create(Project.PRODUCT_API,53,"库存锁定失败");
-    MessageId OUTBOUND_SAVE_ERROR = MessageId.create(Project.PRODUCT_API,54,"出库单保存失败");
-    MessageId STOCK_UNLOCK_ERROR = MessageId.create(Project.PRODUCT_API,55,"库存解锁失败");
-    MessageId STOCK_REDUCE_UNLOCK_STOCK_ERROR = MessageId.create(Project.PRODUCT_API,55,"减库存并解锁");
+    MessageId STOCK_RETURN_SUPPLY_SKU_EMPTY = MessageId.create(Project.PRODUCT_API, 45, "退供商品信息为空");
+    MessageId STOCK_RETURN_SUPPLY_COMPANY_EMPTY = MessageId.create(Project.PRODUCT_API, 46, "退供公司信息为空");
+    MessageId STOCK_RETURN_SUPPLY_SUPPLY_EMPTY = MessageId.create(Project.PRODUCT_API, 47, "退供供货单位信息为空");
+    MessageId STOCK_RETURN_SUPPLY_TRANSPORT_CENTER_EMPTY = MessageId.create(Project.PRODUCT_API, 48, "退供物流中心信息为空");
+    MessageId STOCK_RETURN_SUPPLY_WAREHOUSE_EMPTY = MessageId.create(Project.PRODUCT_API, 49, "退供库房信息为空");
+    MessageId STOCK_RETURN_SUPPLY_PURCHASE_GROUP_EMPTY = MessageId.create(Project.PRODUCT_API, 50, "退供采购组信息为空");
+    MessageId STOCK_RETURN_SUPPLY_VERIFY_ERROR = MessageId.create(Project.PRODUCT_API, 51, "退供商品信息验证失败");
+    MessageId STOCK_LOCK_ERROR = MessageId.create(Project.PRODUCT_API, 53, "库存锁定失败");
+    MessageId OUTBOUND_SAVE_ERROR = MessageId.create(Project.PRODUCT_API, 54, "出库单保存失败");
+    MessageId STOCK_UNLOCK_ERROR = MessageId.create(Project.PRODUCT_API, 55, "库存解锁失败");
+    MessageId STOCK_REDUCE_UNLOCK_STOCK_ERROR = MessageId.create(Project.PRODUCT_API, 55, "减库存并解锁");
 
     /**
-     *  调拨单相关返回
+     * 调拨单相关返回
      */
-    MessageId ALLOCATION_RETURN_ADD_ERROR = MessageId.create(Project.PRODUCT_API,52,"调拨单添加失败");
-    MessageId ALLOCATION_RETURN_REVOCATION_ERROR = MessageId.create(Project.PRODUCT_API,52,"调拨单撤销失败");
-    MessageId STOCK_CHANGE_ERROR = MessageId.create(Project.PRODUCT_API,56,"修改库存失败");
+    MessageId ALLOCATION_RETURN_ADD_ERROR = MessageId.create(Project.PRODUCT_API, 52, "调拨单添加失败");
+    MessageId ALLOCATION_RETURN_REVOCATION_ERROR = MessageId.create(Project.PRODUCT_API, 52, "调拨单撤销失败");
+    MessageId STOCK_CHANGE_ERROR = MessageId.create(Project.PRODUCT_API, 56, "修改库存失败");
 
     /**
      * 盘点
      */
-    MessageId SELECT_STOCKTAKING_ERROR = MessageId.create(Project.PRODUCT_API,52,"查询盘点记录失败");
-    MessageId SELECT_STOCKTAKING_WHOLE_ERROR = MessageId.create(Project.PRODUCT_API,52,"查询盘点详细失败");
-    MessageId UPDATEDELFLAG = MessageId.create(Project.PRODUCT_API,52,"更新删除标识失败");
+    MessageId SELECT_STOCKTAKING_ERROR = MessageId.create(Project.PRODUCT_API, 52, "查询盘点记录失败");
+    MessageId SELECT_STOCKTAKING_WHOLE_ERROR = MessageId.create(Project.PRODUCT_API, 52, "查询盘点详细失败");
+    MessageId UPDATEDELFLAG = MessageId.create(Project.PRODUCT_API, 52, "更新删除标识失败");
 
-    MessageId RETURNINOUTBOUNDFAIL = MessageId.create(Project.PRODUCT_API,56,"回传失败");
+    MessageId RETURNINOUTBOUNDFAIL = MessageId.create(Project.PRODUCT_API, 56, "回传失败");
 
     /**
      * 商品相关
      */
-    MessageId PRODUCT_NO_EXISTS = MessageId.create(Project.PRODUCT_API,57,"商品信息不存在");
+    MessageId PRODUCT_NO_EXISTS = MessageId.create(Project.PRODUCT_API, 57, "商品信息不存在");
 
     /**
      * yiku
      */
-    MessageId MOVEMENT_RECOVER = MessageId.create(Project.PRODUCT_API,58,"移库撤销失败");
+    MessageId MOVEMENT_RECOVER = MessageId.create(Project.PRODUCT_API, 58, "移库撤销失败");
 
 
     MessageId COMPANY_CODE_EMPTY = MessageId.create(Project.PRODUCT_API, 59, "公司信息为空");
@@ -170,8 +168,8 @@ public interface ResultCode {
 
     MessageId BOX_PACKING_EMPTY = MessageId.create(Project.PRODUCT_API, 70, "包装信息为空");
 
-    MessageId  OBJECT_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "对象转化失败");
-    MessageId  DATE_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "日期转换异常");
+    MessageId OBJECT_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "对象转化失败");
+    MessageId DATE_CONVERSION_FAILED = MessageId.create(Project.PRODUCT_API, 71, "日期转换异常");
     MessageId OBJECT_NOT_FOUND = MessageId.create(Project.PRODUCT_API, 72, "没有找到对应的对象");
 
 
@@ -179,30 +177,30 @@ public interface ResultCode {
 
     MessageId SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "获取数据异常，提交失败");
 
-    MessageId SKU_CONFIG_SUBMIT_ERROR =  MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
-    MessageId SKU_PURCHASE_PRICE_IS_EMPTY =  MessageId.create(Project.PRODUCT_API, 74, "未找到价格项目为采购类的,请先添加价格项目");
+    MessageId SKU_CONFIG_SUBMIT_ERROR = MessageId.create(Project.PRODUCT_API, 74, "申请SKU配置数据保存异常！");
+    MessageId SKU_PURCHASE_PRICE_IS_EMPTY = MessageId.create(Project.PRODUCT_API, 74, "未找到价格项目为采购类的,请先添加价格项目");
     MessageId SKU_DIFFERENT_APPLY_TYPE =  MessageId.create(Project.PRODUCT_API, 75, "不同申请类型必须分开提交");
     MessageId SKU_DIFFERENT_GRPUP_TYPE =  MessageId.create(Project.PRODUCT_API, 76, "不同采购组必须分开提交");
 
     //价格
-    MessageId SAVE_PRICE_FAILED =MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");
-    MessageId DELETE_SKU_PRICE_DRAFT_FAILED =MessageId.create(Project.PRODUCT_API, 96, "删除价格临时表数据失败") ;
+    MessageId SAVE_PRICE_FAILED = MessageId.create(Project.PRODUCT_API, 96, "价格数据保存失败");
+    MessageId DELETE_SKU_PRICE_DRAFT_FAILED = MessageId.create(Project.PRODUCT_API, 96, "删除价格临时表数据失败");
     MessageId PRICE_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.PRODUCT_API, 96, "价格数据不能为空");
     MessageId SAVE_PRICE_LOG_FAILED = MessageId.create(Project.PRODUCT_API, 96, "保存价格日志失败");
 
     //变价
-    MessageId DATA_ERROR =  MessageId.create(Project.PRODUCT_API, 98, "数据异常");
-    MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API,98,"数据不完成！请检查并补充数据！");
-    MessageId CAN_NOT_FIND_CHANGE_PRICE_INFO = MessageId.create(Project.PRODUCT_API,98,"无法获取变价数据信息！");
-    MessageId UPDATE_RETURN_ORDER_INFO_FAILED = MessageId.create(Project.PRODUCT_API,98,"更新退货单失败！");
+    MessageId DATA_ERROR = MessageId.create(Project.PRODUCT_API, 98, "数据异常");
+    MessageId DATA_NOT_COMPLETE = MessageId.create(Project.PRODUCT_API, 98, "数据不完成！请检查并补充数据！");
+    MessageId CAN_NOT_FIND_CHANGE_PRICE_INFO = MessageId.create(Project.PRODUCT_API, 98, "无法获取变价数据信息！");
+    MessageId UPDATE_RETURN_ORDER_INFO_FAILED = MessageId.create(Project.PRODUCT_API, 98, "更新退货单失败！");
 
     //退供
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     MessageId NOT_HAVE_REJECT_APPLY_RECORD = MessageId.create(Project.SCMP_API, 1001, "未查询到对应的退供申请单记录");
     MessageId NOT_HAVE_REJECT_RECORD = MessageId.create(Project.SCMP_API, 1002, "未查询到对应的退供单记录");
-    MessageId REJECT_RECORD_ERROR =  MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常");
-    MessageId JURISDICTION_ERROR =  MessageId.create(Project.PRODUCT_API, 1004, "所查询的记录没有权限");
-    MessageId PURCHASE_ERROR =  MessageId.create(Project.PRODUCT_API, 1005, "申请采购单审批数据保存异常");
+    MessageId REJECT_RECORD_ERROR = MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常");
+    MessageId JURISDICTION_ERROR = MessageId.create(Project.PRODUCT_API, 1004, "所查询的记录没有权限");
+    MessageId PURCHASE_ERROR = MessageId.create(Project.PRODUCT_API, 1005, "申请采购单审批数据保存异常");
     MessageId NO_HAVE_PRODUCT = MessageId.create(Project.PURCHASE_API, 1006, "未查询到文件夹编码对应的商品");
     MessageId NO_HAVE_ACCOUNT = MessageId.create(Project.PURCHASE_API, 1007, "未查询到账号信息");
     MessageId SELECT_ROLE_ERROR = MessageId.create(Project.PURCHASE_API, 1008, "查询角色异常");
@@ -210,33 +208,33 @@ public interface ResultCode {
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
-    MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API,99,"订单数据查询失败");
-    MessageId UPDATE_ORDER_STATUS_FAILED = MessageId.create(Project.PURCHASE_API,99,"订单状态更新失败");
-    MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API,99,"订单日志保存失败");
-    MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,99,"保存批次锁库失败");
-    MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API,99,"修改实发数量失败");
-    MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API,99,"锁定批次库存失败");
-    MessageId ORDER_INFO_IS_HAVE = MessageId.create(Project.PURCHASE_API,99,"单据已存在");
+    MessageId CAN_NOT_FIND_ORDER = MessageId.create(Project.PURCHASE_API, 99, "订单数据查询失败");
+    MessageId UPDATE_ORDER_STATUS_FAILED = MessageId.create(Project.PURCHASE_API, 99, "订单状态更新失败");
+    MessageId LOG_SAVE_ERROR = MessageId.create(Project.PURCHASE_API, 99, "订单日志保存失败");
+    MessageId SAVE_LOCK_BATCH_FAILED = MessageId.create(Project.PURCHASE_API, 99, "保存批次锁库失败");
+    MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API, 99, "修改实发数量失败");
+    MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API, 99, "锁定批次库存失败");
+    MessageId ORDER_INFO_IS_HAVE = MessageId.create(Project.PURCHASE_API, 99, "单据已存在");
 
     //退货
-    MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单附表保存失败");
-    MessageId CAN_NOT_FIND_RETURN_ORDER = MessageId.create(Project.PURCHASE_API,100,"退货订单数据查询失败");
-    MessageId SAVE_RETURN_ORDER_FAILED = MessageId.create(Project.PURCHASE_API,100,"退货订单主表保存失败");
-    MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API,100,"获取订单详情失败");
-    MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API,100,"查询验货信息失败");
-    MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存验货信息失败");
+    MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API, 100, "退货订单附表保存失败");
+    MessageId CAN_NOT_FIND_RETURN_ORDER = MessageId.create(Project.PURCHASE_API, 100, "退货订单数据查询失败");
+    MessageId SAVE_RETURN_ORDER_FAILED = MessageId.create(Project.PURCHASE_API, 100, "退货订单主表保存失败");
+    MessageId GET_RETURN_GOODS_DETAIL_FAILED = MessageId.create(Project.PURCHASE_API, 100, "获取订单详情失败");
+    MessageId QUERY_INSPECTION_DETAIL_ERROR = MessageId.create(Project.PURCHASE_API, 100, "查询验货信息失败");
+    MessageId SAVE_INSPECTION_DATA_FAILED = MessageId.create(Project.PURCHASE_API, 100, "保存验货信息失败");
 
-    MessageId SAVE_RETURN_RECEIPT_FAILED = MessageId.create(Project.PURCHASE_API,100,"保存退货收货失败");
+    MessageId SAVE_RETURN_RECEIPT_FAILED = MessageId.create(Project.PURCHASE_API, 100, "保存退货收货失败");
 
     //出库
-    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API,75,"出库单信息不能为空");
-    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库主表数据失败");
-    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库商品数据失败");
-    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API,75,"保存入库批次数据失败");
-    MessageId INBOUND_INFO_NULL = MessageId.create(Project.SCMP_API,76,"入库单的信息为空");
+    MessageId OUTBOUND_DATA_CAN_NOT_BE_NULL = MessageId.create(Project.SCMP_API, 75, "出库单信息不能为空");
+    MessageId SAVE_OUT_BOUND_FAILED = MessageId.create(Project.SCMP_API, 75, "保存入库主表数据失败");
+    MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API, 75, "保存入库商品数据失败");
+    MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API, 75, "保存入库批次数据失败");
+    MessageId INBOUND_INFO_NULL = MessageId.create(Project.SCMP_API, 76, "入库单的信息为空");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API,201,"此采购组该人员无相关数据");
+    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API, 201, "此采购组该人员无相关数据");
     MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
     MessageId PURCHASE_ORDER_CHECK = MessageId.create(Project.SCMP_API, 203, "该采购单未审核通过， 不能开始备货");
     MessageId PURCHASE_PRODUCT_NOT_SUBMIT = MessageId.create(Project.SCMP_API, 204, "此采购单所有商品都未提交， 不能完成");
@@ -244,8 +242,8 @@ public interface ResultCode {
     MessageId DL_CANCEL = MessageId.create(Project.SCMP_API, 206, "向dl发送撤销订单请求失败");
 
     //审批中
-    MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API,201,"审批中的数据不允许修改");
-    MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API,201,"供应商编码不能为空");
+    MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API, 201, "审批中的数据不允许修改");
+    MessageId SUPPLIER_CODE_EMPTY = MessageId.create(Project.SCMP_API, 201, "供应商编码不能为空");
     MessageId INBOUND_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "入库单编号不能为空");
     MessageId PURCHSAE_ORDER_CODE_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "采购单编号不能为空");
     MessageId ARRIVAL_SUBSCRIBE_STATUS_EMPTY = MessageId.create(Project.SUPPLIER_API, 45, "预约状态不能为空");
@@ -257,18 +255,18 @@ public interface ResultCode {
     MessageId SAVE_TRANSPORT_LOG_FAILED = MessageId.create(Project.PURCHASE_API, 1005, "保存发运日志信息失败！");
 
     //入库
-    MessageId SAVE_IN_BOUND_FAILED = MessageId.create(Project.PURCHASE_API,76,"保存入库批次数据失败");
-    MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库商品数据失败");
-    MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API,75,"保存入库批次数据失败");
+    MessageId SAVE_IN_BOUND_FAILED = MessageId.create(Project.PURCHASE_API, 76, "保存入库批次数据失败");
+    MessageId SAVE_IN_BOUND_PRODUCT_FAILED = MessageId.create(Project.PURCHASE_API, 75, "保存入库商品数据失败");
+    MessageId SAVE_IN_BOUND_BATCH_FAILED = MessageId.create(Project.PURCHASE_API, 75, "保存入库批次数据失败");
 
-    MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API,75,"监管仓不存在,请先添加");
+    MessageId SUPERVISORY_WAREHOUSE_NOT_EXISTS = MessageId.create(Project.PURCHASE_API, 75, "监管仓不存在,请先添加");
 
     MessageId IMPORT_DATA_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入数据异常");
-    MessageId IMPORT_DATA_EMPTY= MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
-    MessageId MAIN_PRODUCT_EMPTY= MessageId.create(Project.SCMP_API, 1000, "主商品为空,请选择主商品");
-    MessageId SKU_CODE_EMPTY= MessageId.create(Project.SCMP_API, 1000, "skuCode为空,找不到需要修改的数据");
-    MessageId ORDER_TYPE_EMPTY= MessageId.create(Project.SCMP_API, 1000, "订单类型为空,请传入订单订单类型");
-    MessageId ORDER_TYPE_ERROR= MessageId.create(Project.SCMP_API, 1000, "订单类型传输错误,请传入正确的订单类型");
+    MessageId IMPORT_DATA_EMPTY = MessageId.create(Project.SCMP_API, 1000, "导入数据为空");
+    MessageId MAIN_PRODUCT_EMPTY = MessageId.create(Project.SCMP_API, 1000, "主商品为空,请选择主商品");
+    MessageId SKU_CODE_EMPTY = MessageId.create(Project.SCMP_API, 1000, "skuCode为空,找不到需要修改的数据");
+    MessageId ORDER_TYPE_EMPTY = MessageId.create(Project.SCMP_API, 1000, "订单类型为空,请传入订单订单类型");
+    MessageId ORDER_TYPE_ERROR = MessageId.create(Project.SCMP_API, 1000, "订单类型传输错误,请传入正确的订单类型");
 
     //导入
     MessageId IMPORT_EXCEPTION = MessageId.create(Project.SCMP_API, 1000, "导入异常，请检查格式！");
@@ -290,19 +288,20 @@ public interface ResultCode {
     MessageId EXPORT_FAILED = MessageId.create(Project.SCMP_API, 1000, "导出失败！");
 
     MessageId OBJECT_EMPTY_BY_FORMNO = MessageId.create(Project.SCMP_API, 1000, "根据formNo未找到对应的信息");
-    MessageId OPERATION_TYPE_ERROR = MessageId.create(Project.SCMP_API,10001,"采购组操作类型错误");
-    MessageId FIND_CONTRACT_ERROR = MessageId.create(Project.SCMP_API,10002,"无法找到合同信息");
+    MessageId OPERATION_TYPE_ERROR = MessageId.create(Project.SCMP_API, 10001, "采购组操作类型错误");
+    MessageId FIND_CONTRACT_ERROR = MessageId.create(Project.SCMP_API, 10002, "无法找到合同信息");
 
-    MessageId AT_LEAST_ONE_DATA = MessageId.create(Project.SCMP_API,10003,"至少需要一条仓库配置信息");
-    MessageId PURCHASE_GROUP_REPEAT = MessageId.create(Project.SCMP_API,10004,"提交的sku不属于同一个采购组");
-    MessageId NOT_SAME_APPLY = MessageId.create(Project.SCMP_API,10004,"新增类型和修改类型必须分开提交");
-    MessageId REPEAT_DATA = MessageId.create(Project.SCMP_API,10005,"新增供应商存在重复,请检查后重新提交");
-    MessageId SUMBIT_NOT_DATA = MessageId.create(Project.SCMP_API,10006,"没有找到需要提交的数据,请检查后重新提交");
+    MessageId AT_LEAST_ONE_DATA = MessageId.create(Project.SCMP_API, 10003, "至少需要一条仓库配置信息");
+    MessageId PURCHASE_GROUP_REPEAT = MessageId.create(Project.SCMP_API, 10004, "提交的sku不属于同一个采购组");
+    MessageId NOT_SAME_APPLY = MessageId.create(Project.SCMP_API, 10004, "新增类型和修改类型必须分开提交");
+    MessageId REPEAT_DATA = MessageId.create(Project.SCMP_API, 10005, "新增供应商存在重复,请检查后重新提交");
+    MessageId SUMBIT_NOT_DATA = MessageId.create(Project.SCMP_API, 10006, "没有找到需要提交的数据,请检查后重新提交");
 
+    MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API, 10007, "修改仓库地址存在重复,请检查后重新提交");
+    MessageId REUPDATE_ERROR = MessageId.create(Project.SCMP_API, 10007, "只有审批驳回或者撤销的数据才能重新编辑");
 
-   MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API,10007,"修改仓库地址存在重复,请检查后重新提交");
-   MessageId REUPDATE_ERROR = MessageId.create(Project.SCMP_API,10007,"只有审批驳回或者撤销的数据才能重新编辑");
-
-
-
+    // 对接erp相关
+    MessageId ERP_NO_TRANSPORT = MessageId.create(Project.SCMP_API, 300, "此sku没有查询到对应的仓库");
+    MessageId ERP_NO_UNLOCK = MessageId.create(Project.SCMP_API, 301, "无法锁库存,sku锁库存的数量大于实际主备仓的库存总和");
+    MessageId ERP_LOCK_FAIL = MessageId.create(Project.SCMP_API, 302, "调用库存接口锁定库存失败");
 }

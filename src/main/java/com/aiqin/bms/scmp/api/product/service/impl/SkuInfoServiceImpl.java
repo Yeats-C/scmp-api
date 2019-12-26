@@ -425,7 +425,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                         item.setBaseProductContent(1);
-                        item.setZeroRemovalCoefficient(1L);
+                        item.setZeroRemovalCoefficient(BigDecimal.ONE);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -1081,7 +1081,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 item.setCreateTime(productSkuDraft.getCreateTime());
                 item.setUpdateTime(productSkuDraft.getUpdateTime());
                 item.setBaseProductContent(1);
-                item.setZeroRemovalCoefficient(1L);
+                item.setZeroRemovalCoefficient(BigDecimal.ONE);
                 item.setUsageStatus(StatusTypeCode.USE.getStatus());
             });
             productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
