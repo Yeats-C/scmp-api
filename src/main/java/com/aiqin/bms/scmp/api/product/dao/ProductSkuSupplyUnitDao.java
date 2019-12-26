@@ -66,7 +66,7 @@ public interface ProductSkuSupplyUnitDao {
 
     Integer updateApplyInfo(ApplyProductSkuConfigReqVo req);
 
-    Integer deleteList2(List<String> list);
+    Integer deleteList2(List<ApplyProductSkuSupplyUnit> unitList);
 
     List<ApplyProductSkuSupplyUnit> selectUnSynData();
 

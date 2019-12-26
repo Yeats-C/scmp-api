@@ -190,7 +190,7 @@ public class ProductSkuSupplyUnitCapacityServiceImpl implements ProductSkuSupply
                 applyMapper.selectByApplyCode(unitList.get(0).getApplyCode());
         if(CollectionUtils.isNotEmptyCollection(applyProductSkuSupplyUnitCapacities)){
             List<ProductSkuSupplyUnitCapacity> productSkuSupplyUnitCapacities = BeanCopyUtils.copyList(applyProductSkuSupplyUnitCapacities,ProductSkuSupplyUnitCapacity.class);
-            mapper.deleteBySkuCode2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
+            mapper.deleteBySkuCode2(unitList);
             return ((ProductSkuSupplyUnitCapacityService)AopContext.currentProxy()).insertList(productSkuSupplyUnitCapacities);
         }
         return 0;

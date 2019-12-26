@@ -281,7 +281,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         //通过申请编码查询供应商信息
         if (CollectionUtils.isNotEmptyCollection(unitList)){
             List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(unitList,ProductSkuSupplyUnit.class);
-            productSkuSupplyUnitDao.deleteList2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
+            productSkuSupplyUnitDao.deleteList2(unitList);
             return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
         } else {
             return 0;
