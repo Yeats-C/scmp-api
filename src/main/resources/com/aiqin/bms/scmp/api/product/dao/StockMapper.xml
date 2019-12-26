@@ -2700,7 +2700,6 @@
         </where>
     </select>
 
-
     <select id="byCityCodeAndprovinceCode"
             resultType="java.lang.String">
         SELECT distinct s.sku_code skuCode

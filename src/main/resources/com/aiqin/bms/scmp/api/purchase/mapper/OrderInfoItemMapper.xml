@@ -168,7 +168,7 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
-    insert into order_info_item (id, order_code, sku_code,
+    insert into order_info_item (order_code, sku_code,
       sku_name, picture_url, spec,
       spec_code, color_name, color_code,
       model, model_code, unit_code,
@@ -180,18 +180,18 @@
       company_code, channel_unit_price, total_channel_price,
       actual_channel_unit_price, actual_total_channel_price,
       actual_amount, actual_price)
-    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
+    values (#{orderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
       #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},
       #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR},
       #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{unitCode,jdbcType=VARCHAR},
       #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{givePromotion,jdbcType=INTEGER},
-      #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=BIGINT}, #{num,jdbcType=BIGINT},
-      #{amount,jdbcType=BIGINT}, #{activityApportionment,jdbcType=BIGINT}, #{preferentialAllocation,jdbcType=BIGINT},
+      #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL}, #{num,jdbcType=BIGINT},
+      #{amount,jdbcType=DECIMAL}, #{activityApportionment,jdbcType=DECIMAL}, #{preferentialAllocation,jdbcType=DECIMAL},
       #{actualDeliverNum,jdbcType=BIGINT}, #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT},
       #{promotionLineNum,jdbcType=BIGINT}, #{returnNum,jdbcType=BIGINT}, #{companyName,jdbcType=VARCHAR},
-      #{companyCode,jdbcType=VARCHAR}, #{channelUnitPrice,jdbcType=BIGINT}, #{totalChannelPrice,jdbcType=INTEGER},
-      #{actualChannelUnitPrice,jdbcType=BIGINT}, #{actualTotalChannelPrice,jdbcType=BIGINT},
-      #{actualAmount,jdbcType=BIGINT}, #{actualPrice,jdbcType=BIGINT})
+      #{companyCode,jdbcType=VARCHAR}, #{channelUnitPrice,jdbcType=DECIMAL}, #{totalChannelPrice,jdbcType=DECIMAL},
+      #{actualChannelUnitPrice,jdbcType=DECIMAL}, #{actualTotalChannelPrice,jdbcType=DECIMAL},
+      #{actualAmount,jdbcType=DECIMAL}, #{actualPrice,jdbcType=DECIMAL})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
     insert into order_info_item
@@ -349,13 +349,13 @@
         #{batchNumber,jdbcType=VARCHAR},
       </if>
       <if test="price != null">
-        #{price,jdbcType=BIGINT},
+        #{price,jdbcType=DECIMAL},
       </if>
       <if test="num != null">
         #{num,jdbcType=BIGINT},
       </if>
       <if test="amount != null">
-        #{amount,jdbcType=BIGINT},
+        #{amount,jdbcType=DECIMAL},
       </if>
       <if test="activityApportionment != null">
         #{activityApportionment,jdbcType=BIGINT},
@@ -385,52 +385,45 @@
         #{companyCode,jdbcType=VARCHAR},
       </if>
       <if test="channelUnitPrice != null">
-        #{channelUnitPrice,jdbcType=BIGINT},
+        #{channelUnitPrice,jdbcType=DECIMAL},
       </if>
       <if test="totalChannelPrice != null">
-        #{totalChannelPrice,jdbcType=INTEGER},
+        #{totalChannelPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualChannelUnitPrice != null">
-        #{actualChannelUnitPrice,jdbcType=BIGINT},
+        #{actualChannelUnitPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualTotalChannelPrice != null">
-        #{actualTotalChannelPrice,jdbcType=BIGINT},
+        #{actualTotalChannelPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualAmount != null">
-        #{actualAmount,jdbcType=BIGINT},
+        #{actualAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualPrice != null">
-        #{actualPrice,jdbcType=BIGINT},
+        #{actualPrice,jdbcType=DECIMAL},
       </if>
     </trim>
   </insert>
   <insert id="insertBatch" parameterType="java.util.List">
-        insert into order_info_item (id, order_code, sku_code,
-      sku_name, picture_url, spec,
-      spec_code, color_name, color_code,
-      model, model_code, unit_code,
-      unit_name, zero_disassembly_coefficient, give_promotion,
-      batch_number, price, num,
-      amount, activity_apportionment, preferential_allocation,
-      actual_deliver_num, activity_code, product_line_num,
-      promotion_line_num, return_num, company_name,
-      company_code, channel_unit_price, total_channel_price,
-      actual_channel_unit_price, actual_total_channel_price,
-      actual_amount, actual_price)
+    insert into order_info_item (order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code,
+      model, model_code, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, batch_number, price, num,
+      amount, activity_apportionment, preferential_allocation, actual_deliver_num, activity_code, product_line_num,
+      promotion_line_num, return_num, company_name, company_code, channel_unit_price, total_channel_price,
+      actual_channel_unit_price, actual_total_channel_price, actual_amount, actual_price, tax)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
-    (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+     (#{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.pictureUrl,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR},
       #{item.specCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
       #{item.model,jdbcType=VARCHAR}, #{item.modelCode,jdbcType=VARCHAR}, #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{item.givePromotion,jdbcType=INTEGER},
-      #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=BIGINT}, #{item.num,jdbcType=BIGINT},
-      #{item.amount,jdbcType=BIGINT}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
+      #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL}, #{item.num,jdbcType=BIGINT},
+      #{item.amount,jdbcType=DECIMAL}, #{item.activityApportionment,jdbcType=BIGINT}, #{item.preferentialAllocation,jdbcType=BIGINT},
       #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
       #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT}, #{item.companyName,jdbcType=VARCHAR},
-      #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=BIGINT}, #{item.totalChannelPrice,jdbcType=INTEGER},
-      #{item.actualChannelUnitPrice,jdbcType=BIGINT}, #{item.actualTotalChannelPrice,jdbcType=BIGINT},
-      #{item.actualAmount,jdbcType=BIGINT}, #{item.actualPrice,jdbcType=BIGINT})
+      #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=DECIMAL}, #{item.totalChannelPrice,jdbcType=DECIMAL},
+      #{item.actualChannelUnitPrice,jdbcType=DECIMAL}, #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
+      #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
@@ -482,13 +475,13 @@
         batch_number = #{batchNumber,jdbcType=VARCHAR},
       </if>
       <if test="price != null">
-        price = #{price,jdbcType=BIGINT},
+        price = #{price,jdbcType=DECIMAL},
       </if>
       <if test="num != null">
         num = #{num,jdbcType=BIGINT},
       </if>
       <if test="amount != null">
-        amount = #{amount,jdbcType=BIGINT},
+        amount = #{amount,jdbcType=DECIMAL},
       </if>
       <if test="activityApportionment != null">
         activity_apportionment = #{activityApportionment,jdbcType=BIGINT},
@@ -518,22 +511,22 @@
         company_code = #{companyCode,jdbcType=VARCHAR},
       </if>
       <if test="channelUnitPrice != null">
-        channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
+        channel_unit_price = #{channelUnitPrice,jdbcType=DECIMAL},
       </if>
       <if test="totalChannelPrice != null">
-        total_channel_price = #{totalChannelPrice,jdbcType=INTEGER},
+        total_channel_price = #{totalChannelPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualChannelUnitPrice != null">
-        actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
+        actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualTotalChannelPrice != null">
-        actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
+        actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=DECIMAL},
       </if>
       <if test="actualAmount != null">
-        actual_amount = #{actualAmount,jdbcType=BIGINT},
+        actual_amount = #{actualAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualPrice != null">
-        actual_price = #{actualPrice,jdbcType=BIGINT},
+        actual_price = #{actualPrice,jdbcType=DECIMAL},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
@@ -555,9 +548,9 @@
       zero_disassembly_coefficient = #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
       give_promotion = #{givePromotion,jdbcType=INTEGER},
       batch_number = #{batchNumber,jdbcType=VARCHAR},
-      price = #{price,jdbcType=BIGINT},
+      price = #{price,jdbcType=DECIMAL},
       num = #{num,jdbcType=BIGINT},
-      amount = #{amount,jdbcType=BIGINT},
+      amount = #{amount,jdbcType=DECIMAL},
       activity_apportionment = #{activityApportionment,jdbcType=BIGINT},
       preferential_allocation = #{preferentialAllocation,jdbcType=BIGINT},
       actual_deliver_num = #{actualDeliverNum,jdbcType=BIGINT},
@@ -567,12 +560,12 @@
       return_num = #{returnNum,jdbcType=BIGINT},
       company_name = #{companyName,jdbcType=VARCHAR},
       company_code = #{companyCode,jdbcType=VARCHAR},
-      channel_unit_price = #{channelUnitPrice,jdbcType=BIGINT},
-      total_channel_price = #{totalChannelPrice,jdbcType=INTEGER},
-      actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=BIGINT},
-      actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=BIGINT},
-      actual_amount = #{actualAmount,jdbcType=BIGINT},
-      actual_price = #{actualPrice,jdbcType=BIGINT}
+      channel_unit_price = #{channelUnitPrice,jdbcType=DECIMAL},
+      total_channel_price = #{totalChannelPrice,jdbcType=DECIMAL},
+      actual_channel_unit_price = #{actualChannelUnitPrice,jdbcType=DECIMAL},
+      actual_total_channel_price = #{actualTotalChannelPrice,jdbcType=DECIMAL},
+      actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      actual_price = #{actualPrice,jdbcType=DECIMAL}
     where id = #{id,jdbcType=BIGINT}
   </update>
     <update id="updateBatchNumById" parameterType="java.util.List">
@@ -596,10 +589,10 @@
       #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
       #{item.model,jdbcType=VARCHAR},  #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER}, #{item.num,jdbcType=BIGINT},
-      #{item.productLineNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=BIGINT},#{item.totalChannelPrice,jdbcType=BIGINT},
+      #{item.productLineNum,jdbcType=BIGINT},#{item.channelUnitPrice,jdbcType=DECIMAL},#{item.totalChannelPrice,jdbcType=DECIMAL},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.actualChannelUnitPrice,jdbcType=VARCHAR}, #{item.actualTotalChannelPrice,jdbcType=VARCHAR},
-      #{item.actualAmount,jdbcType=VARCHAR}, #{item.actualPrice,jdbcType=VARCHAR}, #{item.actualDeliverNum,jdbcType=BIGINT},
+      #{item.actualChannelUnitPrice,jdbcType=DECIMAL}, #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
+      #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}, #{item.actualDeliverNum,jdbcType=DECIMAL},
       #{item.givePromotion,jdbcType=BIGINT},#{item.tax,jdbcType=DECIMAL}
       )
     </foreach>
@@ -614,5 +607,13 @@
       #{item}
     </foreach>
     )
+  </select>
+  <select id="productList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
+    select
+    order_code as orderCode, sku_code as skuCode, sku_name as skuName, product_line_num as productLineNum,
+    actual_channel_unit_price as actualChannelUnitPrice, actual_total_channel_price as actualTotalChannelPrice,
+    actual_amount as actualAmount, actual_price as actualPrice
+    from order_info_item
+    where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
 </mapper>

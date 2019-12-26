@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
@@ -36,6 +37,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -451,7 +453,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void pushWms(String  code){
+    public void pushWms(String code){
         log.error("异步推送给wms");
         String url = "";
         // 通过id查询 入库单主体
@@ -468,9 +470,15 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundWmsReqVO.setList(outboundProductWmsReqVOs);
             //退供出库需要请求wms
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-            RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
-            outboundWmsReqVO.setCreateById(record.getCreateById());
-            outboundWmsReqVO.setCreateByName(record.getCreateByName());
+            //RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if(authToken != null){
+                outboundWmsReqVO.setCreateById(authToken.getPersonId());
+                outboundWmsReqVO.setCreateByName(authToken.getPersonName());
+            }else {
+                outboundWmsReqVO.setCreateById("0");
+                outboundWmsReqVO.setCreateByName("系统");
+            }
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
             log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
             HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);
@@ -992,7 +1000,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundBatch> batchList = Lists.newArrayList();
         for (OutboundReqVo outboundReqVo : outboundReqVoList) {
             productList.addAll(BeanCopyUtils.copyList(outboundReqVo.getList(), OutboundProduct.class));
-            batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+            if(CollectionUtils.isNotEmpty(batchList)){
+                batchList.addAll(BeanCopyUtils.copyList(outboundReqVo.getOutboundBatches(), OutboundBatch.class));
+            }
         }
         saveData(outbounds,productList,batchList);
         //TODo 保存日志
@@ -1011,10 +1021,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         if(i1!=productList.size()){
             throw new BizException(ResultCode.SAVE_OUT_BOUND_PRODUCT_FAILED);
         }
-        Integer integer = outboundBatchDao.insertInfo(batchList);
-        if(Objects.isNull(integer)||integer!=batchList.size()){
-            throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
+        if (CollectionUtils.isNotEmpty(batchList)){
+            Integer integer = outboundBatchDao.insertInfo(batchList);
+            if(Objects.isNull(integer)||integer!=batchList.size()){
+                throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
+            }
         }
+
     }
     /**
      * 补充出库单数据

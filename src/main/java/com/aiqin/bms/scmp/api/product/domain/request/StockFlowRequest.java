@@ -6,60 +6,61 @@ import lombok.Data;
 
 @Data
 public class StockFlowRequest {
+
     @ApiModelProperty("锁库单号编码(锁定时不传，解锁时传返回的编号)")
-    @JsonProperty(value = "lock_code")
+    @JsonProperty("lock_code")
     private String lockCode;
 
     @ApiModelProperty("公司编码")
-    @JsonProperty(value = "company_code")
+    @JsonProperty("company_code")
     private String companyCode;
 
     @ApiModelProperty("公司名称")
-    @JsonProperty(value = "company_name")
+    @JsonProperty("company_name")
     private String companyName;
 
-    @ApiModelProperty("物流中心编码")
-    @JsonProperty(value = "transport_center_code")
+    @ApiModelProperty("仓库编码")
+    @JsonProperty("transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("物流中心名称")
-    @JsonProperty(value = "transport_center_name")
+    @ApiModelProperty("仓库名称")
+    @JsonProperty("transport_center_name")
     private String transportCenterName;
 
-    @ApiModelProperty("仓库code")
-    @JsonProperty(value = "warehouse_code")
+    @ApiModelProperty("库房编码")
+    @JsonProperty("warehouse_code")
     private String warehouseCode;
 
-    @ApiModelProperty("仓库名称")
-    @JsonProperty(value = "warehouse_name")
+    @ApiModelProperty("库房名称")
+    @JsonProperty("warehouse_name")
     private String warehouseName;
 
-    @ApiModelProperty("sku号")
-    @JsonProperty(value = "sku_code")
+    @ApiModelProperty("sku编码")
+    @JsonProperty("sku_code")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
-    @JsonProperty(value = "sku_name")
+    @JsonProperty("sku_name")
     private String skuName;
 
     @ApiModelProperty("解锁或者锁定数")
-    @JsonProperty(value = "change_num")
+    @JsonProperty("change_num")
     private Long changeNum;
 
     @ApiModelProperty("加解锁库存属性正品0备品1")
-    @JsonProperty(value = "change_type")
+    @JsonProperty("change_type")
     private Integer changeType;
 
-    @ApiModelProperty("锁库类型，0锁库1解锁")
-    @JsonProperty(value = "lock_type")
+    @ApiModelProperty("锁库类型:0.锁库 1.解锁")
+    @JsonProperty("lock_type")
     private Integer lockType;
 
     @ApiModelProperty("解锁时历史锁定数")
-    @JsonProperty(value = "lock_num")
+    @JsonProperty("lock_num")
     private Long lockNum;
 
     @ApiModelProperty("操作类型")
-    @JsonProperty(value = "operation_type")
+    @JsonProperty("operation_type")
     private String operationType;
 
     public StockFlowRequest(){}

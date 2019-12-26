@@ -187,6 +187,10 @@ public class SkuInfoImport{
     @ExcelProperty(index = 30, value = "库存高")
     private String stockBoxHeight;
 
+    @ApiModelProperty("库存体积")
+    @ExcelProperty(index = 30, value = "库存体积")
+    private String stockBoxVolume;
+
     @ApiModelProperty("毛重")
     @ExcelProperty(index = 31, value = "库存毛重")
     private String stockBoxGrossWeight;
@@ -218,6 +222,10 @@ public class SkuInfoImport{
     @ApiModelProperty("箱子高度")
     @ExcelProperty(index = 38, value = "采购高")
     private String purchaseBoxHeight;
+
+    @ApiModelProperty("采购体积")
+    @ExcelProperty(index = 38, value = "采购体积")
+    private String purchaseBoxVolume;
 
     @ApiModelProperty("毛重")
     @ExcelProperty(index = 39, value = "采购毛重")

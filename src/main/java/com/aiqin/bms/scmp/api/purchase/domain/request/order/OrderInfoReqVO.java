@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -36,19 +37,37 @@ public class OrderInfoReqVO {
     @ApiModelProperty("订单状态(状态有点多，后面补)")
     private Integer orderStatus;
 
-    @ApiModelProperty("支付状态")
+    @ApiModelProperty("订单状态名称")
+    private String orderStatusName;
+
+    @ApiModelProperty("是否锁定(0否1是）")
+    private Integer beLock;
+
+    @ApiModelProperty("是否锁定原因")
+    private String lockReason;
+
+    @ApiModelProperty("是否异常订单(0否1是)")
+    private Integer beException;
+
+    @ApiModelProperty("异常原因")
+    private String exceptionReason;
+
+    @ApiModelProperty("是否删除(0否1是)")
+    private Integer beDelete;
+
+    @ApiModelProperty("支付状态0未支付1已支付")
     private Integer paymentStatus;
 
-    @ApiModelProperty("物流中心名称")
+    @ApiModelProperty("仓库名称")
     private String transportCenterName;
 
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty("仓库编码")
     private String transportCenterCode;
 
-    @ApiModelProperty("仓库名称")
+    @ApiModelProperty("库房名称")
     private String warehouseName;
 
-    @ApiModelProperty("仓库编码")
+    @ApiModelProperty("库房编码")
     private String warehouseCode;
 
     @ApiModelProperty("供应商名称")
@@ -100,24 +119,25 @@ public class OrderInfoReqVO {
     private String paymentTypeCode;
 
     @ApiModelProperty("运费")
-    private Long deliverAmount;
+    private BigDecimal deliverAmount;
 
     @ApiModelProperty("商品分销价总金额")
-    private Long productTotalAmount;
+    private BigDecimal productTotalAmount;
 
     @ApiModelProperty("商品渠道价总金额")
-    private Long productChannelTotalAmount;
+    private BigDecimal productChannelTotalAmount;
 
     @ApiModelProperty("优惠额度")
-    private Long discountAmount;
+    private BigDecimal discountAmount;
 
     @ApiModelProperty("订单金额")
-    private Long orderAmount;
+    private BigDecimal orderAmount;
 
     @ApiModelProperty("商品数量")
     private Long productNum;
 
     @ApiModelProperty("支付日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date paymentTime;
 
     @ApiModelProperty("不开、增普、增专")
@@ -126,7 +146,8 @@ public class OrderInfoReqVO {
     @ApiModelProperty("发票类型编码")
     private String invoiceTypeCode;
 
-    @ApiModelProperty("支付日期")
+    @ApiModelProperty("发运日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date transportTime;
 
     @ApiModelProperty("发票抬头")
@@ -134,6 +155,9 @@ public class OrderInfoReqVO {
 
     @ApiModelProperty("活动优惠")
     private Long activityDiscount;
+
+    @ApiModelProperty("体积")
+    private Long volume;
 
     @ApiModelProperty("重量")
     private Long weight;
