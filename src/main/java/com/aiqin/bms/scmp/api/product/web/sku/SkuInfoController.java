@@ -346,6 +346,13 @@ public class SkuInfoController {
             querySkuListReqVO.setUpdateTimeEnd(formatter.parse(updateTimeEnd));
         }
         List<String> skuCodeList = skuInfoService.querySkuCodeList(querySkuListReqVO);
+        Integer length = skuCodeList.size();
+        if(length > 50000){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "最大导出量为5W条数据,筛选的数据量已超过本限制,请根据采购组/品类/时间过滤"));
+        }
+        if(length == 0){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "没有找到需要导出的数据"));
+        }
         try {
             return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCodeList));
         } catch (BizException e) {

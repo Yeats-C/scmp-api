@@ -86,31 +86,32 @@ public class WarehouseServiceImpl implements WarehouseService {
         String warehouseName = warehouseReqVo.getWarehouseName();
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         String companyCode = "";
-        if(null != authToken){
+        if (null != authToken) {
             companyCode = authToken.getCompanyCode();
         }
-        Integer integer = warehouseDao.checkName(warehouseName,null,companyCode);
-        if(integer>0){
+        Integer integer = warehouseDao.checkName(warehouseName, null, companyCode);
+        if (integer > 0) {
             throw new GroundRuntimeException("库房名称重复无法添加");
         }
         WarehouseDTO warehouseDTO = new WarehouseDTO();
-        BeanCopyUtils.copy(warehouseReqVo,warehouseDTO);
+        BeanCopyUtils.copy(warehouseReqVo, warehouseDTO);
         //设置库房编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.WAREHOUSE_CODE);
         warehouseDTO.setWarehouseCode(String.valueOf(encodingRule.getNumberingValue()));
         // 更新数据库编码尺度
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         warehouseDTO.setDelFlag(Byte.parseByte("0"));
         warehouseDTO.setEnable(Byte.parseByte("0"));
         //保存采购组的主体
         int k = ((WarehouseService) AopContext.currentProxy()).insertSelective(warehouseDTO);
-        if(k>0){
+        if (k > 0) {
             return HttpResponse.success(k);
-        }else {
+        } else {
             throw new GroundRuntimeException("库房新增失败");
         }
     }
+
     /**
      * 通过id查询库房详情
      * @param id
@@ -120,13 +121,12 @@ public class WarehouseServiceImpl implements WarehouseService {
     public WarehouseResVo selectByPrimaryKey(Long id) {
         try {
             WarehouseResVo warehouseResVo = new WarehouseResVo();
-            WarehouseDTO warehouseDTO=warehouseDao.selectByPrimaryKey(id);
-            BeanCopyUtils.copy(warehouseDTO,warehouseResVo);
+            WarehouseDTO warehouseDTO = warehouseDao.selectByPrimaryKey(id);
+            BeanCopyUtils.copy(warehouseDTO, warehouseResVo);
             return warehouseResVo;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new GroundRuntimeException("查询失败");
         }
-
     }
 
     /**
@@ -139,20 +139,20 @@ public class WarehouseServiceImpl implements WarehouseService {
     public HttpResponse<Integer>updateWarehouse(UpdateWarehouseReqVo updateWarehouseReqVo) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         String companyCode = "";
-        if(null != authToken){
+        if (null != authToken) {
             companyCode = authToken.getCompanyCode();
         }
-        Integer integer = warehouseDao.checkName(updateWarehouseReqVo.getWarehouseName(),updateWarehouseReqVo.getId(),companyCode);
-        if(integer>0){
+        Integer integer = warehouseDao.checkName(updateWarehouseReqVo.getWarehouseName(), updateWarehouseReqVo.getId(), companyCode);
+        if (integer > 0) {
             throw new GroundRuntimeException("库房名称重复无法修改");
         }
         WarehouseDTO warehouseDTO = new WarehouseDTO();
-        BeanCopyUtils.copy(updateWarehouseReqVo,warehouseDTO);
+        BeanCopyUtils.copy(updateWarehouseReqVo, warehouseDTO);
         //更新采购组主体
         int k = ((WarehouseService) AopContext.currentProxy()).updateByPrimaryKeySelective(warehouseDTO);
-        if(k>0){
+        if (k > 0) {
             return HttpResponse.success(k);
-        }else {
+        } else {
             throw new GroundRuntimeException("库房修改失败");
         }
     }
@@ -202,10 +202,10 @@ public class WarehouseServiceImpl implements WarehouseService {
     public WarehouseResVo getWarehouseByCode(String code) {
         try {
             WarehouseResVo warehouseResVo = new WarehouseResVo();
-            WarehouseDTO warehouseDTO=warehouseDao.getWarehouseByCode(code);
-            BeanCopyUtils.copy(warehouseDTO,warehouseResVo);
+            WarehouseDTO warehouseDTO = warehouseDao.getWarehouseByCode(code);
+            BeanCopyUtils.copy(warehouseDTO, warehouseResVo);
             return warehouseResVo;
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new GroundRuntimeException("查询失败");
         }
     }
@@ -218,20 +218,17 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     @Override
     public List<WarehouseResVo> getWarehouseByLogisticsCenterCode(String logisticsCenterCode) {
-
-
-        List<WarehouseDTO>  dtoList = warehouseDao.getWarehouseByLogisticsCenterCode(logisticsCenterCode, null);
-        if(dtoList.size()>0){
-            try{
-                List<WarehouseResVo>  list =   BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
+        List<WarehouseDTO> dtoList = warehouseDao.getWarehouseByLogisticsCenterCode(logisticsCenterCode, null);
+        if (dtoList.size() > 0) {
+            try {
+                List<WarehouseResVo> list = BeanCopyUtils.copyList(dtoList, WarehouseResVo.class);
                 return list;
-            }catch (Exception e){
+            } catch (Exception e) {
                 throw new GroundRuntimeException("查询失败");
             }
-        }else {
+        } else {
             return null;
         }
-
     }
 
     /**
@@ -241,24 +238,24 @@ public class WarehouseServiceImpl implements WarehouseService {
      */
     @Override
     public List<LogisticsCenterApiResVo> getWarehouseApi(WarehouseListReqVo warehouseListReqVo) {
-            try{
-                AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-                if(null != authToken){
-                    warehouseListReqVo.setCompanyCode(authToken.getCompanyCode());
-                }
-                // 根据省市查询物流中心
-                List<LogisticsCenterDTO> listByArea1 = logisticsCenterDao.getLogisticsCenterListByArea(warehouseListReqVo);
-                 List<LogisticsCenterApiResVo>                      list = BeanCopyUtils.copyList(listByArea1,LogisticsCenterApiResVo.class);
-                for (LogisticsCenterApiResVo logisticsCenterDTO : list) {
-                    List<WarehouseDTO>  dtoList = warehouseDao.getWarehouseByLogisticsCenterCode(logisticsCenterDTO.getLogisticsCenterCode(),warehouseListReqVo.getWarehouseTypeCode());
-                    List<WarehouseApiResVo>warehouseResVos =   BeanCopyUtils.copyList(dtoList,WarehouseApiResVo.class);
-                    logisticsCenterDTO.setList(warehouseResVos);
-                }
-
-                return list;
-            }catch (Exception e){
-                throw new GroundRuntimeException("查询失败");
+        try {
+            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if (null != authToken) {
+                warehouseListReqVo.setCompanyCode(authToken.getCompanyCode());
             }
+            // 根据省市查询物流中心
+            List<LogisticsCenterDTO> listByArea1 = logisticsCenterDao.getLogisticsCenterListByArea(warehouseListReqVo);
+            List<LogisticsCenterApiResVo> list = BeanCopyUtils.copyList(listByArea1, LogisticsCenterApiResVo.class);
+            for (LogisticsCenterApiResVo logisticsCenterDTO : list) {
+                List<WarehouseDTO> dtoList = warehouseDao.getWarehouseByLogisticsCenterCode(logisticsCenterDTO.getLogisticsCenterCode(),
+                        warehouseListReqVo.getWarehouseTypeCode());
+                List<WarehouseApiResVo> warehouseResVos = BeanCopyUtils.copyList(dtoList, WarehouseApiResVo.class);
+                logisticsCenterDTO.setList(warehouseResVos);
+            }
+            return list;
+        } catch (Exception e) {
+            throw new GroundRuntimeException("查询省市仓库失败");
+        }
     }
 
     /**

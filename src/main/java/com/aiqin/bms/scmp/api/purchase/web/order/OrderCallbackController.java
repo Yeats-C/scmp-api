@@ -10,10 +10,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -58,6 +55,7 @@ public class OrderCallbackController {
         LOGGER.info("销售出库单回调,request:{}", request.toString());
         return orderCallbackService.outboundOrder(request);
     }
+
     @PostMapping("/return")
     @ApiOperation(value = "销售退货单回调")
     public HttpResponse returnOrder(@RequestBody ReturnRequest request) {
@@ -78,4 +76,12 @@ public class OrderCallbackController {
         LOGGER.info("报损报溢回传,request:{}", request.toString());
         return orderCallbackService.profitLossOrder(request);
     }
+
+    @PostMapping("/erp/outbound")
+    @ApiOperation(value = "查询销售回调爱亲供应链的信息")
+    public HttpResponse erpOrder(@RequestParam("order_code") String orderCode) {
+        LOGGER.info("销售回调erp的信息", orderCode);
+        return orderCallbackService.erpOrder(orderCode);
+    }
+
 }

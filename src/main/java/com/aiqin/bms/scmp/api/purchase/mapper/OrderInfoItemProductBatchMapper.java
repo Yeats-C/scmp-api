@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.mapper;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -31,4 +32,6 @@ public interface OrderInfoItemProductBatchMapper {
     List<OrderInfoItemProductBatch> listDetailForSap(SapOrderRequest sapOrderRequest);
 
     Integer insertList(@Param(value = "list") List<OrderInfoItemProductBatch> detailList);
+
+    List<QueryOrderInfoItemBatchRespVO> selectList(String orderCode);
 }

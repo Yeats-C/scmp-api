@@ -18,6 +18,9 @@ public class Calculate {
      */
     public static BigDecimal computeNoTaxPrice(BigDecimal price,BigDecimal taxRate){
         //不含税单价=含税单价/(1+税率)
-        return price.divide(BigDecimal.valueOf(100).add(taxRate).divide(BigDecimal.valueOf(100),4,BigDecimal.ROUND_HALF_UP), 4, BigDecimal.ROUND_HALF_UP);
+        BigDecimal tax = BigDecimal.valueOf(100).add(taxRate);
+        return price.divide(tax.divide(BigDecimal.valueOf(100),4,BigDecimal.ROUND_HALF_UP), 4, BigDecimal.ROUND_HALF_UP);
+
+        //return price.divide(BigDecimal.valueOf(1).add(taxRate).divide(BigDecimal.valueOf(100),4,BigDecimal.ROUND_HALF_UP), 4, BigDecimal.ROUND_HALF_UP);
     }
 }

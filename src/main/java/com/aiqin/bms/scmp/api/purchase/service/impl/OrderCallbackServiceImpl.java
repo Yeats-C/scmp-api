@@ -33,6 +33,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -165,6 +168,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private GoodsRejectService goodsRejectService;
     @Resource
     private ProductSkuPicturesDao productSkuPicturesDao;
+    @Resource
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
 
     /**
      * 销售出库接口
@@ -337,7 +342,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             throw new GroundRuntimeException("dl回调:减库存异常");
         }
         return HttpResponse.success();
-
     }
 
     /**
@@ -1327,6 +1331,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             list.add(stockVoRequest);
         }
         return list;
+    }
+
+    @Override
+    public HttpResponse erpOrder(String orderCode){
+        if(StringUtils.isBlank(orderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询要回传销售单的信息
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(orderCode);
+        if(orderInfo == null){
+            return HttpResponse.failure(ResultCode.CAN_NOT_FIND_ORDER);
+        }
+        QueryOrderInfoRespVO vo = new QueryOrderInfoRespVO();
+        BeanUtils.copyProperties(orderInfo, vo);
+        // 查询要回传销售单的商品信息
+        List<QueryOrderInfoItemRespVO> orderInfoItem = orderInfoItemMapper.productList(orderCode);
+        vo.setProductList(orderInfoItem);
+        // 查询要回传销售单的商品批次信息
+        List<QueryOrderInfoItemBatchRespVO> batchList = orderInfoItemProductBatchDao.selectList(orderCode);
+        vo.setBatchList(batchList);
+        return HttpResponse.success(vo);
     }
 
 }

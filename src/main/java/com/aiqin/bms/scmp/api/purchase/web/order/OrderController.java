@@ -143,4 +143,11 @@ public class OrderController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping("/aiqin/sale")
+    @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
+    public HttpResponse insertSaleOrder(@RequestBody OrderInfoReqVO vo) {
+        log.info("爱亲供应链销售单参数", vo);
+        return orderService.insertSaleOrder(vo);
+    }
 }

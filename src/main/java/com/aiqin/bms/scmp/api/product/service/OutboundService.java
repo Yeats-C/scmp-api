@@ -107,7 +107,6 @@ public interface OutboundService {
 
     /**
      * 出库单传送给wms
-     * @param id
      * @return
      */
     void pushWms(String Code);

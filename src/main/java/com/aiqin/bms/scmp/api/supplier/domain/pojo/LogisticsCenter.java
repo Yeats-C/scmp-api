@@ -17,7 +17,7 @@ public class LogisticsCenter extends CommonBean {
     @ApiModelProperty("物流中心名称")
     private String logisticsCenterName;
 
-    @ApiModelProperty("启用禁用状态")
+    @ApiModelProperty("启用禁用状态 0 启用 1禁用")
     private Byte enable;
 
     @ApiModelProperty("逻辑删除。0是未删除")

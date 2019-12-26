@@ -29,13 +29,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author wuyongqiang
@@ -130,12 +128,12 @@ public class StockController {
         return stockService.reduceUnlockStock(reqVo);
     }
 
-    @PostMapping("/search/merchant")
-    @ApiOperation(value = "门店库存查询")
-    public HttpResponse<List<QueryMerchantStockRepVo>> queryMerchantStock(@RequestBody QueryMerchantStockReqVo reqVo){
-        List<QueryMerchantStockRepVo> queryMerchantStockRepVos = stockService.selectStockByCompanyCodeAndSkuList(reqVo);
-        return HttpResponse.success(queryMerchantStockRepVos);
-    }
+//    @PostMapping("/search/merchant")
+//    @ApiOperation(value = "门店库存查询")
+//    public HttpResponse<List<QueryMerchantStockRepVo>> queryMerchantStock(@RequestBody QueryMerchantStockReqVo reqVo){
+//        List<QueryMerchantStockRepVo> queryMerchantStockRepVos = stockService.selectStockByCompanyCodeAndSkuList(reqVo);
+//        return HttpResponse.success(queryMerchantStockRepVos);
+//    }
 
     //因为目前对接中心没介入,所以直接接收采购单
     @ApiOperation(value = "采购单审批通过,接收采购单生成入库单")
@@ -144,12 +142,12 @@ public class StockController {
         return HttpResponse.success(stockService.save(reqVo));
     }
 
-    @PostMapping("/lock/merchant")
-    @ApiOperation(value = "门店库存锁定")
-    public HttpResponse<List<MerchantLockStockRespVo>> lockMerchantStock(@RequestBody MerchantLockStockReqVo reqVo) {
-        List<MerchantLockStockRespVo> queryMerchantStockRepVos = stockService.lockMerchantStock(reqVo);
-        return HttpResponse.success(queryMerchantStockRepVos);
-    }
+//    @PostMapping("/lock/merchant")
+//    @ApiOperation(value = "门店库存锁定")
+//    public HttpResponse<List<MerchantLockStockRespVo>> lockMerchantStock(@RequestBody MerchantLockStockReqVo reqVo) {
+//        List<MerchantLockStockRespVo> queryMerchantStockRepVos = stockService.lockMerchantStock(reqVo);
+//        return HttpResponse.success(queryMerchantStockRepVos);
+//    }
 
     //因为目前对接中心没介入,所以直接接收采购单 这里传之前锁定生成的出库单号
     @ApiOperation(value = "退供供应商确认后,出库单")
@@ -307,6 +305,11 @@ public class StockController {
         return HttpResponse.success(stockService.importStockSkuList(reqVO));
     }
 
+    @PostMapping("/lock/merchant")
+    @ApiOperation(value = "门店库存锁定")
+    public HttpResponse lockErpStock(@RequestBody MerchantLockStockReqVo vo) {
+        return stockService.lockErpStock(vo);
+    }
 
     @GetMapping("/search/byCityAndProvince")
     @ApiOperation(value = "总库存管理列表")

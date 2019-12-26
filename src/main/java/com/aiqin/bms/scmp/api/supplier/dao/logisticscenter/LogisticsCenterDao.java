@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.supplier.dao.logisticscenter;
 
-
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.vo.QueryLogisticsCenterReqVo;
@@ -49,11 +48,9 @@ public interface LogisticsCenterDao {
      */
    List<LogisticsCenterDTO> getEnableLogisticsCenterList(@Param("companyCode") String companyCode);
 
-
     /**
      * 验证名字是否重复
      * @param logisticsCenterName
-     * @param id
      * @return
      */
     Integer checkName(@Param("logisticsCenterName") String logisticsCenterName, @Param("code") String code, @Param("companyCode") String companyCode);
@@ -78,6 +75,7 @@ public interface LogisticsCenterDao {
      * @return int
      */
     int updateByCodeSelective(LogisticsCenterDTO record);
+
     /**
      * 名称集合匹配
      * @author NullPointException
@@ -88,4 +86,5 @@ public interface LogisticsCenterDao {
      */
     @MapKey("logisticsCenterName")
     Map<String,LogisticsCenterDTO> selectByCenterNames(@Param("list") Set<String> warehouseList, @Param("companyCode") String companyCode);
+
 }
