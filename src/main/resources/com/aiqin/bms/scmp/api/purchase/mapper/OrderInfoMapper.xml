@@ -395,7 +395,7 @@ transport_number
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
-      insert into order_info (id, order_code, order_type,
+      insert into order_info (order_code, order_type,
       order_type_code, customer_name, customer_code,
       create_date, order_status, be_lock,
       lock_reason, be_exception, exception_reason,
@@ -424,7 +424,7 @@ transport_number
       actual_weight, actual_volume, actual_product_total_amount,transport_company,
       transport_company_code,transport_number
       )
-    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
+    values (#{orderCode,jdbcType=VARCHAR}, #{orderType,jdbcType=VARCHAR},
       #{orderTypeCode,jdbcType=INTEGER}, #{customerName,jdbcType=VARCHAR}, #{customerCode,jdbcType=VARCHAR},
       #{createDate,jdbcType=TIMESTAMP}, #{orderStatus,jdbcType=INTEGER}, #{beLock,jdbcType=INTEGER},
       #{lockReason,jdbcType=VARCHAR}, #{beException,jdbcType=INTEGER}, #{exceptionReason,jdbcType=VARCHAR},
@@ -947,40 +947,21 @@ transport_number
           </if>
       </trim>
   </insert>
-    <insert id="insertBatch" parameterType="java.util.List">
-        insert into order_info (id, order_code, order_type,
-      order_type_code, customer_name, customer_code,
-      create_date, order_status, be_lock,
-      lock_reason, be_exception, exception_reason,
-      be_delete, payment_status, transport_center_name,
-      transport_center_code, warehouse_name, warehouse_code,
-      supplier_name, supplier_code, distribution_mode,
-      distribution_mode_code, consignee, consignee_phone,
-      province_code, province_name, city_code,
-      city_name, district_code, district_name,
-      detail_address, zip_code, payment_type,
-      payment_type_code, deliver_amount, product_total_amount,
-      product_channel_total_amount, discount_amount,
-      order_amount, payment_time, delivery_time,
-      transport_time, receiving_time, invoice_type,
-      invoice_type_code, invoice_title, operator,
-      operator_code, operator_time, activity_discount,
-      volume, weight, be_master_order,
-      master_order_code, order_original, remake,
-      logistics_remission_ratio, transport_status,
-      store_type, store_type_code, company_name,
-      company_code, product_num, order_category,
-      order_category_code, create_by_name, create_by_id,
-      create_time, update_by_name, update_by_id,
-      update_time, actual_product_channel_total_amount,
-      actual_order_amount, actual_product_num, order_original_name,
-      actual_weight, actual_volume, actual_product_total_amount,transport_company,
-        transport_company_code,
-        transport_number
-      )
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into order_info (order_code, order_type, order_type_code, customer_name, customer_code, create_date, order_status,
+      be_lock, lock_reason, be_exception, exception_reason, be_delete, payment_status, transport_center_name, transport_center_code,
+      warehouse_name, warehouse_code, supplier_name, supplier_code, distribution_mode, distribution_mode_code, consignee, consignee_phone,
+      province_code, province_name, city_code, city_name, district_code, district_name, detail_address, zip_code, payment_type,
+      payment_type_code, deliver_amount, product_total_amount, product_channel_total_amount, discount_amount, order_amount,
+      payment_time, delivery_time, transport_time, receiving_time, invoice_type, invoice_type_code, invoice_title, operator,
+      operator_code, operator_time, activity_discount, volume, weight, be_master_order, master_order_code, order_original, remake,
+      logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
+      order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
+      actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
+      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
-    (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
+     (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
       #{item.orderTypeCode,jdbcType=INTEGER}, #{item.customerName,jdbcType=VARCHAR}, #{item.customerCode,jdbcType=VARCHAR},
       #{item.createDate,jdbcType=TIMESTAMP}, #{item.orderStatus,jdbcType=INTEGER}, #{item.beLock,jdbcType=INTEGER},
       #{item.lockReason,jdbcType=VARCHAR}, #{item.beException,jdbcType=INTEGER}, #{item.exceptionReason,jdbcType=VARCHAR},
@@ -1003,11 +984,11 @@ transport_number
       #{item.storeType,jdbcType=VARCHAR}, #{item.storeTypeCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR}, #{item.productNum,jdbcType=BIGINT}, #{item.orderCategory,jdbcType=VARCHAR},
       #{item.orderCategoryCode,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.createById,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateByName,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.actualProductChannelTotalAmount,jdbcType=DECIMAL},
+      now(), #{item.updateByName,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
+      now(), #{item.actualProductChannelTotalAmount,jdbcType=DECIMAL},
       #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
-      #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL}
-        , #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR}
+      #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
+      #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

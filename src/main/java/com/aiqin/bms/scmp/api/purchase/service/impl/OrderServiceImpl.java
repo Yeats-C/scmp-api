@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.OrderStatus;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
@@ -12,9 +9,12 @@ import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConv
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
@@ -30,12 +30,14 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -43,6 +45,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.swing.*;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -360,11 +363,21 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
         orderItems.addAll(orderItem);
         // 拼装日志信息
-        OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(),
-                "a",
-                "a", null,
-                info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
-        logs.add(log);
+        if(vo.getOrderType() != null){
+            OrderInfoLog log;
+            if(vo.getOrderType().equals(1) || vo.getOrderType().equals(3)){
+               log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStatusCode(),
+                       OrderStatus.WAITING_FOR_DISTRIBUTION.getBackgroundOrderStatus(),
+                       OrderStatus.WAITING_FOR_DISTRIBUTION.getExplain(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStandardDescription(),
+                       info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
+            }else{
+               log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_PICKING.getStatusCode(),
+                       OrderStatus.WAITING_FOR_PICKING.getBackgroundOrderStatus(),
+                       OrderStatus.WAITING_FOR_PICKING.getExplain(), OrderStatus.WAITING_FOR_PICKING.getStandardDescription(),
+                        info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
+            }
+            logs.add(log);
+        }
         // 保存订单和订单商品信息
         saveData(orderItems, orders);
         //存日志
@@ -375,14 +388,93 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 出库单参数填充
-    private void insertOutbound(OrderInfoReqVO vo){
+    private void insertOutbound(OrderInfoReqVO vo) {
         OutboundReqVo outboundReqVo = new OutboundReqVo();
+        // 公司
         outboundReqVo.setCompanyCode(vo.getCompanyCode());
         outboundReqVo.setCompanyName(vo.getCompanyName());
+        // 状态
         outboundReqVo.setOutboundStatusCode(vo.getOrderStatus().byteValue());
         outboundReqVo.setOutboundStatusName(vo.getOrderStatusName());
-        outboundReqVo.setOutboundTypeCode(vo.getOrderTypeCode().byteValue());
-        outboundReqVo.setOutboundTypeName(vo.getOrderType());
+        // 出库类型
+        outboundReqVo.setOutboundTypeCode(InOutStatus.CREATE_INOUT.getCode());
+        outboundReqVo.setOutboundTypeName(InOutStatus.CREATE_INOUT.getName());
+        // 仓库
+        outboundReqVo.setLogisticsCenterCode(vo.getTransportCenterCode());
+        outboundReqVo.setLogisticsCenterName(vo.getTransportCenterName());
+        // 库房
+        outboundReqVo.setWarehouseCode(vo.getWarehouseCode());
+        outboundReqVo.setWarehouseName(vo.getWarehouseName());
+        // 供应商
+        outboundReqVo.setSupplierCode(vo.getSupplierCode());
+        outboundReqVo.setSupplierName(vo.getSupplierName());
+        //原始单号
+        outboundReqVo.setSourceOderCode(vo.getOrderCode());
+        //预计出库数量
+        outboundReqVo.setPreOutboundNum(vo.getProductNum());
+        //预计主出库数量
+        outboundReqVo.setPreMainUnitNum(vo.getProductNum());
+        //预计含税总金额
+        outboundReqVo.setPreTaxAmount(vo.getProductTotalAmount());
+        // 地址
+        outboundReqVo.setProvinceCode(vo.getProvinceCode());
+        outboundReqVo.setProvinceName(vo.getProvinceName());
+        outboundReqVo.setCityCode(vo.getCityCode());
+        outboundReqVo.setCityName(vo.getCityName());
+        outboundReqVo.setCountyCode(vo.getCityCode());
+        outboundReqVo.setCountyName(vo.getDistrictName());
+        outboundReqVo.setConsignee(vo.getConsignee());
+        outboundReqVo.setConsigneeNumber(vo.getConsigneePhone());
+        outboundReqVo.setConsigneeRate(vo.getZipCode());
+        outboundReqVo.setDetailedAddress(vo.getDetailAddress());
+        outboundReqVo.setCreateBy(vo.getCreateByName());
+        outboundReqVo.setUpdateBy(vo.getCreateByName());
+        // 商品详情
+        List<OrderInfoItemReqVO> productList = vo.getProductList();
+        List<OutboundProductReqVo> outboundProductList = Lists.newArrayList();
+        BigDecimal noTaxTotalAmount = BigDecimal.ZERO;
+        OutboundProductReqVo outboundProduct;
+        for (OrderInfoItemReqVO product : productList) {
+            outboundProduct = new OutboundProductReqVo();
+            // sku
+            outboundProduct.setSkuCode(product.getSkuCode());
+            outboundProduct.setSkuName(product.getSkuName());
+            // 图片地址
+            outboundProduct.setPictureUrl(product.getPictureUrl());
+            //规格
+            outboundProduct.setNorms(product.getSpec());
+            //单位
+            outboundProduct.setUnitCode(product.getUnitCode());
+            outboundProduct.setUnitName(product.getUnitName());
+            //进货规格
+            outboundProduct.setOutboundNorms(product.getSpec());
+            //预计出库数量
+            outboundProduct.setPreOutboundNum(product.getNum());
+            //预计含税进价
+            outboundProduct.setPreTaxPurchaseAmount(product.getPrice());
+            //预计含税总价
+            outboundProduct.setPreTaxAmount(product.getAmount());
+            outboundProduct.setColorCode(product.getColorCode());
+            outboundProduct.setColorName(product.getColorName());
+            outboundProduct.setCreateBy(vo.getCreateByName());
+            outboundProduct.setUpdateBy(vo.getCreateByName());
+            outboundProduct.setPreOutboundMainNum(product.getNum());
+            outboundProduct.setLinenum(product.getProductLineNum());
+            //计算不含税单价
+            BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(product.getPrice(), product.getTax());
+            outboundProduct.setOutboundBaseContent("1");
+            outboundProduct.setOutboundBaseUnit("1");
+            outboundProduct.setTax(product.getTax());
+            //计算不含税总价 (现在是主单位数量 * 单价）
+            BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(product.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
+            noTaxTotalAmount = noTaxTotalPrice;
+            outboundProductList.add(outboundProduct);
+        }
+        //预计无税总金额
+        outboundReqVo.setPreAmount(noTaxTotalAmount);
+        // 税额
+        outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
+        outboundReqVo.setList(outboundProductList);
         outboundService.saveOutBoundInfo(outboundReqVo);
     }
 

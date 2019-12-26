@@ -40,19 +40,34 @@ public class OrderInfoReqVO {
     @ApiModelProperty("订单状态名称")
     private String orderStatusName;
 
-    @ApiModelProperty("支付状态")
+    @ApiModelProperty("是否锁定(0否1是）")
+    private Integer beLock;
+
+    @ApiModelProperty("是否锁定原因")
+    private String lockReason;
+
+    @ApiModelProperty("是否异常订单(0否1是)")
+    private Integer beException;
+
+    @ApiModelProperty("异常原因")
+    private String exceptionReason;
+
+    @ApiModelProperty("是否删除(0否1是)")
+    private Integer beDelete;
+
+    @ApiModelProperty("支付状态0未支付1已支付")
     private Integer paymentStatus;
 
-    @ApiModelProperty("物流中心名称")
+    @ApiModelProperty("仓库名称")
     private String transportCenterName;
 
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty("仓库编码")
     private String transportCenterCode;
 
-    @ApiModelProperty("仓库名称")
+    @ApiModelProperty("库房名称")
     private String warehouseName;
 
-    @ApiModelProperty("仓库编码")
+    @ApiModelProperty("库房编码")
     private String warehouseCode;
 
     @ApiModelProperty("供应商名称")
@@ -140,6 +155,9 @@ public class OrderInfoReqVO {
 
     @ApiModelProperty("活动优惠")
     private Long activityDiscount;
+
+    @ApiModelProperty("体积")
+    private Long volume;
 
     @ApiModelProperty("重量")
     private Long weight;

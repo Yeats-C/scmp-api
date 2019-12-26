@@ -104,4 +104,7 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("公司编码")
     private String companyCode;
 
+    @ApiModelProperty("税率")
+    private BigDecimal tax;
+
 }
