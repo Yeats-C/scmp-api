@@ -282,7 +282,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         if (CollectionUtils.isNotEmptyCollection(unitList)){
             List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(unitList,ProductSkuSupplyUnit.class);
             productSkuSupplyUnitDao.deleteList2(unitList);
-            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            //判断申请中的数据有没有默认值是的
+            List<ProductSkuSupplyUnit> defaultList = productSkuSupplyUnits.stream().filter(x -> Objects.equals(x.getIsDefault(), DefaultOrNot.DEFALUT.getValue())).collect(Collectors.toList());
+            if(CollectionUtils.isNotEmptyCollection(defaultList)){
+                //存在,根据skuCode和supplyUnitCode更新为不默认
+                productSkuSupplyUnitDao.updateIsDeFaultBySkuCodeAndSupplyUnitCode(defaultList,DefaultOrNot.DEFALUT_NOT.getValue());
+            }
+            int i = ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            return i;
         } else {
             return 0;
         }

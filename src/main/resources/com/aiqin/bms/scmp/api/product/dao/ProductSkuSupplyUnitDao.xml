@@ -182,6 +182,13 @@
             where product_sku_code = #{item.productSkuCode} and apply_code = #{item.applyCode}
         </foreach>
     </update>
+    <update id="updateIsDeFaultBySkuCodeAndSupplyUnitCode">
+        <foreach collection="list" open="" close="" item="item" separator=";">
+            update product_sku_supply_unit_draft
+            set is_default = #{isDefault}
+            where product_sku_code = #{item.productSkuCode} and supply_unit_code = #{item.supplyUnitCode}
+        </foreach>
+    </update>
     <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
      <include refid="Base_Column_List"/>

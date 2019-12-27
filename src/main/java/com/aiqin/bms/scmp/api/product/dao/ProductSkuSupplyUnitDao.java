@@ -90,4 +90,6 @@ public interface ProductSkuSupplyUnitDao {
     ProductSkuSupplyUnitRespVo selectDraftById(Long id);
 
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
+
+    int updateIsDeFaultBySkuCodeAndSupplyUnitCode(@Param("list") List<ProductSkuSupplyUnit> defaultList, @Param("isDefault") Byte value);
 }

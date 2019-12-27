@@ -712,10 +712,12 @@ public class CheckSkuNew {
                 if (flag) {
                     purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
                 }
-                try {
-                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
-                } catch (Exception e) {
-                    error.add("采购毛重格式不正确");
+                if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight())) {
+                    try {
+                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                    } catch (Exception e) {
+                        error.add("采购毛重格式不正确");
+                    }
                 }
                 if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight())) {
                     try {
