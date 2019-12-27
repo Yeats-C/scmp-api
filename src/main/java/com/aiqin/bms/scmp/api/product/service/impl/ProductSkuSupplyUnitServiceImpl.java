@@ -368,7 +368,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
         }
         // 设置获取分销价
-        repsVo.setDistributionPrice(getDistributionPrice(skuCode));
+        repsVo.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         return repsVo;
     }
 
@@ -513,7 +513,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
         List<QueryProductSkuSupplyUnitsRespVo> list = draftMapper.getListPage(reqVo);
         list.forEach(item->{
-            item.setDistributionPrice(getDistributionPrice(item.getProductSkuCode()));
+            item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
             item.setCapacityList(productSkuSupplyUnitCapacityService.getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(item.getSupplyUnitCode(),item.getProductSkuCode()));
         });
         return PageUtil.getPageList(reqVo.getPageNo(),list);
@@ -554,7 +554,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         // }
         String skuCode = detail.getSkuCode();
         // 设置获取分销价
-        detail.setDistributionPrice(getDistributionPrice(skuCode));
+        detail.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         List<ProductSkuSupplyUnitRespVo> respVos = Lists.newArrayList(productSkuSupplyUnitRespVo);
         detail.setSupplierList(respVos);
         return detail;
@@ -781,7 +781,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         unitRespVos.forEach(item -> {
             // 设置分销价
             if (StringUtils.isNotBlank(item.getProductSkuCode())) {
-                item.setDistributionPrice(this.getDistributionPrice(item.getProductSkuCode()));
+                item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
             }
         });
         ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
@@ -860,7 +860,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
      * @param skuCode
      * @return
      */
-    private BigDecimal getDistributionPrice(String skuCode) {
+    @Override
+    public BigDecimal getDistributionPrice(String skuCode) {
         if (StringUtils.isNotBlank(skuCode)) {
             List<ProductSkuPriceRespVo> productSkuPriceInfosTemp =
                     productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);

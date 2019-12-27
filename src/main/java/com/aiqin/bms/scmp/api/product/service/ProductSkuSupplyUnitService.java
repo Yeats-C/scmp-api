@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import io.swagger.models.auth.In;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -207,4 +208,6 @@ public interface ProductSkuSupplyUnitService extends BaseService {
 
 
     DetailRequestRespVo getInfoByForm(String formNo);
+
+    BigDecimal getDistributionPrice(String skuCode);
 }
