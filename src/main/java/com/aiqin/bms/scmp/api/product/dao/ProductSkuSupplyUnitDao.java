@@ -91,5 +91,5 @@ public interface ProductSkuSupplyUnitDao {
 
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
 
-    int updateIsDeFaultBySkuCodeAndSupplyUnitCode(@Param("list") List<ProductSkuSupplyUnit> defaultList, @Param("isDefault") Byte value);
+    int updateIsDeFaultBySkuCode(@Param("list") List<String> skuCodes, @Param("isDefault") Byte value);
 }
