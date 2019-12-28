@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -16,6 +17,7 @@ public class ProductSkuFileDraft extends CommonBean {
     private String fileCode;
 
     @ApiModelProperty("文件名称")
+    @PropertyMsg("文件名称")
     private String fileName;
 
     @ApiModelProperty("文件路径")

@@ -77,4 +77,7 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("采购组名称")
     private String purchaseGroupName;
 
+    @ApiModelProperty("货号")
+    private String itemNumber;
+
 }

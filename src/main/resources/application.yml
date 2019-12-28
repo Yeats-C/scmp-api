@@ -318,6 +318,14 @@ mgs:
           name: 编辑
         - code: SCMP004011002
           name: 导入
+      - code: SCMP004012
+        name: 商品制造商管理
+        link: '/product/manufacturer'
+        methods:
+        - code: SCMP004012001
+          name: 编辑
+        - code: SCMP004012002
+          name: 导入
     - code: SCMP005
       name: 价格管理
       link: ''

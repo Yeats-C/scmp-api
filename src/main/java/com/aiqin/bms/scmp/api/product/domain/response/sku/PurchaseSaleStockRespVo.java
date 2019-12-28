@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -39,7 +41,7 @@ public class PurchaseSaleStockRespVo extends CommonBean {
     @ApiModelProperty("单位code")
     private String unitCode;
 
-    @ApiModelProperty("单位名称")
+    @ApiModelProperty(value = "单位名称")
     private String unitName;
 
     @ApiModelProperty("条形码")
@@ -58,5 +60,5 @@ public class PurchaseSaleStockRespVo extends CommonBean {
     private Byte isDefault;
 
     @ApiModelProperty("拆零系数")
-    private Long zeroRemovalCoefficient;
+    private BigDecimal zeroRemovalCoefficient;
 }

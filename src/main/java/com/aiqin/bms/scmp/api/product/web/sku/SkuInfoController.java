@@ -6,28 +6,40 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
+import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
+import com.aiqin.bms.scmp.api.product.service.NewProductService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
+import com.google.common.collect.Lists;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @功能说明:
@@ -41,11 +53,19 @@ import java.util.List;
 public class SkuInfoController {
     @Autowired
     SkuInfoService skuInfoService;
+    @Autowired
+    private NewProductService productService;
+
 
     @PostMapping("/add")
     @ApiOperation("新增sku信息")
     public HttpResponse<Integer> addSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
         try {
+            // 修改spu
+            NewProduct spuInfo = addSkuInfoReqVO.getSpuInfo();
+            NewProductUpdateReqVO newProductUpdateReqVO = new NewProductUpdateReqVO();
+            BeanCopyUtils.copy(spuInfo, newProductUpdateReqVO);
+            productService.updateProduct(newProductUpdateReqVO);
             return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo(addSkuInfoReqVO));
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
@@ -102,6 +122,43 @@ public class SkuInfoController {
     @ApiOperation("待提交sku列表")
     public HttpResponse<BasePage<ProductSkuDraftRespVo>> getSkuDraftList(@RequestBody QuerySkuDraftListReqVO reqVO){
         return HttpResponse.successGenerics(skuInfoService.getProductSkuDraftList(reqVO));
+    }
+
+    @PostMapping("/draft/submit/check")
+    @ApiOperation("提交审批验证,是否为同一修改类型或同一采购组")
+    public HttpResponse<List<String>> submitCheck(@RequestBody QuerySkuDraftListReqVO reqVO){
+        List<ProductSkuDraftRespVo> list = skuInfoService.getProductSkuDraftListNoPage(reqVO);
+        if (CollectionUtils.isEmptyCollection(list)) {
+            return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+        }
+        Byte applyType = list.get(0).getApplyType();
+        String groupCode = list.get(0).getPurchaseGroupCode();
+        for (ProductSkuDraftRespVo productSkuDraftRespVo : list) {
+            if (applyType - productSkuDraftRespVo.getApplyType() != 0) {
+                return HttpResponse.failure(ResultCode.SKU_DIFFERENT_APPLY_TYPE);
+            }
+            if (!StringUtils.equals(groupCode, productSkuDraftRespVo.getPurchaseGroupCode())) {
+                return HttpResponse.failure(ResultCode.SKU_DIFFERENT_GRPUP_TYPE);
+            }
+        }
+        List<String> skuCodeList = list.stream().map(ProductSkuDraftRespVo::getCode).collect(Collectors.toList());
+        return HttpResponse.successGenerics(skuCodeList);
+    }
+
+    @DeleteMapping("/draft/list")
+    @ApiOperation("删除所有符合条件待提交sku列表")
+    public HttpResponse<Integer> deleteDraft(@RequestBody QuerySkuDraftListReqVO reqVO){
+        log.info(reqVO.toString());
+        List<ProductSkuDraftRespVo> list = skuInfoService.getProductSkuDraftListNoPage(reqVO);
+        List<String> skuList = list.stream().map(ProductSkuDraftRespVo::getCode).collect(Collectors.toList());
+        try {
+            return HttpResponse.successGenerics(skuInfoService.deleteProductSkuDraft(skuList));
+        } catch (BizException bz){
+            return HttpResponse.failure(bz.getMessageId(),0);
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+        }
     }
 
     @PostMapping("/apply/add")
@@ -252,7 +309,62 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @GetMapping("/exportSkuInfo")
+    @ApiOperation("导出审批通过的sku信息,多个skuCode通过逗号隔开")
+    public HttpResponse<Boolean> exportSkuBySkuCode(HttpServletResponse resp, String productBrandCode, String productBrandName,
+                                                    String productCategoryCode, String productCategoryName, String productCode, String productName,
+                                                    String productPropertyCode, String productPropertyName, String purchaseGroupCode, String purchaseGroupName,
+                                                    String skuCode, String skuName, Byte skuStatus, String createTimeStart, String createTimeEnd,
+                                                    String updateTimeStart, String updateTimeEnd) throws ParseException {
+
+        QuerySkuListReqVO querySkuListReqVO = new QuerySkuListReqVO();
+        querySkuListReqVO.setProductBrandCode(productBrandCode);
+        querySkuListReqVO.setProductBrandName(productBrandName);
+        querySkuListReqVO.setProductCategoryCode(productCategoryCode);
+        querySkuListReqVO.setProductCategoryName(productCategoryName);
+        querySkuListReqVO.setProductCode(productCode);
+        querySkuListReqVO.setProductName(productName);
+        querySkuListReqVO.setProductPropertyCode(productPropertyCode);
+        querySkuListReqVO.setProductPropertyName(productPropertyName);
+        querySkuListReqVO.setPurchaseGroupCode(purchaseGroupCode);
+        querySkuListReqVO.setPurchaseGroupName(purchaseGroupName);
+        querySkuListReqVO.setSkuCode(skuCode);
+        querySkuListReqVO.setSkuName(skuName);
+        querySkuListReqVO.setSkuStatus(skuStatus);
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        if (StringUtils.isNotBlank(createTimeStart)) {
+            querySkuListReqVO.setCreateTimeStart(formatter.parse(createTimeStart));
+        }
+        if (StringUtils.isNotBlank(createTimeEnd)) {
+            querySkuListReqVO.setCreateTimeEnd(formatter.parse(createTimeEnd));
+        }
+        if (StringUtils.isNotBlank(updateTimeStart)) {
+            querySkuListReqVO.setUpdateTimeStart(formatter.parse(updateTimeStart));
+        }
+        if (StringUtils.isNotBlank(updateTimeEnd)) {
+            querySkuListReqVO.setUpdateTimeEnd(formatter.parse(updateTimeEnd));
+        }
+        List<String> skuCodeList = skuInfoService.querySkuCodeList(querySkuListReqVO);
+        Integer length = skuCodeList.size();
+        if(length > 50000){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "最大导出量为5W条数据,筛选的数据量已超过本限制,请根据采购组/品类/时间过滤"));
+        }
+        if(length == 0){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "没有找到需要导出的数据"));
+        }
+        try {
+            return HttpResponse.successGenerics(skuInfoService.exportFormalSkuBySkuCode(resp, skuCodeList));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
     @GetMapping("/exportAddSku")
+    @ApiOperation("审批新增导出")
     public HttpResponse<Boolean> exportAddSku(HttpServletResponse resp,String code){
         log.info("SkuInfoController---exportSku---入参：[{}]",code);
         try {

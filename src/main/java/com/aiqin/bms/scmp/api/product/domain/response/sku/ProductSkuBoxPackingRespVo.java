@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.sku;
 
+import com.aiqin.bms.scmp.api.base.PropertyMsg;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;

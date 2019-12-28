@@ -41,6 +41,9 @@ public class UpdateSkuSupplyUnitReqVo {
     @ApiModelProperty("税率")
     private BigDecimal taxRate;
 
+    @ApiModelProperty("分销价")
+    private BigDecimal distributionPrice;
+
     @ApiModelProperty(value = "sku供应商信息")
     @JsonProperty("productSkuSupplyUnits")
     private List<UpdateProductSkuSupplyUnitReqVo> updateProductSkuSupplyUnitReqVos;

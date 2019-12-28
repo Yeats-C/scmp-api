@@ -168,4 +168,14 @@
       province_id = #{provinceId,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectAreaStatus" resultType="java.lang.Integer">
+    select count(1) from
+    product_sku_sale_area_info
+    <where>
+      status = #{status,jdbcType=INTEGER}
+      and main_code = #{mainCode,jdbcType=VARCHAR}
+      and code = #{code,jdbcType=VARCHAR}
+      and type = #{type,jdbcType=INTEGER}
+    </where>
+  </select>
 </mapper>

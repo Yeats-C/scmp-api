@@ -75,11 +75,10 @@
         before_total_way_num,after_total_way_num,change_num,operation_type,create_time,create_by,update_time,update_by,
         lock_status,document_type,document_num,source_document_type,source_document_num,remark,stock_cost
     </sql>
-    
+
     <sql id="Stock_Column">
 
     </sql>
-    
     <select id="selectOneStockInfoByStockFlow"  resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock" resultMap="StockResultMap">
         select <include refid="Stock_Column"></include> from stock
         where company_code=#{companyCode}

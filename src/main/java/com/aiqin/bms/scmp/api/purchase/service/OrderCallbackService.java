@@ -40,4 +40,6 @@ public interface OrderCallbackService {
     HttpResponse transfersOrder(TransfersRequest request);
 
     HttpResponse profitLossOrder(ProfitLossRequest request);
+
+    HttpResponse erpOrder(String orderCode);
 }

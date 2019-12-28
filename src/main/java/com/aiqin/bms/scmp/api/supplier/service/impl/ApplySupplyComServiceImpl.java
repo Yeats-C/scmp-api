@@ -453,7 +453,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Transactional(rollbackFor = Exception.class)
     public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
+        workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(applySupplyCompanyReqDTO.getFormNo());
@@ -1150,6 +1150,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //复制对象
             ApplySupplyCompany applySupplyCompany = new ApplySupplyCompany();
             BeanCopyUtils.copy(applySupplyCompanyReqVO,applySupplyCompany);
+            applySupplyCompany.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //根据供货单位code获取相应的三张申请表id
             applySupplyCompany.setId(s.getId());
@@ -1242,6 +1243,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 applySupplyCompanyReqDTO.setId(applySupplyCompany.getId());
                 applySupplyCompanyReqDTO.setApprovalName(applySupplyCompany.getApprovalName());
                 applySupplyCompanyReqDTO.setApprovalRemark(applySupplyCompany.getApprovalRemark());
+                applySupplyCompanyReqDTO.setPositionCode(applySupplyCompanyReqVO.getPositionCode());
                 workFlow(applySupplyCompanyReqDTO);
             }
             //审批附件

@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import io.swagger.models.auth.In;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -90,6 +91,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     Integer deleteDraftById(Long id);
 
     /**
+     * 批量删除
+     * @param ids
+     * @return
+     */
+    Integer batchDeleteDraftById(List<Long> ids);
+
+    /**
      *
      * 功能描述: 获取申请数据
      *
@@ -144,6 +152,13 @@ public interface ProductSkuSupplyUnitService extends BaseService {
     BasePage<QueryProductSkuSupplyUnitsRespVo> getDraftListPage(QuerySkuSupplyUnitReqVo reqVo);
 
     /**
+     * 分局条件获取SKU供应商管理,不分页
+     * @param reqVo
+     * @return
+     */
+    List<QueryProductSkuSupplyUnitsRespVo> getDraftListNoPage(QuerySkuSupplyUnitReqVo reqVo);
+
+    /**
      * SKU供应商管理-待审请详情
      * @param id
      * @return
@@ -171,7 +186,7 @@ public interface ProductSkuSupplyUnitService extends BaseService {
      * @param directSupervisorCode
      * @param approvalName
      */
-    void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName);
+    void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode);
 
     void updateApplyInfoByVO2(WorkFlowCallbackVO newVO, String applyCode);
 
@@ -193,4 +208,6 @@ public interface ProductSkuSupplyUnitService extends BaseService {
 
 
     DetailRequestRespVo getInfoByForm(String formNo);
+
+    BigDecimal getDistributionPrice(String skuCode);
 }

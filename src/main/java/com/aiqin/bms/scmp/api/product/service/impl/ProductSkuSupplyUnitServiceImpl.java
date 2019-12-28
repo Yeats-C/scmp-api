@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.ApplySkuSupply
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.QuerySkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.supplier.UpdateSkuSupplyUnitReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
@@ -52,6 +53,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -236,6 +238,20 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         return delNum;
     }
 
+    @Override
+    public Integer batchDeleteDraftById(List<Long> ids) {
+        Integer delNum = 0;
+        for (Long id : ids) {
+            ProductSkuSupplyUnitDraft productSkuSupplyUnitDraft = draftMapper.selectById(id);
+            if (null == productSkuSupplyUnitDraft) {
+                throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
+            }
+            delNum += draftMapper.deleteDraftById(id);
+            productSkuSupplyUnitCapacityService.deleteDraftBySkuCodeAndSupplierCode(productSkuSupplyUnitDraft.getProductSkuCode(), productSkuSupplyUnitDraft.getSupplyUnitCode());
+        }
+        return delNum;
+    }
+
     /**
      * 功能描述: 获取申请数据
      *
@@ -265,8 +281,16 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         //通过申请编码查询供应商信息
         if (CollectionUtils.isNotEmptyCollection(unitList)){
             List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(unitList,ProductSkuSupplyUnit.class);
-            productSkuSupplyUnitDao.deleteList2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
-            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            productSkuSupplyUnitDao.deleteList2(unitList);
+            //判断申请中的数据有没有默认值是的
+            List<ProductSkuSupplyUnit> defaultList = productSkuSupplyUnits.stream().filter(x -> Objects.equals(x.getIsDefault(), DefaultOrNot.DEFALUT.getValue())).collect(Collectors.toList());
+            if(CollectionUtils.isNotEmptyCollection(defaultList)){
+                List<String> productSkuCodes = defaultList.stream().map(ProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList());
+                //存在,根据skuCode和supplyUnitCode更新为不默认
+                productSkuSupplyUnitDao.updateIsDeFaultBySkuCode(productSkuCodes,DefaultOrNot.DEFALUT_NOT.getValue());
+            }
+            int i = ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            return i;
         } else {
             return 0;
         }
@@ -343,6 +367,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         if (null == repsVo) {
             throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
         }
+        // 设置获取分销价
+        repsVo.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         return repsVo;
     }
 
@@ -380,6 +406,15 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 addList.forEach(item->{
                     if(supplyCodeMap.containsKey(item.getSupplyUnitCode())){
                         throw new BizException(ResultCode.REPEAT_DATA);
+                    } else {
+                        Date now = new Date();
+                        item.setDelFlag((byte) 0);
+                        item.setCreateTime(now);
+                        item.setUpdateTime(now);
+                        if(AuthenticationInterceptor.getCurrentAuthToken() != null ) {
+                            item.setCreateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                            item.setUpdateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                        }
                     }
                 });
                 list.addAll(addList);
@@ -388,6 +423,10 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 //比较修改
                 updateList.forEach(item -> {
                     if (diffData(item, reqVo.getSkuCode(),item.getSupplyUnitCode())) {
+                        item.setUpdateTime(new Date());
+                        if(AuthenticationInterceptor.getCurrentAuthToken() != null ) {
+                            item.setUpdateBy(AuthenticationInterceptor.getCurrentAuthToken().getPersonName());
+                        }
                         list.add(item);
                     }
                 });
@@ -474,9 +513,15 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
         List<QueryProductSkuSupplyUnitsRespVo> list = draftMapper.getListPage(reqVo);
         list.forEach(item->{
+            item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
             item.setCapacityList(productSkuSupplyUnitCapacityService.getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(item.getSupplyUnitCode(),item.getProductSkuCode()));
         });
         return PageUtil.getPageList(reqVo.getPageNo(),list);
+    }
+
+    @Override
+    public List<QueryProductSkuSupplyUnitsRespVo> getDraftListNoPage(QuerySkuSupplyUnitReqVo reqVo) {
+        return draftMapper.getListPage(reqVo);
     }
 
     @Override
@@ -489,6 +534,27 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         if(null == detail){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
+        // 设置商品的供货渠道类别，根据商品供应商的供货渠道类别的变化而变化。
+        // List<String> codeList = detail.getSupplierList().stream().map(ProductSkuSupplyUnitRespVo::getCategoriesSupplyChannelsCode).collect(Collectors.toList());
+        // if(CollectionUtils.isNotEmptyCollection(codeList)) {
+        //     // 商品供应商的供货渠道类别有直送有配送，全部
+        //     if (codeList.contains(StatusTypeCode.DELIVERY.getStatus().toString()) &&
+        //             codeList.contains(StatusTypeCode.DIRECT_DELIVERY.getStatus().toString())) {
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.ALL.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.ALL.getName());
+        //     } else if (codeList.contains(StatusTypeCode.DELIVERY.getStatus().toString())) {
+        //         // 配送
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.DELIVERY.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.DELIVERY.getName());
+        //     } else {
+        //         // 直送
+        //         detail.setCategoriesSupplyChannelsCode(StatusTypeCode.DIRECT_DELIVERY.getStatus().toString());
+        //         detail.setCategoriesSupplyChannelsName(StatusTypeCode.DIRECT_DELIVERY.getName());
+        //     }
+        // }
+        String skuCode = detail.getSkuCode();
+        // 设置获取分销价
+        detail.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         List<ProductSkuSupplyUnitRespVo> respVos = Lists.newArrayList(productSkuSupplyUnitRespVo);
         detail.setSupplierList(respVos);
         return detail;
@@ -588,14 +654,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         //保存审批附件信息
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),String.valueOf(code),formNo, ApprovalFileTypeEnum.GOODS_COMPANY.getType());
-        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName());
+        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName(), reqVo.getPositionCode());
         return num;
     }
 
     @Override
-    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName) {
+    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(positionCode);
+        workFlowVO.setPositionCode(positionCode);
       //回调地址
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuSupplier + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
@@ -712,6 +778,12 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     }
 
     private ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> dealApplyViewData(List<ProductSkuSupplyUnitRespVo> unitRespVos) {
+        unitRespVos.forEach(item -> {
+            // 设置分销价
+            if (StringUtils.isNotBlank(item.getProductSkuCode())) {
+                item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
+            }
+        });
         ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
         SkuSupplierDetailRepsVo repsVo = new SkuSupplierDetailRepsVo();
         ProductSkuSupplyUnitRespVo respVo = unitRespVos.get(0);
@@ -781,5 +853,38 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             });
         }
         return list;
+    }
+
+    /***
+     * 获取分销价 爱亲没有就取萌贝树的，还没有取小红马的
+     * @param skuCode
+     * @return
+     */
+    @Override
+    public BigDecimal getDistributionPrice(String skuCode) {
+        if (StringUtils.isNotBlank(skuCode)) {
+            List<ProductSkuPriceRespVo> productSkuPriceInfosTemp =
+                    productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);
+            List<ProductSkuPriceRespVo>  productSkuPriceInfos =
+                    productSkuPriceInfosTemp.stream().filter(item -> Objects.equals(item.getPriceTypeCode(),
+                            PriceTypeEnum.DISTRIBUTION.getTypeCode())).collect(Collectors.toList());
+            if (CollectionUtils.isNotEmptyCollection(productSkuPriceInfos)) {
+                for (ProductSkuPriceRespVo item : productSkuPriceInfos) {
+                    if (StringUtils.equals(item.getPriceItemCode(), "1007")) {
+                        // 爱亲分销价
+                        return item.getPriceTax();
+                    } else if (StringUtils.equals(item.getPriceItemCode(), "1008")) {
+                        // 萌贝树分销价
+                        return item.getPriceTax();
+                    } else if (StringUtils.equals(item.getPriceItemCode(), "1009")) {
+                        // 小红马分销价
+                        return item.getPriceTax();
+                    } else {
+                        throw new BizException("分销价为空");
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

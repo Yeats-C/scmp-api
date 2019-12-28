@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProduct
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -111,7 +112,7 @@ public interface ProductSaleAreaService {
      * @param userName 登录人
      * @return void
      */
-    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode);
+    void workFlow(String formNo, String applyCode, String userName,String directSupervisorCode, String positionCode);
     /**
      * 处理保存或修改正式数据
      * @author NullPointException
@@ -279,4 +280,6 @@ public interface ProductSaleAreaService {
     BasePage<StoreInfo> storeList(QueryStoreReqVO req);
 
     DetailRequestRespVo getInfoByForm(String formNo);
+
+    HttpResponse skuAreaSale(String skuCode, String provinceCode, String storeCode);
 }

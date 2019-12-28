@@ -26,6 +26,7 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -255,13 +256,20 @@ public class InboundServiceImpl implements InboundService {
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
             log.info("插入入库单主表返回结果:{}", insert);
-
+            if(insert <= 0){
+                log.info("新增入库单主表数据失败");
+                throw new GroundRuntimeException("新增入库单主表数据失败");
+            }
             //  转化入库单sku实体
             List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
             list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
             //插入入库单商品表
             int insertProducts=inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
+            if(insert <= 0){
+                log.info("新增入库单商品表数据失败");
+                throw new GroundRuntimeException("新增入库单商品表数据失败");
+            }
             List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
             if(CollectionUtils.isNotEmpty(batchList)){
                 batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
@@ -364,9 +372,10 @@ public class InboundServiceImpl implements InboundService {
                     purchaseManageService.addLog(operationLog);
                 }
             }
-            PurchaseOrder order = inboundDao.selectCreateById(inbound.getInboundOderCode());
+            PurchaseOrderDetails order = inboundDao.selectCreateById(inbound.getInboundOderCode());
             inboundWmsReqVO.setCreateById(order.getCreateById());
             inboundWmsReqVO.setCreateByName(order.getCreateByName());
+            inboundWmsReqVO.setRemark(order.getRemark());
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundWmsReqVO));
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundWmsReqVO).timeout(200000);
@@ -815,6 +824,7 @@ public class InboundServiceImpl implements InboundService {
             String data= JSON.toJSONString(orderDto.getData());
             com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
             ResponseWms entiy = mapper.readValue(data, ResponseWms.class);
+            log.info("撤销采购单的dl回调参数：{}" + entiy);
             if("0".equals(orderDto.getCode())) {
                 if ("0".equals(entiy.getResultCode())) {
                     log.info("向dl发送撤销订单请求成功");

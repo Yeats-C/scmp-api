@@ -112,6 +112,12 @@ public interface SkuInfoService{
      * @return
      */
     BasePage<QueryProductSkuListResp> querySkuList(QuerySkuListReqVO querySkuListReqVO);
+    /**
+     * 根据条件查询skuCode
+     * @param querySkuListReqVO
+     * @return
+     */
+    List<String> querySkuCodeList(QuerySkuListReqVO querySkuListReqVO);
 
     /**
      * 通过供应商编号查询
@@ -291,6 +297,14 @@ public interface SkuInfoService{
 
     Boolean exportSku(HttpServletResponse resp);
 
+    /**
+     * 通过skuCode导出sku正式数据
+     * @param resp
+     * @param skuCodeList
+     * @return
+     */
+    Boolean exportFormalSkuBySkuCode(HttpServletResponse resp, List<String> skuCodeList);
+
     Boolean importSkuUpdateForSupplyPlatform(SkuImportReq reqVO);
 
     int saveDraftSkuInfoForPlatform(AddSkuInfoReqVO reqVO);
@@ -298,6 +312,13 @@ public interface SkuInfoService{
     DetailRequestRespVo getInfoByForm(String formNo);
 
     BasePage<ProductSkuDraftRespVo> getProductSkuDraftList(QuerySkuDraftListReqVO reqVO);
+
+    /**
+     * 带条件获取商品临时表，不分页
+     * @param reqVO
+     * @return
+     */
+    List<ProductSkuDraftRespVo> getProductSkuDraftListNoPage(QuerySkuDraftListReqVO reqVO);
 
     /**
      * 查未同步的

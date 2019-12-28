@@ -70,7 +70,7 @@ public class CheckContract {
             reqVo.setYear(contractImportNew.getYear().trim());
         }
         //供应商
-        if (StringUtils.isBlank(contractImportNew.getSupplierName())) {
+        if (StringUtils.isBlank(contractImportNew.getSupplierName().trim())) {
             error.add("供应商名称不能为空");
         } else {
             SupplyCompany supplyCompany = supplyCompanyNames.get(contractImportNew.getSupplierName().trim());
@@ -171,7 +171,7 @@ public class CheckContract {
         //折扣
         if (StringUtils.isNotBlank(contractImportNew.getDiscount())) {
             try {
-                reqVo.setDiscount(new BigDecimal(contractImportNew.getDiscount().trim()));
+                reqVo.setDiscount(contractImportNew.getDiscount().trim());
             } catch (NumberFormatException e) {
                 error.add("折扣格式不正确");
             }

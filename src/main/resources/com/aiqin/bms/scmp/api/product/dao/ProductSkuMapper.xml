@@ -839,7 +839,9 @@
     <include refid="Product_Sku_Resp_Column"/>,
       apply_type,
       apply_type_name,
-      product_desc
+      product_desc,
+      item_number,
+      season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -847,6 +849,7 @@
   <select id="getSkuInfoResp" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
     SELECT
     <include refid="Product_Sku_Resp_Column"/>
+    ,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 
@@ -855,7 +858,8 @@
     <include refid="Product_Sku_Resp_Column"/>,
     apply_type,
     apply_type_name,
-    product_desc
+    product_desc,item_number,
+    season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
     from apply_product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
     and apply_code=#{applyCode,jdbcType=VARCHAR}
     and del_flag=0
@@ -932,6 +936,71 @@
         AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
       </if>
     order by create_time desc
+  </select>
+  <select id="querySkuCodeList" resultType="java.lang.String">
+    SELECT
+    a.sku_code
+    FROM
+    product_sku a
+    LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+    WHERE a.del_flag=0
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND a.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCode!=null and productCode!=''">
+      AND a.product_code = #{productCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productName!=null and productName!=''">
+      AND a.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productPropertyName!=null and productPropertyName!=''">
+      AND a.product_property_name like CONCAT('',#{productPropertyName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryCode!=null and productCategoryCode!=''">
+      AND a.product_category_code like CONCAT('',#{productCategoryCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND a.product_category_name like CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandCode!=null and productBrandCode!=''">
+      AND a.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND a.product_brand_name like CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+      AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+      AND a.procurement_section_name like CONCAT('',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and a.company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuStatus != null">
+      and a.sku_status = #{skuStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    <if test="createTimeStart != null ">
+      AND a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createTimeEnd != null">
+      AND a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeStart != null ">
+      AND a.update_time &gt;=#{updateTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeEnd != null">
+      AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+    </if>
   </select>
   <select id="getProductDraftList" resultMap="ProductDraftListMap">
     SELECT
@@ -1019,7 +1088,8 @@
     form_no,inventory_model,use_time,unique_code,
     company_code,company_name,remark,apply_type,apply_type_name,
     seasonal_goods,warehouse_type_code,warehouse_type_name,structural_goods,
-    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc,approval_remark,approval_name)
+    price_model,inventory_allocation,sku_status,change_content,pic_folder_code,product_desc,approval_remark,approval_name,
+    item_number,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name)
     VALUES
     <foreach collection="applyProductSkus" item="item" index="index" separator="," >
       (#{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR},
@@ -1046,7 +1116,9 @@
       #{item.applyType,jdbcType=TINYINT},#{item.applyTypeName,jdbcType=VARCHAR}, #{item.seasonalGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR},#{item.warehouseTypeName,jdbcType=VARCHAR},#{item.structuralGoods,jdbcType=TINYINT},
       #{item.inventoryAllocation,jdbcType=TINYINT},#{item.priceModel,jdbcType=TINYINT},#{item.skuStatus,jdbcType=TINYINT},
-      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR},#{item.approvalName,jdbcType=VARCHAR}
+      #{item.changeContent,jdbcType=VARCHAR},#{item.picFolderCode,jdbcType=VARCHAR},#{item.productDesc,jdbcType=VARCHAR},#{item.approvalRemark,jdbcType=VARCHAR},#{item.approvalName,jdbcType=VARCHAR},
+      #{item.itemNumber,jdbcType=VARCHAR},#{item.seasonBand,jdbcType=VARCHAR},#{item.level,jdbcType=VARCHAR},#{item.featureCode,jdbcType=VARCHAR},
+      #{item.featureName,jdbcType=VARCHAR},#{item.currencyLevelCode,jdbcType=VARCHAR},#{item.currencyLevelName,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -1579,6 +1651,13 @@
     <result column="apply_type" jdbcType="TINYINT" property="applyType" />
     <result column="apply_type_name" jdbcType="TINYINT" property="applyTypeName" />
     <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+    <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+    <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+    <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+    <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
@@ -2361,4 +2440,5 @@
     on ps.transport_center_code = w.logistics_center_code
     where p.sku_code = #{skuCode}
   </select>
+
 </mapper>

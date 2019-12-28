@@ -169,7 +169,7 @@ public interface ApplyContractService{
     * 审批流接口
     * @param id
     */
-   void workFlow(Long id) ;
+   void workFlow(Long id, String positionCode) ;
 
  /**
   * 查询供货单位账户列表
