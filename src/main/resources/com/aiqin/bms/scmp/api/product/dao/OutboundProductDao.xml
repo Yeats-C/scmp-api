@@ -343,23 +343,15 @@
       <if test="praTaxAmount != null">
         pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
       <if test="linenum != null">
         linenum = #{linenum,jdbcType=BIGINT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType = BIGINT}
     and  outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct">

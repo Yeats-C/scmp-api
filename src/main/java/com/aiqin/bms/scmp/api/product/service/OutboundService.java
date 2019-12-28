@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -168,6 +169,7 @@ public interface OutboundService {
      */
     void saveData(List<Outbound> list, List<OutboundProduct> productList, List<OutboundBatch> batchList);
 
+    HttpResponse saleCallBack(OutboundCallBackRequest request);
 }
 
 

@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -123,4 +124,12 @@ public class OutboundController {
             return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
         }
     }
+
+    @ApiOperation("销售单回调接口")
+    @PostMapping("/sale/call/back")
+    public HttpResponse saleCallBack(@RequestBody OutboundCallBackRequest request){
+        log.error(" 出库单回调接口实体是:[{}]", JSON.toJSONString(request));
+        return  outboundService.saleCallBack(request);
+    }
+
 }

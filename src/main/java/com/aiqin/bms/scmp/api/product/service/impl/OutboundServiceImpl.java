@@ -37,10 +37,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -557,7 +554,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setPraTaxAmount(BigDecimal.ZERO);
             outbound.setPraTax(BigDecimal.ZERO);
             outbound.setPraAmount(BigDecimal.ZERO);
-            outbound.setOutboundTime(reqVo.getOutboundTime());
             // 设置解锁并且减少库存
 
             // 减在途数并且增加库存 实体
@@ -701,7 +697,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<SupplyOrderProductItemReqVO> orderItems = BeanCopyUtils.copyList(list,SupplyOrderProductItemReqVO.class);
                 supplyOrderInfoReqVO.setOrderItems(orderItems);
                 // 调用订单接口
-//                returnOder(supplyOrderInfoReqVO);
+                returnOder(supplyOrderInfoReqVO);
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -1049,5 +1045,93 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
         }
         return outboundReqVoList;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    // @Async("myTaskAsyncPool")
+    public HttpResponse saleCallBack(OutboundCallBackRequest request){
+        if(null == request){
+           return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 根据入库单编号查询旧的入库单主体
+        Outbound outbound;
+        outbound = outboundDao.selectByCode(request.getOutboundOderCode());
+        // 保存日志
+        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(),
+                ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
+        // 设置状态
+        outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
+        outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
+        // 设置出库时间
+        outbound.setOutboundTime(request.getOutboundTime());
+        // 设置实际出库数量和出库主数量
+        outbound.setPraOutboundNum(request.getActualTotalCount());
+        outbound.setPraMainUnitNum(request.getActualTotalCount());
+        if(CollectionUtils.isEmpty(request.getDetailList())){
+            log.info("sku的详情数据缺失: 出库单号：" + outbound.getOutboundOderCode());
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 设置sku详情
+        OutboundProduct outboundProduct;
+        BigDecimal praTaxAmount = BigDecimal.ZERO, praAmount = BigDecimal.ZERO;
+        for(OutboundCallBackDetailRequest detail : request.getDetailList()){
+            ReturnOutboundProduct returnOutboundProduct;
+            // 查询旧的sku，以及销项，进项税率
+            if(!Objects.isNull(detail.getLineCode()) && detail.getLineCode()!= null){
+                returnOutboundProduct = outboundProductDao.selectByLinenum(outbound.getOutboundOderCode(), detail.getSkuCode(), detail.getLineCode());
+            }else{
+                List<ReturnOutboundProduct> list = outboundProductDao.selectBySkuCode(outbound.getOutboundOderCode(), detail.getSkuCode());
+                returnOutboundProduct = list.get(0);
+            }
+            outboundProduct = new OutboundProduct();
+            // 如果是订单则使用销项税率
+            returnOutboundProduct.setTax(returnOutboundProduct.getOutputTaxRate());
+            // copy 实体
+            BeanCopyUtils.copy(returnOutboundProduct,outboundProduct);
+            // 设置实际数量，实际数量
+            outboundProduct.setPraOutboundNum(detail.getActualTotalCount());
+            outboundProduct.setPraOutboundMainNum(detail.getActualTotalCount());
+            //设置实际含税单价，实际含税总价
+            outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
+            BigDecimal amount = outboundProduct.getPraTaxPurchaseAmount().multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum())).
+                    setScale(4, BigDecimal.ROUND_HALF_UP);
+            outboundProduct.setPraTaxAmount(amount);
+            // 修改单条 sku
+            outboundProductDao.updateByPrimaryKeySelective(outboundProduct);
+            praTaxAmount = amount.add(praTaxAmount);
+            praAmount = Calculate.computeNoTaxPrice(amount, outboundProduct.getTax());
+            praAmount = praAmount.add(praAmount);
+        }
+        // 设置实际含税总金额，税额，不含税总金额
+        outbound.setPraTaxAmount(praTaxAmount);
+        outbound.setPraTax(praTaxAmount.subtract(praAmount));
+        outbound.setPraAmount(praAmount);
+        // 设置sku批次信息
+        List<OutboundBatch> outboundBatchList = Lists.newArrayList();
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+            OutboundBatch outboundBatch;
+            for(OutboundCallBackBatchRequest batch : request.getBatchList()){
+                outboundBatch = new OutboundBatch();
+                outboundBatch.setOutboundOderCode(request.getOutboundOderCode());
+                outboundBatch.setSkuCode(batch.getSkuCode());
+                outboundBatch.setSkuName(batch.getSkuName());
+                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
+                outboundBatch.setManufactureTime(batch.getProductDate());
+                outboundBatch.setBatchRemark(batch.getBatchRemark());
+                outboundBatch.setPraQty(batch.getActualTotalCount());
+                outboundBatch.setCreateBy(request.getDeliveryPerson());
+                outboundBatch.setUpdateBy(request.getDeliveryPerson());
+                outboundBatch.setLineNum(batch.getLineCode());
+                outboundBatchList.add(outboundBatch);
+            }
+        }
+        int count = outboundDao.updateByPrimaryKeySelective(outbound);
+        if(count <= 0){
+            log.info("DL回传出库失败！！！");
+        }
+        outboundBatchDao.insertList(outboundBatchList);
+        returnSource(outbound.getId());
+        return HttpResponse.success();
     }
 }

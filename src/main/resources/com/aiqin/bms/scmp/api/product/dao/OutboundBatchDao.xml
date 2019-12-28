@@ -98,10 +98,8 @@
     </foreach>
   </insert>
   <insert id="insertList" parameterType="java.util.List">
-    insert into outbound_batch ( outbound_oder_code, sku_code,
-    sku_name,  pre_qty, pra_qty,supplier_name,supplier_code,create_time, update_time,
-    create_by, update_by
-    )
+    insert into outbound_batch (outbound_oder_code, sku_code, sku_name,  pre_qty, pra_qty,
+    supplier_name,supplier_code,create_time, update_time, create_by, update_by)
     values
     <foreach collection="list" index="index" item="item" separator=",">
     (
