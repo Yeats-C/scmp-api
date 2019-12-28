@@ -188,6 +188,7 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
         }
         ProductCategory productCategory = new ProductCategory();
         BeanCopyUtils.copy(productCategoryReqVO, productCategory);
+        productCategory.setCategoryStatus(productCategoryReqVO.getCategoryStatus().intValue());
         if (productCategoryReqVO.getCategoryStatus().equals(Byte.parseByte("1"))) {
             verifyDisable(productCategory.getCategoryId());
         }

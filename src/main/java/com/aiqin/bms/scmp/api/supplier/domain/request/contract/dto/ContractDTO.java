@@ -146,7 +146,7 @@ public class ContractDTO extends CommonBean {
     private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private BigDecimal discount;
+    private String discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;

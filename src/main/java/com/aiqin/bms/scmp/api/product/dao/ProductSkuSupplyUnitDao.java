@@ -66,7 +66,7 @@ public interface ProductSkuSupplyUnitDao {
 
     Integer updateApplyInfo(ApplyProductSkuConfigReqVo req);
 
-    Integer deleteList2(List<String> list);
+    Integer deleteList2(List<ApplyProductSkuSupplyUnit> unitList);
 
     List<ApplyProductSkuSupplyUnit> selectUnSynData();
 
@@ -90,4 +90,6 @@ public interface ProductSkuSupplyUnitDao {
     ProductSkuSupplyUnitRespVo selectDraftById(Long id);
 
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
+
+    int updateIsDeFaultBySkuCode(@Param("list") List<String> skuCodes, @Param("isDefault") Byte value);
 }

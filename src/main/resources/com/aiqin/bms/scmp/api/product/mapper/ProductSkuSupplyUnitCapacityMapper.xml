@@ -36,17 +36,17 @@
   </delete>
     <delete id="deleteDraftsByVos" parameterType="java.util.List">
       <foreach collection="list" open="" close="" separator=";" item="item">
-        delete from product_sku_supply_unit_capacity
+        delete from product_sku_supply_unit_capacity_draft
         where product_sku_code = #{item.productSkuCode}
         and supply_unit_code = #{item.supplyUnitCode}
       </foreach>
     </delete>
     <delete id="deleteBySkuCode2" parameterType="java.util.List">
-      delete from product_sku_supply_unit_capacity
-    where product_sku_code in
-    <foreach collection="list" open="(" close=")" item="item" separator=",">
-         #{item}
-    </foreach>
+      <foreach collection="list" open="" close="" separator=";" item="item">
+        delete from product_sku_supply_unit_capacity
+        where product_sku_code = #{item.productSkuCode}
+        and supply_unit_code = #{item.supplyUnitCode}
+      </foreach>
     </delete>
   <delete id="deleteByUintCode" parameterType="java.util.List">
     delete from product_sku_supply_unit_capacity

@@ -58,6 +58,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -113,15 +114,14 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityMapper;
     @Autowired
     private ApplyProductSkuConfigMapper applyProductSkuConfigMapper;
-
     @Autowired
     private ProductSkuConfigDraftMapper productSkuConfigDraftMapper;
-
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
-
     @Autowired
     private ProductSkuCheckoutService productSkuCheckoutService;
+    @Resource
+    private ProductSkuSupplyUnitMapper productSkuSupplyUnitMapper;
 
 
 
@@ -1243,6 +1243,19 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 }
                 list.add(reqVo);
             }
+            // 新增是否默认个数
+            Set<String> set = new HashSet<>();
+            for (SkuSupplierImport supplierImport : skuSupplierImport) {
+                if (StringUtils.equals("是", supplierImport.getIsDefault())) {
+                    if (set.contains(supplierImport.getProductSkuCode())) {
+                        if (list.get(0).getError() == null) {
+                            list.get(0).setError("同一sku只能有一条默认商品供应商");
+                        }
+                        break;
+                    }
+                    set.add(supplierImport.getProductSkuCode());
+                }
+            }
             return list;
         } catch (ExcelException e) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
@@ -1324,6 +1337,21 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 capacityDraft.setSupplyUnitCode(supplyUnitDraft.getSupplyUnitCode());
                 capacityDrafts.add(capacityDraft);
             }
+            // 数据转换,新增
+            if (draft.getApplyType().equals(StatusTypeCode.ADD_APPLY.getStatus())) {
+                draft.setOriginRateOfMargin(BigDecimal.ZERO);
+                draft.setOriginTaxIncludedPrice(BigDecimal.ZERO);
+            }
+            // 数据转换，修改
+            if (draft.getApplyType().equals(StatusTypeCode.UPDATE_APPLY.getStatus())) {
+                ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
+                draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
+                // 分销价
+                BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(productSkuSupplyUnit.getProductSkuCode());
+                //原毛利率
+                draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice()));
+            }
+
         }
         if (CollectionUtils.isNotEmpty(error)) {
             throw new BizException(MessageId.create(Project.SCMP_API, 100, StringUtils.strip(error.toString(), "[]")));
@@ -1405,6 +1433,21 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 }
             }
         }
+        // sku供应商关系校验
+        int count = productSkuSupplyUnitMapper.selectCountBySkuCodeAndSupplyCode(skuSupplierImport.getProductSkuCode(), skuSupplierImport.getSupplyUnitCode());
+        // 新增，验证该sku下是否已经存在该供应商，存在就报错
+        if (StringUtils.equals(StatusTypeCode.ADD_APPLY.getName(), skuSupplierImport.getApplyType())) {
+            if (count > 0) {
+                errorList.add(StatusTypeCode.ADD_APPLY.getName() + "的供应商已存在");
+            }
+        }
+        // 修改，验证该sku下是否已经存在该供应商，不存在报错
+        if (StringUtils.equals(StatusTypeCode.UPDATE_APPLY.getName(), skuSupplierImport.getApplyType())) {
+            if (count < 1) {
+                errorList.add(StatusTypeCode.UPDATE_APPLY.getName() + "的供应商不存在");
+            }
+        }
+
         //含税金额
         if (Objects.isNull(skuSupplierImport.getTaxIncludedPrice())) {
             errorList.add("含税金额不能为空");

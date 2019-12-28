@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacity;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitCapacityDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitCapacityRespVo;
@@ -21,7 +22,7 @@ public interface ProductSkuSupplyUnitCapacityMapper {
     int updateByPrimaryKey(ProductSkuSupplyUnitCapacity record);
 
     int deleteBySkuCode(String skuCode);
-    int deleteBySkuCode2(List<String> list);
+    int deleteBySkuCode2(List<ApplyProductSkuSupplyUnit> unitList);
 
     int insertBatch(List<ProductSkuSupplyUnitCapacity> capacities);
 

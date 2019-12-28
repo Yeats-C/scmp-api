@@ -56,17 +56,17 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
         if(null != referer){
             fromSwagger = referer.indexOf("swagger-ui.html") > 0;
         }
-//        if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
-//            AuthToken current = new AuthToken();
-//            current.setPersonId("12449");
-//            current.setPositionCode(null);
-//            current.setPersonName("余红梅");
-//            current.setCompanyCode("09");
-//            current.setCompanyName("宁波熙耘科技有限公司");
-//            current.setAccountId("a553b0f542c846dd98ec5026f947f1c5");
-//            filterThreadLocal.set(current);
-//            return true;
-//        }
+        if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
+            AuthToken current = new AuthToken();
+            current.setPersonId("11356");
+            current.setPositionCode(null);
+            current.setPersonName("魏强");
+            current.setCompanyCode("09");
+            current.setCompanyName("宁波熙耘科技有限公司");
+            current.setAccountId("a553b0f542c846dd98ec5026f947f1c5");
+            filterThreadLocal.set(current);
+            return true;
+        }
         String ticket = httpServletRequest.getParameter(Global.TICKET);
         String accountId = httpServletRequest.getParameter("account_id");
         log.info("ticket{}",ticket);

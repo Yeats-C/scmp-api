@@ -31,6 +31,16 @@
     from product_sku_supply_unit
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectCountBySkuCodeAndSupplyCode" resultType="java.lang.Integer">
+    select count(*)
+    from product_sku_supply_unit
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR} and supply_unit_code=#{supplyCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectBySupplyCode" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from product_sku_supply_unit
+    where product_sku_code = #{skuCode,jdbcType=VARCHAR} and supply_unit_code=#{supplyCode,jdbcType=VARCHAR}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_supply_unit
     where id = #{id,jdbcType=BIGINT}
