@@ -63,7 +63,7 @@ public class CheckSkuUpdate {
         this.channelMap = channelMap;
         this.skuTagMap = skuTagMap;
         this.repeatMap = repeatMap;
-        this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
+        this.importVo = BeanCopyUtils.copy(importVo, SkuInfoImport.class);
         this.spuMap = spuMap;
         this.dicMap = dicMap;
         this.dicMap2 = dicMap2;
@@ -74,18 +74,19 @@ public class CheckSkuUpdate {
     public CheckSkuUpdate checkRepeat() {
         return this;
     }
+
     //修改检查sku
     public CheckSkuUpdate checkSKuUpdate() {
         ProductSkuDraft draft = BeanCopyUtils.copy(importVo, ProductSkuDraft.class);
         //sku编码
         if (Objects.isNull(importVo.getSkuCode())) {
             error.add("sku编码不能为空");
-        }else {
+        } else {
             ProductSkuInfo sku = productSkuMap.get(importVo.getSkuCode());
             //sku名称
             if (Objects.isNull(sku)) {
                 error.add("无对应的sku编码");
-            }else {
+            } else {
 //                if (Objects.isNull(importVo.getSkuName())) {
 //                    error.add("SKU名称不能为空");
 //                }
@@ -110,7 +111,7 @@ public class CheckSkuUpdate {
             StatusTypeCode code = StatusTypeCode.getAll().get(importVo.getGoodsGiftsDesc());
             if (Objects.isNull(code)) {
                 error.add("类型值错误，请填写商品或赠品");
-            } else  {
+            } else {
                 productSkuDraft.setGoodsGifts(code.getStatus());
             }
         }
@@ -167,7 +168,7 @@ public class CheckSkuUpdate {
             ProductCategory productCategory = categoryMap.get(importVo.getProductCategoryName());
             if (Objects.isNull(productCategory)) {
                 error.add("无对应编码为" + importVo.getProductCategoryName() + "的品类信息");
-            }else {
+            } else {
                 productSkuDraft.setProductCategoryCode(productCategory.getCategoryId());
                 productSkuDraft.setProductCategoryName(productCategory.getCategoryName());
             }
@@ -246,15 +247,15 @@ public class CheckSkuUpdate {
         //保质天数
         if (StringUtils.isBlank(importVo.getQualityDate())) {
 //            error.add("保质天数不能为空");
-        }else {
+        } else {
             try {
                 int i = Integer.parseInt(importVo.getQualityDate());
-                if ( i == 0) {
+                if (i == 0) {
                     productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.NO.getType());
-                }else if (i>0){
+                } else if (i > 0) {
                     productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.YES.getType());
                     productSkuDraft.setQualityNumber(QualityTypes.DAY.getType().toString());
-                    productSkuDraft.setQualityDate(i+"");
+                    productSkuDraft.setQualityDate(i + "");
                 }
             } catch (NumberFormatException e) {
                 error.add("保质天数格式不正确");
@@ -442,7 +443,7 @@ public class CheckSkuUpdate {
         if (StringUtils.isNotBlank(importVo.getRemark())) {
             productSkuDraft.setRemark(importVo.getRemark());
         }
-        if(StringUtils.isNotBlank(importVo.getProductDesc()))
+        if (StringUtils.isNotBlank(importVo.getProductDesc()))
             productSkuDraft.setRemark(importVo.getProductDesc());
         //管理方式默认写死
         productSkuDraft.setManagementStyleCode("1");
@@ -488,6 +489,9 @@ public class CheckSkuUpdate {
                 && StringUtils.isBlank(importVo.getStockBoxHeight()) && StringUtils.isBlank(importVo.getStockBoxVolume())
                 && StringUtils.isBlank(importVo.getStockBoxGrossWeight()) && StringUtils.isBlank(importVo.getStockNetWeight());
         if (!stockNotSave) {
+            if (Objects.isNull(importVo.getStockUnitName())) {
+                error.add("库存包装信息不匹配");
+            }
             ProductSkuBoxPackingDraft stockBox = new ProductSkuBoxPackingDraft();
             stockBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
             stockBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
@@ -498,9 +502,10 @@ public class CheckSkuUpdate {
                 if (StringUtils.isNotBlank(importVo.getStockBoxLength())) {
                     BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
-                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存长格式不正确");
+                        error.add("库存长格式不正确");
                     }
                     stockBox.setBoxLength(longLength);
                 } else {
@@ -511,12 +516,13 @@ public class CheckSkuUpdate {
                 flag = false;
             }
             try {
-                if(StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
+                if (StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
                     BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
-                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存宽格式不正确");
+                        error.add("库存宽格式不正确");
                     }
                     stockBox.setBoxWidth(longWidth);
                 } else {
@@ -531,9 +537,10 @@ public class CheckSkuUpdate {
                 if (StringUtils.isNotBlank(importVo.getStockBoxHeight())) {
                     BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
-                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存高格式不正确");
+                        error.add("库存高格式不正确");
                     }
                     stockBox.setBoxHeight(longHeight);
                 } else {
@@ -548,9 +555,10 @@ public class CheckSkuUpdate {
                 if (StringUtils.isNotBlank(importVo.getStockBoxVolume())) {
                     BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxVolume().trim());
                     Long longVolume = bigDecimalVolume.longValue();
-                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存体积格式不正确");
+                        error.add("库存体积格式不正确");
                     }
                     stockBox.setBoxVolume(longVolume);
                     flag = false;
@@ -562,16 +570,23 @@ public class CheckSkuUpdate {
                 stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
             }
             try {
-                stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight().trim())) {
+                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                } else {
+                    stockBox.setBoxGrossWeight(BigDecimal.ZERO);
+                }
             } catch (Exception e) {
                 error.add("库存毛重格式不正确");
             }
             try {
-                stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
+                if (StringUtils.isNotBlank(importVo.getStockNetWeight().trim())) {
+                    stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight().trim()));
+                }
             } catch (Exception e) {
                 error.add("库存净重格式不正确");
             }
             productSkuBoxPackingDrafts.add(stockBox);
+
         }
         stock.setBarCode(importVo.getSaleBarCode());
         purchaseSaleStockReqVos.add(stock);
@@ -604,8 +619,11 @@ public class CheckSkuUpdate {
         if ((!StringUtils.equals(importVo.getStockUnitName(), importVo.getPurchaseUnitName()))) {
             boolean purchaseBoxNotSave = StringUtils.isBlank(importVo.getPurchaseBoxLength()) && StringUtils.isBlank(importVo.getPurchaseBoxWidth())
                     && StringUtils.isBlank(importVo.getPurchaseBoxHeight()) && StringUtils.isBlank(importVo.getPurchaseBoxVolume())
-                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight())  && StringUtils.isBlank(importVo.getPurchaseNetWeight());
+                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight()) && StringUtils.isBlank(importVo.getPurchaseNetWeight());
             if (!purchaseBoxNotSave) {
+                if (Objects.isNull(importVo.getPurchaseUnitName())) {
+                    error.add("采购包装信息不匹配");
+                }
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
                 purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
@@ -616,9 +634,10 @@ public class CheckSkuUpdate {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxLength())) {
                         BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim());
                         Long longLength = bigDecimalLength.longValue();
-                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购长格式不正确");
+                            throw new BizException("采购长格式不正确");
                         }
                         purchaseBox.setBoxLength(longLength);
                     } else {
@@ -629,12 +648,13 @@ public class CheckSkuUpdate {
                     flag = false;
                 }
                 try {
-                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
                         BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim());
                         Long longWidth = bigDecimalWidth.longValue();
-                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购宽格式不正确");
+                            throw new BizException("采购宽格式不正确");
                         }
                         purchaseBox.setBoxWidth(longWidth);
                     } else {
@@ -648,9 +668,10 @@ public class CheckSkuUpdate {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxHeight())) {
                         BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim());
                         Long longHeight = bigDecimalHeight.longValue();
-                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购高格式不正确");
+                            throw new BizException("采购高格式不正确");
                         }
                         purchaseBox.setBoxHeight(longHeight);
                     } else {
@@ -661,12 +682,13 @@ public class CheckSkuUpdate {
                     flag = false;
                 }
                 try {
-                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
                         BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxVolume().trim());
                         Long longVolume = bigDecimalVolume.longValue();
-                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购体积格式不正确");
+                            throw new BizException("采购体积格式不正确");
                         }
                         purchaseBox.setBoxVolume(longVolume);
                         flag = false;
@@ -678,12 +700,18 @@ public class CheckSkuUpdate {
                     purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
                 }
                 try {
-                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight().trim())) {
+                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                    } else {
+                        purchaseBox.setBoxGrossWeight(BigDecimal.ZERO);
+                    }
                 } catch (Exception e) {
                     error.add("采购毛重格式不正确");
                 }
                 try {
-                    purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
+                    if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight().trim())) {
+                        purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight().trim()));
+                    }
                 } catch (Exception e) {
                     error.add("采购净重格式不正确");
                 }
@@ -748,7 +776,7 @@ public class CheckSkuUpdate {
         sale.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
         sale.setProductCode(this.resp.getProductSkuDraft().getProductCode());
         sale.setProductName(this.resp.getProductSkuDraft().getProductName());
-        sale.setIsDefault((byte)1);
+        sale.setIsDefault((byte) 1);
         sale.setType((byte) 3);
         sale.setSpec(stock.getSpec());
         sale.setUnitCode(stock.getUnitCode());
@@ -844,7 +872,7 @@ public class CheckSkuUpdate {
                 ProductSkuManufacturerDraft draft = new ProductSkuManufacturerDraft();
                 draft.setManufacturerName(manufacturer.getName());
                 draft.setManufacturerCode(manufacturer.getManufacturerCode());
-                draft.setIsDefault((byte)1);
+                draft.setIsDefault((byte) 1);
                 //厂方商品编号
                 if (Objects.isNull(importVo.getFactoryProductNumber())) {
                     error.add("厂方商品编号不能为空");
@@ -868,7 +896,7 @@ public class CheckSkuUpdate {
     public CheckSkuUpdate checkPic() {
         if (Objects.isNull(importVo.getPicFolderCode())) {
 //                error.add("图片文件夹编号不能为空");
-        }else {
+        } else {
             this.resp.getProductSkuDraft().setPicFolderCode(importVo.getPicFolderCode().trim());
         }
         return this;

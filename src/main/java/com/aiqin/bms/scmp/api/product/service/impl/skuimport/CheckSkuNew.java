@@ -585,9 +585,11 @@ public class CheckSkuNew {
                 stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
             }
             try {
-                // if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
+                 if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
                     stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
-                // }
+                 } else {
+                     error.add("库存毛重不能为空");
+                 }
             } catch (Exception e) {
                 error.add("库存毛重格式不正确");
             }
@@ -718,6 +720,8 @@ public class CheckSkuNew {
                     } catch (Exception e) {
                         error.add("采购毛重格式不正确");
                     }
+                } else {
+                    error.add("采购毛重不能为空");
                 }
                 if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight())) {
                     try {
