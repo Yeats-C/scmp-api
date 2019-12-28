@@ -570,7 +570,7 @@ public class CheckSkuUpdate {
                 stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
             }
             try {
-                if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight().trim())) {
+                if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
                     stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
                 } else {
                     stockBox.setBoxGrossWeight(BigDecimal.ZERO);
@@ -579,7 +579,7 @@ public class CheckSkuUpdate {
                 error.add("库存毛重格式不正确");
             }
             try {
-                if (StringUtils.isNotBlank(importVo.getStockNetWeight().trim())) {
+                if (StringUtils.isNotBlank(importVo.getStockNetWeight())) {
                     stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight().trim()));
                 }
             } catch (Exception e) {
@@ -700,7 +700,7 @@ public class CheckSkuUpdate {
                     purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
                 }
                 try {
-                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight().trim())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight())) {
                         purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
                     } else {
                         purchaseBox.setBoxGrossWeight(BigDecimal.ZERO);
@@ -709,7 +709,7 @@ public class CheckSkuUpdate {
                     error.add("采购毛重格式不正确");
                 }
                 try {
-                    if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight().trim())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight())) {
                         purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight().trim()));
                     }
                 } catch (Exception e) {
