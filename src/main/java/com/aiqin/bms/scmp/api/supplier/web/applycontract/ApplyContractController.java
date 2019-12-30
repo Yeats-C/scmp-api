@@ -58,7 +58,11 @@ public class ApplyContractController {
         try {
             int kp = applyContractService.saveApplyContract(applyContractReqVo);
             return HttpResponse.success(kp);
-        }catch (Exception ex){
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
+        } catch (Exception e) {
             return HttpResponse.failure(ResultCode.ADD_ERROR);
         }
     }
@@ -76,7 +80,7 @@ public class ApplyContractController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (GroundRuntimeException e) {
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API,999,e.getMessage()));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
         }catch (Exception e) {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
@@ -93,7 +97,11 @@ public class ApplyContractController {
         try {
             ApplyContractUpdateResVo detail = applyContractService.findUpdateContractDetail(applyContractCode);
             return HttpResponse.success(detail);
-        }catch (Exception ex){
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
+        }catch (Exception e) {
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }
     }
@@ -110,9 +118,14 @@ public class ApplyContractController {
         try{
             int k =applyContractService.updateApplyContract(updateApplyContractReqVo);
             return HttpResponse.success(k);
-        }catch (Exception ex){
-            return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, ex.getMessage()));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
+        }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
+
     }
 
     /**
@@ -125,8 +138,12 @@ public class ApplyContractController {
     public HttpResponse<Boolean> saveUpdateApply(@RequestBody @Valid UpdateApplyContractReqVo updateApplyContractReqVo){
         try{
             return HttpResponse.success(applyContractService.saveUpdateApply(updateApplyContractReqVo));
-        }catch (Exception ex){
-            return HttpResponse.failure(MessageId.create(Project.MARKET_API, -1, ex.getMessage()));
+        } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (GroundRuntimeException e) {
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
+         }catch (Exception e) {
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
     }
 
@@ -167,7 +184,7 @@ public class ApplyContractController {
         } catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (GroundRuntimeException e) {
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API,999,e.getMessage()));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API,-1,e.getMessage()));
         }catch (Exception e) {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
