@@ -215,6 +215,7 @@ public interface ResultCode {
     MessageId CHANGE_ACTUAL_DELIVERY_NUM_FAILED = MessageId.create(Project.PURCHASE_API, 99, "修改实发数量失败");
     MessageId LOCK_BATCH_STOCK_FAILED = MessageId.create(Project.PURCHASE_API, 99, "锁定批次库存失败");
     MessageId ORDER_INFO_IS_HAVE = MessageId.create(Project.PURCHASE_API, 99, "单据已存在");
+    MessageId ORDER_INFO_NOT_HAVE = MessageId.create(Project.PURCHASE_API, 99, "单据不存在");
 
     //退货
     MessageId SAVE_RETURN_ORDER_ITEM_FAILED = MessageId.create(Project.PURCHASE_API, 100, "退货订单附表保存失败");

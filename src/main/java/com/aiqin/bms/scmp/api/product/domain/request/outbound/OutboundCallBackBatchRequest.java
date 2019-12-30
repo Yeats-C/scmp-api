@@ -32,6 +32,10 @@ public class OutboundCallBackBatchRequest {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date productDate;
 
+    @ApiModelProperty("销售数量")
+    @JsonProperty("product_count")
+    private Long productCount;
+
     @ApiModelProperty("实际销售数量")
     @JsonProperty("actual_total_count")
     private Long actualTotalCount;

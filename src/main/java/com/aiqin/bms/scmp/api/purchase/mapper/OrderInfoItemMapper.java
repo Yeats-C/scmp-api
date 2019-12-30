@@ -60,4 +60,8 @@ public interface OrderInfoItemMapper {
     List<OrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 
     List<QueryOrderInfoItemRespVO> productList(String orderCode);
+
+    OrderInfoItem selectOrderByLine(String orderCode, Long lineCode);
+
+    Integer updateList(List<OrderInfoItem> itemList);
 }

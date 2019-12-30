@@ -19,11 +19,6 @@ import java.util.List;
 @Data
 public class OutboundCallBackRequest {
 
-    @ApiModelProperty("出库单编号")
-    @NotEmpty(message = "出库单编号不能为空")
-    @JsonProperty("outbound_oder_code")
-    private String outboundOderCode;
-
     @ApiModelProperty("来源单号")
     @NotEmpty(message = "来源单号不能为空")
     @JsonProperty("source_oder_code")

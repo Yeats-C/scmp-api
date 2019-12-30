@@ -688,7 +688,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
-
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
             try {
@@ -697,7 +696,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<SupplyOrderProductItemReqVO> orderItems = BeanCopyUtils.copyList(list,SupplyOrderProductItemReqVO.class);
                 supplyOrderInfoReqVO.setOrderItems(orderItems);
                 // 调用订单接口
-                returnOder(supplyOrderInfoReqVO);
+                //returnOder(supplyOrderInfoReqVO);
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -1056,7 +1055,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
         // 根据入库单编号查询旧的入库单主体
         Outbound outbound;
-        outbound = outboundDao.selectByCode(request.getOutboundOderCode());
+        outbound = outboundDao.selectByCode("");
         // 保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(),
                 ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
@@ -1113,7 +1112,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             OutboundBatch outboundBatch;
             for(OutboundCallBackBatchRequest batch : request.getBatchList()){
                 outboundBatch = new OutboundBatch();
-                outboundBatch.setOutboundOderCode(request.getOutboundOderCode());
+                outboundBatch.setOutboundOderCode("");
                 outboundBatch.setSkuCode(batch.getSkuCode());
                 outboundBatch.setSkuName(batch.getSkuName());
                 outboundBatch.setOutboundBatchCode(batch.getBatchCode());

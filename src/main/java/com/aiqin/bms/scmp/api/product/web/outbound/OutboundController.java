@@ -81,19 +81,19 @@ public class OutboundController {
 
     @ApiOperation("退供生成出库单")
     @PostMapping("/returnSupply/save")
-    public HttpResponse<Integer>returnSupplySave(@RequestBody ReturnSupplyToOutBoundReqVo req){
+    public HttpResponse<Integer> returnSupplySave(@RequestBody ReturnSupplyToOutBoundReqVo req){
         return HttpResponse.success(outboundService.returnSupplySave(req));
     }
 
     @ApiOperation("订单生成出库单")
     @PostMapping("/order/save")
-    public HttpResponse<Integer>orderSave(@RequestBody List<OrderInfo> req){
+    public HttpResponse<Integer> orderSave(@RequestBody List<OrderInfo> req){
         return HttpResponse.success(outboundService.orderSave(req));
     }
 
     @ApiOperation("出库单回调接口")
      @PostMapping("/workFlowCallBack")
-    public HttpResponse<Integer>workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo){
+    public HttpResponse<Integer> workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo){
         log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
         try {
             reqVo.setOutboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
