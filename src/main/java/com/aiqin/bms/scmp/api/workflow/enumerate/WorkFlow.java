@@ -24,7 +24,7 @@ public enum WorkFlow {
     /**
      * 供应商集团工作流
      */
-    APPLY_SUPPLIER(2,"供应商集团申请工作流","SCMP_APPLY_SUPPLIER01"),
+    APPLY_SUPPLIER(2,"供应商集团申请工作流","SCMP_APPLY_SUPPLIER"),
     /**
      * 供应商工作流
      */
@@ -37,7 +37,7 @@ public enum WorkFlow {
     /**
      * 采购申请工作流
      */
-    APPLY_PURCHASE(6,"采购申请工作流","SCMP_APPLY_PURCHASE01"),
+    APPLY_PURCHASE(6,"采购申请工作流","SCMP_APPLY_PURCHASE"),
     /**
      * 退供申请工作流
      */
