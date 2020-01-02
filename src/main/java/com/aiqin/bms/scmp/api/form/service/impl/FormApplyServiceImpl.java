@@ -48,8 +48,7 @@ public class FormApplyServiceImpl implements FormApplyService {
         paramVO.setFormUrl(request.getFormUrl());
         paramVO.setFormUpdateUrl(request.getFormUpdateUrl());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
-        paramVO.setReceiptType(2); // 2代表供应链 HUANGZY删除标识
-//        paramVO.setReceiptType(systemCode);
+        paramVO.setReceiptType(systemCode);
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(request.getAuditPersonId())) {
             Map<String, Object> map = new HashMap<>();
