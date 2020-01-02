@@ -25,46 +25,41 @@ public class FormListController {
     @PostMapping("/send")
     @ApiOperation("查询我的已发")
     HttpResponse findActBaseList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType(2); //HUANGZY删除标识
-//        formListRequest.setReceiptType(systemCode);
+        formListRequest.setReceiptType(systemCode);
         return formListService.findActBaseList(formListRequest);
     }
 
     @PostMapping("/wait")
     @ApiOperation("查询我的待办")
     HttpResponse findMyTaskList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType(2); //HUANGZY删除标识
-//        formListRequest.setReceiptType(systemCode);
+        formListRequest.setReceiptType(systemCode);
         return formListService.findMyTaskList(formListRequest);
     }
 
     @PostMapping("/done")
     @ApiOperation("查询我的已办")
     HttpResponse findMyDoTaskList(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType(2); //HUANGZY删除标识
-//      formListRequest.setReceiptType(systemCode);
+      formListRequest.setReceiptType(systemCode);
         return formListService.findMyDoTaskList(formListRequest);
     }
 
     @PostMapping("/relate")
     @ApiOperation("查询抄送我的")
     HttpResponse findMyTaskListTaskDefinitionKeyWithzhsp(@RequestBody FormListRequest formListRequest) {
-        formListRequest.setReceiptType(2); //HUANGZY删除标识
-//      formListRequest.setReceiptType(systemCode);
+      formListRequest.setReceiptType(systemCode);
         return formListService.findMyTaskListTaskDefinitionKeyWithzhsp(formListRequest);
     }
 
     @GetMapping("/count")
     @ApiOperation("查询数量")
     HttpResponse findTaskListCount(@RequestParam("person_id") String personId, @RequestParam(value = "process_key", required = false) String processKey) {
-        return formListService.findTaskListCount(personId, "2", processKey); //HUANGZY删除标识
-//        return formListService.findTaskListCount(personId,systemCode, processKey);
+        return formListService.findTaskListCount(personId,systemCode, processKey);
     }
 
     @GetMapping("/process")
     @ApiOperation("审批类型列表")
     HttpResponse getProcessListByType() {
-        return formListService.getProcessListByType(Integer.valueOf(systemCode));
+        return formListService.getProcessListByType(systemCode);
     }
 
 }
