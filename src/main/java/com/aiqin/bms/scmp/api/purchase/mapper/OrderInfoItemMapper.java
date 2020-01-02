@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductLis
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryProductUniqueCodeListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -61,7 +62,7 @@ public interface OrderInfoItemMapper {
 
     List<QueryOrderInfoItemRespVO> productList(String orderCode);
 
-    OrderInfoItem selectOrderByLine(String orderCode, Long lineCode);
+    OrderInfoItem selectOrderByLine(@Param("orderCode") String orderCode, @Param("lineCode")Long lineCode);
 
-    Integer updateList(List<OrderInfoItem> itemList);
+    Integer updateBatch(List<OrderInfoItem> itemList);
 }

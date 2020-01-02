@@ -658,11 +658,6 @@
     where
     source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
   </update>
-  <select id="selectCreateById" resultType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-    select b.create_by_id as createById, b.create_by_name as createByName from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
-    where a.outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
-  </select>
-
   <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -688,4 +683,10 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <select id="selectBySourceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

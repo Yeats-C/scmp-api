@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
@@ -43,4 +44,6 @@ public interface OrderCallbackService {
     HttpResponse profitLossOrder(ProfitLossRequest request);
 
     HttpResponse outboundOrderCallBack(OutboundCallBackRequest request);
+
+    HttpResponse deliveryCallBack(DeliveryCallBackRequest request);
 }

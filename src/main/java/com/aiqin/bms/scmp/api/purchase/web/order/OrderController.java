@@ -150,4 +150,13 @@ public class OrderController {
         log.info("爱亲供应链销售单参数", vo);
         return orderService.insertSaleOrder(vo);
     }
+
+    @GetMapping("/cancel")
+    @ApiOperation("订单的取消")
+    public HttpResponse orderCancel(@RequestParam("order_code") String orderCode,
+                                    @RequestParam("operator_id") String operatorId,
+                                    @RequestParam("operator_name") String operatorName) {
+        log.info("订单的取消:", orderCode);
+        return orderService.orderCancel(orderCode, operatorId, operatorName);
+    }
 }

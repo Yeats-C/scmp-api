@@ -19,16 +19,15 @@ import java.util.List;
 @Data
 public class OutboundCallBackRequest {
 
-    @ApiModelProperty("来源单号")
-    @NotEmpty(message = "来源单号不能为空")
-    @JsonProperty("source_oder_code")
-    private String sourceOderCode;
+    @ApiModelProperty("订单号")
+    @NotEmpty(message = "订单号")
+    @JsonProperty("oder_code")
+    private String oderCode;
 
-    @ApiModelProperty("出库时间")
-    @NotEmpty(message = "出库时间不能为空")
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    @JsonProperty("outbound_time")
-    private Date outboundTime;
+    @ApiModelProperty("发货时间")
+    @NotEmpty(message = "发货时间不能为空")
+    @JsonProperty("delivery_time")
+    private Date deliveryTime;
 
     @ApiModelProperty("实际销售数量")
     @JsonProperty("actual_total_count")
@@ -38,11 +37,24 @@ public class OutboundCallBackRequest {
     @JsonProperty("delivery_person")
     private String deliveryPerson;
 
-    @ApiModelProperty("回调详情列表")
+    @ApiModelProperty("签收时间（数据库两个发运时间）")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonProperty("receive_time")
+    private Date receiveTime;
+
+    @ApiModelProperty(value = "操作人id")
+    @JsonProperty("person_id")
+    private String personId;
+
+    @ApiModelProperty(value = "操作人姓名")
+    @JsonProperty("person_name")
+    private String personName;
+
+    @ApiModelProperty("商品详情列表")
     @JsonProperty("detail_id")
     private List<OutboundCallBackDetailRequest> detailList;
 
-    @ApiModelProperty("回调sku列表")
+    @ApiModelProperty("商品批次列表")
     @JsonProperty("batch_list")
     private List<OutboundCallBackBatchRequest> batchList;
 

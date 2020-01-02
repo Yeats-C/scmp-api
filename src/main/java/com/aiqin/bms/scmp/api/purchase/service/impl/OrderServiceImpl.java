@@ -9,12 +9,10 @@ import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConv
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
@@ -44,7 +42,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -60,6 +57,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
+
     @Autowired
     private OrderInfoMapper orderInfoMapper;
     @Autowired
@@ -476,6 +474,37 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
         outboundService.saveOutBoundInfo(outboundReqVo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse orderCancel(String orderCode,  String operatorId, String operatorName){
+        if(StringUtils.isBlank(orderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // TODO 调用DL 取消的销售单接口
+
+
+        // 取消销售单
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderCode(orderCode);
+        orderInfo.setOrderStatus(OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode());
+        orderInfo.setUpdateById(operatorId);
+        orderInfo.setUpdateByName(operatorName);
+        Integer count = orderInfoMapper.updateByOrderCode(orderInfo);
+
+        // 添加取消订单日志
+        OrderInfoLog orderInfoLog = new OrderInfoLog(null, orderCode, OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getBackgroundOrderStatus(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getExplain(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStandardDescription(),
+                operatorName, new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
+        orderInfoLogMapper.insert(orderInfoLog);
+        if(count <=  0){
+            log.info("取消订单失败！！！");
+            return HttpResponse.success(false);
+        }
+        return HttpResponse.success(true);
     }
 
 }

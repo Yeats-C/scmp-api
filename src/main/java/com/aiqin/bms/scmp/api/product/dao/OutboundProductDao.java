@@ -38,7 +38,6 @@ public interface OutboundProductDao {
 
     List<OutboundProduct> selectOutboundProductInfoBySourceOrderCode(String sourceOrderCode);
 
-
     int updateBatch(List<UpdateOutboundProductReqVO> records);
 
     /**
@@ -47,8 +46,6 @@ public interface OutboundProductDao {
      * @return
      */
     List<OutboundProductWmsResVO> selectMmsReqByOutboundOderCode(String outboundOderCode);
-
-
 
     /**
      *  出库单sku 详情以及进项，销项水税率
@@ -68,4 +65,6 @@ public interface OutboundProductDao {
     List<ReturnOutboundProduct> selectBySkuCode(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
 
     List<OutboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
+
+    OutboundProduct selectByProductAmount(@Param("outboundOderCode") String outboundOderCode, @Param("lineCode") Long lineCode);
 }

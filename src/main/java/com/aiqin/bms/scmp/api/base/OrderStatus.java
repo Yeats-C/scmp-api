@@ -40,9 +40,7 @@ import java.util.stream.Collectors;
 public enum OrderStatus {
 
     TO_BE_PAID(1, "等待客户支付", "待支付", "客户下单后，等待支付", "您提交了订单，请尽快支付", "1", "2", "99"),
-
     PAID(2,"付款成功","待支付","收款已确认，等待拆分","您的订单已支付，请等待系统确认","1","3","102"),
-
     ORDER_SPLIT(3,"商品出库","订单拆分中","订单拆分过程中","订单拆分过程中，请等待系统确认","1","4/5/6",null),
     ORDER_SYNCHRONIZATION(4,"商品出库","订单同步中","订单同步采购单、上级销售单、上级采购单","订单同步过程中，请等待系统确认","1","5/6",null),
     WAITING_FOR_DISTRIBUTION(5,"商品出库","等待配货","直送订单等待完成","您的订单等待拣货","1","11","97"),
@@ -65,7 +63,6 @@ public enum OrderStatus {
     APPLY_TO_TERMINATE_THE_TRANSACTION_FAIL(94,null,"申请终止交易不通过",null,"您的订单申请终止交易未通过，继续发货","0",null,null),
     RECEIVING_EXTENSION(95,null,"收货延期",null,"您的订单收货延期","0",null,null),
     WAITING_FOR_PICKING_FAILED(-6,"等待生成出库单","等待生成出库单","配送订单拆分完成,生成出库单失败！","生成出库单失败","1",null,null);
-
 
     private Integer statusCode;
     private String frontOrderStatus;

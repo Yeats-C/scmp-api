@@ -534,4 +534,12 @@
     </foreach>
     )
   </select>
+  <select id="selectByProductAmount" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound_product
+    where
+    outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
+    and linenum = #{lineCode, jdbcType=BIGINT}
+  </select>
 </mapper>
