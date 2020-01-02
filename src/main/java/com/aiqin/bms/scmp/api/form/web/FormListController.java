@@ -64,7 +64,7 @@ public class FormListController {
     @GetMapping("/process")
     @ApiOperation("审批类型列表")
     HttpResponse getProcessListByType() {
-        return formListService.getProcessListByType(Integer.valueOf(systemCode));
+        return formListService.getProcessListByType(systemCode);
     }
 
 }
