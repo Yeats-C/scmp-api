@@ -112,6 +112,12 @@ public interface SkuInfoService{
      * @return
      */
     BasePage<QueryProductSkuListResp> querySkuList(QuerySkuListReqVO querySkuListReqVO);
+    /**
+     * 根据条件查询skuCode
+     * @param querySkuListReqVO
+     * @return
+     */
+    List<String> querySkuCodeList(QuerySkuListReqVO querySkuListReqVO);
 
     /**
      * 通过供应商编号查询

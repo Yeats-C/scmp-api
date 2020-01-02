@@ -51,5 +51,4 @@ public class ProductSkuDisInfoDraft extends CommonBean {
 
     @ApiModelProperty("拆零系数")
     private BigDecimal zeroRemovalCoefficient;
-
 }

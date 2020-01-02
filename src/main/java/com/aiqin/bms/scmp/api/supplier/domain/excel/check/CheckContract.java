@@ -155,7 +155,7 @@ public class CheckContract {
                 Integer deliveryCycle = Integer.parseInt(contractImportNew.getDeliveryCycle().trim());
                 reqVo.setDeliveryCycle(deliveryCycle);
             } catch (NumberFormatException e) {
-                error.add("结账日格式不正确");
+                error.add("送货周期格式不正确");
             }
         }
         //税率
@@ -171,7 +171,7 @@ public class CheckContract {
         //折扣
         if (StringUtils.isNotBlank(contractImportNew.getDiscount())) {
             try {
-                reqVo.setDiscount(new BigDecimal(contractImportNew.getDiscount().trim()));
+                reqVo.setDiscount(contractImportNew.getDiscount().trim());
             } catch (NumberFormatException e) {
                 error.add("折扣格式不正确");
             }

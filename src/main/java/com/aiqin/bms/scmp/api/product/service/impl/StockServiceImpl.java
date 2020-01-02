@@ -2251,7 +2251,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stringBuffer.append(stockBatchRespVOList.get(num));
             }
         }
-        String str = stringBuffer.toString();
+        String str=  stringBuffer.toString();
         return str;
     }
 

@@ -1043,9 +1043,9 @@
     <if test="skuCode != null and skuCode != '' ">
       and sku_code != #{skuCode}
     </if>
-    <if test="skuName != null and skuName != '' ">
-      and sku_name = #{skuName}
-    </if>
+    <!--<if test="skuName != null and skuName != '' ">-->
+      <!--and sku_name = #{skuName}-->
+    <!--</if>-->
   </select>
     <select id="exportSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.ExportSkuInfo">
               select a.*,
@@ -1080,7 +1080,7 @@
                a.quality_date qualityNumber,
                a.categories_supply_channels_name categoriesSupplyChannelsName,
                a.mnemonic_code mnemonicCode,
-               a.manufacturer_guide_price/100 manufacturerGuidePrice,
+               a.manufacturer_guide_price manufacturerGuidePrice,
                a.applicable_month_age applicableMonthAge,
                case when a.seasonal_goods = 0 then '是'
                     when a.seasonal_goods = 1 then '否'
@@ -1107,17 +1107,17 @@
                a.remark remark,
                d.spec stockSpec,
                d.unit_name stockUnitName,
-               e.box_length/100 stockBoxLength,
-               e.box_width/100 stockBoxWidth,
-               e.box_height/100 stockBoxHeight,
+               e.box_length stockBoxLength,
+               e.box_width stockBoxWidth,
+               e.box_height stockBoxHeight,
                e.box_gross_weight stockBoxGrossWeight,
                e.net_weight stockNetWeight,
                d.bar_code stockBarCode,
                f.spec purchaseSpec,
                f.unit_name purchaseUnitName,
-               g.box_length/100 purchaseBoxLength,
-               g.box_width/100 purchaseBoxWidth,
-               g.box_height/100 purchaseBoxHeight,
+               g.box_length purchaseBoxLength,
+               g.box_width purchaseBoxWidth,
+               g.box_height purchaseBoxHeight,
                g.box_gross_weight purchaseBoxGrossWeight,
                g.net_weight purchaseNetWeight,
                f.base_product_content purchaseBaseProductContent,
@@ -1134,15 +1134,15 @@
                i.sales_code saleBarCode,
                i.description description,
                j.settlement_method_name settlementMethodName,
-               j.Input_tax_rate/100 inputTaxRate,
-               j.output_tax_rate/100 outputTaxRate,
+               j.Input_tax_rate inputTaxRate,
+               j.output_tax_rate outputTaxRate,
                j.Integral_coefficient integralCoefficient,
                j.logistics_fee_award_ratio logisticsFeeAwardRatio,
                k.supply_unit_code supplyUnitCode,
                k.supply_unit_name supplyUnitName,
-               k.tax_included_price/100 taxIncludedPrice,
-               k.joint_franchise_rate/100 jointFranchiseRate,
-               k.point/100 point,
+               k.tax_included_price taxIncludedPrice,
+               k.joint_franchise_rate jointFranchiseRate,
+               k.point point,
                k.factory_sku_code factorySkuCode,
                k.categories_supply_channels_name supplyCategoriesSupplyChannelsName
         from product_sku_draft a

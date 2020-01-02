@@ -182,6 +182,14 @@
             where product_sku_code = #{item.productSkuCode} and apply_code = #{item.applyCode}
         </foreach>
     </update>
+    <update id="updateIsDeFaultBySkuCode">
+        update product_sku_supply_unit
+        set is_default = #{isDefault}
+        where product_sku_code in
+        <foreach collection="list" open="(" close=")" item="item" separator=",">
+           #{item}
+        </foreach>
+    </update>
     <select id="getDraft" parameterType="java.lang.String" resultMap="BaseResultMap">
     SELECT
      <include refid="Base_Column_List"/>
@@ -218,9 +226,10 @@
     DELETE FROM product_sku_supply_unit WHERE product_sku_code =#{skuCode,jdbcType=VARCHAR}
   </delete>
     <delete id="deleteList2" parameterType="java.util.List">
-        DELETE FROM product_sku_supply_unit WHERE product_sku_code
-        in <foreach collection="list" open="(" close=")" item="item" separator=",">
-             #{item}
+        <foreach collection="list" open="" close="" separator=";" item="item">
+            delete from product_sku_supply_unit
+            where product_sku_code = #{item.productSkuCode}
+            and supply_unit_code = #{item.supplyUnitCode}
         </foreach>
     </delete>
     <select id="getApply"  resultMap="com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuSupplyUnitMapper.BaseResultMap">

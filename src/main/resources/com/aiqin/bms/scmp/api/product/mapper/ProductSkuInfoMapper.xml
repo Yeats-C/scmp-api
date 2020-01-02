@@ -179,12 +179,13 @@
        d.box_gross_weight                         boxGrossWeight,
        a.product_brand_name                       productBrandName,
        a.product_category_code                    productCategoryCode,
-       a.product_category_name                    productCategoryName,
+       CONCAT(lv1.category_name, '-', lv2.category_name, '-', lv3.category_name, '-',
+    lv4.category_name) as       productCategoryName,
        a.management_style_name                    managementStyleName,
        e.sales_code                               salesCode,
        f.zero_removal_coefficient                 zeroRemovalCoefficient,
-       ROUND(g.output_tax_rate/100,2)             outputTaxRate,
-       ROUND(g.Input_tax_rate/100,2)              inputTaxRate,
+       g.output_tax_rate             outputTaxRate,
+       g.Input_tax_rate              inputTaxRate,
        g.settlement_method_name                   settlementMethodName,
        a.procurement_section_name                 procurementSectionName,
        case
@@ -194,18 +195,18 @@
              a.product_property_name
        end                                        productPropertyName,
        g.Integral_coefficient                     integralCoefficient,
-       ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
-       ROUND(h.price_tax/100,2)                   salePrice,
-       ROUND(i.price_tax/100,2)                   memberPrice,
+       a.manufacturer_guide_price    manufacturerGuidePrice,
+       h.price_tax                   salePrice,
+       i.price_tax                   memberPrice,
        j.categories_supply_channels_name          categoriesSupplyChannelsName,
-       ROUND(j.tax_included_price/100,2)                       basePrice,
-       ROUND(((i2.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints2,
-       ROUND(((i3.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints3,
-       ROUND(((i4.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints4,
-       ROUND(((i5.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints5,
-       ROUND(((i6.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints6,
-       ROUND(((i7.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints7,
-       ROUND(((i8.price_tax-j.tax_included_price)/j.tax_included_price)*100,4)                               addPoints8,
+       j.tax_included_price                       basePrice,
+       ROUND(((i2.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints2,
+       ROUND(((i3.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints3,
+       ROUND(((i4.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints4,
+       ROUND(((i5.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints5,
+       ROUND(((i6.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints6,
+       ROUND(((i7.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints7,
+       ROUND(((i8.price_tax-j.tax_included_price)/j.tax_included_price*100),4)                               addPoints8,
        k.manufacturer_name                        manufacturerName,
        k.factory_product_number                   factoryProductNumber,
        k.address                                  address,
@@ -224,14 +225,14 @@
        e.small_unit                               saleUnit,
        e.sales_code                               salesCode2,
        e.base_product_content                     saleBaseProductContent,
-       ROUND(d.box_length/100,2)                  saleBoxLength,
-       ROUND(d.box_width/100,2)                   saleBoxWidth,
-       ROUND(d.box_height/100,2)                  saleBoxHeight,
+       d.box_length                 saleBoxLength,
+       d.box_width                   saleBoxWidth,
+       d.box_height                  saleBoxHeight,
        j.supply_unit_code                         supplyUnitCode,
        j.supply_unit_name                         supplyUnitName,
-       ROUND(j.tax_included_price/100,2)                  taxIncludedPrice,
-       ROUND(j.joint_franchise_rate/100,2)                     jointFranchiseRate,
-       ROUND(j.point/100,2)                                    point,
+       j.tax_included_price                  taxIncludedPrice,
+       j.joint_franchise_rate                     jointFranchiseRate,
+       j.point                                    point,
        case
            when a.sku_status = 0
                then '在用'
@@ -278,7 +279,202 @@ from product_sku a
          left join product_sku_price_info i7 on i7.sku_code = a.sku_code and i7.price_item_code = '1003' #小红马渠道价
          left join product_sku_price_info i8 on i8.sku_code = a.sku_code and i8.price_item_code = '1009' #小红马分销价
          left join product_sku_manufacturer k on a.sku_code = k.product_sku_code and k.is_default = 1
-         left join product_sku_purchase_info l on l.product_sku_code = a.sku_code;
+         left join product_sku_purchase_info l on l.product_sku_code = a.sku_code
+         LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
+         LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+         LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+         LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
+    </select>
+    <select id="exportSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoExport">
+      select
+        case when a.goods_gifts = 0 then '商品' when  a.goods_gifts = 1 then '赠品' when  a.goods_gifts = 2 then '组合商品' end goodsGifts,
+        a.product_sort_name productSortName,
+        a.product_category_code                    productCategoryCode,
+        CONCAT(lv1.category_name, '-', lv2.category_name, '-', lv3.category_name, '-',lv4.category_name) as       productCategoryName,
+        a.sku_code                         skuCode,
+        a.sku_name                         skuName,
+        a.sku_abbreviation                 skuAbbreviation,
+        a.mnemonic_code  mnemonicCode,
+        b.product_name   productName,
+        b.abbreviation   productAbbreviation,
+        b.bar_code       productBarCode,
+        b.style_number   productStyleNumber,
+        a.item_number    itemNumber,
+        case when a.product_property_name = 'A+品'then 'A品' else a.product_property_name end productPropertyName,
+        a.product_brand_name                       productBrandName,
+        a.procurement_section_name                 procurementSectionName,
+        a.color_name   colorName,
+        a.model_number modelNumber,
+        case
+           when a.quality_assurance_management = 0
+               then '是'
+           when a.quality_assurance_management = 1
+               then '否'
+           end                                    qualityAssuranceManagement,
+       a.quality_date                             qualityDate,
+       case
+           when a.quality_number = 1
+               then '天'
+           when a.quality_number = 2
+               then '月'
+           when a.quality_number = 3
+               then '年'
+           end                                    qualityNumber,
+      a.applicable_month_age                     applicableMonthAge,
+      case
+           when a.seasonal_goods = 0
+               then '是'
+           when a.seasonal_goods = 1
+               then '否'
+           end                                    seasonalGoodsDesc,
+      case
+           when a.structural_goods = 0
+               then '是'
+           when a.structural_goods = 1
+               then '否'
+           end                                    structuralGoodsDesc,
+      a.warehouse_type_name                      warehouseTypeName,
+      a.use_time useTime,
+      a.season_band seasonBand,
+      case
+           when a.unique_code = 0
+               then '是'
+           when a.unique_code = 1
+               then '否'
+           end                                    uniqueCode,
+      a.level level,
+      a.feature_name featureName,
+      a.currency_level_name currencyLevelName,
+      a.remark                           remark,
+      a.product_desc                             productDesc,
+      a.manufacturer_guide_price manufacturerGuidePrice,
+      j.tax_included_price taxIncludedPrice,
+      i5.price_tax readyCol67,
+      i6.price_tax readyCol68,
+      i7.price_tax readyCol69,
+      i2.price_tax readyCol70,
+      i3.price_tax readyCol71,
+      i4.price_tax readyCol72,
+      h.price_tax readyCol73,
+      i.price_tax readyCol74,
+      j.supply_unit_code supplyUnitCode,
+      j.supply_unit_name supplyUnitName,
+      j.joint_franchise_rate                    jointFranchiseRate,
+      j.point                                    point,
+      j.factory_sku_code                        factorySkuCode,
+      j.categories_supply_channels_name        categoriesSupplyChannelsName,
+      c.spec                                     stockSpec,
+      c.unit_name                                stockUnitName,
+      d.box_length                 stockBoxLength,
+      d.box_width                  stockBoxWidth,
+      d.box_height                 stockBoxHeight,
+      d.box_volume                 stockBoxVolume,
+      d.box_gross_weight           stockBoxGrossWeight,
+      d.net_weight                 stockNetWeight,
+      e.spec                       purchaseSpec,
+      e.unit_name                  purchaseUnitName,
+      f.box_length                 purchaseBoxLength,
+      f.box_width                  purchaseBoxWidth,
+      f.box_height                 purchaseBoxHeight,
+      f.box_volume                  stockBoxVolume,
+      f.box_gross_weight          purchaseBoxGrossWeight,
+      f.net_weight                 purchaseNetWeight,
+      e.zero_removal_coefficient   purchaseBaseProductContent,
+      e.purchase_code             stockBarCode,
+      m.zero_removal_coefficient distributionZeroRemovalCoefficient,
+      m.max_order_num maxOrderNum,
+      n.sales_code saleBarCode,
+      n.description description,
+      g.settlement_method_name settlementMethodName,
+      g.Input_tax_rate inputTaxRate,
+      g.output_tax_rate outputTaxRate,
+      g.Integral_coefficient integralCoefficient,
+      g.logistics_fee_award_ratio logisticsFeeAwardRatio,
+      k.manufacturer_name manufacturerName,
+      k.factory_product_number factoryProductNumber,
+      k.address address,
+      case
+           when config.config_status = 0
+               then '在用'
+           when config.config_status = 1
+               then '停止进货'
+           when config.config_status = 2
+               then '停止配送'
+           when config.config_status = 3
+               then '停止销售'
+           end
+      readyCol76,
+      case
+           when config1.config_status = 0
+               then '在用'
+           when config1.config_status = 1
+               then '停止进货'
+           when config1.config_status = 2
+               then '停止配送'
+           when config1.config_status = 3
+               then '停止销售'
+           end
+      readyCol77,
+      case
+           when config2.config_status = 0
+               then '在用'
+           when config2.config_status = 1
+               then '停止进货'
+           when config2.config_status = 2
+               then '停止配送'
+           when config2.config_status = 3
+               then '停止销售'
+           end
+      readyCol78,
+      case
+           when config3.config_status = 0
+               then '在用'
+           when config3.config_status = 1
+               then '停止进货'
+           when config3.config_status = 2
+               then '停止配送'
+           when config3.config_status = 3
+               then '停止销售'
+           end
+      readyCol79,
+      case
+           when config4.config_status = 0
+               then '在用'
+           when config4.config_status = 1
+               then '停止进货'
+           when config4.config_status = 2
+               then '停止配送'
+           when config4.config_status = 3
+               then '停止销售'
+           end readyCol80
+		from (select * from product_sku where sku_code in (${skuCodes})) a
+		 left join product b on a.product_code = b.product_code
+         left join product_sku_stock_info c on a.sku_code = c.product_sku_code
+         left join product_sku_box_packing d on d.unit_code = c.unit_code and d.product_sku_code = a.sku_code
+         left join product_sku_purchase_info e on e.product_sku_code = a.sku_code
+         left join product_sku_box_packing f on e.unit_code = f.unit_code and f.product_sku_code = a.sku_code
+         left join product_sku_distribution_info m on m.product_sku_code = a.sku_code
+         left join product_sku_sales_info n on n.product_sku_code = a.sku_code and n.is_default = 1
+         left join product_sku_checkout g on g.sku_code = a.sku_code
+         left join product_sku_price_info h on h.sku_code = a.sku_code and h.price_item_code = '1013'
+         left join product_sku_price_info i on i.sku_code = a.sku_code and i.price_item_code = '1014'
+         left join product_sku_supply_unit j on j.product_sku_code = a.sku_code and j.is_default = 1
+         left join product_sku_price_info i2 on i2.sku_code = a.sku_code and i2.price_item_code = '1007'
+         left join product_sku_price_info i3 on i3.sku_code = a.sku_code and i3.price_item_code = '1008'
+         left join product_sku_price_info i4 on i4.sku_code = a.sku_code and i4.price_item_code = '1009'
+         left join product_sku_price_info i5 on i5.sku_code = a.sku_code and i5.price_item_code = '1001'
+         left join product_sku_price_info i6 on i6.sku_code = a.sku_code and i6.price_item_code = '1002'
+         left join product_sku_price_info i7 on i7.sku_code = a.sku_code and i7.price_item_code = '1003'
+         left join product_sku_manufacturer k on a.sku_code = k.product_sku_code and k.is_default = 1 and k.del_flag = 0
+         LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
+         LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
+         LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
+         LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
+         left join product_sku_config config on config.sku_code = a.sku_code and config.transport_center_code = '1081'
+         left join product_sku_config config1 on config1.sku_code = a.sku_code and config1.transport_center_code = '1083'
+         left join product_sku_config config2 on config2.sku_code = a.sku_code and config2.transport_center_code = '1084'
+         left join product_sku_config config3 on config3.sku_code = a.sku_code and config3.transport_center_code = '1082'
+         left join product_sku_config config4 on config4.sku_code = a.sku_code and config4.transport_center_code = '1085'
     </select>
     <select id="exportEditSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.SkuEditExport">
         select a.sku_code                                 skuCode,
@@ -294,7 +490,7 @@ from product_sku a
                 else
                      a.product_property_name
                 end                                        productPropertyName,
-               ROUND(a.manufacturer_guide_price/100,2)    manufacturerGuidePrice,
+               a.manufacturer_guide_price    manufacturerGuidePrice,
                case
                     when a.sku_status = 0
                         then '在用'
@@ -370,7 +566,7 @@ from product_sku a
       #{qualityAssuranceManagement,jdbcType=TINYINT}, #{qualityNumber,jdbcType=VARCHAR},
       #{qualityDate,jdbcType=VARCHAR}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{seasonalGoods,jdbcType=TINYINT},
-      #{structuralGoods,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=BIGINT},
+      #{structuralGoods,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=DECIMAL},
       #{applicableMonthAge,jdbcType=VARCHAR}, #{mnemonicCode,jdbcType=VARCHAR}, #{warehouseTypeCode,jdbcType=VARCHAR},
       #{warehouseTypeName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT},
       #{remark,jdbcType=VARCHAR}, #{selectionEffectiveTime,jdbcType=TINYINT}, #{selectionEffectiveStartTime,jdbcType=VARCHAR},
@@ -770,7 +966,7 @@ from product_sku a
         #{structuralGoods,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        #{manufacturerGuidePrice,jdbcType=BIGINT},
+        #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="applicableMonthAge != null">
         #{applicableMonthAge,jdbcType=VARCHAR},
@@ -1003,7 +1199,7 @@ from product_sku a
         structural_goods = #{structuralGoods,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="applicableMonthAge != null">
         applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
@@ -1158,7 +1354,7 @@ from product_sku a
       categories_supply_channels_name = #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
       seasonal_goods = #{seasonalGoods,jdbcType=TINYINT},
       structural_goods = #{structuralGoods,jdbcType=TINYINT},
-      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       applicable_month_age = #{applicableMonthAge,jdbcType=VARCHAR},
       mnemonic_code = #{mnemonicCode,jdbcType=VARCHAR},
       warehouse_type_code = #{warehouseTypeCode,jdbcType=VARCHAR},
@@ -1216,8 +1412,8 @@ from product_sku a
         <if test="skuCode != null and skuCode != '' ">
             and sku_code != #{skuCode}
         </if>
-        <if test="skuName != null and skuName != '' ">
-            and sku_name = #{skuName}
-        </if>
+        <!--<if test="skuName != null and skuName != '' ">-->
+            <!--and sku_name = #{skuName}-->
+        <!--</if>-->
     </select>
 </mapper>

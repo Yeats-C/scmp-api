@@ -281,8 +281,16 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         //通过申请编码查询供应商信息
         if (CollectionUtils.isNotEmptyCollection(unitList)){
             List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(unitList,ProductSkuSupplyUnit.class);
-            productSkuSupplyUnitDao.deleteList2(unitList.stream().map(ApplyProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList()));
-            return ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            productSkuSupplyUnitDao.deleteList2(unitList);
+            //判断申请中的数据有没有默认值是的
+            List<ProductSkuSupplyUnit> defaultList = productSkuSupplyUnits.stream().filter(x -> Objects.equals(x.getIsDefault(), DefaultOrNot.DEFALUT.getValue())).collect(Collectors.toList());
+            if(CollectionUtils.isNotEmptyCollection(defaultList)){
+                List<String> productSkuCodes = defaultList.stream().map(ProductSkuSupplyUnit::getProductSkuCode).collect(Collectors.toList());
+                //存在,根据skuCode和supplyUnitCode更新为不默认
+                productSkuSupplyUnitDao.updateIsDeFaultBySkuCode(productSkuCodes,DefaultOrNot.DEFALUT_NOT.getValue());
+            }
+            int i = ((ProductSkuSupplyUnitService) AopContext.currentProxy()).insertList(productSkuSupplyUnits);
+            return i;
         } else {
             return 0;
         }
@@ -360,7 +368,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
             throw new BizException(ResultCode.NO_HAVE_INFO_ERROR);
         }
         // 设置获取分销价
-        repsVo.setDistributionPrice(getDistributionPrice(skuCode));
+        repsVo.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         return repsVo;
     }
 
@@ -505,7 +513,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         PageHelper.startPage(reqVo.getPageNo(), reqVo.getPageSize());
         List<QueryProductSkuSupplyUnitsRespVo> list = draftMapper.getListPage(reqVo);
         list.forEach(item->{
-            item.setDistributionPrice(getDistributionPrice(item.getProductSkuCode()));
+            item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
             item.setCapacityList(productSkuSupplyUnitCapacityService.getCapacityDraftInfoBySupplyUnitCodeAndProductSkuCode(item.getSupplyUnitCode(),item.getProductSkuCode()));
         });
         return PageUtil.getPageList(reqVo.getPageNo(),list);
@@ -546,7 +554,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         // }
         String skuCode = detail.getSkuCode();
         // 设置获取分销价
-        detail.setDistributionPrice(getDistributionPrice(skuCode));
+        detail.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(skuCode));
         List<ProductSkuSupplyUnitRespVo> respVos = Lists.newArrayList(productSkuSupplyUnitRespVo);
         detail.setSupplierList(respVos);
         return detail;
@@ -646,14 +654,14 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         }
         //保存审批附件信息
         approvalFileInfoService.batchSave(reqVo.getApprovalFileInfos(),String.valueOf(code),formNo, ApprovalFileTypeEnum.GOODS_COMPANY.getType());
-        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName());
+        workFlow(String.valueOf(code), formNo, reqVo.getDirectSupervisorCode(), reqVo.getApprovalName(), reqVo.getPositionCode());
         return num;
     }
 
     @Override
-    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName) {
+    public void workFlow(String applyCode, String form, String directSupervisorCode, String approvalName, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(positionCode);
+        workFlowVO.setPositionCode(positionCode);
       //回调地址
         workFlowVO.setFormUrl(workFlowBaseUrl.applySkuSupplier + "?approvalType=2&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
@@ -773,7 +781,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         unitRespVos.forEach(item -> {
             // 设置分销价
             if (StringUtils.isNotBlank(item.getProductSkuCode())) {
-                item.setDistributionPrice(this.getDistributionPrice(item.getProductSkuCode()));
+                item.setDistributionPrice(((ProductSkuSupplyUnitService) AopContext.currentProxy()).getDistributionPrice(item.getProductSkuCode()));
             }
         });
         ProductApplyInfoRespVO<SkuSupplierDetailRepsVo> resp = new ProductApplyInfoRespVO<>();
@@ -852,7 +860,8 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
      * @param skuCode
      * @return
      */
-    private BigDecimal getDistributionPrice(String skuCode) {
+    @Override
+    public BigDecimal getDistributionPrice(String skuCode) {
         if (StringUtils.isNotBlank(skuCode)) {
             List<ProductSkuPriceRespVo> productSkuPriceInfosTemp =
                     productSkuPriceInfoService.getSkuPriceBySkuCodeForOfficial(skuCode);

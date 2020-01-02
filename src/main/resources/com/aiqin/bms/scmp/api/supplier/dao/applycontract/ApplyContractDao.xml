@@ -52,7 +52,7 @@
     <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
     <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
     <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
-    <result column="discount" jdbcType="BIGINT" property="discount"/>
+    <result column="discount" jdbcType="VARCHAR" property="discount"/>
     <result column="return_guarantee" jdbcType="TINYINT" property="returnGuarantee"/>
     <result column="return_guarantee_day" jdbcType="INTEGER" property="returnGuaranteeDay"/>
     <result column="warranty" jdbcType="BIGINT" property="warranty"/>

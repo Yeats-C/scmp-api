@@ -34,5 +34,4 @@ public class UseTagRecord extends CommonBean {
     @ApiModelProperty("来源单号")
     private String sourceCode;
 
-
 }

@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("申请合同")
@@ -35,7 +36,7 @@ public class ApplyContract extends CommonBean {
     private Integer paymentPeriod;
 
     @ApiModelProperty("配送费")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;
@@ -50,7 +51,7 @@ public class ApplyContract extends CommonBean {
     private Byte fixedRebateType;
 
     @ApiModelProperty("返利率(按进货金额)")
-    private Long returnRate;
+    private BigDecimal returnRate;
 
     @ApiModelProperty("目标返利(门店,地区,大区,全国)")
     private Byte targetRebate;
@@ -113,13 +114,13 @@ public class ApplyContract extends CommonBean {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
-    private Long shipPaymentRatio;
+    private BigDecimal shipPaymentRatio;
 
     @ApiModelProperty("到货付款比例")
-    private Long paymentOnDeliveryRatio;
+    private BigDecimal paymentOnDeliveryRatio;
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;

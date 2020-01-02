@@ -305,4 +305,15 @@
       company_name = #{companyName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectMainCode" resultType="java.lang.String">
+    select b.code from
+    product_sku_sale_area a inner join product_sku_sale_area_main b
+    on a.code = b.code
+    <where>
+      b.be_disable = 0
+      and be_effective = 1
+      and selection_effective_time = 0
+      and a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </where>
+  </select>
 </mapper>

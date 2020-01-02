@@ -53,10 +53,10 @@ public class ProductSkuBoxPackingServiceImpl implements ProductSkuBoxPackingServ
                 for (int i = 0;i<productSkuBoxPackingDrafts.size();i++){
                     ApplyProductSkuBoxPacking applyProductSkuBoxPacking = new ApplyProductSkuBoxPacking();
                     BeanCopyUtils.copy(productSkuBoxPackingDrafts.get(i),applyProductSkuBoxPacking);
-                    applyProductSkuBoxPacking.setBoxHeight(productSkuBoxPackingDrafts.get(i).getBoxHeight().longValue());
-                    applyProductSkuBoxPacking.setBoxWidth(productSkuBoxPackingDrafts.get(i).getBoxWidth().longValue());
-                    applyProductSkuBoxPacking.setBoxLength(productSkuBoxPackingDrafts.get(i).getBoxLength().longValue());
-                    applyProductSkuBoxPacking.setBoxVolume(productSkuBoxPackingDrafts.get(i).getBoxVolume().longValue());
+                    applyProductSkuBoxPacking.setBoxHeight(productSkuBoxPackingDrafts.get(i).getBoxHeight());
+                    applyProductSkuBoxPacking.setBoxWidth(productSkuBoxPackingDrafts.get(i).getBoxWidth());
+                    applyProductSkuBoxPacking.setBoxLength(productSkuBoxPackingDrafts.get(i).getBoxLength());
+                    applyProductSkuBoxPacking.setBoxVolume(productSkuBoxPackingDrafts.get(i).getBoxVolume());
                     applyProductSkuBoxPacking.setApplyCode(applyProductSkus.get(0).getApplyCode());
                     applyProductSkuBoxPackings.add(applyProductSkuBoxPacking);
                 }

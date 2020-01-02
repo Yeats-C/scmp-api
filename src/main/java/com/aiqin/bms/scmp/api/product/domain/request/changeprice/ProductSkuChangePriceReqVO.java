@@ -56,7 +56,7 @@ public class ProductSkuChangePriceReqVO {
     private String costBearerName;
 
     @ApiModelProperty("预算")
-    private Long budget;
+    private BigDecimal budget;
 
     @ApiModelProperty("公司名称")
     private String companyCode;

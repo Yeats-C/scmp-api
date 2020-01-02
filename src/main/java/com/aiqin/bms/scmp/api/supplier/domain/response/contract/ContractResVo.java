@@ -133,7 +133,7 @@ public class ContractResVo {
     private Integer earlyWarnNum;
 
     @ApiModelProperty("预先付款比列")
-    private Long prePaymentRatio;
+    private BigDecimal prePaymentRatio;
 
     @ApiModelProperty("发货付款比例")
     private BigDecimal shipPaymentRatio;
@@ -183,7 +183,7 @@ public class ContractResVo {
     private BigDecimal taxRate;
 
     @ApiModelProperty("折扣")
-    private BigDecimal discount;
+    private String discount;
 
     @ApiModelProperty("退换货保证(0保证 1不保证)")
     private Byte returnGuarantee;

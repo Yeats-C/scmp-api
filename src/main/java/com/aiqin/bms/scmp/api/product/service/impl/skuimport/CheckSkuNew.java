@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl.skuimport;
 
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.StatusTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
@@ -45,6 +46,7 @@ public class CheckSkuNew {
     SkuInfoImport importVo;
     List<String> error;
     Map<String, SupplierDictionaryInfo> dicMap;
+    Map<String, SupplierDictionaryInfo> dicMap2;
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
@@ -52,7 +54,7 @@ public class CheckSkuNew {
     private CheckSkuNew() {
     }
 
-    public CheckSkuNew(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap) {
+    public CheckSkuNew(Map<String, ProductSkuInfo> productSkuMap, Map<String, SupplyCompany> supplyCompanyMap, Map<String, ProductBrandType> brandMap, Map<String, ProductCategory> categoryMap, Map<String, PriceChannel> channelMap, Map<String, TagInfo> skuTagMap, Map<String, String> repeatMap, Object importVo, Map<String, NewProduct> spuMap, Map<String, SupplierDictionaryInfo> dicMap, Map<String, Manufacturer> manufactureMap, Map<String, SupplierDictionaryInfo> dicMap2) {
         this.error = Lists.newArrayList();
         this.resp = new AddSkuInfoReqVO();
         this.productSkuMap = productSkuMap;
@@ -65,6 +67,7 @@ public class CheckSkuNew {
         this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImport.class);
         this.spuMap = spuMap;
         this.dicMap = dicMap;
+        this.dicMap2 = dicMap2;
         this.manufactureMap = manufactureMap;
     }
 
@@ -265,25 +268,25 @@ public class CheckSkuNew {
             }
         }
 
-        // 供货渠道类别
-        // if (Objects.isNull(importVo.getCategoriesSupplyChannelsName())) {
-        //     error.add("供货渠道类别不能为空");
-        // } else {
-        //     SupplierDictionaryInfo info = dicMap.get(importVo.getCategoriesSupplyChannelsName());
-        //     if (Objects.isNull(info)) {
-        //         error.add("无对应的名称的供货渠道类别");
-        //     } else {
-        //         productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
-        //         //库存模式
-        //         boolean b = "直送".equals(importVo.getCategoriesSupplyChannelsName());
-        //         if (b) {
-        //             productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
-        //         } else {
-        //             productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
-        //         }
-        //     }
-        //
-        // }
+        //供货渠道类别
+        if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
+            error.add("供货渠道类别不能为空");
+        } else {
+            SupplierDictionaryInfo info = dicMap2.get(importVo.getSupplyCategoriesSupplyChannelsName());
+            if (Objects.isNull(info)) {
+                error.add("无对应的名称的供货渠道类别");
+            } else {
+                productSkuDraft.setCategoriesSupplyChannelsCode(info.getSupplierDictionaryValue());
+                //库存模式
+                boolean b = "直送".equals(importVo.getSupplyCategoriesSupplyChannelsName());
+                if (b) {
+                    productSkuDraft.setInventoryModel(InventoryModels.NO.getType());
+                } else {
+                    productSkuDraft.setInventoryModel(InventoryModels.YES.getType());
+                }
+            }
+
+        }
         //助记码
         if (false) {
         }
@@ -502,7 +505,11 @@ public class CheckSkuNew {
             }
         }
         //库存包装信息
-        if (Objects.nonNull(importVo.getStockBoxLength())) {
+        //如果长宽高体积毛重净重为空,则不存库存包装信息
+        boolean stockNotSave = StringUtils.isBlank(importVo.getStockBoxLength()) && StringUtils.isBlank(importVo.getStockBoxWidth())
+                && StringUtils.isBlank(importVo.getStockBoxHeight()) && StringUtils.isBlank(importVo.getStockBoxVolume())
+                && StringUtils.isBlank(importVo.getStockBoxGrossWeight()) && StringUtils.isBlank(importVo.getStockNetWeight());
+        if (!stockNotSave) {
             ProductSkuBoxPackingDraft stockBox = new ProductSkuBoxPackingDraft();
             stockBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
             stockBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
@@ -510,35 +517,90 @@ public class CheckSkuNew {
             stockBox.setUnitCode(stock.getUnitCode());
             boolean flag = true;
             try {
-                stockBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim()));
+                if (StringUtils.isNotBlank(importVo.getStockBoxLength())) {
+                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    Long longLength = bigDecimalLength.longValue();
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        //小数
+                        throw  new BizException("库存长格式不正确");
+                    }
+                    stockBox.setBoxLength(longLength);
+                } else {
+                    flag = false;
+                }
+
             } catch (Exception e) {
                 error.add("库存长格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim()));
+                if(StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
+                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    Long longWidth = bigDecimalWidth.longValue();
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        //小数
+                        throw  new BizException("库存宽格式不正确");
+                    }
+                    stockBox.setBoxWidth(longWidth);
+                } else {
+                    flag = false;
+                }
+
             } catch (Exception e) {
                 error.add("库存宽格式不正确");
                 flag = false;
             }
             try {
-                stockBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim()));
+                if (StringUtils.isNotBlank(importVo.getStockBoxHeight())) {
+                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    Long longHeight = bigDecimalHeight.longValue();
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        //小数
+                        throw  new BizException("库存高格式不正确");
+                    }
+                    stockBox.setBoxHeight(longHeight);
+                } else {
+                    flag = false;
+                }
             } catch (Exception e) {
                 error.add("库存高格式不正确");
                 flag = false;
             }
+            try {
+                if (StringUtils.isNotBlank(importVo.getStockBoxVolume())) {
+                    BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxVolume().trim());
+                    Long longVolume = bigDecimalVolume.longValue();
+                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                        //小数
+                        throw  new BizException("库存体积格式不正确");
+                    }
+                    stockBox.setBoxVolume(longVolume);
+                    flag = false;
+                }
+            } catch (Exception e) {
+                error.add("库存体积格式不正确");
+            }
             if (flag) {
-                stockBox.setBoxVolume(stockBox.getBoxLength() .multiply(stockBox.getBoxWidth()).multiply(stockBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)));
+                // 长宽高有一个没有填就不算，体积填了不算，只有长宽高全都填对了才算体积
+                stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
             }
             try {
-                stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                 if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
+                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                 } else {
+                     error.add("库存毛重不能为空");
+                 }
             } catch (Exception e) {
                 error.add("库存毛重格式不正确");
             }
-            try {
-                stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
-            } catch (Exception e) {
-                error.add("库存净重格式不正确");
+
+            if (StringUtils.isNotBlank(importVo.getStockNetWeight())) {
+                try {
+                    stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
+
+                } catch (Exception e) {
+                    error.add("库存净重格式不正确");
+                }
             }
             productSkuBoxPackingDrafts.add(stockBox);
         }
@@ -575,8 +637,12 @@ public class CheckSkuNew {
             }
         }
         //采购包装信息
+        //如果长宽高体积毛重净重为空,则不存包装信息
         if (Objects.nonNull(importVo.getStockUnitName())&&Objects.nonNull(importVo.getPurchaseUnitName())&&(!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName()))) {
-            if (Objects.nonNull(importVo.getPurchaseBoxLength())) {
+            boolean purchaseBoxNotSave = StringUtils.isBlank(importVo.getPurchaseBoxLength()) && StringUtils.isBlank(importVo.getPurchaseBoxWidth())
+                    && StringUtils.isBlank(importVo.getPurchaseBoxHeight()) && StringUtils.isBlank(importVo.getPurchaseBoxVolume())
+                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight())  && StringUtils.isBlank(importVo.getPurchaseNetWeight());
+            if (!purchaseBoxNotSave) {
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
                 purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
@@ -584,35 +650,85 @@ public class CheckSkuNew {
                 purchaseBox.setUnitCode(purchase.getUnitCode());
                 boolean flag = true;
                 try {
-                    purchaseBox.setBoxLength(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim()));
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxLength())) {
+                        BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim());
+                        Long longLength = bigDecimalLength.longValue();
+                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                            //小数
+                            throw  new BizException("采购长格式不正确");
+                        }
+                        purchaseBox.setBoxLength(longLength);
+                    } else {
+                        flag = false;
+                    }
                 } catch (Exception e) {
                     error.add("采购长格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxWidth(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim()));
+                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
+                        BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim());
+                        Long longWidth = bigDecimalWidth.longValue();
+                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                            //小数
+                            throw  new BizException("采购宽格式不正确");
+                        }
+                        purchaseBox.setBoxWidth(longWidth);
+                    } else {
+                        flag = false;
+                    }
                 } catch (Exception e) {
                     error.add("采购宽格式不正确");
                     flag = false;
                 }
                 try {
-                    purchaseBox.setBoxHeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim()));
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxHeight())) {
+                        BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim());
+                        Long longHeight = bigDecimalHeight.longValue();
+                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                            //小数
+                            throw  new BizException("采购高格式不正确");
+                        }
+                        purchaseBox.setBoxHeight(longHeight);
+                    } else {
+                        flag = false;
+                    }
                 } catch (Exception e) {
                     error.add("采购高格式不正确");
                     flag = false;
                 }
+                try {
+                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
+                        BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxVolume().trim());
+                        Long longVolume = bigDecimalVolume.longValue();
+                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                            //小数
+                            throw  new BizException("采购体积格式不正确");
+                        }
+                        purchaseBox.setBoxVolume(longVolume);
+                        flag = false;
+                    }
+                } catch (Exception e) {
+                    error.add("采购体积格式不正确");
+                }
                 if (flag) {
-                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength().multiply(purchaseBox.getBoxWidth()).multiply(purchaseBox.getBoxHeight()).divide(BigDecimal.valueOf(10000)) );
+                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
                 }
-                try {
-                    purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
-                } catch (Exception e) {
-                    error.add("采购毛重格式不正确");
+                if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight())) {
+                    try {
+                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                    } catch (Exception e) {
+                        error.add("采购毛重格式不正确");
+                    }
+                } else {
+                    error.add("采购毛重不能为空");
                 }
-                try {
-                    purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
-                } catch (Exception e) {
-                    error.add("采购净重格式不正确");
+                if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight())) {
+                    try {
+                        purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
+                    } catch (Exception e) {
+                        error.add("采购净重格式不正确");
+                    }
                 }
                 productSkuBoxPackingDrafts.add(purchaseBox);
             }
@@ -1120,13 +1236,13 @@ public class CheckSkuNew {
                 draft.setIsDefault((byte)1);
                 //厂方商品编号
                 if (Objects.isNull(importVo.getFactoryProductNumber())) {
-                    error.add("厂方商品编号不能为空");
+                    // error.add("厂方商品编号不能为空");
                 } else {
                     draft.setFactoryProductNumber(importVo.getFactoryProductNumber());
                 }
                 //保修地址
                 if (Objects.isNull(importVo.getAddress())) {
-                    error.add("保修地址不能为空");
+                    // error.add("保修地址不能为空");
                 } else {
                     draft.setAddress(importVo.getAddress());
                 }

@@ -13,6 +13,7 @@ import com.aiqin.platform.flows.client.domain.vo.StartProcessParamVO;
 import com.aiqin.platform.flows.client.service.FormApplyCommonService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -25,6 +26,9 @@ public class FormApplyServiceImpl implements FormApplyService {
 
     @Resource
     private FormApplyCommonService formApplyCommonService;
+    
+    @Value("${mgs.control.system-code}")
+    private String systemCode;
 
     /**
      * 提交表单
@@ -44,7 +48,8 @@ public class FormApplyServiceImpl implements FormApplyService {
         paramVO.setFormUrl(request.getFormUrl());
         paramVO.setFormUpdateUrl(request.getFormUpdateUrl());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
-        paramVO.setReceiptType(2); // 2代表供应链
+        paramVO.setReceiptType(2); // 2代表供应链 HUANGZY删除标识
+//        paramVO.setReceiptType(systemCode);
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(request.getAuditPersonId())) {
             Map<String, Object> map = new HashMap<>();

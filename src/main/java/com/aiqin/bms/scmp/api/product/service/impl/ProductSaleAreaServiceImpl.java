@@ -339,7 +339,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //存日志
         supplierCommonService.getInstance(formNo, HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.WAIT_SALE_AREA.getName(), null, HandleTypeCoce.PENDING.getName(), getUser().getPersonName());
         //调用审批的接口
-        workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode());
+        workFlow(formNo, code, currentAuthToken.getPersonName(),reqVO.getDirectSupervisorCode(), reqVO.getPositionCode());
         return true;
     }
     @Override
@@ -390,9 +390,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode) {
+    public void workFlow(String formNo, String applyCode, String userName, String directSupervisorCode, String positionCode) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
-//        workFlowVO.setPositionCode(positionCode);
+        workFlowVO.setPositionCode(positionCode);
         workFlowVO.setFormUrl(workFlowBaseUrl.applySaleArea + "?approvalType=3&code=" + applyCode + "&" + workFlowBaseUrl.authority);
         workFlowVO.setHost(workFlowBaseUrl.supplierHost);
         workFlowVO.setFormNo(formNo);
@@ -887,5 +887,41 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             respVOS.add(temp);
         }
         return respVOS;
+    }
+
+    @Override
+    public HttpResponse skuAreaSale(String skuCode, String provinceCode, String storeCode){
+        if(StringUtils.isBlank(skuCode) || StringUtils.isBlank(provinceCode) || StringUtils.isBlank(storeCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询商品是否启用及主单号
+        String mainCode = productSkuSaleAreaMapper.selectMainCode(skuCode);
+        if(StringUtils.isBlank(mainCode)){
+            return HttpResponse.success(true);
+        }
+        // 根据区域(禁用)查询
+        Integer areaCount = productSkuSaleAreaInfoMapper.selectAreaStatus(mainCode, provinceCode, 0, 1);
+        if(areaCount > 0){
+            return HttpResponse.success(false);
+        }else {
+            // 根据门店(禁用)查询
+            Integer storeCount = productSkuSaleAreaInfoMapper.selectAreaStatus(mainCode, storeCode, 0, 2);
+            if(storeCount > 0) {
+                return HttpResponse.success(false);
+            }else {
+                // 根据区域(启用)查询
+                Integer areaCount1 = productSkuSaleAreaInfoMapper.selectAreaStatus(mainCode, provinceCode, 1, 1);
+                if(areaCount1 > 0){
+                    return HttpResponse.success(true);
+                }else {
+                    // 根据门店(启用)查询
+                    Integer storeCount1 = productSkuSaleAreaInfoMapper.selectAreaStatus(mainCode, storeCode, 1, 2);
+                    if(storeCount1 <= 0) {
+                        return HttpResponse.success(false);
+                    }
+                }
+            }
+        }
+        return HttpResponse.success(true);
     }
 }

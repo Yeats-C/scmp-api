@@ -363,7 +363,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
-            if(vo.getOrderType().equals(1) || vo.getOrderType().equals(3)){
+            if(vo.getOrderTypeCode().equals(1) || vo.getOrderTypeCode().equals(3)){
                log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStatusCode(),
                        OrderStatus.WAITING_FOR_DISTRIBUTION.getBackgroundOrderStatus(),
                        OrderStatus.WAITING_FOR_DISTRIBUTION.getExplain(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStandardDescription(),

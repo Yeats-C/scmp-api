@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @ApiModel("SKU信息")
@@ -164,7 +165,7 @@ public class ProductSkuInfo extends CommonBean {
     private String remark;
 
     @ApiModelProperty("厂家指导价")
-    private Long manufacturerGuidePrice;
+    private BigDecimal manufacturerGuidePrice;
 
     @ApiModelProperty("拆零系数")
     private Long zeroRemovalCoefficient;

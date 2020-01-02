@@ -160,6 +160,13 @@ public interface ProductSkuDao {
     List<QueryProductSkuListResp> querySkuList(QuerySkuListReqVO querySkuListReqVO);
 
     /**
+     * 根据条件查询skuCode
+     * @param querySkuListReqVO
+     * @return
+     */
+    List<String> querySkuCodeList(QuerySkuListReqVO querySkuListReqVO);
+
+    /**
      * sku管理查询通过供应商
      *
      * @param supplyUnitCode

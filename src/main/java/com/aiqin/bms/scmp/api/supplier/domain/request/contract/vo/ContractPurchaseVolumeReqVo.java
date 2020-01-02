@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 
 /**
  * 描述:合同请求保存和编辑进货额实体
@@ -24,13 +25,13 @@ public class ContractPurchaseVolumeReqVo {
 
     @ApiModelProperty("金额(以分为单位)")
     @NotNull(message = "进货额不能为空")
-    private Long amountMoney;
+    private BigDecimal amountMoney;
 
     @ApiModelProperty("按比例")
-    private Long proportion;
+    private BigDecimal proportion;
 
     @ApiModelProperty("或者金额(以分为单位)")
-    private Long orAmountMoney;
+    private BigDecimal orAmountMoney;
 
     @ApiModelProperty("返利类型1月2季3半年4年")
     private Integer rebateType;

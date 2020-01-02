@@ -24,6 +24,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,10 @@ import java.util.TreeMap;
 @Service
 @Slf4j
 public class BaseServiceImpl implements BaseService {
+	
+	@Value("${mgs.control.system-code}")
+    private String systemCode;
+	
     @Autowired
     private UrlConfig urlConfig;
 
@@ -76,9 +81,12 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setRemark(null);
         paramVO.setFormUrl(vo.getFormUrl());
         paramVO.setFormUpdateUrl(vo.getUpdateUrl());
-//        paramVO.setPositionCode(vo.getPositionCode());
+        paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
-        paramVO.setReceiptType(2); // 2代表供应链
+        paramVO.setReceiptType(2); // 2代表供应链  HUANGZY删除标识
+//        paramVO.setReceiptType(systemCode);
+        
+        paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(vo.getVariables())) {
             Map map = JSON.parseObject(vo.getVariables(), Map.class);

@@ -937,6 +937,71 @@
       </if>
     order by create_time desc
   </select>
+  <select id="querySkuCodeList" resultType="java.lang.String">
+    SELECT
+    a.sku_code
+    FROM
+    product_sku a
+    LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+    WHERE a.del_flag=0
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND a.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCode!=null and productCode!=''">
+      AND a.product_code = #{productCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productName!=null and productName!=''">
+      AND a.product_name like CONCAT('',#{productName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productPropertyName!=null and productPropertyName!=''">
+      AND a.product_property_name like CONCAT('',#{productPropertyName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryCode!=null and productCategoryCode!=''">
+      AND a.product_category_code like CONCAT('',#{productCategoryCode,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND a.product_category_name like CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandCode!=null and productBrandCode!=''">
+      AND a.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND a.product_brand_name like CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+      AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+    </if>
+    <if test="purchaseGroupName!=null and purchaseGroupName!=''">
+      AND a.procurement_section_name like CONCAT('',#{purchaseGroupName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="companyCode != null and companyCode != '' ">
+      and a.company_code = #{companyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuStatus != null">
+      and a.sku_status = #{skuStatus,jdbcType=VARCHAR}
+    </if>
+    <if test="personId != null and personId != '' ">
+      and a.procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </if>
+    <if test="createTimeStart != null ">
+      AND a.create_time &gt;=#{createTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="createTimeEnd != null">
+      AND a.create_time &lt;=#{createTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeStart != null ">
+      AND a.update_time &gt;=#{updateTimeStart,jdbcType=TIMESTAMP}
+    </if>
+    <if test="updateTimeEnd != null">
+      AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+    </if>
+  </select>
   <select id="getProductDraftList" resultMap="ProductDraftListMap">
     SELECT
       a.bar_code,
@@ -1602,7 +1667,7 @@
   mnemonic_code,manufacturer_guide_price,applicable_month_age,seasonal_goods,warehouse_type_code,warehouse_type_name,
   structural_goods,is_main_push,new_product,remark,company_code,company_name,
   del_flag,create_time,create_by,update_time,update_by,use_time,unique_code,
-  inventory_model,price_model,inventory_allocation,sku_status,on_sale
+  inventory_model,price_model,inventory_allocation,sku_status,on_sale,product_desc
   </sql>
   <select id="getProductSkuInfos"  parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuReqVO" resultMap="Product_Sku_Resp_Map">
     select
@@ -2375,4 +2440,5 @@
     on ps.transport_center_code = w.logistics_center_code
     where p.sku_code = #{skuCode}
   </select>
+
 </mapper>

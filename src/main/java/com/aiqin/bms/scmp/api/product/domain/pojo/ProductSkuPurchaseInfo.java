@@ -35,7 +35,7 @@ public class ProductSkuPurchaseInfo extends CommonBean {
     private Integer baseProductContent;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 
     @ApiModelProperty("商品sku 编码")
     private String productSkuCode;

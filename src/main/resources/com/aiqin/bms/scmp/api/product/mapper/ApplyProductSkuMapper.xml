@@ -51,7 +51,7 @@
     <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
     <result column="is_main_push" jdbcType="TINYINT" property="isMainPush" />
     <result column="new_product" jdbcType="TINYINT" property="newProduct" />
-    <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice" />
+    <result column="manufacturer_guide_price" property="manufacturerGuidePrice" />
     <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
@@ -392,9 +392,9 @@ group by a.sku_code
     <if test="skuCode != null and skuCode != '' ">
       and sku_code != #{skuCode}
     </if>
-    <if test="skuName != null and skuName != '' ">
-      and sku_name = #{skuName}
-    </if>
+    <!--<if test="skuName != null and skuName != '' ">-->
+      <!--and sku_name = #{skuName}-->
+    <!--</if>-->
   </select>
     <select id="selectUnSynData" resultMap="BaseResultMap">
       select
@@ -445,7 +445,7 @@ group by a.sku_code
       #{selectionEffectiveStartTime,jdbcType=VARCHAR}, #{selectionEffectiveEndTime,jdbcType=VARCHAR}, 
       #{goodsGifts,jdbcType=TINYINT}, #{skuName,jdbcType=VARCHAR}, #{applyStatus,jdbcType=TINYINT}, 
       #{auditorBy,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{isMainPush,jdbcType=TINYINT}, 
-      #{newProduct,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=BIGINT}, #{zeroRemovalCoefficient,jdbcType=BIGINT}, 
+      #{newProduct,jdbcType=TINYINT}, #{manufacturerGuidePrice,jdbcType=DECIMAL}, #{zeroRemovalCoefficient,jdbcType=BIGINT},
       #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR}, 
       #{formNo,jdbcType=VARCHAR})
   </insert>
@@ -758,7 +758,7 @@ group by a.sku_code
         #{newProduct,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        #{manufacturerGuidePrice,jdbcType=BIGINT},
+        #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="zeroRemovalCoefficient != null">
         #{zeroRemovalCoefficient,jdbcType=BIGINT},
@@ -919,7 +919,7 @@ group by a.sku_code
         new_product = #{newProduct,jdbcType=TINYINT},
       </if>
       <if test="manufacturerGuidePrice != null">
-        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+        manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="zeroRemovalCoefficient != null">
         zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
@@ -985,7 +985,7 @@ group by a.sku_code
       auditor_time = #{auditorTime,jdbcType=TIMESTAMP},
       is_main_push = #{isMainPush,jdbcType=TINYINT},
       new_product = #{newProduct,jdbcType=TINYINT},
-      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=BIGINT},
+      manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
       procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
       procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},

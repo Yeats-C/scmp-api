@@ -263,7 +263,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
             }
         }
         if (!Byte.valueOf("1").equals(applyContractReqVo.getSource())) {
-             workFlow(applyContractDTO.getId());
+             workFlow(applyContractDTO.getId(), applyContractDTO.getPositionCode());
         }
         return 0;
     }
@@ -530,7 +530,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 int mm = ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(applyContractCategories);
             }
         }
-        workFlow(applyContractDTO.getId());
+        workFlow(applyContractDTO.getId(), applyContractDTO.getPositionCode());
         // 修改合同状态防止在审核中修改合同
         int  kp = contractDao.updateByCode(oldApplyContractDTO.getApplyContractCode(),Byte.valueOf("1"),applyContractDTO.getApplyContractCode());
         return kp;
@@ -762,12 +762,12 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(Long id) {
+    public void workFlow(Long id, String positionCode) {
         log.info("ApplyContractServiceImplSupplier-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
          ApplyContractDTO applyContractDTO = applyContractDao.selectByPrimaryKey(id);
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
-//            workFlowVO.setPositionCode(positionCode);
+            workFlowVO.setPositionCode(positionCode);
             workFlowVO.setFormUrl(workFlowBaseUrl.applyContractUrl+"?applyType="+applyContractDTO.getApplyType()+"&applyCode="+applyContractDTO.getApplyContractCode()+"&id="+applyContractDTO.getId()+"&itemCode=4"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo("HT"+IdSequenceUtils.getInstance().nextId());
@@ -1270,7 +1270,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                 int mm = ((ApplyContractService) AopContext.currentProxy()).saveCategoryList(applyContractCategories);
             }
         }
-        workFlow(applyContractDTO.getId());
+        workFlow(applyContractDTO.getId(), applyContractDTO.getPositionCode());
         // 修改合同状态防止在审核中修改合同
 //        int  kp = contractDao.updateByCode(oldApplyContractDTO.getApplyContractCode(),Byte.valueOf("1"),applyContractDTO.getApplyContractCode());
         return Boolean.TRUE;

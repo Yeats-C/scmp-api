@@ -263,9 +263,8 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
 //            throw new BizException(httpResponse.getMessage());
 //        }
         try {
-
             WorkFlowVO workFlowVO = new WorkFlowVO();
-//            workFlowVO.setPositionCode(applySupplierReqDTO.getPositionCode());
+            workFlowVO.setPositionCode(applySupplierReqDTO.getPositionCode());
             workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierGroupUrl+"?applyType="+applySupplierReqDTO.getApplyType()+"&applyCode="+applySupplierReqDTO.getApplySupplierCode()+"&id="+applySupplierReqDTO.getId()+"&itemCode=2"+"&"+workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
             workFlowVO.setFormNo(applySupplierReqDTO.getFormNo());
