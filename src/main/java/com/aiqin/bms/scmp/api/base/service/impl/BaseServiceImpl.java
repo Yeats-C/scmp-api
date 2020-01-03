@@ -83,8 +83,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setFormUpdateUrl(vo.getUpdateUrl());
         paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
-        paramVO.setReceiptType(2); // 2代表供应链  HUANGZY删除标识
-//        paramVO.setReceiptType(systemCode);
+        paramVO.setReceiptType(systemCode);
         
         paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setSignTicket(IdUtil.uuid());
