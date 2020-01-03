@@ -1349,7 +1349,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 // 分销价
                 BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(productSkuSupplyUnit.getProductSkuCode());
                 //原毛利率
-                draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice()));
+                draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
             }
 
         }
