@@ -1337,6 +1337,16 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 capacityDraft.setSupplyUnitCode(supplyUnitDraft.getSupplyUnitCode());
                 capacityDrafts.add(capacityDraft);
             }
+            ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
+            // 分销价
+            BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(productSkuSupplyUnit.getProductSkuCode());
+            // 毛利率
+            if (Objects.nonNull(draft.getTaxIncludedPrice())) {
+                if (draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
+                    draft.setRateOfMargin(BigDecimal.ONE);
+                }
+                draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+            }
             // 数据转换,新增
             if (draft.getApplyType().equals(StatusTypeCode.ADD_APPLY.getStatus())) {
                 draft.setOriginRateOfMargin(BigDecimal.ZERO);
@@ -1344,14 +1354,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             // 数据转换，修改
             if (draft.getApplyType().equals(StatusTypeCode.UPDATE_APPLY.getStatus())) {
-                ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
                 draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
-                // 分销价
-                BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(productSkuSupplyUnit.getProductSkuCode());
                 // 原毛利率
                 draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
-                // 毛利率
-                draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
             }
 
         }
