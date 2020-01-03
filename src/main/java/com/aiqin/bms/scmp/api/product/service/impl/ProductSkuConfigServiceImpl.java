@@ -1345,7 +1345,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 if (draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                     draft.setRateOfMargin(new BigDecimal("100"));
                 } else {
-                    draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+                    draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)));
                 }
             } else {
                 draft.setRateOfMargin(new BigDecimal("100"));
@@ -1364,7 +1364,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                     if (productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
                         draft.setRateOfMargin(new BigDecimal("100"));
                     } else {
-                        draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+                        draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)));
                     }
                 } else {
                     draft.setRateOfMargin(new BigDecimal("100"));
