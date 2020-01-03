@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.response.PositionRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.BankService;
 import com.aiqin.bms.scmp.api.util.HttpClientHelper;
@@ -47,6 +48,7 @@ public class PositionController {
         httpClient.addParameter("size", size);
         httpClient.addParameter("ticket_person_id", ticketPersonId);
         httpClient.addParameter("person_name", personName);
+        httpClient.addParameter("company_code", Global.COMPANY_09);
         HttpResponse<BasePage<PositionRespVo>> response = httpClient.action().result(new TypeReference<HttpResponse<BasePage<PositionRespVo>>>(){
         });
         BasePage<PositionRespVo> positionRespVo = response.getData();
