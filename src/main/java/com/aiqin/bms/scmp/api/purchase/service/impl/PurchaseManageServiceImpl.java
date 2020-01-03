@@ -549,6 +549,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
                 WorkFlowVO w = new WorkFlowVO();
                 w.setFormNo(order.getPurchaseOrderCode());
+                w.setUsername(createById);
                 WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
                 if (!workFlowRespVO.getSuccess()) {
                     throw new GroundRuntimeException("审批流撤销失败!");

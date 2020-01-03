@@ -200,8 +200,8 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo){
         log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        HttpResponse httpResponse = formOperateService.commonCancel(vo.getFormNo(), currentAuthToken.getPersonId());
+        // AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        HttpResponse httpResponse = formOperateService.commonCancel(vo.getFormNo(), vo.getUsername());
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
         if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
             workFlowRespVO.setSuccess(Boolean.TRUE);
