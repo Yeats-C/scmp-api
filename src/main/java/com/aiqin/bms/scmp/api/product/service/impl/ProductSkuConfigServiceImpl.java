@@ -1337,15 +1337,18 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 capacityDraft.setSupplyUnitCode(supplyUnitDraft.getSupplyUnitCode());
                 capacityDrafts.add(capacityDraft);
             }
-            ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
             // 分销价
-            BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(productSkuSupplyUnit.getProductSkuCode());
+            BigDecimal distributionPrice = productSkuSupplyUnitService.getDistributionPrice(draft.getProductSkuCode());
+            distributionPrice = null == distributionPrice ? BigDecimal.ZERO : distributionPrice;
             // 毛利率
             if (Objects.nonNull(draft.getTaxIncludedPrice())) {
                 if (draft.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
-                    draft.setRateOfMargin(BigDecimal.ONE);
+                    draft.setRateOfMargin(new BigDecimal("100"));
+                } else {
+                    draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
                 }
-                draft.setRateOfMargin(distributionPrice.subtract(draft.getTaxIncludedPrice()).divide(draft.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+            } else {
+                draft.setRateOfMargin(new BigDecimal("100"));
             }
             // 数据转换,新增
             if (draft.getApplyType().equals(StatusTypeCode.ADD_APPLY.getStatus())) {
@@ -1354,9 +1357,18 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             }
             // 数据转换，修改
             if (draft.getApplyType().equals(StatusTypeCode.UPDATE_APPLY.getStatus())) {
+                ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitMapper.selectBySupplyCode(draft.getProductSkuCode(), draft.getSupplyUnitCode());
                 draft.setOriginTaxIncludedPrice(productSkuSupplyUnit.getTaxIncludedPrice());
                 // 原毛利率
-                draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+                if (Objects.nonNull(productSkuSupplyUnit.getTaxIncludedPrice())) {
+                    if (productSkuSupplyUnit.getTaxIncludedPrice().equals(BigDecimal.ZERO)) {
+                        draft.setRateOfMargin(new BigDecimal("100"));
+                    } else {
+                        draft.setOriginRateOfMargin(distributionPrice.subtract(productSkuSupplyUnit.getTaxIncludedPrice()).divide(productSkuSupplyUnit.getTaxIncludedPrice(),2, BigDecimal.ROUND_DOWN));
+                    }
+                } else {
+                    draft.setRateOfMargin(new BigDecimal("100"));
+                }
             }
 
         }
