@@ -67,4 +67,6 @@ public interface OutboundProductDao {
     List<OutboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
 
     OutboundProduct selectByProductAmount(@Param("outboundOderCode") String outboundOderCode, @Param("lineCode") Long lineCode);
+
+    Integer updateAll(List<UpdateOutboundProductReqVO> list);
 }

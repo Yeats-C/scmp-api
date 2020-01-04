@@ -581,10 +581,8 @@
       county_code = #{countyCode,jdbcType=VARCHAR},
       county_name = #{countyName,jdbcType=VARCHAR},
       detailed_address = #{detailedAddress,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
 

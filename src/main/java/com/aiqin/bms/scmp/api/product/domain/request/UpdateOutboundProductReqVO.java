@@ -44,4 +44,10 @@ public class UpdateOutboundProductReqVO implements Serializable {
     @ApiModelProperty(hidden = true)
     private Date currentDate;
 
+    @ApiModelProperty("出库单")
+    private String outboundOderCode;
+
+    @ApiModelProperty("行号")
+    private Long lineCode;
+
 }

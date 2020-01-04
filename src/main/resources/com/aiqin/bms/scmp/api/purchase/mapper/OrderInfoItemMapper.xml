@@ -643,8 +643,8 @@
           actual_price = #{item.actualPrice,jdbcType=DECIMAL},
         </if>
       </set>
-      where order_code = #{orderCode,jdbcType=VARCHAR}
-      and product_line_num = #{productLineNum,jdbcType=BIGINT}
+      where order_code = #{item.orderCode,jdbcType=VARCHAR}
+      and product_line_num = #{item.productLineNum,jdbcType=BIGINT}
     </foreach>
   </update>
 </mapper>

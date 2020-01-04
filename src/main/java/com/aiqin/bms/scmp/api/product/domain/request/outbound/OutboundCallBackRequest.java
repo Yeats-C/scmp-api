@@ -6,8 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +24,7 @@ public class OutboundCallBackRequest {
 
     @ApiModelProperty("发货时间")
     @NotEmpty(message = "发货时间不能为空")
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonProperty("delivery_time")
     private Date deliveryTime;
 
@@ -37,7 +36,7 @@ public class OutboundCallBackRequest {
     @JsonProperty("delivery_person")
     private String deliveryPerson;
 
-    @ApiModelProperty("签收时间（数据库两个发运时间）")
+    @ApiModelProperty("签收时间")
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonProperty("receive_time")
     private Date receiveTime;
