@@ -1449,7 +1449,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 更新出库单
         this.updateOutbound(request);
         // 调用爱亲供应链的接口 回传销售单的发货等信息
-        //this.updateAiqinOrder(request);
+        this.updateAiqinOrder(request);
         return HttpResponse.success();
     }
 
