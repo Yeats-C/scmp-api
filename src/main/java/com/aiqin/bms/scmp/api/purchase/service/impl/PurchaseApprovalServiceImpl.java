@@ -152,7 +152,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         if (workFlowRespVO.getSuccess()) {
             LOGGER.info("创建采购单审批成功:{}",workFlowRespVO);
         } else {
-            throw new BizException(ResultCode.PURCHASE_ERROR);
+            throw new BizException(workFlowRespVO.getMsg());
         }
     }
 
