@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
@@ -350,6 +352,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Override
     public Boolean record(ReturnReq reqVO) {
+        Inbound inbound=new Inbound();
+        ReturnOrderInfoReq returnOrderInfo=reqVO.getReturnOrderInfo();
+        inbound.setCompanyCode(returnOrderInfo.getCompanyCode());
+        inbound.setCompanyName(returnOrderInfo.getCompanyName());
+        //进行第一次状态
+        inbound.setInboundStatusCode(new Byte("1"));
+
+
         return null;
     }
 
