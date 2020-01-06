@@ -167,5 +167,5 @@ public interface ReturnGoodsService {
      * @date 2019/7/4
      * @return java.lang.Boolean
      */
-    Boolean record(ReturnReq reqVO);
+    String record(ReturnReq reqVO);
 }

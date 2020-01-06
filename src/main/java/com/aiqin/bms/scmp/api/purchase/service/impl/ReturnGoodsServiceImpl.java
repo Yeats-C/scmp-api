@@ -6,12 +6,15 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
@@ -38,6 +41,7 @@ import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.poi.ss.formula.functions.Now;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -351,16 +355,89 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    public Boolean record(ReturnReq reqVO) {
-        Inbound inbound=new Inbound();
+    @Transactional
+    public String record(ReturnReq reqVO) {
+        InboundReqSave inbound=new InboundReqSave();
         ReturnOrderInfoReq returnOrderInfo=reqVO.getReturnOrderInfo();
         inbound.setCompanyCode(returnOrderInfo.getCompanyCode());
         inbound.setCompanyName(returnOrderInfo.getCompanyName());
         //进行第一次状态
         inbound.setInboundStatusCode(new Byte("1"));
+        inbound.setInboundStatusName("新建");
+       // 进行退货设置
+        inbound.setInboundTypeCode(InboundTypeEnum.ORDER.getCode());
+        inbound.setInboundTypeName(InboundTypeEnum.ORDER.getName());
+        inbound.setSourceOderCode(returnOrderInfo.getReturnOrderCode());
+        inbound.setInboundTime(new Date());
+        inbound.setLogisticsCenterCode(returnOrderInfo.getTransportCenterCode());
+        inbound.setLogisticsCenterName(returnOrderInfo.getTransportCenterName());
+        inbound.setWarehouseCode(returnOrderInfo.getWarehouseCode());
+        inbound.setWarehouseName(returnOrderInfo.getWarehouseName());
+        inbound.setSupplierCode(returnOrderInfo.getSupplierCode());
+        inbound.setSupplierName(returnOrderInfo.getSupplierName());
+       //预计到货时间?
+        inbound.setPreArrivalTime(null);
+        //预计入库数量？
+        inbound.setPreInboundNum(returnOrderInfo.getActualProductCount());
+        //预计入库数量？
+        inbound.setPraInboundNum(returnOrderInfo.getActualProductCount());
+        //预计主单位数量?
+        inbound.setPreMainUnitNum(returnOrderInfo.getActualProductCount());
+        inbound.setPreTaxAmount(returnOrderInfo.getReturnOrderAmount());
+        inbound.setPraAmount(returnOrderInfo.getReturnOrderAmount());
+        //省编码
+        inbound.setProvinceCode(returnOrderInfo.getProvinceId());
+        inbound.setProvinceName(returnOrderInfo.getProvinceName());
+        //城市
+        inbound.setCityCode(returnOrderInfo.getCityId());
+        inbound.setCityName(returnOrderInfo.getCityName());
+        //区
+        inbound.setCountyCode(returnOrderInfo.getDistrictId());
+        inbound.setCountyName(returnOrderInfo.getDistrictName());
+        //详细地址
+        inbound.setDetailedAddress(returnOrderInfo.getReceiveAddress());
+        //创建人
+        inbound.setCreateBy(returnOrderInfo.getCreateByName());
+        inbound.setCreateTime(returnOrderInfo.getCreateTime());
+        //修改人
+        inbound.setUpdateBy(returnOrderInfo.getUpdateByName());
+        inbound.setUpdateTime(returnOrderInfo.getUpdateTime());
+        //进行商品设置
+        List<InboundProductReqVo> list=Lists.newArrayList();
+        for (ReturnOrderDetailReq returnOrderDetailReq:
+        reqVO.getReturnOrderDetailReqList()) {
+            InboundProductReqVo inboundProductReqVo=new InboundProductReqVo();
+            inboundProductReqVo.setInboundOderCode(returnOrderDetailReq.getReturnOrderDetailId());
+            inboundProductReqVo.setSkuCode(returnOrderDetailReq.getSkuCode());
+            inboundProductReqVo.setSkuName(returnOrderDetailReq.getSkuName());
+            inboundProductReqVo.setPictureUrl(returnOrderDetailReq.getPictureUrl());
+            inboundProductReqVo.setNorms(returnOrderDetailReq.getProductSpec());
+            inboundProductReqVo.setColorCode(returnOrderDetailReq.getColorCode());
+            inboundProductReqVo.setColorName(returnOrderDetailReq.getColorName());
+            inboundProductReqVo.setModel(returnOrderDetailReq.getModelCode());
+            inboundProductReqVo.setUnitCode(returnOrderDetailReq.getUnitCode());
+            inboundProductReqVo.setUnitName(returnOrderDetailReq.getUnitName());
+            inboundProductReqVo.setInboundNorms(returnOrderDetailReq.getModelCode());
+            inboundProductReqVo.setInboundBaseUnit(String.valueOf(returnOrderDetailReq.getZeroDisassemblyCoefficient()));
+            inboundProductReqVo.setPreInboundNum(returnOrderDetailReq.getReturnProductCount());
+            inboundProductReqVo.setPreInboundMainNum(returnOrderDetailReq.getReturnProductCount());
+            inboundProductReqVo.setPreTaxPurchaseAmount(returnOrderDetailReq.getProductAmount());
+            inboundProductReqVo.setPreTaxAmount(returnOrderDetailReq.getTotalProductAmount());
+            inboundProductReqVo.setPraInboundNum(returnOrderDetailReq.getReturnProductCount());
+            inboundProductReqVo.setPraInboundMainNum(returnOrderDetailReq.getReturnProductCount());
+            inboundProductReqVo.setPraTaxPurchaseAmount(returnOrderDetailReq.getProductAmount());
+            inboundProductReqVo.setPraTaxAmount(returnOrderDetailReq.getTotalProductAmount());
+            inboundProductReqVo.setCreateBy(returnOrderDetailReq.getCreateByName());
+            inboundProductReqVo.setCreateTime(returnOrderDetailReq.getCreateTime());
+            inboundProductReqVo.setUpdateBy(returnOrderDetailReq.getUpdateByName());
+            inboundProductReqVo.setUpdateTime(returnOrderDetailReq.getUpdateTime());
+            inboundProductReqVo.setSupplyCode(inboundProductReqVo.getSupplyCode());
+            inboundProductReqVo.setSupplyName(inboundProductReqVo.getSupplyName());
+            list.add(inboundProductReqVo);
+        }
 
-
-        return null;
+       //回传入库单编号
+        return inboundService.saveInbound(inbound);
     }
 
     /**

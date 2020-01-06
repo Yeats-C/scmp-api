@@ -53,7 +53,7 @@ public class ReturnGoodsController {
 
     @ApiOperation("退货单调用接口")
     @PostMapping("record/return")
-    public HttpResponse<Boolean> record(@RequestBody ReturnReq reqVO){
+    public HttpResponse<String> record(@RequestBody ReturnReq reqVO){
         log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(returnGoodsService.record(reqVO));
