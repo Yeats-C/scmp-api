@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
@@ -345,6 +346,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         vo.setOrderStatus(status);
         changeStatus(vo);
         return Boolean.TRUE;
+    }
+
+    @Override
+    public Boolean record(ReturnReq reqVO) {
+        return null;
     }
 
     /**

@@ -100,7 +100,7 @@ public interface ReturnOrderInfoMapper {
      * @author NullPointException
      * @date 2019/7/4
      * @param orderCode
-     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo
+     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoReq
      */
     ReturnOrderInfo selectByCode1(String orderCode);
     /**

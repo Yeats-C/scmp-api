@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
@@ -160,4 +161,11 @@ public interface ReturnGoodsService {
      * @return java.lang.Boolean
      */
     Boolean changeOrderStatus(String code, Integer status);
+    /**
+     * 进行订单记录
+     * @author NullPointException
+     * @date 2019/7/4
+     * @return java.lang.Boolean
+     */
+    Boolean record(ReturnReq reqVO);
 }
