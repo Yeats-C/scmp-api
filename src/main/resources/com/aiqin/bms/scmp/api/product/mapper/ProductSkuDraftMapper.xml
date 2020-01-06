@@ -1047,6 +1047,17 @@
       <!--and sku_name = #{skuName}-->
     <!--</if>-->
   </select>
+  <select id="checkPicFolderCode" resultType="java.lang.Integer">
+    select count(*) from
+    product_sku_draft
+    where 1=1
+    <if test="skuCode != null and skuCode != '' ">
+      and sku_code != #{skuCode}
+    </if>
+    <if test="picFolderCode != null and picFolderCode != '' ">
+      and pic_folder_code = #{picFolderCode}
+    </if>
+  </select>
     <select id="exportSku" resultType="com.aiqin.bms.scmp.api.product.domain.excel.ExportSkuInfo">
               select a.*,
                group_concat(b.price_channel_name) priceChannelName,
