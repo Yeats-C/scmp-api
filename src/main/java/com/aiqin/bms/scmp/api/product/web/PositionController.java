@@ -41,7 +41,7 @@ public class PositionController {
     public HttpResponse getBankList(String accountId, String page, String size,String ticketPersonId,String personName){
         //http://control.api.aiqin.com/person/user/position/c0ee64bff2e54c639447d458f08935f2?page=1&ticket_person_id=11182&person_name=%E5%BE%90%E5%AD%A6%E6%B5%A9&size=20
         StringBuilder sb = new StringBuilder();
-        sb.append(urlConfig.CENTRAL_URL).append("/person/user/position/").append(accountId);
+        sb.append(urlConfig.CENTRAL_URL).append("/person/user/position/scmp/").append(accountId);
         // HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(sb.toString()));
         HttpClient httpClient = HttpClient.get(sb.toString());
         httpClient.addParameter("page", page);
