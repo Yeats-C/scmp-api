@@ -221,6 +221,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             // if(count > 0 ){
             //     throw new BizException(MessageId.create(Project.SCMP_API, 13, "SKU信息已经存在"));
             // }
+            //验证文件夹编码是否存在
+            if(StringUtils.isNotBlank(productSkuDraft.getPicFolderCode())){
+                int count = productSkuDraftMapper.checkPicFolderCode(productSkuDraft.getSkuCode(), productSkuDraft.getPicFolderCode());
+                 if(count > 0 ){
+                     throw new BizException(MessageId.create(Project.SCMP_API, 13, "图片文件夹编码在申请表中已存在"));
+                 }
+            }
             //计算状态
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuConfigs())) {
                 List<SkuConfigsRepsVo> skuConfigsRepsVos = BeanCopyUtils.copyList(addSkuInfoReqVO.getProductSkuConfigs(),SkuConfigsRepsVo.class);
@@ -256,6 +263,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (StringUtils.isNotBlank(compareResult)) {
                         changeStr.append("基本信息:").append(compareResult).append(";");
                     }
+                    productSkuDraft.setPicFolderCode(oldSku.getPicFolderCode());
                 } else {
                     productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
@@ -2686,15 +2694,20 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 } else {
                     //没有spu信息需要先增加品牌信息
                     synchronized (SkuInfoService.class) {
-                        NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
-                        saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
-                        saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
-                        saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
-                        saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
-                        saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
-                        String s = newProductService.insertProduct(saveReqVO);
-                        reqVO.getProductSkuDraft().setProductCode(s);
-                        spuMap.put(reqVO.getProductSkuDraft().getProductName(), s);
+                        String productCode = spuMap.get(reqVO.getProductSkuDraft().getProductName());
+                        if(StringUtils.isNotBlank(productCode)){
+                            reqVO.getProductSkuDraft().setProductCode(spuMap.get(reqVO.getProductSkuDraft()));
+                        } else {
+                            NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
+                            saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
+                            saveReqVO.setPurchasingGroupCode(reqVOs.getPurchaseGroupCode());
+                            saveReqVO.setPurchasingGroupName(reqVOs.getPurchaseGroupName());
+                            saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
+                            saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
+                            productCode = newProductService.insertProduct(saveReqVO);
+                            spuMap.put(reqVO.getProductSkuDraft().getProductName(), productCode);
+                        }
+                        reqVO.getProductSkuDraft().setProductCode(productCode);
                     }
                 }
             }

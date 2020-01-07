@@ -50,6 +50,7 @@ public class CheckSkuNew {
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
+    private static String picFolderCodeKey="picFolderCode_";
 
     private CheckSkuNew() {
     }
@@ -506,84 +507,85 @@ public class CheckSkuNew {
         }
         //库存包装信息
         //如果长宽高体积毛重净重为空,则不存库存包装信息
-        boolean stockNotSave = StringUtils.isBlank(importVo.getStockBoxLength()) && StringUtils.isBlank(importVo.getStockBoxWidth())
-                && StringUtils.isBlank(importVo.getStockBoxHeight()) && StringUtils.isBlank(importVo.getStockBoxVolume())
-                && StringUtils.isBlank(importVo.getStockBoxGrossWeight()) && StringUtils.isBlank(importVo.getStockNetWeight());
-        if (!stockNotSave) {
+//        boolean stockNotSave = StringUtils.isBlank(importVo.getStockBoxLength()) && StringUtils.isBlank(importVo.getStockBoxWidth())
+//                && StringUtils.isBlank(importVo.getStockBoxHeight()) && StringUtils.isBlank(importVo.getStockBoxVolume())
+//                && StringUtils.isBlank(importVo.getStockBoxGrossWeight()) && StringUtils.isBlank(importVo.getStockNetWeight());
+//        if (!stockNotSave) {
             ProductSkuBoxPackingDraft stockBox = new ProductSkuBoxPackingDraft();
             stockBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
             stockBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
             stockBox.setLargeUnit(stock.getUnitName());
             stockBox.setUnitCode(stock.getUnitCode());
-            boolean flag = true;
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxLength())) {
                     BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
-                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){
+                        stockBox.setBoxLength(longLength);
+                    }else {
                         //小数
-                        throw  new BizException("库存长格式不正确");
+                        error.add("库存长格式不正确");
                     }
-                    stockBox.setBoxLength(longLength);
+
                 } else {
-                    flag = false;
+                    error.add("库存长不能为空");
                 }
 
             } catch (Exception e) {
                 error.add("库存长格式不正确");
-                flag = false;
             }
             try {
                 if(StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
                     BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
-                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){
+                        stockBox.setBoxWidth(longWidth);
+                    }else {
                         //小数
-                        throw  new BizException("库存宽格式不正确");
+                        error.add("库存宽格式不正确");
                     }
-                    stockBox.setBoxWidth(longWidth);
                 } else {
-                    flag = false;
+                    error.add("库存宽不能为空");
                 }
-
             } catch (Exception e) {
                 error.add("库存宽格式不正确");
-                flag = false;
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxHeight())) {
                     BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
-                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){
+                        stockBox.setBoxHeight(longHeight);
+                    }else {
                         //小数
-                        throw  new BizException("库存高格式不正确");
+                        error.add("库存高格式不正确");
                     }
-                    stockBox.setBoxHeight(longHeight);
                 } else {
-                    flag = false;
+                    error.add("库存高不能为空");
                 }
             } catch (Exception e) {
                 error.add("库存高格式不正确");
-                flag = false;
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxVolume())) {
                     BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxVolume().trim());
                     Long longVolume = bigDecimalVolume.longValue();
-                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){
+                        stockBox.setBoxVolume(longVolume);
+                    }else {
                         //小数
-                        throw  new BizException("库存体积格式不正确");
+                        error.add("库存体积格式不正确");
                     }
-                    stockBox.setBoxVolume(longVolume);
-                    flag = false;
+                } else{
+                    error.add("库存体积不能为空");
                 }
             } catch (Exception e) {
                 error.add("库存体积格式不正确");
             }
-            if (flag) {
-                // 长宽高有一个没有填就不算，体积填了不算，只有长宽高全都填对了才算体积
-                stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
-            }
+//            if (flag) {
+//                // 长宽高有一个没有填就不算，体积填了不算，只有长宽高全都填对了才算体积
+//                stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight());
+//            }
             try {
                  if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
                     stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
@@ -597,13 +599,12 @@ public class CheckSkuNew {
             if (StringUtils.isNotBlank(importVo.getStockNetWeight())) {
                 try {
                     stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
-
                 } catch (Exception e) {
                     error.add("库存净重格式不正确");
                 }
             }
             productSkuBoxPackingDrafts.add(stockBox);
-        }
+//        }
         //库存条形码 默认使用销售条形码
 //        if (Objects.isNull(importVo.getStockBarCode())) {
 //            error.add("库存条形码不能为空");
@@ -639,81 +640,83 @@ public class CheckSkuNew {
         //采购包装信息
         //如果长宽高体积毛重净重为空,则不存包装信息
         if (Objects.nonNull(importVo.getStockUnitName())&&Objects.nonNull(importVo.getPurchaseUnitName())&&(!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName()))) {
-            boolean purchaseBoxNotSave = StringUtils.isBlank(importVo.getPurchaseBoxLength()) && StringUtils.isBlank(importVo.getPurchaseBoxWidth())
-                    && StringUtils.isBlank(importVo.getPurchaseBoxHeight()) && StringUtils.isBlank(importVo.getPurchaseBoxVolume())
-                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight())  && StringUtils.isBlank(importVo.getPurchaseNetWeight());
-            if (!purchaseBoxNotSave) {
+//            boolean purchaseBoxNotSave = StringUtils.isBlank(importVo.getPurchaseBoxLength()) && StringUtils.isBlank(importVo.getPurchaseBoxWidth())
+//                    && StringUtils.isBlank(importVo.getPurchaseBoxHeight()) && StringUtils.isBlank(importVo.getPurchaseBoxVolume())
+//                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight())  && StringUtils.isBlank(importVo.getPurchaseNetWeight());
+//            if (!purchaseBoxNotSave) {
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
                 purchaseBox.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
                 purchaseBox.setLargeUnit(purchase.getUnitName());
                 purchaseBox.setUnitCode(purchase.getUnitCode());
-                boolean flag = true;
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxLength())) {
                         BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim());
                         Long longLength = bigDecimalLength.longValue();
-                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){
+                            purchaseBox.setBoxLength(longLength);
+                        }else {
                             //小数
-                            throw  new BizException("采购长格式不正确");
+                            error.add("采购长格式不正确");
                         }
-                        purchaseBox.setBoxLength(longLength);
+
                     } else {
-                        flag = false;
+                        error.add("采购长不能为空");
                     }
                 } catch (Exception e) {
                     error.add("采购长格式不正确");
-                    flag = false;
                 }
                 try {
                     if(StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
                         BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim());
                         Long longWidth = bigDecimalWidth.longValue();
-                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){
+                            purchaseBox.setBoxWidth(longWidth);
+                        }else {
                             //小数
-                            throw  new BizException("采购宽格式不正确");
+                            error.add("采购宽格式不正确");
                         }
-                        purchaseBox.setBoxWidth(longWidth);
                     } else {
-                        flag = false;
+                        error.add("采购宽不能为空");
                     }
                 } catch (Exception e) {
                     error.add("采购宽格式不正确");
-                    flag = false;
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxHeight())) {
                         BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim());
                         Long longHeight = bigDecimalHeight.longValue();
-                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){
+                            purchaseBox.setBoxHeight(longHeight);
+                        }else {
                             //小数
-                            throw  new BizException("采购高格式不正确");
+                            error.add("采购高格式不正确");
                         }
-                        purchaseBox.setBoxHeight(longHeight);
                     } else {
-                        flag = false;
+                        error.add("采购高不能为空");
                     }
                 } catch (Exception e) {
                     error.add("采购高格式不正确");
-                    flag = false;
                 }
                 try {
                     if(StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
                         BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxVolume().trim());
                         Long longVolume = bigDecimalVolume.longValue();
-                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){
+                            purchaseBox.setBoxVolume(longVolume);
+                        }else {
                             //小数
-                            throw  new BizException("采购体积格式不正确");
+                            error.add("采购体积格式不正确");
                         }
-                        purchaseBox.setBoxVolume(longVolume);
-                        flag = false;
+                    } else {
+                        error.add("采购体积不能为空");
                     }
                 } catch (Exception e) {
                     error.add("采购体积格式不正确");
                 }
-                if (flag) {
-                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
-                }
+//                if (flag2) {
+//                    purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight());
+//                }
                 if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight())) {
                     try {
                         purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
@@ -731,7 +734,7 @@ public class CheckSkuNew {
                     }
                 }
                 productSkuBoxPackingDrafts.add(purchaseBox);
-            }
+//            }
         }
         //采购基商品含量
         if (Objects.isNull(importVo.getPurchaseBaseProductContent())) {
@@ -1255,9 +1258,14 @@ public class CheckSkuNew {
 
     //检查图片
     public CheckSkuNew checkPic() {
-        if (Objects.isNull(importVo.getPicFolderCode())) {
-//                error.add("图片文件夹编号不能为空");
-        }else {
+        //检查文件夹编码是否存在
+        if(StringUtils.isNotBlank(importVo.getPicFolderCode())){
+            String picFolderCode = repeatMap.get(picFolderCodeKey + importVo.getPicFolderCode().trim());
+            if(StringUtils.isNotBlank(picFolderCode)){
+                error.add("图片文件夹编号重复");
+            } else {
+                repeatMap.put(picFolderCodeKey + importVo.getPicFolderCode().trim(),importVo.getPicFolderCode().trim());
+            }
             this.resp.getProductSkuDraft().setPicFolderCode(importVo.getPicFolderCode().trim());
         }
         return this;
