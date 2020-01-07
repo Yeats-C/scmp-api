@@ -1,9 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.OrderType;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
@@ -11,12 +8,12 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
-import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
-import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
+import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
@@ -37,12 +34,18 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.poi.ss.formula.functions.Now;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -71,6 +74,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Autowired
     private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+
+    @Autowired
+    private UrlConfig urlConfig;
 
     @Autowired
     private WarehouseService warehouseService;
@@ -355,16 +361,202 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public String record(ReturnReq reqVO) {
+        //进行退货单记录
+        returnOrderAdd(reqVO);
+        //进行入库记录
+        InboundReqSave inbound = getInboundReqSave(reqVO);
+        //回传入库单编号
+        return inboundService.saveInbound2(inbound);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean recordDL(ReturnDLReq reqVO) {
+        reqVO=test1();
+        if(ObjectUtils.equals(null,reqVO)
+                ||ObjectUtils.equals(null,reqVO.getReturnOrderInfoDLReq())
+                ||CollectionUtils.isEmptyCollection(reqVO.getReturnOrderDetailDLReqList())){
+         throw new BizException("有必填项为空");
+        }
+        //进行主表修改
+        ReturnOrderInfoDLReq returnOrderInfoDLReq=reqVO.getReturnOrderInfoDLReq();
+        if (ObjectUtils.equals(null,returnOrderInfoMapper.selectByCode(returnOrderInfoDLReq.getReturnOrderCode()))){
+            throw new BizException("没有对应退货主单");
+        }
+        ReturnOrderInfo returnOrderInfo=new ReturnOrderInfo();
+        returnOrderInfo.setReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
+        returnOrderInfo.setActualProductNum(returnOrderInfoDLReq.getActualProductCount());
+        returnOrderInfo.setUpdateById(returnOrderInfoDLReq.getReturnById());
+        returnOrderInfo.setUpdateTime(returnOrderInfoDLReq.getReturnTime());
+        returnOrderInfoMapper.updateByReturnOrderCodeSelective(returnOrderInfo);
+        //进行验证
+        List<ReturnOrderInfoItem> returnOrderInfoItems=returnOrderInfoItemMapper.selectByReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
+        if(CollectionUtils.isEmptyCollection(returnOrderInfoItems)){
+            throw new BizException("没有对应退货商品明细");
+        }
+        //进行商品修改
+        List<ReturnOrderDetailDLReq> returnOrderDetailDLReqList= reqVO.getReturnOrderDetailDLReqList();
+        for (ReturnOrderDetailDLReq returnOrderDetailDLReq:
+        returnOrderDetailDLReqList  ) {
+            ReturnOrderInfoItem returnOrderInfoItem=new ReturnOrderInfoItem();
+            returnOrderInfoItem.setActualInboundNum(Math.toIntExact(returnOrderDetailDLReq.getActualReturnProductCount()));
+            returnOrderInfoItem.setReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
+            returnOrderInfoItem.setSkuCode(returnOrderDetailDLReq.getSkuCode());
+            returnOrderInfoItem.setSkuName(returnOrderDetailDLReq.getSkuName());
+            returnOrderInfoItem.setProductLineNum(returnOrderDetailDLReq.getLineCode());
+            returnOrderInfoItemMapper.updateByReturnOrderCodeSelective(returnOrderInfoItem);
+        }
+      //进行批次的添加
+      if(CollectionUtils.isNotEmptyCollection(reqVO.getReturnBatchDetailDLReqList())){
+          for (ReturnBatchDetailDLReq returnBatchDetailDLReq:
+          reqVO.getReturnBatchDetailDLReqList()) {
+              ReturnOrderInfoInspectionItem returnOrderInfoInspectionItem=new ReturnOrderInfoInspectionItem();
+              returnOrderInfoInspectionItem.setReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
+              returnOrderInfoInspectionItem.setSkuCode(returnBatchDetailDLReq.getSkuCode());
+              returnOrderInfoInspectionItem.setSkuName(returnBatchDetailDLReq.getSkuName());
+              returnOrderInfoInspectionItem.setProductLineNum(returnBatchDetailDLReq.getLineCode());
+              returnOrderInfoInspectionItem.setBatchNumber(String.valueOf(returnBatchDetailDLReq.getBatchNum()));
+              returnOrderInfoInspectionItemMapper.insert(returnOrderInfoInspectionItem);
+          }
+
+      }
+      //发送请求
+        if (sendRecordDL(reqVO)){
+            log.info("回调成功");
+        }else {
+            log.info("回调失败");
+        } ;
+        return sendRecordDL(reqVO);
+    }
+
+
+    public Boolean sendRecordDL(ReturnDLReq reqVO) {
+        try {
+            StringBuilder sb = new StringBuilder();
+            sb.append(urlConfig.Order_URL).append("/reject/info");
+            HttpClient httpClient = HttpClient.post(String.valueOf(sb)).json(reqVO).timeout(100000);
+            HttpResponse<Boolean> response = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){});
+            return response.getData();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw  new BizException("查询出错");
+        }
+    }
+
+
+
+    private ReturnDLReq test1() {
+        ReturnDLReq returnDLReq=new ReturnDLReq();
+        ReturnOrderInfoDLReq returnOrderInfoDLReq=new ReturnOrderInfoDLReq();
+        returnOrderInfoDLReq.setActualProductCount(1000L);
+        returnOrderInfoDLReq.setReturnOrderCode("20191220015100001");
+        returnOrderInfoDLReq.setReturnById("12272");
+        returnOrderInfoDLReq.setReturnTime(new Date());
+        returnDLReq.setReturnOrderInfoDLReq(returnOrderInfoDLReq);
+
+        List<ReturnOrderDetailDLReq> returnOrderDetailDLReqList=Lists.newArrayList();
+        ReturnOrderDetailDLReq returnOrderDetailDLReq=new ReturnOrderDetailDLReq();
+        returnOrderDetailDLReq.setActualReturnProductCount(Long.valueOf(11));
+        returnOrderDetailDLReq.setSkuCode("102423");
+        returnOrderDetailDLReq.setSkuName("奶粉");
+        returnOrderDetailDLReq.setLineCode(Long.valueOf(1));
+        returnOrderDetailDLReqList.add(returnOrderDetailDLReq);
+        returnDLReq.setReturnOrderDetailDLReqList(returnOrderDetailDLReqList);
+
+
+        List<ReturnBatchDetailDLReq> returnBatchDetailDLReqList=Lists.newArrayList();
+        ReturnBatchDetailDLReq returnBatchDetailDLReq=new ReturnBatchDetailDLReq();
+        returnBatchDetailDLReq.setActualReturnProductCount(Long.valueOf(10));
+        returnBatchDetailDLReq.setSkuCode("102423");
+        returnBatchDetailDLReq.setSkuName("奶粉");
+        returnBatchDetailDLReq.setBatchNum(1);
+        returnBatchDetailDLReq.setLineCode(1L);
+        returnBatchDetailDLReqList.add(returnBatchDetailDLReq);
+        returnDLReq.setReturnBatchDetailDLReqList(returnBatchDetailDLReqList);
+
+        return returnDLReq;
+    }
+
+    private void returnOrderAdd(ReturnReq reqVO) {
+        //进行主表添加
+        ReturnOrderInfoReq returnOrderInfoReq=reqVO.getReturnOrderInfo();
+        ReturnOrderInfo returnOrderInfo=new ReturnOrderInfo();
+        BeanUtils.copyProperties(returnOrderInfoReq,returnOrderInfo);
+        returnOrderInfo.setOrderCode(returnOrderInfoReq.getOrderStoreCode());
+        returnOrderInfo.setId(null);
+        returnOrderInfoMapper.insert(returnOrderInfo);
+        List<ReturnOrderDetailReq> returnOrderDetailReqList=reqVO.getReturnOrderDetailReqList();
+        //进行商品书写
+        if(CollectionUtils.isEmptyCollection(returnOrderDetailReqList)){
+            throw  new BizException("集合为空");
+        }
+        for (ReturnOrderDetailReq returnOrderDetailReq:
+        returnOrderDetailReqList ) {
+            ReturnOrderInfoItem returnOrderInfoItem=new ReturnOrderInfoItem();
+            returnOrderInfoItem.setReturnOrderCode(returnOrderDetailReq.getReturnOrderCode());
+            returnOrderInfoItem.setSkuCode(returnOrderDetailReq.getSkuCode());
+            returnOrderInfoItem.setSkuName(returnOrderDetailReq.getSkuName());
+            returnOrderInfoItem.setPictureUrl(returnOrderDetailReq.getPictureUrl());
+            returnOrderInfoItem.setColorCode(returnOrderDetailReq.getColorCode());
+            returnOrderInfoItem.setColorName(returnOrderDetailReq.getColorName());
+            returnOrderInfoItem.setModelCode(returnOrderDetailReq.getModelCode());
+            returnOrderInfoItem.setUnitCode(returnOrderDetailReq.getUnitCode());
+            returnOrderInfoItem.setUnitName(returnOrderDetailReq.getUnitName());
+            returnOrderInfoItem.setZeroDisassemblyCoefficient(Math.toIntExact(returnOrderDetailReq.getZeroDisassemblyCoefficient()));
+            returnOrderInfoItem.setPrice(returnOrderDetailReq.getProductAmount());
+            returnOrderInfoItem.setNum(returnOrderDetailReq.getReturnProductCount());
+            returnOrderInfoItem.setAmount(returnOrderDetailReq.getTotalProductAmount());
+            returnOrderInfoItem.setActivityCode(returnOrderDetailReq.getActivityCode());
+            returnOrderInfoItem.setProductLineNum(returnOrderDetailReq.getLineCode());
+            returnOrderInfoItem.setProductStatus(returnOrderDetailReq.getProductStatus());
+            returnOrderInfoItem.setActualInboundNum(Math.toIntExact(returnOrderDetailReq.getActualReturnProductCount()));
+            returnOrderInfoItem.setCompanyCode(returnOrderInfoReq.getCompanyCode());
+            returnOrderInfoItem.setCompanyName(returnOrderInfoReq.getCompanyName());
+            returnOrderInfoItem.setChannelUnitPrice(returnOrderDetailReq.getProductAmount());
+            returnOrderInfoItem.setActualChannelUnitPrice(returnOrderDetailReq.getProductAmount());
+            returnOrderInfoItem.setActualAmount(returnOrderDetailReq.getProductAmount());
+            returnOrderInfoItem.setActualPrice(returnOrderDetailReq.getTotalProductAmount());
+            returnOrderInfoItem.setWarehouseCode(returnOrderInfoReq.getWarehouseCode());
+            returnOrderInfoItem.setWarehouseName(returnOrderInfoReq.getWarehouseName());
+            returnOrderInfoItem.setSupplyCode(returnOrderInfoReq.getSupplierCode());
+            returnOrderInfoItem.setSupplyName(returnOrderInfoReq.getSupplierName());
+            returnOrderInfoItem.setTax(returnOrderDetailReq.getTaxRate());
+            returnOrderInfoItemMapper.insert(returnOrderInfoItem);
+
+        }
+        //书写日志
+        ReturnOrderInfoLog returnOrderInfoLog=new ReturnOrderInfoLog(null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        returnOrderInfoLog.setOrderCode(returnOrderInfoReq.getReturnOrderCode());
+        returnOrderInfoLog.setStatus(Integer.valueOf(InOutStatus.CREATE_INOUT.getCode()));
+        returnOrderInfoLog.setStatusDesc(InOutStatus.CREATE_INOUT.getName());
+        returnOrderInfoLog.setRemark(returnOrderInfoReq.getRemark());
+        returnOrderInfoLog.setOperator(returnOrderInfoReq.getCreateByName());
+        returnOrderInfoLog.setOperatorTime(returnOrderInfoReq.getCreateTime());
+        returnOrderInfoLog.setCompanyCode(returnOrderInfoReq.getCompanyCode());
+        returnOrderInfoLog.setCompanyName(returnOrderInfoReq.getCompanyName());
+        returnOrderInfoLogMapper.insert(returnOrderInfoLog);
+    }
+
+    private InboundReqSave getInboundReqSave(ReturnReq reqVO) {
         InboundReqSave inbound=new InboundReqSave();
         ReturnOrderInfoReq returnOrderInfo=reqVO.getReturnOrderInfo();
         inbound.setCompanyCode(returnOrderInfo.getCompanyCode());
         inbound.setCompanyName(returnOrderInfo.getCompanyName());
         //进行第一次状态
-        inbound.setInboundStatusCode(new Byte("1"));
-        inbound.setInboundStatusName("新建");
-       // 进行退货设置
+        inbound.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
+        // 进行退货设置
         inbound.setInboundTypeCode(InboundTypeEnum.ORDER.getCode());
         inbound.setInboundTypeName(InboundTypeEnum.ORDER.getName());
         inbound.setSourceOderCode(returnOrderInfo.getReturnOrderCode());
@@ -375,7 +567,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         inbound.setWarehouseName(returnOrderInfo.getWarehouseName());
         inbound.setSupplierCode(returnOrderInfo.getSupplierCode());
         inbound.setSupplierName(returnOrderInfo.getSupplierName());
-       //预计到货时间?
+        //预计到货时间?
         inbound.setPreArrivalTime(null);
         //预计入库数量？
         inbound.setPreInboundNum(returnOrderInfo.getActualProductCount());
@@ -402,8 +594,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         //修改人
         inbound.setUpdateBy(returnOrderInfo.getUpdateByName());
         inbound.setUpdateTime(returnOrderInfo.getUpdateTime());
+
+        if(CollectionUtils.isEmptyCollection(reqVO.getReturnOrderDetailReqList())){
+         throw new BizException("传输列表详情为空");
+        }
         //进行商品设置
-        List<InboundProductReqVo> list=Lists.newArrayList();
+        List<InboundProductReqVo> list= Lists.newArrayList();
         for (ReturnOrderDetailReq returnOrderDetailReq:
         reqVO.getReturnOrderDetailReqList()) {
             InboundProductReqVo inboundProductReqVo=new InboundProductReqVo();
@@ -435,10 +631,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             inboundProductReqVo.setSupplyName(inboundProductReqVo.getSupplyName());
             list.add(inboundProductReqVo);
         }
+        inbound.setList(list);
 
-       //回传入库单编号
-        return inboundService.saveInbound(inbound);
+        return inbound;
     }
+
 
     /**
      * 参数验证

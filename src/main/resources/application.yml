@@ -46,6 +46,8 @@ marker:
     url: http://market.api.aiqin.com/
 Central:
   url: http://control.api.aiqin.com
+Order:
+  api: http://order.api.aiqin.com
 Store:
   url: http://store.api.aiqin.com
 Workflow:

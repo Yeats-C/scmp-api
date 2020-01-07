@@ -15,6 +15,9 @@ public class UrlConfig {
     @Value("${Central.url}")
     public String CENTRAL_URL;
 
+    @Value("${Order.api}")
+    public String Order_URL;
+
     @Value("${Store.url}")
     public String STORE_API_URL;
 

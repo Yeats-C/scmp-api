@@ -16,7 +16,11 @@ public interface ReturnOrderInfoItemMapper {
 
     ReturnOrderInfoItem selectByPrimaryKey(Long id);
 
+    List<ReturnOrderInfoItem> selectByReturnOrderCode(@Param("returnOrderCode") String returnOrderCode);
+
     int updateByPrimaryKeySelective(ReturnOrderInfoItem record);
+
+    int updateByReturnOrderCodeSelective(ReturnOrderInfoItem record);
 
     int updateByPrimaryKey(ReturnOrderInfoItem record);
     /**

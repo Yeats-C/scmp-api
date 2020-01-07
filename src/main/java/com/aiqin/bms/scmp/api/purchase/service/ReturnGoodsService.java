@@ -1,8 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnDLReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
@@ -168,4 +171,6 @@ public interface ReturnGoodsService {
      * @return java.lang.Boolean
      */
     String record(ReturnReq reqVO);
+
+    Boolean recordDL(ReturnDLReq reqVO);
 }

@@ -2324,7 +2324,7 @@
                 actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=BIGINT},
             </if>
         </set>
-        where return_order_code = #{return_order_code,jdbcType=VARCHAR}
+        where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
     </update>
     <select id="listForSap" resultMap="BaseResultMap">
         select
