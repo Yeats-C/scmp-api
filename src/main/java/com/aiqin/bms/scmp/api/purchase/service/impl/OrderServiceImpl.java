@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
@@ -391,6 +392,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
+        vo.setCompanyCode(Global.COMPANY_09);
+        vo.setCompanyName(Global.COMPANY_09_NAME);
+        vo.setOrderOriginal(request.getCompanyName());
+        vo.setOrderCategoryCode(request.getCompanyCode());
         vo.setOrderCode(request.getOrderStoreCode());
         vo.setOrderType(request.getOrderTypeName());
         vo.setOrderTypeCode(Integer.valueOf(request.getOrderTypeCode()));
@@ -428,6 +433,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         for(ErpOrderItem item : request.getItemList()){
             product = new OrderInfoItemReqVO();
             BeanUtils.copyProperties(item, product);
+            product.setCompanyCode(Global.COMPANY_09);
+            product.setCompanyName(Global.COMPANY_09_NAME);
             product.setOrderCode(item.getOrderStoreCode());
             product.setSpec(item.getProductSpec());
             product.setModel(item.getModelCode());
@@ -460,14 +467,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private void insertOutbound(OrderInfoReqVO vo) {
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         // 公司
-        outboundReqVo.setCompanyCode(vo.getCompanyCode());
-        outboundReqVo.setCompanyName(vo.getCompanyName());
+        outboundReqVo.setCompanyCode(Global.COMPANY_09);
+        outboundReqVo.setCompanyName(Global.COMPANY_09_NAME);
         // 状态
-        outboundReqVo.setOutboundStatusCode(vo.getOrderStatus().byteValue());
-        outboundReqVo.setOutboundStatusName(vo.getOrderStatusName());
+        outboundReqVo.setOutboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
+        outboundReqVo.setOutboundStatusName(InOutStatus.CREATE_INOUT.getName());
         // 出库类型
-        outboundReqVo.setOutboundTypeCode(InOutStatus.CREATE_INOUT.getCode());
-        outboundReqVo.setOutboundTypeName(InOutStatus.CREATE_INOUT.getName());
+        outboundReqVo.setOutboundTypeCode(OutboundTypeEnum.ORDER.getCode());
+        outboundReqVo.setOutboundTypeName(OutboundTypeEnum.ORDER.getName());
         // 仓库
         outboundReqVo.setLogisticsCenterCode(vo.getTransportCenterCode());
         outboundReqVo.setLogisticsCenterName(vo.getTransportCenterName());
