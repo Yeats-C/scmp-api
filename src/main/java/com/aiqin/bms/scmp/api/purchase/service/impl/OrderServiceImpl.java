@@ -37,6 +37,7 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -347,10 +348,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertSaleOrder(OrderInfoReqVO vo) {
-        if (null == vo) {
+    public HttpResponse insertSaleOrder(ErpOrderInfo request) {
+        if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 转换erp参数
+        OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         Date date = Calendar.getInstance().getTime();
         // 数据处理
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
@@ -383,6 +386,74 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 调用销售单生成出库单信息
         this.insertOutbound(vo);
         return HttpResponse.success();
+    }
+
+    private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
+        OrderInfoReqVO vo = new OrderInfoReqVO();
+        BeanUtils.copyProperties(request, vo);
+        vo.setOrderCode(request.getOrderStoreCode());
+        vo.setOrderType(request.getOrderTypeName());
+        vo.setOrderTypeCode(Integer.valueOf(request.getOrderTypeCode()));
+        vo.setOrderStatusName(request.getOrderStatusDesc());
+        vo.setBeLock(request.getOrderLock());
+        vo.setBeException(request.getOrderException());
+        vo.setBeDelete(request.getOrderDelete());
+        vo.setDistributionMode(request.getDistributionModeName());
+        vo.setConsignee(request.getReceivePerson());
+        vo.setConsigneePhone(request.getReceiveMobile());
+        vo.setProvinceCode(request.getProvinceId());
+        vo.setCityCode(request.getCityId());
+        vo.setDistrictCode(request.getDistrictId());
+        vo.setDetailAddress(request.getReceiveAddress());
+        vo.setPaymentTypeCode(request.getPaymentCode());
+        vo.setPaymentType(request.getPaymentName());
+        vo.setProductTotalAmount(request.getTotalProductAmount());
+        vo.setInvoiceTypeCode(request.getInvoiceType().toString());
+        vo.setInvoiceType(request.getInvoiceType() == 1 ? "不开" : (request.getInvoiceType() == 2 ? "增普" : "增专"));
+        vo.setVolume(request.getTotalVolume());
+        vo.setWeight(request.getTotalWeight());
+        vo.setBeMasterOrder(request.getOrderLevel() == 0 ? 1 : 0);
+        vo.setMasterOrderCode(request.getMainOrderCode());
+        vo.setOrderOriginal(request.getOrderStoreCode());
+        vo.setStoreTypeCode(request.getStoreType() == null ? "" : request.getStoreType().toString());
+        vo.setOrderCategory(request.getOrderCategoryName());
+        vo.setCreateById(request.getCreateById());
+        vo.setCreateByName(request.getCreateByName());
+        vo.setUpdateById(request.getCreateById());
+        vo.setUpdateByName(request.getUpdateByName());
+        List<OrderInfoItemReqVO> productList = Lists.newArrayList();
+        OrderInfoItemReqVO product;
+        Long productNum = 0L;
+        BigDecimal totalChannelAmount = BigDecimal.ZERO;
+        for(ErpOrderItem item : request.getItemList()){
+            product = new OrderInfoItemReqVO();
+            BeanUtils.copyProperties(item, product);
+            product.setOrderCode(item.getOrderStoreCode());
+            product.setSpec(item.getProductSpec());
+            product.setModel(item.getModelCode());
+            product.setGivePromotion(item.getProductType());
+            product.setPrice(item.getProductAmount());
+            product.setNum(item.getProductCount());
+            product.setAmount(item.getTotalProductAmount());
+            product.setActivityApportionment(item.getTotalAcivityAmount());
+            product.setPreferentialAllocation(item.getTotalPreferentialAmount());
+            product.setProductLineNum(item.getLineCode());
+            product.setPromotionLineNum(item.getGiftLineCode());
+            BigDecimal amount = item.getPurchaseAmount().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPurchaseAmount();
+            product.setChannelUnitPrice(amount);
+            BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
+            product.setTotalChannelPrice(totalAmount);
+            totalChannelAmount = totalChannelAmount.add(totalAmount);
+            product.setTax(item.getTaxRate());
+            product.setCompanyCode(item.getCompanyCode());
+            product.setCompanyName(item.getCompanyName());
+            productNum += item.getProductCount();
+            productList.add(product);
+        }
+        vo.setProductNum(productNum);
+        vo.setProductChannelTotalAmount(totalChannelAmount);
+        vo.setProductList(productList);
+        return vo;
     }
 
     // 出库单参数填充
@@ -473,7 +544,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 税额
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
-        outboundService.saveOutBoundInfo(outboundReqVo);
+        outboundService.saveOutbound(outboundReqVo);
     }
 
     @Override

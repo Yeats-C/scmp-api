@@ -248,6 +248,15 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String save(OutboundReqVo stockReqVO) {
+        String outboundOderCode = this.saveOutbound(stockReqVO);
+        //  调用推送接口
+        OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+        outboundService.pushWms(outboundOderCode);
+        return outboundOderCode;
+    }
+
+    @Transactional(rollbackFor = GroundRuntimeException.class)
+    public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
             //编码生成
@@ -277,9 +286,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
-            //  调用推送接口
-            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode());
             return outboundOderCode;
         } catch (GroundRuntimeException e) {
             log.error(Global.ERROR, e);
