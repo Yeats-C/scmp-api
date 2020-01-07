@@ -59,6 +59,7 @@ public interface ProductSkuDraftMapper {
     int checkCategory(String categoryCode);
 
     int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
+    int checkPicFolderCode(@Param("skuCode") String skuCode,@Param("picFolderCode") String picFolderCode);
 
     ProductSkuDraft selectProductByFolderCode(@Param(value = "picFolderCode") String folderName);
 

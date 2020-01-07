@@ -76,7 +76,7 @@ public interface OrderService {
     /** 编码查询订单*/
     OrderInfo selectByOrderCode(String orderCode);
 
-    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
+    HttpResponse insertSaleOrder(ErpOrderInfo vo);
 
     HttpResponse orderCancel(String orderCode, String operatorId, String operatorName);
 }

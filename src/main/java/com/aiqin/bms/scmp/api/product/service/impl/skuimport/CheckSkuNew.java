@@ -50,6 +50,7 @@ public class CheckSkuNew {
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
+    private static String picFolderCodeKey="picFolderCode_";
 
     private CheckSkuNew() {
     }
@@ -1255,9 +1256,14 @@ public class CheckSkuNew {
 
     //检查图片
     public CheckSkuNew checkPic() {
-        if (Objects.isNull(importVo.getPicFolderCode())) {
-//                error.add("图片文件夹编号不能为空");
-        }else {
+        //检查文件夹编码是否存在
+        if(StringUtils.isNotBlank(importVo.getPicFolderCode())){
+            String picFolderCode = repeatMap.get(picFolderCodeKey + importVo.getPicFolderCode().trim());
+            if(StringUtils.isNotBlank(picFolderCode)){
+                error.add("图片文件夹编号重复");
+            } else {
+                repeatMap.put(picFolderCodeKey + importVo.getPicFolderCode().trim(),importVo.getPicFolderCode().trim());
+            }
             this.resp.getProductSkuDraft().setPicFolderCode(importVo.getPicFolderCode().trim());
         }
         return this;
