@@ -198,4 +198,7 @@ public class ProductSkuRespVo extends CommonBean {
 
     @ApiModelProperty("通货等级名称")
     private String currencyLevelName;
+
+    @ApiModelProperty(value = "图片文件夹编码")
+    private String picFolderCode;
 }

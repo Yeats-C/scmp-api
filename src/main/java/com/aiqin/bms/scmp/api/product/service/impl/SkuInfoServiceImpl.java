@@ -263,7 +263,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     if (StringUtils.isNotBlank(compareResult)) {
                         changeStr.append("基本信息:").append(compareResult).append(";");
                     }
-                    productSkuDraft.setPicFolderCode(oldSku.getPicFolderCode());
                 } else {
                     productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                     productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
@@ -1195,7 +1194,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         NewProductUpdateReqVO newProductUpdateReqVO = new NewProductUpdateReqVO();
         BeanCopyUtils.copy(spuInfo, newProductUpdateReqVO);
         newProductService.updateProduct(newProductUpdateReqVO);
-
+        addSkuInfoReqVO.getProductSkuDraft().setPicFolderCode(skuRespVo.getPicFolderCode());
         addSkuInfoReqVO.getProductSkuDraft().setApplyType(skuRespVo.getApplyType());
         addSkuInfoReqVO.getProductSkuDraft().setApplyTypeName(skuRespVo.getApplyTypeName());
         List<String> skuCodes = Lists.newArrayList();

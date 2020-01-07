@@ -93,7 +93,7 @@
     company_code, company_name, apply_code, apply_status, auditor_by, auditor_time, del_flag,
     create_time, create_by, update_time, update_by, spec, unit_name, unit_code, box_gauge,
     point, spu_code, bar_code, logo, images, itro_images, zero_removal_coefficient, use_time,
-    unique_code, inventory_model, inventory_allocation, price_model,product_desc,pic_folder_code
+    unique_code, inventory_model, inventory_allocation, price_model,product_desc
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select

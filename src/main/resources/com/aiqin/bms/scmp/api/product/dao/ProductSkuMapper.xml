@@ -841,7 +841,7 @@
       apply_type_name,
       product_desc,
       item_number,
-      season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
+      season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name,pic_folder_code
     from product_sku_draft
     where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
@@ -1658,6 +1658,7 @@
     <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
     <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
     <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
+    <result column="pic_folder_code" jdbcType="VARCHAR" property="picFolderCode" />
   </resultMap>
   <sql id="Product_Sku_Resp_Column">
   id,product_code,product_name,sku_code,sku_name,sku_abbreviation,product_brand_code,product_brand_name,product_category_code,
