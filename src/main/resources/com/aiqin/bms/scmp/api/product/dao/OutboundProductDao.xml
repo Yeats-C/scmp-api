@@ -343,23 +343,15 @@
       <if test="praTaxAmount != null">
         pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
       <if test="linenum != null">
         linenum = #{linenum,jdbcType=BIGINT},
       </if>
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where id = #{id,jdbcType = BIGINT}
     and  outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundProduct">
@@ -542,4 +534,37 @@
     </foreach>
     )
   </select>
+  <select id="selectByProductAmount" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound_product
+    where
+    outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
+    and linenum = #{lineCode, jdbcType=BIGINT}
+  </select>
+  <update id="updateAll" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update outbound_product
+      <set>
+        <if test="item.praOutboundNum != null and item.praOutboundNum != ''">
+          pra_outbound_num = #{item.praOutboundNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.praOutboundMainNum != null and item.praOutboundMainNum != ''">
+          pra_outbound_main_num = #{item.praOutboundMainNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.praTaxPurchaseAmount != null and item.praTaxPurchaseAmount != ''">
+          pra_tax_purchase_amount = #{item.praTaxPurchaseAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.praTaxAmount != null and item.praTaxAmount != ''">
+          pra_tax_amount = #{item.praTaxAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.operator != null and item.operator != ''">
+          update_by = #{item.operator,jdbcType=VARCHAR},
+        </if>
+          update_time = now()
+      </set>
+      where outbound_oder_code = #{item.outboundOderCode,jdbcType=VARCHAR}
+      and linenum = #{item.lineCode,jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

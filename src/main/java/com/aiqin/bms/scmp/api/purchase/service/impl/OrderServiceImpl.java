@@ -3,18 +3,17 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
@@ -39,12 +38,12 @@ import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.*;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -60,6 +59,7 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
+
     @Autowired
     private OrderInfoMapper orderInfoMapper;
     @Autowired
@@ -349,10 +349,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse insertSaleOrder(OrderInfoReqVO vo) {
-        if (null == vo) {
+    public HttpResponse insertSaleOrder(ErpOrderInfo request) {
+        if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 转换erp参数
+        OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         Date date = Calendar.getInstance().getTime();
         // 数据处理
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
@@ -387,18 +389,92 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         return HttpResponse.success();
     }
 
+    private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
+        OrderInfoReqVO vo = new OrderInfoReqVO();
+        BeanUtils.copyProperties(request, vo);
+        vo.setCompanyCode(Global.COMPANY_09);
+        vo.setCompanyName(Global.COMPANY_09_NAME);
+        vo.setOrderOriginal(request.getCompanyName());
+        vo.setOrderCategoryCode(request.getCompanyCode());
+        vo.setOrderCode(request.getOrderStoreCode());
+        vo.setOrderType(request.getOrderTypeName());
+        vo.setOrderTypeCode(Integer.valueOf(request.getOrderTypeCode()));
+        vo.setOrderStatusName(request.getOrderStatusDesc());
+        vo.setBeLock(request.getOrderLock());
+        vo.setBeException(request.getOrderException());
+        vo.setBeDelete(request.getOrderDelete());
+        vo.setDistributionMode(request.getDistributionModeName());
+        vo.setConsignee(request.getReceivePerson());
+        vo.setConsigneePhone(request.getReceiveMobile());
+        vo.setProvinceCode(request.getProvinceId());
+        vo.setCityCode(request.getCityId());
+        vo.setDistrictCode(request.getDistrictId());
+        vo.setDetailAddress(request.getReceiveAddress());
+        vo.setPaymentTypeCode(request.getPaymentCode());
+        vo.setPaymentType(request.getPaymentName());
+        vo.setProductTotalAmount(request.getTotalProductAmount());
+        vo.setInvoiceTypeCode(request.getInvoiceType().toString());
+        vo.setInvoiceType(request.getInvoiceType() == 1 ? "不开" : (request.getInvoiceType() == 2 ? "增普" : "增专"));
+        vo.setVolume(request.getTotalVolume());
+        vo.setWeight(request.getTotalWeight());
+        vo.setBeMasterOrder(request.getOrderLevel() == 0 ? 1 : 0);
+        vo.setMasterOrderCode(request.getMainOrderCode());
+        vo.setOrderOriginal(request.getOrderStoreCode());
+        vo.setStoreTypeCode(request.getStoreType() == null ? "" : request.getStoreType().toString());
+        vo.setOrderCategory(request.getOrderCategoryName());
+        vo.setCreateById(request.getCreateById());
+        vo.setCreateByName(request.getCreateByName());
+        vo.setUpdateById(request.getCreateById());
+        vo.setUpdateByName(request.getUpdateByName());
+        List<OrderInfoItemReqVO> productList = Lists.newArrayList();
+        OrderInfoItemReqVO product;
+        Long productNum = 0L;
+        BigDecimal totalChannelAmount = BigDecimal.ZERO;
+        for(ErpOrderItem item : request.getItemList()){
+            product = new OrderInfoItemReqVO();
+            BeanUtils.copyProperties(item, product);
+            product.setCompanyCode(Global.COMPANY_09);
+            product.setCompanyName(Global.COMPANY_09_NAME);
+            product.setOrderCode(item.getOrderStoreCode());
+            product.setSpec(item.getProductSpec());
+            product.setModel(item.getModelCode());
+            product.setGivePromotion(item.getProductType());
+            product.setPrice(item.getProductAmount());
+            product.setNum(item.getProductCount());
+            product.setAmount(item.getTotalProductAmount());
+            product.setActivityApportionment(item.getTotalAcivityAmount());
+            product.setPreferentialAllocation(item.getTotalPreferentialAmount());
+            product.setProductLineNum(item.getLineCode());
+            product.setPromotionLineNum(item.getGiftLineCode());
+            BigDecimal amount = item.getPurchaseAmount().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPurchaseAmount();
+            product.setChannelUnitPrice(amount);
+            BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
+            product.setTotalChannelPrice(totalAmount);
+            totalChannelAmount = totalChannelAmount.add(totalAmount);
+            product.setTax(item.getTaxRate());
+            product.setCompanyCode(item.getCompanyCode());
+            product.setCompanyName(item.getCompanyName());
+            productNum += item.getProductCount();
+            productList.add(product);
+        }
+        vo.setProductNum(productNum);
+        vo.setProductChannelTotalAmount(totalChannelAmount);
+        vo.setProductList(productList);
+        return vo;
+    }
+
     // 出库单参数填充
     private void insertOutbound(OrderInfoReqVO vo) {
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         // 公司
-        outboundReqVo.setCompanyCode(vo.getCompanyCode());
-        outboundReqVo.setCompanyName(vo.getCompanyName());
+        outboundReqVo.setCompanyCode(Global.COMPANY_09);
+        outboundReqVo.setCompanyName(Global.COMPANY_09_NAME);
         // 状态
-        outboundReqVo.setOutboundStatusCode(vo.getOrderStatus().byteValue());
-        outboundReqVo.setOutboundStatusName(vo.getOrderStatusName());
+        outboundReqVo.setOutboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
+        outboundReqVo.setOutboundStatusName(InOutStatus.CREATE_INOUT.getName());
         // 出库类型
-        outboundReqVo.setOutboundTypeCode(InOutStatus.CREATE_INOUT.getCode());
-        outboundReqVo.setOutboundTypeName(InOutStatus.CREATE_INOUT.getName());
+        outboundReqVo.setOutboundTypeCode(OutboundTypeEnum.ORDER.getCode());
+        outboundReqVo.setOutboundTypeName(OutboundTypeEnum.ORDER.getName());
         // 仓库
         outboundReqVo.setLogisticsCenterCode(vo.getTransportCenterCode());
         outboundReqVo.setLogisticsCenterName(vo.getTransportCenterName());
@@ -475,7 +551,38 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 税额
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
-        outboundService.saveOutBoundInfo(outboundReqVo);
+        outboundService.saveOutbound(outboundReqVo);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse orderCancel(String orderCode,  String operatorId, String operatorName){
+        if(StringUtils.isBlank(orderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // TODO 调用DL 取消的销售单接口
+
+
+        // 取消销售单
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderCode(orderCode);
+        orderInfo.setOrderStatus(OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode());
+        orderInfo.setUpdateById(operatorId);
+        orderInfo.setUpdateByName(operatorName);
+        Integer count = orderInfoMapper.updateByOrderCode(orderInfo);
+
+        // 添加取消订单日志
+        OrderInfoLog orderInfoLog = new OrderInfoLog(null, orderCode, OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getBackgroundOrderStatus(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getExplain(),
+                OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStandardDescription(),
+                operatorName, new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
+        orderInfoLogMapper.insert(orderInfoLog);
+        if(count <=  0){
+            log.info("取消订单失败！！！");
+            return HttpResponse.success(false);
+        }
+        return HttpResponse.success(true);
     }
 
 }

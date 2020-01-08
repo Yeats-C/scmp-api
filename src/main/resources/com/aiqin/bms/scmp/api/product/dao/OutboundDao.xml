@@ -535,18 +535,10 @@
       <if test="detailedAddress != null">
         detailed_address = #{detailedAddress,jdbcType=VARCHAR},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -589,10 +581,8 @@
       county_code = #{countyCode,jdbcType=VARCHAR},
       county_name = #{countyName,jdbcType=VARCHAR},
       detailed_address = #{detailedAddress,jdbcType=VARCHAR},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
       update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
+      update_time = now()
     where id = #{id,jdbcType=BIGINT}
   </update>
 
@@ -666,11 +656,6 @@
     where
     source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
   </update>
-  <select id="selectCreateById" resultType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-    select b.create_by_id as createById, b.create_by_name as createByName from outbound a left join reject_record b on a.source_oder_code = b.reject_record_code
-    where a.outbound_oder_code = #{outboundOderCode, jdbcType=VARCHAR}
-  </select>
-
   <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
@@ -696,4 +681,10 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <select id="selectBySourceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

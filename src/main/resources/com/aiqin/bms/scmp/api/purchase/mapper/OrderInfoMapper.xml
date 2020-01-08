@@ -1239,7 +1239,7 @@ transport_number
         where id = #{id,jdbcType=BIGINT}
     </update>
   <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
-update order_info
+    update order_info
     set order_code = #{orderCode,jdbcType=VARCHAR},
       order_type = #{orderType,jdbcType=VARCHAR},
       order_type_code = #{orderTypeCode,jdbcType=INTEGER},
@@ -1324,86 +1324,237 @@ update order_info
   </update>
   <update id="updateByOrderCode">
    update order_info
-    set order_code = #{orderCode,jdbcType=VARCHAR},
-      order_type = #{orderType,jdbcType=VARCHAR},
-      order_type_code = #{orderTypeCode,jdbcType=INTEGER},
-      customer_name = #{customerName,jdbcType=VARCHAR},
-      customer_code = #{customerCode,jdbcType=VARCHAR},
-      create_date = #{createDate,jdbcType=TIMESTAMP},
-      order_status = #{orderStatus,jdbcType=INTEGER},
-      be_lock = #{beLock,jdbcType=INTEGER},
-      lock_reason = #{lockReason,jdbcType=VARCHAR},
-      be_exception = #{beException,jdbcType=INTEGER},
-      exception_reason = #{exceptionReason,jdbcType=VARCHAR},
-      be_delete = #{beDelete,jdbcType=INTEGER},
-      payment_status = #{paymentStatus,jdbcType=INTEGER},
-      transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
-      transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
-      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
-      supplier_name = #{supplierName,jdbcType=VARCHAR},
-      supplier_code = #{supplierCode,jdbcType=VARCHAR},
-      distribution_mode = #{distributionMode,jdbcType=VARCHAR},
-      distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
-      consignee = #{consignee,jdbcType=VARCHAR},
-      consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
-      province_code = #{provinceCode,jdbcType=VARCHAR},
-      province_name = #{provinceName,jdbcType=VARCHAR},
-      city_code = #{cityCode,jdbcType=VARCHAR},
-      city_name = #{cityName,jdbcType=VARCHAR},
-      district_code = #{districtCode,jdbcType=VARCHAR},
-      district_name = #{districtName,jdbcType=VARCHAR},
-      detail_address = #{detailAddress,jdbcType=VARCHAR},
-      zip_code = #{zipCode,jdbcType=VARCHAR},
-      payment_type = #{paymentType,jdbcType=VARCHAR},
-      payment_type_code = #{paymentTypeCode,jdbcType=VARCHAR},
-      deliver_amount = #{deliverAmount,jdbcType=DECIMAL},
-      product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
-      product_channel_total_amount = #{productChannelTotalAmount,jdbcType=DECIMAL},
-      discount_amount = #{discountAmount,jdbcType=DECIMAL},
-      order_amount = #{orderAmount,jdbcType=DECIMAL},
-      payment_time = #{paymentTime,jdbcType=TIMESTAMP},
-      delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
-      transport_time = #{transportTime,jdbcType=TIMESTAMP},
-      receiving_time = #{receivingTime,jdbcType=TIMESTAMP},
-      invoice_type = #{invoiceType,jdbcType=VARCHAR},
-      invoice_type_code = #{invoiceTypeCode,jdbcType=VARCHAR},
-      invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
-      operator = #{operator,jdbcType=VARCHAR},
-      operator_code = #{operatorCode,jdbcType=VARCHAR},
-      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
-      activity_discount = #{activityDiscount,jdbcType=DECIMAL},
-      volume = #{volume,jdbcType=BIGINT},
-      weight = #{weight,jdbcType=BIGINT},
-      be_master_order = #{beMasterOrder,jdbcType=INTEGER},
-      master_order_code = #{masterOrderCode,jdbcType=VARCHAR},
-      order_original = #{orderOriginal,jdbcType=VARCHAR},
-      remake = #{remake,jdbcType=VARCHAR},
-      logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
-      transport_status = #{transportStatus,jdbcType=INTEGER},
-      store_type = #{storeType,jdbcType=VARCHAR},
-      store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      company_code = #{companyCode,jdbcType=VARCHAR},
-      product_num = #{productNum,jdbcType=BIGINT},
-      order_category = #{orderCategory,jdbcType=VARCHAR},
-      order_category_code = #{orderCategoryCode,jdbcType=VARCHAR},
-      create_by_name = #{createByName,jdbcType=VARCHAR},
-      create_by_id = #{createById,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_by_name = #{updateByName,jdbcType=VARCHAR},
-      update_by_id = #{updateById,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=DECIMAL},
-      actual_order_amount = #{actualOrderAmount,jdbcType=DECIMAL},
-      actual_product_num = #{actualProductNum,jdbcType=DECIMAL},
-      order_original_name = #{orderOriginalName,jdbcType=VARCHAR},
-      actual_weight = #{actualWeight,jdbcType=BIGINT},
-      actual_volume = #{actualVolume,jdbcType=BIGINT},
-      actual_product_total_amount = #{actualProductTotalAmount,jdbcType=DECIMAL},
-      transport_company = #{transportCompany,jdbcType=VARCHAR},
-      transport_company_code = #{transportCompanyCode,jdbcType=VARCHAR},
-      transport_number = #{transportNumber,jdbcType=VARCHAR}
+   <set>
+      <if test="orderCode != null">
+          order_code = #{orderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderType != null">
+          order_type = #{orderType,jdbcType=VARCHAR},
+      </if>
+      <if test="orderTypeCode != null">
+          order_type_code = #{orderTypeCode,jdbcType=INTEGER},
+      </if>
+      <if test="customerName != null">
+          customer_name = #{customerName,jdbcType=VARCHAR},
+      </if>
+      <if test="customerCode != null">
+          customer_code = #{customerCode,jdbcType=VARCHAR},
+      </if>
+      <if test="createDate != null">
+          create_date = #{createDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="orderStatus != null">
+          order_status = #{orderStatus,jdbcType=INTEGER},
+      </if>
+      <if test="beLock != null">
+          be_lock = #{beLock,jdbcType=INTEGER},
+      </if>
+      <if test="lockReason != null">
+          lock_reason = #{lockReason,jdbcType=VARCHAR},
+      </if>
+      <if test="beException != null">
+          be_exception = #{beException,jdbcType=INTEGER},
+      </if>
+      <if test="exceptionReason != null">
+          exception_reason = #{exceptionReason,jdbcType=VARCHAR},
+      </if>
+      <if test="beDelete != null">
+          be_delete = #{beDelete,jdbcType=INTEGER},
+      </if>
+      <if test="paymentStatus != null">
+          payment_status = #{paymentStatus,jdbcType=INTEGER},
+      </if>
+      <if test="transportCenterName != null">
+          transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+          transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+          warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+          warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+          supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+          supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="distributionMode != null">
+          distribution_mode = #{distributionMode,jdbcType=VARCHAR},
+      </if>
+      <if test="distributionModeCode != null">
+          distribution_mode_code = #{distributionModeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="consignee != null">
+          consignee = #{consignee,jdbcType=VARCHAR},
+      </if>
+      <if test="consigneePhone != null">
+          consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+          province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+          province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+          city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+          city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtCode != null">
+          district_code = #{districtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+          district_name = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailAddress != null">
+          detail_address = #{detailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="zipCode != null">
+          zip_code = #{zipCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentType != null">
+          payment_type = #{paymentType,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTypeCode != null">
+          payment_type_code = #{paymentTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="deliverAmount != null">
+          deliver_amount = #{deliverAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="productTotalAmount != null">
+          product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="productChannelTotalAmount != null">
+          product_channel_total_amount = #{productChannelTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="discountAmount != null">
+          discount_amount = #{discountAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="orderAmount != null">
+          order_amount = #{orderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="paymentTime != null">
+          payment_time = #{paymentTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="deliveryTime != null">
+          delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="transportTime != null">
+          transport_time = #{transportTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="receivingTime != null">
+          receiving_time = #{receivingTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="invoiceType != null">
+          invoice_type = #{invoiceType,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceTypeCode != null">
+          invoice_type_code = #{invoiceTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="invoiceTitle != null">
+          invoice_title = #{invoiceTitle,jdbcType=VARCHAR},
+      </if>
+      <if test="operator != null">
+          operator = #{operator,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorCode != null">
+          operator_code = #{operatorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="operatorTime != null">
+          operator_time = #{operatorTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="activityDiscount != null">
+          activity_discount = #{activityDiscount,jdbcType=BIGINT},
+      </if>
+      <if test="volume != null">
+          volume = #{volume,jdbcType=BIGINT},
+      </if>
+      <if test="weight != null">
+          weight = #{weight,jdbcType=BIGINT},
+      </if>
+      <if test="beMasterOrder != null">
+          be_master_order = #{beMasterOrder,jdbcType=INTEGER},
+      </if>
+      <if test="masterOrderCode != null">
+          master_order_code = #{masterOrderCode,jdbcType=VARCHAR},
+      </if>
+      <if test="orderOriginal != null">
+          order_original = #{orderOriginal,jdbcType=VARCHAR},
+      </if>
+      <if test="remake != null">
+          remake = #{remake,jdbcType=VARCHAR},
+      </if>
+      <if test="logisticsRemissionRatio != null">
+          logistics_remission_ratio = #{logisticsRemissionRatio,jdbcType=INTEGER},
+      </if>
+      <if test="transportStatus != null">
+          transport_status = #{transportStatus,jdbcType=INTEGER},
+      </if>
+      <if test="storeType != null">
+          store_type = #{storeType,jdbcType=VARCHAR},
+      </if>
+      <if test="storeTypeCode != null">
+          store_type_code = #{storeTypeCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+          company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+          company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productNum != null">
+          product_num = #{productNum,jdbcType=BIGINT},
+      </if>
+      <if test="orderCategory != null">
+          order_category = #{orderCategory,jdbcType=VARCHAR},
+      </if>
+      <if test="orderCategoryCode != null">
+          order_category_code = #{orderCategoryCode,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+          update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+          update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+          update_time = now(),
+      <if test="actualProductChannelTotalAmount != null">
+          actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualOrderAmount != null">
+          actual_order_amount = #{actualOrderAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="actualProductNum != null">
+          actual_product_num = #{actualProductNum,jdbcType=BIGINT},
+      </if>
+      <if test="orderOriginalName != null">
+          order_original_name = #{orderOriginalName,jdbcType=VARCHAR},
+      </if>
+      <if test="actualWeight != null">
+          actual_weight = #{actualWeight,jdbcType=BIGINT},
+      </if>
+      <if test="actualVolume != null">
+          actual_volume = #{actualVolume,jdbcType=BIGINT},
+      </if>
+      <if test="actualProductTotalAmount != null">
+          actual_product_total_amount = #{actualProductTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="transportCompany != null">
+          transport_company = #{transportCompany,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCompanyCode != null">
+          transport_company_code = #{transportCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportNumber != null">
+          transport_number = #{transportNumber,jdbcType=VARCHAR}
+      </if>
+   </set>
     where order_code = #{orderCode,jdbcType=BIGINT}
   </update>
    <select id="listForSap" resultMap="BaseResultMap">
@@ -1439,4 +1590,43 @@ update order_info
             #{item,jdbcType=VARCHAR}
         </foreach>
     </select>
+    <update id="updateBatch">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update order_info
+            <set>
+                <if test="item.customerCode != null and item.customerCode != ''">
+                    customer_code = #{item.customerCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.customerName != null and item.customerName != ''">
+                    customer_name = #{item.customerName,jdbcType=VARCHAR},
+                </if>
+                <if test="item.transportTime != null">
+                    transport_time = #{item.transportTime,jdbcType=TIMESTAMP},
+                </if>
+                <if test="item.deliverAmount != null and item.deliverAmount != ''">
+                    deliver_amount = #{item.deliverAmount,jdbcType=DECIMAL},
+                </if>
+                <if test="item.transportStatus != null and item.transportStatus != ''">
+                    transport_status = #{item.transportStatus,jdbcType=BIGINT},
+                </if>
+                <if test="item.transportCompany != null and item.transportCompany != ''">
+                    transport_company = #{item.transportCompany,jdbcType=VARCHAR},
+                </if>
+                <if test="item.transportCompanyCode != null and item.transportCompanyCode != ''">
+                    transport_company_code = #{item.transportCompanyCode,jdbcType=VARCHAR},
+                </if>
+                <if test="item.transportNumber != null and item.transportNumber != ''">
+                    transport_number = #{item.transportNumber,jdbcType=VARCHAR},
+                </if>
+                <if test="item.updateById != null and item.updateById != ''">
+                    update_by_id = #{item.updateById,jdbcType=VARCHAR},
+                </if>
+                <if test="item.updateByName != null and item.updateByName != ''">
+                    update_by_name = #{item.updateByName,jdbcType=VARCHAR},
+                </if>
+                update_time = now()
+            </set>
+            where order_code = #{item.orderCode,jdbcType=VARCHAR}
+        </foreach>
+    </update>
 </mapper>

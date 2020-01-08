@@ -37,10 +37,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -251,6 +248,15 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String save(OutboundReqVo stockReqVO) {
+        String outboundOderCode = this.saveOutbound(stockReqVO);
+        //  调用推送接口
+        OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+        outboundService.pushWms(outboundOderCode);
+        return outboundOderCode;
+    }
+
+    @Transactional(rollbackFor = GroundRuntimeException.class)
+    public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
             //编码生成
@@ -280,9 +286,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
-            //  调用推送接口
-            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode());
             return outboundOderCode;
         } catch (GroundRuntimeException e) {
             log.error(Global.ERROR, e);
@@ -557,7 +560,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setPraTaxAmount(BigDecimal.ZERO);
             outbound.setPraTax(BigDecimal.ZERO);
             outbound.setPraAmount(BigDecimal.ZERO);
-            outbound.setOutboundTime(reqVo.getOutboundTime());
             // 设置解锁并且减少库存
 
             // 减在途数并且增加库存 实体
@@ -692,7 +694,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
-
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
             try {
@@ -701,7 +702,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<SupplyOrderProductItemReqVO> orderItems = BeanCopyUtils.copyList(list,SupplyOrderProductItemReqVO.class);
                 supplyOrderInfoReqVO.setOrderItems(orderItems);
                 // 调用订单接口
-//                returnOder(supplyOrderInfoReqVO);
+                //returnOder(supplyOrderInfoReqVO);
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -1050,4 +1051,5 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
         return outboundReqVoList;
     }
+
 }

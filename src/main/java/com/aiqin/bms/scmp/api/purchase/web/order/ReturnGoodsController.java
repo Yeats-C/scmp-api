@@ -3,13 +3,19 @@ package com.aiqin.bms.scmp.api.purchase.web.order;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnDLReq;
+import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
+import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -49,6 +55,35 @@ public class ReturnGoodsController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @ApiOperation("退货单调用接口")
+    @PostMapping("record/return")
+    public HttpResponse<String> record(@RequestBody ReturnReq reqVO){
+        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.record(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(e.getMessageId());
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    @ApiOperation("DL退货单调用接口")
+    @PostMapping("recordDL/return")
+    public HttpResponse recordDL(@RequestBody ReturnDLReq reqVO){
+        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.recordDL(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+        }
+    }
+
 
     @ApiOperation("退货单管理")
     @PostMapping("/returnOrderManagement")

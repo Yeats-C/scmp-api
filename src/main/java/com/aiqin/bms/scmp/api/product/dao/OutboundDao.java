@@ -50,11 +50,11 @@ public interface OutboundDao {
      */
     int insertBatch(List<Outbound> list);
 
-    RejectRecord selectCreateById(String outboundOderCode);
-
     Outbound selectById(Long id);
 
     List<Outbound> listForSap(SapOrderRequest sapOrderRequest);
 
     void updateByOrderCodes(List<String> list);
+
+    Outbound selectBySourceCode(String sourceOderCode);
 }

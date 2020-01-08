@@ -59,7 +59,8 @@ public final class Global {
      * 公司编码  01-爱亲
      */
     public static final String COMPANY_01 = "01";
-
+    public static final String COMPANY_09 = "09";
+    public static final String COMPANY_09_NAME = "宁波熙耘科技有限公司";
 
     public static final String CONFIG_CODE = "configCodes";
     public static final String SUPPLIER_ID = "supplierIds";

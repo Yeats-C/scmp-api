@@ -24,149 +24,59 @@ import java.util.List;
  * @time: 17:34
  */
 public interface OrderService {
-    /**
-     * 保存订单
-     * @author NullPointException
-     * @date 2019/6/13
-     * @param reqVO
-     * @return java.lang.Boolean
-     * @exception
-     */
+
+    /**保存订单*/
     Boolean save(List<OrderInfoReqVO> reqVO);
-    /**
-     * 推送到库房
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param dtos
-     * @return void
-     */
-    void sendOrderToOutBound(List<OrderInfoDTO> dtos);
-    /**
-     * 锁定批次库存
-     * @author NullPointException
-     * @date 2019/6/21
-     * @param orders
-     * @param orderItems
-     * @return void
-     */
+
+    /**推送到库房*/
+    void sendOrderToOutBound(List<OrderInfoDTO> dto);
+
+    /** 锁定批次库存*/
     void lockBatchStock(List<OrderInfo> orders, List<OrderInfoItem> orderItems, OrderServiceImpl service);
-    /**
-     * 保存锁定的信息
-     * @author NullPointException
-     * @date 2019/6/21
-     * @param list
-     * @return void
-     */
+
+    /** 保存锁定的信息*/
     void saveLockBatch(List<OrderInfoItemProductBatch> list);
 
-    /**
-     * 保存日志
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param logs
-     * @return void
-     */
+    /** 保存日志*/
     void saveLog(List<OrderInfoLog> logs);
 
-    /**
-     * 保存订单数据
-     * @author NullPointException
-     * @date 2019/6/13
-     * @param infoItems
-     * @param info
-     * @return void
-     * @exception Exception copy异常
-     */
+    /** 保存订单数据*/
     void saveData(List<OrderInfoItem> infoItems, List<OrderInfo> info);
-    /**
-     * 订单列表
-     * @author NullPointException
-     * @date 2019/6/14
-     * @param reqVO
-     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO>
-     */
+
+    /**  订单列表*/
     BasePage<QueryOrderListRespVO> list(QueryOrderListReqVO reqVO);
-    /**
-     * 详情
-     * @author NullPointException
-     * @date 2019/6/14
-     * @param orderCode
-     * @return com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO
-     */
+
+    /** 详情*/
     QueryOrderInfoRespVO view(String orderCode);
-    /**
-     * 改变订单状态
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param reqVO
-     * @return java.lang.Boolean
-     */
+
+    /** 改变订单状态*/
     Boolean changeStatus(ChangeOrderStatusReqVO reqVO);
-    /**
-     * 通过编码更新
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param order
-     * @return void
-     */
+
+    /** 通过编码更新*/
     void updateByOrderCode(OrderInfo order);
-    /**
-     * 配货或者发货
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param orderCode 订单编码
-     * @param status 订单状态
-     * @return java.lang.Boolean
-     */
+
+    /**  配货或者发货*/
     Boolean distribution(String orderCode,Integer status);
-    /**
-     * TODO 订单发货后传给结算系统
-     * @author NullPointException
-     * @date 2019/6/15
-     * @param
-     * @return void
-     */
+
+    /**  TODO 订单发货后传给结算系统 */
     void sendToSettlement();
 
-    /**
-     * TODO 订单完成后传状态给结算系统
-     * @author NullPointException
-     * @date 2019/6/15
-     * @return
-     */
+    /** TODO 订单完成后传状态给结算系统*/
     void sendStatusToSettlement();
-    /**
-     * 订单商品列表
-     * @author NullPointException
-     * @date 2019/6/17
-     * @param reqVO
-     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO>
-     */
+
+    /** 订单商品列表*/
     BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO);
-    /**
-     * 商品唯一码
-     * @author NullPointException
-     * @date 2019/6/18
-     * @param reqVO
-     * @return com.aiqin.bms.scmp.api.base.BasePage<com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO>
-     */
+
+    /** 商品唯一码*/
     BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
-    /**
-     * 直送修改数量
-     * @author NullPointException
-     * @date 2019/6/24
-     * @param reqVO
-     * @return java.lang.Boolean
-     */
+
+    /** 直送修改数量*/
     Boolean delivery(List<DeliveryReqVO> reqVO,String orderCode);
-    /**
-     * 编码查询订单
-     * @author NullPointException
-     * @date 2019/6/28
-     * @param orderCode
-     * @return com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo
-     */
+
+    /** 编码查询订单*/
     OrderInfo selectByOrderCode(String orderCode);
 
-    HttpResponse insertSaleOrder(OrderInfoReqVO vo);
+    HttpResponse insertSaleOrder(ErpOrderInfo vo);
+
+    HttpResponse orderCancel(String orderCode, String operatorId, String operatorName);
 }

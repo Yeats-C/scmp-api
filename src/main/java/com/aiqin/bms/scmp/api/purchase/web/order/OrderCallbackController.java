@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
@@ -77,11 +79,18 @@ public class OrderCallbackController {
         return orderCallbackService.profitLossOrder(request);
     }
 
-    @PostMapping("/erp/outbound")
-    @ApiOperation(value = "查询销售回调爱亲供应链的信息")
-    public HttpResponse erpOrder(@RequestParam("order_code") String orderCode) {
-        LOGGER.info("销售回调erp的信息", orderCode);
-        return orderCallbackService.erpOrder(orderCode);
+    @PostMapping("/outbound/aiqin")
+    @ApiOperation("销售出库单回调并且回传爱亲供应链")
+    public HttpResponse outboundOrderCallBack(@RequestBody OutboundCallBackRequest request) {
+        LOGGER.info("销售出库单回调并且回传爱亲供应链,request:{}", request.toString());
+        return orderCallbackService.outboundOrderCallBack(request);
+    }
+
+    @PostMapping("/delivery/info")
+    @ApiOperation("发运单的回传")
+    public HttpResponse deliveryCallBack(@RequestBody DeliveryCallBackRequest request) {
+        LOGGER.info("发运单的回传,request:{}", request.toString());
+        return orderCallbackService.deliveryCallBack(request);
     }
 
 }

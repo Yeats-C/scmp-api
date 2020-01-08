@@ -61,6 +61,13 @@ public interface InboundService {
 
 
     /**
+     * 新建入库单
+     * @param reqVo
+     * @return
+     */
+    String saveInbound2(InboundReqSave reqVo);
+
+    /**
      * 获取入库类型
      * @return
      */

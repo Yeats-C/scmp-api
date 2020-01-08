@@ -1,21 +1,19 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
-import com.aiqin.bms.scmp.api.base.EncodingRuleType;
-import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.base.MsgStatus;
-import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutboundProductReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
@@ -24,6 +22,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConve
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -31,6 +30,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailR
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO;
@@ -49,9 +49,10 @@ import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -60,6 +61,7 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +110,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private final static String COMPANY_CODE = "09";
     private final static String COMPANY_NAME = "宁波熙耘科技有限公司";
     private static List<String> productTypeList = Arrays.asList("商品", "赠品", "实物返");
+    @Value("${order.info.url}")
+    public String orderUrl;
     @Resource
     private OrderInfoMapper orderInfoMapper;
     @Resource
@@ -170,6 +174,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private ProductSkuPicturesDao productSkuPicturesDao;
     @Resource
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
+    @Resource
+    private OrderInfoLogMapper orderInfoLogMapper;
 
     /**
      * 销售出库接口
@@ -1334,24 +1340,268 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     }
 
     @Override
-    public HttpResponse erpOrder(String orderCode){
-        if(StringUtils.isBlank(orderCode)){
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse outboundOrderCallBack(OutboundCallBackRequest request) {
+        // 验证销售订单是否存在
+        OrderInfo response = orderInfoMapper.selectByOrderCode2(request.getOderCode());
+        if (response == null) {
+            return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
+        }
+        // 操作时间 签收时间
+        OrderInfo orderInfo = new OrderInfo();
+        orderInfo.setOrderCode(request.getOderCode());
+        orderInfo.setDeliveryTime(request.getDeliveryTime());
+        orderInfo.setOperatorTime(orderInfo.getReceivingTime());
+        orderInfo.setOperator(request.getDeliveryPerson());
+        orderInfo.setUpdateById(request.getPersonId());
+        orderInfo.setUpdateByName(request.getPersonName());
+        orderInfo.setReceivingTime(request.getReceiveTime());
+        orderInfo.setActualProductNum(request.getActualTotalCount());
+        List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        if (CollectionUtils.isEmpty(detailList)) {
+            LOGGER.info("销售单回传的详情信息缺失");
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 查询要回传销售单的信息
-        OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(orderCode);
-        if(orderInfo == null){
-            return HttpResponse.failure(ResultCode.CAN_NOT_FIND_ORDER);
+        // 根据回传信息，更新销售单的实际发货信息
+        OrderInfoItem orderInfoItem;
+        List<OrderInfoItem> itemList = Lists.newArrayList();
+        Map<String, OrderInfoItem> product = new HashMap<>();
+        String key;
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
+            if (product.get(key) == null) {
+                product.put(key, orderInfoItemMapper.selectOrderByLine(response.getOrderCode(), detail.getLineCode()));
+            }
         }
-        QueryOrderInfoRespVO vo = new QueryOrderInfoRespVO();
-        BeanUtils.copyProperties(orderInfo, vo);
-        // 查询要回传销售单的商品信息
-        List<QueryOrderInfoItemRespVO> orderInfoItem = orderInfoItemMapper.productList(orderCode);
-        vo.setProductList(orderInfoItem);
-        // 查询要回传销售单的商品批次信息
-        List<QueryOrderInfoItemBatchRespVO> batchList = orderInfoItemProductBatchDao.selectList(orderCode);
-        vo.setBatchList(batchList);
-        return HttpResponse.success(vo);
+        BigDecimal actualTotalChannelAmount = BigDecimal.ZERO, actualTotalProductAmount = BigDecimal.ZERO;
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            orderInfoItem = new OrderInfoItem();
+            orderInfoItem.setActualDeliverNum(detail.getActualTotalCount());
+            // 根据单价计算总价
+            key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
+            OrderInfoItem item = product.get(key);
+            // 计算实际分销总价和实际渠道总计
+            orderInfoItem.setActualPrice(item.getPrice());
+            orderInfoItem.setActualAmount(item.getPrice().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+                    setScale(4, BigDecimal.ROUND_HALF_UP));
+            orderInfoItem.setActualChannelUnitPrice(item.getChannelUnitPrice());
+            orderInfoItem.setActualTotalChannelPrice(item.getChannelUnitPrice().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+                    setScale(4, BigDecimal.ROUND_HALF_UP));
+            orderInfoItem.setProductLineNum(detail.getLineCode());
+            orderInfoItem.setOrderCode(request.getOderCode());
+            itemList.add(orderInfoItem);
+
+            actualTotalChannelAmount = actualTotalChannelAmount.add(item.getChannelUnitPrice());
+            actualTotalProductAmount = actualTotalProductAmount.add(item.getPrice());
+        }
+        // 更新订单信息
+        orderInfo.setActualProductChannelTotalAmount(actualTotalChannelAmount);
+        orderInfo.setActualProductTotalAmount(actualTotalProductAmount);
+        // 计算实际的体积,重量
+        if(response.getVolume() != null && response.getVolume() > 0){
+            Long volume = response.getVolume() / response.getProductNum() * orderInfo.getActualProductNum();
+            orderInfo.setActualVolume(volume);
+        }
+        if(response.getWeight() != null && response.getWeight() > 0){
+            Long weight = response.getWeight() / response.getProductNum() * orderInfo.getActualProductNum();
+            orderInfo.setActualWeight(weight);
+        }
+        Integer count = orderInfoMapper.updateByOrderCode(orderInfo);
+        if(count <= 0){
+            LOGGER.error("发货回传失败 ！！" + orderInfo);
+            //throw new GroundRuntimeException(String.format("发货回传失败"));
+        }
+        orderInfoItemMapper.updateBatch(itemList);
+        // 添加订单日志
+        OrderInfoLog orderInfoLog = new OrderInfoLog(null, request.getOderCode(), OrderStatus.ALL_SHIPPED.getStatusCode(),
+                OrderStatus.ALL_SHIPPED.getBackgroundOrderStatus(),
+                OrderStatus.ALL_SHIPPED.getExplain(),
+                OrderStatus.ALL_SHIPPED.getStandardDescription(),
+                request.getPersonName(), new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
+        orderInfoLogMapper.insert(orderInfoLog);
+        // 根据回传信息，更新销售单的实际发货批次信息
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+            List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
+            OrderInfoItemProductBatch productBatch;
+            for (OutboundCallBackBatchRequest batch : request.getBatchList()){
+                productBatch = new OrderInfoItemProductBatch();
+                productBatch.setOrderCode(request.getOderCode());
+                productBatch.setSkuCode(batch.getSkuCode());
+                productBatch.setSkuName(batch.getSkuName());
+                productBatch.setNum(batch.getProductCount());
+                productBatch.setActualDeliverNum(batch.getActualTotalCount());
+                productBatch.setProductTime(batch.getProductDate());
+                productBatch.setBatchNumber(batch.getBatchCode());
+                productBatch.setBatchRemark(batch.getBatchRemark());
+                productBatch.setTransportCenterCode(response.getTransportCenterCode());
+                productBatch.setTransportCenterName(response.getTransportCenterName());
+                productBatch.setWarehouseCode(response.getWarehouseCode());
+                productBatch.setWarehouseName(response.getWarehouseName());
+                productBatch.setCompanyCode(response.getCompanyCode());
+                productBatch.setCompanyName(response.getCompanyName());
+                productBatch.setSupplierCode(response.getSupplierCode());
+                productBatch.setSupplierName(response.getSupplierName());
+                productBatch.setProductLineNum(batch.getLineCode());
+                batchList.add(productBatch);
+            }
+            orderInfoItemProductBatchDao.insertBatch(batchList);
+        }
+        // 更新出库单
+        this.updateOutbound(request);
+        // 调用爱亲供应链的接口 回传销售单的发货等信息
+        this.updateAiqinOrder(request);
+        return HttpResponse.success();
+    }
+
+    private void updateOutbound(OutboundCallBackRequest request){
+        // 根据来源单号查询销售单
+        Outbound outbound = outboundDao.selectBySourceCode(request.getOderCode());
+        // 设置状态
+        outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+        outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+        // 设置出库时间
+        outbound.setOutboundTime(request.getDeliveryTime());
+        // 设置出库的实际数量，实际金额
+        outbound.setPraOutboundNum(request.getActualTotalCount());
+        outbound.setPraMainUnitNum(request.getActualTotalCount());
+        outbound.setUpdateBy(request.getDeliveryPerson());
+        List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        String key;
+        Map<String, OutboundProduct> product = new HashMap<>();
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            key = String.format("%s,%s", outbound.getOutboundOderCode(), detail.getLineCode());
+            if (product.get(key) == null) {
+                product.put(key, outboundProductDao.selectByProductAmount(outbound.getOutboundOderCode(), detail.getLineCode()));
+            }
+        }
+
+        List<UpdateOutboundProductReqVO> productList = Lists.newArrayList();
+        UpdateOutboundProductReqVO outboundProduct;
+        // 便利更新出库单的实际数量
+        BigDecimal totalTaxAmount = BigDecimal.ZERO, totalAmount = BigDecimal.ZERO;
+        for(OutboundCallBackDetailRequest detail : detailList){
+            outboundProduct = new UpdateOutboundProductReqVO();
+            // 根据出库单与行号找到对应的预计采购价
+            key = String.format("%s,%s", outbound.getOutboundOderCode(), detail.getLineCode());
+            outboundProduct.setOutboundOderCode(outbound.getOutboundOderCode());
+            outboundProduct.setLineCode(detail.getLineCode());
+            outboundProduct.setPraOutboundNum(detail.getActualTotalCount());
+            outboundProduct.setPraOutboundMainNum(detail.getActualTotalCount());
+            OutboundProduct outProduct = product.get(key);
+            outboundProduct.setPraTaxPurchaseAmount(outProduct.getPreTaxPurchaseAmount());
+            BigDecimal taxAmount = outProduct.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+                    setScale(4, BigDecimal.ROUND_HALF_UP);
+            outboundProduct.setPraTaxAmount(taxAmount);
+            outboundProduct.setOperator(request.getDeliveryPerson());
+            productList.add(outboundProduct);
+            totalTaxAmount = totalTaxAmount.add(taxAmount);
+            BigDecimal praAmount = Calculate.computeNoTaxPrice(taxAmount, product.get(key).getTax());
+            totalAmount = totalAmount.add(praAmount);
+        }
+        outbound.setPraTaxAmount(totalTaxAmount);
+        outbound.setPraAmount(totalAmount);
+        outbound.setPraTax(totalTaxAmount.subtract(totalAmount));
+
+        // 便利更新出库的批次信息
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+            List<OutboundBatch> outboundBatchList = Lists.newArrayList();
+            OutboundBatch outboundBatch;
+            for(OutboundCallBackBatchRequest batch : request.getBatchList()){
+                outboundBatch = new OutboundBatch();
+                outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+                outboundBatch.setSkuCode(batch.getSkuCode());
+                outboundBatch.setSkuName(batch.getSkuName());
+                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
+                outboundBatch.setManufactureTime(batch.getProductDate());
+                outboundBatch.setBatchRemark(batch.getBatchRemark());
+                outboundBatch.setPraQty(batch.getActualTotalCount());
+                outboundBatch.setCreateBy(request.getDeliveryPerson());
+                outboundBatch.setUpdateBy(request.getDeliveryPerson());
+                outboundBatch.setLineNum(batch.getLineCode());
+                outboundBatchList.add(outboundBatch);
+            }
+            outboundBatchDao.insertList(outboundBatchList);
+        }
+        Integer count = outboundDao.updateByPrimaryKey(outbound);
+        if(count <= 0){
+            LOGGER.error("发货回传失败, 出库单更新失败");
+            throw new GroundRuntimeException(String.format("发货回传失败, 出库单更新失败"));
+        }
+            outboundProductDao.updateAll(productList);
+    }
+
+    private void updateAiqinOrder(OutboundCallBackRequest request){
+        LOGGER.info("调用审批流发起申请,request={}", request);
+        String url = orderUrl + "/purchase/sale/info";
+        OrderIogisticsVo info = new OrderIogisticsVo();
+        // 复制订单主信息
+        BeanUtils.copyProperties(request, info);
+        info.setOrderStoreCode(request.getOderCode());
+        // 复制订单商品明细
+        List<OrderStoreDetail> infoList = BeanCopyUtils.copyList(request.getDetailList(), OrderStoreDetail.class);
+        info.setOrderStoreDetail(infoList);
+        // 复制批次信息
+        List<OrderBatchStoreDetail> batchList = BeanCopyUtils.copyList(request.getBatchList(), OrderBatchStoreDetail.class);
+        info.setOrderBatchStoreDetail(batchList);
+        HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("回传爱亲供应链的发货单成功");
+        }else {
+            LOGGER.error("回传爱亲供应链的发货单失败:{}", response.getMessage());
+            throw new GroundRuntimeException(String.format("回传爱亲供应链的发货单失败:%s", response.getMessage()));
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deliveryCallBack(DeliveryCallBackRequest request){
+        if(request == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<OrderInfo> list = Lists.newArrayList();
+        OrderInfo orderInfo;
+        List<DeliveryDetailRequest> detailList = request.getDetailList();
+        if(CollectionUtils.isEmpty(detailList)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 便利更新采购单的发运信息
+        for(DeliveryDetailRequest detail : detailList){
+            orderInfo = new OrderInfo();
+            orderInfo.setOrderCode(detail.getOrderCode());
+            orderInfo.setDeliverAmount(detail.getTransportAmount());
+            orderInfo.setTransportTime(request.getTransportDate());
+            orderInfo.setTransportCompanyCode(request.getTransportCompanyCode());
+            orderInfo.setTransportCompany(request.getTransportCompanyName());
+            orderInfo.setTransportNumber(request.getTransportCode());
+            orderInfo.setCustomerCode(request.getCustomerCode());
+            orderInfo.setCustomerName(request.getCustomerName());
+            orderInfo.setTransportStatus(1);
+            orderInfo.setUpdateByName(request.getTransportPerson());
+            list.add(orderInfo);
+        }
+        // 更新订单的发运信息
+        Integer count = orderInfoMapper.updateBatch(list);
+        if (count <= 0){
+            LOGGER.error("更新耘链的订单的发运信息失败！！！");
+            throw new GroundRuntimeException(String.format("更新耘链的订单的发运信息失败:%s", count));
+        }
+        // 回传爱亲的销售单的发运信息
+        DeliveryInfoVo info =  new DeliveryInfoVo();
+        BeanUtils.copyProperties(request, info);
+        info.setTransportStatus(1);
+        List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
+        info.setDeliveryDetail(infoList);
+        String url = orderUrl + "/purchase/delivery/info";
+        HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("回传爱亲供应链的发运单成功");
+        }else {
+            LOGGER.error("回传爱亲供应链的发运单失败:{}", response.getMessage());
+            throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
+        }
+        return HttpResponse.success();
     }
 
 }

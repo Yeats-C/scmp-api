@@ -616,4 +616,35 @@
     from order_info_item
     where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectOrderByLine" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from order_info_item
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+    and product_line_num = #{lineCode,jdbcType=BIGINT}
+  </select>
+  <update id="updateBatch">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update order_info_item
+      <set>
+        <if test="item.actualDeliverNum != null and item.actualDeliverNum != ''">
+          actual_deliver_num = #{item.actualDeliverNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.actualChannelUnitPrice != null and item.actualChannelUnitPrice != ''">
+          actual_channel_unit_price = #{item.actualChannelUnitPrice,jdbcType=DECIMAL},
+        </if>
+        <if test="item.actualTotalChannelPrice != null and item.actualTotalChannelPrice != ''">
+          actual_total_channel_price = #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
+        </if>
+        <if test="item.actualAmount != null and item.actualAmount != ''">
+          actual_amount = #{item.actualAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.actualPrice != null and item.actualPrice != ''">
+          actual_price = #{item.actualPrice,jdbcType=DECIMAL},
+        </if>
+      </set>
+      where order_code = #{item.orderCode,jdbcType=VARCHAR}
+      and product_line_num = #{item.productLineNum,jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

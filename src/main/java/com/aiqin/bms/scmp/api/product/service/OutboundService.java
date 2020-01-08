@@ -60,6 +60,7 @@ public interface OutboundService {
      */
     String save(OutboundReqVo stockReqVO);
 
+    String saveOutbound(OutboundReqVo stockReqVO);
 
     /**
      * 根据原始单据号封装更新库存信息

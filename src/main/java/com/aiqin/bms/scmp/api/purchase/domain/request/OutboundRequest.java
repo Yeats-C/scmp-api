@@ -72,16 +72,16 @@ public class OutboundRequest {
     @ApiModelProperty("订单来源:渠道信息 ")
     private String orderOriginal;
 
-    @ApiModelProperty("仓库名称")
+    @ApiModelProperty("库房名称")
     private String warehouseName;
 
-    @ApiModelProperty("仓库编码")
+    @ApiModelProperty("库房编码")
     private String warehouseCode;
 
-    @ApiModelProperty("物流中心名称")
+    @ApiModelProperty("仓库名称")
     private String transportCenterName;
 
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty("仓库编码")
     private String transportCenterCode;
 
     @ApiModelProperty("供应商名称")

@@ -7,7 +7,7 @@
 //import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 //import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 //import com.aiqin.bms.scmp.api.product.service.SkuService;
-//import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+//import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoReq;
 //import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 //import com.google.common.collect.Lists;
 //import org.springframework.beans.BeanUtils;
@@ -44,7 +44,7 @@
 // * <p>
 // * 思维方式*热情*能力
 // */
-//public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfo, List<InboundReqSave>> {
+//public class ReturnInfoToInboundConverter implements Converter<ReturnOrderInfoReq, List<InboundReqSave>> {
 //
 //
 //
@@ -53,7 +53,7 @@
 //    }
 //
 //    @Override
-//    public List<InboundReqSave> convert(ReturnOrderInfo reqVo) {
+//    public List<InboundReqSave> convert(ReturnOrderInfoReq reqVo) {
 //        List<InboundReqSave> list = Lists.newArrayList();
 //        InboundReqSave inbound;
 //        InboundProductReqVo product;

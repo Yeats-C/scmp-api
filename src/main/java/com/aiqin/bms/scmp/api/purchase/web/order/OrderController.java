@@ -146,8 +146,17 @@ public class OrderController {
 
     @PostMapping("/aiqin/sale")
     @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
-    public HttpResponse insertSaleOrder(@RequestBody OrderInfoReqVO vo) {
+    public HttpResponse insertSaleOrder(@RequestBody ErpOrderInfo vo) {
         log.info("爱亲供应链销售单参数", vo);
         return orderService.insertSaleOrder(vo);
+    }
+
+    @GetMapping("/cancel")
+    @ApiOperation("订单的取消")
+    public HttpResponse orderCancel(@RequestParam("order_code") String orderCode,
+                                    @RequestParam("operator_id") String operatorId,
+                                    @RequestParam("operator_name") String operatorName) {
+        log.info("订单的取消:", orderCode);
+        return orderService.orderCancel(orderCode, operatorId, operatorName);
     }
 }
