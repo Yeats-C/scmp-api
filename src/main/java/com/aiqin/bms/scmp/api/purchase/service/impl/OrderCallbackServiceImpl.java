@@ -52,6 +52,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
@@ -63,8 +64,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -1376,16 +1379,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         BigDecimal actualTotalChannelAmount = BigDecimal.ZERO, actualTotalProductAmount = BigDecimal.ZERO;
         for (OutboundCallBackDetailRequest detail : detailList) {
             orderInfoItem = new OrderInfoItem();
-            orderInfoItem.setActualDeliverNum(detail.getActualTotalCount());
+            orderInfoItem.setActualDeliverNum(detail.getActualProductCount());
             // 根据单价计算总价
             key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
             OrderInfoItem item = product.get(key);
             // 计算实际分销总价和实际渠道总计
             orderInfoItem.setActualPrice(item.getPrice());
-            orderInfoItem.setActualAmount(item.getPrice().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+            orderInfoItem.setActualAmount(item.getPrice().multiply(BigDecimal.valueOf(detail.getActualProductCount())).
                     setScale(4, BigDecimal.ROUND_HALF_UP));
             orderInfoItem.setActualChannelUnitPrice(item.getChannelUnitPrice());
-            orderInfoItem.setActualTotalChannelPrice(item.getChannelUnitPrice().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+            orderInfoItem.setActualTotalChannelPrice(item.getChannelUnitPrice().multiply(BigDecimal.valueOf(detail.getActualProductCount())).
                     setScale(4, BigDecimal.ROUND_HALF_UP));
             orderInfoItem.setProductLineNum(detail.getLineCode());
             orderInfoItem.setOrderCode(request.getOderCode());
@@ -1485,11 +1488,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             key = String.format("%s,%s", outbound.getOutboundOderCode(), detail.getLineCode());
             outboundProduct.setOutboundOderCode(outbound.getOutboundOderCode());
             outboundProduct.setLineCode(detail.getLineCode());
-            outboundProduct.setPraOutboundNum(detail.getActualTotalCount());
-            outboundProduct.setPraOutboundMainNum(detail.getActualTotalCount());
+            outboundProduct.setPraOutboundNum(detail.getActualProductCount());
+            outboundProduct.setPraOutboundMainNum(detail.getActualProductCount());
             OutboundProduct outProduct = product.get(key);
             outboundProduct.setPraTaxPurchaseAmount(outProduct.getPreTaxPurchaseAmount());
-            BigDecimal taxAmount = outProduct.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(detail.getActualTotalCount())).
+            BigDecimal taxAmount = outProduct.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(detail.getActualProductCount())).
                     setScale(4, BigDecimal.ROUND_HALF_UP);
             outboundProduct.setPraTaxAmount(taxAmount);
             outboundProduct.setOperator(request.getDeliveryPerson());
@@ -1530,7 +1533,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             outboundProductDao.updateAll(productList);
     }
 
-    private void updateAiqinOrder(OutboundCallBackRequest request){
+    @Async
+    public void updateAiqinOrder(OutboundCallBackRequest request){
         LOGGER.info("调用审批流发起申请,request={}", request);
         String url = orderUrl + "/purchase/sale/info";
         OrderIogisticsVo info = new OrderIogisticsVo();
@@ -1593,6 +1597,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
         info.setDeliveryDetail(infoList);
         String url = orderUrl + "/purchase/delivery/info";
+        LOGGER.info("打印发运单回传爱亲数据："  + JsonUtil.toJson(info));
         HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){
