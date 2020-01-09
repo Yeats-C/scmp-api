@@ -159,18 +159,16 @@ public class SkuSupplierController {
         try {
             List<QueryProductSkuSupplyUnitsRespVo> list = productSkuSupplyUnitService.getDraftListNoPage(reqVo);
             if (CollectionUtils.isEmptyCollection(list)) {
-                String purchaseGroupCode = list.get(0).getPurchaseGroupCode();
-                for (QueryProductSkuSupplyUnitsRespVo respVo : list) {
-                    if (!StringUtils.equals(purchaseGroupCode, respVo.getPurchaseGroupCode())) {
-                        // 不是同一采购组直接返回
-                        return HttpResponse.failure(ResultCode.SKU_DIFFERENT_GRPUP_TYPE);
-                    }
+                return HttpResponse.failure(ResultCode.NO_HAVE_INFO_ERROR);
+            }
+            String purchaseGroupCode = list.get(0).getPurchaseGroupCode();
+            for (QueryProductSkuSupplyUnitsRespVo respVo : list) {
+                if (!StringUtils.equals(purchaseGroupCode, respVo.getPurchaseGroupCode())) {
+                    // 不是同一采购组直接返回
+                    return HttpResponse.failure(ResultCode.SKU_DIFFERENT_GRPUP_TYPE);
                 }
             }
             List<Long> ids = list.stream().map(QueryProductSkuSupplyUnitsRespVo::getId).collect(Collectors.toList());
-            if (CollectionUtils.isEmptyCollection(ids)) {
-                return HttpResponse.successGenerics(new ArrayList<>());
-            }
             return HttpResponse.successGenerics(ids);
         } catch (Exception e) {
             log.error(Global.ERROR, e);
