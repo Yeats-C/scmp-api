@@ -50,7 +50,7 @@ public class OutboundCallBackRequest {
     private String personName;
 
     @ApiModelProperty("商品详情列表")
-    @JsonProperty("detail_id")
+    @JsonProperty("detail_list")
     private List<OutboundCallBackDetailRequest> detailList;
 
     @ApiModelProperty("商品批次列表")

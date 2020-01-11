@@ -20,9 +20,9 @@ public class OutboundCallBackDetailRequest {
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("实际销售数量")
-    @JsonProperty("actual_total_count")
-    private Long actualTotalCount;
+    @ApiModelProperty(value = "实发数量")
+    @JsonProperty("actual_product_count")
+    private Long actualProductCount;
 
     @ApiModelProperty("行号")
     @JsonProperty("line_code")
