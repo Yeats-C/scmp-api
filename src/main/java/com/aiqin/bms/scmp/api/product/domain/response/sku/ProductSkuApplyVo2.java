@@ -13,6 +13,8 @@ import java.util.Date;
 public class ProductSkuApplyVo2 {
     @ApiModelProperty("申请类型")
     private String applyType;
+    @ApiModelProperty("申请类型code")
+    private String applyTypeCode;
     @ApiModelProperty("类型")
     private String goodsGifts;
     @ApiModelProperty("SKU编号")
