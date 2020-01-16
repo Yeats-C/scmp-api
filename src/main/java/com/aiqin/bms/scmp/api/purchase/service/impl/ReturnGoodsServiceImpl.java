@@ -374,7 +374,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean recordDL(ReturnDLReq reqVO) {
-        reqVO=test1();
+//        reqVO=test1();
         if(ObjectUtils.equals(null,reqVO)
                 ||ObjectUtils.equals(null,reqVO.getReturnOrderInfoDLReq())
                 ||CollectionUtils.isEmptyCollection(reqVO.getReturnOrderDetailDLReqList())){
