@@ -83,10 +83,10 @@ public class CheckSkuNew {
         if (Objects.isNull(importVo.getSkuName())) {
             error.add("SKU名称不能为空");
         } else {
-//            ProductSkuInfo sku = productSkuMap.get(importVo.getSkuName());
-//            if (Objects.nonNull(sku)) {
-//                error.add("sku名称已存在");
-//            }
+            ProductSkuInfo sku = productSkuMap.get(importVo.getSkuName());
+            if (Objects.nonNull(sku)) {
+                error.add("sku名称已存在");
+            }
         }
         this.resp.setProductSkuDraft(draft);
         return this;

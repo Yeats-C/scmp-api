@@ -269,7 +269,6 @@ select case
            when a.goods_gifts = 1
                then '赠品'
            end                          goodsGifts,
-       a.apply_type                     applyTypeCode,
        a.sku_code                       skuCode,
        a.sku_name                       skuName,
        a.product_name                   productName,
