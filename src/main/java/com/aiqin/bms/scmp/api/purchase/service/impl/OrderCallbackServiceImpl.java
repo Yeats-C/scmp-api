@@ -1580,7 +1580,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfo.setTransportNumber(request.getTransportCode());
             orderInfo.setCustomerCode(request.getCustomerCode());
             orderInfo.setCustomerName(request.getCustomerName());
-            orderInfo.setTransportStatus(1);
+            orderInfo.setTransportStatus(0);
             orderInfo.setUpdateByName(request.getTransportPerson());
             list.add(orderInfo);
         }
@@ -1593,7 +1593,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 回传爱亲的销售单的发运信息
         DeliveryInfoVo info =  new DeliveryInfoVo();
         BeanUtils.copyProperties(request, info);
-        info.setTransportStatus(1);
+        info.setTransportStatus(0);
         List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
         info.setDeliveryDetail(infoList);
         String url = orderUrl + "/purchase/delivery/info";
