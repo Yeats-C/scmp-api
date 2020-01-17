@@ -64,7 +64,7 @@ public class ProductSkuSalesInfoServiceImpl implements ProductSkuSalesInfoServic
         if (CollectionUtils.isNotEmptyCollection(applyProductSkuSalesInfos)){
             List<ProductSkuSalesInfo> productSkuSalesInfos = BeanCopyUtils.copyList(applyProductSkuSalesInfos,ProductSkuSalesInfo.class);
             //门店销售条码在修改和新增时都做新增处理
-            // productSkuSalesInfoDao.deleteList(skuCode);
+             productSkuSalesInfoDao.deleteList(skuCode);
             return ((ProductSkuSalesInfoService)AopContext.currentProxy()).insertList(productSkuSalesInfos);
         } else {
             return 0;
