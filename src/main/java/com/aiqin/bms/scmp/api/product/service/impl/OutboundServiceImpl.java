@@ -255,7 +255,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         return outboundOderCode;
     }
 
-    @Transactional(rollbackFor = GroundRuntimeException.class)
+    //@Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
