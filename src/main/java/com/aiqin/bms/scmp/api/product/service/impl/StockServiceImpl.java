@@ -1436,9 +1436,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 return null;
         }
         //库存不管是锁定数还是可以数还是库存数都不能为负
-        if (lockNum < 0 || inventoryNum < 0 || availableNum < 0 || allocationWayNum < 0 || totalWayNum < 0) {
-            return null;
-        }
+//        if (lockNum < 0 || inventoryNum < 0 || availableNum < 0 || allocationWayNum < 0 || totalWggit ayNum < 0) {
+//            return null;
+//        }
         return stock;
     }
 
