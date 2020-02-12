@@ -33,10 +33,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.service.InboundService;
-import com.aiqin.bms.scmp.api.product.service.OutboundService;
-import com.aiqin.bms.scmp.api.product.service.SkuService;
-import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
@@ -100,6 +97,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private WarehouseService supplierApiService;
     @Autowired
     private PurchaseGroupService purchaseGroupService;
+    @Autowired
+    private RedisLockService redisLockService;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -1116,7 +1115,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public synchronized HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
+    public HttpResponse changeStock(StockChangeRequest stockChangeRequest) {
         try {
             LOGGER.info("对库存进行操作");
             if (CollectionUtils.isEmpty(stockChangeRequest.getStockVoRequests())) {
@@ -1134,6 +1133,12 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             //将需要修改的库存进行逻辑计算
             List<StockFlow> flows = new ArrayList<>();
             for (StockVoRequest stockVoRequest : stockChangeRequest.getStockVoRequests()) {
+                // 给sku加锁
+                long time = System.currentTimeMillis() + 30;
+                if(!redisLockService.lock(stockVoRequest.getSkuCode(), String.valueOf(time))){
+                    LOGGER.info("redis给sku加锁失败：" + stockVoRequest.getSkuCode());
+                    throw new BizException("redis给sku加锁失败：" + stockVoRequest.getSkuCode());
+                }
                 if (stockMap.containsKey(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode())) {
                     Stock stock = stockMap.get(stockVoRequest.getSkuCode() + stockVoRequest.getWarehouseCode());
                     //设置库存流水期初值
@@ -1308,6 +1313,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
                     flows.add(stockFlow);
                 }
+                // 给sku解锁
+                redisLockService.unlock(stockVoRequest.getSkuCode(), String.valueOf(time));
             }
             if (flage) {
                 return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
