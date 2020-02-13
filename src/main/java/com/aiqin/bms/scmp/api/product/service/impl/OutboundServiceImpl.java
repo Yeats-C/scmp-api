@@ -544,7 +544,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }else{
                 outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
             }
-
             //保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
@@ -563,7 +562,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 设置解锁并且减少库存
 
             // 减在途数并且增加库存 实体
-            StockChangeRequest  stockChangeRequest = new StockChangeRequest();
+            StockChangeRequest stockChangeRequest = new StockChangeRequest();
             stockChangeRequest.setOrderCode(outbound.getOutboundOderCode());
             stockChangeRequest.setOperationType(2);
 

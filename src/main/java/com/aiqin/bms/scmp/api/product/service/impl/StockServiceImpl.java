@@ -1382,6 +1382,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         switch (operationType) {
             //锁定库存数
             case 1:
+                // 判断锁定库存时， 可用库存是否够用
+                if(availableNum < stockVoRequest.getChangeNum()){
+                    LOGGER.error("可用库存小于锁定库存，不可锁定库存");
+                    return null;
+                }
                 stock.setLockNum(lockNum + stockVoRequest.getChangeNum());
                 stock.setAvailableNum(availableNum - stockVoRequest.getChangeNum());
                 break;
