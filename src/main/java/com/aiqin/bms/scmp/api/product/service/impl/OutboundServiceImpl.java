@@ -259,6 +259,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
+            Thread.sleep(1000);
             //编码生成
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
@@ -287,7 +288,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
             return outboundOderCode;
-        } catch (GroundRuntimeException e) {
+        } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException(String.format("保存出库单失败%s",e.getMessage()));
         }

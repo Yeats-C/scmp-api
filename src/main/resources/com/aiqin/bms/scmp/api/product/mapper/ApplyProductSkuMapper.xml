@@ -69,6 +69,15 @@
     <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
     <result column="price_model" jdbcType="TINYINT" property="priceModel" />
     <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+    <result column="approval_remark" jdbcType="VARCHAR" property="approvalRemark" />
+    <result column="approval_name" jdbcType="VARCHAR" property="approvalName" />
+    <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+    <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+    <result column="level" jdbcType="VARCHAR" property="level" />
+    <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+    <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+    <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+    <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
 
 
   </resultMap>
@@ -84,7 +93,9 @@
     apply_status, auditor_by, auditor_time, is_main_push, new_product, manufacturer_guide_price, 
     zero_removal_coefficient, procurement_section_code, procurement_section_name, form_no,
     company_code,company_name,warehouse_type_code,warehouse_type_name,remark,apply_type,apply_type_name,
-    use_time,unique_code,inventory_model,inventory_allocation,price_model,sku_status,product_desc
+    use_time,unique_code,inventory_model,inventory_allocation,price_model,sku_status,product_desc,
+    approval_remark,approval_name,item_number,season_band,level,feature_code,feature_name,
+    currency_level_code,currency_level_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

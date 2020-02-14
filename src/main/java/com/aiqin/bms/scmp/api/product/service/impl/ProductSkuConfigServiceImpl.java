@@ -1423,12 +1423,10 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 if (Objects.isNull(skuSupplierImport.getProductSkuName())) {
                     errorList.add("sku名称不能为空");
                 } else {
-                    if (!productSkuInfo.getSkuName().equals(skuSupplierImport.getProductSkuName())) {
-                        errorList.add("sku名称与对应的sku编码不一致");
+                    if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
+                        errorList.add("该sku所属的采购组不是所选择的采购组");
                     }else {
-                        if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
-                            errorList.add("该sku所属的采购组不是所选择的采购组");
-                        }
+                        copy.setProductSkuName(productSkuInfo.getSkuName());
                     }
                 }
             }
@@ -1604,15 +1602,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
                 if (Objects.isNull(configImport.getSkuName())) {
                     errorList.add("sku名称不能为空");
                 } else {
-                    if (!productSkuInfo.getSkuName().equals(configImport.getSkuName())) {
-                        errorList.add("sku名称与对应的sku编码不一致");
+                    if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
+                        errorList.add("该sku所属的采购组不是所选择的采购组");
                     }else {
-                        if(!purchaseGroupCode.equals(productSkuInfo.getProcurementSectionCode())){
-                            errorList.add("该sku所属的采购组不是所选择的采购组");
-                        }else {
-                            copy.setProductCode(productSkuInfo.getProductCode());
-                            copy.setProductName(productSkuInfo.getProductName());
-                        }
+                        copy.setProductCode(productSkuInfo.getProductCode());
+                        copy.setProductName(productSkuInfo.getProductName());
+                        copy.setSkuName(productSkuInfo.getSkuName());
                     }
                 }
             }
