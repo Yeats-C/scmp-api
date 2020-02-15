@@ -36,13 +36,33 @@ public class PurchaseApply {
     @JsonProperty("supplier_name")
     private String supplierName;
 
-    @ApiModelProperty(value="采购申请类型  0 手动 1自动")
+    @ApiModelProperty(value="结算方式编码")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value="结算方式名称")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
+
+    @ApiModelProperty(value="商品数量")
+    @JsonProperty("product_count")
+    private Long productCount;
+
+    @ApiModelProperty(value="实物返数量")
+    @JsonProperty("return_count")
+    private Long returnCount;
+
+    @ApiModelProperty(value="赠品数量")
+    @JsonProperty("gift_count")
+    private Long giftCount;
+
+    @ApiModelProperty(value="采购申请类型   0 手动 1自动")
     @JsonProperty("apply_type")
-    private Integer applyType;
+    private Boolean applyType;
 
     @ApiModelProperty(value="采购申请状态0. 待提交 1.已完成  2.待审核 3.审核中 4.审核通过 5.审核不通过 6.撤销")
     @JsonProperty("apply_status")
-    private Integer applyStatus;
+    private Boolean applyStatus;
 
     @ApiModelProperty(value="采购组编码")
     @JsonProperty("purchase_group_code")
@@ -62,11 +82,11 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="是否删除 0 否 1是")
     @JsonProperty("status")
-    private Integer status;
+    private Boolean status;
 
-    @ApiModelProperty(value="供应商名称")
+    @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
-    private String totalCount;
+    private Long totalCount;
 
     @ApiModelProperty(value="商品含税金额")
     @JsonProperty("product_tax_amount")
@@ -82,11 +102,15 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="采购价来源 0.读取 1.录入")
     @JsonProperty("purchase_source")
-    private Integer purchaseSource;
+    private Boolean purchaseSource;
 
     @ApiModelProperty(value="预采购类型 0 普通采购 1.预采购")
     @JsonProperty("pre_purchase_type")
-    private Integer prePurchaseType;
+    private Boolean prePurchaseType;
+
+    @ApiModelProperty(value="预采购单号")
+    @JsonProperty("pre_purchase_code")
+    private String prePurchaseCode;
 
     @ApiModelProperty(value="账户编码")
     @JsonProperty("account_code")
@@ -120,9 +144,21 @@ public class PurchaseApply {
     @JsonProperty("supplier_mobile")
     private String supplierMobile;
 
+    @ApiModelProperty(value="第一个商品品牌编码")
+    @JsonProperty("brand_id")
+    private String brandId;
+
+    @ApiModelProperty(value="第一个商品品牌名称")
+    @JsonProperty("brand_name")
+    private String brandName;
+
     @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
+
+    @ApiModelProperty(value="到货后周转期")
+    @JsonProperty("receipt_turnover")
+    private Integer receiptTurnover;
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
