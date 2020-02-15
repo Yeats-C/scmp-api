@@ -109,6 +109,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private WarehouseDao warehouseDao;
     @Resource
     private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
+    @Resource
+    private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -359,6 +361,17 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             this.productDetail(products);
         }                                                                                                                                
         return HttpResponse.success(products);
+    }
+
+    @Override
+    public HttpResponse transportCenterPurchase(String applyProductCode, String transportCenterCode){
+       if(StringUtils.isBlank(applyProductCode)){
+           return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+       }
+       // 查询各个仓库的分仓信息
+
+       // 计算
+       return HttpResponse.success();
     }
 
     @Override

@@ -75,9 +75,22 @@ public class PurchaseApplyController {
     }
 
     @PostMapping("/product/list")
-    @ApiOperation("采购申请单商品列表")
+    @ApiOperation("查询采购申请单商品列表（手动选择商品）")
     public HttpResponse applyProductList(@RequestBody PurchaseApplyRequest purchaseApplyRequest){
         return purchaseApplyService.applyProductList(purchaseApplyRequest);
+    }
+
+    @GetMapping("/product")
+    @ApiOperation("查询申请采购单，商品详情列表")
+    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
+        return purchaseApplyService.searchApplyProduct(applyProductId);
+    }
+
+    @GetMapping("/transport/center/info")
+    @ApiOperation("查询申请采购单，分仓采购信息")
+    public HttpResponse transportCenterPurchase(@RequestParam("apply_product_code") String applyProductCode,
+                                                @RequestParam(value = "transport_center_code", required = false) String transportCenterCode) {
+        return purchaseApplyService.transportCenterPurchase(applyProductCode, transportCenterCode);
     }
 
     @PostMapping("/purchase/form")
@@ -86,11 +99,7 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseApplyForm(applyProductRequest);
     }
 
-    @GetMapping("/product")
-    @ApiOperation("查询申请采购商品信息")
-    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
-        return purchaseApplyService.searchApplyProduct(applyProductId);
-    }
+
 
     @DeleteMapping("/product")
     @ApiOperation("删除申请采购商品信息")

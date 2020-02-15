@@ -22,6 +22,8 @@ public interface PurchaseApplyService {
 
     HttpResponse searchApplyProduct(String applyProductId);
 
+    HttpResponse transportCenterPurchase(String applyProductCode, String transportCenterCode);
+
     HttpResponse deleteApplyProduct(String applyProductId);
 
     HttpResponse applyProductBasic(String purchaseApplyId);
