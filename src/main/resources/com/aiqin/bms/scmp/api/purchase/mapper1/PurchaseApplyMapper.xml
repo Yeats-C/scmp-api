@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao1.PurchaseApplyMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
+    <result column="purchase_apply_name" jdbcType="VARCHAR" property="purchaseApplyName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="apply_type" jdbcType="BIT" property="applyType" />
+    <result column="apply_status" jdbcType="BIT" property="applyStatus" />
+    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="status" jdbcType="BIT" property="status" />
+    <result column="total_count" jdbcType="VARCHAR" property="totalCount" />
+    <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
+    <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
+    <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+    <result column="purchase_source" jdbcType="BIT" property="purchaseSource" />
+    <result column="pre_purchase_type" jdbcType="BIT" property="prePurchaseType" />
+    <result column="account_code" jdbcType="VARCHAR" property="accountCode" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+    <result column="charge_person_code" jdbcType="VARCHAR" property="chargePersonCode" />
+    <result column="charge_person_name" jdbcType="VARCHAR" property="chargePersonName" />
+    <result column="supplier_person" jdbcType="VARCHAR" property="supplierPerson" />
+    <result column="supplier_mobile" jdbcType="VARCHAR" property="supplierMobile" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name, 
+    apply_type, apply_status, purchase_group_code, purchase_group_name, company_code, 
+    company_name, status, total_count, product_tax_amount, return_tax_amount, gift_tax_amount, 
+    purchase_source, pre_purchase_type, account_code, account_name, contract_code, contract_name, 
+    charge_person_code, charge_person_name, supplier_person, supplier_mobile, remark, 
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from purchase_apply
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from purchase_apply
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+    insert into purchase_apply (id, purchase_apply_id, purchase_apply_code, 
+      purchase_apply_name, supplier_code, supplier_name, 
+      apply_type, apply_status, purchase_group_code, 
+      purchase_group_name, company_code, company_name, 
+      status, total_count, product_tax_amount, 
+      return_tax_amount, gift_tax_amount, purchase_source, 
+      pre_purchase_type, account_code, account_name, 
+      contract_code, contract_name, charge_person_code, 
+      charge_person_name, supplier_person, supplier_mobile, 
+      remark, create_time, update_time, 
+      create_by_id, update_by_id, create_by_name, 
+      update_by_name)
+    values (#{id,jdbcType=BIGINT}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, 
+      #{purchaseApplyName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, 
+      #{applyType,jdbcType=BIT}, #{applyStatus,jdbcType=BIT}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=BIT}, #{totalCount,jdbcType=VARCHAR}, #{productTaxAmount,jdbcType=DECIMAL}, 
+      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{purchaseSource,jdbcType=BIT}, 
+      #{prePurchaseType,jdbcType=BIT}, #{accountCode,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, 
+      #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR}, #{chargePersonCode,jdbcType=VARCHAR}, 
+      #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR}, #{supplierMobile,jdbcType=VARCHAR}, 
+      #{remark,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, 
+      #{updateByName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+    insert into purchase_apply
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id,
+      </if>
+      <if test="purchaseApplyCode != null">
+        purchase_apply_code,
+      </if>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="applyType != null">
+        apply_type,
+      </if>
+      <if test="applyStatus != null">
+        apply_status,
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code,
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name,
+      </if>
+      <if test="companyCode != null">
+        company_code,
+      </if>
+      <if test="companyName != null">
+        company_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+      <if test="totalCount != null">
+        total_count,
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount,
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount,
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount,
+      </if>
+      <if test="purchaseSource != null">
+        purchase_source,
+      </if>
+      <if test="prePurchaseType != null">
+        pre_purchase_type,
+      </if>
+      <if test="accountCode != null">
+        account_code,
+      </if>
+      <if test="accountName != null">
+        account_name,
+      </if>
+      <if test="contractCode != null">
+        contract_code,
+      </if>
+      <if test="contractName != null">
+        contract_name,
+      </if>
+      <if test="chargePersonCode != null">
+        charge_person_code,
+      </if>
+      <if test="chargePersonName != null">
+        charge_person_name,
+      </if>
+      <if test="supplierPerson != null">
+        supplier_person,
+      </if>
+      <if test="supplierMobile != null">
+        supplier_mobile,
+      </if>
+      <if test="remark != null">
+        remark,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
+      <if test="createById != null">
+        create_by_id,
+      </if>
+      <if test="updateById != null">
+        update_by_id,
+      </if>
+      <if test="createByName != null">
+        create_by_name,
+      </if>
+      <if test="updateByName != null">
+        update_by_name,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="purchaseApplyId != null">
+        #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyCode != null">
+        #{purchaseApplyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyName != null">
+        #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null">
+        #{applyType,jdbcType=BIT},
+      </if>
+      <if test="applyStatus != null">
+        #{applyStatus,jdbcType=BIT},
+      </if>
+      <if test="purchaseGroupCode != null">
+        #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=BIT},
+      </if>
+      <if test="totalCount != null">
+        #{totalCount,jdbcType=VARCHAR},
+      </if>
+      <if test="productTaxAmount != null">
+        #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseSource != null">
+        #{purchaseSource,jdbcType=BIT},
+      </if>
+      <if test="prePurchaseType != null">
+        #{prePurchaseType,jdbcType=BIT},
+      </if>
+      <if test="accountCode != null">
+        #{accountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null">
+        #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonCode != null">
+        #{chargePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonName != null">
+        #{chargePersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPerson != null">
+        #{supplierPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMobile != null">
+        #{supplierMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createById != null">
+        #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+    update purchase_apply
+    <set>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyCode != null">
+        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="applyType != null">
+        apply_type = #{applyType,jdbcType=BIT},
+      </if>
+      <if test="applyStatus != null">
+        apply_status = #{applyStatus,jdbcType=BIT},
+      </if>
+      <if test="purchaseGroupCode != null">
+        purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseGroupName != null">
+        purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=VARCHAR},
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseSource != null">
+        purchase_source = #{purchaseSource,jdbcType=BIT},
+      </if>
+      <if test="prePurchaseType != null">
+        pre_purchase_type = #{prePurchaseType,jdbcType=BIT},
+      </if>
+      <if test="accountCode != null">
+        account_code = #{accountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null">
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonCode != null">
+        charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonName != null">
+        charge_person_name = #{chargePersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPerson != null">
+        supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMobile != null">
+        supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        create_by_name = #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+    update purchase_apply
+    set purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
+      purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      supplier_name = #{supplierName,jdbcType=VARCHAR},
+      apply_type = #{applyType,jdbcType=BIT},
+      apply_status = #{applyStatus,jdbcType=BIT},
+      purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+      purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+      company_code = #{companyCode,jdbcType=VARCHAR},
+      company_name = #{companyName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=BIT},
+      total_count = #{totalCount,jdbcType=VARCHAR},
+      product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      purchase_source = #{purchaseSource,jdbcType=BIT},
+      pre_purchase_type = #{prePurchaseType,jdbcType=BIT},
+      account_code = #{accountCode,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      contract_code = #{contractCode,jdbcType=VARCHAR},
+      contract_name = #{contractName,jdbcType=VARCHAR},
+      charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
+      charge_person_name = #{chargePersonName,jdbcType=VARCHAR},
+      supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+      supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      create_by_id = #{createById,jdbcType=VARCHAR},
+      update_by_id = #{updateById,jdbcType=VARCHAR},
+      create_by_name = #{createByName,jdbcType=VARCHAR},
+      update_by_name = #{updateByName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>
