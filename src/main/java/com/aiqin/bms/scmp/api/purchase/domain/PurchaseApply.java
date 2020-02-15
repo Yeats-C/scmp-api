@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -35,7 +36,7 @@ public class PurchaseApply {
     @JsonProperty("supplier_name")
     private String supplierName;
 
-    @ApiModelProperty(value="采购申请类型   0 手动 1自动")
+    @ApiModelProperty(value="采购申请类型  0 手动 1自动")
     @JsonProperty("apply_type")
     private Integer applyType;
 
@@ -125,10 +126,12 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value="创建人id")

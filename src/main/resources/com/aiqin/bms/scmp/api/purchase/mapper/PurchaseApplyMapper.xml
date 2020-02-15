@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyDao">
-  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain1.PurchaseApply">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
     <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
@@ -38,7 +38,7 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
+    purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
     apply_type, apply_status, purchase_group_code, purchase_group_name, company_code,
     company_name, status, total_count, product_tax_amount, return_tax_amount, gift_tax_amount,
     purchase_source, pre_purchase_type, account_code, account_name, contract_code, contract_name,
@@ -78,12 +78,9 @@
     </set>
     where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
-  <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
+  <select id="applyList" resultMap="BaseResultMap">
     select
-    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
-    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
-    create_time as createTime, create_by_id as createById, create_by_name as createByName,
-    update_by_id as updateById, update_by_name as updateByName, update_time as updateTime
+    <include refid="Base_Column_List"></include>
     from purchase_apply
     <where>
       status = 0 and
@@ -91,11 +88,17 @@
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
       </foreach>
-      <if test="beginTime != null">
-        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      <if test="createBeginTime != null">
+        and create_time &gt;= #{createBeginTime,jdbcType=VARCHAR}
       </if>
-      <if test="finishTime != null">
-        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      <if test="createFinishTime != null">
+        and create_time &lt;= #{createFinishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateBeginTime != null">
+        and update_time &gt;= #{updateBeginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateFinishTime != null">
+        and update_time &lt;= #{updateFinishTime,jdbcType=VARCHAR}
       </if>
       <if test="purchaseApplyCode != null">
         and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
@@ -103,11 +106,26 @@
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="prePurchaseType != null">
+        and pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER}
+      </if>
       <if test="applyType != null">
         and apply_type = #{applyType,jdbcType=INTEGER}
       </if>
+      <if test="purchaseSource != null">
+        and purchase_source = #{purchaseSource,jdbcType=INTEGER}
+      </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+      <if test="companyCode != null">
+        and company_code = #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
     order by create_time desc
@@ -121,11 +139,17 @@
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
       </foreach>
-      <if test="beginTime != null">
-        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      <if test="createBeginTime != null">
+        and create_time &gt;= #{createBeginTime,jdbcType=VARCHAR}
       </if>
-      <if test="finishTime != null">
-        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      <if test="createFinishTime != null">
+        and create_time &lt;= #{createFinishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateBeginTime != null">
+        and update_time &gt;= #{updateBeginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateFinishTime != null">
+        and update_time &lt;= #{updateFinishTime,jdbcType=VARCHAR}
       </if>
       <if test="purchaseApplyCode != null">
         and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
@@ -133,11 +157,26 @@
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="prePurchaseType != null">
+        and pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER}
+      </if>
       <if test="applyType != null">
         and apply_type = #{applyType,jdbcType=INTEGER}
       </if>
+      <if test="purchaseSource != null">
+        and purchase_source = #{purchaseSource,jdbcType=INTEGER}
+      </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+      <if test="companyCode != null">
+        and company_code = #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
   </select>

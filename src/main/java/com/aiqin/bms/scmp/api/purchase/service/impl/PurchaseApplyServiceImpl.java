@@ -119,25 +119,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
         purchaseApplyRequest.setGroupList(groupVoList);
         List<PurchaseApplyResponse> purchases = purchaseApplyDao.applyList(purchaseApplyRequest);
-        if(CollectionUtils.isNotEmptyCollection(purchases)){
-            for (PurchaseApplyResponse apply:purchases){
-                // 计算sku数量 / 单品数量/ 采购含税金额 / 实物返金额
-                PurchaseApplyProductInfoResponse info = this.applyProductReckon(apply.getPurchaseApplyId());
-                // 计算sku数量
-                Integer skuCount = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), null);
-                apply.setSkuCount(skuCount);
-                apply.setSingleCount(info.getSingleSum());
-                apply.setProductTotalAmount(info.getProductTaxSum());
-                apply.setReturnAmount(info.getMatterTaxSum());
-                apply.setGiftTaxSum(info.getGiftTaxSum());
-                if(apply.getApplyStatus() == 0){
-                    Integer count = purchaseApplyProductDao.skuCount(apply.getPurchaseApplyId(), Global.PURCHASE_APPLY_STATUS_1);
-                    apply.setSubmitStatus(count > 0 ? 0 : 1);
-                }else {
-                    apply.setSubmitStatus(0);
-                }
-            }
-        }
         Integer count = purchaseApplyDao.applyCount(purchaseApplyRequest);
         pageResData.setDataList(purchases);
         pageResData.setTotalCount(count);
@@ -145,7 +126,6 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     // 查询新增采购申请单时候的库存商品信息
-
     @Override
     public HttpResponse applyProductList(PurchaseApplyRequest purchases){
         PageResData pageResData = new PageResData();

@@ -37,24 +37,38 @@ public class PurchaseApplyController {
     @GetMapping("/list")
     @ApiOperation("采购申请单列表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "create_begin_time", value = "创建开始时间", type = "String"),
+            @ApiImplicitParam(name = "create_finish_time", value = "创建结束时间", type = "String"),
+            @ApiImplicitParam(name = "update_begin_time", value = "修改开始时间", type = "String"),
+            @ApiImplicitParam(name = "update_finish_time", value = "修改结束时间", type = "String"),
+            @ApiImplicitParam(name = "purchase_group_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "purchase_apply_code", value = "采购申请单号", type = "String"),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
+            @ApiImplicitParam(name = "pre_purchase_type", value = "预采购类型 0 普通采购 1.预采购", type = "Integer"),
             @ApiImplicitParam(name = "apply_type", value = "采购申请单类型: 0 手动 1自动", type = "Integer"),
-            @ApiImplicitParam(name = "apply_status", value = "采购申请单状态: 0 待提交  1 已完成", type = "Integer"),
-            @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
-            @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
-            @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
+            @ApiImplicitParam(name = "purchase_source", value = "采购价来源 0.读取 1.录入", type = "Integer"),
+            @ApiImplicitParam(name = "apply_status", value = "采购申请状态 0.待提交 1.已完成  2.待审核 3.审核中 4.审核通过 5.审核不通过 6.撤销", type = "Integer"),
+            @ApiImplicitParam(name = "company_code", value = "公司编码", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer") })
-    public HttpResponse applyList(@RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
-                                   @RequestParam(value = "apply_type", required = false) Integer applyType,
-                                   @RequestParam(value = "apply_status", required = false) Integer applyStatus,
+    public HttpResponse applyList(@RequestParam(value = "create_begin_time", required = false) String createBeginTime,
+                                   @RequestParam(value = "create_finish_time", required = false) String createFinishTime,
+                                   @RequestParam(value = "update_begin_time", required = false) String updateBeginTime,
+                                   @RequestParam(value = "update_finish_time", required = false) String updateFinishTime,
                                    @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
-                                   @RequestParam(value = "begin_time", required = false) String beginTime,
-                                   @RequestParam(value = "finish_time", required = false) String finishTime,
+                                   @RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
+                                   @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                   @RequestParam(value = "supplier_name", required = false) String supplierName,
+                                   @RequestParam(value = "pre_purchase_type", required = false) Integer prePurchaseType,
+                                   @RequestParam(value = "apply_type", required = false) Integer applyType,
+                                   @RequestParam(value = "purchase_source", required = false) Integer purchaseSource,
+                                   @RequestParam(value = "apply_status", required = false) Integer applyStatus,
+                                   @RequestParam(value = "company_code", required = false) String companyCode,
                                    @RequestParam(value = "page_no", required = false) Integer pageNo,
                                    @RequestParam(value = "page_size", required = false) Integer pageSize) {
-            PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseApplyCode, applyType, applyStatus, purchaseGroupCode,
-                    beginTime, finishTime);
+            PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(createBeginTime, createFinishTime, updateBeginTime, updateFinishTime,
+                    purchaseGroupCode, purchaseApplyCode, supplierCode, supplierName, prePurchaseType, applyType, purchaseSource, applyStatus, companyCode);
             purchaseApplyRequest.setPageSize(pageSize);
             purchaseApplyRequest.setPageNo(pageNo);
         return purchaseApplyService.applyList(purchaseApplyRequest);
