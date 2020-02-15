@@ -58,11 +58,11 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="采购申请类型   0 手动 1自动")
     @JsonProperty("apply_type")
-    private Boolean applyType;
+    private Integer applyType;
 
     @ApiModelProperty(value="采购申请状态0. 待提交 1.已完成  2.待审核 3.审核中 4.审核通过 5.审核不通过 6.撤销")
     @JsonProperty("apply_status")
-    private Boolean applyStatus;
+    private Integer applyStatus;
 
     @ApiModelProperty(value="采购组编码")
     @JsonProperty("purchase_group_code")
@@ -82,7 +82,7 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="是否删除 0 否 1是")
     @JsonProperty("status")
-    private Boolean status;
+    private Integer status;
 
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
@@ -102,11 +102,11 @@ public class PurchaseApply {
 
     @ApiModelProperty(value="采购价来源 0.读取 1.录入")
     @JsonProperty("purchase_source")
-    private Boolean purchaseSource;
+    private Integer purchaseSource;
 
     @ApiModelProperty(value="预采购类型 0 普通采购 1.预采购")
     @JsonProperty("pre_purchase_type")
-    private Boolean prePurchaseType;
+    private Integer prePurchaseType;
 
     @ApiModelProperty(value="预采购单号")
     @JsonProperty("pre_purchase_code")
