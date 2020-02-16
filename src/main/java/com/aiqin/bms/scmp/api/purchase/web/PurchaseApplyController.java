@@ -96,18 +96,22 @@ public class PurchaseApplyController {
         return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, transportCenterCode);
     }
 
-    @PostMapping("/purchase/form")
-    @ApiOperation("生成采购申请单")
-    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
-        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
-    }
-
-
-
     @DeleteMapping("/product")
     @ApiOperation("删除申请采购商品信息")
     public HttpResponse deleteApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
         return purchaseApplyService.deleteApplyProduct(applyProductId);
+    }
+
+    @PostMapping("/apply/import")
+    @ApiOperation(value = "批量导入采购申请单")
+    public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
+        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
+    }
+
+    @PostMapping("/purchase/form")
+    @ApiOperation("生成采购申请单")
+    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
+        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
     }
 
 //    @GetMapping("/product/basic")
@@ -120,12 +124,6 @@ public class PurchaseApplyController {
     @ApiOperation("查询采购申请-编辑采购申请-选中商品列表")
     public HttpResponse applySelectionProduct(@RequestParam("purchase_apply_id") String purchaseApplyId) {
         return purchaseApplyService.applySelectionProduct(purchaseApplyId);
-    }
-
-    @PostMapping("/apply/import")
-    @ApiOperation(value = "批量导入采购申请单")
-    public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
-        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
     }
 
     @PutMapping("/apply/status")
