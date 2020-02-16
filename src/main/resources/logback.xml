@@ -56,7 +56,7 @@
     <logger name="org.apache.ibatis.io.DefaultVFS" level="INFO" additivity="false">
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
-    <logger name="com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl" level="ERROR" additivity="false">
+    <logger name="com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl" level="INFO" additivity="false">
         <appender-ref ref="CALLBACK_FILE"/>
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
