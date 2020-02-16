@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
@@ -364,14 +365,13 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
-    public HttpResponse transportCenterPurchase(String applyProductCode, String transportCenterCode){
-       if(StringUtils.isBlank(applyProductCode)){
+    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode){
+       if(StringUtils.isBlank(purchaseApplyCode)){
            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
        }
        // 查询各个仓库的分仓信息
-
-       // 计算
-       return HttpResponse.success();
+       List<PurchaseApplyTransportCenter> list = purchaseApplyTransportCenterDao.selectList(purchaseApplyCode, transportCenterCode);
+       return HttpResponse.success(list);
     }
 
     @Override

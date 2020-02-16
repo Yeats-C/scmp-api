@@ -9,9 +9,8 @@
     <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
     <result column="pre_arrival_time" jdbcType="TIMESTAMP" property="preArrivalTime" />
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
-    <result column="payment_code" jdbcType="VARCHAR" property="paymentCode" />
-    <result column="payment_name" jdbcType="VARCHAR" property="paymentName" />
-    <result column="payment time" jdbcType="INTEGER" property="paymentTime" />
+    <result column="payment_mode" jdbcType="INTEGER" property="paymentMode" />
+    <result column="payment_time" jdbcType="INTEGER" property="paymentTime" />
     <result column="total_count" jdbcType="BIGINT" property="totalCount" />
     <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
     <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
@@ -25,35 +24,25 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, purchase_apply_code, purchase_apply_name, transport_center_code, transport_center_name, 
-    pre_arrival_time, valid_time, payment_code, payment_name, "payment time", total_count, 
+    purchase_apply_code, purchase_apply_name, transport_center_code, transport_center_name,
+    pre_arrival_time, valid_time, payment_mode, payment_time, total_count,
     product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, 
     update_time, create_by_id, create_by_name, update_by_id, update_by_name
   </sql>
   <insert id="insert">
-    insert into purchase_apply_transport_center (id, purchase_apply_code, purchase_apply_name, 
-      transport_center_code, transport_center_name, 
-      pre_arrival_time, valid_time, payment_code, 
-      payment_name, "payment time", total_count, 
-      product_tax_amount, return_tax_amount, gift_tax_amount, 
-      inbound_line, create_time, update_time, 
-      create_by_id, create_by_name, update_by_id, 
-      update_by_name)
-    values (#{id,jdbcType=BIGINT}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR}, 
-      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
-      #{preArrivalTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP}, #{paymentCode,jdbcType=VARCHAR}, 
-      #{paymentName,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{totalCount,jdbcType=BIGINT}, 
+    insert into purchase_apply_transport_center (purchase_apply_code, purchase_apply_name,
+      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, total_count,
+      product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
+      create_by_id, create_by_name, update_by_id, update_by_name)
+    values (#{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR},
+      #{transportCenterName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP}, #{validTime,jdbcType=TIMESTAMP},
+      #{paymentMode,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{totalCount,jdbcType=BIGINT},
       #{productTaxAmount,jdbcType=DECIMAL}, #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, 
-      #{inboundLine,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{updateByName,jdbcType=VARCHAR})
+      #{inboundLine,jdbcType=INTEGER}, NOW(), NOW(), #{createById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply_transport_center
     <set>
-      <if test="purchaseApplyCode != null">
-        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
-      </if>
       <if test="purchaseApplyName != null">
         purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
       </if>
@@ -69,14 +58,11 @@
       <if test="validTime != null">
         valid_time = #{validTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="paymentCode != null">
-        payment_code = #{paymentCode,jdbcType=VARCHAR},
-      </if>
-      <if test="paymentName != null">
-        payment_name = #{paymentName,jdbcType=VARCHAR},
+      <if test="paymentMode != null">
+        payment_mode = #{paymentMode,jdbcType=VARCHAR},
       </if>
       <if test="paymentTime != null">
-        "payment time" = #{paymentTime,jdbcType=INTEGER},
+        payment_time = #{paymentTime,jdbcType=INTEGER},
       </if>
       <if test="totalCount != null">
         total_count = #{totalCount,jdbcType=BIGINT},
@@ -93,25 +79,22 @@
       <if test="inboundLine != null">
         inbound_line = #{inboundLine,jdbcType=INTEGER},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
-      </if>
-      <if test="createByName != null">
-        create_by_name = #{createByName,jdbcType=VARCHAR},
-      </if>
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
+      update_time = NOW()
     </set>
-    where id = #{id,jdbcType=BIGINT}
+    where purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
   </update>
+  <select id="selectList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply_transport_center
+    where purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+    <if test="transportCenterCode != null">
+      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

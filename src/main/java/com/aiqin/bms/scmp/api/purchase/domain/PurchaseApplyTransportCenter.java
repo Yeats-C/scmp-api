@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -39,16 +40,12 @@ public class PurchaseApplyTransportCenter {
     @JsonProperty("valid_time")
     private Date validTime;
 
-    @ApiModelProperty(value="付款方式编码")
-    @JsonProperty("payment_code")
-    private String paymentCode;
-
-    @ApiModelProperty(value="付款方式名称")
-    @JsonProperty("payment_name")
-    private String paymentName;
+    @ApiModelProperty(value="付款方式 0.预付款 1.货到付款 2.月结 3.实销实结")
+    @JsonProperty("payment_mode")
+    private Integer paymentMode;
 
     @ApiModelProperty(value="付款期")
-    @JsonProperty("payment time")
+    @JsonProperty("payment_time")
     private Integer paymentTime;
 
     @ApiModelProperty(value="最小单位数量")
@@ -73,10 +70,12 @@ public class PurchaseApplyTransportCenter {
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value="创建人编码")

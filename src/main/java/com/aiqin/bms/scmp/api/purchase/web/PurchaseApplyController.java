@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
@@ -19,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -88,9 +90,10 @@ public class PurchaseApplyController {
 
     @GetMapping("/transport/center/info")
     @ApiOperation("查询申请采购单，分仓采购信息")
-    public HttpResponse transportCenterPurchase(@RequestParam("apply_product_code") String applyProductCode,
-                                                @RequestParam(value = "transport_center_code", required = false) String transportCenterCode) {
-        return purchaseApplyService.transportCenterPurchase(applyProductCode, transportCenterCode);
+    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(
+            @RequestParam("purchase_apply_code") String purchaseApplyCode,
+            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode) {
+        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, transportCenterCode);
     }
 
     @PostMapping("/purchase/form")

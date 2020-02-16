@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
@@ -11,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.math.BigDecimal;
+import java.util.List;
 
 public interface PurchaseApplyService {
 
@@ -22,7 +24,7 @@ public interface PurchaseApplyService {
 
     HttpResponse searchApplyProduct(String applyProductId);
 
-    HttpResponse transportCenterPurchase(String applyProductCode, String transportCenterCode);
+    HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
 
     HttpResponse deleteApplyProduct(String applyProductId);
 
