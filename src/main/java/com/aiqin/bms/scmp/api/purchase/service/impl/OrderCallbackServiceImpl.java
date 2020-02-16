@@ -1313,6 +1313,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
+            e.printStackTrace();
             LOGGER.error("报损报溢订单回调异常:{}", e);
             throw new GroundRuntimeException("报损报溢订单回调异常");
         }
