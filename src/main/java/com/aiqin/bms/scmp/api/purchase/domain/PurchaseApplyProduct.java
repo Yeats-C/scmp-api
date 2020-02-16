@@ -237,4 +237,12 @@ public class PurchaseApplyProduct {
     @JsonProperty("update_by_name")
     private String updateByName;
 
+    @ApiModelProperty(value="结算方式编码")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
+    @ApiModelProperty(value="结算方式名称")
+    @JsonProperty("settlement_method_name")
+    private String settlementMethodName;
+
 }

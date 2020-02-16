@@ -28,6 +28,8 @@ public interface PurchaseApplyService {
 
     HttpResponse deleteApplyProduct(String applyProductId);
 
+    HttpResponse productGroup(PurchaseApplyProductRequest request);
+
     HttpResponse applyProductBasic(String purchaseApplyId);
 
     HttpResponse applySelectionProduct(String purchaseApplyId);

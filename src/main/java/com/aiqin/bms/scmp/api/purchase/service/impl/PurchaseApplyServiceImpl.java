@@ -392,6 +392,20 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     }
 
     @Override
+    public HttpResponse productGroup(PurchaseApplyProductRequest request){
+        if(CollectionUtils.isEmptyCollection(request.getApplyProducts())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 根据商品信息根据采购组、供应商、结算方式进行分组
+        List<PurchaseApplyProduct> productList = request.getApplyProducts();
+        List<PurchaseApplyProduct> products = productList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                new TreeSet<>(Comparator.comparing(o -> o.getSupplierCode() + ";" + o.getPurchaseGroupCode() + ";" + o.getSettlementMethodCode()))), ArrayList::new));
+        System.out.println(products);
+        LOGGER.info(products.toString());
+        return HttpResponse.success();
+    }
+
+    @Override
     public HttpResponse applyProductBasic(String purchaseApplyId){
         if(StringUtils.isBlank(purchaseApplyId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);

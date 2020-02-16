@@ -108,6 +108,12 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
     }
 
+    @PostMapping("/product/group")
+    @ApiOperation(value = "根据商品对采购申请单按供应商、结算方式、采购组进行生成")
+    public HttpResponse productGroup(@RequestBody PurchaseApplyProductRequest request) {
+        return purchaseApplyService.productGroup(request);
+    }
+
     @PostMapping("/purchase/form")
     @ApiOperation("生成采购申请单")
     public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
