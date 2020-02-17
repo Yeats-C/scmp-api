@@ -587,6 +587,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     LOGGER.error("退货单加库存异常");
                     throw new GroundRuntimeException("退货单加库存异常");
                 }
+                LOGGER.info("退货单加库存成功{}" + httpResponse);
             }
             return HttpResponse.success();
         }catch (DataAccessException e){
