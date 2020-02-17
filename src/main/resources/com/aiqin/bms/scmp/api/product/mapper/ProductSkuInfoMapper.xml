@@ -1328,10 +1328,10 @@ from product_sku a
           season_band = #{seasonBand,jdbcType=VARCHAR},
       </if>
       <if test="level != null">
-          level = #{level,jdbcType=VARCHAR},
+          `level` = #{level,jdbcType=VARCHAR},
       </if>
       <if test="featureCode != null">
-          feature_code = #{featureCode,jdbcType=VARCHAR}
+          feature_code = #{featureCode,jdbcType=VARCHAR},
       </if>
       <if test="featureName != null">
           feature_name = #{featureName,jdbcType=VARCHAR},
