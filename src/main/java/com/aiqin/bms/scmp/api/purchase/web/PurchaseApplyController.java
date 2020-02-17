@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
@@ -112,6 +113,12 @@ public class PurchaseApplyController {
     @ApiOperation(value = "根据商品对采购申请单按供应商、结算方式、采购组进行生成")
     public HttpResponse productGroup(@RequestBody PurchaseApplyProductRequest request) {
         return purchaseApplyService.productGroup(request);
+    }
+
+    @PostMapping("/purchase/save")
+    @ApiOperation("保存/提交审核采购申请单")
+    public HttpResponse applyPurchaseSave(@RequestBody PurchaseApplySaveRequest request) {
+        return purchaseApplyService.applyPurchaseSave(request);
     }
 
     @PostMapping("/purchase/form")

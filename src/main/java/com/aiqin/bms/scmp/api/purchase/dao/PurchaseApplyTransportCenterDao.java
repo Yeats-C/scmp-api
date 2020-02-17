@@ -13,4 +13,6 @@ public interface PurchaseApplyTransportCenterDao {
 
     List<PurchaseApplyTransportCenter> selectList(@Param("purchaseApplyCode") String purchaseApplyCode,
                                                   @Param("transportCenterCode") String transportCenterCode);
+
+    Integer insertAll(List<PurchaseApplyTransportCenter> list);
 }

@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
@@ -29,6 +30,8 @@ public interface PurchaseApplyService {
     HttpResponse deleteApplyProduct(String applyProductId);
 
     HttpResponse productGroup(PurchaseApplyProductRequest request);
+
+    HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request);
 
     HttpResponse applyProductBasic(String purchaseApplyId);
 

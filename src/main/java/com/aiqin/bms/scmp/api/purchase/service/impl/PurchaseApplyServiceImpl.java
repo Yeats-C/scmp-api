@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
@@ -23,6 +24,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -37,10 +39,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.DateUtils;
-import com.aiqin.bms.scmp.api.util.FileReaderUtil;
-import com.aiqin.bms.scmp.api.util.PDFUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -112,6 +111,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     private ProductSkuPurchaseInfoDao productSkuPurchaseInfoDao;
     @Resource
     private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
+    @Resource
+    private FileRecordDao fileRecordDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -402,6 +403,50 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 new TreeSet<>(Comparator.comparing(o -> o.getSupplierCode() + ";" + o.getPurchaseGroupCode() + ";" + o.getSettlementMethodCode()))), ArrayList::new));
         LOGGER.info("分组后的商品信息：" + products.toString());
         return HttpResponse.success(products);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request){
+        if(request == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+        // 添加采购申请单通用信息
+        if(request.getPurchaseApply() == null){
+            LOGGER.info("采购申请单的通用信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_INFO_NULL);
+        }
+        Integer applyCount = purchaseApplyDao.insert(request.getPurchaseApply());
+        LOGGER.info("添加采购申请单:{}", applyCount);
+
+        // 添加采购申请单的分仓信息
+        if(CollectionUtils.isEmptyCollection(request.getPurchaseTransportList())){
+            LOGGER.info("采购申请单的分仓信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_TRANSPORT_NULL);
+        }
+        Integer transportCount = purchaseApplyTransportCenterDao.insertAll(request.getPurchaseTransportList());
+        LOGGER.info("添加采购申请单分仓信息:{}", transportCount);
+
+        // 添加采购申请单的商品信息
+        if(CollectionUtils.isEmptyCollection(request.getProductList())){
+            LOGGER.info("采购申请单的商品信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        Integer procuctCount = purchaseApplyProductDao.insertAll(request.getProductList());
+        LOGGER.info("添加采购申请单商品信息:{}", procuctCount);
+
+        // 添加采购申请单的文件信息
+        if(CollectionUtils.isNotEmptyCollection(request.getFileList())){
+            Integer count = fileRecordDao.insertAll("", request.getFileList());
+            LOGGER.info("添加采购申请单文件:{}", count);
+        }
+        return HttpResponse.success();
     }
 
     @Override
