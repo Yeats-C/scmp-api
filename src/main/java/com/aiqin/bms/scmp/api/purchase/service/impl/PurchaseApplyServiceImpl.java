@@ -400,9 +400,8 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         List<PurchaseApplyProduct> productList = request.getApplyProducts();
         List<PurchaseApplyProduct> products = productList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                 new TreeSet<>(Comparator.comparing(o -> o.getSupplierCode() + ";" + o.getPurchaseGroupCode() + ";" + o.getSettlementMethodCode()))), ArrayList::new));
-        System.out.println(products);
-        LOGGER.info(products.toString());
-        return HttpResponse.success();
+        LOGGER.info("分组后的商品信息：" + products.toString());
+        return HttpResponse.success(products);
     }
 
     @Override

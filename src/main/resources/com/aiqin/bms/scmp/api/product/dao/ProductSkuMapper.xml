@@ -2163,7 +2163,8 @@
     com.supply_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost,
-    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName
+    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName,
+    com.contact_name as contactPerson, com.phone as mobile
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join supply_company com on com.supply_code = su.supply_unit_code
