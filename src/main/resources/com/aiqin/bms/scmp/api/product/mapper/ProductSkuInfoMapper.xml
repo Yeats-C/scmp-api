@@ -1339,8 +1339,8 @@ from product_sku a
       <if test="currencyLevelCode != null">
           currency_level_code = #{currencyLevelCode,jdbcType=VARCHAR},
       </if>
-      <if test="currencyLevelCode != null">
-          currency_level_code = #{currencyLevelName,jdbcType=VARCHAR},
+      <if test="currencyLevelName != null">
+          currency_level_name = #{currencyLevelName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
