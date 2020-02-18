@@ -308,13 +308,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(supplier.getSupplyCode(),productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
-                    response.setProductCount(new Double(record[7]).intValue());
+                    Integer rejectCount = new Double(record[7]).intValue();
+                    response.setProductCount(rejectCount);
                     response.setProductAmount(new BigDecimal(record[8]));
                     if (productTypeList.contains(record[6])) {
                         response.setProductType(productTypeList.indexOf(record[6]));
                     }
-                    response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal((record[7])).setScale(4, BigDecimal.ROUND_HALF_UP)));
-                    if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(record[7])) {
+                    response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal(rejectCount).setScale(4, BigDecimal.ROUND_HALF_UP)));
+                    if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(rejectCount)) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
                 } else {

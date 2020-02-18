@@ -127,6 +127,12 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseOrderFile(fileId);
     }
 
+    @GetMapping("/purchase/currency")
+    @ApiOperation("查询采购申请单-采购通用信息")
+    public HttpResponse purchaseCurrency(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+        return purchaseApplyService.purchaseCurrency(purchaseApplyId);
+    }
+
     @PostMapping("/purchase/form")
     @ApiOperation("生成采购申请单")
     public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {

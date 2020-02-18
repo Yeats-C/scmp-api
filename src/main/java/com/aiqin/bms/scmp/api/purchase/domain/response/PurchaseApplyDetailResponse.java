@@ -422,5 +422,6 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("company_code")
     private String companyCode;
 
+
 }
 

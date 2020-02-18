@@ -458,12 +458,11 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
                 productCount += sumCount;
                 productAmount = productAmount.add(amount);
             }else if(product.getProductType().equals(1)) {
+                giftCount += sumCount;
+                giftAmount = giftAmount.add(amount);
+            }else {
                 returnCount += sumCount;
                 returnAmount = returnAmount.add(amount);
-            }else {
-                giftCount += sumCount;
-                productAmount = productAmount.add(amount);
-                giftAmount = giftAmount.add(amount);
             }
         }
         purchaseApply.setProductCount(productCount);
@@ -515,10 +514,46 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
     @Override
     public HttpResponse purchaseOrderFile(String fileId){
         if(StringUtils.isBlank(fileId)){
+            LOGGER.info("查询的文件id为空，入参：{}" + fileId);
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         List<FileRecord> files = fileRecordDao.fileList(fileId);
         return HttpResponse.success(files);
+    }
+
+    @Override
+    public HttpResponse purchaseCurrency(String purchaseApplyId){
+        if(StringUtils.isBlank(purchaseApplyId)){
+            LOGGER.info("查询的采购申请单通用信息的采购单id为空，入参：{}" + purchaseApplyId);
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        if(purchaseApply == null){
+            LOGGER.info("采购申请单信息为空");
+        }
+        // 查询商品件数
+        List<PurchaseApplyDetailResponse> responses = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
+        PurchaseApplyCurrencyResponse response = new PurchaseApplyCurrencyResponse();
+        PurchaseApply info = BeanCopyUtils.copy(response, PurchaseApply.class);
+        if(CollectionUtils.isNotEmptyCollection(responses)){
+            // 计算商品，实物返，赠品件数
+            Long productPiece = 0L, returnPiece = 0L, giftPiece = 0L;
+            for(PurchaseApplyDetailResponse product:responses){
+                // 商品类型 0商品 1赠品 2实物返回
+                if(product.getProductType().equals(0)){
+                    productPiece += product.getPurchaseWhole();
+                }else if(product.getProductType().equals(1)){
+                    returnPiece +=  product.getPurchaseWhole();
+                }else {
+                    giftPiece += product.getPurchaseWhole();
+                }
+            }
+            response.setProductPiece(productPiece);
+            response.setReturnPiece(returnPiece);
+            response.setGiftPiece(giftPiece);
+            response.setTotalPiece(productPiece + returnPiece + giftPiece);
+        }
+        return HttpResponse.success(response);
     }
 
     @Override
