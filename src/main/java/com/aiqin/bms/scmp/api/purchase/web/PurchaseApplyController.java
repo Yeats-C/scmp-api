@@ -121,6 +121,12 @@ public class PurchaseApplyController {
         return purchaseApplyService.applyPurchaseSave(request);
     }
 
+    @GetMapping("/order/file")
+    @ApiOperation("查询采购单文件-文件信息")
+    public HttpResponse purchaseOrderFile(@RequestParam("file_id") String fileId) {
+        return purchaseApplyService.purchaseOrderFile(fileId);
+    }
+
     @PostMapping("/purchase/form")
     @ApiOperation("生成采购申请单")
     public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {

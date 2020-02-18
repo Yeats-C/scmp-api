@@ -33,6 +33,8 @@ public interface PurchaseApplyService {
 
     HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request);
 
+    HttpResponse purchaseOrderFile(String fileId);
+
     HttpResponse applyProductBasic(String purchaseApplyId);
 
     HttpResponse applySelectionProduct(String purchaseApplyId);

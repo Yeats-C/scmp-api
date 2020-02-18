@@ -17,10 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
@@ -513,6 +510,15 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             // todo
         }
         return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse purchaseOrderFile(String fileId){
+        if(StringUtils.isBlank(fileId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        List<FileRecord> files = fileRecordDao.fileList(fileId);
+        return HttpResponse.success(files);
     }
 
     @Override
