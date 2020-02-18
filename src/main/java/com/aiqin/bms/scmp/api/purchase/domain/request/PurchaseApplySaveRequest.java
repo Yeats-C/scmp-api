@@ -15,7 +15,7 @@ public class PurchaseApplySaveRequest {
 
     @ApiModelProperty(value="采购单的通用信息")
     @JsonProperty("purchase_apply")
-    private PurchaseApply PurchaseApply;
+    private PurchaseApply purchaseApply;
 
     @ApiModelProperty(value="采购单的仓库信息")
     @JsonProperty("purchase_transport_list")
@@ -28,4 +28,8 @@ public class PurchaseApplySaveRequest {
     @ApiModelProperty(value="文件信息")
     @JsonProperty("file_list")
     private List<FileRecord> fileList;
+
+    @ApiModelProperty(value="保存方式 0.保存 1.提交审核")
+    @JsonProperty("save_mode")
+    private Integer saveMode;
 }

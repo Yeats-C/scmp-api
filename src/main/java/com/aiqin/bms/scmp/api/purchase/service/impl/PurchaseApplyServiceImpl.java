@@ -412,39 +412,105 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 获取当前登录人的信息
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (currentAuthToken == null) {
-            LOGGER.info("获取当前登录信息失败");
-            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
-        }
+//        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+//        if (currentAuthToken == null) {
+//            LOGGER.info("获取当前登录信息失败");
+//            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+//        }
+
+        // 采购申请单id
+        String purchaseApplyId = IdUtil.purchaseId();;
+        // 获取采购申请单号
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
         // 添加采购申请单通用信息
-        if(request.getPurchaseApply() == null){
+        PurchaseApply purchaseApply = request.getPurchaseApply();
+        if(purchaseApply == null){
             LOGGER.info("采购申请单的通用信息为空");
             return HttpResponse.failure(ResultCode.PURCHASE_APPLY_INFO_NULL);
         }
-        Integer applyCount = purchaseApplyDao.insert(request.getPurchaseApply());
+        purchaseApply.setPurchaseApplyId(purchaseApplyId);
+        purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
+//        purchaseApply.setCreateById(currentAuthToken.getPersonId());
+//        purchaseApply.setCreateByName(currentAuthToken.getPersonId());
+        // 判断保存的状态
+        if(request.getSaveMode().equals(0)){
+            purchaseApply.setApplyStatus(0);
+        }else {
+            purchaseApply.setApplyStatus(2);
+        }
+        if(CollectionUtils.isEmptyCollection(request.getProductList())){
+            LOGGER.info("采购申请单的商品信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        // 计算商品，赠品，实物返数量
+        List<PurchaseApplyProduct> productList = request.getProductList();
+        Long productCount = 0L, returnCount = 0L, giftCount = 0L;
+        BigDecimal productAmount = BigDecimal.ZERO, returnAmount = BigDecimal.ZERO, giftAmount = BigDecimal.ZERO;
+        for(PurchaseApplyProduct product:productList){
+            product.setApplyProductId(IdUtil.uuid());
+            product.setPurchaseApplyId(purchaseApplyId);
+            product.setPurchaseApplyCode(purchaseApplyCode);
+            product.setApplyProductStatus(1);
+            // 计算商品的最小单位数量
+            Long sumCount = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle().longValue();
+            // 含税每个sku的含税总价
+            BigDecimal amount = product.getProductPurchaseAmount().multiply(BigDecimal.valueOf(sumCount)).setScale(4, BigDecimal.ROUND_HALF_UP);
+            // 计算商品数量 商品类型 0商品 1赠品 2实物返回
+            if(product.getProductType().equals(0)) {
+                productCount += sumCount;
+                productAmount = productAmount.add(amount);
+            }else if(product.getProductType().equals(1)) {
+                returnCount += sumCount;
+                returnAmount = returnAmount.add(amount);
+            }else {
+                giftCount += sumCount;
+                productAmount = productAmount.add(amount);
+                giftAmount = giftAmount.add(amount);
+            }
+        }
+        purchaseApply.setProductCount(productCount);
+        purchaseApply.setReturnCount(returnCount);
+        purchaseApply.setGiftCount(giftCount);
+        purchaseApply.setTotalCount(productCount + returnCount + giftCount);
+        purchaseApply.setBrandId(productList.get(0).getBrandId());
+        purchaseApply.setBrandName(productList.get(0).getBrandName());
+        purchaseApply.setProductTaxAmount(productAmount);
+        purchaseApply.setReturnTaxAmount(returnAmount);
+        purchaseApply.setGiftTaxAmount(giftAmount);
+        purchaseApply.setApplyType(0);
+        Integer applyCount = purchaseApplyDao.insert(purchaseApply);
         LOGGER.info("添加采购申请单:{}", applyCount);
+
+        // 更新采购单号
+        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
 
         // 添加采购申请单的分仓信息
         if(CollectionUtils.isEmptyCollection(request.getPurchaseTransportList())){
             LOGGER.info("采购申请单的分仓信息为空");
             return HttpResponse.failure(ResultCode.PURCHASE_APPLY_TRANSPORT_NULL);
         }
+        List<PurchaseApplyTransportCenter> purchaseTransportList = request.getPurchaseTransportList();
+        for(PurchaseApplyTransportCenter center:purchaseTransportList){
+            center.setPurchaseApplyCode(purchaseApplyCode);
+            center.setPurchaseApplyName(request.getPurchaseApply().getPurchaseApplyName());
+        }
         Integer transportCount = purchaseApplyTransportCenterDao.insertAll(request.getPurchaseTransportList());
         LOGGER.info("添加采购申请单分仓信息:{}", transportCount);
 
         // 添加采购申请单的商品信息
-        if(CollectionUtils.isEmptyCollection(request.getProductList())){
-            LOGGER.info("采购申请单的商品信息为空");
-            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
-        }
-        Integer procuctCount = purchaseApplyProductDao.insertAll(request.getProductList());
-        LOGGER.info("添加采购申请单商品信息:{}", procuctCount);
+        Integer productInfoCount = purchaseApplyProductDao.insertAll(request.getProductList());
+        LOGGER.info("添加采购申请单商品信息:{}", productInfoCount);
 
         // 添加采购申请单的文件信息
         if(CollectionUtils.isNotEmptyCollection(request.getFileList())){
-            Integer count = fileRecordDao.insertAll("", request.getFileList());
+            Integer count = fileRecordDao.insertAll(purchaseApplyId, request.getFileList());
             LOGGER.info("添加采购申请单文件:{}", count);
+        }
+
+        // 提交审批流
+        if(request.getSaveMode().equals(1)){
+            // todo
         }
         return HttpResponse.success();
     }

@@ -59,12 +59,27 @@
     create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
   </sql>
   <insert id="insert">
-    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type, apply_status, purchase_group_code,
-      purchase_group_name, company_code, company_name, create_time, create_by_id, create_by_name)
-    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{applyType,jdbcType=INTEGER},
-      #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR},
-      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR},
-      #{createByName,jdbcType=VARCHAR})
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
+      settlement_method_code, settlement_method_name, product_count, return_count, gift_count, apply_type, apply_status,
+      purchase_group_code, purchase_group_name, company_code, company_name, status, total_count, product_tax_amount,
+      return_tax_amount, gift_tax_amount, purchase_source, pre_purchase_type, pre_purchase_code, account_code,
+      account_name, contract_code, contract_name, charge_person_code, charge_person_name, supplier_person,
+      supplier_mobile, brand_id, brand_name, remark, receipt_turnover, position_code, position_name,create_time,
+      update_time, create_by_id, update_by_id, create_by_name, update_by_name)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{settlementMethodCode,jdbcType=VARCHAR},
+      #{settlementMethodName,jdbcType=VARCHAR}, #{productCount,jdbcType=BIGINT}, #{returnCount,jdbcType=BIGINT},
+      #{giftCount,jdbcType=BIGINT}, #{applyType,jdbcType=BIT}, #{applyStatus,jdbcType=BIT}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+      #{status,jdbcType=BIT}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL},
+      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{purchaseSource,jdbcType=BIT},
+      #{prePurchaseType,jdbcType=BIT}, #{prePurchaseCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR},
+      #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR},
+      #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
+      #{supplierMobile,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR}, #{receiptTurnover,jdbcType=INTEGER}, #{positionCode,jdbcType=VARCHAR},
+      #{positionName,jdbcType=VARCHAR}, now(), now(), #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply

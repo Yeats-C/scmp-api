@@ -156,6 +156,10 @@ public class PurchaseApply {
     @JsonProperty("remark")
     private String remark;
 
+    @ApiModelProperty(value="到货后周转期")
+    @JsonProperty("receipt_turnover")
+    private String receiptTurnover;
+
     @ApiModelProperty(value="岗位编码")
     @JsonProperty("position_code")
     private String positionCode;

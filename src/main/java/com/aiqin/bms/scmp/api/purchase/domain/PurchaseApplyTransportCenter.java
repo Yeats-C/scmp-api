@@ -34,10 +34,12 @@ public class PurchaseApplyTransportCenter {
 
     @ApiModelProperty(value="预计到货日期")
     @JsonProperty("pre_arrival_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date preArrivalTime;
 
     @ApiModelProperty(value="有效期")
     @JsonProperty("valid_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date validTime;
 
     @ApiModelProperty(value="付款方式 0.预付款 1.货到付款 2.月结 3.实销实结")
