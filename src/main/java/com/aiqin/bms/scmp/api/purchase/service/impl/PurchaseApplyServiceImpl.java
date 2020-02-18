@@ -533,8 +533,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
         // 查询商品件数
         List<PurchaseApplyDetailResponse> responses = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
-        PurchaseApplyCurrencyResponse response = new PurchaseApplyCurrencyResponse();
-        PurchaseApply info = BeanCopyUtils.copy(response, PurchaseApply.class);
+        PurchaseApplyCurrencyResponse response = BeanCopyUtils.copy(purchaseApply, PurchaseApplyCurrencyResponse.class);
         if(CollectionUtils.isNotEmptyCollection(responses)){
             // 计算商品，实物返，赠品件数
             Long productPiece = 0L, returnPiece = 0L, giftPiece = 0L;

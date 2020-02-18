@@ -208,7 +208,7 @@
       </if>
     </where>
   </select>
-  <select id="purchaseApplyInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+  <select id="purchaseApplyInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"></include>
     from purchase_apply
     where status = 0 and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
