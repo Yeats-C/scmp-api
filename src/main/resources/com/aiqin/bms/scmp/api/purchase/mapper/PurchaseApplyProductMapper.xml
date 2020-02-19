@@ -807,4 +807,9 @@
           </if>
       </where>
   </select>
+  <select id="applyProductList" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List"></include>
+      from purchase_apply_product where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </select>
 </mapper>

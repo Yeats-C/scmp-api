@@ -51,4 +51,6 @@ public interface PurchaseApplyProductDao {
 
     List<PurchaseApplyDetailResponse> purchaseFormByRepeat(PurchaseFormRequest apply);
 
+    List<PurchaseApplyProduct> applyPurchaseProductList(String purchaseApplyId);
+
 }

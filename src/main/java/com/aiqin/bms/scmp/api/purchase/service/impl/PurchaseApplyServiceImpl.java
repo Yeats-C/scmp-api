@@ -368,7 +368,10 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
        }
        // 查询各个仓库的分仓信息
-       List<PurchaseApplyTransportCenter> list = purchaseApplyTransportCenterDao.selectList(purchaseApplyCode, transportCenterCode);
+       PurchaseApplyTransportCenter center = new PurchaseApplyTransportCenter();
+       center.setPurchaseApplyCode(purchaseApplyCode);
+       center.setTransportCenterCode(transportCenterCode);
+       List<PurchaseApplyTransportCenter> list = purchaseApplyTransportCenterDao.selectList(center);
        return HttpResponse.success(list);
     }
 
@@ -488,6 +491,7 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
         }
         List<PurchaseApplyTransportCenter> purchaseTransportList = request.getPurchaseTransportList();
         for(PurchaseApplyTransportCenter center:purchaseTransportList){
+            center.setPurchaseApplyId(purchaseApplyId);
             center.setPurchaseApplyCode(purchaseApplyCode);
             center.setPurchaseApplyName(request.getPurchaseApply().getPurchaseApplyName());
         }
@@ -553,6 +557,93 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
             response.setTotalPiece(productPiece + returnPiece + giftPiece);
         }
         return HttpResponse.success(response);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse purchaseNewEdit(String purchaseApplyId){
+        if(StringUtils.isBlank(purchaseApplyId)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+        // 采购申请单id
+        String newApplyId = IdUtil.purchaseId();;
+        // 获取采购申请单号
+        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
+        // 添加采购申请单通用信息
+        PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        if(purchaseApply == null){
+            LOGGER.info("采购申请单的通用信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_INFO_NULL);
+        }
+        purchaseApply.setPurchaseApplyId(newApplyId);
+        purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
+        purchaseApply.setCreateById(currentAuthToken.getPersonId());
+        purchaseApply.setCreateByName(currentAuthToken.getPersonName());
+        purchaseApply.setUpdateById(currentAuthToken.getPersonId());
+        purchaseApply.setUpdateByName(currentAuthToken.getPersonName());
+        purchaseApply.setApplyStatus(0);
+        Integer applyCount = purchaseApplyDao.insert(purchaseApply);
+        LOGGER.info("添加采购申请单:{}", applyCount);
+
+        // 更新采购单号
+        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+
+        // 查询商品的分仓信息
+        PurchaseApplyTransportCenter center = new PurchaseApplyTransportCenter();
+        center.setPurchaseApplyId(purchaseApplyId);
+        List<PurchaseApplyTransportCenter> applyTransportCenterList = purchaseApplyTransportCenterDao.selectList(center);
+
+        // 添加采购申请单的分仓信息
+        if(CollectionUtils.isEmptyCollection(applyTransportCenterList)){
+            LOGGER.info("采购申请单的分仓信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_TRANSPORT_NULL);
+        }
+        for(PurchaseApplyTransportCenter transportCenter:applyTransportCenterList){
+            transportCenter.setPurchaseApplyId(newApplyId);
+            transportCenter.setPurchaseApplyCode(purchaseApplyCode);
+            transportCenter.setCreateById(currentAuthToken.getPersonId());
+            transportCenter.setCreateByName(currentAuthToken.getPersonName());
+            transportCenter.setUpdateById(currentAuthToken.getPersonId());
+            transportCenter.setUpdateByName(currentAuthToken.getPersonName());
+        }
+        Integer transportCount = purchaseApplyTransportCenterDao.insertAll(applyTransportCenterList);
+        LOGGER.info("添加采购申请单分仓信息:{}", transportCount);
+
+        // 查询采购申请单的商品信息
+        List<PurchaseApplyProduct> productList = purchaseApplyProductDao.applyPurchaseProductList(purchaseApplyId);
+
+        // 添加采购申请单的商品信息
+        if(CollectionUtils.isEmptyCollection(productList)){
+            LOGGER.info("采购申请单的商品信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        for (PurchaseApplyProduct product:productList){
+            product.setPurchaseApplyId(newApplyId);
+            product.setPurchaseApplyCode(purchaseApplyCode);
+            product.setCreateById(currentAuthToken.getPersonId());
+            product.setCreateByName(currentAuthToken.getPersonName());
+            product.setUpdateById(currentAuthToken.getPersonId());
+            product.setUpdateByName(currentAuthToken.getPersonName());
+            product.setApplyProductStatus(1);
+        }
+        Integer productInfoCount = purchaseApplyProductDao.insertAll(productList);
+        LOGGER.info("添加采购申请单商品信息:{}", productInfoCount);
+
+        // 查询文件信息
+        List<FileRecord> fileRecords = fileRecordDao.fileList(purchaseApplyId);
+        // 添加采购申请单的文件信息
+        if(CollectionUtils.isNotEmptyCollection(fileRecords)){
+            Integer count = fileRecordDao.insertAll(newApplyId  , fileRecords);
+            LOGGER.info("添加采购申请单文件:{}", count);
+        }
+        return HttpResponse.success();
     }
 
     @Override

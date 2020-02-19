@@ -133,6 +133,12 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseCurrency(purchaseApplyId);
     }
 
+    @GetMapping("/purchase/new/edit")
+    @ApiOperation("采购申请单- 重新编辑")
+    public HttpResponse purchaseEdit(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+        return purchaseApplyService.purchaseNewEdit(purchaseApplyId);
+    }
+
     @PostMapping("/purchase/form")
     @ApiOperation("生成采购申请单")
     public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {

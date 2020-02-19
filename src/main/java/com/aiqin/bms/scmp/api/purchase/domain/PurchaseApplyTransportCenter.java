@@ -16,6 +16,10 @@ public class PurchaseApplyTransportCenter {
     @JsonProperty("id")
     private Long id;
 
+    @ApiModelProperty(value="采购申请单id")
+    @JsonProperty("purchase_apply_id")
+    private String purchaseApplyId;
+
     @ApiModelProperty(value="采购申请单编码")
     @JsonProperty("purchase_apply_code")
     private String purchaseApplyCode;

@@ -37,6 +37,8 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseCurrency(String purchaseApplyId);
 
+    HttpResponse purchaseNewEdit(String purchaseApplyId);
+
     HttpResponse applyProductBasic(String purchaseApplyId);
 
     HttpResponse applySelectionProduct(String purchaseApplyId);

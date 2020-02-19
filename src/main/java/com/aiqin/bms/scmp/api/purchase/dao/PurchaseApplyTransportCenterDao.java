@@ -11,8 +11,8 @@ public interface PurchaseApplyTransportCenterDao {
 
     int update(PurchaseApplyTransportCenter record);
 
-    List<PurchaseApplyTransportCenter> selectList(@Param("purchaseApplyCode") String purchaseApplyCode,
-                                                  @Param("transportCenterCode") String transportCenterCode);
+    List<PurchaseApplyTransportCenter> selectList(PurchaseApplyTransportCenter center);
 
     Integer insertAll(List<PurchaseApplyTransportCenter> list);
+
 }
