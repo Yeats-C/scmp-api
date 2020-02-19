@@ -103,8 +103,6 @@ public class InboundController {
     @ApiOperation("入库单回调接口")
     @PostMapping("/workFlowCallBack")
     public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
-
-
         try {
             reqVo.setInboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
             inboundService.workFlowCallBack(reqVo);
