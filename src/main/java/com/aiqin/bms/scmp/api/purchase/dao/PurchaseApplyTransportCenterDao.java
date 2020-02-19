@@ -15,4 +15,6 @@ public interface PurchaseApplyTransportCenterDao {
 
     Integer insertAll(List<PurchaseApplyTransportCenter> list);
 
+    Integer delete(String purchaseApplyId);
+
 }

@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductReques
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyCurrencyResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
@@ -116,7 +117,7 @@ public class PurchaseApplyController {
     }
 
     @PostMapping("/purchase/save")
-    @ApiOperation("保存/提交审核采购申请单")
+    @ApiOperation("保存/提交审核/编辑 采购申请单")
     public HttpResponse applyPurchaseSave(@RequestBody PurchaseApplySaveRequest request) {
         return purchaseApplyService.applyPurchaseSave(request);
     }
@@ -129,14 +130,20 @@ public class PurchaseApplyController {
 
     @GetMapping("/purchase/currency")
     @ApiOperation("查询采购申请单-采购通用信息")
-    public HttpResponse purchaseCurrency(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_id") String purchaseApplyId) {
         return purchaseApplyService.purchaseCurrency(purchaseApplyId);
     }
 
     @GetMapping("/purchase/new/edit")
     @ApiOperation("采购申请单- 重新编辑")
-    public HttpResponse purchaseEdit(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+    public HttpResponse purchaseNewEdit(@RequestParam("purchase_apply_id") String purchaseApplyId) {
         return purchaseApplyService.purchaseNewEdit(purchaseApplyId);
+    }
+
+    @GetMapping("/purchase/edit")
+    @ApiOperation("采购申请单- 编辑")
+    public HttpResponse purchaseEdit(@RequestBody PurchaseApplySaveRequest request) {
+        return purchaseApplyService.purchaseEdit(request);
     }
 
     @PostMapping("/purchase/form")

@@ -67,4 +67,7 @@
     from file_record
     where file_id = #{fileId,jdbcType=VARCHAR}
   </select>
+  <delete id="delete">
+    delete from file_record where file_id = #{fileId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

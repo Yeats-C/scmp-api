@@ -84,11 +84,35 @@
   <update id="update">
     update purchase_apply
     <set>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=BIGINT},
+      </if>
+      <if test="returnCount != null">
+        return_count = #{returnCount,jdbcType=BIGINT},
+      </if>
+      <if test="giftCount != null">
+        gift_count = #{giftCount,jdbcType=BIGINT},
+      </if>
       <if test="applyType != null">
-        apply_type = #{applyType,jdbcType=INTEGER},
+        apply_type = #{applyType,jdbcType=BIT},
       </if>
       <if test="applyStatus != null">
-        apply_status = #{applyStatus,jdbcType=INTEGER},
+        apply_status = #{applyStatus,jdbcType=BIT},
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -96,15 +120,81 @@
       <if test="purchaseGroupName != null">
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
-      update_time = now(),
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=BIT},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseSource != null">
+        purchase_source = #{purchaseSource,jdbcType=BIT},
+      </if>
+      <if test="prePurchaseType != null">
+        pre_purchase_type = #{prePurchaseType,jdbcType=BIT},
+      </if>
+      <if test="prePurchaseCode != null">
+        pre_purchase_code = #{prePurchaseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountCode != null">
+        account_code = #{accountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null">
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonCode != null">
+        charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonName != null">
+        charge_person_name = #{chargePersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPerson != null">
+        supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMobile != null">
+        supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptTurnover != null">
+        receipt_turnover = #{receiptTurnover,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR}
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
-    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+    where  purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
   <select id="applyList" resultMap="BaseResultMap">
     select

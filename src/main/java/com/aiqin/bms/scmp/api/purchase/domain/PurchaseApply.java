@@ -56,7 +56,7 @@ public class PurchaseApply {
     @JsonProperty("gift_count")
     private Long giftCount;
 
-    @ApiModelProperty(value="采购申请类型   0 手动 1自动")
+    @ApiModelProperty(value="采购申请类型  0 手动 1自动")
     @JsonProperty("apply_type")
     private Integer applyType;
 

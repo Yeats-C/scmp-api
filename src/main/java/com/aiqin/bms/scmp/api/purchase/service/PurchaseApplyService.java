@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductReques
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyCurrencyResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -35,9 +36,11 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseOrderFile(String fileId);
 
-    HttpResponse purchaseCurrency(String purchaseApplyId);
+    HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(String purchaseApplyId);
 
     HttpResponse purchaseNewEdit(String purchaseApplyId);
+
+    HttpResponse purchaseEdit(PurchaseApplySaveRequest request);
 
     HttpResponse applyProductBasic(String purchaseApplyId);
 
