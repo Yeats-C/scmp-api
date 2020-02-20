@@ -146,11 +146,11 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseEdit(request);
     }
 
-    @PostMapping("/purchase/form")
-    @ApiOperation("生成采购申请单")
-    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
-        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
-    }
+//    @PostMapping("/purchase/form")
+//    @ApiOperation("生成采购申请单")
+//    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
+//        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
+//    }
 
 //    @GetMapping("/product/basic")
 //    @ApiOperation("查询采购申请-编辑采购申请-商品基本信息")
@@ -171,16 +171,16 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseApplyStatus(purchaseApplyId, applyStatus);
     }
 
-    @GetMapping("/apply/product/detail")
-    @ApiOperation("查询采购申请单商品的详情")
-    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
-                                                           @RequestParam("product_purchase_amount") BigDecimal productPurchaseAmount,
-                                                           @RequestParam("sku_code") String skuCode,
-                                                           @RequestParam("supplier_code") String supplierCode,
-                                                           @RequestParam("transport_center_code") String transportCenterCode,
-                                                           @RequestParam("product_count") Integer productCount) {
-        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
-    }
+//    @GetMapping("/apply/product/detail")
+//    @ApiOperation("查询采购申请单商品的详情")
+//    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
+//                                                           @RequestParam("product_purchase_amount") BigDecimal productPurchaseAmount,
+//                                                           @RequestParam("sku_code") String skuCode,
+//                                                           @RequestParam("supplier_code") String supplierCode,
+//                                                           @RequestParam("transport_center_code") String transportCenterCode,
+//                                                           @RequestParam("product_count") Integer productCount) {
+//        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
+//    }
 
     @PostMapping("/automatic/purchase")
     @ApiOperation("生成自动采购单")
@@ -212,10 +212,10 @@ public class PurchaseApplyController {
         return  purchaseApplyService.importPdf(purchaseOrderCode, response);
     }
 
-    @GetMapping("/delete")
-    @ApiOperation("删除采购申请单")
-    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseApplyService.purchaseDelete(purchaseOrderId);
-    }
+//    @GetMapping("/delete")
+//    @ApiOperation("删除采购申请单")
+//    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
+//        return purchaseApplyService.purchaseDelete(purchaseOrderId);
+//    }
 
 }
