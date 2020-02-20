@@ -41,6 +41,8 @@
     <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
     <result column="position_code" jdbcType="VARCHAR" property="positionCode" />
     <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -56,7 +58,8 @@
     purchase_source, pre_purchase_type, pre_purchase_code, account_code, account_name,
     contract_code, contract_name, charge_person_code, charge_person_name, supplier_person,
     supplier_mobile, brand_id, brand_name, remark, receipt_turnover, position_code, position_name,
-    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name,
+    direct_supervisor_code, direct_supervisor_name
   </sql>
   <insert id="insert">
     insert into purchase_apply (purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
@@ -65,7 +68,7 @@
       return_tax_amount, gift_tax_amount, purchase_source, pre_purchase_type, pre_purchase_code, account_code,
       account_name, contract_code, contract_name, charge_person_code, charge_person_name, supplier_person,
       supplier_mobile, brand_id, brand_name, remark, receipt_turnover, position_code, position_name,create_time,
-      update_time, create_by_id, update_by_id, create_by_name, update_by_name)
+      update_time, create_by_id, update_by_id, create_by_name, update_by_name, direct_supervisor_code, direct_supervisor_name)
     values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
       #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{settlementMethodCode,jdbcType=VARCHAR},
       #{settlementMethodName,jdbcType=VARCHAR}, #{productCount,jdbcType=BIGINT}, #{returnCount,jdbcType=BIGINT},
@@ -79,7 +82,8 @@
       #{supplierMobile,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}, #{receiptTurnover,jdbcType=INTEGER}, #{positionCode,jdbcType=VARCHAR},
       #{positionName,jdbcType=VARCHAR}, now(), now(), #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
-      #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
+      #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{directSupervisorCode,jdbcType=VARCHAR},
+      #{directSupervisorName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply
@@ -192,6 +196,12 @@
       </if>
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
     </set>
     where  purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
@@ -318,4 +328,12 @@
     set status = 1
     where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
+  <select id="purchaseApply" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply
+    where status = 0
+    <if test="purchaseApplyCode != null">
+      and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

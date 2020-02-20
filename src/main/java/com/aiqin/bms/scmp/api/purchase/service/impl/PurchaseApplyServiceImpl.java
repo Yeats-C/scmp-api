@@ -549,7 +549,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 提交审批流
         if(request.getSaveMode().equals(1)){
             // 调审批流
-            //purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(), details.getDirectSupervisorCode(), purchaseOrderRequest.getPositionCode());
+            purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(),
+                    request.getPurchaseApply().getDirectSupervisorCode(), request.getPurchaseApply().getPositionCode());
 
         }
         return HttpResponse.success();

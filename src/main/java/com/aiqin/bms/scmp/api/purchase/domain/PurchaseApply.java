@@ -168,6 +168,14 @@ public class PurchaseApply {
     @JsonProperty("position_name")
     private String positionName;
 
+    @ApiModelProperty(value="直属上级编码")
+    @JsonProperty("direct_supervisor_code")
+    private String directSupervisorCode;
+
+    @ApiModelProperty(value="直属上级名称")
+    @JsonProperty("direct_supervisor_name")
+    private String directSupervisorName;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

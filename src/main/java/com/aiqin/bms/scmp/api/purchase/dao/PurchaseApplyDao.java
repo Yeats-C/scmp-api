@@ -23,4 +23,6 @@ public interface PurchaseApplyDao {
 
     Integer delete(String purchaseOrderId);
 
+    PurchaseApply purchaseApply(PurchaseApply purchaseApply);
+
 }
