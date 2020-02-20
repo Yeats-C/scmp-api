@@ -27,6 +27,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -114,6 +115,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
     @Resource
     private FileRecordDao fileRecordDao;
+    @Resource
+    private PurchaseApprovalService purchaseApprovalService;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -545,7 +548,9 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
         // 提交审批流
         if(request.getSaveMode().equals(1)){
-            // todo
+            // 调审批流
+            //purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(), details.getDirectSupervisorCode(), purchaseOrderRequest.getPositionCode());
+
         }
         return HttpResponse.success();
     }
