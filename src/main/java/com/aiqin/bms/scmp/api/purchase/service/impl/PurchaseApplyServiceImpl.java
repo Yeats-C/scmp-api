@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
@@ -37,6 +38,9 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -64,7 +68,7 @@ import java.util.stream.Collectors;
  * @create: 2019-06-13
  **/
 @Service
-public class PurchaseApplyServiceImpl implements PurchaseApplyService {
+public class PurchaseApplyServiceImpl extends BaseServiceImpl implements PurchaseApplyService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseApplyServiceImpl.class);
 
@@ -900,9 +904,39 @@ public class PurchaseApplyServiceImpl implements PurchaseApplyService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseApplyStatus(PurchaseApply purchaseApply){
-        if(purchaseApply == null || StringUtils.isBlank(purchaseApply.getPurchaseApplyId())){
+    public HttpResponse purchaseApplyStatus(String purchaseApplyId, Integer applyStatus){
+        if(StringUtils.isBlank(purchaseApplyId) || applyStatus == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询采购申请单
+        PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        PurchaseApply purchaseApply = new PurchaseApply();
+        purchaseApply.setPurchaseApplyId(purchaseApplyId);
+        if(applyStatus.equals(0) && apply.getApplyStatus().equals(0)){
+            // 取消待提交的采购申请单
+            purchaseApply.setStatus(1);
+        }else {
+            // 取消待审批、审批中的采购申请
+            if(apply.getApplyStatus().equals(2) || apply.getApplyStatus().equals(3)){
+
+                // 获取当前登录人的信息
+                AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+                if (currentAuthToken == null) {
+                    LOGGER.info("获取当前登录信息失败");
+                    return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+                }
+                purchaseApply.setApplyStatus(6);
+                // 调用审批流取消
+                WorkFlowVO w = new WorkFlowVO();
+                w.setFormNo(apply.getPurchaseApplyCode());
+                w.setUsername(currentAuthToken.getPersonId());
+                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+                if (!workFlowRespVO.getSuccess()) {
+                    throw new GroundRuntimeException("审批流撤销失败!");
+                }
+            }else {
+                LOGGER.info("撤销采购申请单不在待审批、审批中");
+            }
         }
         Integer count = purchaseApplyDao.update(purchaseApply);
         if(count == 0){
