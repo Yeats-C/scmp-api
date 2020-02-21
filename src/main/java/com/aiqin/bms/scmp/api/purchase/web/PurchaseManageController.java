@@ -4,11 +4,9 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -119,10 +117,10 @@ public class PurchaseManageController {
             @ApiImplicitParam(name = "is_page", value = "是否分页 0.分页 1.不分页", type = "Integer"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
-    public HttpResponse purchaseOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
-                                             @RequestParam(value = "is_page", required = false) Integer isPage,
-                                             @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                             @RequestParam(value = "page_size", required = false) Integer pageSize) {
+    public HttpResponse<PurchaseOrderProduct> purchaseOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
+                                                                   @RequestParam(value = "is_page", required = false) Integer isPage,
+                                                                   @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                   @RequestParam(value = "page_size", required = false) Integer pageSize) {
         PurchaseOrderProductRequest request = new PurchaseOrderProductRequest(purchaseOrderId, isPage);
         request.setPageSize(pageSize);
         request.setPageNo(pageNo);
