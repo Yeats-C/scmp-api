@@ -598,11 +598,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(String purchaseOrderId){
+    public HttpResponse<PurchaseOrder> purchaseOrderDetails(String purchaseOrderId){
         if(StringUtils.isBlank(purchaseOrderId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrderId);
+        PurchaseOrder detail = purchaseOrderDao.purchaseOrder(purchaseOrderId);
         return HttpResponse.success(detail);
     }
 

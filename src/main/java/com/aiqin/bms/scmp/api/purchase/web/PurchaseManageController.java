@@ -108,12 +108,17 @@ public class PurchaseManageController {
 
     @GetMapping("/order/details")
     @ApiOperation("查询采购单详情-采购信息")
-    public HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(@RequestParam("purchase_order_id") String purchaseOrderId) {
+    public HttpResponse<PurchaseOrder> purchaseOrderDetails(@RequestParam("purchase_order_id") String purchaseOrderId) {
         return purchaseManageService.purchaseOrderDetails(purchaseOrderId);
     }
 
     @GetMapping("/order/product")
     @ApiOperation("查询采购单商品-商品列表")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "purchase_order_id", value = "采购单id", type = "String"),
+            @ApiImplicitParam(name = "is_page", value = "是否分页 0.分页 1.不分页", type = "Integer"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
     public HttpResponse purchaseOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
                                              @RequestParam(value = "is_page", required = false) Integer isPage,
                                              @RequestParam(value = "page_no", required = false) Integer pageNo,

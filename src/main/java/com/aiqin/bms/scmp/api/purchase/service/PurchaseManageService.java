@@ -27,7 +27,7 @@ public interface PurchaseManageService {
 
     HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 
-    HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(String purchaseOrderId);
+    HttpResponse<PurchaseOrder> purchaseOrderDetails(String purchaseOrderId);
 
     HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request);
 
