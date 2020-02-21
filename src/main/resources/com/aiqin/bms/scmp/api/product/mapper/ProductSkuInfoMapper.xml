@@ -1318,8 +1318,29 @@ from product_sku a
       <if test="priceModel != null">
         price_model = #{priceModel,jdbcType=TINYINT},
       </if>
-        <if test="productDesc != null">
-            product_desc = #{productDesc,jdbcType=VARCHAR},
+      <if test="productDesc != null">
+        product_desc = #{productDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="itemNumber != null">
+          item_number = #{itemNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="seasonBand != null">
+          season_band = #{seasonBand,jdbcType=VARCHAR},
+      </if>
+      <if test="level != null">
+          `level` = #{level,jdbcType=VARCHAR},
+      </if>
+      <if test="featureCode != null">
+          feature_code = #{featureCode,jdbcType=VARCHAR},
+      </if>
+      <if test="featureName != null">
+          feature_name = #{featureName,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyLevelCode != null">
+          currency_level_code = #{currencyLevelCode,jdbcType=VARCHAR},
+      </if>
+      <if test="currencyLevelName != null">
+          currency_level_name = #{currencyLevelName,jdbcType=VARCHAR},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}

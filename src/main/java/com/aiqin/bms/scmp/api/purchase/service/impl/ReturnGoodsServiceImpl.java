@@ -374,7 +374,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean recordDL(ReturnDLReq reqVO) {
-        reqVO=test1();
+//        reqVO=test1();
         if(ObjectUtils.equals(null,reqVO)
                 ||ObjectUtils.equals(null,reqVO.getReturnOrderInfoDLReq())
                 ||CollectionUtils.isEmptyCollection(reqVO.getReturnOrderDetailDLReqList())){
@@ -422,13 +422,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
           }
 
       }
+      Boolean isok;
       //发送请求
         if (sendRecordDL(reqVO)){
             log.info("回调成功");
+            isok=true;
         }else {
             log.info("回调失败");
-        } ;
-        return sendRecordDL(reqVO);
+            isok=false;
+        }
+        return isok;
     }
 
 

@@ -6,10 +6,12 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -72,6 +74,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private StockService stockService;
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
+    @Autowired
+    private ProductSkuCheckoutDao productSkuCheckoutDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -352,6 +356,27 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     public HttpResponse insertSaleOrder(ErpOrderInfo request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 获取税率
+        String key;
+        Map<String, ProductSkuCheckout> product = new HashMap<>();
+        for (ErpOrderItem detail : request.getItemList()) {
+            key = String.format("%s", detail.getSkuCode());
+            if (product.get(key) == null) {
+                product.put(key, productSkuCheckoutDao.getInfo(detail.getSkuCode()));
+            }
+        }
+        for (ErpOrderItem detail : request.getItemList()) {
+            // set税率
+            key = String.format("%s", detail.getSkuCode());
+            if(detail.getTaxRate() == null){
+                ProductSkuCheckout item = product.get(key);
+                if(item == null || item.getOutputTaxRate() == null){
+                    detail.setTaxRate(BigDecimal.ZERO);
+                }else {
+                    detail.setTaxRate(item.getOutputTaxRate());
+                }
+            }
         }
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);

@@ -849,7 +849,7 @@
   <select id="getSkuInfoResp" parameterType="java.lang.String" resultMap="Product_Sku_Resp_Map">
     SELECT
     <include refid="Product_Sku_Resp_Column"/>
-    ,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name
+    ,season_band,`level`,feature_code,feature_name,currency_level_code,currency_level_name,item_number
     from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR}
   </select>
 

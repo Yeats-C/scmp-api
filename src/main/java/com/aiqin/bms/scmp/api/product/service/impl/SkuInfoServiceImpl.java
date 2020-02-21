@@ -1816,7 +1816,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
                 }
-                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName,new Date(),vo1.getApprovalUserName(), null);
+                productCommonService.instanceThreeParty(productSkuInfo.getSkuCode(), handleTypeCoceStatus, ObjectTypeCode.APPLY_SKU.getStatus(), productSkuInfo, handleTypeCoceName, new Date(), vo1.getApprovalUserName(), null);
                 //渠道
                 productSkuChannelService.save(skuCode, applyCode);
                 //标签
@@ -1890,27 +1890,27 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuInspReportService.saveList(skuCode, applyCode);
                 //组合商品子商品列表
                 productSkuSubService.saveList(skuCode, applyCode);
-            }
-            //价格
+                //价格
 //            List<String> skuCodes = applyProductSkus.stream().map(item -> item.getSkuCode()).distinct().collect(Collectors.toList());
-            List<String> skuCodes = Lists.newArrayList();
-            skuCodes.add(skuCode);
-            List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
-            if (CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)) {
-                List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode, ProductSkuPriceInfo.class);
-                Date current = new Date();
-                productSkuPriceInfos.forEach(item -> {
-                    if (null == item.getEffectiveTimeStart()) {
-                        item.setEffectiveTimeStart(current);
-                    }
-                });
-                productSkuPriceInfoService.saveSkuPriceOfficial(productSkuPriceInfos);
+                List<String> skuCodes = Lists.newArrayList();
+                skuCodes.add(skuCode);
+                List<ApplyProductSkuPriceInfo> skuPriceListApplyBySkuCode = productSkuPriceInfoService.getSkuPriceListApplyBySkuCodes(skuCodes, applyCode);
+                if (CollectionUtils.isNotEmpty(skuPriceListApplyBySkuCode)) {
+                    List<ProductSkuPriceInfo> productSkuPriceInfos = BeanCopyUtils.copyList(skuPriceListApplyBySkuCode, ProductSkuPriceInfo.class);
+                    Date current = new Date();
+                    productSkuPriceInfos.forEach(item -> {
+                        if (null == item.getEffectiveTimeStart()) {
+                            item.setEffectiveTimeStart(current);
+                        }
+                    });
+                    productSkuPriceInfoService.saveSkuPriceOfficial(productSkuPriceInfos);
+                }
+                //更新为该条数据生效。在这里只能加一个同步的时间 SelectionEffectiveEndTime
+                ApplyProductSku applyProductSku = new ApplyProductSku();
+                applyProductSku.setId(applyProductSkus.get(i).getId());
+                applyProductSku.setSelectionEffectiveEndTime(auditorTime);
+                applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
             }
-            //更新为该条数据生效。在这里只能加一个同步的时间 SelectionEffectiveEndTime
-            ApplyProductSku applyProductSku = new ApplyProductSku();
-            applyProductSku.setId(applyProductSkus.get(i).getId());
-            applyProductSku.setSelectionEffectiveEndTime(auditorTime);
-            applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
         }
         //更新审批状态
         applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(), vo.getFormNo(), vo.getApprovalUserName(), auditorTime);

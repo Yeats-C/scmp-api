@@ -315,7 +315,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                         response.setProductType(productTypeList.indexOf(record[6]));
                     }
                     response.setProductTotalAmount(new BigDecimal(record[8]).multiply(new BigDecimal(rejectCount).setScale(4, BigDecimal.ROUND_HALF_UP)));
-                    if (rejectApplyDetailHandleResponse.getStockCount() < Integer.valueOf(rejectCount)) {
+                    if (rejectApplyDetailHandleResponse.getStockCount() < rejectCount) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
                 } else {

@@ -434,8 +434,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     public HttpResponse returnOrder(ReturnRequest request) {
         //操作时间 签收时间 等于回单时间 退货的商品对应供应商信息取入库单据相关
         //查询退货单是否存在
+        LOGGER.info("耘链开始调用退货单，入参{}" + request);
         ReturnOrderInfo response = returnOrderInfoMapper.selectByCode1(request.getReturnOrderCode());
         if (response != null) {
+            LOGGER.info("耘链退货单单据已存在");
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
         }
         try {
@@ -579,23 +581,24 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 stockChangeRequest.setOperationType(10);
                 List<StockVoRequest> list = handleInboundStockData( inboundOderCode, inboundReqSave);
                 stockChangeRequest.setStockVoRequests(list);
+                LOGGER.info("退货单加库存参数{}" + stockChangeRequest);
                 HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                    LOGGER.error("dl回调   加库存异常");
-                    throw new GroundRuntimeException("dl回调   加库存异常");
+                    LOGGER.error("退货单加库存异常");
+                    throw new GroundRuntimeException("退货单加库存异常");
                 }
+                LOGGER.info("退货单加库存成功{}" + httpResponse);
             }
-
             return HttpResponse.success();
         }catch (DataAccessException e){
-            LOGGER.error("订单回调异常:{}", e);
+            LOGGER.error("退货单回调异常:{}", e);
             if(e.getCause().toString().contains("return_order_info_return_order_code_uindex")){
-                throw new GroundRuntimeException("单据已存在");
+                throw new GroundRuntimeException("退货单单据已存在");
             }
-            throw new GroundRuntimeException("订单回调异常");
+            throw new GroundRuntimeException("退货单回调异常");
         }catch (Exception e) {
-            LOGGER.error("订单回调异常:{}", e);
-            throw new GroundRuntimeException("订单回调异常");
+            LOGGER.error("退货单回调异常:{}", e);
+            throw new GroundRuntimeException("退货单回调异常");
         }
     }
 
@@ -1313,6 +1316,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
+            e.printStackTrace();
             LOGGER.error("报损报溢订单回调异常:{}", e);
             throw new GroundRuntimeException("报损报溢订单回调异常");
         }
@@ -1580,7 +1584,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfo.setTransportNumber(request.getTransportCode());
             orderInfo.setCustomerCode(request.getCustomerCode());
             orderInfo.setCustomerName(request.getCustomerName());
-            orderInfo.setTransportStatus(1);
+            orderInfo.setTransportStatus(0);
             orderInfo.setUpdateByName(request.getTransportPerson());
             list.add(orderInfo);
         }
@@ -1593,7 +1597,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 回传爱亲的销售单的发运信息
         DeliveryInfoVo info =  new DeliveryInfoVo();
         BeanUtils.copyProperties(request, info);
-        info.setTransportStatus(1);
+        info.setTransportStatus(0);
         List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
         info.setDeliveryDetail(infoList);
         String url = orderUrl + "/purchase/delivery/info";
