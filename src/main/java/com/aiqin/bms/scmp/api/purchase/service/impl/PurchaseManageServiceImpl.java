@@ -347,72 +347,70 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);
-        purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
-        purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
+//        purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
+//        purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         if(orderCount > 0){
             // 添加采购单的审批日志
             applyPurchaseOrderDao.insert(purchaseOrder);
             // 添加操作日志
-            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
-                    PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
-            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
-                    PurchaseOrderLogEnum.CHECKOUT_STAY.getCode(), PurchaseOrderLogEnum.CHECKOUT_STAY.getName(), purchaseOrder.getApplyTypeForm());
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-            // 添加采购单详情
-            PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
-            details.setPurchaseDetailsId(IdUtil.purchaseId());
-            details.setPurchaseOrderId(purchaseId);
-            details.setPurchaseOrderCode(purchaseProductCode);
-            details.setDetailsStatus(Global.USER_ON);
-            details.setOrderType("配送");
-            purchaseOrderDetailsDao.insert(details);
-            // 添加采购单审批的详情
-            applyPurchaseOrderDetailsDao.insert(details);
-            // 添加商品列表
-            PurchaseFormRequest form = new PurchaseFormRequest();
-            if(CollectionUtils.isNotEmptyCollection(purchaseOrderRequest.getApplyIds())){
-                form.setApplyIds(purchaseOrderRequest.getApplyIds());
-                PurchaseOrder order = purchaseOrderRequest.getPurchaseOrder();
-                form.setWarehouseCode(order.getWarehouseCode());
-                form.setTransportCenterCode(order.getTransportCenterCode());
-                form.setSupplierCode(order.getSupplierCode());
-                form.setPurchaseGroupCode(order.getPurchaseGroupCode());
-                form.setSettlementMethodCode(order.getSettlementMethodCode());
-            }
-            List<PurchaseApplyDetailResponse> productList = this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
-            // 添加文件信息
-            List<FileRecord> fileList = purchaseOrderRequest.getFileList();
-            if(CollectionUtils.isNotEmptyCollection(fileList)){
-                fileRecordDao.insertAll(purchaseId, fileList);
-            }
-            //  判断所有采购申请单的完成状态
-            List<String> applyIds = purchaseOrderRequest.getApplyIds();
-            if(CollectionUtils.isNotEmptyCollection(applyIds)){
-                for(String apply:applyIds){
-                    // 变更提交采购申请单的完成状态
-                    for(PurchaseApplyDetailResponse product:productList){
-                        form.setPurchaseApplyId(apply);
-                        form.setSkuCode(product.getSkuCode());
-                        form.setUpdateById(purchaseOrderRequest.getPersonId());
-                        form.setUpdateByName(purchaseOrderRequest.getPersonName());
-                        purchaseApplyProductDao.updateInfoStatus(form);
-                    }
-                    // 判断所有采购申请单的完成状态
-                    Integer count = purchaseApplyProductDao.purchaseFormByComplete(apply);
-                    if(count <= 0){
-                        PurchaseApply purchaseApply = new PurchaseApply();
-                        purchaseApply.setPurchaseApplyId(apply);
-                        purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
-                        purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
-                        purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
-                        purchaseApplyDao.update(purchaseApply);
-                    }
-                }
-            }
-            // 调审批流
-            purchaseApprovalService.workFlow(purchaseProductCode, purchaseOrderRequest.getCheckoutName(), details.getDirectSupervisorCode(), purchaseOrderRequest.getPositionCode());
+//            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
+//                    PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
+//            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
+//                    PurchaseOrderLogEnum.CHECKOUT_STAY.getCode(), PurchaseOrderLogEnum.CHECKOUT_STAY.getName(), purchaseOrder.getApplyTypeForm());
+//            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+//            // 添加采购单详情
+//            PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
+//            details.setPurchaseDetailsId(IdUtil.purchaseId());
+//            details.setPurchaseOrderId(purchaseId);
+//            details.setPurchaseOrderCode(purchaseProductCode);
+//            details.setDetailsStatus(Global.USER_ON);
+//            details.setOrderType("配送");
+//            purchaseOrderDetailsDao.insert(details);
+//            // 添加采购单审批的详情
+//            applyPurchaseOrderDetailsDao.insert(details);
+//            // 添加商品列表
+//            PurchaseFormRequest form = new PurchaseFormRequest();
+//            if(CollectionUtils.isNotEmptyCollection(purchaseOrderRequest.getApplyIds())){
+//                form.setApplyIds(purchaseOrderRequest.getApplyIds());
+//                PurchaseOrder order = purchaseOrderRequest.getPurchaseOrder();
+//                form.setWarehouseCode(order.getWarehouseCode());
+//                form.setTransportCenterCode(order.getTransportCenterCode());
+//                form.setSupplierCode(order.getSupplierCode());
+//                form.setPurchaseGroupCode(order.getPurchaseGroupCode());
+//                form.setSettlementMethodCode(order.getSettlementMethodCode());
+//            }
+//            List<PurchaseApplyDetailResponse> productList = this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
+//            // 添加文件信息
+//            List<FileRecord> fileList = purchaseOrderRequest.getFileList();
+//            if(CollectionUtils.isNotEmptyCollection(fileList)){
+//                fileRecordDao.insertAll(purchaseId, fileList);
+//            }
+//            //  判断所有采购申请单的完成状态
+//            List<String> applyIds = purchaseOrderRequest.getApplyIds();
+//            if(CollectionUtils.isNotEmptyCollection(applyIds)){
+//                for(String apply:applyIds){
+//                    // 变更提交采购申请单的完成状态
+//                    for(PurchaseApplyDetailResponse product:productList){
+//                        form.setPurchaseApplyId(apply);
+//                        form.setSkuCode(product.getSkuCode());
+//                        form.setUpdateById(purchaseOrderRequest.getPersonId());
+//                        form.setUpdateByName(purchaseOrderRequest.getPersonName());
+//                        purchaseApplyProductDao.updateInfoStatus(form);
+//                    }
+//                    // 判断所有采购申请单的完成状态
+//                    Integer count = purchaseApplyProductDao.purchaseFormByComplete(apply);
+//                    if(count <= 0){
+//                        PurchaseApply purchaseApply = new PurchaseApply();
+//                        purchaseApply.setPurchaseApplyId(apply);
+//                        purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
+//                        purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
+//                        purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
+//                        purchaseApplyDao.update(purchaseApply);
+//                    }
+//                }
+//            }
         }
         return HttpResponse.success();
     }
@@ -456,8 +454,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 orderProduct.setTaxRate(detail.getTaxRate());
                 orderProduct.setProductAmount(amount);
                 orderProduct.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
-                orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
-                orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
+//                orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
+//                orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
                 orderProduct.setActualSingleCount(0);
                 orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
                 detail.setSingleCount(number);
