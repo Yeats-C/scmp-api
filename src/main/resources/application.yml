@@ -382,6 +382,8 @@ mgs:
           name: 生成采购单
         - code: SCMP006001004
           name: 预采购类型
+        - code: SCMP006001005
+          name: 采购价来源
       - code: SCMP006002
         name: 采购单管理
         link: '/purchase/purchase'
