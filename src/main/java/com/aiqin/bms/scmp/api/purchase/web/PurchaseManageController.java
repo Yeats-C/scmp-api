@@ -60,36 +60,41 @@ public class PurchaseManageController {
     @GetMapping("/order/list")
     @ApiOperation("采购单列表")
     @ApiImplicitParams({
+                @ApiImplicitParam(name = "create_begin_time", value = "创建开始时间", type = "String"),
+                @ApiImplicitParam(name = "create_finish_time", value = "创建结束时间", type = "String"),
+                @ApiImplicitParam(name = "update_begin_time", value = "操作开始时间", type = "String"),
+                @ApiImplicitParam(name = "update_finish_time", value = "操作结束时间", type = "String"),
+                @ApiImplicitParam(name = "purchase_group_code", value = "采购组编码", type = "String"),
                 @ApiImplicitParam(name = "purchase_order_code", value = "采购单号", type = "String"),
-                @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
-                @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
-                @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
-                @ApiImplicitParam(name = "supplier_code", value = "供应商名称", type = "String"),
+                @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
+                @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
                 @ApiImplicitParam(name = "transport_center_code", value = "仓库", type = "String"),
                 @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
-                @ApiImplicitParam(name = "purchase_order_status", value = "采购单审核状态" +
-         "0.待审核 1.审核中 2.审核通过  3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消 10.审核不通过", type = "Integer"),
-                @ApiImplicitParam(name = "storage_status", value = "仓储状态 0.未开始  1.确认中 2.完成", type = "Integer"),
-                @ApiImplicitParam(name = "purchase_mode", value = "采购方式 0 配送  1.铺采直送", type = "Integer"),
-                @ApiImplicitParam(name = "purchase_order_type_code", value = "采购单类型编码 1 普通采购 2 预采购", type = "Integer"),
+                @ApiImplicitParam(name = "purchase_order_status", value = "采购单审核状态 " +
+                        "3.备货确认 4.发货确认  5.入库开始 6.入库中 7.已入库  8.完成 9.取消", type = "Integer"),
+                @ApiImplicitParam(name = "purchase_source", value = "采购单来源 0.采购申请 1.订单 ", type = "Integer"),
+                @ApiImplicitParam(name = "purchase_apply_code", value = "采购单来源单号", type = "String"),
+                @ApiImplicitParam(name = "company_code", value = "公司编码", type = "String"),
                 @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
                 @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
-    public HttpResponse<List<PurchaseOrderResponse>> applyProductList(@RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
-                                                                      @RequestParam(value = "begin_time", required = false) String beginTime,
-                                                                      @RequestParam(value = "finish_time", required = false) String finishTime,
+    public HttpResponse<List<PurchaseOrder>> applyProductList(@RequestParam(value = "create_begin_time", required = false) String createBeginTime,
+                                                                      @RequestParam(value = "create_finish_time", required = false) String createFinishTime,
+                                                                      @RequestParam(value = "update_begin_time", required = false) String updateBeginTime,
+                                                                      @RequestParam(value = "update_finish_time", required = false) String updateFinishTime,
                                                                       @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                                                                      @RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode,
                                                                       @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                      @RequestParam(value = "supplier_name", required = false) String supplierName,
                                                                       @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
                                                                       @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
                                                                       @RequestParam(value = "purchase_order_status", required = false) Integer purchaseOrderStatus,
-                                                                      @RequestParam(value = "storage_status", required = false) Integer storageStatus,
-                                                                      @RequestParam(value = "purchase_mode", required = false) Integer purchaseMode,
-                                                                      @RequestParam(value = "approval_code", required = false) String approvalCode,
-                                                                      @RequestParam(value = "purchase_order_type_code", required = false) Integer purchaseOrderTypeCode,
+                                                                      @RequestParam(value = "purchase_source", required = false) Integer purchaseSource,
+                                                                      @RequestParam(value = "purchase_apply_code", required = false) String purchaseApplyCode,
+                                                                      @RequestParam(value = "company_code", required = false) String companyCode,
                                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
                                                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
-        PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, beginTime, finishTime, supplierCode,
-                transportCenterCode, purchaseOrderCode, warehouseCode, purchaseOrderStatus, storageStatus, purchaseMode, approvalCode, purchaseOrderTypeCode);
+        PurchaseApplyRequest purchaseApplyRequest = new PurchaseApplyRequest(purchaseGroupCode, createBeginTime, createFinishTime, updateBeginTime, updateFinishTime,
+                purchaseOrderCode, supplierCode, supplierName, transportCenterCode, warehouseCode, purchaseOrderStatus, purchaseSource, purchaseApplyCode, companyCode);
         purchaseApplyRequest.setPageSize(pageSize);
         purchaseApplyRequest.setPageNo(pageNo);
         return purchaseManageService.purchaseOrderList(purchaseApplyRequest);

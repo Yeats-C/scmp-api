@@ -479,7 +479,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
+    public HttpResponse<List<PurchaseOrder>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         PageResData pageResData = new PageResData();
         if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
@@ -487,42 +487,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         purchaseApplyRequest.setGroupList(groupVoList);
         List<PurchaseOrderResponse> list = purchaseOrderDao.purchaseOrderList(purchaseApplyRequest);
-        if(CollectionUtils.isNotEmptyCollection(list)){
-            for(PurchaseOrderResponse order:list){
-                // 计算实际单品数量，实际含税采购金额， 实际实物返金额。
-                Integer actualSingleCount = 0;
-                BigDecimal actualTotalAmount = big, actualReturnAmount = big, actualGiftTaxSum = big;
-                BigDecimal productTotalAmount = big, returnAmount = big, giftTaxSum = big;
-                List<PurchaseOrderProduct> orderProducts = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
-                if(CollectionUtils.isNotEmptyCollection(orderProducts)){
-                    for(PurchaseOrderProduct product:orderProducts){
-                        Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
-                        Integer actualSingle = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
-                        BigDecimal productAmount = product.getProductAmount() == null ? big :product.getProductAmount();
-                        actualSingleCount += actualSingle;
-                        if(product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
-                            actualTotalAmount = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualTotalAmount) ;
-                            productTotalAmount = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTotalAmount);
-                        }
-                        if(product.getProductType().equals(Global.PRODUCT_TYPE_2)) {
-                            actualReturnAmount = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualReturnAmount);
-                            returnAmount = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(returnAmount);
-                        }
-                        if(product.getProductType().equals(Global.PRODUCT_TYPE_1)) {
-                            actualGiftTaxSum = productAmount.multiply(BigDecimal.valueOf(actualSingle)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualGiftTaxSum);
-                            giftTaxSum = productAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
-                        }
-                    }
-                }
-                order.setActualSingleCount(actualSingleCount);
-                order.setActualTotalAmount(actualTotalAmount);
-                order.setActualReturnAmount(actualReturnAmount);
-                order.setReturnAmount(returnAmount);
-                order.setProductTotalAmount(productTotalAmount);
-                order.setActualGiftTaxSum(actualGiftTaxSum);
-                order.setGiftTaxSum(giftTaxSum);
-            }
-        }
         Integer count = purchaseOrderDao.purchaseOrderCount(purchaseApplyRequest);
         pageResData.setDataList(list);
         pageResData.setTotalCount(count);

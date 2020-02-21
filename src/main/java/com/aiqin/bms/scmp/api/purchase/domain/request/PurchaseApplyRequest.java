@@ -182,7 +182,7 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("pre_purchase_type")
     private Integer prePurchaseType;
 
-    @ApiModelProperty(value="采购价来源 0.读取 1.录入")
+    @ApiModelProperty(value="采购价来源 0.读取 1.录入/ 采购单来源 0.采购申请 1.订单")
     @JsonProperty("purchase_source")
     private Integer purchaseSource;
 
@@ -235,21 +235,23 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.productShortageType = productShortageType;
     }
 
-    public PurchaseApplyRequest(String purchaseGroupCode, String beginTime, String finishTime, String supplierCode,
-                                String transportCenterCode, String purchaseOrderCode, String warehouseCode,
-                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode, String approvalCode,
-                                Integer purchaseOrderTypeCode) {
+    public PurchaseApplyRequest(String purchaseGroupCode, String createBeginTime, String createFinishTime, String updateBeginTime,
+                                String updateFinishTime, String purchaseOrderCode, String supplierCode, String supplierName,
+                                String transportCenterCode,  String warehouseCode, Integer purchaseOrderStatus,
+                                Integer purchaseSource, String purchaseApplyCode, String companyCode ) {
         this.purchaseGroupCode = purchaseGroupCode;
-        this.beginTime = beginTime;
-        this.finishTime = finishTime;
-        this.supplierCode = supplierCode;
-        this.transportCenterCode = transportCenterCode;
+        this.createBeginTime = createBeginTime;
+        this.createFinishTime = createFinishTime;
+        this.updateBeginTime = updateBeginTime;
+        this.updateFinishTime = updateFinishTime;
         this.purchaseOrderCode = purchaseOrderCode;
+        this.supplierCode = supplierCode;
+        this.supplierName = supplierName;
+        this.transportCenterCode = transportCenterCode;
         this.warehouseCode = warehouseCode;
         this.purchaseOrderStatus = purchaseOrderStatus;
-        this.storageStatus = storageStatus;
-        this.purchaseMode = purchaseMode;
-        this.approvalCode = approvalCode;
-        this.purchaseOrderTypeCode = purchaseOrderTypeCode;
+        this.purchaseSource = purchaseSource;
+        this.purchaseApplyCode = purchaseApplyCode;
+        this.companyCode = companyCode;
     }
 }

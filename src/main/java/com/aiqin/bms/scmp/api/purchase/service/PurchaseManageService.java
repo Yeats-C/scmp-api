@@ -23,7 +23,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
 
-    HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
+    HttpResponse<List<PurchaseOrder>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
 
     HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 
