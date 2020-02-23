@@ -626,11 +626,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse purchaseOrderLog(String purchaseOrderId){
-        if(StringUtils.isBlank(purchaseOrderId)){
+    public HttpResponse<List<OperationLog>> purchaseOrderLog(String operationId){
+        if(StringUtils.isBlank(operationId)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<OperationLog> list = operationLogDao.list(purchaseOrderId);
+        List<OperationLog> list = operationLogDao.list(operationId);
         return HttpResponse.success(list);
     }
 

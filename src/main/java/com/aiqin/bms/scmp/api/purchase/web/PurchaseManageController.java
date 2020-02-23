@@ -135,8 +135,8 @@ public class PurchaseManageController {
 
     @GetMapping("/order/log")
     @ApiOperation("查询采购单-操作日志")
-    public HttpResponse purchaseOrderLog(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderLog(purchaseOrderId);
+    public HttpResponse<List<OperationLog>> purchaseOrderLog(@RequestParam("operation_id") String operationId) {
+        return purchaseManageService.purchaseOrderLog(operationId);
     }
 
     @GetMapping("/order/amount")

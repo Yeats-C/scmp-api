@@ -31,7 +31,7 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrderFile(String purchaseOrderId);
 
-    HttpResponse purchaseOrderLog(String purchaseOrderId);
+    HttpResponse<List<OperationLog>> purchaseOrderLog(String operationId);
 
     HttpResponse<PurchaseApplyProductInfoResponse> purchaseOrderAmount(String purchaseOrderId);
 
