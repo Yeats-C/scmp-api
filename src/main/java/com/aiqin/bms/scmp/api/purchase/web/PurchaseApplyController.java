@@ -1,15 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyCurrencyResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -22,7 +18,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
-import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -87,7 +82,7 @@ public class PurchaseApplyController {
 
     @GetMapping("/product")
     @ApiOperation("查询申请采购单，商品详情列表")
-    public HttpResponse searchApplyProduct(@RequestParam("product_apply_id") String purchaseApplyId) {
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_id") String purchaseApplyId) {
         return purchaseApplyService.searchApplyProduct(purchaseApplyId);
     }
 
@@ -113,7 +108,7 @@ public class PurchaseApplyController {
 
     @PostMapping("/product/group")
     @ApiOperation(value = "根据商品对采购申请单按供应商、结算方式、采购组进行生成")
-    public HttpResponse productGroup(@RequestBody PurchaseApplyProductRequest request) {
+    public HttpResponse<List<PurchaseApplyDeatailResponse>> productGroup(@RequestBody PurchaseApplyProductRequest request) {
         return purchaseApplyService.productGroup(request);
     }
 

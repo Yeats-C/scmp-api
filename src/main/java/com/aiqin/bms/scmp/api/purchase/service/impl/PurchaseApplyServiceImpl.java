@@ -20,7 +20,6 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
@@ -402,7 +401,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse productGroup(PurchaseApplyProductRequest request){
+    public HttpResponse<List<PurchaseApplyDeatailResponse>> productGroup(PurchaseApplyProductRequest request){
         if(CollectionUtils.isEmptyCollection(request.getApplyProducts())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }

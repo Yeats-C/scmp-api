@@ -1,15 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyCurrencyResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFlowPathResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,13 +21,13 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest);
 
-    HttpResponse searchApplyProduct(String purchaseApplyId);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyId);
 
     HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
 
     HttpResponse deleteApplyProduct(String applyProductId);
 
-    HttpResponse productGroup(PurchaseApplyProductRequest request);
+    HttpResponse<List<PurchaseApplyDeatailResponse>> productGroup(PurchaseApplyProductRequest request);
 
     HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request);
 
