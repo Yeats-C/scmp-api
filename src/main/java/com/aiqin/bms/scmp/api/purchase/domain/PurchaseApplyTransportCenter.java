@@ -36,6 +36,14 @@ public class PurchaseApplyTransportCenter {
     @JsonProperty("transport_center_name")
     private String transportCenterName;
 
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty(value="仓库名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
     @ApiModelProperty(value="预计到货日期")
     @JsonProperty("pre_arrival_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

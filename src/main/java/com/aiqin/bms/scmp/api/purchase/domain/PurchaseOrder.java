@@ -133,7 +133,7 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="来源类型 0.采购申请 1.订单")
     @JsonProperty("purchase_source")
-    private String purchaseSource;
+    private Integer purchaseSource;
 
     @ApiModelProperty(value="预计到货时间")
     @JsonProperty("pre_arrival_time")

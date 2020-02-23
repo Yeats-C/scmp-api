@@ -136,12 +136,6 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseNewEdit(purchaseApplyId);
     }
 
-    @GetMapping("/purchase/edit")
-    @ApiOperation("采购申请单- 编辑")
-    public HttpResponse purchaseEdit(@RequestBody PurchaseApplySaveRequest request) {
-        return purchaseApplyService.purchaseEdit(request);
-    }
-
 //    @PostMapping("/purchase/form")
 //    @ApiOperation("生成采购申请单")
 //    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {

@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.dao.ProSuggestReplenishmentDao;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -31,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -327,15 +329,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse  purchaseOrder(PurchaseOrderRequest purchaseOrderRequest){
-        if(purchaseOrderRequest == null || purchaseOrderRequest.getPurchaseOrder() == null){
+    public HttpResponse purchaseOrder(PurchaseOrderRequest request) {
+        if (request == null || request.getPurchaseOrder() == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+
         // 获取采购单编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
-        // 采购申请单id
+        // 新增采购单
         String purchaseId = IdUtil.purchaseId();
-        PurchaseOrder purchaseOrder = purchaseOrderRequest.getPurchaseOrder();
+        PurchaseOrder purchaseOrder = request.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
         String purchaseProductCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseProductCode);
@@ -344,134 +353,101 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);
-//        purchaseOrder.setCreateById(purchaseOrderRequest.getPersonId());
-//        purchaseOrder.setCreateByName(purchaseOrderRequest.getPersonName());
+        purchaseOrder.setCreateById(currentAuthToken.getPersonId());
+        purchaseOrder.setCreateByName(currentAuthToken.getPersonName());
+        purchaseOrder.setUpdateById(currentAuthToken.getPersonId());
+        purchaseOrder.setUpdateById(currentAuthToken.getPersonName());
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
-        if(orderCount > 0){
-            // 添加采购单的审批日志
-            applyPurchaseOrderDao.insert(purchaseOrder);
-            // 添加操作日志
-//            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
-//                    PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
-//            log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
-//                    PurchaseOrderLogEnum.CHECKOUT_STAY.getCode(), PurchaseOrderLogEnum.CHECKOUT_STAY.getName(), purchaseOrder.getApplyTypeForm());
-//            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-//            // 添加采购单详情
-//            PurchaseOrderDetails details = purchaseOrderRequest.getOrderDetails();
-//            details.setPurchaseDetailsId(IdUtil.purchaseId());
-//            details.setPurchaseOrderId(purchaseId);
-//            details.setPurchaseOrderCode(purchaseProductCode);
-//            details.setDetailsStatus(Global.USER_ON);
-//            details.setOrderType("配送");
-//            purchaseOrderDetailsDao.insert(details);
-//            // 添加采购单审批的详情
-//            applyPurchaseOrderDetailsDao.insert(details);
-//            // 添加商品列表
-//            PurchaseFormRequest form = new PurchaseFormRequest();
-//            if(CollectionUtils.isNotEmptyCollection(purchaseOrderRequest.getApplyIds())){
-//                form.setApplyIds(purchaseOrderRequest.getApplyIds());
-//                PurchaseOrder order = purchaseOrderRequest.getPurchaseOrder();
-//                form.setWarehouseCode(order.getWarehouseCode());
-//                form.setTransportCenterCode(order.getTransportCenterCode());
-//                form.setSupplierCode(order.getSupplierCode());
-//                form.setPurchaseGroupCode(order.getPurchaseGroupCode());
-//                form.setSettlementMethodCode(order.getSettlementMethodCode());
-//            }
-//            List<PurchaseApplyDetailResponse> productList = this.insertProduct(form, purchaseId, purchaseProductCode, purchaseOrderRequest, purchaseOrder.getCompanyCode());
-//            // 添加文件信息
-//            List<FileRecord> fileList = purchaseOrderRequest.getFileList();
-//            if(CollectionUtils.isNotEmptyCollection(fileList)){
-//                fileRecordDao.insertAll(purchaseId, fileList);
-//            }
-//            //  判断所有采购申请单的完成状态
-//            List<String> applyIds = purchaseOrderRequest.getApplyIds();
-//            if(CollectionUtils.isNotEmptyCollection(applyIds)){
-//                for(String apply:applyIds){
-//                    // 变更提交采购申请单的完成状态
-//                    for(PurchaseApplyDetailResponse product:productList){
-//                        form.setPurchaseApplyId(apply);
-//                        form.setSkuCode(product.getSkuCode());
-//                        form.setUpdateById(purchaseOrderRequest.getPersonId());
-//                        form.setUpdateByName(purchaseOrderRequest.getPersonName());
-//                        purchaseApplyProductDao.updateInfoStatus(form);
-//                    }
-//                    // 判断所有采购申请单的完成状态
-//                    Integer count = purchaseApplyProductDao.purchaseFormByComplete(apply);
-//                    if(count <= 0){
-//                        PurchaseApply purchaseApply = new PurchaseApply();
-//                        purchaseApply.setPurchaseApplyId(apply);
-//                        purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_1.intValue());
-//                        purchaseApply.setUpdateById(purchaseOrderRequest.getPersonId());
-//                        purchaseApply.setUpdateByName(purchaseOrderRequest.getPersonName());
-//                        purchaseApplyDao.update(purchaseApply);
-//                    }
-//                }
-//            }
+        LOGGER.info("添加采购申信息:{}", orderCount);
+
+        // 变更采购单号
+        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+
+        // 添加操作日志
+//        log(purchaseId, purchaseOrderRequest.getPersonId(), purchaseOrderRequest.getPersonName(),
+//            PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
+
+        // 添加采购单商品
+        if(CollectionUtils.isEmptyCollection(request.getProductList())){
+            LOGGER.info("添加采购申商品信息为空");
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        List<PurchaseOrderProduct> productList = request.getProductList();
+        // 行号
+        Integer i = 1;
+        for(PurchaseOrderProduct product:productList){
+            product.setOrderProductId(IdUtil.uuid());
+            product.setPurchaseOrderId(purchaseId);
+            product.setPurchaseOrderCode(purchaseProductCode);
+            product.setLinnum(i);
+        }
+        Integer productCount = purchaseOrderProductDao.insertAll(productList);
+        LOGGER.info("添加采购申商品信息", productCount);
+
         return HttpResponse.success();
     }
 
-    private List<PurchaseApplyDetailResponse> insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
-        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
-        // 提交采购单页面商品列表
-        if (CollectionUtils.isNotEmptyCollection(details)) {
-            List<PurchaseOrderProduct> list = Lists.newArrayList();
-            PurchaseOrderProduct orderProduct;
-            Integer i = 1;
-            for (PurchaseApplyDetailResponse detail : details) {
-                orderProduct = new PurchaseOrderProduct();
-                // 计算单品数量， 含税总价
-                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
-                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
-                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-                BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
-                Integer number = purchaseWhole * packNumber + purchaseSingle;
-                if(number == 0){
-                    continue;
-                }
-                orderProduct.setOrderProductId(IdUtil.purchaseId());
-                orderProduct.setPurchaseOrderId(purchaseId);
-                orderProduct.setPurchaseOrderCode(purchaseProductCode);
-                orderProduct.setSkuCode(detail.getSkuCode());
-                orderProduct.setSkuName(detail.getSkuName());
-                orderProduct.setBrandId(detail.getBrandId());
-                orderProduct.setBrandName(detail.getBrandName());
-                orderProduct.setCategoryId(detail.getCategoryId());
-                orderProduct.setCategoryName(detail.getCategoryName());
-                orderProduct.setProductSpec(detail.getProductSpec());
-                orderProduct.setColorName(detail.getColorName());
-                orderProduct.setModelNumber(detail.getModelNumber());
-                orderProduct.setProductType(detail.getProductType());
-                orderProduct.setPurchaseWhole(detail.getPurchaseWhole());
-                orderProduct.setPurchaseSingle(detail.getPurchaseSingle());
-                orderProduct.setBaseProductContent(detail.getBaseProductContent());
-                orderProduct.setBoxGauge(detail.getBoxGauge());
-                orderProduct.setSingleCount(number);
-                orderProduct.setTaxRate(detail.getTaxRate());
-                orderProduct.setProductAmount(amount);
-                orderProduct.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
-//                orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
-//                orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
-                orderProduct.setActualSingleCount(0);
-                orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
-                detail.setSingleCount(number);
-                detail.setCompanyCode(companyCode);
-                this.stockAmount(detail);
-                orderProduct.setStockAmount(detail.getStockAmount() == null ? big : detail.getStockAmount());
-                orderProduct.setStockTurnover(detail.getStockCount());
-                orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
-                orderProduct.setStockCount(detail.getStockCount());
-                orderProduct.setLinnum(i);
-                i++;
-                list.add(orderProduct);
-            }
-            purchaseOrderProductDao.insertAll(list);
-            // 添加采购单商品的审批记录
-            applyPurchaseOrderProductDao.insertAll(list);
-        }
-        return details;
-    }
+//    private List<PurchaseApplyDetailResponse> insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
+//        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
+//        // 提交采购单页面商品列表
+//        if (CollectionUtils.isNotEmptyCollection(details)) {
+//            List<PurchaseOrderProduct> list = Lists.newArrayList();
+//            PurchaseOrderProduct orderProduct;
+//            Integer i = 1;
+//            for (PurchaseApplyDetailResponse detail : details) {
+//                orderProduct = new PurchaseOrderProduct();
+//                // 计算单品数量， 含税总价
+//                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
+//                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
+//                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
+//                BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
+//                Integer number = purchaseWhole * packNumber + purchaseSingle;
+//                if(number == 0){
+//                    continue;
+//                }
+//                orderProduct.setOrderProductId(IdUtil.purchaseId());
+//                orderProduct.setPurchaseOrderId(purchaseId);
+//                orderProduct.setPurchaseOrderCode(purchaseProductCode);
+//                orderProduct.setSkuCode(detail.getSkuCode());
+//                orderProduct.setSkuName(detail.getSkuName());
+//                orderProduct.setBrandId(detail.getBrandId());
+//                orderProduct.setBrandName(detail.getBrandName());
+//                orderProduct.setCategoryId(detail.getCategoryId());
+//                orderProduct.setCategoryName(detail.getCategoryName());
+//                orderProduct.setProductSpec(detail.getProductSpec());
+//                orderProduct.setColorName(detail.getColorName());
+//                orderProduct.setModelNumber(detail.getModelNumber());
+//                orderProduct.setProductType(detail.getProductType());
+//                orderProduct.setPurchaseWhole(detail.getPurchaseWhole());
+//                orderProduct.setPurchaseSingle(detail.getPurchaseSingle());
+//                orderProduct.setBaseProductContent(detail.getBaseProductContent());
+//                orderProduct.setBoxGauge(detail.getBoxGauge());
+//                orderProduct.setSingleCount(number);
+//                orderProduct.setTaxRate(detail.getTaxRate());
+//                orderProduct.setProductAmount(amount);
+//                orderProduct.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
+////                orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
+////                orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
+//                orderProduct.setActualSingleCount(0);
+//                orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
+//                detail.setSingleCount(number);
+//                detail.setCompanyCode(companyCode);
+//                this.stockAmount(detail);
+//                orderProduct.setStockAmount(detail.getStockAmount() == null ? big : detail.getStockAmount());
+//                orderProduct.setStockTurnover(detail.getStockCount());
+//                orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
+//                orderProduct.setStockCount(detail.getStockCount());
+//                orderProduct.setLinnum(i);
+//                i++;
+//                list.add(orderProduct);
+//            }
+//            purchaseOrderProductDao.insertAll(list);
+//            // 添加采购单商品的审批记录
+//            applyPurchaseOrderProductDao.insertAll(list);
+//        }
+//        return details;
+//    }
 
     @Override
     public HttpResponse<List<PurchaseOrder>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){

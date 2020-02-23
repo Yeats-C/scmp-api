@@ -16,13 +16,13 @@
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
-    <result column="info_status" jdbcType="BIT" property="infoStatus" />
-    <result column="purchase_order_status" jdbcType="BIT" property="purchaseOrderStatus" />
-    <result column="storage_status" jdbcType="BIT" property="storageStatus" />
+    <result column="info_status" jdbcType="INTEGER" property="infoStatus" />
+    <result column="purchase_order_status" jdbcType="INTEGER" property="purchaseOrderStatus" />
+    <result column="storage_status" jdbcType="INTEGER" property="storageStatus" />
     <result column="single_count" jdbcType="INTEGER" property="singleCount" />
     <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="return_amount" jdbcType="DECIMAL" property="returnAmount" />
-    <result column="purchase_mode" jdbcType="BIT" property="purchaseMode" />
+    <result column="purchase_mode" jdbcType="INTEGER" property="purchaseMode" />
     <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
     <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
     <result column="cancel_reason" jdbcType="VARCHAR" property="cancelReason" />
@@ -32,7 +32,7 @@
     <result column="gift_tax_sum" jdbcType="DECIMAL" property="giftTaxSum" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="purchase_source" jdbcType="VARCHAR" property="purchaseSource" />
+    <result column="purchase_source" jdbcType="INTEGER" property="purchaseSource" />
     <result column="pre_arrival_time" jdbcType="TIMESTAMP" property="preArrivalTime" />
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
     <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
@@ -45,7 +45,7 @@
     <result column="supplier_mobile" jdbcType="VARCHAR" property="supplierMobile" />
     <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime" />
     <result column="warehouse_time" jdbcType="TIMESTAMP" property="warehouseTime" />
-    <result column="payment_mode" jdbcType="BIT" property="paymentMode" />
+    <result column="payment_mode" jdbcType="INTEGER" property="paymentMode" />
     <result column="payment_time" jdbcType="INTEGER" property="paymentTime" />
     <result column="remark" jdbcType="VARCHAR" property="remark" />
     <result column="inbound_line" jdbcType="INTEGER" property="inboundLine" />
@@ -60,7 +60,7 @@
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
-    <result column="synchr_status" jdbcType="BIT" property="synchrStatus" />
+    <result column="synchr_status" jdbcType="INTEGER" property="synchrStatus" />
   </resultMap>
   <sql id="Base_Column_List">
     purchase_order_id, purchase_order_code, purchase_apply_id, purchase_apply_code,

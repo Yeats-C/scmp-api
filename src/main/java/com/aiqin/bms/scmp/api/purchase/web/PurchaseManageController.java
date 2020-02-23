@@ -50,7 +50,7 @@ public class PurchaseManageController {
 //    }
 
     @PostMapping("/purchase/order")
-    @ApiOperation("提交采购单")
+    @ApiOperation("保存采购单")
     public HttpResponse purchaseOrder(@RequestBody PurchaseOrderRequest purchaseOrderRequest) {
         return purchaseManageService.purchaseOrder(purchaseOrderRequest);
     }

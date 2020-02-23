@@ -20,14 +20,12 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -118,6 +116,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private FileRecordDao fileRecordDao;
     @Resource
     private PurchaseApprovalService purchaseApprovalService;
+    @Resource
+    private PurchaseManageService purchaseManageService;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -607,11 +607,64 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 提交审批流
         if(request.getSaveMode().equals(1)){
             // 调审批流
-            purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(),
+            WorkFlowRespVO flowRespVO = purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(),
                     request.getPurchaseApply().getDirectSupervisorCode(), request.getPurchaseApply().getPositionCode());
-
+            // 审批成功， 创建采购单
+            if(flowRespVO.getSuccess()){
+                this.insertPurchaseOrder(request);
+            }
         }
         return HttpResponse.success();
+    }
+
+    // 创建采购单
+    private void insertPurchaseOrder(PurchaseApplySaveRequest request){
+        // 根据分仓信息，创建多采购单
+        List<PurchaseApplyTransportCenter> purchaseTransports = request.getPurchaseTransportList();
+        PurchaseOrderRequest orderRequest;
+        List<PurchaseApplyProduct> applyProductList;
+        List<PurchaseOrderProduct> proList;
+        for(PurchaseApplyTransportCenter center:purchaseTransports){
+            orderRequest = new PurchaseOrderRequest();
+            // 赋值采购单数据
+            PurchaseApply purchaseApply = request.getPurchaseApply();
+            PurchaseOrder purchaseOrder = BeanCopyUtils.copy(purchaseApply, PurchaseOrder.class);
+            purchaseOrder.setTransportCenterCode(center.getTransportCenterCode());
+            purchaseOrder.setTransportCenterName(center.getTransportCenterName());
+            purchaseOrder.setPreArrivalTime(center.getPreArrivalTime());
+            purchaseOrder.setValidTime(center.getValidTime());
+            purchaseOrder.setPaymentMode(center.getPaymentMode());
+            purchaseOrder.setPaymentTime(center.getPaymentTime());
+            purchaseOrder.setPrePaymentAmount(center.getGiftTaxAmount());
+            purchaseOrder.setInboundLine(center.getInboundLine());
+            purchaseOrder.setSingleCount(center.getTotalCount().intValue());
+            purchaseOrder.setProductTotalAmount(center.getProductTaxAmount());
+            purchaseOrder.setReturnAmount(center.getReturnTaxAmount());
+            purchaseOrder.setGiftTaxSum(center.getGiftTaxAmount());
+            purchaseOrder.setPurchaseSource(0);
+            orderRequest.setPurchaseOrder(purchaseOrder);
+            // 筛选对应仓库数据
+            applyProductList = request.getProductList().stream().filter(s->s.getTransportCenterCode().equals(center.getTransportCenterCode())
+            ).collect(Collectors.toList());
+            // 赋值采购单商品数据
+            proList = Lists.newArrayList();
+            for(PurchaseApplyProduct product:applyProductList){
+                PurchaseOrderProduct purchaseOrderProduct = BeanCopyUtils.copy(product, PurchaseOrderProduct.class);
+                // 计算单品数量
+                Integer count = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle();
+                //purchaseOrderProduct.setTaxRate();
+                purchaseOrderProduct.setSingleCount(count);
+                purchaseOrderProduct.setProductAmount(product.getProductPurchaseAmount());
+                BigDecimal amount = BigDecimal.valueOf(count).multiply(product.getProductPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP);
+                purchaseOrderProduct.setProductTotalAmount(amount);
+                //purchaseOrderProduct.setStockAmount();
+                //purchaseOrderProduct.setFactorySkuCode();
+                proList.add(purchaseOrderProduct);
+            }
+            orderRequest.setProductList(proList);
+            // 调用采购单接口
+            purchaseManageService.purchaseOrder(orderRequest);
+        }
     }
 
     @Override
@@ -742,14 +795,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             Integer count = fileRecordDao.insertAll(newApplyId  , fileRecords);
             LOGGER.info("添加采购申请单文件:{}", count);
         }
-        return HttpResponse.success();
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseEdit(PurchaseApplySaveRequest request){
-
-
         return HttpResponse.success();
     }
 

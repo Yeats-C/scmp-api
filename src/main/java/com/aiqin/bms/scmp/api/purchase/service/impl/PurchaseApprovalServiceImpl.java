@@ -116,7 +116,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode){
+    public WorkFlowRespVO workFlow(String formNo, String userName, String directSupervisorCode, String positionCode){
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
         workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?purchase_apply_code=" + formNo + "&" + workFlowBaseUrl.authority);
@@ -142,8 +142,10 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         if (workFlowRespVO.getSuccess()) {
             LOGGER.info("创建采购单审批成功:{}",workFlowRespVO);
         } else {
+            LOGGER.info("审批流调用失败");
             throw new BizException(workFlowRespVO.getMsg());
         }
+        return workFlowRespVO;
     }
 
     private void log(String purchaseOrderId, String createById, String createByName, Integer code, String name, String remark){
