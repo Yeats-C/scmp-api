@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pdf.SupplyPdfResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplySaveRequest;
@@ -46,6 +47,7 @@ import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -408,8 +410,65 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         List<PurchaseApplyProduct> productList = request.getApplyProducts();
         List<PurchaseApplyProduct> products = productList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                 new TreeSet<>(Comparator.comparing(o -> o.getSupplierCode() + ";" + o.getPurchaseGroupCode() + ";" + o.getSettlementMethodCode()))), ArrayList::new));
+
+        // 赋值商品分组后的信息
+        List<PurchaseApplyDeatailResponse> detailList = BeanCopyUtils.copyList(products, PurchaseApplyDeatailResponse.class);
+        // 查询分组下的供应商商品集合
+        if(CollectionUtils.isEmptyCollection(detailList)){
+            LOGGER.info("分组下的供应商信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        List<PurchaseApplyProduct> proList;
+        List<PurchaseApplyTransportCenter> transportList;
+        PurchaseApplyTransportCenter transportCenter;
+        for(PurchaseApplyDeatailResponse detail:detailList){
+             proList = productList.stream().filter(s->s.getSupplierCode().equals(detail.getSupplierCode())
+                    && s.getSettlementMethodCode().equals(detail.getSettlementMethodCode())
+                    && s.getPurchaseGroupCode().equals(detail.getPurchaseGroupCode())
+                    ).collect(Collectors.toList());
+             detail.setProductList(proList);
+             // 计算商品的分仓信息
+            transportList = Lists.newArrayList();
+            List<PurchaseApplyProduct> centers = proList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
+                    new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode()))), ArrayList::new));
+            for(PurchaseApplyProduct center:centers){
+                // 便利商品
+                transportCenter = new PurchaseApplyTransportCenter();
+                transportCenter.setPurchaseApplyId(center.getPurchaseApplyId());
+                transportCenter.setPurchaseApplyCode(center.getPurchaseApplyCode());
+                transportCenter.setPurchaseApplyName(center.getPurchaseGroupName());
+                transportCenter.setTransportCenterCode(center.getTransportCenterCode());
+                transportCenter.setTransportCenterName(center.getTransportCenterName());
+                Long totalCount = 0L;
+                BigDecimal productAmount = big, returnAmount = big, giftAmount = big;
+                for(PurchaseApplyProduct product:proList){
+                    // 计算商品数量
+                    Integer count = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle();
+                    BigDecimal amount = product.getProductPurchaseAmount().multiply(BigDecimal.valueOf(count)).setScale(4, BigDecimal.ROUND_HALF_UP);
+                    if(center.getTransportCenterCode().equals(product.getTransportCenterCode())){
+                        // 计算每个仓库的商品、实物返、赠品、最小单位数量总和
+                        // 根据商品类型判断   0商品 1赠品 2实物返回
+                        if(product.getProductType().equals(0)){
+                            productAmount = productAmount.add(amount);
+                        }else if(product.getProductType().equals(1)){
+                            giftAmount = giftAmount.add(amount);
+                        }else {
+                            returnAmount = returnAmount.add(amount);
+                        }
+                        totalCount += count;
+                    }
+                }
+                transportCenter.setTotalCount(totalCount);
+                transportCenter.setProductTaxAmount(productAmount);
+                transportCenter.setReturnTaxAmount(returnAmount);
+                transportCenter.setGiftTaxAmount(giftAmount);
+                transportList.add(transportCenter);
+            }
+            detail.setTransportList(transportList);
+        }
+
         LOGGER.info("分组后的商品信息：" + products.toString());
-        return HttpResponse.success(products);
+        return HttpResponse.success(detailList);
     }
 
     @Override
