@@ -86,8 +86,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/product")
     @ApiOperation("查询申请采购单，商品详情列表")
-    public HttpResponse searchApplyProduct(@RequestParam("apply_product_id") String applyProductId) {
-        return purchaseApplyService.searchApplyProduct(applyProductId);
+    public HttpResponse searchApplyProduct(@RequestParam("product_apply_id") String purchaseApplyId) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyId);
     }
 
     @GetMapping("/transport/center/info")
