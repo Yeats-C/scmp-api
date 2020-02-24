@@ -40,7 +40,7 @@ public class PurchaseApplyTransportCenter {
     @JsonProperty("warehouse_code")
     private String warehouseCode;
 
-    @ApiModelProperty(value="仓库名称")
+    @ApiModelProperty(value="库房名称")
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
