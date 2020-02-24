@@ -92,9 +92,9 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},
       #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
-      #{infoStatus,jdbcType=BIT}, #{purchaseOrderStatus,jdbcType=BIT}, #{storageStatus,jdbcType=BIT},
+      #{infoStatus,jdbcType=INTEGER}, #{purchaseOrderStatus,jdbcType=INTEGER}, #{storageStatus,jdbcType=INTEGER},
       #{singleCount,jdbcType=INTEGER}, #{productTotalAmount,jdbcType=DECIMAL}, #{returnAmount,jdbcType=DECIMAL},
-      #{purchaseMode,jdbcType=BIT}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR},
+      #{purchaseMode,jdbcType=INTEGER}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR},
       #{cancelReason,jdbcType=VARCHAR}, #{cancelRemark,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR},
       #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=DECIMAL}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{purchaseSource,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP},
@@ -102,15 +102,21 @@
       #{actualReturnAmount,jdbcType=TIMESTAMP}, #{actualGiftAmount,jdbcType=TIMESTAMP},
       #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
       #{supplierMobile,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{warehouseTime,jdbcType=TIMESTAMP},
-      #{paymentMode,jdbcType=BIT}, #{paymentTime,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
+      #{paymentMode,jdbcType=INTEGER}, #{paymentTime,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
       #{inboundLine,jdbcType=INTEGER}, #{prePaymentAmount,jdbcType=DECIMAL}, #{accountCode,jdbcType=VARCHAR},
       #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR},
       now(), now(), #{createById,jdbcType=VARCHAR},
       #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
   </insert>
-  <update id="update">
+  <update i="update">
     update purchase_order
     <set>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
       <if test="transportCenterName != null">
         transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
       </if>
@@ -150,6 +156,9 @@
       <if test="returnAmount != null">
         return_amount = #{returnAmount,jdbcType=DECIMAL},
       </if>
+      <if test="purchaseMode != null">
+        purchase_mode = #{purchaseMode,jdbcType=INTEGER},
+      </if>
       <if test="settlementMethodCode != null">
         settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
       </if>
@@ -162,12 +171,93 @@
       <if test="cancelRemark != null">
         cancel_remark = #{cancelRemark,jdbcType=VARCHAR},
       </if>
+      <if test="applyTypeForm != null">
+        apply_type_form = #{applyTypeForm,jdbcType=VARCHAR},
+      </if>
+      <if test="approvalCode != null">
+        approval_code = #{approvalCode,jdbcType=VARCHAR},
+      </if>
+      <if test="giftTaxSum != null">
+        gift_tax_sum = #{giftTaxSum,jdbcType=DECIMAL},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseSource != null">
+        purchase_source = #{purchaseSource,jdbcType=VARCHAR},
+      </if>
+      <if test="preArrivalTime != null">
+        pre_arrival_time = #{preArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validTime != null">
+        valid_time = #{validTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualTotalCount != null">
+        actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="actualProductAmount != null">
+        actual_product_amount = #{actualProductAmount,jdbcType=VARCHAR},
+      </if>
+      <if test="actualReturnAmount != null">
+        actual_return_amount = #{actualReturnAmount,jdbcType=TIMESTAMP},
+      </if>
+      <if test="actualGiftAmount != null">
+        actual_gift_amount = #{actualGiftAmount,jdbcType=TIMESTAMP},
+      </if>
+      <if test="chargePersonCode != null">
+        charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonName != null">
+        charge_person_name = #{chargePersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPerson != null">
+        supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMobile != null">
+        supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="deliveryTime != null">
+        delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="warehouseTime != null">
+        warehouse_time = #{warehouseTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentMode != null">
+        payment_mode = #{paymentMode,jdbcType=INTEGER},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=INTEGER},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="inboundLine != null">
+        inbound_line = #{inboundLine,jdbcType=INTEGER},
+      </if>
+      <if test="prePaymentAmount != null">
+        pre_payment_amount = #{prePaymentAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="accountCode != null">
+        account_code = #{accountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null">
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
       update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR}
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
     </set>
     where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
