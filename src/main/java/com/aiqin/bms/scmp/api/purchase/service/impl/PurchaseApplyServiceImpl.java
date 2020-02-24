@@ -9,9 +9,11 @@ import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseAppl
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPurchaseInfoDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
@@ -118,6 +120,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private PurchaseApprovalService purchaseApprovalService;
     @Resource
     private PurchaseManageService purchaseManageService;
+    @Resource
+    private ProductSkuCheckoutDao productSkuCheckoutDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -652,7 +656,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 PurchaseOrderProduct purchaseOrderProduct = BeanCopyUtils.copy(product, PurchaseOrderProduct.class);
                 // 计算单品数量
                 Integer count = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle();
-                //purchaseOrderProduct.setTaxRate();
+
+                // 查询税率
+                ProductSkuCheckout info = productSkuCheckoutDao.getInfo(product.getSkuCode());
+                if(info != null){
+                    purchaseOrderProduct.setTaxRate(info.getInputTaxRate() == null ? BigDecimal.ZERO : info.getInputTaxRate());
+                }
                 purchaseOrderProduct.setSingleCount(count);
                 purchaseOrderProduct.setProductAmount(product.getProductPurchaseAmount());
                 BigDecimal amount = BigDecimal.valueOf(count).multiply(product.getProductPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP);

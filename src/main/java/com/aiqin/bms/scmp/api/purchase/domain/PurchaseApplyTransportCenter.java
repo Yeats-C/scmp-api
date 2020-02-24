@@ -62,6 +62,10 @@ public class PurchaseApplyTransportCenter {
     @JsonProperty("payment_time")
     private Integer paymentTime;
 
+    @ApiModelProperty(value="预付款金额")
+    @JsonProperty("pre_payment_amount")
+    private BigDecimal prePaymentAmount;
+
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
     private Long totalCount;

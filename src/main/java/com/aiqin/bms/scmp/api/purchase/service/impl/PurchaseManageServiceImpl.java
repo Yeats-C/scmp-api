@@ -388,67 +388,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success();
     }
 
-//    private List<PurchaseApplyDetailResponse> insertProduct(PurchaseFormRequest form, String purchaseId, String purchaseProductCode, PurchaseOrderRequest purchaseOrderRequest, String companyCode) {
-//        List<PurchaseApplyDetailResponse> details = purchaseApplyProductDao.purchaseFormProduct(form);
-//        // 提交采购单页面商品列表
-//        if (CollectionUtils.isNotEmptyCollection(details)) {
-//            List<PurchaseOrderProduct> list = Lists.newArrayList();
-//            PurchaseOrderProduct orderProduct;
-//            Integer i = 1;
-//            for (PurchaseApplyDetailResponse detail : details) {
-//                orderProduct = new PurchaseOrderProduct();
-//                // 计算单品数量， 含税总价
-//                Integer purchaseWhole = detail.getPurchaseWhole() == null ? 0 : detail.getPurchaseWhole();
-//                Integer purchaseSingle = detail.getPurchaseSingle() == null ? 0 : detail.getPurchaseSingle();
-//                Integer packNumber = detail.getBaseProductContent() == null ? 0 : detail.getBaseProductContent();
-//                BigDecimal amount = detail.getProductPurchaseAmount() == null ? big : detail.getProductPurchaseAmount();
-//                Integer number = purchaseWhole * packNumber + purchaseSingle;
-//                if(number == 0){
-//                    continue;
-//                }
-//                orderProduct.setOrderProductId(IdUtil.purchaseId());
-//                orderProduct.setPurchaseOrderId(purchaseId);
-//                orderProduct.setPurchaseOrderCode(purchaseProductCode);
-//                orderProduct.setSkuCode(detail.getSkuCode());
-//                orderProduct.setSkuName(detail.getSkuName());
-//                orderProduct.setBrandId(detail.getBrandId());
-//                orderProduct.setBrandName(detail.getBrandName());
-//                orderProduct.setCategoryId(detail.getCategoryId());
-//                orderProduct.setCategoryName(detail.getCategoryName());
-//                orderProduct.setProductSpec(detail.getProductSpec());
-//                orderProduct.setColorName(detail.getColorName());
-//                orderProduct.setModelNumber(detail.getModelNumber());
-//                orderProduct.setProductType(detail.getProductType());
-//                orderProduct.setPurchaseWhole(detail.getPurchaseWhole());
-//                orderProduct.setPurchaseSingle(detail.getPurchaseSingle());
-//                orderProduct.setBaseProductContent(detail.getBaseProductContent());
-//                orderProduct.setBoxGauge(detail.getBoxGauge());
-//                orderProduct.setSingleCount(number);
-//                orderProduct.setTaxRate(detail.getTaxRate());
-//                orderProduct.setProductAmount(amount);
-//                orderProduct.setProductTotalAmount(amount.multiply(BigDecimal.valueOf(number)).setScale(4, BigDecimal.ROUND_HALF_UP));
-////                orderProduct.setCreateById(purchaseOrderRequest.getPersonId());
-////                orderProduct.setCreateByName(purchaseOrderRequest.getPersonName());
-//                orderProduct.setActualSingleCount(0);
-//                orderProduct.setFactorySkuCode(detail.getFactorySkuCode());
-//                detail.setSingleCount(number);
-//                detail.setCompanyCode(companyCode);
-//                this.stockAmount(detail);
-//                orderProduct.setStockAmount(detail.getStockAmount() == null ? big : detail.getStockAmount());
-//                orderProduct.setStockTurnover(detail.getStockCount());
-//                orderProduct.setReceiptTurnover(detail.getReceiptTurnover());
-//                orderProduct.setStockCount(detail.getStockCount());
-//                orderProduct.setLinnum(i);
-//                i++;
-//                list.add(orderProduct);
-//            }
-//            purchaseOrderProductDao.insertAll(list);
-//            // 添加采购单商品的审批记录
-//            applyPurchaseOrderProductDao.insertAll(list);
-//        }
-//        return details;
-//    }
-
     @Override
     public HttpResponse<List<PurchaseOrder>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);

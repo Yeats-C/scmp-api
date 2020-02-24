@@ -14,6 +14,7 @@
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
     <result column="payment_mode" jdbcType="INTEGER" property="paymentMode" />
     <result column="payment_time" jdbcType="INTEGER" property="paymentTime" />
+    <result column="pre_payment_amount" jdbcType="DECIMAL" property="prePaymentAmount" />
     <result column="total_count" jdbcType="BIGINT" property="totalCount" />
     <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
     <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
@@ -28,19 +29,19 @@
   </resultMap>
   <sql id="Base_Column_List">
     purchase_apply_id, purchase_apply_code, purchase_apply_name, transport_center_code, transport_center_name,
-    warehouse_code, warehouse_name, pre_arrival_time, valid_time, payment_mode, payment_time, total_count,
-    product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, 
-    update_time, create_by_id, create_by_name, update_by_id, update_by_name
+    warehouse_code, warehouse_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+    product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line,
+    create_time, update_time, create_by_id, create_by_name, update_by_id, update_by_name
   </sql>
   <insert id="insert">
     insert into purchase_apply_transport_center (purchase_apply_id, purchase_apply_code, purchase_apply_name,
-      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, total_count,
-      product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
+      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+      total_count, product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
       create_by_id, create_by_name, update_by_id, update_by_name, warehouse_code, warehouse_name)
     values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP},
-      #{validTime,jdbcType=TIMESTAMP}, #{paymentMode,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{totalCount,jdbcType=BIGINT},
-      #{productTaxAmount,jdbcType=DECIMAL}, #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, 
+      #{validTime,jdbcType=TIMESTAMP}, #{paymentMode,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{prePaymentAmount,jdbcType=DECIMAL},
+      #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL}, #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL},
       #{inboundLine,jdbcType=INTEGER}, NOW(), NOW(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR})
   </insert>
@@ -73,6 +74,9 @@
       </if>
       <if test="paymentTime != null">
         payment_time = #{paymentTime,jdbcType=INTEGER},
+      </if>
+      <if test="prePaymentAmount != null">
+        pre_payment_amount = #{prePaymentAmount,jdbcType=DECIMAL},
       </if>
       <if test="totalCount != null">
         total_count = #{totalCount,jdbcType=BIGINT},
@@ -116,14 +120,14 @@
   </select>
   <insert id="insertAll">
     insert into purchase_apply_transport_center (purchase_apply_id, purchase_apply_code, purchase_apply_name,
-      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, total_count,
-      product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
+      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+      total_count, product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
       create_by_id, create_by_name, update_by_id, update_by_name, warehouse_code, warehouse_name) values
     <foreach collection="list" item="item" index="" separator=",">
       (#{item.purchaseApplyId,jdbcType=VARCHAR}, #{item.purchaseApplyCode,jdbcType=VARCHAR}, #{item.purchaseApplyName,jdbcType=VARCHAR},
       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR}, #{item.preArrivalTime,jdbcType=TIMESTAMP},
-      #{item.validTime,jdbcType=TIMESTAMP}, #{item.paymentMode,jdbcType=VARCHAR}, #{item.paymentTime,jdbcType=INTEGER}, #{item.totalCount,jdbcType=BIGINT},
-      #{item.productTaxAmount,jdbcType=DECIMAL}, #{item.returnTaxAmount,jdbcType=DECIMAL}, #{item.giftTaxAmount,jdbcType=DECIMAL},
+      #{item.validTime,jdbcType=TIMESTAMP}, #{item.paymentMode,jdbcType=VARCHAR}, #{item.paymentTime,jdbcType=INTEGER}, #{item.prePaymentAmount,jdbcType=DECIMAL},
+      #{item.totalCount,jdbcType=BIGINT}, #{item.productTaxAmount,jdbcType=DECIMAL}, #{item.returnTaxAmount,jdbcType=DECIMAL}, #{item.giftTaxAmount,jdbcType=DECIMAL},
       #{item.inboundLine,jdbcType=INTEGER}, NOW(), NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
       #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR})
      </foreach>
