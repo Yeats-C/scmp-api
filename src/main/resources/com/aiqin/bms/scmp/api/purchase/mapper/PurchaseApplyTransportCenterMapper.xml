@@ -135,4 +135,19 @@
   <delete id="delete">
     delete from purchase_apply_transport_center where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </delete>
+  <select id="purchaseCenterInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply_transport_center
+    <where>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyId != null">
+        and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
 </mapper>

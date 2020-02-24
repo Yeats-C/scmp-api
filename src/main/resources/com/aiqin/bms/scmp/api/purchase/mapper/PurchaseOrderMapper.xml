@@ -108,7 +108,7 @@
       now(), now(), #{createById,jdbcType=VARCHAR},
       #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
   </insert>
-  <update i="update">
+  <update id="update">
     update purchase_order
     <set>
       <if test="purchaseApplyName != null">

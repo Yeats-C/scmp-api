@@ -113,6 +113,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private StockDao stockDao;
     @Resource
     private ProSuggestReplenishmentDao proSuggestReplenishmentDao;
+    @Resource
+    private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -688,22 +690,34 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             LOGGER.error("此采购单没有商品");
             return HttpResponse.failure(ResultCode.PRODUCT_NO_EXISTS);
         }
-        String inboundOderCode = purchaseOrderCode + "01";
-        purchaseStorage.setInboundOderCode(inboundOderCode);
-        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
-        String s = inboundService.saveInbound(reqSave);
-        if(StringUtils.isBlank(s)){
-            LOGGER.error("生成入库单失败....");
-            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
-        }
+//        String inboundOderCode = purchaseOrderCode + "01";
+//        purchaseStorage.setInboundOderCode(inboundOderCode);
+//        InboundReqSave reqSave = this.InboundReqSave(purchaseOrder, purchaseStorage, products);
+//        String s = inboundService.saveInbound(reqSave);
+//        if(StringUtils.isBlank(s)){
+//            LOGGER.error("生成入库单失败....");
+//            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+//        }
         return HttpResponse.success();
     }
 
-    private InboundReqSave InboundReqSave(PurchaseOrder purchaseOrder, PurchaseStorageRequest purchaseStorage, List<PurchaseOrderProduct> productList){
+    private InboundReqSave InboundReqSave(PurchaseInboundRequest request) {
+
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            throw new GroundRuntimeException("获取当前登录信息失败！");
+        }
+
+        // 查询采购单信息
+        PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(request.getPurchaseOrderId());
+        LOGGER.info("入库单的采购单的信息：" + purchaseOrder);
         InboundReqSave save = new InboundReqSave();
-        save.setInboundOderCode(purchaseStorage.getInboundOderCode());
-        save.setCompanyCode(purchaseStorage.getCompanyCode());
-        save.setCompanyName(purchaseStorage.getCompanyName());
+        // 赋值入库单字段
+        save.setInboundOderCode(request.getInboundOrderCode());
+        save.setCompanyCode(currentAuthToken.getCompanyCode());
+        save.setCompanyName(currentAuthToken.getCompanyName());
         save.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
         save.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
         save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
@@ -715,89 +729,90 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setWarehouseName(purchaseOrder.getWarehouseName());
         save.setSupplierCode(purchaseOrder.getSupplierCode());
         save.setSupplierName(purchaseOrder.getSupplierName());
-        save.setPurchaseNum(purchaseStorage.getPurchaseNum());
-        save.setCreateBy(purchaseStorage.getCreateByName());
-        save.setUpdateBy(purchaseStorage.getCreateByName());
+        save.setPurchaseNum(request.getPurchaseNum());
+        save.setCreateBy(currentAuthToken.getPersonId());
+        save.setUpdateBy(currentAuthToken.getPersonName());
         save.setCreateTime(Calendar.getInstance().getTime());
         save.setUpdateTime(Calendar.getInstance().getTime());
-        // 预计到货时间
-        PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrder.getPurchaseOrderCode());
-        if(detail != null){
-            save.setPreArrivalTime(detail.getExpectArrivalTime());
+        save.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
+
+        // 查询采购单商品信息
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(request.getPurchaseOrderId());
+        if (CollectionUtils.isEmptyCollection(products)) {
+            LOGGER.info("入库采购单商品信息未空");
+            throw new GroundRuntimeException("入库采购单商品信息未空！");
         }
+
+        // 赋值入库单商品
         Long preInboundNum = 0L, preInboundMainNum = 0L;
         BigDecimal preTaxAmount = big, preNoTaxAmount = big;
-
         InboundProductReqVo reqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
         List<InboundBatchReqVo> batchReqVoList = Lists.newArrayList();
-        // 查询是否有商品可以入库
-        if(CollectionUtils.isNotEmptyCollection(productList)){
-            InboundBatchReqVo inboundBatchReqVo;
-            ProductSkuPictures productSkuPicture;
-            ProductSkuPurchaseInfo skuPurchaseInfo;
-            for(PurchaseOrderProduct product:productList){
-                Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
-                Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
-                if(singleCount - actualSingleCount == 0){
-                    continue;
-                }
-                reqVo = new InboundProductReqVo();
-                reqVo.setInboundOderCode(purchaseStorage.getInboundOderCode());
-                reqVo.setSkuCode(product.getSkuCode());
-                reqVo.setSkuName(product.getSkuName());
-                productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
-                if(productSkuPicture != null && StringUtils.isNotBlank(productSkuPicture.getProductPicturePath())){
-                    reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
-                }
-                reqVo.setNorms(product.getProductSpec());
-                reqVo.setColorName(product.getColorName());
-                reqVo.setColorCode(null);
-                reqVo.setModel(product.getModelNumber());
-                reqVo.setInboundNorms(product.getProductSpec());
-                skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
-                if(skuPurchaseInfo != null){
-                    reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
-                    reqVo.setUnitName(skuPurchaseInfo.getUnitName());
-                    reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
-                    reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
-                }
-                Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
-                Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
-                BigDecimal amount = product.getProductAmount() == null ? big : product.getProductAmount();
-                if(actualSingleCount > 0 && baseProductContent > 0){
-                    purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
-                }
-                reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
-                reqVo.setPreInboundNum(purchaseWhole.longValue());
-                reqVo.setPreTaxPurchaseAmount(product.getProductAmount());
-                BigDecimal productTotalAmount = product.getProductTotalAmount() == null ? big : product.getProductTotalAmount();
-                reqVo.setPreTaxAmount(productTotalAmount);
-                reqVo.setLinenum(product.getLinnum().longValue());
-                reqVo.setCreateBy(purchaseStorage.getCreateByName());
-                reqVo.setCreateTime(Calendar.getInstance().getTime());
-                reqVo.setTax(product.getTaxRate());
-                preInboundMainNum += reqVo.getPreInboundMainNum();
-                preInboundNum += purchaseWhole;
-                Integer num = singleCount - actualSingleCount;
-                BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
-                preTaxAmount = totalAmount.add(preTaxAmount);
-                BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
-                preNoTaxAmount = noTax.add(preNoTaxAmount);
-                list.add(reqVo);
-                //出库加入供应商与商品关系
-                inboundBatchReqVo = new InboundBatchReqVo();
-                inboundBatchReqVo.setInboundOderCode(purchaseStorage.getInboundOderCode());
-                inboundBatchReqVo.setSkuName(product.getSkuName());
-                inboundBatchReqVo.setSkuCode(product.getSkuCode());
-                inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
-                inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
-                inboundBatchReqVo.setPraQty(product.getSingleCount().longValue());
-                inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
-                inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
-                batchReqVoList.add(inboundBatchReqVo);
+        InboundBatchReqVo inboundBatchReqVo;
+        ProductSkuPictures productSkuPicture;
+        ProductSkuPurchaseInfo skuPurchaseInfo;
+        for (PurchaseOrderProduct product : products) {
+            Integer singleCount = product.getSingleCount() == null ? 0 : product.getSingleCount();
+            Integer actualSingleCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().intValue();
+            if (singleCount - actualSingleCount == 0) {
+                continue;
             }
+            reqVo = new InboundProductReqVo();
+            reqVo.setInboundOderCode(request.getInboundOrderCode());
+            reqVo.setSkuCode(product.getSkuCode());
+            reqVo.setSkuName(product.getSkuName());
+            productSkuPicture = productSkuPicturesDao.getPicInfoBySkuCode(product.getSkuCode());
+            if (productSkuPicture != null && StringUtils.isNotBlank(productSkuPicture.getProductPicturePath())) {
+                reqVo.setPictureUrl(productSkuPicture.getProductPicturePath());
+            }
+            reqVo.setNorms(product.getProductSpec());
+            reqVo.setColorName(product.getColorName());
+            reqVo.setColorCode(null);
+            reqVo.setModel(product.getModelNumber());
+            reqVo.setInboundNorms(product.getProductSpec());
+            skuPurchaseInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
+            if (skuPurchaseInfo != null) {
+                reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
+                reqVo.setUnitName(skuPurchaseInfo.getUnitName());
+                reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
+                reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
+            }
+            Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
+            Integer baseProductContent = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent().intValue();
+            BigDecimal amount = product.getProductAmount() == null ? big : product.getProductAmount();
+            if (actualSingleCount > 0 && baseProductContent > 0) {
+                purchaseWhole = purchaseWhole - actualSingleCount / baseProductContent;
+            }
+            reqVo.setPreInboundMainNum(singleCount.longValue() - actualSingleCount.longValue());
+            reqVo.setPreInboundNum(purchaseWhole.longValue());
+            reqVo.setPreTaxPurchaseAmount(product.getProductAmount());
+            BigDecimal productTotalAmount = product.getProductTotalAmount() == null ? big : product.getProductTotalAmount();
+            reqVo.setPreTaxAmount(productTotalAmount);
+            reqVo.setLinenum(product.getLinnum().longValue());
+            reqVo.setCreateBy(currentAuthToken.getPersonName());
+            reqVo.setCreateTime(Calendar.getInstance().getTime());
+            reqVo.setTax(product.getTaxRate());
+            preInboundMainNum += reqVo.getPreInboundMainNum();
+            preInboundNum += purchaseWhole;
+            Integer num = singleCount - actualSingleCount;
+            BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
+            preTaxAmount = totalAmount.add(preTaxAmount);
+            BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
+            preNoTaxAmount = noTax.add(preNoTaxAmount);
+            list.add(reqVo);
+            //出库加入供应商与商品关系
+            inboundBatchReqVo = new InboundBatchReqVo();
+            inboundBatchReqVo.setInboundOderCode(request.getInboundOrderCode());
+            inboundBatchReqVo.setSkuName(product.getSkuName());
+            inboundBatchReqVo.setSkuCode(product.getSkuCode());
+            inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
+            inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
+            inboundBatchReqVo.setPraQty(product.getSingleCount().longValue());
+            inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
+            inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
+            batchReqVoList.add(inboundBatchReqVo);
         }
         save.setPreInboundNum(preInboundNum);
         save.setPreMainUnitNum(preInboundMainNum);
@@ -868,7 +883,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             String inboundOderCode = purchaseStorage.getPurchaseOrderCode() + code;
             purchaseStorage.setInboundOderCode(inboundOderCode);
-            InboundReqSave save = this.InboundReqSave(purchaseOrder, purchaseStorage, productList);
+            PurchaseInboundRequest inboundRequest = new PurchaseInboundRequest();
+            inboundRequest.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+            inboundRequest.setInboundOrderCode(inboundOderCode);
+            inboundRequest.setPurchaseNum(Integer.valueOf(code));
+            InboundReqSave save = this.InboundReqSave(inboundRequest);
             String s = inboundService.saveInbound(save);
             if(StringUtils.isBlank(s)){
                 LOGGER.error("生成入库单失败....");
