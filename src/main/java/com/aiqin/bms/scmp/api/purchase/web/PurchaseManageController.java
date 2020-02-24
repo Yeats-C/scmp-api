@@ -98,9 +98,22 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderList(purchaseApplyRequest);
     }
 
-    @PutMapping("/order/status")
+    @GetMapping("/order/status")
     @ApiOperation("变更采购单状态")
-    public HttpResponse cancelPurchaseOrder(@RequestBody PurchaseOrder purchaseOrder) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "purchase_order_status", value = "采购单状态 0.待确认  3.备货确认 4.发货确认 5.入库开始 6.入库中 7.已入库  8.完成 9.取消 11.重发", type = "Integer"),
+            @ApiImplicitParam(name = "purchase_order_id", value = "采购单id", type = "String"),
+            @ApiImplicitParam(name = "cancel_reason", value = "取消原因", type = "String"),
+            @ApiImplicitParam(name = "cancel_remark", value = "取消备注", type = "String")})
+    public HttpResponse cancelPurchaseOrder(@RequestParam("purchase_order_status") Integer purchaseOrderStatus,
+                                            @RequestParam("purchase_order_id") String purchaseOrderId,
+                                            @RequestParam(value = "cancel_reason", required = false) String cancelReason,
+                                            @RequestParam(value = "cancel_remark", required = false) String cancelRemark) {
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setPurchaseOrderId(purchaseOrderId);
+        purchaseOrder.setPurchaseOrderStatus(purchaseOrderStatus);
+        purchaseOrder.setCancelReason(cancelReason);
+        purchaseOrder.setCancelRemark(cancelRemark);
         return purchaseManageService.cancelPurchaseOrder(purchaseOrder);
     }
 
@@ -127,11 +140,11 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderProduct(request);
     }
 
-    @GetMapping("/order/file")
-    @ApiOperation("查询采购单文件-文件信息")
-    public HttpResponse purchaseOrderFile(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderFile(purchaseOrderId);
-    }
+//    @GetMapping("/order/file")
+//    @ApiOperation("查询采购单文件-文件信息")
+//    public HttpResponse purchaseOrderFile(@RequestParam("purchase_order_id") String purchaseOrderId) {
+//        return purchaseManageService.purchaseOrderFile(purchaseOrderId);
+//    }
 
     @GetMapping("/order/log")
     @ApiOperation("查询采购单-操作日志")

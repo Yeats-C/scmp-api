@@ -405,106 +405,114 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder){
-        if(purchaseOrder == null || StringUtils.isBlank(purchaseOrder.getPurchaseOrderId())){
+    public HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder) {
+        if (purchaseOrder == null || StringUtils.isBlank(purchaseOrder.getPurchaseOrderId())
+                || purchaseOrder.getPurchaseOrderStatus() == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+
         String purchaseOrderId = purchaseOrder.getPurchaseOrderId();
-        String createById = purchaseOrder.getCreateById();
-        String createByName = purchaseOrder.getCreateByName();
+        // 查询当前的采购单信息
         PurchaseOrder order = purchaseOrderDao.purchaseOrder(purchaseOrderId);
-        if(null == order){
-            return HttpResponse.failure(ResultCode.OBJECT_NOT_FOUND);
+        if (null == order) {
+            LOGGER.info("采购单的信息为空");
+            return HttpResponse.failure(ResultCode.PURCHASE_ORDER_NULL);
         }
-        purchaseOrder.setUpdateByName(createByName);
-        purchaseOrder.setUpdateById(createById);
-        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)){
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
-                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_1)){
-                WorkFlowVO w = new WorkFlowVO();
-                w.setFormNo(order.getPurchaseOrderCode());
-                w.setUsername(createById);
-                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-                if (!workFlowRespVO.getSuccess()) {
-                    throw new GroundRuntimeException("审批流撤销失败!");
+        String personId = currentAuthToken.getPersonId();
+        String personName = currentAuthToken.getPersonName();
+        purchaseOrder.setUpdateById(personId);
+        purchaseOrder.setUpdateByName(personName);
+
+        Integer status = purchaseOrder.getPurchaseOrderStatus();
+        String type = "手动";
+        switch (status) {
+            case 9:
+                // 取消采购单
+                // 判断采购单是否是待确认、备货确认、发货确认状态
+                if (!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)
+                        || !order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)
+                        || !order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)) {
+                    LOGGER.info("采购单非待确认、备货确认、发货确认状态");
+                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
                 }
-                applyPurchaseOrderDao.update(purchaseOrder);
-            }else {
-                // 取消在途数
-                this.wayNum(order);
-            }
+                // 添加日志
+                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.REVOKE.getCode(),
+                        PurchaseOrderLogEnum.REVOKE.getName(), type);
+                // 调用取消入库单
+                this.cancelInbound(order);
+                break;
+            case 3:
+                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+                    LOGGER.info("采购单非待确认状态，不能进行备货确认");
+                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
+                }
+                // 添加备货确认日志
+                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.STOCK_UP.getCode(),
+                        PurchaseOrderLogEnum.STOCK_UP.getName(), type);
+                break;
+            case 4:
+                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_3)){
+                    LOGGER.info("采购单非待备货确认状态，不能进行发货确认");
+                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
+                }
+                // 发货确认
+                purchaseOrder.setDeliveryTime(Calendar.getInstance().getTime());
+                // 添加发货确认日志
+                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
+                        PurchaseOrderLogEnum.DELIVER_GOODS.getName(), type);
+                break;
+            case 8:
+                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
+                    LOGGER.info("采购单非待入库中状态，不能进行完成采购确认");
+                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
+                }
+                // 完成
+                purchaseOrder.setWarehouseTime(Calendar.getInstance().getTime());
+                // 添加完成确认日志
+                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), type);
+                // 调用入库单的取消
+                this.cancelInbound(order);
+                break;
+            case 11:
+                // 重发
+                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+                    LOGGER.info("采购单非待确认状态，不能进行重发操作");
+                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
+                }
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+                break;
         }
-        // 添加操作日志
-        PurchaseOrderDetails detail;
-        if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)){
-            // 开始发货
-            detail = new PurchaseOrderDetails();
-            detail.setPurchaseOrderId(purchaseOrderId);
-            detail.setDeliveryTime(Calendar.getInstance().getTime());
-            detail.setUpdateById(createById);
-            detail.setUpdateByName(createByName);
-            purchaseOrderDetailsDao.update(detail);
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
-                    PurchaseOrderLogEnum.DELIVER_GOODS.getName(), order.getApplyTypeForm());
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_9)) {
-            // 取消
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.REVOKE.getCode(),
-                    PurchaseOrderLogEnum.REVOKE.getName(), order.getApplyTypeForm());
-            if(order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_4)
-                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_5)
-                    || order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
-                // 查询入库单号的id
-                String id = inboundDao.cancelById(order.getPurchaseOrderCode());
-                if(StringUtils.isBlank(id)){
-                    return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
-                }
-                String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
-                if(!s.equals("0")){
-                    return HttpResponse.failure(ResultCode.DL_CANCEL);
-                }else {
-                    // 将入库单状态修改为取消
-                    Inbound inbound = new Inbound();
-                    inbound.setId(Long.valueOf(id));
-                    inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
-                    inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
-                    inboundDao.updateByPrimaryKeySelective(inbound);
-                }
-            }
-        }else if(purchaseOrder.getPurchaseOrderStatus() != null && purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
-            // 添加入库完成时间
-            detail = new PurchaseOrderDetails();
-            detail.setPurchaseOrderId(purchaseOrderId);
-            detail.setWarehouseTime(Calendar.getInstance().getTime());
-            detail.setUpdateByName(createById);
-            detail.setUpdateById(createByName);
-            purchaseOrderDetailsDao.update(detail);
-            // 手动入库完成 撤销未完成的入库单
-            String id = inboundDao.cancelById(order.getPurchaseOrderCode());
-            if(StringUtils.isBlank(id)){
-                return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
-            }
-            String s = inboundService.repealOrder(id, createById, createByName, purchaseOrder.getCancelRemark());
-            if(!s.equals("0")){
-                return HttpResponse.failure(ResultCode.DL_CANCEL);
-            }
+        Integer count = purchaseOrderDao.update(purchaseOrder);
+        LOGGER.error("变更采购单状态" + count);
+        return HttpResponse.success();
+    }
+
+    // 撤销未完成的入库单
+    private HttpResponse cancelInbound(PurchaseOrder order){
+        // 查询入库单id
+        String id = inboundDao.cancelById(order.getPurchaseOrderCode());
+        if(StringUtils.isBlank(id)){
+            LOGGER.info("未查询到入库单");
+            return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
+        }
+        String s = inboundService.repealOrder(id, order.getUpdateById(), order.getUpdateByName(), order.getCancelRemark());
+        if(!s.equals("0")){
+            return HttpResponse.failure(ResultCode.DL_CANCEL);
+        }else {
             // 将入库单状态修改为取消
             Inbound inbound = new Inbound();
             inbound.setId(Long.valueOf(id));
             inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
             inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
             inboundDao.updateByPrimaryKeySelective(inbound);
-            log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode(),
-                    PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName(), order.getApplyTypeForm());
-            if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-                log(purchaseOrderId, createById, createByName, PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
-                        PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), order.getApplyTypeForm());
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
-            }
-        }
-        Integer count = purchaseOrderDao.update(purchaseOrder);
-        if(count == 0){
-            LOGGER.error("变更采购单的状态失败......");
-            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         return HttpResponse.success();
     }

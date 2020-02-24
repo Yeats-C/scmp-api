@@ -244,6 +244,9 @@ public interface ResultCode {
     MessageId PURCHASE_APPLY_INFO_NULL = MessageId.create(Project.SCMP_API, 207, "采购申请单的通用信息为空");
     MessageId PURCHASE_APPLY_TRANSPORT_NULL = MessageId.create(Project.SCMP_API, 208, "采购申请单的分仓信息为空");
     MessageId PURCHASE_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 209, "采购申请单的商品信息为空");
+    MessageId PURCHASE_ORDER_STATUS_FAIL = MessageId.create(Project.SCMP_API, 210, "变更采购单状态失败");
+    MessageId PURCHASE_ORDER_NULL = MessageId.create(Project.SCMP_API, 211, "采购单信息为空");
+
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API, 201, "审批中的数据不允许修改");
