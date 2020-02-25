@@ -158,11 +158,11 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
 
-    @PostMapping("/order/stock")
-    @ApiOperation("采购单-开始备货")
-    public HttpResponse purchaseOrderStock(@RequestBody PurchaseStorageRequest purchaseStorage) {
-        return purchaseManageService.purchaseOrderStock(purchaseStorage);
-    }
+//    @PostMapping("/order/stock")
+//    @ApiOperation("采购单-开始备货")
+//    public HttpResponse purchaseOrderStock(@RequestBody PurchaseStorageRequest purchaseStorage) {
+//        return purchaseManageService.purchaseOrderStock(purchaseStorage);
+//    }
 
     @PostMapping("/warehousing")
     @ApiOperation("入库")
@@ -170,11 +170,11 @@ public class PurchaseManageController {
         return purchaseManageService.getWarehousing(purchaseStorageRequest);
     }
 
-    @GetMapping("/sku/info")
-    @ApiOperation("查询质检报告对应的sku")
-    public HttpResponse reportSku(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.reportSku(purchaseOrderId);
-    }
+//    @GetMapping("/sku/info")
+//    @ApiOperation("查询质检报告对应的sku")
+//    public HttpResponse reportSku(@RequestParam("purchase_order_id") String purchaseOrderId) {
+//        return purchaseManageService.reportSku(purchaseOrderId);
+//    }
 
     @GetMapping("/warehouse/receipt")
     @ApiOperation("查询采购单对应的入库单")
@@ -182,11 +182,11 @@ public class PurchaseManageController {
         return purchaseManageService.receipt(purchaseOrderCode);
     }
 
-    @PostMapping("/storage/confirm")
-    @ApiOperation("仓储确认-质检报告、供应商评分 ")
-    public HttpResponse storageConfirm(@RequestBody PurchaseStorageRequest storageRequest) {
-        return purchaseManageService.storageConfirm(storageRequest);
-    }
+//    @PostMapping("/storage/confirm")
+//    @ApiOperation("仓储确认-质检报告、供应商评分 ")
+//    public HttpResponse storageConfirm(@RequestBody PurchaseStorageRequest storageRequest) {
+//        return purchaseManageService.storageConfirm(storageRequest);
+//    }
 
     @GetMapping("/warehouse/receipt/product")
     @ApiOperation("查询采购单对应的入库单的商品信息")
@@ -203,11 +203,11 @@ public class PurchaseManageController {
         return purchaseManageService.addLog(operationLog);
     }
 
-    @GetMapping("/purchase/inspection/report")
-    @ApiOperation("查询采购单对应的质检报告")
-    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.inspectionReport(purchaseOrderId);
-    }
+//    @GetMapping("/purchase/inspection/report")
+//    @ApiOperation("查询采购单对应的质检报告")
+//    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId) {
+//        return purchaseManageService.inspectionReport(purchaseOrderId);
+//    }
 
     @GetMapping("/sku/supply")
     @ApiOperation("查询sku对应的供应商")

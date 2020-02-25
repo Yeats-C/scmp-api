@@ -264,7 +264,7 @@ public class InboundServiceImpl implements InboundService {
             List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
             list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
             //插入入库单商品表
-            int insertProducts=inboundProductDao.insertBatch(list);
+            int insertProducts = inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
             if(insert <= 0){
                 log.info("新增入库单商品表数据失败");

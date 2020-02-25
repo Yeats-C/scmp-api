@@ -246,7 +246,7 @@ public interface ResultCode {
     MessageId PURCHASE_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 209, "采购申请单的商品信息为空");
     MessageId PURCHASE_ORDER_STATUS_FAIL = MessageId.create(Project.SCMP_API, 210, "变更采购单状态失败");
     MessageId PURCHASE_ORDER_NULL = MessageId.create(Project.SCMP_API, 211, "采购单信息为空");
-
+    MessageId PURCHASE_ORDER_INBOUND_STATUS = MessageId.create(Project.SCMP_API, 212, "采购单非入库中状态，不可再次入库");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API, 201, "审批中的数据不允许修改");
