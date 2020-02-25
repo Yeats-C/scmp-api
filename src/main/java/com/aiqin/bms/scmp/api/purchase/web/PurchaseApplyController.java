@@ -155,10 +155,9 @@ public class PurchaseApplyController {
     }
 
     @PutMapping("/apply/status")
-    @ApiOperation(value = "修改采购申请单的状态 apply_status 0.取消 1.撤销")
-    public HttpResponse purchaseApplyStatus(@RequestParam("purchase_apply_id") String purchaseApplyId,
-                                            @RequestParam("apply_status") Integer applyStatus) {
-        return purchaseApplyService.purchaseApplyStatus(purchaseApplyId, applyStatus);
+    @ApiOperation(value = "采购申请单的撤销")
+    public HttpResponse purchaseApplyStatus(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+        return purchaseApplyService.purchaseApplyStatus(purchaseApplyId);
     }
 
 //    @GetMapping("/apply/product/detail")
