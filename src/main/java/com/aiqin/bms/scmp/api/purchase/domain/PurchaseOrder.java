@@ -149,15 +149,15 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="实际商品数量")
     @JsonProperty("actual_product_amount")
-    private String actualProductAmount;
+    private BigDecimal actualProductAmount;
 
     @ApiModelProperty(value="实际实物返数量")
     @JsonProperty("actual_return_amount")
-    private Date actualReturnAmount;
+    private BigDecimal actualReturnAmount;
 
     @ApiModelProperty(value="实际赠品数量")
     @JsonProperty("actual_gift_amount")
-    private Date actualGiftAmount;
+    private BigDecimal actualGiftAmount;
 
     @ApiModelProperty(value="负责人编码（登录人名称）")
     @JsonProperty("charge_person_code")

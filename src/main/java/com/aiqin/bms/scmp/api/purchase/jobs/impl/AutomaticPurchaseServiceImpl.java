@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.jobs.AutomaticPurchaseService;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
@@ -67,13 +68,15 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
     @Resource
     private OperationLogDao operationLogDao;
+    @Resource
+    private PurchaseManageService purchaseManageService;
 
-    @Scheduled(cron = "0 0 10 1 * ?")  //每月1号的10:00执行
-    public void automatic(){
-        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
-        String data = dateTime.toString("yyyy-MM-dd");
-        this.automaticPurchase(data);
-    }
+//    @Scheduled(cron = "0 0 10 1 * ?")  //每月1号的10:00执行
+//    public void automatic(){
+//        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
+//        String data = dateTime.toString("yyyy-MM-dd");
+//        this.automaticPurchase(data);
+//    }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -159,49 +162,53 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse executeWarehousing(){
+    public HttpResponse executeWarehousing() {
         // 查询备货确认有前一天（有效期到期，没有入库完成）的数据
         // 获取前一天的时间
         String date = DateUtils.yestedayDate();
         String beginTime = date + " 00:00:00";
         String finishTime = date + " 23:59:59";
-        List<PurchaseApplyDetailResponse> details = purchaseOrderDao.orderByExecuteWarehousing(beginTime, finishTime);
-        if(CollectionUtils.isNotEmpty(details)){
-            PurchaseOrder purchaseOrder = new PurchaseOrder();
-            PurchaseOrderDetails detail;
-            for(PurchaseApplyDetailResponse order:details){
-                purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
-                if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-                    purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
-                }else {
-                    purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_7);
-                    // 添加入库完成时间
-                    detail = new PurchaseOrderDetails();
-                    detail.setPurchaseOrderId(order.getPurchaseOrderId());
-                    detail.setWarehouseTime(Calendar.getInstance().getTime());
-                    detail.setUpdateByName("有效期到期，自动执行");
-                    detail.setUpdateById("0");
-                    purchaseOrderDetailsDao.update(detail);
-                }
-                purchaseOrder.setUpdateByName("有效期到期，自动执行");
-                purchaseOrder.setUpdateById("0");
-                purchaseOrderDao.update(purchaseOrder);
-                if(purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_7)){
-                    OperationLog log = new OperationLog();
-                    log.setOperationId(order.getPurchaseOrderId());
-                    log.setOperationType(PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getCode());
-                    log.setOperationContent(PurchaseOrderLogEnum.ORDER_WAREHOUSING_FINISH.getName());
-                    log.setRemark(order.getApplyTypeForm());
-                    log.setCreateById("0");
-                    log.setCreateByName("有效期到期，自动执行");
-                    operationLogDao.insert(log);
-                    if(!order.getStorageStatus().equals(Global.STORAGE_STATUS_1)){
-                        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_FINISH.getCode());
-                        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_FINISH.getName());
-                        operationLogDao.insert(log);
-                    }
-                }
+        List<PurchaseOrder> details = purchaseOrderDao.orderByExecuteWarehousing(beginTime, finishTime);
+        LOGGER.info("前一天有效期到期的采购单信息" + details);
+        if (CollectionUtils.isEmpty(details)) {
+            LOGGER.info("无采购单到有效期");
+            return HttpResponse.success();
+        }
+        PurchaseOrder purchaseOrder;
+        OperationLog log;
+        for (PurchaseOrder order : details) {
+            // 调用dl取消采购单
+            HttpResponse response = purchaseManageService.cancelInbound(order);
+            if (!response.getCode().equals("0")) {
+                LOGGER.info("取消dl采购单失败" + order);
+                continue;
             }
+
+            purchaseOrder = new PurchaseOrder();
+            log = new OperationLog();
+            purchaseOrder.setPurchaseOrderId(order.getPurchaseOrderId());
+            purchaseOrder.setUpdateByName("有效期到期,系统执行");
+            purchaseOrder.setUpdateById("0");
+            if (order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)) {
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_8);
+                purchaseOrder.setWarehouseTime(Calendar.getInstance().getTime());
+                log.setOperationType(PurchaseOrderLogEnum.PURCHASE_FINISH.getCode());
+                log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_FINISH.getName());
+            } else {
+                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_9);
+                log.setOperationType(PurchaseOrderLogEnum.REVOKE.getCode());
+                log.setOperationContent(PurchaseOrderLogEnum.REVOKE.getName());
+            }
+            Integer orderCount = purchaseOrderDao.update(purchaseOrder);
+            LOGGER.info(order.getPurchaseOrderCode() + "采购单到期:" + orderCount);
+
+            // 添加日志
+            log.setOperationId(order.getPurchaseOrderId());
+            log.setRemark(order.getApplyTypeForm());
+            log.setCreateById("0");
+            log.setCreateByName("有效期到期,系统执行");
+            int count = operationLogDao.insert(log);
+            LOGGER.info(order.getPurchaseOrderCode() + "采购单到期日志:" + count);
         }
         return HttpResponse.success();
     }

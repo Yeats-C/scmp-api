@@ -36,9 +36,9 @@
     <result column="pre_arrival_time" jdbcType="TIMESTAMP" property="preArrivalTime" />
     <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
     <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
-    <result column="actual_product_amount" jdbcType="VARCHAR" property="actualProductAmount" />
-    <result column="actual_return_amount" jdbcType="TIMESTAMP" property="actualReturnAmount" />
-    <result column="actual_gift_amount" jdbcType="TIMESTAMP" property="actualGiftAmount" />
+    <result column="actual_product_amount" jdbcType="DECIMAL" property="actualProductAmount" />
+    <result column="actual_return_amount" jdbcType="DECIMAL" property="actualReturnAmount" />
+    <result column="actual_gift_amount" jdbcType="DECIMAL" property="actualGiftAmount" />
     <result column="charge_person_code" jdbcType="VARCHAR" property="chargePersonCode" />
     <result column="charge_person_name" jdbcType="VARCHAR" property="chargePersonName" />
     <result column="supplier_person" jdbcType="VARCHAR" property="supplierPerson" />
@@ -98,8 +98,8 @@
       #{cancelReason,jdbcType=VARCHAR}, #{cancelRemark,jdbcType=VARCHAR}, #{applyTypeForm,jdbcType=VARCHAR},
       #{approvalCode,jdbcType=VARCHAR}, #{giftTaxSum,jdbcType=DECIMAL}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{purchaseSource,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP},
-      #{validTime,jdbcType=TIMESTAMP}, #{actualTotalCount,jdbcType=BIGINT}, #{actualProductAmount,jdbcType=VARCHAR},
-      #{actualReturnAmount,jdbcType=TIMESTAMP}, #{actualGiftAmount,jdbcType=TIMESTAMP},
+      #{validTime,jdbcType=TIMESTAMP}, #{actualTotalCount,jdbcType=BIGINT}, #{actualProductAmount,jdbcType=DECIMAL},
+      #{actualReturnAmount,jdbcType=DECIMAL}, #{actualGiftAmount,jdbcType=DECIMAL},
       #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
       #{supplierMobile,jdbcType=VARCHAR}, #{deliveryTime,jdbcType=TIMESTAMP}, #{warehouseTime,jdbcType=TIMESTAMP},
       #{paymentMode,jdbcType=INTEGER}, #{paymentTime,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
@@ -108,7 +108,7 @@
       now(), now(), #{createById,jdbcType=VARCHAR},
       #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
   </insert>
-  <update i="update">
+  <update id="update">
     update purchase_order
     <set>
       <if test="purchaseApplyName != null">
@@ -199,13 +199,13 @@
         actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
       </if>
       <if test="actualProductAmount != null">
-        actual_product_amount = #{actualProductAmount,jdbcType=VARCHAR},
+        actual_product_amount = #{actualProductAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualReturnAmount != null">
-        actual_return_amount = #{actualReturnAmount,jdbcType=TIMESTAMP},
+        actual_return_amount = #{actualReturnAmount,jdbcType=DECIMAL},
       </if>
       <if test="actualGiftAmount != null">
-        actual_gift_amount = #{actualGiftAmount,jdbcType=TIMESTAMP},
+        actual_gift_amount = #{actualGiftAmount,jdbcType=DECIMAL},
       </if>
       <if test="chargePersonCode != null">
         charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
@@ -370,14 +370,12 @@
      select <include refid="Base_Column_List"></include>
      from purchase_order where purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
   </select>
-  <select id="orderByExecuteWarehousing" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select d.valid_time as validTime, o.purchase_order_id as purchaseOrderId, o.purchase_order_code as purchaseOrderCode,
-    o.purchase_order_status as purchaseOrderStatus, o.storage_status as storageStatus, o.apply_type_form as applyTypeForm
+  <select id="orderByExecuteWarehousing" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
     from purchase_order o
-    inner join purchase_order_details d on o.purchase_order_id = d.purchase_order_id
-    where o.purchase_order_status in(3, 4, 5, 6)
-    and d.valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
-    and d.valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
+    where o.purchase_order_status in(0, 3, 4, 6)
+    and valid_time &gt;= #{beginTime,jdbcType=VARCHAR}
+    and valid_time &lt;= #{finishTime,jdbcType=VARCHAR}
   </select>
   <select id="listForSap" resultMap="BaseResultMap">
     select

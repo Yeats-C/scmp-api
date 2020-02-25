@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
+import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
@@ -122,6 +123,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private PurchaseManageService purchaseManageService;
     @Resource
     private ProductSkuCheckoutDao productSkuCheckoutDao;
+    @Resource
+    private OperationLogDao operationLogDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -618,6 +621,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 this.insertPurchaseOrder(request);
             }
         }
+
+        OperationLog log = new OperationLog();
+        log.setOperationId(purchaseApplyId);
+        log.setCreateById(request.getPurchaseApply().getCreateById());
+        log.setCreateByName(request.getPurchaseApply().getCreateByName());
+        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getCode());
+        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getName());
+        log.setRemark(request.getPurchaseApply().getRemark());
+        operationLogDao.insert(log);
         return HttpResponse.success();
     }
 
@@ -1022,45 +1034,58 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseApplyStatus(String purchaseApplyId, Integer applyStatus){
-        if(StringUtils.isBlank(purchaseApplyId) || applyStatus == null){
+    public HttpResponse purchaseApplyStatus(String purchaseApplyId) {
+        if (StringUtils.isBlank(purchaseApplyId)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 查询采购申请单
         PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        if(!apply.getApplyStatus().equals(Global.PURCHASE_APPLY_0) ||
+                !apply.getApplyStatus().equals(Global.PURCHASE_APPLY_2) ||
+                !apply.getApplyStatus().equals(Global.PURCHASE_APPLY_3)){
+            LOGGER.info("撤销采购申请单不在待提交、待审批、审批中");
+            throw new GroundRuntimeException("撤销采购申请单非待提交、待审批、审批中状态");
+        }
+
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+
         PurchaseApply purchaseApply = new PurchaseApply();
         purchaseApply.setPurchaseApplyId(purchaseApplyId);
-        if(applyStatus.equals(0) && apply.getApplyStatus().equals(0)){
-            // 取消待提交的采购申请单
-            purchaseApply.setStatus(1);
-        }else {
-            // 取消待审批、审批中的采购申请
-            if(apply.getApplyStatus().equals(2) || apply.getApplyStatus().equals(3)){
+        purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_6);
+        // 取消待审批、审批中的采购申请
+        if (apply.getApplyStatus().equals(Global.PURCHASE_APPLY_2) ||
+                apply.getApplyStatus().equals(Global.PURCHASE_APPLY_3)) {
 
-                // 获取当前登录人的信息
-                AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-                if (currentAuthToken == null) {
-                    LOGGER.info("获取当前登录信息失败");
-                    return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
-                }
-                purchaseApply.setApplyStatus(6);
-                // 调用审批流取消
-                WorkFlowVO w = new WorkFlowVO();
-                w.setFormNo(apply.getPurchaseApplyCode());
-                w.setUsername(currentAuthToken.getPersonId());
-                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-                if (!workFlowRespVO.getSuccess()) {
-                    throw new GroundRuntimeException("审批流撤销失败!");
-                }
-            }else {
-                LOGGER.info("撤销采购申请单不在待审批、审批中");
+            // 调用审批流取消
+            WorkFlowVO w = new WorkFlowVO();
+            w.setFormNo(apply.getPurchaseApplyCode());
+            w.setUsername(currentAuthToken.getPersonId());
+            WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+            if (!workFlowRespVO.getSuccess()) {
+                LOGGER.error("审批流撤销失败!");
+                throw new GroundRuntimeException("审批流撤销失败!");
             }
         }
         Integer count = purchaseApplyDao.update(purchaseApply);
-        if(count == 0){
+        if (count == 0) {
             LOGGER.error("修改采购申请单是状态信息失败");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
+        // 添加撤销日志
+        OperationLog log = new OperationLog();
+        log.setOperationId(purchaseApplyId);
+        log.setCreateById(currentAuthToken.getPersonId());
+        log.setCreateByName(currentAuthToken.getPersonName());
+        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode());
+        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName());
+        log.setRemark(apply.getRemark());
+        int logCount = operationLogDao.insert(log);
+        LOGGER.error("添加采购申请单撤销日志：" + logCount);
         return HttpResponse.success();
     }
 

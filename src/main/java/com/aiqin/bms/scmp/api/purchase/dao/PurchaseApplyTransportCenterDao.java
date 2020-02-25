@@ -17,4 +17,6 @@ public interface PurchaseApplyTransportCenterDao {
 
     Integer delete(String purchaseApplyId);
 
+    PurchaseApplyTransportCenter purchaseCenterInfo(PurchaseApplyTransportCenter center);
+
 }

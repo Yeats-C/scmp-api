@@ -70,6 +70,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             }else if(!order.getApplyStatus().equals(Global.PURCHASE_APPLY_2) &&
                     !order.getApplyStatus().equals(Global.PURCHASE_APPLY_3)){
                 // 采购单不是待审核状态
+                LOGGER.info("采购单不是待审核状态");
                 return WorkFlowReturn.SUCCESS;
             }
             order.setUpdateById(vo1.getApprovalUserCode());
@@ -81,7 +82,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_NOT.getCode(), PurchaseOrderLogEnum.CHECKOUT_NOT.getName(), order.getRemark());
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
                 order.setApplyStatus(Global.PURCHASE_APPLY_3);
@@ -89,7 +91,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
                 log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT.getCode(), PurchaseOrderLogEnum.CHECKOUT.getName(), order.getRemark());
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
                 order.setApplyStatus(Global.PURCHASE_APPLY_4);
@@ -97,7 +100,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批通过操作日志
                 log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.CHECKOUT_ADOPT.getCode(), PurchaseOrderLogEnum.CHECKOUT_ADOPT.getName(), order.getRemark());
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getName(), order.getRemark());
                 //this.updateWayNum(order);
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
@@ -106,7 +110,8 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
                 log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.REVOKE.getCode(), PurchaseOrderLogEnum.REVOKE.getName(), order.getRemark());
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode(),
+                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName(), order.getRemark());
             }
             return WorkFlowReturn.SUCCESS;
         }catch  (Exception e) {

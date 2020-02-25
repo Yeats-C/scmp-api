@@ -43,7 +43,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode);
 
-    HttpResponse purchaseApplyStatus(String purchaseApplyId, Integer applyStatus);
+    HttpResponse purchaseApplyStatus(String purchaseApplyId);
 
     HttpResponse<PurchaseFlowPathResponse> applyProductDetail(Integer singleCount, BigDecimal productPurchaseAmount, String skuCode,
                                                               String supplierCode, String transportCenterCode, Integer productCount);

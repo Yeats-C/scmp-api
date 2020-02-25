@@ -155,10 +155,9 @@ public class PurchaseApplyController {
     }
 
     @PutMapping("/apply/status")
-    @ApiOperation(value = "修改采购申请单的状态 apply_status 0.取消 1.撤销")
-    public HttpResponse purchaseApplyStatus(@RequestParam("purchase_apply_id") String purchaseApplyId,
-                                            @RequestParam("apply_status") Integer applyStatus) {
-        return purchaseApplyService.purchaseApplyStatus(purchaseApplyId, applyStatus);
+    @ApiOperation(value = "采购申请单的撤销")
+    public HttpResponse purchaseApplyStatus(@RequestParam("purchase_apply_id") String purchaseApplyId) {
+        return purchaseApplyService.purchaseApplyStatus(purchaseApplyId);
     }
 
 //    @GetMapping("/apply/product/detail")
@@ -178,11 +177,11 @@ public class PurchaseApplyController {
         return automaticPurchaseService.automaticPurchase(data);
     }
 
-    @GetMapping("/execute/warehousing")
-    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
-    public HttpResponse executeWarehousing() {
-        return automaticPurchaseService.executeWarehousing();
-    }
+//    @GetMapping("/execute/warehousing")
+//    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
+//    public HttpResponse executeWarehousing() {
+//        return automaticPurchaseService.executeWarehousing();
+//    }
 
     @GetMapping("/intellect/purchase")
     @ApiOperation("智能采购-生成建议补货数(yy-mmmm)")
