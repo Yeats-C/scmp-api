@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.purchase.dao;
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -23,7 +22,7 @@ public interface PurchaseOrderDao {
 
     PurchaseOrder purchaseOrderInfo(PurchaseOrder purchaseOrder);
 
-    List<PurchaseApplyDetailResponse> orderByExecuteWarehousing(@Param("beginTime") String beginTime, @Param("finishTime") String finishTime);
+    List<PurchaseOrder> orderByExecuteWarehousing(@Param("beginTime") String beginTime, @Param("finishTime") String finishTime);
 
     List<PurchaseOrder> listForSap(SapOrderRequest sapOrderRequest);
 

@@ -178,11 +178,11 @@ public class PurchaseApplyController {
         return automaticPurchaseService.automaticPurchase(data);
     }
 
-    @GetMapping("/execute/warehousing")
-    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
-    public HttpResponse executeWarehousing() {
-        return automaticPurchaseService.executeWarehousing();
-    }
+//    @GetMapping("/execute/warehousing")
+//    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
+//    public HttpResponse executeWarehousing() {
+//        return automaticPurchaseService.executeWarehousing();
+//    }
 
     @GetMapping("/intellect/purchase")
     @ApiOperation("智能采购-生成建议补货数(yy-mmmm)")

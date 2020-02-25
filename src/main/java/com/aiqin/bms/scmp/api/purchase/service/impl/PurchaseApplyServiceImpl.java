@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
+import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
@@ -122,6 +123,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private PurchaseManageService purchaseManageService;
     @Resource
     private ProductSkuCheckoutDao productSkuCheckoutDao;
+    @Resource
+    private OperationLogDao operationLogDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -618,6 +621,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 this.insertPurchaseOrder(request);
             }
         }
+
+        OperationLog log = new OperationLog();
+        log.setOperationId(purchaseApplyId);
+        log.setCreateById(request.getPurchaseApply().getCreateById());
+        log.setCreateByName(request.getPurchaseApply().getCreateByName());
+        log.setOperationType(PurchaseOrderLogEnum.INSERT_APPLY_ORDER.getCode());
+        log.setOperationContent(PurchaseOrderLogEnum.INSERT_APPLY_ORDER.getName());
+        log.setRemark(request.getPurchaseApply().getRemark());
+        operationLogDao.insert(log);
         return HttpResponse.success();
     }
 

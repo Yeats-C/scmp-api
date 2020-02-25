@@ -513,7 +513,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     // 撤销未完成的入库单
-    private HttpResponse cancelInbound(PurchaseOrder order){
+    public HttpResponse cancelInbound(PurchaseOrder order){
         // 查询入库单id
         String id = inboundDao.cancelById(order.getPurchaseOrderCode());
         if(StringUtils.isBlank(id)){

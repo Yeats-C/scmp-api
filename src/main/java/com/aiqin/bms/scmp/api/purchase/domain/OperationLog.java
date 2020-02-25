@@ -15,7 +15,7 @@ public class OperationLog {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="来源id")
     @JsonProperty("operation_id")
     private String operationId;
 
@@ -27,7 +27,7 @@ public class OperationLog {
     @JsonProperty("operation_content")
     private String operationContent;
 
-    @ApiModelProperty(value="")
+    @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
 

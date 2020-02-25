@@ -29,7 +29,11 @@ public enum PurchaseOrderLogEnum {
     DOWNLOAD_APPLY(16,"下载了采购文件"), // 下载
     INSERT_ORDER(17,"新增采购单"), // 新增
     UPDATE_ORDER(18,"修改采购单"),  // 修改
-    COMPLETE(19,"完成");
+    COMPLETE(19,"完成"),
+    INSERT_APPLY_ORDER(20,"新增采购申请单"),
+    CHECKOUT_APPLY_STAY(21,"采购申请单已提交，等待审核"), // 待审核
+    CHECKOUT_APPLY(22,"采购申请单审核中"),  // 审核中
+    CHECKOUT_APPLY_ADOPT(23,"采购申请单审核通过"); // 审核通过
 
     private int code;
     private String name;
