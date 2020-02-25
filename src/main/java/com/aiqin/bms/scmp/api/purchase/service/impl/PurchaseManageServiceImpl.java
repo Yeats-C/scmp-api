@@ -385,7 +385,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             product.setLinnum(i);
         }
         Integer productCount = purchaseOrderProductDao.insertAll(productList);
-        LOGGER.info("添加采购申商品信息", productCount);
+        LOGGER.info("添加采购单商品信息", productCount);
 
         // 保存采购单成功开始入库
         String inboundOderCode = purchaseOrderCode + "01";
@@ -394,12 +394,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         inboundRequest.setPurchaseNum(1);
         inboundRequest.setPurchaseOrderId(purchaseId);
         InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
+        LOGGER.info("开始调用采购单入库");
         String s = inboundService.saveInbound(reqSave);
         if(StringUtils.isBlank(s)){
             LOGGER.error("生成入库单失败....");
             return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
-
+        LOGGER.info("调用采购单入库成功：" + s);
         // 增加采购在途数
         this.wayNum(purchaseOrder, 6);
         return HttpResponse.success();
