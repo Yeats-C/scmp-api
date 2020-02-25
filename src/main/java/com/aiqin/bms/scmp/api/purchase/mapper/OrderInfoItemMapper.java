@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.mapper;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.DeliveryItemReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.DeliveryReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryOrderProductListReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.QueryProductUniqueCodeListReqVO;
@@ -54,7 +55,7 @@ public interface OrderInfoItemMapper {
      * @param reqVO
      * @return int
      */
-    int updateBatchNumById(List<DeliveryReqVO> reqVO);
+    int updateBatchNumById(List<DeliveryItemReqVo> reqVO);
 
     Integer insertList(List<OrderInfoItem> list);
 
@@ -65,4 +66,6 @@ public interface OrderInfoItemMapper {
     OrderInfoItem selectOrderByLine(@Param("orderCode") String orderCode, @Param("lineCode")Long lineCode);
 
     Integer updateBatch(List<OrderInfoItem> itemList);
+
+    List<OrderInfoItem> selectByIds(List<Long> itemIds);
 }

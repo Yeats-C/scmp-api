@@ -12,6 +12,8 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -29,6 +31,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
@@ -76,6 +79,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Autowired
     private ProductSkuCheckoutDao productSkuCheckoutDao;
+    @Autowired
+    private OrderCallbackService orderCallbackService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -305,7 +310,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         reqVO.setOperatorCode(getUser().getPersonId());
         reqVO.setOrderCode(orderCode);
         reqVO.setOrderStatus(status);
-        return changeStatus(reqVO);
+        Boolean flag = changeStatus(reqVO);
+        if(flag && Objects.equals(status,ReturnOrderStatus.RETURN_ABNORMALLY_TERMINATED.getStatusCode())){
+           updateAiqinOrder(orderCode,null);
+        }
+        return flag;
     }
 
     @Override
@@ -336,14 +345,70 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean delivery(List<DeliveryReqVO> reqVO, String orderCode) {
-        //更新状态
-        distribution(orderCode, ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
-        int i = orderInfoItemMapper.updateBatchNumById(reqVO);
-        if (i != reqVO.size()) {
-            throw new BizException(ResultCode.CHANGE_ACTUAL_DELIVERY_NUM_FAILED);
+    public Boolean delivery(DeliveryReqVO reqVO) {
+        if(null == reqVO){
+            throw new BizException("参数信息错误");
         }
+        if(StringUtils.isNotBlank(reqVO.getOrderCode())){
+            throw new BizException("订单编号不能为空");
+        }
+        if(CollectionUtils.isNotEmptyCollection(reqVO.getItemList())){
+            throw new BizException("发货明细不能为空");
+        }
+        if(null == reqVO.getDeliverAmount()){
+            throw new BizException("运费信息不能为空");
+        }
+        ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+        changeOrderStatusReqVO.setOperator(getUser().getPersonName());
+        changeOrderStatusReqVO.setOperatorCode(getUser().getPersonId());
+        changeOrderStatusReqVO.setOrderCode(reqVO.getOrderCode());
+        changeOrderStatusReqVO.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        //更新状态
+        changeStatus(changeOrderStatusReqVO);
+        //更新运费信息
+        orderInfoMapper.updateDevliverAmountByOrderCode(reqVO.getOrderCode(),reqVO.getDeliverAmount());
+        //更新发货数量
+        int i = orderInfoItemMapper.updateBatchNumById(reqVO.getItemList());
+        updateAiqinOrder(reqVO.getOrderCode(),reqVO.getItemList().stream().map(DeliveryItemReqVo :: getId).distinct().collect(Collectors.toList()));
         return Boolean.TRUE;
+    }
+
+    private void updateAiqinOrder(String orderCode, List<Long> itemIds) {
+        //根据订单编码获取最新的订单信息
+        OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(orderCode);
+        if(null == orderCode){
+            throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
+        }
+        if(Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY.getNum()) ||
+                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY_FUCAI.getNum())) {
+            OutboundCallBackRequest request = new OutboundCallBackRequest();
+            request.setOderCode(orderCode);
+            request.setOrderStatus(orderInfo.getOrderStatus());
+            request.setOrderTypeCode(orderInfo.getOrderTypeCode());
+            request.setPersonId(orderInfo.getOperatorCode());
+            request.setPersonName(orderInfo.getOperator());
+            if (Objects.equals(orderInfo.getOrderStatus(), ReturnOrderStatus.RETURN_COMPLETED.getStatusCode())) {
+                request.setDeliverAmount(orderInfo.getDeliverAmount());
+                request.setDeliveryTime(new Date());
+                request.setDeliveryPerson(orderInfo.getOperator());
+            }
+            if (CollectionUtils.isNotEmptyCollection(itemIds)) {
+                List<OutboundCallBackDetailRequest> detailList = Lists.newArrayList();
+                //根据订单明细Id查询
+                List<OrderInfoItem> orderInfoItems = orderInfoItemMapper.selectByIds(itemIds);
+                orderInfoItems.forEach(item -> {
+                    OutboundCallBackDetailRequest detailRequest = new OutboundCallBackDetailRequest();
+                    detailRequest.setActualProductCount(item.getActualDeliverNum());
+                    detailRequest.setLineCode(item.getProductLineNum());
+                    detailRequest.setSkuCode(item.getSkuCode());
+                    detailRequest.setSkuName(item.getSkuName());
+                    detailList.add(detailRequest);
+                });
+                request.setDetailList(detailList);
+                request.setActualTotalCount(orderInfoItems.stream().mapToLong(OrderInfoItem::getActualDeliverNum).sum());
+            }
+            orderCallbackService.updateAiqinOrder(request);
+        }
     }
 
     @Override
