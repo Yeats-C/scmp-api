@@ -155,6 +155,15 @@ public class ApplyContractUpdateResVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("平均毛利率")
+    private BigDecimal averageGrossMargin;
+
+    @ApiModelProperty("合同属性")
+    private String contractProperty;
+
+    @ApiModelProperty("合同费用")
+    private BigDecimal contractCost;
+
     @ApiModelProperty("合同采购组")
     private List<ContractPurchaseGroupResVo> purchaseGroupResVos;
 
