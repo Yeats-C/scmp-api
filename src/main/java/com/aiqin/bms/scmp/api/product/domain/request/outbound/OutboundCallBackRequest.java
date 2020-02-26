@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -21,6 +22,11 @@ public class OutboundCallBackRequest {
     @NotEmpty(message = "订单号")
     @JsonProperty("oder_code")
     private String oderCode;
+
+    @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
+    @NotEmpty(message = "订单类型")
+    @JsonProperty("orderTypeCode")
+    private Integer orderTypeCode;
 
     @ApiModelProperty("发货时间")
     @NotEmpty(message = "发货时间不能为空")
@@ -48,6 +54,14 @@ public class OutboundCallBackRequest {
     @ApiModelProperty(value = "操作人姓名")
     @JsonProperty("person_name")
     private String personName;
+
+    @ApiModelProperty(value = "订单状态")
+    @JsonProperty("order_status")
+    private Integer orderStatus;
+
+    @ApiModelProperty(value = "运费")
+    @JsonProperty("deliver_amount")
+    private BigDecimal deliverAmount;
 
     @ApiModelProperty("商品详情列表")
     @JsonProperty("detail_list")

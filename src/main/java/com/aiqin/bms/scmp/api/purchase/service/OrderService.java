@@ -71,7 +71,7 @@ public interface OrderService {
     BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO);
 
     /** 直送修改数量*/
-    Boolean delivery(List<DeliveryReqVO> reqVO,String orderCode);
+    Boolean delivery(DeliveryReqVO reqVO);
 
     /** 编码查询订单*/
     OrderInfo selectByOrderCode(String orderCode);

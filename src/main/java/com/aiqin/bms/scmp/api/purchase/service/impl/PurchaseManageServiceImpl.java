@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspRepo
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.product.service.impl.InboundServiceImpl;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -44,6 +45,7 @@ import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,8 +65,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseManageServiceImpl.class);
 
-    @Resource
-    private PurchaseApplyDao purchaseApplyDao;
     @Resource
     private PurchaseApplyProductDao purchaseApplyProductDao;
     @Resource
@@ -92,8 +92,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     @Resource
     private ProductSkuInspReportDao productSkuInspReportDao;
     @Resource
-    private PurchaseApprovalService purchaseApprovalService;
-    @Resource
     private ProductSkuPicturesDao productSkuPicturesDao;
     @Resource
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
@@ -104,8 +102,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     @Resource
     private PurchaseInspectionReportDao purchaseInspectionReportDao;
     @Resource
-    private ApplyPurchaseOrderDao applyPurchaseOrderDao;
-    @Resource
     private ApplyPurchaseOrderDetailsDao applyPurchaseOrderDetailsDao;
     @Resource
     private ApplyPurchaseOrderProductDao applyPurchaseOrderProductDao;
@@ -113,8 +109,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private StockDao stockDao;
     @Resource
     private ProSuggestReplenishmentDao proSuggestReplenishmentDao;
-    @Resource
-    private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -506,6 +500,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
                 }
                 purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+                InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
+                // 根据采购单号查询入库单号
+                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseOrder.getPurchaseOrderCode());
+                // 入库单号
+                String code = num <= 9 ? ("0" + num.toString()) : num.toString();
+                inboundService.pushWms(purchaseOrder.getPurchaseOrderCode() + code, inboundService);
                 break;
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);

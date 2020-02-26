@@ -7,6 +7,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -23,6 +24,11 @@ public class OrderIogisticsVo implements Serializable {
     @NotEmpty(message = "订单号不能为空")
     private String orderStoreCode;
 
+    @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
+    @NotEmpty(message = "订单类型")
+    @JsonProperty("orderTypeCode")
+    private String orderTypeCode;
+
     @ApiModelProperty(value = "实际销售数量")
     @JsonProperty("actual_total_count")
     private Long actualTotalCount;
@@ -38,6 +44,14 @@ public class OrderIogisticsVo implements Serializable {
     @ApiModelProperty(value = "操作人姓名")
     @JsonProperty("person_name")
     private String personName;
+
+    @ApiModelProperty(value = "订单状态")
+    @JsonProperty("order_status")
+    private Integer orderStatus;
+
+    @ApiModelProperty(value = "运费")
+    @JsonProperty("deliver_amount")
+    private BigDecimal deliverAmount;
 
     //订单明细
     @ApiModelProperty(value = "订单商品明细行")

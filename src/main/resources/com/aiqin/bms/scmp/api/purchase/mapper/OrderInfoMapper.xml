@@ -1629,4 +1629,7 @@ transport_number
             where order_code = #{item.orderCode,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <update id="updateDevliverAmountByOrderCode">
+        update order_info set deliver_amount = #{deliverAmount} where order_code = #{orderCode}
+    </update>
 </mapper>
