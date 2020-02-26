@@ -33,6 +33,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
@@ -428,7 +429,13 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         List<PurchaseApplyTransportCenter> transportList;
         PurchaseApplyTransportCenter transportCenter;
         for(PurchaseApplyDeatailResponse detail:detailList){
-             proList = productList.stream().filter(s->s.getSupplierCode().equals(detail.getSupplierCode())
+            // 查询对应的供应商信息
+            ApplySupplyCompany supplyCompany = supplyCompanyDao.selectBySupplierCode2(detail.getSupplierCode());
+            if(supplyCompany != null){
+                detail.setSupplierPerson(supplyCompany.getContactName());
+                detail.setSupplierMobile(supplyCompany.getMobilePhone());
+            }
+            proList = productList.stream().filter(s->s.getSupplierCode().equals(detail.getSupplierCode())
                     && s.getSettlementMethodCode().equals(detail.getSettlementMethodCode())
                     && s.getPurchaseGroupCode().equals(detail.getPurchaseGroupCode())
                     ).collect(Collectors.toList());

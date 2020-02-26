@@ -20,6 +20,14 @@ public class PurchaseApplyDeatailResponse extends PurchaseApplyProduct {
     @JsonProperty("purchase_apply_name")
     private String purchaseApplyName;
 
+    @ApiModelProperty(value="联系人（供应商的联系人）")
+    @JsonProperty("supplier_person")
+    private String supplierPerson;
+
+    @ApiModelProperty(value="供应商电话")
+    @JsonProperty("supplier_mobile")
+    private String supplierMobile;
+
     @ApiModelProperty(value = "仓库列表")
     @JsonProperty("transport_list")
     private List<PurchaseApplyTransportCenter> transportList;
