@@ -72,11 +72,11 @@
     values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
       #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{settlementMethodCode,jdbcType=VARCHAR},
       #{settlementMethodName,jdbcType=VARCHAR}, #{productCount,jdbcType=BIGINT}, #{returnCount,jdbcType=BIGINT},
-      #{giftCount,jdbcType=BIGINT}, #{applyType,jdbcType=BIT}, #{applyStatus,jdbcType=BIT}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{giftCount,jdbcType=BIGINT}, #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR},
       #{purchaseGroupName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
-      #{status,jdbcType=BIT}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL},
-      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{purchaseSource,jdbcType=BIT},
-      #{prePurchaseType,jdbcType=BIT}, #{prePurchaseCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL},
+      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{purchaseSource,jdbcType=INTEGER},
+      #{prePurchaseType,jdbcType=INTEGER}, #{prePurchaseCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR},
       #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR},
       #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
       #{supplierMobile,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
@@ -113,10 +113,10 @@
         gift_count = #{giftCount,jdbcType=BIGINT},
       </if>
       <if test="applyType != null">
-        apply_type = #{applyType,jdbcType=BIT},
+        apply_type = #{applyType,jdbcType=INTEGER},
       </if>
       <if test="applyStatus != null">
-        apply_status = #{applyStatus,jdbcType=BIT},
+        apply_status = #{applyStatus,jdbcType=INTEGER},
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -131,7 +131,7 @@
         company_name = #{companyName,jdbcType=VARCHAR},
       </if>
       <if test="status != null">
-        status = #{status,jdbcType=BIT},
+        status = #{status,jdbcType=INTEGER},
       </if>
       <if test="totalCount != null">
         total_count = #{totalCount,jdbcType=BIGINT},
@@ -146,10 +146,10 @@
         gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
       </if>
       <if test="purchaseSource != null">
-        purchase_source = #{purchaseSource,jdbcType=BIT},
+        purchase_source = #{purchaseSource,jdbcType=INTEGER},
       </if>
       <if test="prePurchaseType != null">
-        pre_purchase_type = #{prePurchaseType,jdbcType=BIT},
+        pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER},
       </if>
       <if test="prePurchaseCode != null">
         pre_purchase_code = #{prePurchaseCode,jdbcType=VARCHAR},

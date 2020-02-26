@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response;
 
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -14,7 +15,7 @@ import java.util.List;
  **/
 
 @Data
-public class PurchaseApplyDeatailResponse extends PurchaseApplyProduct {
+public class PurchaseApplyDeatailResponse extends PurchaseApply {
 
     @ApiModelProperty(value="采购申请单名称/审批名称")
     @JsonProperty("purchase_apply_name")
