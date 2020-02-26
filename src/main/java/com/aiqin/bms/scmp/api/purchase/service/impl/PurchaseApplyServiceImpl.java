@@ -437,6 +437,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             transportList = Lists.newArrayList();
             List<PurchaseApplyProduct> centers = proList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                     new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode()))), ArrayList::new));
+            // 计算采购申请单的总和
+            BigDecimal productCenterAmount = big, returnCenterAmount = big, giftCenterAmount = big;
             for(PurchaseApplyProduct center:centers){
                 // 便利商品
                 transportCenter = new PurchaseApplyTransportCenter();
@@ -468,8 +470,16 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 transportCenter.setProductTaxAmount(productAmount);
                 transportCenter.setReturnTaxAmount(returnAmount);
                 transportCenter.setGiftTaxAmount(giftAmount);
+                productCenterAmount = productCenterAmount.add(productAmount);
+                returnCenterAmount = returnCenterAmount.add(returnAmount);
+                giftCenterAmount = giftCenterAmount.add(giftAmount);
                 transportList.add(transportCenter);
             }
+            // 审批名称
+            String name = detail.getSupplierName() + proList.get(0).getBrandName()
+                    + "商品金额" + productCenterAmount + "实物返金额" + returnCenterAmount
+                    + "赠品金额" + giftCenterAmount;
+            detail.setPurchaseApplyName(name);
             detail.setTransportList(transportList);
         }
 
