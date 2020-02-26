@@ -16,6 +16,10 @@ import java.util.List;
 @Data
 public class PurchaseApplyDeatailResponse extends PurchaseApplyProduct {
 
+    @ApiModelProperty(value="采购申请单名称/审批名称")
+    @JsonProperty("purchase_apply_name")
+    private String purchaseApplyName;
+
     @ApiModelProperty(value = "仓库列表")
     @JsonProperty("transport_list")
     private List<PurchaseApplyTransportCenter> transportList;
