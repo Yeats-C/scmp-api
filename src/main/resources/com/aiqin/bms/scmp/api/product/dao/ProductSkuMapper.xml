@@ -2336,7 +2336,7 @@
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
     pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
-    ifnull(su.tax_included_price, 0) as purchaseMax
+    ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_num, 0) * ifnull(s.tax_cost, 0) as stockAmount
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
