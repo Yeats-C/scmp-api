@@ -1,21 +1,25 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -137,6 +141,17 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
         //判断是否成功
         if (workFlowRespVO.getSuccess()) {
             LOGGER.info("创建采购单审批成功:{}",workFlowRespVO);
+
+            AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+            if (currentAuthToken == null) {
+                LOGGER.info("获取当前登录信息失败");
+                throw new BizException("审批获取当前登录信息失败");
+            }
+            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_2);
+            purchaseApply.setUpdateById(currentAuthToken.getPersonId());
+            purchaseApply.setUpdateByName(currentAuthToken.getPersonName());
+            Integer count = purchaseApplyDao.update(purchaseApply);
+            LOGGER.info("更改采购申请单为待审核：" + count);
         } else {
             LOGGER.info("审批流调用失败");
             throw new BizException(workFlowRespVO.getMsg());
