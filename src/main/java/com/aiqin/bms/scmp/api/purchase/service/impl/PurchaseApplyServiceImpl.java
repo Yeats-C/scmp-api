@@ -346,17 +346,20 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyId){
-        if(StringUtils.isBlank(purchaseApplyId)){
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode){
+        if(StringUtils.isBlank(purchaseApplyCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
+        // 查询采购单信息
+        PurchaseApply purchaseApply = new PurchaseApply();
+        purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
+        PurchaseApply apply = purchaseApplyDao.purchaseApply(purchaseApply);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApply.getPurchaseApplyId());
         if(CollectionUtils.isEmptyCollection(products)){
-            LOGGER.info("查询采购申请商品的信息失败...{}:" +purchaseApplyId);
+            LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }else {
             // 查询采购申请单的公司
-            PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
             Stock stock;
             for(PurchaseApplyDetailResponse detail:products){
                 // 查询库存数量，库存金额， 在途库存
@@ -496,16 +499,16 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request){
-        if(request == null){
+    public HttpResponse applyPurchaseSave(PurchaseApplySaveRequest request) {
+        if (request == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 获取当前登录人的信息
-//        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-//        if (currentAuthToken == null) {
-//            LOGGER.info("获取当前登录信息失败");
-//            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
-//        }
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
 
         // 获取采购申请单号
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
@@ -514,26 +517,26 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 采购申请单id
         String purchaseApplyId;
         String purchaseApplyCode;
-        if(request.getSaveMode().equals(0) || request.getSaveMode().equals(1)) {
+        if (request.getSaveMode().equals(0) || request.getSaveMode().equals(1)) {
             purchaseApplyId = IdUtil.purchaseId();
             purchaseApplyCode = code;
-        }else {
+        } else {
             purchaseApplyId = request.getPurchaseApply().getPurchaseApplyId();
             purchaseApplyCode = request.getPurchaseApply().getPurchaseApplyCode();
         }
         // 添加,修改采购申请单通用信息
         PurchaseApply purchaseApply = request.getPurchaseApply();
-        if(purchaseApply == null){
+        if (purchaseApply == null) {
             LOGGER.info("采购申请单的通用信息为空");
             return HttpResponse.failure(ResultCode.PURCHASE_APPLY_INFO_NULL);
         }
-        if(CollectionUtils.isEmptyCollection(request.getProductList())){
+        if (CollectionUtils.isEmptyCollection(request.getProductList())) {
             LOGGER.info("采购申请单的商品信息为空");
             return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
         }
 
         // 添加，修改采购申请单的分仓信息
-        if(CollectionUtils.isEmptyCollection(request.getPurchaseTransportList())){
+        if (CollectionUtils.isEmptyCollection(request.getPurchaseTransportList())) {
             LOGGER.info("采购申请单的分仓信息为空");
             return HttpResponse.failure(ResultCode.PURCHASE_APPLY_TRANSPORT_NULL);
         }
@@ -541,23 +544,29 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         List<PurchaseApplyProduct> productList = request.getProductList();
         Long productCount = 0L, returnCount = 0L, giftCount = 0L;
         BigDecimal productAmount = BigDecimal.ZERO, returnAmount = BigDecimal.ZERO, giftAmount = BigDecimal.ZERO;
-        for(PurchaseApplyProduct product:productList){
+        for (PurchaseApplyProduct product : productList) {
             product.setApplyProductId(IdUtil.uuid());
             product.setPurchaseApplyId(purchaseApplyId);
             product.setPurchaseApplyCode(purchaseApplyCode);
             product.setApplyProductStatus(1);
+            if (!request.getSaveMode().equals(2)) {
+                product.setCreateById(currentAuthToken.getPersonId());
+                product.setCreateByName(currentAuthToken.getPersonName());
+            }
+            product.setUpdateById(currentAuthToken.getPersonId());
+            product.setUpdateByName(currentAuthToken.getPersonId());
             // 计算商品的最小单位数量
             Long sumCount = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle().longValue();
             // 含税每个sku的含税总价
             BigDecimal amount = product.getProductPurchaseAmount().multiply(BigDecimal.valueOf(sumCount)).setScale(4, BigDecimal.ROUND_HALF_UP);
             // 计算商品数量 商品类型 0商品 1赠品 2实物返回
-            if(product.getProductType().equals(0)) {
+            if (product.getProductType().equals(0)) {
                 productCount += sumCount;
                 productAmount = productAmount.add(amount);
-            }else if(product.getProductType().equals(1)) {
+            } else if (product.getProductType().equals(1)) {
                 giftCount += sumCount;
                 giftAmount = giftAmount.add(amount);
-            }else {
+            } else {
                 returnCount += sumCount;
                 returnAmount = returnAmount.add(amount);
             }
@@ -573,9 +582,17 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         purchaseApply.setGiftTaxAmount(giftAmount);
         purchaseApply.setApplyType(0);
         purchaseApply.setStatus(0);
+        purchaseApply.setCompanyCode(currentAuthToken.getCompanyCode());
+        purchaseApply.setCompanyName(currentAuthToken.getCompanyName());
+        if (!request.getSaveMode().equals(2)) {
+            purchaseApply.setCreateById(currentAuthToken.getPersonId());
+            purchaseApply.setCreateByName(currentAuthToken.getPersonName());
+        }
+        purchaseApply.setUpdateById(currentAuthToken.getPersonId());
+        purchaseApply.setUpdateByName(currentAuthToken.getPersonId());
 
         // 判断采购申请的保存、编辑
-        if(request.getSaveMode().equals(2)){
+        if (request.getSaveMode().equals(2)) {
             purchaseApply.setApplyStatus(0);
             // 更改采购申请单的信息
             Integer applyCount = purchaseApplyDao.update(purchaseApply);
@@ -590,16 +607,14 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             // 删除采购申请单文件信息
             Integer fileCount = fileRecordDao.delete(applyId);
             LOGGER.info("删除采购申请单文件信息:{}", fileCount);
-        }else {
+        } else {
             // 新增采购申请单
             purchaseApply.setPurchaseApplyId(purchaseApplyId);
             purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
-            //  purchaseApply.setCreateById(currentAuthToken.getPersonId());
-            //  purchaseApply.setCreateByName(currentAuthToken.getPersonId());
             // 判断保存的状态
-            if(request.getSaveMode().equals(0)){
+            if (request.getSaveMode().equals(0)) {
                 purchaseApply.setApplyStatus(0);
-            }else {
+            } else {
                 purchaseApply.setApplyStatus(2);
             }
             Integer applyCount = purchaseApplyDao.insert(purchaseApply);
@@ -610,10 +625,16 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         }
 
         List<PurchaseApplyTransportCenter> purchaseTransportList = request.getPurchaseTransportList();
-        for(PurchaseApplyTransportCenter center:purchaseTransportList){
+        for (PurchaseApplyTransportCenter center : purchaseTransportList) {
             center.setPurchaseApplyId(purchaseApplyId);
             center.setPurchaseApplyCode(purchaseApplyCode);
             center.setPurchaseApplyName(request.getPurchaseApply().getPurchaseApplyName());
+            if (!request.getSaveMode().equals(2)) {
+                center.setCreateById(currentAuthToken.getPersonId());
+                center.setCreateByName(currentAuthToken.getPersonName());
+            }
+            center.setUpdateById(currentAuthToken.getPersonId());
+            center.setUpdateByName(currentAuthToken.getPersonId());
         }
         Integer transportCount = purchaseApplyTransportCenterDao.insertAll(request.getPurchaseTransportList());
         LOGGER.info("添加采购申请单分仓信息:{}", transportCount);
@@ -623,44 +644,54 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         LOGGER.info("添加采购申请单商品信息:{}", productInfoCount);
 
         // 添加采购申请单的文件信息
-        if(CollectionUtils.isNotEmptyCollection(request.getFileList())){
+        if (CollectionUtils.isNotEmptyCollection(request.getFileList())) {
             Integer count = fileRecordDao.insertAll(purchaseApplyId, request.getFileList());
             LOGGER.info("添加采购申请单文件:{}", count);
         }
 
         // 提交审批流
-        if(request.getSaveMode().equals(1)){
+        if (request.getSaveMode().equals(1)) {
             // 调审批流
-            WorkFlowRespVO flowRespVO = purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(),
+            purchaseApprovalService.workFlow(purchaseApplyCode, request.getPurchaseApply().getPurchaseApplyName(),
                     request.getPurchaseApply().getDirectSupervisorCode(), request.getPurchaseApply().getPositionCode());
-            // 审批成功， 创建采购单
-            if(flowRespVO.getSuccess()){
-                this.insertPurchaseOrder(request);
-            }
         }
 
-        OperationLog log = new OperationLog();
-        log.setOperationId(purchaseApplyId);
-        log.setCreateById(request.getPurchaseApply().getCreateById());
-        log.setCreateByName(request.getPurchaseApply().getCreateByName());
-        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getCode());
-        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getName());
-        log.setRemark(request.getPurchaseApply().getRemark());
-        operationLogDao.insert(log);
+//        OperationLog log = new OperationLog();
+//        log.setOperationId(purchaseApplyId);
+//        log.setCreateById(request.getPurchaseApply().getCreateById());
+//        log.setCreateByName(request.getPurchaseApply().getCreateByName());
+//        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getCode());
+//        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getName());
+//        log.setRemark(request.getPurchaseApply().getRemark());
+//        operationLogDao.insert(log);
         return HttpResponse.success();
     }
 
     // 创建采购单
-    private void insertPurchaseOrder(PurchaseApplySaveRequest request){
+    public void insertPurchaseOrder(String purchaseApplyId){
+        // 查询采购申请单分仓信息
+        PurchaseApplyTransportCenter applyTransportCenter = new PurchaseApplyTransportCenter();
+        applyTransportCenter.setPurchaseApplyId(purchaseApplyId);
+        List<PurchaseApplyTransportCenter> purchaseTransports = purchaseApplyTransportCenterDao.selectList(applyTransportCenter);
+        LOGGER.info("采购申请单的分仓信息：" + purchaseTransports);
+
+        // 查询采购申请单数据
+        PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        LOGGER.info("采购申请单信息：" + purchaseApply);
+
+        // 查询采购申请单的商品信息
+        List<PurchaseApplyProduct> productList = purchaseApplyProductDao.applyPurchaseProductList(purchaseApplyId);
+        LOGGER.info("采购申请单的商品信息：" + productList);
+
         // 根据分仓信息，创建多采购单
-        List<PurchaseApplyTransportCenter> purchaseTransports = request.getPurchaseTransportList();
         PurchaseOrderRequest orderRequest;
         List<PurchaseApplyProduct> applyProductList;
         List<PurchaseOrderProduct> proList;
+
+
         for(PurchaseApplyTransportCenter center:purchaseTransports){
             orderRequest = new PurchaseOrderRequest();
             // 赋值采购单数据
-            PurchaseApply purchaseApply = request.getPurchaseApply();
             PurchaseOrder purchaseOrder = BeanCopyUtils.copy(purchaseApply, PurchaseOrder.class);
             purchaseOrder.setTransportCenterCode(center.getTransportCenterCode());
             purchaseOrder.setTransportCenterName(center.getTransportCenterName());
@@ -677,7 +708,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             purchaseOrder.setPurchaseSource(0);
             orderRequest.setPurchaseOrder(purchaseOrder);
             // 筛选对应仓库数据
-            applyProductList = request.getProductList().stream().filter(s->s.getTransportCenterCode().equals(center.getTransportCenterCode())
+            applyProductList = productList.stream().filter(s->s.getTransportCenterCode().equals(center.getTransportCenterCode())
             ).collect(Collectors.toList());
             // 赋值采购单商品数据
             proList = Lists.newArrayList();
@@ -716,17 +747,19 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(String purchaseApplyId){
-        if(StringUtils.isBlank(purchaseApplyId)){
-            LOGGER.info("查询的采购申请单通用信息的采购单id为空，入参：{}" + purchaseApplyId);
+    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(String purchaseApplyCode){
+        if(StringUtils.isBlank(purchaseApplyCode)){
+            LOGGER.info("查询的采购申请单通用信息的采购单code为空，入参：{}" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
+        PurchaseApply apply = new PurchaseApply();
+        apply.setPurchaseApplyCode(purchaseApplyCode);
+        PurchaseApply purchaseApply = purchaseApplyDao.purchaseApply(apply);
         if(purchaseApply == null){
             LOGGER.info("采购申请单信息为空");
         }
         // 查询商品件数
-        List<PurchaseApplyDetailResponse> responses = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
+        List<PurchaseApplyDetailResponse> responses = purchaseApplyProductDao.productListByDetail(purchaseApply.getPurchaseApplyId());
         PurchaseApplyCurrencyResponse response = BeanCopyUtils.copy(purchaseApply, PurchaseApplyCurrencyResponse.class);
         if(CollectionUtils.isNotEmptyCollection(responses)){
             // 计算商品，实物返，赠品件数
@@ -746,6 +779,10 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             response.setGiftPiece(giftPiece);
             response.setTotalPiece(productPiece + returnPiece + giftPiece);
         }
+
+        // 查询文件信息
+        List<FileRecord> files = fileRecordDao.fileList(purchaseApply.getPurchaseApplyId());
+        response.setFiles(files);
         return HttpResponse.success(response);
     }
 

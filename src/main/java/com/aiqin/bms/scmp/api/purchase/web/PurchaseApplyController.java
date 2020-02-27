@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -82,8 +83,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/product")
     @ApiOperation("查询申请采购单，商品详情列表")
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_id") String purchaseApplyId) {
-        return purchaseApplyService.searchApplyProduct(purchaseApplyId);
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyCode);
     }
 
     @GetMapping("/transport/center/info")
@@ -126,8 +127,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/purchase/currency")
     @ApiOperation("查询采购申请单-采购通用信息")
-    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_id") String purchaseApplyId) {
-        return purchaseApplyService.purchaseCurrency(purchaseApplyId);
+    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_code") String purchaseApplyCode) {
+        return purchaseApplyService.purchaseCurrency(purchaseApplyCode);
     }
 
     @GetMapping("/purchase/new/edit")
@@ -160,16 +161,16 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseApplyStatus(purchaseApplyId);
     }
 
-//    @GetMapping("/apply/product/detail")
-//    @ApiOperation("查询采购申请单商品的详情")
-//    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
-//                                                           @RequestParam("product_purchase_amount") BigDecimal productPurchaseAmount,
-//                                                           @RequestParam("sku_code") String skuCode,
-//                                                           @RequestParam("supplier_code") String supplierCode,
-//                                                           @RequestParam("transport_center_code") String transportCenterCode,
-//                                                           @RequestParam("product_count") Integer productCount) {
-//        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
-//    }
+    @GetMapping("/apply/product/detail")
+    @ApiOperation("查询采购申请单商品的详情")
+    public HttpResponse<PurchaseFlowPathResponse> purchase(@RequestParam("single_count") Integer singleCount,
+                                                           @RequestParam("product_purchase_amount") BigDecimal productPurchaseAmount,
+                                                           @RequestParam("sku_code") String skuCode,
+                                                           @RequestParam("supplier_code") String supplierCode,
+                                                           @RequestParam("transport_center_code") String transportCenterCode,
+                                                           @RequestParam("product_count") Integer productCount) {
+        return purchaseApplyService.applyProductDetail(singleCount, productPurchaseAmount, skuCode, supplierCode, transportCenterCode, productCount);
+    }
 
     @PostMapping("/automatic/purchase")
     @ApiOperation("生成自动采购单")

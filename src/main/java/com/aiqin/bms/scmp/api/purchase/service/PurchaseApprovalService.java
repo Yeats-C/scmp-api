@@ -30,6 +30,6 @@ import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
  */
 public interface PurchaseApprovalService {
 
-    WorkFlowRespVO workFlow(String formNo, String userName, String directSupervisorCode, String positionCode);
+    void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode);
 
 }
