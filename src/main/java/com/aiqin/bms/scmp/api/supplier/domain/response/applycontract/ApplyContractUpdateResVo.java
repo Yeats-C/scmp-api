@@ -49,7 +49,7 @@ public class ApplyContractUpdateResVo {
     private Integer paymentPeriod;
 
     @ApiModelProperty("配送费")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;

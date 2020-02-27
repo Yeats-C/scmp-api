@@ -10,12 +10,12 @@
     <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
     <result column="settlement_method" jdbcType="TINYINT" property="settlementMethod" />
     <result column="payment_period" jdbcType="INTEGER" property="paymentPeriod" />
-    <result column="shipping_fee" jdbcType="BIGINT" property="shippingFee" />
+    <result column="shipping_fee" jdbcType="DECIMAL" property="shippingFee" />
     <result column="delivery_charges" jdbcType="TINYINT" property="deliveryCharges" />
     <result column="unloading_fee" jdbcType="BIGINT" property="unloadingFee" />
     <result column="other_conventions" jdbcType="VARCHAR" property="otherConventions" />
     <result column="fixed_rebate_type" jdbcType="TINYINT" property="fixedRebateType" />
-    <result column="return_rate" jdbcType="BIGINT" property="returnRate" />
+    <result column="return_rate" jdbcType="DECIMAL" property="returnRate" />
     <result column="target_rebate" jdbcType="TINYINT" property="targetRebate" />
     <result column="plan_type" jdbcType="TINYINT" property="planType" />
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -41,15 +41,15 @@
     <result column="pre_payment_ratio" jdbcType="BIGINT" property="prePaymentRatio" />
     <result column="ship_payment_ratio" jdbcType="BIGINT" property="shipPaymentRatio" />
     <result column="payment_on_delivery_ratio" jdbcType="BIGINT" property="paymentOnDeliveryRatio" />
-    <result column="min_amount" jdbcType="BIGINT" property="minAmount" />
+    <result column="min_amount" jdbcType="DECIMAL" property="minAmount" />
     <result column="rebate_clause" jdbcType="TINYINT" property="rebateClause" />
     <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode"/>
     <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName"/>
     <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
     <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
     <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
-    <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
-    <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
+    <result column="min_amount" jdbcType="DECIMAL" property="minAmount"/>
+    <result column="max_amount" jdbcType="DECIMAL" property="maxAmount"/>
     <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
     <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
     <result column="discount" jdbcType="VARCHAR" property="discount"/>
@@ -199,7 +199,7 @@
         payment_period = #{paymentPeriod,jdbcType=INTEGER},
       </if>
       <if test="shippingFee != null">
-        shipping_fee = #{shippingFee,jdbcType=BIGINT},
+        shipping_fee = #{shippingFee,jdbcType=DECIMAL},
       </if>
       <if test="deliveryCharges != null">
         delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
@@ -214,7 +214,7 @@
         fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
       </if>
       <if test="returnRate != null">
-        return_rate = #{returnRate,jdbcType=BIGINT},
+        return_rate = #{returnRate,jdbcType=DECIMAL},
       </if>
       <if test="targetRebate != null">
         target_rebate = #{targetRebate,jdbcType=TINYINT},
@@ -304,7 +304,7 @@
         checkout_date = #{checkoutDate,jdbcType=VARCHAR},
       </if>
       <if test="minAmount != null">
-        min_amount = #{minAmount,jdbcType=BIGINT},
+        min_amount = #{minAmount,jdbcType=DECIMAL},
       </if>
       <if test="maxAmount != null">
         max_amount = #{maxAmount},
@@ -357,12 +357,12 @@
       purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
       settlement_method = #{settlementMethod,jdbcType=TINYINT},
       payment_period = #{paymentPeriod,jdbcType=INTEGER},
-      shipping_fee = #{shippingFee,jdbcType=BIGINT},
+      shipping_fee = #{shippingFee,jdbcType=DECIMAL},
       delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
       unloading_fee = #{unloadingFee,jdbcType=BIGINT},
       other_conventions = #{otherConventions,jdbcType=VARCHAR},
       fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
-      return_rate = #{returnRate,jdbcType=BIGINT},
+      return_rate = #{returnRate,jdbcType=DECIMAL},
       target_rebate = #{targetRebate,jdbcType=TINYINT},
       plan_type = #{planType,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
