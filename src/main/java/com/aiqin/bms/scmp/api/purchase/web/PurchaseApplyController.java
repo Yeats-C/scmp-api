@@ -82,8 +82,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/product")
     @ApiOperation("查询申请采购单，商品详情列表")
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_id") String purchaseApplyId) {
-        return purchaseApplyService.searchApplyProduct(purchaseApplyId);
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyCode);
     }
 
     @GetMapping("/transport/center/info")
@@ -126,8 +126,8 @@ public class PurchaseApplyController {
 
     @GetMapping("/purchase/currency")
     @ApiOperation("查询采购申请单-采购通用信息")
-    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_id") String purchaseApplyId) {
-        return purchaseApplyService.purchaseCurrency(purchaseApplyId);
+    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_code") String purchaseApplyCode) {
+        return purchaseApplyService.purchaseCurrency(purchaseApplyCode);
     }
 
     @GetMapping("/purchase/new/edit")

@@ -97,7 +97,7 @@ WorkFlowBaseUrl:
     scrap: http://scmp.bms.aiqin.com/#/store/detailScrap
   purchaseUrl:
     #采购申请详情
-    applyPurchase: http://scmp.bms.aiqin.com/#/purchase/detailPurchase
+    applyPurchase: http://scmp.bms.aiqin.com/#/purchase/applyOrderDetail
     #退供申请详情
     applyRefund: http://scmp.bms.aiqin.com/#/purchase/returnDetail
 #审批流的host

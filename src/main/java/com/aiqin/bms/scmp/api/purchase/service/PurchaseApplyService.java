@@ -21,7 +21,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest);
 
-    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyId);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode);
 
     HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
 
@@ -33,7 +33,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseOrderFile(String fileId);
 
-    HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(String purchaseApplyId);
+    HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(String purchaseApplyCode);
 
     HttpResponse purchaseNewEdit(String purchaseApplyId);
 
