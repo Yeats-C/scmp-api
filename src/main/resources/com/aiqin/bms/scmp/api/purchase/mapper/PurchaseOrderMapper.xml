@@ -310,7 +310,7 @@
         and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
       </if>
     </where>
-    order by o.create_time desc
+    order by create_time desc
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="purchaseOrderCount" resultType="java.lang.Integer">
