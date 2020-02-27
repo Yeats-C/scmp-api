@@ -53,4 +53,6 @@ public interface PurchaseApplyService {
     HttpResponse importPdf(String purchaseOrderCode, HttpServletResponse response);
 
     HttpResponse purchaseDelete(String purchaseOrderId);
+
+    void insertPurchaseOrder(String purchaseApplyId);
 }

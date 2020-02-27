@@ -4,26 +4,18 @@ import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
-import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
-import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +24,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -48,11 +39,9 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     @Resource
     private OperationLogDao operationLogDao;
     @Resource
-    private PurchaseOrderProductDao purchaseOrderProductDao;
-    @Resource
-    private StockService stockService;
-    @Resource
     private PurchaseApplyDao purchaseApplyDao;
+    @Resource
+    private PurchaseApplyService purchaseApplyService;
 
     /**
      * 审核回调接口
@@ -81,37 +70,39 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
-                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getCode(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getName(), order.getRemark());
+//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getCode(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
                 order.setApplyStatus(Global.PURCHASE_APPLY_3);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批中操作日志
-                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getCode(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getName(), order.getRemark());
+//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getCode(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 //审批成功
                 order.setApplyStatus(Global.PURCHASE_APPLY_4);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
+                // 审批通过，创建采购单
+                purchaseApplyService.insertPurchaseOrder(order.getPurchaseApplyId());
                 // 添加审批通过操作日志
-                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getCode(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getName(), order.getRemark());
-                //this.updateWayNum(order);
+//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getCode(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getName(), order.getRemark());
+
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
                 order.setApplyStatus(Global.PURCHASE_APPLY_6);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 添加审批不通过操作日志
-                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode(),
-                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName(), order.getRemark());
+//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode(),
+//                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName(), order.getRemark());
             }
             return WorkFlowReturn.SUCCESS;
         }catch  (Exception e) {
@@ -121,7 +112,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public WorkFlowRespVO workFlow(String formNo, String userName, String directSupervisorCode, String positionCode){
+    public void workFlow(String formNo, String userName, String directSupervisorCode, String positionCode){
         WorkFlowVO workFlowVO = new WorkFlowVO();
         //在审批中看到的页面
         workFlowVO.setFormUrl(workFlowBaseUrl.applyPurchase + "?purchase_apply_code=" + formNo + "&" + workFlowBaseUrl.authority);
@@ -150,51 +141,19 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             LOGGER.info("审批流调用失败");
             throw new BizException(workFlowRespVO.getMsg());
         }
-        return workFlowRespVO;
     }
 
-    private void log(String purchaseOrderId, String createById, String createByName, Integer code, String name, String remark){
-        OperationLog log = new OperationLog();
-        log.setOperationId(purchaseOrderId);
-        log.setCreateById(createById);
-        log.setCreateByName(createByName);
-        log.setOperationType(code);
-        log.setOperationContent(name);
-        log.setRemark(remark);
-        Integer count = operationLogDao.insert(log);
-        LOGGER.info("操作日志{}", count);
-    }
-
-    // 修改库存在途数
-//    private void updateWayNum(PurchaseOrder order){
-//        StockChangeRequest stock = new StockChangeRequest();
-//        stock.setOperationType(6);
-//        List<StockVoRequest> list = Lists.newArrayList();
-//        StockVoRequest stockVo;
-//        // 查询该采购单的商品
-//        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(order.getPurchaseOrderId());
-//        if(CollectionUtils.isNotEmptyCollection(products)){
-//            for(PurchaseApplyDetailResponse product:products){
-//                stockVo = new StockVoRequest();
-//                stockVo.setTransportCenterCode(product.getTransportCenterCode());
-//                stockVo.setTransportCenterName(product.getTransportCenterName());
-//                stockVo.setWarehouseCode(product.getWarehouseCode());
-//                stockVo.setWarehouseName(product.getWarehouseName());
-//                stockVo.setOperator(product.getCreateByName());
-//                stockVo.setSkuCode(product.getSkuCode());
-//                stockVo.setSkuName(product.getSkuName());
-//                long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
-//                stockVo.setChangeNum(singleCount);
-//                stockVo.setDocumentNum(product.getPurchaseOrderCode());
-//                stockVo.setDocumentType(3);
-//                stockVo.setTaxRate(product.getTaxRate());
-//                stockVo.setCompanyName(order.getCompanyName());
-//                stockVo.setCompanyCode(order.getCompanyCode());
-//                list.add(stockVo);
-//            }
-//            stock.setStockVoRequests(list);
-//            stockService.changeStock(stock);
-//        }
+//    private void log(String purchaseOrderId, String createById, String createByName, Integer code, String name, String remark){
+//        OperationLog log = new OperationLog();
+//        log.setOperationId(purchaseOrderId);
+//        log.setCreateById(createById);
+//        log.setCreateByName(createByName);
+//        log.setOperationType(code);
+//        log.setOperationContent(name);
+//        log.setRemark(remark);
+//        Integer count = operationLogDao.insert(log);
+//        LOGGER.info("操作日志{}", count);
 //    }
+
 
 }
