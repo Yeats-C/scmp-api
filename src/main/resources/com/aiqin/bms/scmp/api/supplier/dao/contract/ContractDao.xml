@@ -57,6 +57,9 @@
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="comment" jdbcType="VARCHAR" property="comment"/>
+    <result column="average_gross_margin" jdbcType="DECIMAL" property="averageGrossMargin"/>
+    <result column="contract_property" jdbcType="VARCHAR" property="contractProperty"/>
+    <result column="contract_cost" jdbcType="DECIMAL" property="contractCost"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -68,7 +71,8 @@
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
     direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
     max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-    categories_supply_channels_code,categories_supply_channels_name,remark,comment
+    categories_supply_channels_code,categories_supply_channels_name,remark,comment,
+    average_gross_margin,contract_property,contract_cost
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
@@ -298,6 +302,15 @@
       <if test="comment != null">
         comment,
       </if>
+      <if test="averageGrossMargin != null">
+        average_gross_margin,
+      </if>
+      <if test="contractProperty != null">
+        contract_property,
+      </if>
+      <if test="contractCost != null">
+        contract_cost,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -462,6 +475,15 @@
       <if test="comment != null">
         #{comment},
       </if>
+      <if test="averageGrossMargin != null">
+        #{averageGrossMargin},
+      </if>
+      <if test="contractProperty != null">
+        #{contractProperty},
+      </if>
+      <if test="contractCost != null">
+        #{contractCost},
+      </if>
     </trim>
   </insert>
 
@@ -621,6 +643,18 @@
       <if test="remark != null">
         remark = #{remark},
       </if>
+      <if test="comment != null">
+        comment = #{comment},
+      </if>
+      <if test="averageGrossMargin != null">
+        average_gross_margin = #{averageGrossMargin},
+      </if>
+      <if test="contractProperty != null">
+        contract_property = #{contractProperty},
+      </if>
+      <if test="contractCost != null">
+        contract_cost = #{contractCost},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -666,7 +700,10 @@
       contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
       contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
       checkout_date = #{checkoutDate,jdbcType=VARCHAR},
-      min_amount = #{minAmount,jdbcType=VARCHAR}
+      min_amount = #{minAmount,jdbcType=VARCHAR},
+      average_gross_margin = #{averageGrossMargin},
+      contract_property = #{contractProperty},
+      contract_cost = #{contractCost}
     where id = #{id,jdbcType=BIGINT}
   </update>
 
