@@ -346,38 +346,40 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode){
-        if(StringUtils.isBlank(purchaseApplyCode)){
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode) {
+        if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 查询采购单信息
         PurchaseApply purchaseApply = new PurchaseApply();
         purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
         PurchaseApply apply = purchaseApplyDao.purchaseApply(purchaseApply);
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApply.getPurchaseApplyId());
-        if(CollectionUtils.isEmptyCollection(products)){
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(apply.getPurchaseApplyId());
+        if (CollectionUtils.isEmptyCollection(products)) {
             LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
-        }else {
-            // 查询采购申请单的公司
-            Stock stock;
-            for(PurchaseApplyDetailResponse detail:products){
-                // 查询库存数量，库存金额， 在途库存
-                stock = new Stock();
-                stock.setSkuCode(detail.getSkuCode());
-                stock.setTransportCenterCode(detail.getTransportCenterCode());
-                stock.setWarehouseCode(detail.getWarehouseCode());
-                stock.setCompanyCode(apply.getCompanyCode());
-                Stock info = stockDao.stockInfo(stock);
-                if(info != null){
-                    detail.setStockCount(info.getInventoryNum().intValue());
-                    detail.setTotalWayNum(info.getTotalWayNum().intValue());
-                    detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
-                    detail.setNewPurchasePrice(info.getNewPurchasePrice());
-                }
+        }
+        // 查询采购申请单的公司
+        Stock stock;
+        for (PurchaseApplyDetailResponse detail : products) {
+            // 查询库存数量，库存金额， 在途库存
+            stock = new Stock();
+            stock.setSkuCode(detail.getSkuCode());
+            stock.setTransportCenterCode(detail.getTransportCenterCode());
+            stock.setWarehouseCode(detail.getWarehouseCode());
+            stock.setCompanyCode(apply.getCompanyCode());
+            Stock info = stockDao.stockInfo(stock);
+            if (info != null) {
+                detail.setStockCount(info.getInventoryNum().intValue());
+                detail.setTotalWayNum(info.getTotalWayNum().intValue());
+                detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
+                detail.setNewPurchasePrice(info.getNewPurchasePrice());
             }
+            // 最小单位数量
+            Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
+            detail.setSingleCount(totalCount);
             this.productDetail(products);
-        }                                                                                                                                
+        }
         return HttpResponse.success(products);
     }
 
