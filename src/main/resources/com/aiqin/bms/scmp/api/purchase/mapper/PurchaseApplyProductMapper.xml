@@ -807,9 +807,10 @@
           </if>
       </where>
   </select>
-  <select id="applyPurchaseProductList" resultMap="BaseResultMap">
+  <select id="applyPurchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
       select
       <include refid="Base_Column_List"></include>
-      from purchase_apply_product where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+      from purchase_apply_product
+      where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </select>
 </mapper>

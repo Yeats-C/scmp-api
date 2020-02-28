@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -137,10 +138,12 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="预计到货时间")
     @JsonProperty("pre_arrival_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date preArrivalTime;
 
     @ApiModelProperty(value="有效期")
     @JsonProperty("valid_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date validTime;
 
     @ApiModelProperty(value="实际最小单位数量")
@@ -177,10 +180,12 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="发货时间")
     @JsonProperty("delivery_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date deliveryTime;
 
     @ApiModelProperty(value="入库时间")
     @JsonProperty("warehouse_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date warehouseTime;
 
     @ApiModelProperty(value="付款方式 0.预付款 1.货到付款 2.月结 3.实销实结")
@@ -221,10 +226,12 @@ public class PurchaseOrder {
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value="创建人id")
