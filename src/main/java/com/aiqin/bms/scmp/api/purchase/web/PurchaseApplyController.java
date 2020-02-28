@@ -114,7 +114,7 @@ public class PurchaseApplyController {
     }
 
     @PostMapping("/purchase/save")
-    @ApiOperation("保存/提交审核/编辑 采购申请单")
+    @ApiOperation("保存/提交审核 采购申请单")
     public HttpResponse applyPurchaseSave(@RequestBody PurchaseApplySaveRequest request) {
         return purchaseApplyService.applyPurchaseSave(request);
     }

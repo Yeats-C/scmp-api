@@ -29,7 +29,7 @@ public class PurchaseApplySaveRequest {
     @JsonProperty("file_list")
     private List<FileRecord> fileList;
 
-    @ApiModelProperty(value="保存方式 0.保存 1.提交审核 2.编辑")
+    @ApiModelProperty(value="保存方式 0.保存 1.提交审核")
     @JsonProperty("save_mode")
     private Integer saveMode;
 }

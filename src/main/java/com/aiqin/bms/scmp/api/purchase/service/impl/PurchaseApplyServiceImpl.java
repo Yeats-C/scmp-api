@@ -521,7 +521,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 采购申请单id
         String purchaseApplyId;
         String purchaseApplyCode;
-        if (request.getSaveMode().equals(0) || request.getSaveMode().equals(1)) {
+        if (StringUtils.isBlank(request.getPurchaseApply().getPurchaseApplyId())) {
             purchaseApplyId = IdUtil.purchaseId();
             purchaseApplyCode = code;
         } else {
@@ -553,7 +553,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             product.setPurchaseApplyId(purchaseApplyId);
             product.setPurchaseApplyCode(purchaseApplyCode);
             product.setApplyProductStatus(1);
-            if (!request.getSaveMode().equals(2)) {
+            if (StringUtils.isBlank(request.getPurchaseApply().getPurchaseApplyId())) {
                 product.setCreateById(currentAuthToken.getPersonId());
                 product.setCreateByName(currentAuthToken.getPersonName());
             }
@@ -588,7 +588,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         purchaseApply.setStatus(0);
         purchaseApply.setCompanyCode(currentAuthToken.getCompanyCode());
         purchaseApply.setCompanyName(currentAuthToken.getCompanyName());
-        if (!request.getSaveMode().equals(2)) {
+        if (StringUtils.isBlank(request.getPurchaseApply().getPurchaseApplyId())) {
             purchaseApply.setCreateById(currentAuthToken.getPersonId());
             purchaseApply.setCreateByName(currentAuthToken.getPersonName());
         }
@@ -596,7 +596,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         purchaseApply.setUpdateByName(currentAuthToken.getPersonId());
 
         // 判断采购申请的保存、编辑
-        if (request.getSaveMode().equals(2)) {
+        if (!StringUtils.isBlank(request.getPurchaseApply().getPurchaseApplyId())) {
             purchaseApply.setApplyStatus(0);
             // 更改采购申请单的信息
             Integer applyCount = purchaseApplyDao.update(purchaseApply);
@@ -633,7 +633,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             center.setPurchaseApplyId(purchaseApplyId);
             center.setPurchaseApplyCode(purchaseApplyCode);
             center.setPurchaseApplyName(request.getPurchaseApply().getPurchaseApplyName());
-            if (!request.getSaveMode().equals(2)) {
+            if (StringUtils.isBlank(request.getPurchaseApply().getPurchaseApplyId())) {
                 center.setCreateById(currentAuthToken.getPersonId());
                 center.setCreateByName(currentAuthToken.getPersonName());
             }
