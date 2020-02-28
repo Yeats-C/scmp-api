@@ -1098,8 +1098,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         }
         // 查询采购申请单
         PurchaseApply apply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
-        if(!apply.getApplyStatus().equals(Global.PURCHASE_APPLY_0) ||
-                !apply.getApplyStatus().equals(Global.PURCHASE_APPLY_2) ||
+        if(!apply.getApplyStatus().equals(Global.PURCHASE_APPLY_0) &&
+                !apply.getApplyStatus().equals(Global.PURCHASE_APPLY_2) &&
                 !apply.getApplyStatus().equals(Global.PURCHASE_APPLY_3)){
             LOGGER.info("撤销采购申请单不在待提交、待审批、审批中");
             throw new GroundRuntimeException("撤销采购申请单非待提交、待审批、审批中状态");
@@ -1135,15 +1135,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
         // 添加撤销日志
-        OperationLog log = new OperationLog();
-        log.setOperationId(purchaseApplyId);
-        log.setCreateById(currentAuthToken.getPersonId());
-        log.setCreateByName(currentAuthToken.getPersonName());
-        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode());
-        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName());
-        log.setRemark(apply.getRemark());
-        int logCount = operationLogDao.insert(log);
-        LOGGER.error("添加采购申请单撤销日志：" + logCount);
+//        OperationLog log = new OperationLog();
+//        log.setOperationId(purchaseApplyId);
+//        log.setCreateById(currentAuthToken.getPersonId());
+//        log.setCreateByName(currentAuthToken.getPersonName());
+//        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode());
+//        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName());
+//        log.setRemark(apply.getRemark());
+//        int logCount = operationLogDao.insert(log);
+//        LOGGER.error("添加采购申请单撤销日志：" + logCount);
         return HttpResponse.success();
     }
 
