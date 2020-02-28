@@ -10,12 +10,12 @@
     <result column="purchasing_group_code" jdbcType="VARCHAR" property="purchasingGroupCode" />
     <result column="settlement_method" jdbcType= "TINYINT" property="settlementMethod" />
     <result column="payment_period" jdbcType="INTEGER" property="paymentPeriod" />
-    <result column="shipping_fee" jdbcType="BIGINT" property="shippingFee" />
+    <result column="shipping_fee" jdbcType="DECIMAL" property="shippingFee" />
     <result column="delivery_charges" jdbcType="TINYINT" property="deliveryCharges" />
     <result column="unloading_fee" jdbcType="BIGINT" property="unloadingFee" />
     <result column="other_conventions" jdbcType="VARCHAR" property="otherConventions" />
     <result column="fixed_rebate_type" jdbcType="TINYINT" property="fixedRebateType" />
-    <result column="return_rate" jdbcType="BIGINT" property="returnRate" />
+    <result column="return_rate" jdbcType="DECIMAL" property="returnRate" />
     <result column="target_rebate" jdbcType="TINYINT" property="targetRebate" />
 <!--    <result column="plan_type" jdbcType="TINYINT" property="planType" />-->
     <result column="start_time" jdbcType="TIMESTAMP" property="startTime" />
@@ -45,8 +45,8 @@
     <result column="contract_type_code" jdbcType="VARCHAR" property="contractTypeCode"/>
     <result column="contract_type_name" jdbcType="VARCHAR" property="contractTypeName"/>
     <result column="checkout_date" jdbcType="VARCHAR" property="checkoutDate"/>
-    <result column="min_amount" jdbcType="BIGINT" property="minAmount"/>
-    <result column="max_amount" jdbcType="BIGINT" property="maxAmount"/>
+    <result column="min_amount" jdbcType="DECIMAL" property="minAmount"/>
+    <result column="max_amount" jdbcType="DECIMAL" property="maxAmount"/>
     <result column="delivery_cycle" jdbcType="INTEGER" property="deliveryCycle"/>
     <result column="tax_rate" jdbcType="BIGINT" property="taxRate"/>
     <result column="discount" jdbcType="VARCHAR" property="discount"/>
@@ -57,6 +57,9 @@
     <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName"/>
     <result column="remark" jdbcType="VARCHAR" property="remark"/>
     <result column="comment" jdbcType="VARCHAR" property="comment"/>
+    <result column="average_gross_margin" jdbcType="DECIMAL" property="averageGrossMargin"/>
+    <result column="contract_property" jdbcType="VARCHAR" property="contractProperty"/>
+    <result column="contract_cost" jdbcType="DECIMAL" property="contractCost"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, year, year_name, supplier_name, supplier_code, purchasing_group_code, settlement_method, 
@@ -68,7 +71,8 @@
     pre_payment_ratio,ship_payment_ratio,payment_on_delivery_ratio,rebate_clause,
     direct_supervisor_code,direct_supervisor_name,contract_type_code,contract_type_name,checkout_date,min_amount,
     max_amount,delivery_cycle,tax_rate,discount,return_guarantee,return_guarantee_day,warranty,
-    categories_supply_channels_code,categories_supply_channels_name,remark,comment
+    categories_supply_channels_code,categories_supply_channels_name,remark,comment,
+    average_gross_margin,contract_property,contract_cost
   </sql>
 
   <select id="selectBySelectContract" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.contract.vo.QueryContractReqVo" resultMap="BaseResultMap">
@@ -298,6 +302,15 @@
       <if test="comment != null">
         comment,
       </if>
+      <if test="averageGrossMargin != null">
+        average_gross_margin,
+      </if>
+      <if test="contractProperty != null">
+        contract_property,
+      </if>
+      <if test="contractCost != null">
+        contract_cost,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -325,7 +338,7 @@
         #{paymentPeriod,jdbcType=INTEGER},
       </if>
       <if test="shippingFee != null">
-        #{shippingFee,jdbcType=BIGINT},
+        #{shippingFee,jdbcType=DECIMAL},
       </if>
       <if test="deliveryCharges != null">
         #{deliveryCharges,jdbcType=TINYINT},
@@ -462,6 +475,15 @@
       <if test="comment != null">
         #{comment},
       </if>
+      <if test="averageGrossMargin != null">
+        #{averageGrossMargin},
+      </if>
+      <if test="contractProperty != null">
+        #{contractProperty},
+      </if>
+      <if test="contractCost != null">
+        #{contractCost},
+      </if>
     </trim>
   </insert>
 
@@ -490,7 +512,7 @@
         payment_period = #{paymentPeriod,jdbcType=INTEGER},
       </if>
       <if test="shippingFee != null">
-        shipping_fee = #{shippingFee,jdbcType=BIGINT},
+        shipping_fee = #{shippingFee,jdbcType=DECIMAL},
       </if>
       <if test="deliveryCharges != null">
         delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
@@ -505,7 +527,7 @@
         fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
       </if>
       <if test="returnRate != null">
-        return_rate = #{returnRate,jdbcType=BIGINT},
+        return_rate = #{returnRate,jdbcType=DECIMAL},
       </if>
       <if test="targetRebate != null">
         target_rebate = #{targetRebate,jdbcType=TINYINT},
@@ -589,7 +611,7 @@
         checkout_date = #{checkoutDate,jdbcType=VARCHAR},
       </if>
       <if test="minAmount != null">
-       min_amount = #{minAmount,jdbcType=VARCHAR},
+       min_amount = #{minAmount,jdbcType=DECIMAL},
       </if>
       <if test="maxAmount != null">
         max_amount = #{maxAmount},
@@ -621,6 +643,18 @@
       <if test="remark != null">
         remark = #{remark},
       </if>
+      <if test="comment != null">
+        comment = #{comment},
+      </if>
+      <if test="averageGrossMargin != null">
+        average_gross_margin = #{averageGrossMargin},
+      </if>
+      <if test="contractProperty != null">
+        contract_property = #{contractProperty},
+      </if>
+      <if test="contractCost != null">
+        contract_cost = #{contractCost},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -633,12 +667,12 @@
       purchasing_group_code = #{purchasingGroupCode,jdbcType=VARCHAR},
       settlement_method = #{settlementMethod,jdbcType=TINYINT},
       payment_period = #{paymentPeriod,jdbcType=INTEGER},
-      shipping_fee = #{shippingFee,jdbcType=BIGINT},
+      shipping_fee = #{shippingFee,jdbcType=DECIMAL},
       delivery_charges = #{deliveryCharges,jdbcType=TINYINT},
       unloading_fee = #{unloadingFee,jdbcType=BIGINT},
       other_conventions = #{otherConventions,jdbcType=VARCHAR},
       fixed_rebate_type = #{fixedRebateType,jdbcType=TINYINT},
-      return_rate = #{returnRate,jdbcType=BIGINT},
+      return_rate = #{returnRate,jdbcType=DECIMAL},
       target_rebate = #{targetRebate,jdbcType=TINYINT},
 --       plan_type = #{planType,jdbcType=TINYINT},
       start_time = #{startTime,jdbcType=TIMESTAMP},
@@ -666,7 +700,10 @@
       contract_type_code = #{contractTypeCode,jdbcType=VARCHAR},
       contract_type_name = #{contractTypeName,jdbcType=VARCHAR},
       checkout_date = #{checkoutDate,jdbcType=VARCHAR},
-      min_amount = #{minAmount,jdbcType=VARCHAR}
+      min_amount = #{minAmount,jdbcType=DECIMAL},
+      average_gross_margin = #{averageGrossMargin},
+      contract_property = #{contractProperty},
+      contract_cost = #{contractCost}
     where id = #{id,jdbcType=BIGINT}
   </update>
 

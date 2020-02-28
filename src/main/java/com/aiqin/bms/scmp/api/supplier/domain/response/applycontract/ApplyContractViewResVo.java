@@ -217,6 +217,15 @@ public class  ApplyContractViewResVo {
     @ApiModelProperty("最下面的备注")
     private String comment;
 
+    @ApiModelProperty("平均毛利率")
+    private BigDecimal averageGrossMargin;
+
+    @ApiModelProperty("合同属性")
+    private String contractProperty;
+
+    @ApiModelProperty("合同费用")
+    private BigDecimal contractCost;
+
     public void setApplyType(Byte applyType) {
         if(applyType.equals((byte)0)){
             this.applyType = "新增申请";

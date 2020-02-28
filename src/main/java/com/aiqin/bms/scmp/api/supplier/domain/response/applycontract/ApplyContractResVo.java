@@ -43,7 +43,7 @@ public class ApplyContractResVo {
     private Integer paymentPeriod;
 
     @ApiModelProperty("配送费")
-    private Long shippingFee;
+    private BigDecimal shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
     private Byte deliveryCharges;
@@ -96,4 +96,13 @@ public class ApplyContractResVo {
 
     @ApiModelProperty("审核申请单号")
     private String formNo;
+
+    @ApiModelProperty("平均毛利率")
+    private BigDecimal averageGrossMargin;
+
+    @ApiModelProperty("合同属性")
+    private String contractProperty;
+
+    @ApiModelProperty("合同费用")
+    private BigDecimal contractCost;
 }

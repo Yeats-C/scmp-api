@@ -125,4 +125,13 @@ public class Contract extends CommonBean {
 
     @ApiModelProperty("返利条款 0:固定返利 1:目标返利")
     private Byte rebateClause;
+
+    @ApiModelProperty("平均毛利率")
+    private BigDecimal averageGrossMargin;
+
+    @ApiModelProperty("合同属性")
+    private String contractProperty;
+
+    @ApiModelProperty("合同费用")
+    private BigDecimal contractCost;
 }
