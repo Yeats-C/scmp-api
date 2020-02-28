@@ -378,6 +378,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             // 最小单位数量
             Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
             detail.setSingleCount(totalCount);
+            detail.setProductPurchaseSum(BigDecimal.valueOf(totalCount).multiply(detail.getProductPurchaseAmount()).
+                    setScale(4, BigDecimal.ROUND_HALF_UP));
             this.productDetail(products);
         }
         return HttpResponse.success(products);
