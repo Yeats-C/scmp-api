@@ -382,22 +382,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         LOGGER.info("添加采购单商品信息", productCount);
 
         // 保存采购单成功开始入库
-//        String inboundOderCode = purchaseOrderCode + "01";
-//        PurchaseInboundRequest inboundRequest = new PurchaseInboundRequest();
-//        inboundRequest.setInboundOrderCode(inboundOderCode);
-//        inboundRequest.setPurchaseNum(1);
-//        inboundRequest.setPurchaseOrderId(purchaseId);
-//        InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
+        String inboundOderCode = purchaseOrderCode + "01";
+        PurchaseInboundRequest inboundRequest = new PurchaseInboundRequest();
+        inboundRequest.setInboundOrderCode(inboundOderCode);
+        inboundRequest.setPurchaseNum(1);
+        inboundRequest.setPurchaseOrderId(purchaseId);
+        InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
         LOGGER.info("开始调用采购单入库");
-//        String s = inboundService.saveInbound(reqSave);
-//        if(StringUtils.isBlank(s)){
-//            LOGGER.error("生成入库单失败....");
-//            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
-//        }else {
-//            LOGGER.info("调用采购单入库成功：" + s);
-//            // 增加采购在途数
-//            this.wayNum(purchaseOrder, 6);
-//        }
+        String s = inboundService.saveInbound(reqSave);
+        if(StringUtils.isBlank(s)){
+            LOGGER.error("生成入库单失败....");
+            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+        }else {
+            LOGGER.info("调用采购单入库成功：" + s);
+            // 增加采购在途数
+            this.wayNum(purchaseOrder, 6);
+        }
         return HttpResponse.success();
     }
 
@@ -721,11 +721,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private InboundReqSave InboundReqSave(PurchaseInboundRequest request) {
 
         // 获取当前登录人的信息
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (currentAuthToken == null) {
-            LOGGER.info("获取当前登录信息失败");
-            throw new GroundRuntimeException("获取当前登录信息失败！");
-        }
+//        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+//        if (currentAuthToken == null) {
+//            LOGGER.info("获取当前登录信息失败");
+//            throw new GroundRuntimeException("获取当前登录信息失败！");
+//        }
 
         // 查询采购单信息
         PurchaseOrder purchaseOrder = purchaseOrderDao.purchaseOrder(request.getPurchaseOrderId());
@@ -733,8 +733,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         InboundReqSave save = new InboundReqSave();
         // 赋值入库单字段
         save.setInboundOderCode(request.getInboundOrderCode());
-        save.setCompanyCode(currentAuthToken.getCompanyCode());
-        save.setCompanyName(currentAuthToken.getCompanyName());
+        save.setCompanyCode(purchaseOrder.getCompanyCode());
+        save.setCompanyName(purchaseOrder.getCompanyName());
         save.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
         save.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
         save.setInboundTypeCode(InboundTypeEnum.RETURN_SUPPLY.getCode());
@@ -747,8 +747,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setSupplierCode(purchaseOrder.getSupplierCode());
         save.setSupplierName(purchaseOrder.getSupplierName());
         save.setPurchaseNum(request.getPurchaseNum());
-        save.setCreateBy(currentAuthToken.getPersonId());
-        save.setUpdateBy(currentAuthToken.getPersonName());
+        save.setCreateBy(purchaseOrder.getCreateById());
+        save.setUpdateBy(purchaseOrder.getCreateByName());
         save.setCreateTime(Calendar.getInstance().getTime());
         save.setUpdateTime(Calendar.getInstance().getTime());
         save.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
@@ -808,7 +808,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             BigDecimal productTotalAmount = product.getProductTotalAmount() == null ? big : product.getProductTotalAmount();
             reqVo.setPreTaxAmount(productTotalAmount);
             reqVo.setLinenum(product.getLinnum().longValue());
-            reqVo.setCreateBy(currentAuthToken.getPersonName());
+            reqVo.setCreateBy(purchaseOrder.getCreateByName());
             reqVo.setCreateTime(Calendar.getInstance().getTime());
             reqVo.setTax(product.getTaxRate());
             preInboundMainNum += reqVo.getPreInboundMainNum();
