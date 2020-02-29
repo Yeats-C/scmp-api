@@ -7,7 +7,6 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.bireport.domain.request.PurchaseApplyReqVo;
 import com.aiqin.bms.scmp.api.bireport.domain.response.editpurchase.PurchaseApplyRespVo;
 import com.aiqin.bms.scmp.api.bireport.service.ProSuggestReplenishmentService;
-import com.aiqin.bms.scmp.api.common.PurchaseOrderLogEnum;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
@@ -125,7 +124,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     @Resource
     private ProductSkuCheckoutDao productSkuCheckoutDao;
     @Resource
-    private OperationLogDao operationLogDao;
+    private PurchaseOrderDao purchaseOrderDao;
 
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
@@ -1375,19 +1374,22 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         /** 组装数据 */
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         // 查询采购单的信息
-        PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrderCode);
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
+        PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+        //PurchaseApplyDetailResponse detail = purchaseOrderDetailsDao.purchaseOrderDetail(purchaseOrderCode);
         dataMap.put("code", purchaseOrderCode);
-        if(detail != null){
-            dataMap.put("singleSum", detail.getSingleCount());
-            if(detail.getExpectArrivalTime() != null) {
-                dataMap.put("time", sdf.format(detail.getExpectArrivalTime()));
+        if(order != null){
+            dataMap.put("singleSum", order.getSingleCount());
+            if(order.getPreArrivalTime() != null) {
+                dataMap.put("time", sdf.format(order.getPreArrivalTime()));
             }
         }
         String fileName = "订货单";
-        if(StringUtils.isNotBlank(detail.getSupplierCode())) {
-            dataMap.put("supplyName", detail.getSupplierName());
-            fileName = "(" + detail.getSupplierCode() + ")" + detail.getSupplierName();
-            SupplyPdfResponse supply = supplyCompanyDao.supplyInfoByPdf(detail.getSupplierCode());
+        if(StringUtils.isNotBlank(order.getSupplierCode())) {
+            dataMap.put("supplyName", order.getSupplierName());
+            fileName = "(" + order.getSupplierCode() + ")" + order.getSupplierName();
+            SupplyPdfResponse supply = supplyCompanyDao.supplyInfoByPdf(order.getSupplierCode());
             dataMap.put("number", supply == null || supply.getSupplyCode() == null ? "" : supply.getSupplyCode());
             dataMap.put("address", supply == null || supply.getAddress() == null ? "" : supply.getAddress());
             dataMap.put("phone", supply == null || supply.getMobilePhone() == null ? "" : supply.getMobilePhone());
@@ -1395,15 +1397,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             dataMap.put("contacts", supply == null || supply.getContactName() == null ? "" : supply.getContactName());
         }
         // 查询收货部门的信息
-        if(StringUtils.isNotBlank(detail.getWarehouseCode())){
-            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(detail.getWarehouseCode());
-            dataMap.put("dept", detail.getTransportCenterName());
+        if(StringUtils.isNotBlank(order.getWarehouseCode())){
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(order.getWarehouseCode());
+            dataMap.put("dept", order.getTransportCenterName());
             dataMap.put("goodsAddress", warehouse.getProvinceName() + warehouse.getCityName() + "/" + warehouse.getDetailedAddress());
             dataMap.put("mobile", warehouse.getPhone());
             dataMap.put("goodsPerson", warehouse.getContact());
         }
         // 查询采购单的商品信息
-        List<PurchaseOrderProduct> list = purchaseOrderProductDao.orderProductInfo(detail.getPurchaseOrderId());
+        List<PurchaseOrderProduct> list = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
         List<Map<String, Object>> productList = new ArrayList<>();
         Map<String, Object> map;
         int i = 0;
