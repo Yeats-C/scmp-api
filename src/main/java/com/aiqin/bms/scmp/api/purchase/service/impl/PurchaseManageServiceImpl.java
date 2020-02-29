@@ -330,11 +330,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 获取当前登录人的信息
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if (currentAuthToken == null) {
-            LOGGER.info("获取当前登录信息失败");
-            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
-        }
+//        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+//        if (currentAuthToken == null) {
+//            LOGGER.info("获取当前登录信息失败");
+//            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+//        }
 
         // 获取采购单编码
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
@@ -349,10 +349,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);
-        purchaseOrder.setCreateById(currentAuthToken.getPersonId());
-        purchaseOrder.setCreateByName(currentAuthToken.getPersonName());
-        purchaseOrder.setUpdateById(currentAuthToken.getPersonId());
-        purchaseOrder.setUpdateById(currentAuthToken.getPersonName());
+        purchaseOrder.setCreateById(request.getPurchaseOrder().getCreateById());
+        purchaseOrder.setCreateByName(request.getPurchaseOrder().getCreateByName());
+        purchaseOrder.setUpdateById(request.getPurchaseOrder().getCreateById());
+        purchaseOrder.setUpdateById(request.getPurchaseOrder().getCreateByName());
         // 添加采购单
         Integer orderCount = purchaseOrderDao.insert(purchaseOrder);
         LOGGER.info("添加采购申信息:{}", orderCount);
@@ -361,7 +361,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
 
         // 添加生成采购单操作日志
-        log(purchaseId, currentAuthToken.getPersonId(), currentAuthToken.getPersonName(),
+        log(purchaseId, request.getPurchaseOrder().getCreateById(), request.getPurchaseOrder().getCreateByName(),
             PurchaseOrderLogEnum.INSERT_ORDER.getCode(), PurchaseOrderLogEnum.INSERT_ORDER.getName(), purchaseOrder.getApplyTypeForm());
 
         // 添加采购单商品
@@ -382,12 +382,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         LOGGER.info("添加采购单商品信息", productCount);
 
         // 保存采购单成功开始入库
-        String inboundOderCode = purchaseOrderCode + "01";
-        PurchaseInboundRequest inboundRequest = new PurchaseInboundRequest();
-        inboundRequest.setInboundOrderCode(inboundOderCode);
-        inboundRequest.setPurchaseNum(1);
-        inboundRequest.setPurchaseOrderId(purchaseId);
-        InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
+//        String inboundOderCode = purchaseOrderCode + "01";
+//        PurchaseInboundRequest inboundRequest = new PurchaseInboundRequest();
+//        inboundRequest.setInboundOrderCode(inboundOderCode);
+//        inboundRequest.setPurchaseNum(1);
+//        inboundRequest.setPurchaseOrderId(purchaseId);
+//        InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
         LOGGER.info("开始调用采购单入库");
 //        String s = inboundService.saveInbound(reqSave);
 //        if(StringUtils.isBlank(s)){

@@ -730,8 +730,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 purchaseOrderProduct.setProductAmount(product.getProductPurchaseAmount());
                 BigDecimal amount = BigDecimal.valueOf(count).multiply(product.getProductPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP);
                 purchaseOrderProduct.setProductTotalAmount(amount);
-                //purchaseOrderProduct.setStockAmount();
-                //purchaseOrderProduct.setFactorySkuCode();
                 proList.add(purchaseOrderProduct);
             }
             orderRequest.setProductList(proList);
