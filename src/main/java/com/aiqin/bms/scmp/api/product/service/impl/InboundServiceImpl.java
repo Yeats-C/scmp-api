@@ -244,7 +244,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
+   //@Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
             log.info("采购单入库参数：" + reqVo);
@@ -288,7 +288,7 @@ public class InboundServiceImpl implements InboundService {
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
             InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            //inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
+            inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
             // 跟新数据库状态
             return inbound.getInboundOderCode();
         } catch (GroundRuntimeException e) {
@@ -390,8 +390,8 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-//    @Async("myTaskAsyncPool")
-    @Transactional(rollbackFor = Exception.class)
+    @Async("myTaskAsyncPool")
+    //@Transactional(rollbackFor = Exception.class)
     public void pushWms(String code,InboundServiceImpl inboundService) {
         log.info("异步推送给wms");
         String url = "";
