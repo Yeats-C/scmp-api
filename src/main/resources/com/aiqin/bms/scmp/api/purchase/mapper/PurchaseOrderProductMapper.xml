@@ -147,7 +147,7 @@
       </if>
     </where>
   </update>
-  <select id="purchaseOrderList" resultMap="BaseResultMap">
+  <select id="purchaseOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
     select <include refid="Base_Column_List"></include>
     from purchase_order_product
     <where>

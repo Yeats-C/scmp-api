@@ -461,6 +461,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 transportCenter.setPurchaseApplyName(center.getPurchaseGroupName());
                 transportCenter.setTransportCenterCode(center.getTransportCenterCode());
                 transportCenter.setTransportCenterName(center.getTransportCenterName());
+                transportCenter.setWarehouseCode(center.getWarehouseCode());
+                transportCenter.setWarehouseName(center.getWarehouseName());
                 Long totalCount = 0L;
                 BigDecimal productAmount = big, returnAmount = big, giftAmount = big;
                 for(PurchaseApplyProduct product:proList){
