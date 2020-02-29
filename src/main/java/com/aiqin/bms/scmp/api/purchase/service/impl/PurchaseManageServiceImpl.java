@@ -389,14 +389,15 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         inboundRequest.setPurchaseOrderId(purchaseId);
         InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
         LOGGER.info("开始调用采购单入库");
-        String s = inboundService.saveInbound(reqSave);
-        if(StringUtils.isBlank(s)){
-            LOGGER.error("生成入库单失败....");
-            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
-        }
-        LOGGER.info("调用采购单入库成功：" + s);
-        // 增加采购在途数
-        this.wayNum(purchaseOrder, 6);
+//        String s = inboundService.saveInbound(reqSave);
+//        if(StringUtils.isBlank(s)){
+//            LOGGER.error("生成入库单失败....");
+//            return HttpResponse.failure(ResultCode.SAVE_OUT_BOUND_FAILED);
+//        }else {
+//            LOGGER.info("调用采购单入库成功：" + s);
+//            // 增加采购在途数
+//            this.wayNum(purchaseOrder, 6);
+//        }
         return HttpResponse.success();
     }
 

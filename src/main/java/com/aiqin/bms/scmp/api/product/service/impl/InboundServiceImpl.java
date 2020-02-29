@@ -288,7 +288,7 @@ public class InboundServiceImpl implements InboundService {
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
             InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            //inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
+            inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
             // 跟新数据库状态
             return inbound.getInboundOderCode();
         } catch (GroundRuntimeException e) {
