@@ -1384,6 +1384,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             if(order.getPreArrivalTime() != null) {
                 dataMap.put("time", sdf.format(order.getPreArrivalTime()));
             }
+            dataMap.put("time",  sdf.format(order.getCreateTime()));
         }
         String fileName = "订货单";
         if(StringUtils.isNotBlank(order.getSupplierCode())) {
@@ -1419,7 +1420,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 map.put("skuCode", product.getSkuCode());
                 // 查询sku 的销售条形码
                 ProductSkuPurchaseInfo salesInfo = productSkuPurchaseInfoDao.getInfo(product.getSkuCode());
-                String salesCode = salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
+                String salesCode = salesInfo == null || salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
                 map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
                 try {
