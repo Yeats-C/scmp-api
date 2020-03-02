@@ -706,7 +706,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             purchaseOrder.setValidTime(center.getValidTime());
             purchaseOrder.setPaymentMode(center.getPaymentMode());
             purchaseOrder.setPaymentTime(center.getPaymentTime());
-            purchaseOrder.setPrePaymentAmount(center.getGiftTaxAmount());
+            purchaseOrder.setPrePaymentAmount(center.getPrePaymentAmount());
             purchaseOrder.setInboundLine(center.getInboundLine());
             purchaseOrder.setSingleCount(center.getTotalCount().intValue());
             purchaseOrder.setProductTotalAmount(center.getProductTaxAmount());
