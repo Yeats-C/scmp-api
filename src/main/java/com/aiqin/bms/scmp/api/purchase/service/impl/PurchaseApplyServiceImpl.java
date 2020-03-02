@@ -700,6 +700,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             PurchaseOrder purchaseOrder = BeanCopyUtils.copy(purchaseApply, PurchaseOrder.class);
             purchaseOrder.setTransportCenterCode(center.getTransportCenterCode());
             purchaseOrder.setTransportCenterName(center.getTransportCenterName());
+            purchaseOrder.setWarehouseCode(center.getWarehouseCode());
+            purchaseOrder.setWarehouseName(center.getWarehouseName());
             purchaseOrder.setPreArrivalTime(center.getPreArrivalTime());
             purchaseOrder.setValidTime(center.getValidTime());
             purchaseOrder.setPaymentMode(center.getPaymentMode());

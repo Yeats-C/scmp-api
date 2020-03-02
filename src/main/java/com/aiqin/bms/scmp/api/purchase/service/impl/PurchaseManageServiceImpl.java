@@ -377,6 +377,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             product.setPurchaseOrderId(purchaseId);
             product.setPurchaseOrderCode(purchaseOrderCode);
             product.setLinnum(i);
+            ++i;
         }
         Integer productCount = purchaseOrderProductDao.insertAll(productList);
         LOGGER.info("添加采购单商品信息", productCount);
