@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
@@ -205,5 +206,22 @@ public class DraftServiceImpl implements DraftService {
     @Override
     public Integer deleteSupply(Long id) {
         return productSkuSupplyUnitDraftMapper.deleteDraftById(id);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deleteIds(List<Long> ids) {
+        if(null == ids){
+            throw new BizException(ResultCode.APPLY_DATA_EMPTY);
+        }
+        if(CollectionUtils.isNotEmptyCollection(ids)){
+            for (Long id:
+            ids  ) {
+                productSkuConfigService.deleteDraftById(id);
+                productSkuSupplyUnitService.deleteDraftById(id);
+            }
+        }
+        return HttpResponse.success(ids.size());
+
     }
 }
