@@ -272,7 +272,7 @@
     </foreach>
   </select>
 
-    <select id="loadAllConfigCode"  resultMap="BaseResultMap">
+    <select id="loadAllConfigCode"  resultType="java.lang.String">
         select
         config_code
         from product_sku_config_draft
