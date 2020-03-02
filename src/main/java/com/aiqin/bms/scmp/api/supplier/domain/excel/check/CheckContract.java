@@ -220,6 +220,26 @@ public class CheckContract {
                 reqVo.setCategoriesSupplyChannelsName(info.getSupplierContent());
             }
         }
+        //合同费用
+        if (StringUtils.isNotBlank(contractImportNew.getContractCost())) {
+            try {
+                reqVo.setContractCost(NumberConvertUtils.stringParseBigDecimal(contractImportNew.getContractCost().trim()));
+            } catch (NumberFormatException e) {
+                error.add("合同费用格式不正确");
+            }
+        }
+        //平均毛利率
+        if (StringUtils.isNotBlank(contractImportNew.getAverageGrossMargin())) {
+            try {
+                reqVo.setAverageGrossMargin(NumberConvertUtils.stringParseBigDecimal(contractImportNew.getAverageGrossMargin().trim()));
+            } catch (NumberFormatException e) {
+                error.add("平均毛利率格式不正确");
+            }
+        }
+        //合同属性
+        if (StringUtils.isNotBlank(contractImportNew.getContractProperty())) {
+            reqVo.setContractProperty(contractImportNew.getContractProperty().trim());
+        }
         //品类
         if (StringUtils.isBlank(contractImportNew.getCaReqVos())) {
             error.add("品类不能为空");
