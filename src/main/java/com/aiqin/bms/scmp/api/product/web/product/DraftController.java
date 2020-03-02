@@ -118,7 +118,7 @@ public class DraftController {
     }
 
     @PostMapping("/saves")
-    @ApiOperation("提交所有保存")
+    @ApiOperation("提交所有待申请仓库配置")
     public HttpResponse saves(@RequestBody SaveReqVo reqVo){
         log.info("保存商品申请单详情接口,接口参数{}", JSON.toJSON(reqVo));
         try {
