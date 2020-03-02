@@ -794,7 +794,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if (skuPurchaseInfo != null) {
                 reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
                 reqVo.setUnitName(skuPurchaseInfo.getUnitName());
-                reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
+                reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient() == null ? "" :
+                        skuPurchaseInfo.getZeroRemovalCoefficient().toString());
                 reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
             }
             Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
