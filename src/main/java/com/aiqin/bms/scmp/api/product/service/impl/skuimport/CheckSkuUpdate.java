@@ -444,7 +444,7 @@ public class CheckSkuUpdate {
             productSkuDraft.setRemark(importVo.getRemark());
         }
         if (StringUtils.isNotBlank(importVo.getProductDesc()))
-            productSkuDraft.setProductDesc(importVo.getProductDesc());
+            productSkuDraft.setRemark(importVo.getProductDesc());
         //管理方式默认写死
         productSkuDraft.setManagementStyleCode("1");
         productSkuDraft.setManagementStyleName("只管理数量");
