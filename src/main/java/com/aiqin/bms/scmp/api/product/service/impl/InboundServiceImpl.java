@@ -390,7 +390,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   // @Async("myTaskAsyncPool")
+    @Async("myTaskAsyncPool")
     //@Transactional(rollbackFor = Exception.class)
     public void pushWms(String code,InboundServiceImpl inboundService) {
         log.info("异步推送给wms");

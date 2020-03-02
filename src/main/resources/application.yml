@@ -375,19 +375,15 @@ mgs:
         link: '/purchase/applyOrder'
         methods:
         - code: SCMP006001001
-          name: 撤销
+          name: 新增
         - code: SCMP006001002
-          name: 编辑
+          name: 撤销
         - code: SCMP006001003
-          name: 生成采购单
+          name: 编辑
         - code: SCMP006001004
           name: 重新编辑
         - code: SCMP006001005
           name: 采购价来源
-        - code: SCMP006001006
-          name: 保存
-        - code: SCMP006001007
-          name: 提交审核
       - code: SCMP006002
         name: 采购单管理
         link: '/purchase/purchase'
@@ -401,10 +397,6 @@ mgs:
         - code: SCMP006002004
           name: 完成
         - code: SCMP006002005
-          name: 重发
-        - code: SCMP006002006
-          name: 查看
-        - code: SCMP006002007
           name: 导出
       - code: SCMP006003
         name: 退供申请单管理
