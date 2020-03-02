@@ -2,7 +2,7 @@ server:
   port: 80
 spring:
   profiles:
-    active: dev
+    active: ${profile.name}
   resources:
     chain:
       strategy:
