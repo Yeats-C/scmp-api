@@ -245,4 +245,8 @@ public class PurchaseApplyProduct {
     @JsonProperty("settlement_method_name")
     private String settlementMethodName;
 
+    @ApiModelProperty(value="税率")
+    @JsonProperty("tax_rate")
+    private BigDecimal taxRate;
+
 }

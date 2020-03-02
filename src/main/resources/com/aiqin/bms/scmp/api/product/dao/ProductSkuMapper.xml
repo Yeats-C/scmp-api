@@ -2163,7 +2163,7 @@
     com.supply_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost,
-    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName,
+    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName, psc.Input_tax_rate as taxRate,
     com.contact_name as contactPerson, com.phone as mobile, ps.product_code as spuCode, ps.product_name as productName
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
@@ -2337,7 +2337,8 @@
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
     pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
     ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_num, 0) * ifnull(s.tax_cost, 0) as stockAmount,
-    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName
+    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName,
+    psc.Input_tax_rate as taxRate
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code

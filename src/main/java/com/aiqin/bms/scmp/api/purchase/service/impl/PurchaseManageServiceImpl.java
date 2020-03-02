@@ -377,6 +377,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             product.setPurchaseOrderId(purchaseId);
             product.setPurchaseOrderCode(purchaseOrderCode);
             product.setLinnum(i);
+            ++i;
         }
         Integer productCount = purchaseOrderProductDao.insertAll(productList);
         LOGGER.info("添加采购单商品信息", productCount);
@@ -793,7 +794,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if (skuPurchaseInfo != null) {
                 reqVo.setUnitCode(skuPurchaseInfo.getUnitCode());
                 reqVo.setUnitName(skuPurchaseInfo.getUnitName());
-                reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient().toString());
+                reqVo.setInboundBaseUnit(skuPurchaseInfo.getZeroRemovalCoefficient() == null ? "" :
+                        skuPurchaseInfo.getZeroRemovalCoefficient().toString());
                 reqVo.setInboundBaseContent(skuPurchaseInfo.getBaseProductContent().toString());
             }
             Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole().intValue();
