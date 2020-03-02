@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplySkuConfigRe
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaMainRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.DetailConfigSupplierRespVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuSupplyUnitDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
@@ -61,6 +62,8 @@ public class DraftServiceImpl implements DraftService {
     @Autowired
     private ProductSkuSupplyUnitDraftMapper productSkuSupplyUnitDraftMapper;
 
+    @Autowired
+    private ProductSkuConfigDraftMapper draftMapper;
 
     /**
      * 根据审批类型获取审批单数据
@@ -198,6 +201,25 @@ public class DraftServiceImpl implements DraftService {
         return HttpResponse.success(s);
     }
 
+
+    /**
+     * 保存申请单
+     *
+     * @param reqVo
+     * @return
+     */
+    @Override
+    public HttpResponse<Integer> saves(SaveReqVo reqVo) {
+        String s = "";
+        List<String> configCodes=draftMapper.loadAllConfigCode();
+            ApplySkuConfigReqVo applySkuConfigReqVo = new ApplySkuConfigReqVo();
+            BeanCopyUtils.copy(reqVo,applySkuConfigReqVo);
+            applySkuConfigReqVo.setSkuConfigs((configCodes));
+            productSkuConfigService.insertApplyList(applySkuConfigReqVo);
+        return HttpResponse.success(s);
+    }
+
+
     @Override
     public Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode) {
         return productSkuDraftMapper.selectBySkuCode(skuNameList,companyCode);
@@ -218,7 +240,6 @@ public class DraftServiceImpl implements DraftService {
             for (Long id:
             ids  ) {
                 productSkuConfigService.deleteDraftById(id);
-                productSkuSupplyUnitService.deleteDraftById(id);
             }
         }
         return HttpResponse.success(ids.size());

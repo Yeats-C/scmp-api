@@ -57,4 +57,6 @@ public interface DraftService {
     Integer deleteSupply(Long id);
 
     HttpResponse deleteIds(List<Long> ids);
+
+    HttpResponse saves(SaveReqVo reqVo);
 }

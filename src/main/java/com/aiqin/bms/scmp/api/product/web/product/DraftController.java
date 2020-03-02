@@ -90,7 +90,7 @@ public class DraftController {
 
 
     @DeleteMapping("/deleteIds")
-    @ApiOperation("删除")
+    @ApiOperation("更具商品仓库id，批量删除")
     public HttpResponse deleteIds(@RequestBody List<Long> ids){
         log.info("删除商品申请单详情接口,接口参数{}", JSON.toJSON(ids));
         try {
@@ -110,6 +110,20 @@ public class DraftController {
         try {
             return HttpResponse.success(draftService.deleteSupply(id));
         } catch (BizException e) {
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,ResultCode.SYSTEM_ERROR.getMessage());
+        }
+    }
+
+    @PostMapping("/saves")
+    @ApiOperation("提交所有保存")
+    public HttpResponse saves(@RequestBody SaveReqVo reqVo){
+        log.info("保存商品申请单详情接口,接口参数{}", JSON.toJSON(reqVo));
+        try {
+            return draftService.saves(reqVo);
+        }  catch (BizException e) {
             return HttpResponse.failure(e.getMessageId());
         } catch (Exception e) {
             log.error(Global.ERROR, e);

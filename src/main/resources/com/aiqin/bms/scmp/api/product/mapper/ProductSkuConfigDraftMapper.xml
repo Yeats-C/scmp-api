@@ -271,6 +271,15 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </select>
+
+    <select id="loadAllConfigCode"  resultMap="BaseResultMap">
+        select
+        config_code
+        from product_sku_config_draft
+        where del_flag = 0
+        and apply_show = 0
+    </select>
+
   <select id="getListBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
