@@ -536,7 +536,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             product.setPreferentialAllocation(item.getTotalPreferentialAmount());
             product.setProductLineNum(item.getLineCode());
             product.setPromotionLineNum(item.getGiftLineCode());
-            BigDecimal amount = item.getPurchaseAmount().equals(BigDecimal.ZERO) ? BigDecimal.ZERO : item.getPurchaseAmount();
+            BigDecimal amount = item.getPurchaseAmount() == null ? BigDecimal.ZERO : item.getPurchaseAmount();
             product.setChannelUnitPrice(amount);
             BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
             product.setTotalChannelPrice(totalAmount);
