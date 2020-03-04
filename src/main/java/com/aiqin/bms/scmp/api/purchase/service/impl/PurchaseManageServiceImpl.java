@@ -748,7 +748,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setSupplierCode(purchaseOrder.getSupplierCode());
         save.setSupplierName(purchaseOrder.getSupplierName());
         save.setPurchaseNum(request.getPurchaseNum());
-        save.setCreateBy(purchaseOrder.getCreateById());
+        save.setCreateBy(purchaseOrder.getCreateByName());
         save.setUpdateBy(purchaseOrder.getCreateByName());
         save.setCreateTime(Calendar.getInstance().getTime());
         save.setUpdateTime(Calendar.getInstance().getTime());
