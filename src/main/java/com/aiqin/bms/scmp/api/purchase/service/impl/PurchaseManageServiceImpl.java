@@ -755,11 +755,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
 
         // 查询采购单商品信息
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(request.getPurchaseOrderId());
-        if (CollectionUtils.isEmptyCollection(products)) {
-            LOGGER.info("入库采购单商品信息未空");
-            throw new GroundRuntimeException("入库采购单商品信息未空！");
-        }
+        List<PurchaseOrderProduct> products = request.getProductList();
 
         // 赋值入库单商品
         Long preInboundNum = 0L, preInboundMainNum = 0L;
@@ -869,10 +865,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             Integer actualCount = orderProduct.getActualSingleCount() == null ? 0 : orderProduct.getActualSingleCount().intValue();
             product.setActualSingleCount(actualCount + product.getActualSingleCount());
             Integer count1 = purchaseOrderProductDao.update(product);
-            if (count1 == 0) {
-                LOGGER.info("采购入库完成，更改采购单商品信息的实际数量失败");
-                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-            }
+            LOGGER.info("采购入库回传，更改采购单商品信息的实际数量失败" + count1);
 
             // 预计单品数量
             Integer singleCount = orderProduct.getSingleCount() == null ? 0 : orderProduct.getSingleCount().intValue();
@@ -904,7 +897,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         order.setActualReturnAmount(actualReturnAmount);
         order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
         // 判断入库次数 、入库是否完成
-        if (purchaseOrder.getInboundLine() > 1 || purchaseStorage.getPurchaseNum() < purchaseOrder.getInboundLine()) {
+        if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() < purchaseOrder.getInboundLine() ||
+                productList.size() >= 1
+        ) {
             if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
                 // 变更入库中状态
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
@@ -930,6 +925,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundRequest.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
             inboundRequest.setInboundOrderCode(inboundOderCode);
             inboundRequest.setPurchaseNum(Integer.valueOf(code));
+            inboundRequest.setProductList(productList);
             InboundReqSave save = this.InboundReqSave(inboundRequest);
             String s = inboundService.saveInbound(save);
             if (StringUtils.isBlank(s)) {
