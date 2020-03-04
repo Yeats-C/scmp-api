@@ -502,12 +502,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
                 }
                 purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
-                InboundServiceImpl service = (InboundServiceImpl) AopContext.currentProxy();
+                //InboundServiceImpl service = (InboundServiceImpl) AopContext.currentProxy();
                 // 根据采购单号查询入库单号
-                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseOrder.getPurchaseOrderCode());
+                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(order.getPurchaseOrderCode());
                 // 入库单号
                 String code = num <= 9 ? ("0" + num.toString()) : num.toString();
-                service.pushWms(purchaseOrder.getPurchaseOrderCode() + code, service);
+                inboundService.wms(code);
                 break;
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);
