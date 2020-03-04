@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceI
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.mapper.*;
@@ -77,7 +78,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     }
 
     @Override
-    public ProductSkuPriceInfoRespVO view(String code) {
+    public ProductSkuPriceInfoRespVO1 view(String code) {
         return productSkuPriceInfoMapper.selectInfoByCode(code);
     }
 
