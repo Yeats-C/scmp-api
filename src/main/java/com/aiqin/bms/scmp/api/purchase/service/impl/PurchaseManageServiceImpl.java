@@ -507,7 +507,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(order.getPurchaseOrderCode());
                 // 入库单号
                 String code = num <= 9 ? ("0" + num.toString()) : num.toString();
-                inboundService.wms(code);
+                inboundService.wms(order.getPurchaseOrderCode() + code);
                 break;
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);
@@ -1263,4 +1263,5 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<String> list = purchaseOrderDao.getPurchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
         return HttpResponse.success(list);
     }
+
 }
