@@ -388,6 +388,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         inboundRequest.setInboundOrderCode(inboundOderCode);
         inboundRequest.setPurchaseNum(1);
         inboundRequest.setPurchaseOrderId(purchaseId);
+        // 查询商品信息
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(purchaseId);
+        if(CollectionUtils.isEmptyCollection(products)){
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        inboundRequest.setProductList(products);
         InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
         LOGGER.info("开始调用采购单入库");
         String s = inboundService.saveInbound(reqSave);
@@ -926,6 +932,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundRequest.setInboundOrderCode(inboundOderCode);
             inboundRequest.setPurchaseNum(Integer.valueOf(code));
             inboundRequest.setProductList(productList);
+            if(CollectionUtils.isEmptyCollection(productList)){
+                return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+            }
             InboundReqSave save = this.InboundReqSave(inboundRequest);
             String s = inboundService.saveInbound(save);
             if (StringUtils.isBlank(s)) {
