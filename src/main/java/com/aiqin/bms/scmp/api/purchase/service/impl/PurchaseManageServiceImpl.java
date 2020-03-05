@@ -908,7 +908,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
-        if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() < purchaseOrder.getInboundLine() &&
+        if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
                 productList.size() >= 1
         ) {
             if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
