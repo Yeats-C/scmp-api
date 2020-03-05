@@ -55,4 +55,6 @@ public interface PurchaseApplyService {
     HttpResponse purchaseDelete(String purchaseOrderId);
 
     void insertPurchaseOrder(String purchaseApplyId);
+
+    List<PurchaseApplyDetailResponse> productInfo(PurchaseApplyRequest purchases);
 }

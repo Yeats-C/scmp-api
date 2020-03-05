@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -100,4 +101,8 @@ public class PurchaseFormResponse {
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_sum")
     private BigDecimal giftTaxSum;
+
+    @ApiModelProperty(value="商品集合")
+    @JsonProperty("sku_data")
+    private PurchaseApplyDetailResponse skuData;
 }

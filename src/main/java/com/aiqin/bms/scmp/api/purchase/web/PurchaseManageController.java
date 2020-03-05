@@ -9,10 +9,12 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.mgs.control.component.service.AreaBasicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -211,8 +213,12 @@ public class PurchaseManageController {
 
     @GetMapping("/sku/supply")
     @ApiOperation("查询sku对应的供应商")
-    public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode) {
-        return purchaseManageService.skuSupply(skuCode);
+    public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode,
+                                                        @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                        @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                        @RequestParam(value = "settlement_method_code", required = false) String settlementMethodCode,
+                                                        @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
+        return purchaseManageService.skuSupply(skuCode, transportCenterCode, warehouseCode, settlementMethodCode, purchaseGroupCode);
     }
 
 //    @GetMapping("/order/details/apply")

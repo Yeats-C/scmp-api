@@ -51,7 +51,8 @@ public interface PurchaseManageService {
 
     HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId);
 
-    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode);
+    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode, String transportCenterCode, String warehouseCode,
+                                                 String settlementMethodCode, String purchaseGroupCode);
 
     HttpResponse<PurchaseApplyDetailResponse> applyDetails(String purchaseOrderCode);
 

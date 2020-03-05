@@ -197,6 +197,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         return HttpResponse.success(pageResData);
     }
 
+    public List<PurchaseApplyDetailResponse> productInfo(PurchaseApplyRequest purchases){
+        List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
+        this.productDetail(detail);
+        return detail;
+    }
+
     private void productDetail(List<PurchaseApplyDetailResponse> detail){
         if (CollectionUtils.isNotEmptyCollection(detail)) {
             PurchaseApplyReqVo applyReqVo;

@@ -26,6 +26,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -34,6 +35,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -109,6 +111,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private StockDao stockDao;
     @Resource
     private ProSuggestReplenishmentDao proSuggestReplenishmentDao;
+    @Resource
+    private PurchaseApplyService purchaseApplyService;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -1174,11 +1178,26 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<PurchaseFormResponse> skuSupply(String skuCode){
+    public  HttpResponse<PurchaseFormResponse> skuSupply(String skuCode, String transportCenterCode, String warehouseCode,
+                                                         String settlementMethodCode, String purchaseGroupCode){
         if(StringUtils.isBlank(skuCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
+        if(CollectionUtils.isNotEmptyCollection(purchaseFormResponses)){
+            PurchaseApplyRequest request;
+            for (PurchaseFormResponse response:purchaseFormResponses){
+                request = new PurchaseApplyRequest();
+                request.setSkuCode(response.getSkuCode());
+                request.setSupplierCode(response.getSupplierCode());
+                request.setTransportCenterCode(transportCenterCode);
+                request.setSettlementMethodCode(settlementMethodCode);
+                request.setWarehouseCode(warehouseCode);
+                request.setPurchaseGroupCode(purchaseGroupCode);
+                List<PurchaseApplyDetailResponse> responses = purchaseApplyService.productInfo(request);
+                response.setSkuData(responses.get(0));
+            }
+        }
         return HttpResponse.success(purchaseFormResponses);
     }
 
