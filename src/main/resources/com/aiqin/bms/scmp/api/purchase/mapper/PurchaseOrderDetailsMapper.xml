@@ -51,7 +51,7 @@
     valid_time, direct_supervisor_code, direct_supervisor_name, payment_code, payment_name, advance_payment,
     amount_payable, month_amount, payable_time, month_time, receipt, receipt_address, 
     delivery, delivery_address, delivery_time, warehouse_time, remark, details_status, 
-    order_code, order_type, score_code as scoreCode, create_time, create_by_id, create_by_name,
+    order_code, order_type, score_code, create_time, create_by_id, create_by_name,
     purchase_order_type_code, purchase_order_type_name, purchase_order_pre
   </sql>
   <insert id="insert">
