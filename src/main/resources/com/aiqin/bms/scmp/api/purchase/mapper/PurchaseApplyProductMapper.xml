@@ -485,8 +485,8 @@
        #{item.shortageNumber,jdbcType=DECIMAL}, #{item.shortageDay,jdbcType=INTEGER},
        #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},
        #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER},
-       #{item.factorySkuCode,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.createById,jdbcType=VARCHAR},
-       #{item.createByName,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
+       #{item.factorySkuCode,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR},
+       #{item.createByName,jdbcType=VARCHAR}, now(),
        #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL})
      </foreach>
   </insert>

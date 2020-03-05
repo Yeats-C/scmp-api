@@ -258,7 +258,7 @@
       <if test="contractName != null">
         contract_name = #{contractName,jdbcType=VARCHAR},
       </if>
---       update_time = now(),
+      update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>

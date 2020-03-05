@@ -81,7 +81,7 @@
       #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
       #{supplierMobile,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
       #{remark,jdbcType=VARCHAR}, #{receiptTurnover,jdbcType=INTEGER}, #{positionCode,jdbcType=VARCHAR},
-      #{positionName,jdbcType=VARCHAR},#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}, #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
+      #{positionName,jdbcType=VARCHAR}, now(), now(), #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
       #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{directSupervisorCode,jdbcType=VARCHAR},
       #{directSupervisorName,jdbcType=VARCHAR})
   </insert>
