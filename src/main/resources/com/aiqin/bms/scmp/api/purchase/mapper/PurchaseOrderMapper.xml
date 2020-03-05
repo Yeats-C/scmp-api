@@ -111,6 +111,12 @@
   <update id="update">
     update purchase_order
     <set>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyCode != null">
+        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
+      </if>
       <if test="purchaseApplyName != null">
         purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
       </if>
