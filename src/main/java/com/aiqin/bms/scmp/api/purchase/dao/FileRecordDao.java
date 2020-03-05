@@ -15,6 +15,6 @@ public interface FileRecordDao {
 
     Integer insertAll(@Param("fileId") String fileId,@Param("list") List<FileRecord> list);
 
-
+    Integer delete(String fileId);
 
 }

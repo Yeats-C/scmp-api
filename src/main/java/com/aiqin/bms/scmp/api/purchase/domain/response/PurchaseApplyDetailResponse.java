@@ -422,5 +422,15 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("company_code")
     private String companyCode;
 
+    @ApiModelProperty(value="spu编码")
+    @JsonProperty("spu_code")
+    private String spuCode;
+
+    @ApiModelProperty(value="商品名称")
+    @JsonProperty("product_name")
+    private String productName;
+
+
+
 }
 

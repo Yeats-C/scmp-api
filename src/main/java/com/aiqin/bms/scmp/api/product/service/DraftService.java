@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.draft.DetailReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.draft.SaveReqVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -54,4 +55,8 @@ public interface DraftService {
     Map<String, ProductSkuDraft> selectBySkuCode(Set<String> skuNameList, String companyCode);
 
     Integer deleteSupply(Long id);
+
+    HttpResponse deleteIds(List<Long> ids);
+
+    HttpResponse saves(SaveReqVo reqVo);
 }

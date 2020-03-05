@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface OrderInfoMapper {
@@ -46,4 +47,6 @@ public interface OrderInfoMapper {
     Integer updateByOrderCodes(@Param(value = "list") List<String> orderCodes);
 
     Integer updateBatch(@Param(value = "list") List<OrderInfo> list);
+
+    Integer updateDevliverAmountByOrderCode(@Param("orderCode") String orderCode, @Param("deliverAmount") BigDecimal deliverAmount);
 }

@@ -2162,7 +2162,10 @@
     ps.product_code as spuCode, ps.product_name as spuName, pi.spec as productSpec, su.supply_unit_code as supplierCode,
     com.supply_name as supplierName, ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
     s.new_purchase_price as newPurchasePrice, s.update_time as lastTime, ifnull(pi.base_product_content, 0) as baseProductContent,
-    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost
+    CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost,
+    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName, psc.Input_tax_rate as taxRate,
+    com.contact_name as contactPerson, com.phone as mobile, ps.product_code as spuCode, ps.product_name as productName,
+    su.tax_included_price as productPurchaseAmount
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join supply_company com on com.supply_code = su.supply_unit_code
@@ -2170,6 +2173,7 @@
     inner join product_sku_config sc on sc.sku_code = ps.sku_code
     inner join warehouse w on w.logistics_center_code = sc.transport_center_code
     inner join product_sku_stock_info ss on ss.product_sku_code = ps.sku_code
+    inner join product_sku_checkout psc on psc.sku_code = ps.sku_code
     left join stock s on s.sku_code = ps.sku_code and s.warehouse_code = w.warehouse_code and s.transport_center_code = sc.transport_center_code
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
@@ -2238,14 +2242,17 @@
         </foreach>
       </if>
     </where>
+    group by  su.supply_unit_code,w.warehouse_code, psc.settlement_method_code
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="purchaseProductCount" resultType="java.lang.Integer">
-    select count(1)
+    select count(1) from
+    (select ps.sku_code
     from product_sku ps
-    left join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
-    left join product_sku_config sc on sc.sku_code = ps.sku_code
-    left join warehouse w on w.logistics_center_code = sc.transport_center_code
+    inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
+    inner join product_sku_config sc on sc.sku_code = ps.sku_code
+    inner join warehouse w on w.logistics_center_code = sc.transport_center_code
+    inner join product_sku_checkout psc on psc.sku_code = ps.sku_code
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
@@ -2313,6 +2320,8 @@
         </foreach>
       </if>
     </where>
+    group by  su.supply_unit_code,w.warehouse_code, psc.settlement_method_code)
+    AS countWarehouseProductByPage
   </select>
   <select id="contrastPropertySku" resultType="java.lang.String">
     select sku_code as skuCode
@@ -2333,19 +2342,22 @@
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
     pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
-    ifnull(su.tax_included_price, 0) as purchaseMax
+    ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_num, 0) * ifnull(s.tax_cost, 0) as stockAmount,
+    psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName,
+    psc.Input_tax_rate as taxRate, su.tax_included_price as productPurchaseAmount
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join product_sku_purchase_info pi on ps.sku_code = pi.product_sku_code
     inner join product_sku_config sc on sc.sku_code = ps.sku_code
     inner join warehouse w on w.logistics_center_code = sc.transport_center_code
     inner join product_sku_stock_info ss on ss.product_sku_code = ps.sku_code
+    inner join product_sku_checkout psc on psc.sku_code = ps.sku_code
     left join stock s on s.sku_code = ps.sku_code and s.warehouse_code = w.warehouse_code and s.transport_center_code = sc.transport_center_code
     <where>
       ps.del_flag = 0 and w.warehouse_type_code = 1
       and sc.config_status = 0 and ps.goods_gifts != 2
       and ps.sku_code = #{skuCode, jdbcType=VARCHAR}
-      and sc.transport_center_code = #{transportCenterCode, jdbcType=VARCHAR}
+      and w.warehouse_code = #{warehouseCode, jdbcType=VARCHAR}
       and su.supply_unit_code = #{supplierCode, jdbcType=VARCHAR}
       and ps.procurement_section_code = #{purchaseGroupCode, jdbcType=VARCHAR}
     </where>

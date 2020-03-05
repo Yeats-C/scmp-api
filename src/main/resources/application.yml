@@ -97,7 +97,7 @@ WorkFlowBaseUrl:
     scrap: http://scmp.bms.aiqin.com/#/store/detailScrap
   purchaseUrl:
     #采购申请详情
-    applyPurchase: http://scmp.bms.aiqin.com/#/purchase/detailPurchase
+    applyPurchase: http://scmp.bms.aiqin.com/#/purchase/applyOrderDetail
     #退供申请详情
     applyRefund: http://scmp.bms.aiqin.com/#/purchase/returnDetail
 #审批流的host
@@ -377,25 +377,27 @@ mgs:
         - code: SCMP006001001
           name: 新增
         - code: SCMP006001002
-          name: 编辑
+          name: 撤销
         - code: SCMP006001003
-          name: 生成采购单
+          name: 编辑
         - code: SCMP006001004
-          name: 预采购类型
+          name: 重新编辑
+        - code: SCMP006001005
+          name: 采购价来源
       - code: SCMP006002
         name: 采购单管理
         link: '/purchase/purchase'
         methods:
         - code: SCMP006002001
-          name: 取消
+          name: 撤销
         - code: SCMP006002002
-          name: 供应商备货
+          name: 备货
         - code: SCMP006002003
-          name: 供应商发货
+          name: 发货
         - code: SCMP006002004
-          name: 入库完成
+          name: 完成
         - code: SCMP006002005
-          name: 仓储确认
+          name: 导出
       - code: SCMP006003
         name: 退供申请单管理
         link: '/purchase/refundApply'

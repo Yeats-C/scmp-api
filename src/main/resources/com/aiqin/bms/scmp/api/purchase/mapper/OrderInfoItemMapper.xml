@@ -623,6 +623,15 @@
     where order_code = #{orderCode,jdbcType=VARCHAR}
     and product_line_num = #{lineCode,jdbcType=BIGINT}
   </select>
+  <select id="selectByIds" resultType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
+    select
+    <include refid="Base_Column_List" />
+    from order_info_item
+    where id in
+    <foreach collection="list" item="id" separator="," open="(" close=")">
+      #{id}
+    </foreach>
+  </select>
   <update id="updateBatch">
     <foreach collection="list" item="item" index="index" open="" close="" separator=";">
       update order_info_item

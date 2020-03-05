@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseApplyTransportCenterDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
+    <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
+    <result column="purchase_apply_name" jdbcType="VARCHAR" property="purchaseApplyName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="pre_arrival_time" jdbcType="TIMESTAMP" property="preArrivalTime" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="payment_mode" jdbcType="INTEGER" property="paymentMode" />
+    <result column="payment_time" jdbcType="INTEGER" property="paymentTime" />
+    <result column="pre_payment_amount" jdbcType="DECIMAL" property="prePaymentAmount" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
+    <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
+    <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+    <result column="inbound_line" jdbcType="INTEGER" property="inboundLine" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    purchase_apply_id, purchase_apply_code, purchase_apply_name, transport_center_code, transport_center_name,
+    warehouse_code, warehouse_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+    product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, total_count,
+    create_time, update_time, create_by_id, create_by_name, update_by_id, update_by_name
+  </sql>
+  <insert id="insert">
+    insert into purchase_apply_transport_center (purchase_apply_id, purchase_apply_code, purchase_apply_name,
+      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+      total_count, product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
+      create_by_id, create_by_name, update_by_id, update_by_name, warehouse_code, warehouse_name)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP},
+      #{validTime,jdbcType=TIMESTAMP}, #{paymentMode,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{prePaymentAmount,jdbcType=DECIMAL},
+      #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL}, #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL},
+      #{inboundLine,jdbcType=INTEGER},  now(), now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update purchase_apply_transport_center
+    <set>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="preArrivalTime != null">
+        pre_arrival_time = #{preArrivalTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validTime != null">
+        valid_time = #{validTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="paymentMode != null">
+        payment_mode = #{paymentMode,jdbcType=VARCHAR},
+      </if>
+      <if test="paymentTime != null">
+        payment_time = #{paymentTime,jdbcType=INTEGER},
+      </if>
+      <if test="prePaymentAmount != null">
+        pre_payment_amount = #{prePaymentAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="inboundLine != null">
+        inbound_line = #{inboundLine,jdbcType=INTEGER},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      update_time = NOW()
+    </set>
+    where purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+  </update>
+  <select id="selectList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply_transport_center
+    <where>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyId != null">
+        and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <insert id="insertAll">
+    insert into purchase_apply_transport_center (purchase_apply_id, purchase_apply_code, purchase_apply_name,
+      transport_center_code, transport_center_name, pre_arrival_time, valid_time, payment_mode, payment_time, pre_payment_amount,
+      total_count, product_tax_amount, return_tax_amount, gift_tax_amount, inbound_line, create_time, update_time,
+      create_by_id, create_by_name, update_by_id, update_by_name, warehouse_code, warehouse_name) values
+    <foreach collection="list" item="item" index="" separator=",">
+      (#{item.purchaseApplyId,jdbcType=VARCHAR}, #{item.purchaseApplyCode,jdbcType=VARCHAR}, #{item.purchaseApplyName,jdbcType=VARCHAR},
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR}, #{item.preArrivalTime,jdbcType=TIMESTAMP},
+      #{item.validTime,jdbcType=TIMESTAMP}, #{item.paymentMode,jdbcType=VARCHAR}, #{item.paymentTime,jdbcType=INTEGER}, #{item.prePaymentAmount,jdbcType=DECIMAL},
+      #{item.totalCount,jdbcType=BIGINT}, #{item.productTaxAmount,jdbcType=DECIMAL}, #{item.returnTaxAmount,jdbcType=DECIMAL}, #{item.giftTaxAmount,jdbcType=DECIMAL},
+      #{item.inboundLine,jdbcType=INTEGER}, NOW(), NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
+      #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR})
+     </foreach>
+  </insert>
+  <delete id="delete">
+    delete from purchase_apply_transport_center where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+  </delete>
+  <select id="purchaseCenterInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply_transport_center
+    <where>
+      <if test="purchaseApplyCode != null">
+        and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="transportCenterCode != null">
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="purchaseApplyId != null">
+        and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

@@ -5,13 +5,44 @@
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="purchase_apply_id" jdbcType="VARCHAR" property="purchaseApplyId" />
     <result column="purchase_apply_code" jdbcType="VARCHAR" property="purchaseApplyCode" />
+    <result column="purchase_apply_name" jdbcType="VARCHAR" property="purchaseApplyName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+    <result column="product_count" jdbcType="BIGINT" property="productCount" />
+    <result column="return_count" jdbcType="BIGINT" property="returnCount" />
+    <result column="gift_count" jdbcType="BIGINT" property="giftCount" />
     <result column="apply_type" jdbcType="INTEGER" property="applyType" />
     <result column="apply_status" jdbcType="INTEGER" property="applyStatus" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="status" jdbcType="VARCHAR" property="status" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
+    <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
+    <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+    <result column="purchase_source" jdbcType="INTEGER" property="purchaseSource" />
+    <result column="pre_purchase_type" jdbcType="INTEGER" property="prePurchaseType" />
+    <result column="pre_purchase_code" jdbcType="VARCHAR" property="prePurchaseCode" />
+    <result column="account_code" jdbcType="VARCHAR" property="accountCode" />
+    <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+    <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+    <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+    <result column="charge_person_code" jdbcType="VARCHAR" property="chargePersonCode" />
+    <result column="charge_person_name" jdbcType="VARCHAR" property="chargePersonName" />
+    <result column="supplier_person" jdbcType="VARCHAR" property="supplierPerson" />
+    <result column="supplier_mobile" jdbcType="VARCHAR" property="supplierMobile" />
+    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
+    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="receipt_turnover" jdbcType="INTEGER" property="receiptTurnover" />
+    <result column="position_code" jdbcType="VARCHAR" property="positionCode" />
+    <result column="position_name" jdbcType="VARCHAR" property="positionName" />
+    <result column="direct_supervisor_code" jdbcType="VARCHAR" property="directSupervisorCode" />
+    <result column="direct_supervisor_name" jdbcType="VARCHAR" property="directSupervisorName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
@@ -20,22 +51,67 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
-    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
-    create_time as createTime, create_by_id as createById, create_by_name as createByName, company_code as companyCode,
-    company_name as companyName
+    purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
+    settlement_method_code, settlement_method_name, product_count, return_count, gift_count,
+    apply_type, apply_status, purchase_group_code, purchase_group_name, company_code,
+    company_name, status, total_count, product_tax_amount, return_tax_amount, gift_tax_amount,
+    purchase_source, pre_purchase_type, pre_purchase_code, account_code, account_name,
+    contract_code, contract_name, charge_person_code, charge_person_name, supplier_person,
+    supplier_mobile, brand_id, brand_name, remark, receipt_turnover, position_code, position_name,
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name,
+    direct_supervisor_code, direct_supervisor_name
   </sql>
   <insert id="insert">
-    insert into purchase_apply (purchase_apply_id, purchase_apply_code, apply_type, apply_status, purchase_group_code,
-      purchase_group_name, company_code, company_name, create_time, create_by_id, create_by_name)
-    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{applyType,jdbcType=INTEGER},
-      #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR},
-      #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR},
-      #{createByName,jdbcType=VARCHAR})
+    insert into purchase_apply (purchase_apply_id, purchase_apply_code, purchase_apply_name, supplier_code, supplier_name,
+      settlement_method_code, settlement_method_name, product_count, return_count, gift_count, apply_type, apply_status,
+      purchase_group_code, purchase_group_name, company_code, company_name, status, total_count, product_tax_amount,
+      return_tax_amount, gift_tax_amount, purchase_source, pre_purchase_type, pre_purchase_code, account_code,
+      account_name, contract_code, contract_name, charge_person_code, charge_person_name, supplier_person,
+      supplier_mobile, brand_id, brand_name, remark, receipt_turnover, position_code, position_name,create_time,
+      update_time, create_by_id, update_by_id, create_by_name, update_by_name, direct_supervisor_code, direct_supervisor_name)
+    values (#{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{settlementMethodCode,jdbcType=VARCHAR},
+      #{settlementMethodName,jdbcType=VARCHAR}, #{productCount,jdbcType=BIGINT}, #{returnCount,jdbcType=BIGINT},
+      #{giftCount,jdbcType=BIGINT}, #{applyType,jdbcType=INTEGER}, #{applyStatus,jdbcType=INTEGER}, #{purchaseGroupCode,jdbcType=VARCHAR},
+      #{purchaseGroupName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
+      #{status,jdbcType=INTEGER}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL},
+      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{purchaseSource,jdbcType=INTEGER},
+      #{prePurchaseType,jdbcType=INTEGER}, #{prePurchaseCode,jdbcType=VARCHAR}, #{accountCode,jdbcType=VARCHAR},
+      #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR},
+      #{chargePersonCode,jdbcType=VARCHAR}, #{chargePersonName,jdbcType=VARCHAR}, #{supplierPerson,jdbcType=VARCHAR},
+      #{supplierMobile,jdbcType=VARCHAR}, #{brandId,jdbcType=VARCHAR}, #{brandName,jdbcType=VARCHAR},
+      #{remark,jdbcType=VARCHAR}, #{receiptTurnover,jdbcType=INTEGER}, #{positionCode,jdbcType=VARCHAR},
+      #{positionName,jdbcType=VARCHAR}, now(), now(), #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{directSupervisorCode,jdbcType=VARCHAR},
+      #{directSupervisorName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_apply
     <set>
+      <if test="purchaseApplyName != null">
+        purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodCode != null">
+        settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=BIGINT},
+      </if>
+      <if test="returnCount != null">
+        return_count = #{returnCount,jdbcType=BIGINT},
+      </if>
+      <if test="giftCount != null">
+        gift_count = #{giftCount,jdbcType=BIGINT},
+      </if>
       <if test="applyType != null">
         apply_type = #{applyType,jdbcType=INTEGER},
       </if>
@@ -48,22 +124,91 @@
       <if test="purchaseGroupName != null">
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
-      update_time = now(),
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="purchaseSource != null">
+        purchase_source = #{purchaseSource,jdbcType=INTEGER},
+      </if>
+      <if test="prePurchaseType != null">
+        pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER},
+      </if>
+      <if test="prePurchaseCode != null">
+        pre_purchase_code = #{prePurchaseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountCode != null">
+        account_code = #{accountCode,jdbcType=VARCHAR},
+      </if>
+      <if test="accountName != null">
+        account_name = #{accountName,jdbcType=VARCHAR},
+      </if>
+      <if test="contractCode != null">
+        contract_code = #{contractCode,jdbcType=VARCHAR},
+      </if>
+      <if test="contractName != null">
+        contract_name = #{contractName,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonCode != null">
+        charge_person_code = #{chargePersonCode,jdbcType=VARCHAR},
+      </if>
+      <if test="chargePersonName != null">
+        charge_person_name = #{chargePersonName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierPerson != null">
+        supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierMobile != null">
+        supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="receiptTurnover != null">
+        receipt_turnover = #{receiptTurnover,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR}
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorCode != null">
+        direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="directSupervisorName != null">
+        direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
       </if>
     </set>
-    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
+    where  purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
-  <select id="applyList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyResponse">
+  <select id="applyList" resultMap="BaseResultMap">
     select
-    purchase_apply_id as purchaseApplyId, purchase_apply_code as purchaseApplyCode, apply_type as applyType,
-    apply_status as applyStatus, purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName,
-    create_time as createTime, create_by_id as createById, create_by_name as createByName,
-    update_by_id as updateById, update_by_name as updateByName, update_time as updateTime
+    <include refid="Base_Column_List"></include>
     from purchase_apply
     <where>
       status = 0 and
@@ -71,11 +216,17 @@
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
       </foreach>
-      <if test="beginTime != null">
-        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      <if test="createBeginTime != null">
+        and create_time &gt;= #{createBeginTime,jdbcType=VARCHAR}
       </if>
-      <if test="finishTime != null">
-        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      <if test="createFinishTime != null">
+        and create_time &lt;= #{createFinishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateBeginTime != null">
+        and update_time &gt;= #{updateBeginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateFinishTime != null">
+        and update_time &lt;= #{updateFinishTime,jdbcType=VARCHAR}
       </if>
       <if test="purchaseApplyCode != null">
         and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
@@ -83,11 +234,26 @@
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="prePurchaseType != null">
+        and pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER}
+      </if>
       <if test="applyType != null">
         and apply_type = #{applyType,jdbcType=INTEGER}
       </if>
+      <if test="purchaseSource != null">
+        and purchase_source = #{purchaseSource,jdbcType=INTEGER}
+      </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus,jdbcType=INTEGER}
+      </if>
+      <if test="companyCode != null">
+        and company_code = #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
     order by create_time desc
@@ -101,11 +267,17 @@
       <foreach collection="groupList" open="(" close=")" item="item" separator=",">
         #{item.purchaseGroupCode,jdbcType=VARCHAR}
       </foreach>
-      <if test="beginTime != null">
-        and create_time &gt;= #{beginTime,jdbcType=VARCHAR}
+      <if test="createBeginTime != null">
+        and create_time &gt;= #{createBeginTime,jdbcType=VARCHAR}
       </if>
-      <if test="finishTime != null">
-        and create_time &lt;= #{finishTime,jdbcType=VARCHAR}
+      <if test="createFinishTime != null">
+        and create_time &lt;= #{createFinishTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateBeginTime != null">
+        and update_time &gt;= #{updateBeginTime,jdbcType=VARCHAR}
+      </if>
+      <if test="updateFinishTime != null">
+        and update_time &lt;= #{updateFinishTime,jdbcType=VARCHAR}
       </if>
       <if test="purchaseApplyCode != null">
         and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
@@ -113,15 +285,30 @@
       <if test="purchaseGroupCode != null">
         and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
       </if>
+      <if test="supplierCode != null">
+        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+      </if>
+      <if test="supplierName != null">
+        and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
+      <if test="prePurchaseType != null">
+        and pre_purchase_type = #{prePurchaseType,jdbcType=INTEGER}
+      </if>
       <if test="applyType != null">
         and apply_type = #{applyType,jdbcType=INTEGER}
+      </if>
+      <if test="purchaseSource != null">
+        and purchase_source = #{purchaseSource,jdbcType=INTEGER}
       </if>
       <if test="applyStatus != null">
         and apply_status = #{applyStatus,jdbcType=INTEGER}
       </if>
+      <if test="companyCode != null">
+        and company_code = #{companyCode,jdbcType=VARCHAR}
+      </if>
     </where>
   </select>
-  <select id="purchaseApplyInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply">
+  <select id="purchaseApplyInfo" resultMap="BaseResultMap" parameterType="java.lang.String">
     select <include refid="Base_Column_List"></include>
     from purchase_apply
     where status = 0 and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
@@ -141,4 +328,12 @@
     set status = 1
     where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </update>
+  <select id="purchaseApply" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_apply
+    where status = 0
+    <if test="purchaseApplyCode != null">
+      and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+    </if>
+  </select>
 </mapper>

@@ -27,7 +27,7 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("apply_type")
     private Integer applyType;
 
-    @ApiModelProperty(value="采购申请状态: 0 待提交  1 已完成")
+    @ApiModelProperty(value="采购申请状态0. 待提交 1.已完成  2.待审核 3.审核中 4.审核通过 5.审核不通过 6.撤销")
     @JsonProperty("apply_status")
     private Integer applyStatus;
 
@@ -158,16 +158,61 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("purchase_order_type_code")
     private Integer purchaseOrderTypeCode;
 
+    @ApiModelProperty(value="创建开始时间")
+    @JsonProperty("create_begin_time")
+    private String createBeginTime;
+
+    @ApiModelProperty(value="创建结束时间")
+    @JsonProperty("create_finish_time")
+    private String createFinishTime;
+
+    @ApiModelProperty(value="修改开始时间")
+    @JsonProperty("update_begin_time")
+    private String updateBeginTime;
+
+    @ApiModelProperty(value="修改结束时间")
+    @JsonProperty("update_finish_time")
+    private String updateFinishTime;
+
+    @ApiModelProperty(value="供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
+
+    @ApiModelProperty(value="预采购类型 0 普通采购 1.预采购")
+    @JsonProperty("pre_purchase_type")
+    private Integer prePurchaseType;
+
+    @ApiModelProperty(value="采购价来源 0.读取 1.录入/ 采购单来源 0.采购申请 1.订单")
+    @JsonProperty("purchase_source")
+    private Integer purchaseSource;
+
+    @ApiModelProperty(value="公司编码")
+    @JsonProperty("company_code")
+    private String companyCode;
+
+    @ApiModelProperty(value="结算方式")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
     public PurchaseApplyRequest() {
     }
 
-    public PurchaseApplyRequest(String purchaseApplyCode, Integer applyType, Integer applyStatus, String purchaseGroupCode, String beginTime, String finishTime) {
-        this.purchaseApplyCode = purchaseApplyCode;
-        this.applyType = applyType;
-        this.applyStatus = applyStatus;
+    public PurchaseApplyRequest(String createBeginTime, String createFinishTime, String updateBeginTime, String updateFinishTime,
+                                String purchaseGroupCode, String purchaseApplyCode, String supplierCode, String supplierName, Integer prePurchaseType,
+                                Integer applyType, Integer purchaseSource, Integer applyStatus, String companyCode) {
+        this.createBeginTime = createBeginTime;
+        this.createFinishTime = createFinishTime;
+        this.updateBeginTime = updateBeginTime;
+        this.updateFinishTime = updateFinishTime;
         this.purchaseGroupCode = purchaseGroupCode;
-        this.beginTime = beginTime;
-        this.finishTime = finishTime;
+        this.purchaseApplyCode = purchaseApplyCode;
+        this.supplierCode = supplierCode;
+        this.supplierName = supplierName;
+        this.prePurchaseType = prePurchaseType;
+        this.applyType = applyType;
+        this.purchaseSource = purchaseSource;
+        this.applyStatus = applyStatus;
+        this.companyCode = companyCode;
     }
 
     public PurchaseApplyRequest(String purchaseApplyId, String purchaseGroupCode, String skuCode, String skuName, String spuCode, String productName,
@@ -194,21 +239,23 @@ public class PurchaseApplyRequest extends PagesRequest {
         this.productShortageType = productShortageType;
     }
 
-    public PurchaseApplyRequest(String purchaseGroupCode, String beginTime, String finishTime, String supplierCode,
-                                String transportCenterCode, String purchaseOrderCode, String warehouseCode,
-                                Integer purchaseOrderStatus, Integer storageStatus, Integer purchaseMode, String approvalCode,
-                                Integer purchaseOrderTypeCode) {
+    public PurchaseApplyRequest(String purchaseGroupCode, String createBeginTime, String createFinishTime, String updateBeginTime,
+                                String updateFinishTime, String purchaseOrderCode, String supplierCode, String supplierName,
+                                String transportCenterCode,  String warehouseCode, Integer purchaseOrderStatus,
+                                Integer purchaseSource, String purchaseApplyCode, String companyCode ) {
         this.purchaseGroupCode = purchaseGroupCode;
-        this.beginTime = beginTime;
-        this.finishTime = finishTime;
-        this.supplierCode = supplierCode;
-        this.transportCenterCode = transportCenterCode;
+        this.createBeginTime = createBeginTime;
+        this.createFinishTime = createFinishTime;
+        this.updateBeginTime = updateBeginTime;
+        this.updateFinishTime = updateFinishTime;
         this.purchaseOrderCode = purchaseOrderCode;
+        this.supplierCode = supplierCode;
+        this.supplierName = supplierName;
+        this.transportCenterCode = transportCenterCode;
         this.warehouseCode = warehouseCode;
         this.purchaseOrderStatus = purchaseOrderStatus;
-        this.storageStatus = storageStatus;
-        this.purchaseMode = purchaseMode;
-        this.approvalCode = approvalCode;
-        this.purchaseOrderTypeCode = purchaseOrderTypeCode;
+        this.purchaseSource = purchaseSource;
+        this.purchaseApplyCode = purchaseApplyCode;
+        this.companyCode = companyCode;
     }
 }

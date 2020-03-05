@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,6 +12,7 @@ import java.util.Date;
 @ApiModel
 @Data
 public class PurchaseOrder {
+    @ApiModelProperty(value="")
     @JsonProperty("id")
     private Long id;
 
@@ -21,6 +23,18 @@ public class PurchaseOrder {
     @ApiModelProperty(value="采购单号")
     @JsonProperty("purchase_order_code")
     private String purchaseOrderCode;
+
+    @ApiModelProperty(value="采购申请单id")
+    @JsonProperty("purchase_apply_id")
+    private String purchaseApplyId;
+
+    @ApiModelProperty(value="采购申请单编码")
+    @JsonProperty("purchase_apply_code")
+    private String purchaseApplyCode;
+
+    @ApiModelProperty(value="采购申请单名称（审批名称）")
+    @JsonProperty("purchase_apply_name")
+    private String purchaseApplyName;
 
     @ApiModelProperty(value="仓库编码")
     @JsonProperty("transport_center_code")
@@ -66,15 +80,15 @@ public class PurchaseOrder {
     @JsonProperty("storage_status")
     private Integer storageStatus;
 
-    @ApiModelProperty(value="单品数量")
+    @ApiModelProperty(value="最小单位数量")
     @JsonProperty("single_count")
     private Integer singleCount;
 
-    @ApiModelProperty(value="含税采购金额")
+    @ApiModelProperty(value="商品含税金额")
     @JsonProperty("product_total_amount")
     private BigDecimal productTotalAmount;
 
-    @ApiModelProperty(value="实物返金额")
+    @ApiModelProperty(value="实物返含税金额")
     @JsonProperty("return_amount")
     private BigDecimal returnAmount;
 
@@ -118,28 +132,126 @@ public class PurchaseOrder {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty(value="来源类型 0.采购申请 1.订单")
+    @JsonProperty("purchase_source")
+    private Integer purchaseSource;
+
+    @ApiModelProperty(value="预计到货时间")
+    @JsonProperty("pre_arrival_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date preArrivalTime;
+
+    @ApiModelProperty(value="有效期")
+    @JsonProperty("valid_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date validTime;
+
+    @ApiModelProperty(value="实际最小单位数量")
+    @JsonProperty("actual_total_count")
+    private Long actualTotalCount;
+
+    @ApiModelProperty(value="实际商品数量")
+    @JsonProperty("actual_product_amount")
+    private BigDecimal actualProductAmount;
+
+    @ApiModelProperty(value="实际实物返数量")
+    @JsonProperty("actual_return_amount")
+    private BigDecimal actualReturnAmount;
+
+    @ApiModelProperty(value="实际赠品数量")
+    @JsonProperty("actual_gift_amount")
+    private BigDecimal actualGiftAmount;
+
+    @ApiModelProperty(value="负责人编码（登录人名称）")
+    @JsonProperty("charge_person_code")
+    private String chargePersonCode;
+
+    @ApiModelProperty(value="负责人名称")
+    @JsonProperty("charge_person_name")
+    private String chargePersonName;
+
+    @ApiModelProperty(value="联系人（供应商的联系人）")
+    @JsonProperty("supplier_person")
+    private String supplierPerson;
+
+    @ApiModelProperty(value="供应商电话")
+    @JsonProperty("supplier_mobile")
+    private String supplierMobile;
+
+    @ApiModelProperty(value="发货时间")
+    @JsonProperty("delivery_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date deliveryTime;
+
+    @ApiModelProperty(value="入库时间")
+    @JsonProperty("warehouse_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date warehouseTime;
+
+    @ApiModelProperty(value="付款方式 0.预付款 1.货到付款 2.月结 3.实销实结")
+    @JsonProperty("payment_mode")
+    private Integer paymentMode;
+
+    @ApiModelProperty(value="付款期")
+    @JsonProperty("payment_time")
+    private Integer paymentTime;
+
+    @ApiModelProperty(value="备注")
+    @JsonProperty("remark")
+    private String remark;
+
+    @ApiModelProperty(value="最多入库次数")
+    @JsonProperty("inbound_line")
+    private Integer inboundLine;
+
+    @ApiModelProperty(value="预付款金额")
+    @JsonProperty("pre_payment_amount")
+    private BigDecimal prePaymentAmount;
+
+    @ApiModelProperty(value="账户编码")
+    @JsonProperty("account_code")
+    private String accountCode;
+
+    @ApiModelProperty(value="账户名称")
+    @JsonProperty("account_name")
+    private String accountName;
+
+    @ApiModelProperty(value="合同编码")
+    @JsonProperty("contract_code")
+    private String contractCode;
+
+    @ApiModelProperty(value="合同名称")
+    @JsonProperty("contract_name")
+    private String contractName;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty(value="修改时间")
     @JsonProperty("update_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    @ApiModelProperty(value="创建者id")
+    @ApiModelProperty(value="创建人id")
     @JsonProperty("create_by_id")
     private String createById;
 
-    @ApiModelProperty(value="修改者id")
+    @ApiModelProperty(value="修改人id")
     @JsonProperty("update_by_id")
     private String updateById;
 
-    @ApiModelProperty(value="创建者")
+    @ApiModelProperty(value="创建人名称")
     @JsonProperty("create_by_name")
     private String createByName;
 
-    @ApiModelProperty(value="修改者")
+    @ApiModelProperty(value="修改人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
 
 }

@@ -28,7 +28,7 @@
   </insert>
   <insert id="insertAll">
     insert into file_record (file_id, file_code,file_path,
-      file_name,  create_time,  create_by_id,create_by_name)
+      file_name,  create_time,  create_by_id, create_by_name, update_time, update_by_id, update_by_name)
     values
     <foreach collection="list" separator="," item="item">
       (
@@ -36,9 +36,12 @@
       #{item.fileCode,jdbcType=VARCHAR},
       #{item.filePath,jdbcType=VARCHAR},
       #{item.fileName,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=VARCHAR},
+      now(),
       #{item.createById,jdbcType=VARCHAR},
-      #{item.createByName,jdbcType=VARCHAR}
+      #{item.createByName,jdbcType=VARCHAR},
+      now(),
+      #{item.updateById,jdbcType=VARCHAR},
+      #{item.updateByName,jdbcType=VARCHAR}
       )
     </foreach>
 
@@ -64,4 +67,7 @@
     from file_record
     where file_id = #{fileId,jdbcType=VARCHAR}
   </select>
+  <delete id="delete">
+    delete from file_record where file_id = #{fileId,jdbcType=VARCHAR}
+  </delete>
 </mapper>

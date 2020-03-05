@@ -19,4 +19,6 @@ public interface PurchaseOrderDetailsDao {
      * @return
      */
     List<PurchaseOrderDetails> listByCodes(List<String> list);
+
+    PurchaseOrderDetails orderDetail(String purchaseOrderCode);
 }

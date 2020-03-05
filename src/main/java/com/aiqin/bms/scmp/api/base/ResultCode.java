@@ -241,6 +241,12 @@ public interface ResultCode {
     MessageId PURCHASE_PRODUCT_NOT_SUBMIT = MessageId.create(Project.SCMP_API, 204, "此采购单所有商品都未提交， 不能完成");
     MessageId STORAGE_NOT_CONFIRM = MessageId.create(Project.SCMP_API, 205, "采购仓储状态非确认中状态， 不能确认");
     MessageId DL_CANCEL = MessageId.create(Project.SCMP_API, 206, "向dl发送撤销订单请求失败");
+    MessageId PURCHASE_APPLY_INFO_NULL = MessageId.create(Project.SCMP_API, 207, "采购申请单的通用信息为空");
+    MessageId PURCHASE_APPLY_TRANSPORT_NULL = MessageId.create(Project.SCMP_API, 208, "采购申请单的分仓信息为空");
+    MessageId PURCHASE_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 209, "采购申请单的商品信息为空");
+    MessageId PURCHASE_ORDER_STATUS_FAIL = MessageId.create(Project.SCMP_API, 210, "变更采购单状态失败");
+    MessageId PURCHASE_ORDER_NULL = MessageId.create(Project.SCMP_API, 211, "采购单信息为空");
+    MessageId PURCHASE_ORDER_INBOUND_STATUS = MessageId.create(Project.SCMP_API, 212, "采购单非入库中状态，不可再次入库");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API, 201, "审批中的数据不允许修改");

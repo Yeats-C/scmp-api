@@ -120,6 +120,18 @@ public final class Global {
     public static final Integer PURCHASE_ORDER_10 = 10;
 
     /**
+     *  采购申请单状态  0.待提交 1.已完成  2.待审核 3.审核中 4.审核通过 5.审核不通过 6.撤销
+     */
+    public static final Integer PURCHASE_APPLY_0 = 0;
+    public static final Integer PURCHASE_APPLY_1 = 1;
+    public static final Integer PURCHASE_APPLY_2 = 2;
+    public static final Integer PURCHASE_APPLY_3 = 3;
+    public static final Integer PURCHASE_APPLY_4 = 4;
+    public static final Integer PURCHASE_APPLY_5 = 5;
+    public static final Integer PURCHASE_APPLY_6 = 6;
+
+
+    /**
      *监管仓类型
      */
     public static final Byte SUPERVISORY_WAREHOUSE_TYPE = Byte.valueOf("4");

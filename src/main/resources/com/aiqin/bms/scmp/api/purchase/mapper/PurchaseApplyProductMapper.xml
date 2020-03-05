@@ -58,6 +58,7 @@
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
   </resultMap>
   <sql id="Base_Column_List">
     apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
@@ -73,7 +74,8 @@
     purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
-    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName
+    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName,
+    tax_rate as taxRate
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -83,7 +85,8 @@
       product_sort_name, product_type, product_purchase_amount, new_purchase_price, purchase_whole, purchase_single,
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
-      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code, create_time, create_by_id, create_by_name)
+      shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code, create_time,
+      create_by_id, create_by_name, tax_rate)
     values ( #{applyProductId,jdbcType=VARCHAR}, #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR},
       #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, #{spuCode,jdbcType=VARCHAR}, 
       #{productName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehousName,jdbcType=VARCHAR},
@@ -99,7 +102,8 @@
       #{purchaseMax,jdbcType=DECIMAL}, #{productSpec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR},
       #{modelNumber,jdbcType=VARCHAR}, #{shortageNumber,jdbcType=DECIMAL}, #{shortageDay,jdbcType=INTEGER},
       #{stockTurnover,jdbcType=INTEGER}, #{receiptTurnover,jdbcType=INTEGER}, #{errorInfo,jdbcType=VARCHAR}, 
-      #{applyProductStatus,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
+      #{applyProductStatus,jdbcType=INTEGER}, #{factorySkuCode,jdbcType=VARCHAR}, now(), #{createById,jdbcType=VARCHAR},
+      #{createByName,jdbcType=VARCHAR},  #{taxRate,jdbcType=DECIMAL})
   </insert>
   <update id="update">
     update purchase_apply_product
@@ -431,7 +435,8 @@
     brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
     new_purchase_price as newPurchasePrice, last_time as lastTime, sales_volume as salesVolume,  receipt_time as receiptTime,
     product_spec as productSpec, color_name as colorName, model_number as modelNumber, product_property_code as productPropertyCode,
-    product_property_name as productPropertyName, warehouse_code as warehouseCode,  warehouse_name as warehouseName
+    product_property_name as productPropertyName, warehouse_code as warehouseCode,  warehouse_name as warehouseName,
+    receipt_turnover as receiptTurnover, tax_rate as taxRate
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
@@ -453,7 +458,7 @@
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
       shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code,
-      create_time, create_by_id, create_by_name)
+      create_time, create_by_id, create_by_name, update_time, update_by_id, update_by_name, tax_rate)
     values
      <foreach collection="list" item="item" index="" separator=",">
       (#{item.applyProductId,jdbcType=VARCHAR},
@@ -480,8 +485,9 @@
        #{item.shortageNumber,jdbcType=DECIMAL}, #{item.shortageDay,jdbcType=INTEGER},
        #{item.stockTurnover,jdbcType=INTEGER}, #{item.receiptTurnover,jdbcType=INTEGER},
        #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER},
-       #{item.factorySkuCode,jdbcType=VARCHAR}, now(),
-       #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR})
+       #{item.factorySkuCode,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR},
+       #{item.createByName,jdbcType=VARCHAR}, now(),
+       #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL})
      </foreach>
   </insert>
   <select id="selectPurchaseForm" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
@@ -805,5 +811,11 @@
               </foreach>
           </if>
       </where>
+  </select>
+  <select id="applyPurchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
+      select
+      <include refid="Base_Column_List"></include>
+      from purchase_apply_product
+      where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </select>
 </mapper>

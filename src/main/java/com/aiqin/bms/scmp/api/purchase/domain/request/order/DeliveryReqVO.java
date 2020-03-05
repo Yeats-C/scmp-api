@@ -4,6 +4,9 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 /**
  * Description:
  *
@@ -14,8 +17,13 @@ import lombok.Data;
 @Data
 @ApiModel("发货请求vo")
 public class DeliveryReqVO {
-    @ApiModelProperty("主键id")
-    private Long id;
-    @ApiModelProperty("实发数量")
-    private Long actualDeliverNum;
+
+    @ApiModelProperty("订单编号")
+    private String orderCode;
+
+    @ApiModelProperty("运费")
+    private BigDecimal deliverAmount;
+
+    protected List<DeliveryItemReqVo> itemList;
+
 }

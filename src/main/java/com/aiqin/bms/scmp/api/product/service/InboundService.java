@@ -146,4 +146,6 @@ public interface InboundService {
 
     String repealOrder(String orderId, String createById, String createByName, String cancel);
 
+    void wms(String code);
+
 }

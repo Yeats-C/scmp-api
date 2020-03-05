@@ -46,4 +46,6 @@ public interface OrderCallbackService {
     HttpResponse outboundOrderCallBack(OutboundCallBackRequest request);
 
     HttpResponse deliveryCallBack(DeliveryCallBackRequest request);
+
+    void updateAiqinOrder(OutboundCallBackRequest request);
 }

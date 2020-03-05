@@ -106,10 +106,10 @@ public class OrderController {
     }
     @ApiOperation("11发货")
     @PostMapping("/delivery")
-    public HttpResponse<Boolean> delivery(@RequestBody List<DeliveryReqVO> reqVO,@RequestParam String orderCode){
-        log.info("OrderController---delivery---param：[{}],[{}]",JSONObject.toJSONString(reqVO),orderCode);
+    public HttpResponse<Boolean> delivery(@RequestBody DeliveryReqVO reqVO){
+        log.info("OrderController---delivery---param：[{}],[{}]",JSONObject.toJSONString(reqVO));
         try {
-            return HttpResponse.success(orderService.delivery(reqVO,orderCode));
+            return HttpResponse.success(orderService.delivery(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(e.getMessageId());
         }catch (Exception e) {

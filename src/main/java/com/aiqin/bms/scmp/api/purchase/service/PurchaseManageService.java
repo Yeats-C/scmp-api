@@ -4,11 +4,9 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
@@ -23,17 +21,17 @@ public interface PurchaseManageService {
 
     HttpResponse purchaseOrder(PurchaseOrderRequest purchaseOrderRequest);
 
-    HttpResponse<List<PurchaseOrderResponse>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
+    HttpResponse<List<PurchaseOrder>> purchaseOrderList(PurchaseApplyRequest purchaseApplyRequest);
 
     HttpResponse cancelPurchaseOrder(PurchaseOrder purchaseOrder);
 
-    HttpResponse<PurchaseApplyDetailResponse> purchaseOrderDetails(String purchaseOrderId);
+    HttpResponse<PurchaseOrder> purchaseOrderDetails(String purchaseOrderId);
 
-    HttpResponse purchaseOrderProduct(PurchaseOrderProductRequest request);
+    HttpResponse<PurchaseOrderProduct> purchaseOrderProduct(PurchaseOrderProductRequest request);
 
     HttpResponse purchaseOrderFile(String purchaseOrderId);
 
-    HttpResponse purchaseOrderLog(String purchaseOrderId);
+    HttpResponse<List<OperationLog>> purchaseOrderLog(String operationId);
 
     HttpResponse<PurchaseApplyProductInfoResponse> purchaseOrderAmount(String purchaseOrderId);
 
@@ -53,7 +51,8 @@ public interface PurchaseManageService {
 
     HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId);
 
-    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode);
+    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode, String transportCenterCode, String warehouseCode,
+                                                 String settlementMethodCode, String purchaseGroupCode);
 
     HttpResponse<PurchaseApplyDetailResponse> applyDetails(String purchaseOrderCode);
 
@@ -62,4 +61,8 @@ public interface PurchaseManageService {
     HttpResponse<PurchaseApplyProductInfoResponse>  applyOrderAmount(String purchaseOrderId);
 
     HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode);
+
+    HttpResponse cancelInbound(PurchaseOrder order);
+
+    HttpResponse historyDate(String code);
 }
