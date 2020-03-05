@@ -53,9 +53,9 @@ public class AuthenticationInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o) throws Exception {
         String referer = httpServletRequest.getHeader("referer");
         boolean fromSwagger = false;
-//        if(null != referer){
-//            fromSwagger = referer.indexOf("swagger-ui.html") > 0;
-//        }
+        if(null != referer){
+            fromSwagger = referer.indexOf("swagger-ui.html") > 0;
+        }
         if (fromSwagger || (StringUtils.isNotBlank(evn) && "dev".equals(evn))) {
             AuthToken current = new AuthToken();
             current.setPersonId("11356");
