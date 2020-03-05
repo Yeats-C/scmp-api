@@ -258,7 +258,7 @@
       <if test="contractName != null">
         contract_name = #{contractName,jdbcType=VARCHAR},
       </if>
-      update_time = now(),
+--       update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
@@ -415,5 +415,14 @@
     <if test="purchaseOrderCode != null">
       and o.purchase_order_code LIKE concat(#{purchaseOrderCode, jdbcType=VARCHAR}, '%')
     </if>
+  </select>
+  <select id="orderList" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order
+    <where>
+      <if test="purchaseOrderCode != null">
+        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
 </mapper>

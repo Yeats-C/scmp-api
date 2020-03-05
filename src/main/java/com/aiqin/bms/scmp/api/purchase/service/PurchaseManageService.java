@@ -63,4 +63,6 @@ public interface PurchaseManageService {
     HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode);
 
     HttpResponse cancelInbound(PurchaseOrder order);
+
+    HttpResponse historyDate(String code);
 }

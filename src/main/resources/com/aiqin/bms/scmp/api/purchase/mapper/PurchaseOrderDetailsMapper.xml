@@ -211,4 +211,9 @@
       #{item}
     </foreach>
   </select>
+  <select id="orderDetail" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order_details
+    where purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

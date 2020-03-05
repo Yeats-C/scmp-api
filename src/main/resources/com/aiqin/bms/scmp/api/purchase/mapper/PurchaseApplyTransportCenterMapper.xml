@@ -42,7 +42,7 @@
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, #{preArrivalTime,jdbcType=TIMESTAMP},
       #{validTime,jdbcType=TIMESTAMP}, #{paymentMode,jdbcType=VARCHAR}, #{paymentTime,jdbcType=INTEGER}, #{prePaymentAmount,jdbcType=DECIMAL},
       #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL}, #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL},
-      #{inboundLine,jdbcType=INTEGER}, NOW(), NOW(), #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{inboundLine,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
       #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
