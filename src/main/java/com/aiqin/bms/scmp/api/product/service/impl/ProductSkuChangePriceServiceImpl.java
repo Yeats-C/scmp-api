@@ -434,10 +434,11 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //根据价格作不同的处理
         //判断类型
+        dto.setChangePriceType("2");
         switch (dto.getChangePriceType()) {
-            case CommonConstant.PURCHASE_CHANGE_PRICE:
-                 savePurchaseChangePrice(newVO, dto);
-                break;
+//            case CommonConstant.PURCHASE_CHANGE_PRICE:
+//                 savePurchaseChangePrice(newVO, dto);
+//                break;
             case CommonConstant.SALE_CHANGE_PRICE:
                 if(dto.getBeContainArea() == 0) {
                     saveSaleChangePrice(newVO, dto);
@@ -445,13 +446,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                     saveSaleAreaChangePrice(newVO, dto);
                 }
                 break;
-            case CommonConstant.TEMPORARY_CHANGE_PRICE:
-                if(dto.getBeContainArea() == 0) {
-                    saveTemporaryChangePrice(newVO, dto);
-                }else {
-                    saveTemporaryAreaChangePrice(newVO, dto);
-                }
-                break;
+//            case CommonConstant.TEMPORARY_CHANGE_PRICE:
+//                if(dto.getBeContainArea() == 0) {
+//                    saveTemporaryChangePrice(newVO, dto);
+//                }else {
+//                    saveTemporaryAreaChangePrice(newVO, dto);
+//                }
+//                break;
 //            case CommonConstant.SALE_AREA_CHANGE_PRICE:
 //                saveSaleAreaChangePrice(newVO, dto);
 //                break;
