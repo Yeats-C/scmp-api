@@ -22,7 +22,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/favicon.ico",
                         "/static/**",
                         "/index.html",
-                        "/order/callback/*",
+                        "/order/callback/**",
                         "/product/inbound/workFlowCallBack",
                         "/product/outbound/workFlowCallBack",
                         "/product/allocation/workFlowCallBack",
