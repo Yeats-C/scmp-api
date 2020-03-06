@@ -17,6 +17,12 @@
     from product_sku_change_price_sale_area
     where id = #{id,jdbcType=BIGINT}
   </select>
+  <select id="selectByChangePriceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_change_price_sale_area
+    where change_price_code = #{code}
+  </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_change_price_sale_area
     where id = #{id,jdbcType=BIGINT}
