@@ -352,11 +352,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 查询采购单信息
-        PurchaseApply purchaseApply = new PurchaseApply();
-        purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
-        PurchaseApply apply = purchaseApplyDao.purchaseApply(purchaseApply);
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(apply.getPurchaseApplyId());
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode);
         if (CollectionUtils.isEmptyCollection(products)) {
             LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
@@ -369,20 +365,17 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             stock.setSkuCode(detail.getSkuCode());
             stock.setTransportCenterCode(detail.getTransportCenterCode());
             stock.setWarehouseCode(detail.getWarehouseCode());
-            stock.setCompanyCode(apply.getCompanyCode());
+            stock.setCompanyCode(Global.COMPANY_09);
             Stock info = stockDao.stockInfo(stock);
             if (info != null) {
                 detail.setStockCount(info.getInventoryNum().intValue());
-                detail.setTotalWayNum(info.getTotalWayNum().intValue());
                 detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
-                detail.setNewPurchasePrice(info.getNewPurchasePrice());
             }
-            // 最小单位数量
             Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
             detail.setSingleCount(totalCount);
             detail.setProductPurchaseSum(BigDecimal.valueOf(totalCount).multiply(detail.getProductPurchaseAmount()).
                     setScale(4, BigDecimal.ROUND_HALF_UP));
-            this.productDetail(products);
+
         }
         return HttpResponse.success(products);
     }

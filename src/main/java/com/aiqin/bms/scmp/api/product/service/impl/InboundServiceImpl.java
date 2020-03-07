@@ -495,6 +495,10 @@ public class InboundServiceImpl implements InboundService {
         //根据编码，查询入库单主体
 //        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
         Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
+        if(inbound == null){
+            log.info("DL 采购单回传，耘链未查询到此入库单，请联系管理员：" + reqVo );
+            throw  new GroundRuntimeException("DL 采购单回传，耘链未查询到此入库单，请联系管理员");
+        }
         //设置默认实际数量
         inbound.setInboundTime(Calendar.getInstance().getTime());
         inbound.setPraInboundNum(0L);
