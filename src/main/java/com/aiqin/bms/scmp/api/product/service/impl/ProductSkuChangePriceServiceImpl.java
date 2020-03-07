@@ -317,6 +317,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         //查询区域信息
         List<ProductSkuChangePriceSaleArea> areaList = productSkuChangePriceSaleAreaMapper.selectByChangePriceCode(code);
         //todo 将区域信息添加至返回值 现在查的是中间表 需要修改sql进行联查
+        respVO.setSaleAreaList(areaList);
         return respVO;
     }
 
