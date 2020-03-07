@@ -496,7 +496,7 @@ public class InboundServiceImpl implements InboundService {
 //        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
         Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
         //设置默认实际数量
-        inbound.setInboundTime(reqVo.getInboundTime());
+        inbound.setInboundTime(Calendar.getInstance().getTime());
         inbound.setPraInboundNum(0L);
         inbound.setPraMainUnitNum(0L);
         //实际含税总金额
