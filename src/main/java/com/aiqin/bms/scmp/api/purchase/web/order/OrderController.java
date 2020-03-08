@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
@@ -111,7 +112,7 @@ public class OrderController {
         try {
             return HttpResponse.success(orderService.delivery(reqVO));
         } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
+            return HttpResponse.failure(MessageId.create(null,0,e.getMessage()));
         }catch (Exception e) {
             log.error(e.getMessage(),e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
