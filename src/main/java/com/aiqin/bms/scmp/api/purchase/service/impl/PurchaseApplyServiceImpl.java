@@ -348,11 +348,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode) {
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String transportCenterCode) {
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode);
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, transportCenterCode);
         if (CollectionUtils.isEmptyCollection(products)) {
             LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);

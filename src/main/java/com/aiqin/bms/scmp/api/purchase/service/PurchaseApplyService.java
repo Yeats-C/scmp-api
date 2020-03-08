@@ -21,7 +21,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest);
 
-    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String transportCenterCode);
 
     HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
 
