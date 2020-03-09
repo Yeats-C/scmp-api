@@ -8,10 +8,7 @@ import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyProductInfoResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseNewContrastResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -116,40 +113,23 @@ public class DingApprovalController {
     }
 
     @GetMapping("/manage/order/details/apply")
-    @ApiOperation("查询采购单审批详情")
-    public HttpResponse<PurchaseApplyDetailResponse> applyDetails(@RequestParam("purchase_order_code") String purchaseOrderCode) {
-        return purchaseManageService.applyDetails(purchaseOrderCode);
-    }
-
-    @GetMapping("/manage/order/amount")
-    @ApiOperation("查询采购单-采购数量金额/实际数量金额")
-    public HttpResponse<PurchaseApplyProductInfoResponse> purchaseOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
+    @ApiOperation("查询采购申请单-采购通用信息")
+    public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_code") String purchaseApplyCode) {
+        return purchaseApplyService.purchaseCurrency(purchaseApplyCode);
     }
 
     @GetMapping("/manage/order/product/apply")
-    @ApiOperation("查询采购单商品审批信息")
-    public HttpResponse applyOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
-                                          @RequestParam(value = "is_page", required = false) Integer isPage,
-                                          @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
-        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest(purchaseOrderId, isPage);
-        request.setPageSize(pageSize);
-        request.setPageNo(pageNo);
-        return purchaseManageService.applyOrderProduct(request);
+    @ApiOperation("查询申请采购单，商品详情列表")
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode,
+                                                                              @RequestParam(value = "transport_center_code",required = false) String transportCenterCode) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyCode, transportCenterCode);
     }
 
-    @GetMapping("/manage/order/file")
-    @ApiOperation("查询采购单文件-文件信息")
-    public HttpResponse purchaseOrderFile(@RequestParam("purchase_order_id") String purchaseOrderId) {
-        return purchaseManageService.purchaseOrderFile(purchaseOrderId);
-    }
-
-    @PostMapping("/apply/product/contrast/new")
-    @ApiOperation("查询采购对比信息")
-    public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
-        return purchaseApplyService.purchaseContrast(contrastRequest);
-    }
+//    @PostMapping("/apply/product/contrast/new")
+//    @ApiOperation("查询采购对比信息")
+//    public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
+//        return purchaseApplyService.purchaseContrast(contrastRequest);
+//    }
 
     @GetMapping("/form/detail/key/{form_no}")
     @ApiOperation("根据表单编号获取流程定义key")
