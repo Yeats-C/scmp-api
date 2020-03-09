@@ -440,7 +440,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
              // 计算商品的分仓信息
             transportList = Lists.newArrayList();
             List<PurchaseApplyProduct> centers = proList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                    new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode()))), ArrayList::new));
+                    new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode() + ";" + o.getWarehouseCode()))), ArrayList::new));
             // 计算采购申请单的总和
             BigDecimal productCenterAmount = big, returnCenterAmount = big, giftCenterAmount = big;
             for(PurchaseApplyProduct center:centers){
@@ -706,7 +706,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             purchaseOrder.setPurchaseSource(0);
             orderRequest.setPurchaseOrder(purchaseOrder);
             // 筛选对应仓库数据
-            applyProductList = productList.stream().filter(s->s.getTransportCenterCode().equals(center.getTransportCenterCode())
+            applyProductList = productList.stream().filter(s->s.getWarehouseCode().equals(center.getWarehouseCode())
             ).collect(Collectors.toList());
             // 赋值采购单商品数据
             proList = Lists.newArrayList();

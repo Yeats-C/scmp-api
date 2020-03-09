@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -112,24 +113,26 @@ public class DingApprovalController {
         return goodsRejectService.applyRejectInfo(approval_code);
     }
 
-    @GetMapping("/manage/order/details/apply")
+    @GetMapping("/purchase/details/apply")
     @ApiOperation("查询采购申请单-采购通用信息")
     public HttpResponse<PurchaseApplyCurrencyResponse> purchaseCurrency(@RequestParam("purchase_apply_code") String purchaseApplyCode) {
         return purchaseApplyService.purchaseCurrency(purchaseApplyCode);
     }
 
-    @GetMapping("/manage/order/product/apply")
+    @GetMapping("/purchase/product/apply")
     @ApiOperation("查询申请采购单，商品详情列表")
     public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode,
                                                                               @RequestParam(value = "transport_center_code",required = false) String transportCenterCode) {
         return purchaseApplyService.searchApplyProduct(purchaseApplyCode, transportCenterCode);
     }
 
-//    @PostMapping("/apply/product/contrast/new")
-//    @ApiOperation("查询采购对比信息")
-//    public HttpResponse<PurchaseNewContrastResponse> purchaseContrast(@RequestBody PurchaseNewContrastRequest contrastRequest) {
-//        return purchaseApplyService.purchaseContrast(contrastRequest);
-//    }
+    @GetMapping("/transport/center/info")
+    @ApiOperation("查询申请采购单，分仓采购信息")
+    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(
+            @RequestParam("purchase_apply_code") String purchaseApplyCode,
+            @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, warehouseCode);
+    }
 
     @GetMapping("/form/detail/key/{form_no}")
     @ApiOperation("根据表单编号获取流程定义key")
