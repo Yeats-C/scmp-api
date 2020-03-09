@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import io.swagger.models.auth.In;
@@ -36,7 +37,7 @@ public interface ProductSkuPriceInfoService {
      * @param code
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
-    ProductSkuPriceInfoRespVO view(String code);
+    ProductSkuPriceInfoRespVO1 view(String code);
     /**
      * 保存价格临时表数据
      * @author NullPointException

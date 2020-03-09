@@ -6,20 +6,16 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.SaveList;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuPriceInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoDraft;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QueryProductSkuPriceInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuPriceInfoMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoDraftMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoLogMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
@@ -58,6 +54,8 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     private DataManageService dataManageService;
     @Autowired
     private ProductSkuChangePriceService productSkuChangePriceService;
+    @Autowired
+    private ProductSkuSaleAreaInfoMapper productSkuSaleAreaInfoMapper;
     @Override
     public BasePage<QueryProductSkuPriceInfoRespVO> list(QueryProductSkuPriceInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -70,6 +68,9 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
                 categoryId = sku.getProductCategoryCode();
                 if (StringUtils.isNotBlank(categoryId)) {
                     sku.setProductCategoryName(dataManageService.selectCategoryName(categoryId));
+                    //通过skucode获取销售区域信息
+                    List<ProductSkuSaleAreaInfoRespVo> productSkuSaleAreaInfoList = productSkuSaleAreaInfoMapper.selectBySkuCode(sku.getSkuCode());
+                    sku.setSaleAreaInfos(productSkuSaleAreaInfoList);
                 }
             }
         }
@@ -77,7 +78,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
     }
 
     @Override
-    public ProductSkuPriceInfoRespVO view(String code) {
+    public ProductSkuPriceInfoRespVO1 view(String code) {
         return productSkuPriceInfoMapper.selectInfoByCode(code);
     }
 
