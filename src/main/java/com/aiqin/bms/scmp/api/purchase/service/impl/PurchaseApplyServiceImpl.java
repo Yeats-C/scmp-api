@@ -1049,12 +1049,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                         }
                         BeanUtils.copyProperties(applyProduct, response);
                         BigDecimal purchaseAmount = BigDecimal.ZERO;
-                        if(purchaseSource.equals(0)){
+                        if(!purchaseSource.equals(0)){
                             if (StringUtils.isNotBlank((record[6]))) {
                                 purchaseAmount = new BigDecimal(record[6]);
                             }
                         }else {
-                            purchaseAmount =  applyProduct.getProductPurchaseAmount();
+                            purchaseAmount = applyProduct.getProductPurchaseAmount();
                         }
                         response.setProductPurchaseAmount(purchaseAmount);
 
