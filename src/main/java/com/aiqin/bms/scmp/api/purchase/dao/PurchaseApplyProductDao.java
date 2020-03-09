@@ -53,4 +53,7 @@ public interface PurchaseApplyProductDao {
 
     List<PurchaseApplyProduct> applyPurchaseProductList(String purchaseApplyId);
 
+    List<PurchaseApplyDetailResponse> productCodeByDetail(@Param("purchaseApplyCode") String purchaseApplyCode,
+                                                          @Param("warehouseCode")String warehouseCode);
+
 }

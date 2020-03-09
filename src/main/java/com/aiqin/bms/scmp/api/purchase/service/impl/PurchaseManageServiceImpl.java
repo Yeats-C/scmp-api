@@ -26,6 +26,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApprovalService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -34,6 +35,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -109,6 +111,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private StockDao stockDao;
     @Resource
     private ProSuggestReplenishmentDao proSuggestReplenishmentDao;
+    @Resource
+    private PurchaseApplyService purchaseApplyService;
+    @Resource
+    private PurchaseApplyDao purchaseApplyDao;
+    @Resource
+    private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
 
     @Override
     public HttpResponse selectPurchaseForm(List<String> applyIds){
@@ -388,6 +396,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         inboundRequest.setInboundOrderCode(inboundOderCode);
         inboundRequest.setPurchaseNum(1);
         inboundRequest.setPurchaseOrderId(purchaseId);
+        // 查询商品信息
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(purchaseId);
+        if(CollectionUtils.isEmptyCollection(products)){
+            return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+        }
+        inboundRequest.setProductList(products);
         InboundReqSave reqSave = this.InboundReqSave(inboundRequest);
         LOGGER.info("开始调用采购单入库");
         String s = inboundService.saveInbound(reqSave);
@@ -502,12 +516,12 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
                 }
                 purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
-                InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
+                //InboundServiceImpl service = (InboundServiceImpl) AopContext.currentProxy();
                 // 根据采购单号查询入库单号
-                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseOrder.getPurchaseOrderCode());
+                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(order.getPurchaseOrderCode());
                 // 入库单号
                 String code = num <= 9 ? ("0" + num.toString()) : num.toString();
-                inboundService.pushWms(purchaseOrder.getPurchaseOrderCode() + code, inboundService);
+                inboundService.wms(order.getPurchaseOrderCode() + code);
                 break;
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);
@@ -748,18 +762,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setSupplierCode(purchaseOrder.getSupplierCode());
         save.setSupplierName(purchaseOrder.getSupplierName());
         save.setPurchaseNum(request.getPurchaseNum());
-        save.setCreateBy(purchaseOrder.getCreateById());
+        save.setCreateBy(purchaseOrder.getCreateByName());
         save.setUpdateBy(purchaseOrder.getCreateByName());
         save.setCreateTime(Calendar.getInstance().getTime());
         save.setUpdateTime(Calendar.getInstance().getTime());
         save.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
 
         // 查询采购单商品信息
-        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(request.getPurchaseOrderId());
-        if (CollectionUtils.isEmptyCollection(products)) {
-            LOGGER.info("入库采购单商品信息未空");
-            throw new GroundRuntimeException("入库采购单商品信息未空！");
-        }
+        List<PurchaseOrderProduct> products = request.getProductList();
 
         // 赋值入库单商品
         Long preInboundNum = 0L, preInboundMainNum = 0L;
@@ -869,10 +879,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             Integer actualCount = orderProduct.getActualSingleCount() == null ? 0 : orderProduct.getActualSingleCount().intValue();
             product.setActualSingleCount(actualCount + product.getActualSingleCount());
             Integer count1 = purchaseOrderProductDao.update(product);
-            if (count1 == 0) {
-                LOGGER.info("采购入库完成，更改采购单商品信息的实际数量失败");
-                return HttpResponse.failure(ResultCode.UPDATE_ERROR);
-            }
+            LOGGER.info("采购入库回传，更改采购单商品信息的实际数量失败" + count1);
 
             // 预计单品数量
             Integer singleCount = orderProduct.getSingleCount() == null ? 0 : orderProduct.getSingleCount().intValue();
@@ -881,7 +888,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             if (singleCount - actualSingleCount > 0) {
                 // 判断可以再次入库的商品
                 //Integer code = inboundDao.selectMaxPurchaseNumBySourceOderCode(purchaseStorage.getPurchaseOrderCode());
-                purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
+                orderProduct.setActualSingleCount(actualSingleCount);
                 productList.add(orderProduct);
             }
 
@@ -904,7 +911,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         order.setActualReturnAmount(actualReturnAmount);
         order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
         // 判断入库次数 、入库是否完成
-        if (purchaseOrder.getInboundLine() > 1 || purchaseStorage.getPurchaseNum() < purchaseOrder.getInboundLine()) {
+        purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
+        if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
+                productList.size() >= 1
+        ) {
             if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
                 // 变更入库中状态
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
@@ -930,6 +940,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             inboundRequest.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
             inboundRequest.setInboundOrderCode(inboundOderCode);
             inboundRequest.setPurchaseNum(Integer.valueOf(code));
+            inboundRequest.setProductList(productList);
+            if(CollectionUtils.isEmptyCollection(productList)){
+                return HttpResponse.failure(ResultCode.PURCHASE_APPLY_PRODUCT_NULL);
+            }
             InboundReqSave save = this.InboundReqSave(inboundRequest);
             String s = inboundService.saveInbound(save);
             if (StringUtils.isBlank(s)) {
@@ -1168,11 +1182,26 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    public HttpResponse<PurchaseFormResponse> skuSupply(String skuCode){
+    public  HttpResponse<PurchaseFormResponse> skuSupply(String skuCode, String transportCenterCode, String warehouseCode,
+                                                         String settlementMethodCode, String purchaseGroupCode){
         if(StringUtils.isBlank(skuCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         List<PurchaseFormResponse> purchaseFormResponses = productSkuSupplyUnitDao.supplyList(skuCode);
+        if(CollectionUtils.isNotEmptyCollection(purchaseFormResponses)){
+            PurchaseApplyRequest request;
+            for (PurchaseFormResponse response:purchaseFormResponses){
+                request = new PurchaseApplyRequest();
+                request.setSkuCode(response.getSkuCode());
+                request.setSupplierCode(response.getSupplierCode());
+                request.setTransportCenterCode(transportCenterCode);
+                request.setSettlementMethodCode(settlementMethodCode);
+                request.setWarehouseCode(warehouseCode);
+                request.setPurchaseGroupCode(purchaseGroupCode);
+                List<PurchaseApplyDetailResponse> responses = purchaseApplyService.productInfo(request);
+                response.setSkuData(responses.get(0));
+            }
+        }
         return HttpResponse.success(purchaseFormResponses);
     }
 
@@ -1262,5 +1291,170 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         List<String> list = purchaseOrderDao.getPurchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
         return HttpResponse.success(list);
+    }
+
+
+    @Override
+    public HttpResponse historyDate(String code){
+        // 查询旧采购单的数据
+        List<PurchaseOrder> orderList = purchaseOrderDao.orderList(code);
+        for(PurchaseOrder order:orderList){
+            // 查询旧的采购详情数据放的采购单
+            PurchaseOrderDetails detail = purchaseOrderDetailsDao.orderDetail(order.getPurchaseOrderCode());
+            if(detail == null){
+                continue;
+            }
+            order.setPurchaseApplyId(IdUtil.purchaseId());
+            order.setPurchaseApplyCode(order.getPurchaseOrderCode());
+            order.setPurchaseSource(0);
+            order.setPreArrivalTime(detail.getExpectArrivalTime());
+            order.setValidTime(detail.getValidTime());
+            order.setChargePersonName(detail.getChargePerson());
+            order.setSupplierPerson(detail.getContactPerson());
+            order.setSupplierMobile(detail.getMobile());
+            order.setDeliveryTime(detail.getDeliveryTime());
+            order.setWarehouseTime(detail.getWarehouseTime());
+            if(detail.getPaymentCode().equals("2")){
+                order.setPaymentMode(1);
+            }else if(detail.getPaymentCode().equals("3")){
+                order.setPaymentMode(2);
+            }else if(detail.getPaymentCode().equals("4")){
+                order.setPaymentMode(3);
+            }else {
+                order.setPaymentMode(0);
+            }
+            order.setPaymentTime(detail.getPayableTime());
+            order.setRemark(detail.getRemark());
+            order.setPrePaymentAmount(detail.getAdvancePayment());
+            order.setAccountCode(detail.getAccountCode());
+            order.setAccountName(detail.getAccountName());
+            order.setContractCode(detail.getContractCode());
+            order.setContractName(detail.getContractName());
+            order.setInboundLine(99);
+
+            // 查询采购单的商品信息
+            List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());
+            Long totalCount = 0L;
+            BigDecimal productAmount = BigDecimal.ZERO, returnAmount = BigDecimal.ZERO, giftAmount = BigDecimal.ZERO;
+            if(CollectionUtils.isNotEmptyCollection(products)){
+                for(PurchaseOrderProduct product:products){
+                    Integer singCount = product.getActualSingleCount() == null ? 0 : product.getActualSingleCount();
+                    BigDecimal totalAmount = product.getProductTotalAmount() == null ? BigDecimal.ZERO : product.getProductTotalAmount();
+                    if(product.getProductType() == 0){
+                        productAmount =  productAmount.add(totalAmount);
+                    }else if(product.getProductType() == 1){
+                        giftAmount =  giftAmount.add(totalAmount);
+                    }else {
+                        returnAmount =  returnAmount.add(totalAmount);
+                    }
+                    totalCount += singCount;
+                }
+            }
+            order.setActualTotalCount(totalCount);
+            order.setActualProductAmount(productAmount);
+            order.setActualReturnAmount(returnAmount);
+            order.setActualGiftAmount(giftAmount);
+            String brandName = "";
+            if(CollectionUtils.isNotEmptyCollection(products)){
+                brandName = products.get(0).getBrandName();
+            }
+            String name = order.getSupplierName() + brandName
+                    + "商品金额" + productAmount + "实物返金额" + returnAmount
+                    + "赠品金额" + giftAmount;
+            order.setPurchaseApplyName(name);
+            Integer update = purchaseOrderDao.update(order);
+            LOGGER.info("更改采购单的信息" + update);
+
+            // 生成采购申请单 和 对应仓库的信息
+            applyInsert(order, detail, products);
+        }
+
+        return HttpResponse.success();
+    }
+
+
+    private void applyInsert(PurchaseOrder order, PurchaseOrderDetails detail, List<PurchaseOrderProduct> products){
+        // 新增采购申请单
+        PurchaseApply info = BeanCopyUtils.copy(order, PurchaseApply.class);
+        info.setPurchaseApplyId(order.getPurchaseApplyId());
+
+        info.setApplyType(order.getApplyTypeForm().equals("手动") ? 0 : 1);
+        if(order.getPurchaseOrderStatus() == 9){
+            info.setApplyStatus(6);
+        }else if(order.getPurchaseOrderStatus() == 10){
+            info.setApplyStatus(5);
+        }else {
+            info.setApplyStatus(4);
+        }
+        info.setStatus(0);
+        info.setTotalCount(order.getSingleCount().longValue());
+        info.setProductTaxAmount(order.getProductTotalAmount());
+        info.setReturnTaxAmount(order.getReturnAmount());
+        info.setGiftTaxAmount(order.getGiftTaxSum());
+        info.setPurchaseSource(1);
+        if(StringUtils.isNotBlank(detail.getPurchaseOrderPre())){
+            info.setPrePurchaseCode(detail.getPurchaseOrderPre());
+            info.setPrePurchaseType(1);
+        }else {
+            info.setPrePurchaseType(0);
+        }
+
+
+        info.setDirectSupervisorCode(detail.getDirectSupervisorCode());
+        info.setDirectSupervisorName(detail.getDirectSupervisorName());
+
+        // 查询商品信息
+        List<PurchaseApplyProduct> orderItem = Lists.newArrayList();
+        Long productCount = 0L, returnCount = 0L, giftCount = 0L;
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            info.setBrandId(products.get(0).getBrandId());
+            info.setBrandName(products.get(0).getBrandName());
+            PurchaseApplyProduct applyProduct;
+            for(PurchaseOrderProduct product: products){
+                applyProduct = BeanCopyUtils.copy(product, PurchaseApplyProduct.class);
+                applyProduct.setApplyProductId(IdUtil.uuid());
+                applyProduct.setPurchaseApplyId(info.getPurchaseApplyId());
+                applyProduct.setPurchaseApplyCode(info.getPurchaseApplyCode());
+                applyProduct.setWarehouseCode(order.getWarehouseCode());
+                applyProduct.setWarehouseName(order.getWarehouseName());
+                applyProduct.setTransportCenterName(order.getTransportCenterName());
+                applyProduct.setTransportCenterCode(order.getTransportCenterCode());
+                applyProduct.setSupplierCode(order.getSupplierCode());
+                applyProduct.setSupplierName(order.getSupplierName());
+                applyProduct.setPurchaseGroupCode(order.getPurchaseGroupCode());
+                applyProduct.setPurchaseGroupName(order.getPurchaseGroupName());
+                applyProduct.setProductPurchaseAmount(product.getProductAmount());
+                applyProduct.setApplyProductStatus(1);
+                orderItem.add(applyProduct);
+                if(product.getProductType() == 0){
+                    productCount += product.getSingleCount();
+                }else if(product.getProductType() == 1){
+                    giftCount += product.getSingleCount();
+                }else {
+                    returnCount += product.getSingleCount();
+                }
+            }
+        }
+        info.setProductCount(productCount);
+        info.setReturnCount(returnCount);
+        info.setGiftCount(giftCount);
+        Integer insert = purchaseApplyDao.insert(info);
+        LOGGER.info("采购申请单新增" + insert);
+
+        // 新增采购申请仓库信息
+        PurchaseApplyTransportCenter center = BeanCopyUtils.copy(order, PurchaseApplyTransportCenter.class);
+        center.setTotalCount(order.getSingleCount().longValue());
+        center.setProductTaxAmount(order.getProductTotalAmount());
+        center.setReturnTaxAmount(order.getReturnAmount());
+        center.setGiftTaxAmount(order.getGiftTaxSum());
+        center.setInboundLine(99);
+        int insert1 = purchaseApplyTransportCenterDao.insert(center);
+        LOGGER.info("采购申请单分仓新增" + insert1);
+
+        if(CollectionUtils.isNotEmptyCollection(orderItem)){
+            Integer insertAll = purchaseApplyProductDao.insertAll(orderItem);
+            LOGGER.info("采购申请单商品的新增" + insertAll);
+        }
+
     }
 }

@@ -32,10 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplySupplyCompany;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.LogisticsCenter;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
@@ -78,7 +75,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private static final BigDecimal big = BigDecimal.valueOf(0);
 
     private static final String[] importRejectApplyHeaders = new String[]{
-            "SKU编号", "SKU名称", "供应商", "仓库", "采购数量", "实物返数量", "含税单价",
+            "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量", "含税单价",
     };
 
     @Resource
@@ -198,6 +195,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         pageResData.setDataList(detail);
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
+    }
+
+    public List<PurchaseApplyDetailResponse> productInfo(PurchaseApplyRequest purchases){
+        List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
+        this.productDetail(detail);
+        return detail;
     }
 
     private void productDetail(List<PurchaseApplyDetailResponse> detail){
@@ -345,15 +348,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode) {
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode) {
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // 查询采购单信息
-        PurchaseApply purchaseApply = new PurchaseApply();
-        purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
-        PurchaseApply apply = purchaseApplyDao.purchaseApply(purchaseApply);
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(apply.getPurchaseApplyId());
+        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
         if (CollectionUtils.isEmptyCollection(products)) {
             LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
@@ -366,20 +365,17 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             stock.setSkuCode(detail.getSkuCode());
             stock.setTransportCenterCode(detail.getTransportCenterCode());
             stock.setWarehouseCode(detail.getWarehouseCode());
-            stock.setCompanyCode(apply.getCompanyCode());
+            stock.setCompanyCode(Global.COMPANY_09);
             Stock info = stockDao.stockInfo(stock);
             if (info != null) {
                 detail.setStockCount(info.getInventoryNum().intValue());
-                detail.setTotalWayNum(info.getTotalWayNum().intValue());
                 detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
-                detail.setNewPurchasePrice(info.getNewPurchasePrice());
             }
-            // 最小单位数量
             Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
             detail.setSingleCount(totalCount);
             detail.setProductPurchaseSum(BigDecimal.valueOf(totalCount).multiply(detail.getProductPurchaseAmount()).
                     setScale(4, BigDecimal.ROUND_HALF_UP));
-            this.productDetail(products);
+
         }
         return HttpResponse.success(products);
     }
@@ -984,7 +980,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 }
                 String[] record;
                 SupplyCompany supplier;
-                LogisticsCenter logisticsCenter;
+                //LogisticsCenter logisticsCenter;
+                Warehouse warehouse;
                 PurchaseImportResponse response;
                 PurchaseApplyDetailResponse applyProduct;
                 PurchaseApplyReqVo applyReqVo;
@@ -1007,14 +1004,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                         errorList.add(response);
                         continue;
                     }
-                    logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
-                    if (logisticsCenter == null) {
-                        HandleResponse(response, record, "未查询到仓库信息；", i);
+                    warehouse = warehouseDao.selectByWarehouseName(record[3]);
+                    //logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
+                    if (warehouse == null) {
+                        HandleResponse(response, record, "未查询到库房信息；", i);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
-                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), logisticsCenter.getLogisticsCenterCode());
+                    applyProduct = productSkuDao.purchaseBySkuStock(purchaseGroupCode, record[0], supplier.getSupplyCode(), warehouse.getWarehouseCode());
                     if (applyProduct != null) {
                         if (StringUtils.isNotBlank(applyProduct.getCategoryId())) {
                             String categoryName = goodsRejectService.selectCategoryName(applyProduct.getCategoryId());
@@ -1024,7 +1022,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                         applyReqVo = new PurchaseApplyReqVo();
                         applyReqVo.setSkuCode(record[0]);
                         applyReqVo.setSupplierCode(supplier.getSupplyCode());
-                        applyReqVo.setTransportCenterCode(logisticsCenter.getLogisticsCenterCode());
+                        applyReqVo.setTransportCenterCode(applyProduct.getTransportCenterCode());
                         PurchaseApplyRespVo vo = replenishmentService.selectPurchaseApplySkuList(applyReqVo);
                         if (vo != null) {
                             applyProduct.setPurchaseNumber(vo.getAdviceOrders() == null ? 0 : vo.getAdviceOrders().intValue());
@@ -1082,7 +1080,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
-        response.setTransportCenterName(record[3]);
+        response.setWarehouseName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
         if(StringUtils.isNotBlank(record[6])){

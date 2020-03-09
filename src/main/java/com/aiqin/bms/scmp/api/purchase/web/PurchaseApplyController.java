@@ -83,8 +83,9 @@ public class PurchaseApplyController {
 
     @GetMapping("/product")
     @ApiOperation("查询申请采购单，商品详情列表")
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode) {
-        return purchaseApplyService.searchApplyProduct(purchaseApplyCode);
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode,
+                                                                              @RequestParam(value = "warehouse_code",required = false) String warehouseCode) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyCode, warehouseCode);
     }
 
     @GetMapping("/transport/center/info")

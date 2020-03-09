@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApply;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -23,4 +26,9 @@ public class PurchaseInboundRequest {
     @ApiModelProperty("采购调用次数")
     @JsonProperty("purchase_num")
     private Integer purchaseNum;
+
+
+    @ApiModelProperty("商品信息")
+    @JsonProperty("product_list")
+    private List<PurchaseOrderProduct> productList;
 }

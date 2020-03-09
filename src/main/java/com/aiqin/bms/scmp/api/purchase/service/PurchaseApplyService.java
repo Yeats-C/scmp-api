@@ -21,7 +21,7 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest);
 
-    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode);
 
     HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
 
@@ -55,4 +55,6 @@ public interface PurchaseApplyService {
     HttpResponse purchaseDelete(String purchaseOrderId);
 
     void insertPurchaseOrder(String purchaseApplyId);
+
+    List<PurchaseApplyDetailResponse> productInfo(PurchaseApplyRequest purchases);
 }

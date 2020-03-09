@@ -111,6 +111,12 @@
   <update id="update">
     update purchase_order
     <set>
+      <if test="purchaseApplyId != null">
+        purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR},
+      </if>
+      <if test="purchaseApplyCode != null">
+        purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR},
+      </if>
       <if test="purchaseApplyName != null">
         purchase_apply_name = #{purchaseApplyName,jdbcType=VARCHAR},
       </if>
@@ -409,5 +415,14 @@
     <if test="purchaseOrderCode != null">
       and o.purchase_order_code LIKE concat(#{purchaseOrderCode, jdbcType=VARCHAR}, '%')
     </if>
+  </select>
+  <select id="orderList" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select <include refid="Base_Column_List"></include>
+    from purchase_order
+    <where>
+      <if test="purchaseOrderCode != null">
+        purchase_order_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+      </if>
+    </where>
   </select>
 </mapper>

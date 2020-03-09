@@ -349,10 +349,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(null == reqVO){
             throw new BizException("参数信息错误");
         }
-        if(StringUtils.isNotBlank(reqVO.getOrderCode())){
+        if(StringUtils.isBlank(reqVO.getOrderCode())){
             throw new BizException("订单编号不能为空");
         }
-        if(CollectionUtils.isNotEmptyCollection(reqVO.getItemList())){
+        if(CollectionUtils.isEmptyCollection(reqVO.getItemList())){
             throw new BizException("发货明细不能为空");
         }
         if(null == reqVO.getDeliverAmount()){
@@ -405,7 +405,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     detailList.add(detailRequest);
                 });
                 request.setDetailList(detailList);
-                request.setActualTotalCount(orderInfoItems.stream().mapToLong(OrderInfoItem::getActualDeliverNum).sum());
+                long sum = 0L;
+                for (OrderInfoItem orderInfoItem : orderInfoItems) {
+                    long actualDeliverNum = 0L;
+                    if (null != orderInfoItem.getActualDeliverNum()) {
+                        actualDeliverNum = orderInfoItem.getActualDeliverNum();;
+                    }
+                    sum += actualDeliverNum;
+                }
+                request.setActualTotalCount(sum);
             }
             orderCallbackService.updateAiqinOrder(request);
         }

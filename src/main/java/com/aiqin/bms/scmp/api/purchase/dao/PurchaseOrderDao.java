@@ -31,4 +31,6 @@ public interface PurchaseOrderDao {
     List<String> getPurchaseOrderPre(@Param("purchaseGroupCode")String purchaseGroupCode,
                                      @Param("purchaseOrderTypeCode")Integer purchaseOrderTypeCode,
                                      @Param("purchaseOrderCode")String purchaseOrderCode);
+
+    List<PurchaseOrder> orderList(@Param("purchaseOrderCode")String purchaseOrderCode);
 }

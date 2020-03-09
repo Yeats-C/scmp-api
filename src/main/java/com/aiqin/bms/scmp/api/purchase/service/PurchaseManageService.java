@@ -51,7 +51,8 @@ public interface PurchaseManageService {
 
     HttpResponse<PurchaseInspectionReport> inspectionReport(String purchaseOrderId);
 
-    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode);
+    HttpResponse<PurchaseFormResponse> skuSupply(String skuCode, String transportCenterCode, String warehouseCode,
+                                                 String settlementMethodCode, String purchaseGroupCode);
 
     HttpResponse<PurchaseApplyDetailResponse> applyDetails(String purchaseOrderCode);
 
@@ -62,4 +63,6 @@ public interface PurchaseManageService {
     HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode);
 
     HttpResponse cancelInbound(PurchaseOrder order);
+
+    HttpResponse historyDate(String code);
 }
