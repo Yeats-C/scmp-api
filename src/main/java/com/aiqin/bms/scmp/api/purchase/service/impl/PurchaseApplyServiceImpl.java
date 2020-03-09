@@ -352,30 +352,25 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
-        if (CollectionUtils.isEmptyCollection(products)) {
-            LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
-            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        // 如果库房为空，则为合计
+        List<PurchaseApplyDetailResponse> products;
+        if(StringUtils.isBlank(warehouseCode)){
+            products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+        }else {
+           products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
         }
-        // 查询采购申请单的公司
-        Stock stock;
-        for (PurchaseApplyDetailResponse detail : products) {
-            // 查询库存数量，库存金额， 在途库存
-            stock = new Stock();
-            stock.setSkuCode(detail.getSkuCode());
-            stock.setTransportCenterCode(detail.getTransportCenterCode());
-            stock.setWarehouseCode(detail.getWarehouseCode());
-            stock.setCompanyCode(Global.COMPANY_09);
-            Stock info = stockDao.stockInfo(stock);
-            if (info != null) {
-                detail.setStockCount(info.getInventoryNum().intValue());
-                detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            for(PurchaseApplyDetailResponse product:products){
+                // 计算总计最小单位数量
+                Integer count = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent();
+                Integer sumCount = product.getPurchaseWhole() * count + product.getPurchaseSingle();
+                // 计算含税总价
+                BigDecimal amount = BigDecimal.valueOf(sumCount).multiply(product.getProductPurchaseAmount());
+                product.setProductPurchaseSum(amount);
+                product.setSingleCount(sumCount);
             }
-            Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
-            detail.setSingleCount(totalCount);
-            detail.setProductPurchaseSum(BigDecimal.valueOf(totalCount).multiply(detail.getProductPurchaseAmount()).
-                    setScale(4, BigDecimal.ROUND_HALF_UP));
-
+        }else {
+            LOGGER.info("未查询采购申请商品的信息...{}:" + purchaseApplyCode);
         }
         return HttpResponse.success(products);
     }
