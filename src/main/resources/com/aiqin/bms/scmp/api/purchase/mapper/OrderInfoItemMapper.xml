@@ -623,7 +623,7 @@
     where order_code = #{orderCode,jdbcType=VARCHAR}
     and product_line_num = #{lineCode,jdbcType=BIGINT}
   </select>
-  <select id="selectByIds" resultType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
+  <select id="selectByIds" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from order_info_item

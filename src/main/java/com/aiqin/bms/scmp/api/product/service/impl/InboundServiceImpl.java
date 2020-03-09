@@ -287,8 +287,9 @@ public class InboundServiceImpl implements InboundService {
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
-            InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
+//            InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
+//            inboundService.pushWms(inbound.getInboundOderCode(), inboundService);
+            this.wms(inbound.getInboundOderCode());
             // 跟新数据库状态
             return inbound.getInboundOderCode();
         } catch (GroundRuntimeException e) {
@@ -297,6 +298,10 @@ public class InboundServiceImpl implements InboundService {
         }
     }
 
+    public void wms(String code){
+        InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
+        inboundService.pushWms(code, inboundService);
+    }
 
     /**
      * @param reqVo
@@ -490,8 +495,12 @@ public class InboundServiceImpl implements InboundService {
         //根据编码，查询入库单主体
 //        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
         Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
+        if(inbound == null){
+            log.info("DL 采购单回传，耘链未查询到此入库单，请联系管理员：" + reqVo );
+            throw  new GroundRuntimeException("DL 采购单回传，耘链未查询到此入库单，请联系管理员");
+        }
         //设置默认实际数量
-        inbound.setInboundTime(reqVo.getInboundTime());
+        inbound.setInboundTime(Calendar.getInstance().getTime());
         inbound.setPraInboundNum(0L);
         inbound.setPraMainUnitNum(0L);
         //实际含税总金额

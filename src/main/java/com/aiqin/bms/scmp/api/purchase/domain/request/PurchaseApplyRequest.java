@@ -190,6 +190,10 @@ public class PurchaseApplyRequest extends PagesRequest {
     @JsonProperty("company_code")
     private String companyCode;
 
+    @ApiModelProperty(value="结算方式")
+    @JsonProperty("settlement_method_code")
+    private String settlementMethodCode;
+
     public PurchaseApplyRequest() {
     }
 

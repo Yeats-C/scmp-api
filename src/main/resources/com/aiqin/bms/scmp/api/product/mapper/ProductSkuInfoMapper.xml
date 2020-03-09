@@ -1098,7 +1098,7 @@ from product_sku a
           #{level,jdbcType=VARCHAR},
       </if>
       <if test="featureCode != null">
-          #{featureCode,jdbcType=VARCHAR}
+          #{featureCode,jdbcType=VARCHAR},
       </if>
       <if test="featureName != null">
           #{featureName,jdbcType=VARCHAR},

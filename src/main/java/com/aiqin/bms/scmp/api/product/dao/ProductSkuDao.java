@@ -340,7 +340,7 @@ public interface ProductSkuDao {
     List<String> contrastPropertySku(String productCategoryCode);
 
     PurchaseApplyDetailResponse purchaseBySkuStock(@Param("purchaseGroupCode") String purchaseGroupCode, @Param("skuCode") String skuCode,
-                                                   @Param("supplierCode") String supplierCode, @Param("transportCenterCode") String transportCenterCode);
+                                                   @Param("supplierCode") String supplierCode, @Param("warehouseCode") String warehouseCode);
 
     List<ProductSkuInfo> selectInfoByImport(ProductSkuChangePriceImportRequest productSkuChangePriceImportRequest);
 

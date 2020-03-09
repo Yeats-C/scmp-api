@@ -16,7 +16,7 @@ import lombok.Data;
 @ApiModel("合同新增导入模板")
 public class ContractImportNew extends BaseRowModel {
 
-    public static final String HEADER = "ContractImportNew(yearName=合同名称, year=年度, supplierName=供应商名称, contractTypeName=合同类型, startTime=合同开始日期, endTime=合同终止日期, minAmount=最低起订金额, checkoutDate=结账日, deliveryCycle=送货周期, taxRate=税率, discount=折扣, returnGuarantee=退换货保证, returnGuaranteeDay=退换货保证天数, warranty=质保金, categoriesSupplyChannelsName=供货渠道类别, caReqVos=品类, brandReqVos=品牌, purchaseGroupReqVos=采购组, remark=备注, settlementMethodName=付款方式, paymentPeriod=付款期, shippingFee=配送费, deliveryCharges=送货费承担方, unloadingFee=卸货费承担方, returnRate=固定返利比例, fixedRebateType=计量方式, comment=备注)";
+    public static final String HEADER = "ContractImportNew(yearName=合同名称, year=年度, supplierName=供应商名称, contractTypeName=合同类型, startTime=合同开始日期, endTime=合同终止日期, minAmount=最低起订金额, checkoutDate=结账日, deliveryCycle=送货周期, taxRate=税率, discount=折扣, returnGuarantee=退换货保证, returnGuaranteeDay=退换货保证天数, warranty=质保金, categoriesSupplyChannelsName=供货渠道类别, contractCost=合同费用, averageGrossMargin=平均毛利率, contractProperty=合同属性, caReqVos=品类, brandReqVos=品牌, purchaseGroupReqVos=采购组, remark=备注, settlementMethodName=付款方式, paymentPeriod=付款期, shippingFee=配送费, deliveryCharges=送货费承担方, unloadingFee=卸货费承担方, returnRate=固定返利比例, fixedRebateType=计量方式, comment=备注)";
 
     @ApiModelProperty("合同名称")
     @ExcelProperty(index = 0 , value = "合同名称")
@@ -78,52 +78,64 @@ public class ContractImportNew extends BaseRowModel {
     @ExcelProperty(index = 14 , value = "供货渠道名称")
     private String categoriesSupplyChannelsName;
 
+    @ApiModelProperty("合同费用")
+    @ExcelProperty(index = 15 , value = "合同费用")
+    private String contractCost;
+
+    @ApiModelProperty("平均毛利率")
+    @ExcelProperty(index = 16 , value = "平均毛利率")
+    private String averageGrossMargin;
+
+    @ApiModelProperty("合同属性")
+    @ExcelProperty(index = 17 , value = "合同属性")
+    private String contractProperty;
+
     @ApiModelProperty("品类")
-    @ExcelProperty(index = 15 , value = "品类")
+    @ExcelProperty(index = 18 , value = "品类")
     private String caReqVos;
 
     @ApiModelProperty("品牌")
-    @ExcelProperty(index = 16 , value = "品牌")
+    @ExcelProperty(index = 19 , value = "品牌")
     private String brandReqVos;
 
     @ApiModelProperty("采购组")
-    @ExcelProperty(index = 17 , value = "采购组")
+    @ExcelProperty(index = 20 , value = "采购组")
     private String purchaseGroupReqVos;
 
     @ApiModelProperty("备注")
-    @ExcelProperty(index = 18 , value = "备注")
+    @ExcelProperty(index = 21 , value = "备注")
     private String remark;
 
     @ApiModelProperty("付款方式")
-    @ExcelProperty(index = 19 , value = "付款方式")
+    @ExcelProperty(index = 22 , value = "付款方式")
     private String settlementMethodName;
 
     @ApiModelProperty("付款期")
-    @ExcelProperty(index = 20 , value = "付款期")
+    @ExcelProperty(index = 23 , value = "付款期")
     private String paymentPeriod;
 
     @ApiModelProperty("配送费")
-    @ExcelProperty(index = 21 , value = "配送费")
+    @ExcelProperty(index = 24 , value = "配送费")
     private String shippingFee;
 
     @ApiModelProperty("送货费承担方(甲方,乙方承担)")
-    @ExcelProperty(index = 22 , value = "送货费承担方")
+    @ExcelProperty(index = 25 , value = "送货费承担方")
     private String deliveryCharges;
 
     @ApiModelProperty("卸货费(甲方，乙方承担)")
-    @ExcelProperty(index = 23 , value = "卸货费")
+    @ExcelProperty(index = 26 , value = "卸货费")
     private String unloadingFee;
 
     @ApiModelProperty("固定返利返利率")
-    @ExcelProperty(index = 24 , value = "固定返利返利率")
+    @ExcelProperty(index = 27 , value = "固定返利返利率")
     private String returnRate;
 
     @ApiModelProperty("固定返利类型(未税,含税)")
-    @ExcelProperty(index = 25 , value = "固定返利类型")
+    @ExcelProperty(index = 28 , value = "固定返利类型")
     private String fixedRebateType;
 
     @ApiModelProperty("备注")
-    @ExcelProperty(index = 26 , value = "备注")
+    @ExcelProperty(index = 29 , value = "备注")
     private String comment;
 
 
