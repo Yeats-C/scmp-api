@@ -30,73 +30,41 @@
     where id = #{id,jdbcType=BIGINT}
   </select>
     <resultMap id="officialSkuList" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO">
-      <result property="skuCode" column="asku_code"/>
-      <result property="skuName" column="asku_name"/>
-      <result property="categoriesSupplyChannelsCode" column="acategories_supply_channels_code"/>
-      <result property="directDeliverySupplierName" column="adirect_delivery_supplier_name"/>
-      <result property="beDisable" column="cbe_disable"/>
-      <result property="code" column="ccode"/>
-      <result property="name" column="cname"/>
-      <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaInfoRespVO">
-        <result column="btype"  property="type" />
-        <result column="bstatus"  property="status" />
-        <result column="bname"  property="name" />
-        <result column="bcode"  property="code" />
-      </collection>
+        <result column="acode"  property="code" />
+        <result column="aname"  property="name" />
+        <result column="abe_disable"  property="beDisable" />
+        <result column="acreate_by" property="createBy" />
+        <result column="acreate_time"  property="createTime" />
+        <result column="aupdate_by"  property="updateBy" />
+        <result column="aupdate_time"  property="updateTime" />
+        <result column="skuCount"  property="skuCount" />
+        <result column="skuProcurementCount"  property="skuProcurementCount" />
     </resultMap>
     <select id="officialSkuList" parameterType="java.util.List" resultMap="officialSkuList">
-        select a.sku_code asku_code,
-               a.sku_name asku_name,
-               a.categories_supply_channels_code acategories_supply_channels_code,
-               a.categories_supply_channels_name acategories_supply_channels_name,
-               a.direct_delivery_supplier_code adirect_delivery_supplier_code,
-               a.direct_delivery_supplier_name adirect_delivery_supplier_name,
-               b.type btype,
-               b.status bstatus,
-               b.name bname,
-               b.code bcode,
-               c.code ccode,
-               c.name cname,
-               c.be_disable cbe_disable
-        from product_sku_sale_area a
-               left join product_sku_sale_area_info b
-                         on a.code = b.main_code
-               left join product_sku_sale_area_main c
-                         on a.code = c.code
+        select
+        a.code acode,
+        a.name aname,
+        a.be_disable abe_disable,
+        a.create_by acreate_by,
+        a.create_time acreate_time,
+        a.update_by aupdate_by,
+        a.update_time aupdate_time,
+        count(c.id) skuCount,
+        count(select id from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        ) skuProcurementCount
+        from product_sku_sale_area_main a
+        left join product_sku_sale_area_info c   on a.code = c.main_code
+        left join product_sku ps   on ps.sku_code = c.ps.sku_code
         where a.id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
 </select>
-  <select id="officialSkuListCount" resultType="java.lang.Long">
-    select a.id
-    from product_sku_sale_area a
-    left join product_sku_sale_area_info b
-    on a.code = b.main_code
-    left join product_sku_sale_area_main c
-    on a.code = c.code
-    where c.company_code = #{companyCode}
-    <if test="skuCode != null and skuCode != ''">
-      and a.sku_code like CONCAT('%',#{skuCode},'%')
-    </if>
-    <if test="skuName != null and skuName != ''">
-      and a.sku_name like CONCAT('%',#{skuName},'%')
-    </if>
-    <if test="code != null and code != ''">
-      and c.code like CONCAT('%',#{code},'%')
-    </if>
-    <if test="name != null and name != ''">
-      and c.name like CONCAT('%',#{name},'%')
-    </if>
-    <if test="beDisable != null">
-      and c.be_disable = #{beDisable}
-    </if>
-    <if test="categoriesSupplyChannelsCode != null and categoriesSupplyChannelsCode != ''">
-      and a.categories_supply_channels_code = #{categoriesSupplyChannelsCode}
-    </if>
-    <if test="directDeliverySupplierCode != null and directDeliverySupplierCode != ''">
-      and a.direct_delivery_supplier_code like CONCAT('%',#{directDeliverySupplierCode},'%')
-    </if>
+    <select id="officialSkuListCount" resultType="java.lang.Long">
+    select a.id from product_sku_sale_area_main a
+        left join product_sku_sale_area_info c
+    on a.code = c.main_code
+    where a.company_code = #{companyCode}
     group by a.id
     order by a.create_time desc
   </select>
@@ -111,7 +79,18 @@
       #{item}
     </foreach>
   </delete>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea">
+    <delete id="deleteByCode">
+          delete from product_sku_sale_area
+         where code = #{code,jdbcType=VARCHAR}
+         and
+        sku_code  in (select sku_code from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        )
+    </delete>
+
+
+
+
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea">
     insert into product_sku_sale_area (id, code, sku_code, 
       sku_name, be_disable, categories_supply_channels_code, 
       categories_supply_channels_name, direct_delivery_supplier_code, 
@@ -316,4 +295,130 @@
       and a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </where>
   </select>
+
+    <resultMap id="officialSkuDetail" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO">
+        <result column="acode"  property="code" />
+        <result column="aname"  property="name" />
+        <result column="abe_disable"  property="beDisable" />
+        <result column="acreate_by" property="createBy" />
+        <result column="acreate_time"  property="createTime" />
+        <result column="aupdate_by"  property="updateBy" />
+        <result column="aupdate_time"  property="updateTime" />
+        <result column="skuCount"  property="skuCount" />
+        <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo">
+
+
+
+        </collection>
+    </resultMap>
+    <select id="skuDetail" parameterType="com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetailReqVO" resultMap="officialSkuDetail">
+        select
+        a.code acode,
+        a.name aname,
+        a.be_disable abe_disable,
+        a.create_by acreate_by,
+        a.create_time acreate_time,
+        a.update_by aupdate_by,
+        a.update_time aupdate_time,
+        count(select id from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        ) skuCount
+        from product_sku_sale_area_main a
+        left join product_sku_sale_area_info c   on a.code = c.main_code
+        where a.id =
+            #{id}
+    </select>
+
+
+    <resultMap id="getSkuListMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="sku_abbreviation" jdbcType="VARCHAR" property="skuAbbreviation" />
+        <result column="product_code" jdbcType="VARCHAR" property="productCode" />
+        <result column="product_name" jdbcType="VARCHAR" property="productName" />
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+        <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
+        <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+        <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+        <result column="product_sort_code" jdbcType="VARCHAR" property="productSortCode" />
+        <result column="product_sort_name" jdbcType="VARCHAR" property="productSortName" />
+        <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
+        <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+        <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+        <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
+        <result column="management_style_code" jdbcType="VARCHAR" property="managementStyleCode" />
+        <result column="management_style_name" jdbcType="VARCHAR" property="managementStyleName" />
+        <result column="quality_assurance_management" jdbcType="TINYINT" property="qualityAssuranceManagement" />
+        <result column="quality_number" jdbcType="VARCHAR" property="qualityNumber" />
+        <result column="quality_date" jdbcType="VARCHAR" property="qualityDate" />
+        <result column="categories_supply_channels_code" jdbcType="VARCHAR" property="categoriesSupplyChannelsCode" />
+        <result column="categories_supply_channels_name" jdbcType="VARCHAR" property="categoriesSupplyChannelsName" />
+        <result column="seasonal_goods" jdbcType="TINYINT" property="seasonalGoods" />
+        <result column="structural_goods" jdbcType="TINYINT" property="structuralGoods" />
+        <result column="manufacturer_guide_price" jdbcType="BIGINT" property="manufacturerGuidePrice" />
+        <result column="applicable_month_age" jdbcType="VARCHAR" property="applicableMonthAge" />
+        <result column="mnemonic_code" jdbcType="VARCHAR" property="mnemonicCode" />
+        <result column="warehouse_type_code" jdbcType="VARCHAR" property="warehouseTypeCode" />
+        <result column="warehouse_type_name" jdbcType="VARCHAR" property="warehouseTypeName" />
+        <result column="is_main_push" jdbcType="TINYINT" property="isMainPush" />
+        <result column="new_product" jdbcType="TINYINT" property="newProduct" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
+        <result column="selection_effective_start_time" jdbcType="VARCHAR" property="selectionEffectiveStartTime" />
+        <result column="selection_effective_end_time" jdbcType="VARCHAR" property="selectionEffectiveEndTime" />
+        <result column="sku_status" jdbcType="TINYINT" property="skuStatus" />
+        <result column="on_sale" jdbcType="TINYINT" property="onSale" />
+        <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+        <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
+        <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
+        <result column="auditor_by" jdbcType="VARCHAR" property="auditorBy" />
+        <result column="auditor_time" jdbcType="TIMESTAMP" property="auditorTime" />
+        <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="spec" jdbcType="VARCHAR" property="spec" />
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
+        <result column="box_gauge" jdbcType="VARCHAR" property="boxGauge" />
+        <result column="point" jdbcType="VARCHAR" property="point" />
+        <result column="spu_code" jdbcType="VARCHAR" property="spuCode" />
+        <result column="bar_code" jdbcType="VARCHAR" property="barCode" />
+        <result column="logo" jdbcType="VARCHAR" property="logo" />
+        <result column="images" jdbcType="VARCHAR" property="images" />
+        <result column="itro_images" jdbcType="VARCHAR" property="itroImages" />
+        <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
+        <result column="use_time" jdbcType="INTEGER" property="useTime" />
+        <result column="unique_code" jdbcType="TINYINT" property="uniqueCode" />
+        <result column="inventory_model" jdbcType="TINYINT" property="inventoryModel" />
+        <result column="inventory_allocation" jdbcType="TINYINT" property="inventoryAllocation" />
+        <result column="price_model" jdbcType="TINYINT" property="priceModel" />
+        <result column="product_desc" jdbcType="VARCHAR" property="productDesc" />
+        <result column="item_number" jdbcType="VARCHAR" property="itemNumber" />
+        <result column="level" jdbcType="VARCHAR" property="level" />
+        <result column="season_band" jdbcType="VARCHAR" property="seasonBand" />
+        <result column="feature_code" jdbcType="VARCHAR" property="featureCode" />
+        <result column="feature_name" jdbcType="VARCHAR" property="featureName" />
+        <result column="currency_level_code" jdbcType="VARCHAR" property="currencyLevelCode" />
+        <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
+    </resultMap>
+    <select id="getSkuList" resultMap="getSkuListMap">
+ select
+        ps.*
+        from product_sku_sale_area_main a
+        left join product_sku_sale_area_info c   on a.code = c.main_code
+        left join product_sku ps   on ps.sku_code = c.sku_code
+<where>
+    a.id={id}
+</where>
+
+
+
+    </select>
 </mapper>

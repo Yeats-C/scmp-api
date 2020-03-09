@@ -35,6 +35,14 @@ public interface ProductSkuSaleAreaInfoMapper {
      */
     int deleteByCodes(@Param("items") Set<String> codes);
 
+    /**
+     * 删除
+     * @author NullPointException
+     * @date 2019/6/5
+     * @return int
+     */
+    int deleteByCode(@Param("mainCode") String mainCode);
+
     Integer selectAreaStatus(@Param("mainCode") String mainCode, @Param("code") String code,
                              @Param("status") Integer status,
                              @Param("type") Integer type);

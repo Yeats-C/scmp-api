@@ -111,14 +111,14 @@
     </trim>
   </insert>
     <insert id="insertBatch">
-          insert into product_sku_sale_area_info_draft (id, main_code, sku_code,
-      type, status, name,
+          insert into product_sku_sale_area_info (id, main_code, sku_code,
+      type, name,
       code, company_code, company_name,
       province_id)
     values
       <foreach collection="items" separator="," close="" open="" item="item">
       (#{item.id,jdbcType=BIGINT}, #{item.mainCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
-      #{item.type,jdbcType=INTEGER}, #{item.status,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
+      #{item.type,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR},
       #{item.code,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
       #{item.provinceId,jdbcType=VARCHAR})
       </foreach>

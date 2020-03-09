@@ -16,11 +16,13 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierOperationLog;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
@@ -42,6 +44,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.component.service.AreaBasicService;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -49,6 +52,7 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -111,7 +115,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean addSaleAreaDraft(ProductSkuSaleAreaMainReqVO request) throws Exception {
+    public Boolean addSaleArea(ProductSkuSaleAreaMainReqVO request) throws Exception {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         request.setCompanyCode(currentAuthToken.getCompanyCode());
         request.setCreateBy(currentAuthToken.getPersonName());
@@ -126,53 +130,55 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         }
         //数据本身验重
         validateRepeat(request);
-        //验证名称
-        List<ProductSkuSaleAreaMain> draftName = productSkuSaleAreaMainDraftMapper.selectByName(request.getName());
-        if (CollectionUtils.isNotEmpty(draftName)) {
-            throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"名称重复保存失败"));
-        }
+//        //验证名称
+//        List<ProductSkuSaleAreaMain> draftName = productSkuSaleAreaMainDraftMapper.selectByName(request.getName());
+//        if (CollectionUtils.isNotEmpty(draftName)) {
+//            throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"名称重复保存失败"));
+//        }
         List<ProductSkuSaleAreaMain> applyName = applyProductSkuSaleAreaMainMapper.selectByName(request.getName());
         if (CollectionUtils.isNotEmpty(applyName)) {
             throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"名称重复保存失败"));
         }
-        //首先申请表中试是否有申请中的数据
-        if(Objects.nonNull(request.getOfficialCode())){
-           ApplyProductSkuSaleAreaMain apply =  applyProductSkuSaleAreaMainMapper.selectByOfficialCode(ApplyStatus.APPROVAL.getNumber().intValue(),request.getOfficialCode());
-           if(Objects.nonNull(apply)){
-               throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"已有发起修改的数据，无法保存！"));
-           }
-        }
-        //判断草稿表中是否有这条数据
-        List<String> skuCodes = request.getSkuList().stream().map(ProductSaleAreaReqVO::getSkuCode).distinct().collect(Collectors.toList());
-        List<ProductSkuSaleAreaDraft> repeat = productSkuSaleAreaDraftMapper.selectBySkuCodes(skuCodes);
-        //key:skuCode+供货渠道编码+供应商编码apper.selec
-        Map<String, ProductSkuSaleAreaDraft> repeatMap = repeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
-        StringBuilder sb = new StringBuilder();
-        request.getSkuList().forEach(o->{
-            ProductSkuSaleAreaDraft draft = repeatMap.get(o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""));
-           if(Objects.nonNull(draft)){
-                sb.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于临时表，无法提交！ ");
-           }
-        });
-        if (StringUtils.isNotBlank(sb.toString())) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
-        }
-        //判断申请表中是否有该条数据
-        List<ApplyProductSkuSaleArea> applyRepeat = applyProductSkuSaleAreaMapper.selectBySkuCodes(skuCodes,getUser().getCompanyCode());
-        StringBuilder sb2 = new StringBuilder();
-        //key:skuCode+供货渠道编码+供应商编码
-        Map<String, ApplyProductSkuSaleArea> applyRepeatMap = applyRepeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
-        request.getSkuList().forEach(o->{
-            ApplyProductSkuSaleArea draft = applyRepeatMap.get(o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""));
-            if(Objects.nonNull(draft)){
-                sb2.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于申请表，无法提交！ ");
-            }
-        });
-        if (StringUtils.isNotBlank(sb2.toString())) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb2.toString()));
-        }
+//        //首先申请表中试是否有申请中的数据
+//        if(Objects.nonNull(request.getOfficialCode())){
+//           ApplyProductSkuSaleAreaMain apply =  applyProductSkuSaleAreaMainMapper.selectByOfficialCode(ApplyStatus.APPROVAL.getNumber().intValue(),request.getOfficialCode());
+//           if(Objects.nonNull(apply)){
+//               throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"已有发起修改的数据，无法保存！"));
+//           }
+//        }
+//        //判断草稿表中是否有这条数据
+//        List<String> skuCodes = request.getSkuList().stream().map(ProductSaleAreaReqVO::getSkuCode).distinct().collect(Collectors.toList());
+//        List<ProductSkuSaleAreaDraft> repeat = productSkuSaleAreaDraftMapper.selectBySkuCodes(skuCodes);
+//        //key:skuCode+供货渠道编码+供应商编码apper.selec
+//        Map<String, ProductSkuSaleAreaDraft> repeatMap = repeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
+//        StringBuilder sb = new StringBuilder();
+//        request.getSkuList().forEach(o->{
+//            ProductSkuSaleAreaDraft draft = repeatMap.get(o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""));
+//           if(Objects.nonNull(draft)){
+//                sb.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于临时表，无法提交！ ");
+//           }
+//        });
+//        if (StringUtils.isNotBlank(sb.toString())) {
+//            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb.toString()));
+//        }
+//        //判断申请表中是否有该条数据
+//        List<ApplyProductSkuSaleArea> applyRepeat = applyProductSkuSaleAreaMapper.selectBySkuCodes(skuCodes,getUser().getCompanyCode());
+//        StringBuilder sb2 = new StringBuilder();
+//        //key:skuCode+供货渠道编码+供应商编码
+//        Map<String, ApplyProductSkuSaleArea> applyRepeatMap = applyRepeat.stream().collect(Collectors.toMap(o -> o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""), Function.identity()));
+//        request.getSkuList().forEach(o->{
+//            ApplyProductSkuSaleArea draft = applyRepeatMap.get(o.getSkuCode() + o.getCategoriesSupplyChannelsCode() + Optional.ofNullable(o.getDirectDeliverySupplierCode()).orElse(""));
+//            if(Objects.nonNull(draft)){
+//                sb2.append("该条数据下sku为").append(o.getSkuCode()).append("供货渠道类型为").append(o.getCategoriesSupplyChannelsName()).append("的数据已存在于申请表，无法提交！ ");
+//            }
+//        });
+//        if (StringUtils.isNotBlank(sb2.toString())) {
+//            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, sb2.toString()));
+//        }
+
+
         //保存数据
-        return saveDraft(request);
+        return saveData(request);
     }
 
     private void validateRepeat(ProductSkuSaleAreaMainReqVO request) {
@@ -184,27 +190,27 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"数据异常，请检查禁用和启用的销售区域是否有交叉"));
             }
         });
-        List<ProductSaleAreaReqVO> skuList = request.getSkuList();
-        Set<Object> objects1 = Sets.newHashSet();
-        skuList.forEach(o->{
-            if(!objects1.add(o.getSkuCode()+o.getCategoriesSupplyChannelsCode()+o.getDirectDeliverySupplierCode())){
-                throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"数据异常，请检查sku信息是否有重复！"));
-            }
-            //判断是否为空
-            if(Objects.isNull(o.getCategoriesSupplyChannelsCode())){
-                throw new BizException(ResultCode.DATA_NOT_COMPLETE);
-            }
-            if(CommonConstant.SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY.equals(o.getCategoriesSupplyChannelsCode())){
-                if(Objects.isNull(o.getDirectDeliverySupplierCode())){
-                    throw new BizException(ResultCode.DATA_NOT_COMPLETE);
-                }
-            }
-        });
+//        List<ProductSaleAreaReqVO> skuList = request.getSkuList();
+//        Set<Object> objects1 = Sets.newHashSet();
+//        skuList.forEach(o->{
+//            if(!objects1.add(o.getSkuCode()+o.getCategoriesSupplyChannelsCode()+o.getDirectDeliverySupplierCode())){
+//                throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"数据异常，请检查sku信息是否有重复！"));
+//            }
+//            //判断是否为空
+//            if(Objects.isNull(o.getCategoriesSupplyChannelsCode())){
+//                throw new BizException(ResultCode.DATA_NOT_COMPLETE);
+//            }
+//            if(CommonConstant.SUPPLY_CHANNEL_TYPE_DIRECT_DELIVERY.equals(o.getCategoriesSupplyChannelsCode())){
+//                if(Objects.isNull(o.getDirectDeliverySupplierCode())){
+//                    throw new BizException(ResultCode.DATA_NOT_COMPLETE);
+//                }
+//            }
+//        });
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean saveDraft(ProductSkuSaleAreaMainReqVO request) throws Exception {
+    public Boolean saveData(ProductSkuSaleAreaMainReqVO request) throws Exception {
         //拼装实体
         ProductSkuSaleAreaMainDraft copy = BeanCopyUtils.copy(request, ProductSkuSaleAreaMainDraft.class);
         //获取编码
@@ -218,17 +224,17 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             o.setCompanyCode(request.getCompanyCode());
             o.setCompanyName(request.getCompanyName());
         });
-        List<ProductSkuSaleAreaDraft> skuSaleAreaDrafts = BeanCopyUtils.copyList(request.getSkuList(), ProductSkuSaleAreaDraft.class);
-        skuSaleAreaDrafts.forEach(
-                o ->{
-                    o.setCode(code);
-                    o.setBeDisable(request.getBeDisable());
-                    o.setCompanyCode(request.getCompanyCode());
-                    o.setCompanyName(request.getCompanyName());
-                    o.setCreateBy(request.getCreateBy());
-                    o.setCreateTime(request.getCreateTime());
-                }
-        );
+//        List<ProductSkuSaleAreaDraft> skuSaleAreaDrafts = BeanCopyUtils.copyList(request.getSkuList(), ProductSkuSaleAreaDraft.class);
+//        skuSaleAreaDrafts.forEach(
+//                o ->{
+//                    o.setCode(code);
+//                    o.setBeDisable(request.getBeDisable());
+//                    o.setCompanyCode(request.getCompanyCode());
+//                    o.setCompanyName(request.getCompanyName());
+//                    o.setCreateBy(request.getCreateBy());
+//                    o.setCreateTime(request.getCreateTime());
+//                }
+//        );
         List<ProductSkuSaleAreaChannelDraft> channelDrafts = BeanCopyUtils.copyList(request.getChannelList(), ProductSkuSaleAreaChannelDraft.class);
         channelDrafts.forEach(o->{
             o.setCode(code);
@@ -236,23 +242,32 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             o.setCompanyName(request.getCompanyName());
         });
         //保存数据
-        saveDraftData(copy, productSkuSaleAreaInfoDrafts, skuSaleAreaDrafts, channelDrafts);
+        saveDraftData(copy, productSkuSaleAreaInfoDrafts,  channelDrafts);
         //更新编码
         encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+
+        //新增日志
+        SupplierOperationLog supplierOperationLog=new SupplierOperationLog();
+        supplierOperationLog.setObjectId(code);
+        supplierOperationLog.setHandleType(new Byte(String.valueOf(0)));
+        supplierOperationLog.setObjectType( ObjectTypeCode.SALE_AREA.getStatus());
+        supplierOperationLog.setHandleName("新增");
+        supplierOperationLog.setDelFlag(new Byte(String.valueOf(0)));
+        operationLogService.insert(supplierOperationLog);
         return true;
     }
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveDraftData(ProductSkuSaleAreaMainDraft copy, List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts, List<ProductSkuSaleAreaDraft> skuSaleAreaDrafts, List<ProductSkuSaleAreaChannelDraft> channelDrafts) {
+    public void saveDraftData(ProductSkuSaleAreaMainDraft copy, List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts, List<ProductSkuSaleAreaChannelDraft> channelDrafts) {
         int insert = productSkuSaleAreaMainDraftMapper.insert(copy);
         if (insert <= 0) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存主表数据失败"));
         }
         //插入sku信息
-        int i = productSkuSaleAreaDraftMapper.insertBatch(skuSaleAreaDrafts);
-        if (i != skuSaleAreaDrafts.size()) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存sku信息失败！"));
-        }
+//        int i = productSkuSaleAreaDraftMapper.insertBatch(skuSaleAreaDrafts);
+//        if (i != skuSaleAreaDrafts.size()) {
+//            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存sku信息失败！"));
+//        }
         //插入区域数据
         int j = productSkuSaleAreaInfoDraftMapper.insertBatch(productSkuSaleAreaInfoDrafts);
         if (j != productSkuSaleAreaInfoDrafts.size()) {
@@ -270,7 +285,6 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Override
     public BasePage<QueryProductSaleAreaMainRespVO> queryListForOfficial(QueryProductSaleAreaMainReqVO request) {
         request.setCompanyCode(getUser().getCompanyCode());
-        request.setPersonId(getUser().getPersonId());
         List<Long> longs = productSkuSaleAreaMainMapper.selectListByQueryVoCount(request);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(request.getPageNo(), Lists.newArrayList());
@@ -525,7 +539,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             }
             ProductSkuSaleAreaMain newMain = BeanCopyUtils.copy(areaDTO, ProductSkuSaleAreaMain.class);
             //设置为生效
-            newMain.setBeEffective(1);
+//            newMain.setBeEffective(1);
             newMain.setCode(oldMain.getCode());
             supplierCommonService.getInstance(oldMain.getCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.EDIT_SALE_AREA.getName(), null, HandleTypeCoce.UPDATE.getName(), newVO.getApprovalUserName());
             newMain.setCreateBy(oldMain.getCreateBy());
@@ -588,7 +602,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         for (ApplyProductSkuSaleAreaMainDTO mainDTO : addList) {
             ProductSkuSaleAreaMain saleAreaMain = BeanCopyUtils.copy(mainDTO, ProductSkuSaleAreaMain.class);
             supplierCommonService.getInstance(mainDTO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.ADD_SALE_AREA.getName(), null, HandleTypeCoce.ADD.getName(),newVO.getApprovalUserName() );
-            saleAreaMain.setBeEffective(flag ?1:0);
+//            saleAreaMain.setBeEffective(flag ?1:0);
             main.add(saleAreaMain);
             skuList.addAll(BeanCopyUtils.copyList(mainDTO.getSkuList(),ProductSkuSaleArea.class));
             areaList.addAll(BeanCopyUtils.copyList(mainDTO.getAreaList(),ProductSkuSaleAreaInfo.class));
@@ -716,30 +730,46 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     }
 
     @Override
-    public ProductSaleAreaForOfficialMainRespVO editView(String code) {
-        ProductSaleAreaForOfficialMainRespVO vo = officialView(code);
-        List<String> collect = vo.getSkuList().stream().map(QueryProductSaleAreaRespVO::getSkuCode).distinct().collect(Collectors.toList());
-        //查询直送供应商
-        List<QueryProductSaleAreaRespVO> temp = skuInfoService.selectDirectSupplierBySkuCodes(collect);
-        if(CollectionUtils.isNotEmpty(temp)){
-            Map<String, QueryProductSaleAreaRespVO> map = temp.stream().collect(Collectors.toMap(QueryProductSaleAreaRespVO::getSkuCode, Function.identity()));
-            vo.getSkuList().forEach(o->{
-                QueryProductSaleAreaRespVO queryProductSaleAreaRespVO = map.get(o.getSkuCode());
-                if (Objects.nonNull(queryProductSaleAreaRespVO)) {
-                    o.setSupplierList(queryProductSaleAreaRespVO.getSupplierList());
-                }
-            });
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean editView(ProductSkuSaleAreaMainReqVO productSkuSaleAreaMainReqVO) throws Exception  {
+        //对主表进行修改
+        ProductSkuSaleAreaMain productSkuSaleAreaMain=new ProductSkuSaleAreaMain();
+        BeanUtils.copyProperties(productSkuSaleAreaMainReqVO,productSkuSaleAreaMain);
+        int num=productSkuSaleAreaMainMapper.updateByPrimaryKeySelective(productSkuSaleAreaMain);
+        if(num<1){
+            throw new BizException(MessageId.create(Project.PRODUCT_API,98,"对应编码的数据异常!"));
         }
-        return vo;
+        //删掉之前关联的表
+        productSkuSaleAreaInfoMapper.deleteByCode(productSkuSaleAreaMain.getCode());
+        productSkuSaleAreaChannelMapper.deleteByCode(productSkuSaleAreaMain.getCode());
+        //重新保存数据
+        //拼装实体
+        ProductSkuSaleAreaMainDraft copy = BeanCopyUtils.copy(productSkuSaleAreaMainReqVO, ProductSkuSaleAreaMainDraft.class);
+        List<ProductSkuSaleAreaChannelDraft> channelDrafts = BeanCopyUtils.copyList(productSkuSaleAreaMainReqVO.getChannelList(), ProductSkuSaleAreaChannelDraft.class);
+        List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts = BeanCopyUtils.copyList(productSkuSaleAreaMainReqVO.getAreaList(), ProductSkuSaleAreaInfoDraft.class);
+        saveDraftData(copy, productSkuSaleAreaInfoDrafts,  channelDrafts);
+        //新增日志
+        SupplierOperationLog supplierOperationLog=new SupplierOperationLog();
+        supplierOperationLog.setObjectId(productSkuSaleAreaMainReqVO.getCode());
+        supplierOperationLog.setHandleType(new Byte(String.valueOf(1)));
+        supplierOperationLog.setObjectType( ObjectTypeCode.SALE_AREA.getStatus());
+        supplierOperationLog.setHandleName("修改");
+        supplierOperationLog.setDelFlag(new Byte(String.valueOf(0)));
+        operationLogService.insert(supplierOperationLog);
+        return true;
     }
 
     @Override
     public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        String personId=currentAuthToken.getPersonId();
         reqVO.setCompanyCode(getUser().getCompanyCode());
         List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount(reqVO);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
+        reqVO.setPersonId(personId);
         List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO));
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
@@ -805,7 +835,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     }
     @Override
     public BasePage<AreaBasic> areaList(QueryAreaReqVO req) {
-        HttpResponse response = areaBasicService.areaTypeInfo(3);
+        HttpResponse response = areaBasicService.selectAreaOneTree();
         boolean flag = Objects.isNull(response) || !MsgStatus.SUCCESS.equals(response.getCode()) || CollectionUtils.isEmpty((List<LinkedHashMap<String,String>>) response.getData());
         if(flag){
             throw new BizException(MessageId.create(Project.SUPPLIER_API,98,"获取省列表失败！"));
@@ -923,5 +953,31 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             }
         }
         return HttpResponse.success(true);
+    }
+
+    @Override
+    public QueryProductSaleAreaSkuRespVO skuDetail(QueryProductDetailReqVO reqVO) {
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        String personId=currentAuthToken.getPersonId();
+        reqVO.setPersonId(personId);
+        QueryProductSaleAreaSkuRespVO queryProductSaleAreaSkuRespVO=productSkuSaleAreaMapper.skuDetail(reqVO);
+        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+        Page<ProductSkuInfo> page=productSkuSaleAreaMapper.getSkuList(reqVO);
+        queryProductSaleAreaSkuRespVO.setSkuList(page);
+        return queryProductSaleAreaSkuRespVO;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean skuEdit(QueryProductDetailReqVO reqVO) {
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        String personId=currentAuthToken.getPersonId();
+     //先删除
+        productSkuSaleAreaMapper.deleteByCode(reqVO);
+        //增加
+        productSkuSaleAreaMapper.insertBatch(reqVO.getSkuList());
+        return null;
     }
 }

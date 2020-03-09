@@ -81,7 +81,7 @@
     </trim>
   </insert>
   <insert id="insertBatch">
-    insert into product_sku_sale_area_channel_draft (id, code, price_channel_code,
+    insert into product_sku_sale_area_channel (id, code, price_channel_code,
       price_channel_name, company_code, company_name
       )
     values

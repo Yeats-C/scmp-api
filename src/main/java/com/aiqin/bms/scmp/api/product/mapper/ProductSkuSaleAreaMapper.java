@@ -1,8 +1,12 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea;
+import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetailReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -53,4 +57,11 @@ public interface ProductSkuSaleAreaMapper {
     List<Long> officialSkuListCount(QueryProductSaleAreaReqVO reqVO);
 
     String selectMainCode(String skuCode);
+
+    QueryProductSaleAreaSkuRespVO skuDetail( QueryProductDetailReqVO reqVO);
+
+    Page<ProductSkuInfo> getSkuList(QueryProductDetailReqVO reqVO);
+
+
+    void deleteByCode(QueryProductDetailReqVO reqVO);
 }

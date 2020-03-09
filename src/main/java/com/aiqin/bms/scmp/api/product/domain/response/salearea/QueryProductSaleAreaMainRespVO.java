@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.salearea;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -45,8 +46,8 @@ public class QueryProductSaleAreaMainRespVO {
     @ApiModelProperty("1新增2修改")
     private Integer applyType;
 
-    @ApiModelProperty("sku信息")
-    private List<QueryProductSaleAreaRespVO> skuList;
+    @ApiModelProperty("渠道信息")
+   private List<ProductSkuSaleAreaChannel> channelList;
 
     @ApiModelProperty("区域信息")
     private List<ProductSaleAreaInfoRespVO> areaList;

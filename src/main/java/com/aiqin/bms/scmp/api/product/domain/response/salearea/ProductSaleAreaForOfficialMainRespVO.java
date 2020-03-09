@@ -52,6 +52,6 @@ public class ProductSaleAreaForOfficialMainRespVO {
     @ApiModelProperty("渠道信息")
     private List<ProductSaleAreaChannelRespVO> channelList;
 
-    @ApiModelProperty("区域详情")
+    @ApiModelProperty("日志详情")
     List<LogData> logData;
 }

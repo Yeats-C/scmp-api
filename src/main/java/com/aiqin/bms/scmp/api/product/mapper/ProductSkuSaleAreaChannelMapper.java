@@ -34,4 +34,13 @@ public interface ProductSkuSaleAreaChannelMapper {
      * @return int
      */
     int deleteByCodes(@Param("items") Set<String> codes);
+
+
+    /**
+     * 批量删除
+     * @author NullPointException
+     * @date 2019/6/5
+     * @return int
+     */
+    int deleteByCode(@Param("code") String code);
 }

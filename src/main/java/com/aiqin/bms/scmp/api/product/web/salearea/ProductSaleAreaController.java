@@ -32,12 +32,12 @@ public class ProductSaleAreaController {
     @Autowired
     private ProductSaleAreaService productSaleAreaService;
 
-    @PostMapping("/add/draft")
-    @ApiOperation("新增销售区域草稿")
-    public HttpResponse<Boolean> addSaleAreaDraft(@RequestBody ProductSkuSaleAreaMainReqVO request) {
+    @PostMapping("/add")
+    @ApiOperation("新增销售区域")
+    public HttpResponse<Boolean> addSaleArea(@RequestBody ProductSkuSaleAreaMainReqVO request) {
         log.info("ProductSaleAreaController--addSaleAreaDraft--入参: [{}]", request);
         try {
-           return HttpResponse.success(productSaleAreaService.addSaleAreaDraft(request));
+           return HttpResponse.success(productSaleAreaService.addSaleArea(request));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -61,23 +61,23 @@ public class ProductSaleAreaController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-    @PostMapping("/add/apply")
-    @ApiOperation("新增销售区域申请")
-    public HttpResponse<Boolean> addSaleAreaApply(@RequestBody ApplySaleAreaReqVO reqVO) {
-        log.info("ProductSaleAreaController--addSaleAreaApply--入参: [{}]", reqVO);
-        try {
-            return HttpResponse.success(productSaleAreaService.addSaleAreaApply(reqVO));
-        } catch (BizException e) {
-            log.error(e.getMessageId().getMessage());
-            return HttpResponse.failure(e.getMessageId());
-        } catch (Exception ex){
-            ex.printStackTrace();
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
+//    @PostMapping("/add/apply")
+//    @ApiOperation("新增销售区域申请")
+//    public HttpResponse<Boolean> addSaleAreaApply(@RequestBody ApplySaleAreaReqVO reqVO) {
+//        log.info("ProductSaleAreaController--addSaleAreaApply--入参: [{}]", reqVO);
+//        try {
+//            return HttpResponse.success(productSaleAreaService.addSaleAreaApply(reqVO));
+//        } catch (BizException e) {
+//            log.error(e.getMessageId().getMessage());
+//            return HttpResponse.failure(e.getMessageId());
+//        } catch (Exception ex){
+//            ex.printStackTrace();
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+//        }
+//    }
 
     @GetMapping("/official/info")
-    @ApiOperation("销售区域正式表详情")
+    @ApiOperation("销售区域详情")
     public HttpResponse<ProductSaleAreaForOfficialMainRespVO> officialView(@RequestParam String code) {
         log.info("ProductSaleAreaController--officialView--入参: [{}]", code);
         try {
@@ -91,12 +91,12 @@ public class ProductSaleAreaController {
         }
     }
 
-    @GetMapping("/edit/info")
-    @ApiOperation("销售区域正式表详情(编辑)")
-    public HttpResponse<ProductSaleAreaForOfficialMainRespVO> editView(@RequestParam String code) {
-        log.info("ProductSaleAreaController--editView--入参: [{}]", code);
+    @PostMapping("/edit")
+    @ApiOperation("编辑销售区域")
+    public HttpResponse<Boolean> editView(@RequestBody ProductSkuSaleAreaMainReqVO productSkuSaleAreaMainReqVO) {
+        log.info("ProductSaleAreaController--editView--入参: [{}]", productSkuSaleAreaMainReqVO.toString());
         try {
-            return HttpResponse.success(productSaleAreaService.editView(code));
+            return HttpResponse.success(productSaleAreaService.editView(productSkuSaleAreaMainReqVO));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -136,7 +136,7 @@ public class ProductSaleAreaController {
         }
     }
     @PostMapping("/official/skuList")
-    @ApiOperation("销售区域sku列表")
+    @ApiOperation("sku商品销售区域列表")
     public HttpResponse<BasePage<QueryProductSaleAreaSkuRespVO>> officialSkuList(@RequestBody QueryProductSaleAreaReqVO reqVO) {
         log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
         try {
@@ -149,12 +149,13 @@ public class ProductSaleAreaController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-    @PostMapping("/draft/skuList")
-    @ApiOperation("选sku时的列表")
-    public HttpResponse<BasePage<QueryProductSaleAreaForSkuRespVO>> skuList(@RequestBody QueryProductSaleAreaForSkuReqVO reqVO) {
+
+    @PostMapping ("/official/skuDetail")
+    @ApiOperation("sku商品销售详情")
+    public HttpResponse<QueryProductSaleAreaSkuRespVO> skuDetail(@RequestBody QueryProductDetailReqVO reqVO) {
         log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
         try {
-            return HttpResponse.success(productSaleAreaService.skuList(reqVO));
+            return HttpResponse.success(productSaleAreaService.skuDetail(reqVO));
         } catch (BizException e) {
             log.error(e.getMessageId().getMessage());
             return HttpResponse.failure(e.getMessageId());
@@ -163,6 +164,36 @@ public class ProductSaleAreaController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping ("/edit/skuDetail")
+    @ApiOperation("sku商品销售编辑")
+    public HttpResponse<QueryProductSaleAreaSkuRespVO> skuEdit(@RequestBody QueryProductDetailReqVO reqVO) {
+        log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(productSaleAreaService.skuEdit(reqVO));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+//    @PostMapping("/draft/skuList")
+//    @ApiOperation("选sku时的列表")
+//    public HttpResponse<BasePage<QueryProductSaleAreaForSkuRespVO>> skuList(@RequestBody QueryProductSaleAreaForSkuReqVO reqVO) {
+//        log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
+//        try {
+//            return HttpResponse.success(productSaleAreaService.skuList(reqVO));
+//        } catch (BizException e) {
+//            log.error(e.getMessageId().getMessage());
+//            return HttpResponse.failure(e.getMessageId());
+//        } catch (Exception ex){
+//            ex.printStackTrace();
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+//        }
+//    }
     @GetMapping("/fuzzysearch")
     @ApiOperation("模糊搜索")
     public HttpResponse<List<ProductSaleAreaFuzzySearchRespVO>> fuzzySearch(@RequestParam String name) {

@@ -37,6 +37,9 @@ public class QueryProductSaleAreaReqVO extends PageReq {
     @ApiModelProperty("直送供应商名称")
     private String directDeliverySupplierCode;
 
+
+    private String personId;
+
     @ApiModelProperty("公司编码")
     private String companyCode;
 }

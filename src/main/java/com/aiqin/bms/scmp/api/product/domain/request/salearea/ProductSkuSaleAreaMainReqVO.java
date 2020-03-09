@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.product.domain.request.salearea;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,6 +20,10 @@ import java.util.List;
 @ApiModel("销售区域主表信息")
 @Data
 public class ProductSkuSaleAreaMainReqVO {
+
+    @ApiModelProperty(" 主键")
+    @JsonSerialize(using= ToStringSerializer.class)
+    private Long id;
 
     @ApiModelProperty("限制区域名称")
     private String code;
@@ -54,12 +60,10 @@ public class ProductSkuSaleAreaMainReqVO {
     @ApiModelProperty("公司名称")
     private String companyName;
 
-    @ApiModelProperty("区域信息")
+    @ApiModelProperty("渠道")
     private List<ProductSkuSaleAreaChannelReqVO> channelList;
 
     @ApiModelProperty("区域信息")
     private List<ProductSkuSaleAreaInfoReqVO> areaList;
 
-    @ApiModelProperty("sku信息")
-    private List<ProductSaleAreaReqVO> skuList;
 }

@@ -325,7 +325,7 @@
         select
         <include refid="Base_Column_List" />
         from apply_product_sku_sale_area_main
-        where name = #{name} and apply_status in (0,1)
+        where name = #{name}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from apply_product_sku_sale_area_main
