@@ -440,7 +440,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
              // 计算商品的分仓信息
             transportList = Lists.newArrayList();
             List<PurchaseApplyProduct> centers = proList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                    new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode() + ";" + o.getWarehouseCode()))), ArrayList::new));
+                    new TreeSet<>(Comparator.comparing(o -> o.getWarehouseCode()))), ArrayList::new));
             // 计算采购申请单的总和
             BigDecimal productCenterAmount = big, returnCenterAmount = big, giftCenterAmount = big;
             for(PurchaseApplyProduct center:centers){
@@ -459,7 +459,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     // 计算商品数量
                     Integer count = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle();
                     BigDecimal amount = product.getProductPurchaseAmount().multiply(BigDecimal.valueOf(count)).setScale(4, BigDecimal.ROUND_HALF_UP);
-                    if(center.getTransportCenterCode().equals(product.getTransportCenterCode())){
+                    if(center.getWarehouseCode().equals(product.getWarehouseCode())){
                         // 计算每个仓库的商品、实物返、赠品、最小单位数量总和
                         // 根据商品类型判断   0商品 1赠品 2实物返回
                         if(product.getProductType().equals(0)){
