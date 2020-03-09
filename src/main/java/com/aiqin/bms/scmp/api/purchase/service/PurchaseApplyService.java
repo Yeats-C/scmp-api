@@ -23,7 +23,7 @@ public interface PurchaseApplyService {
 
     HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode);
 
-    HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
+    HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String warehouseCode);
 
     HttpResponse deleteApplyProduct(String applyProductId);
 

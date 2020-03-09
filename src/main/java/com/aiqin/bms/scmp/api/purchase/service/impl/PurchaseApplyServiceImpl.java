@@ -376,14 +376,14 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode){
+    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String warehouseCode){
        if(StringUtils.isBlank(purchaseApplyCode)){
            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
        }
        // 查询各个仓库的分仓信息
        PurchaseApplyTransportCenter center = new PurchaseApplyTransportCenter();
        center.setPurchaseApplyCode(purchaseApplyCode);
-       center.setTransportCenterCode(transportCenterCode);
+       center.setWarehouseCode(warehouseCode);
        List<PurchaseApplyTransportCenter> list = purchaseApplyTransportCenterDao.selectList(center);
        return HttpResponse.success(list);
     }
