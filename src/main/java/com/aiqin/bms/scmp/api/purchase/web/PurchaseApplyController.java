@@ -104,8 +104,10 @@ public class PurchaseApplyController {
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入采购申请单")
-    public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
-        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
+    public HttpResponse purchaseApplyImport(MultipartFile file,
+                                            @RequestParam(name = "purchase_group_code") String purchaseGroupCode,
+                                            @RequestParam(name = "purchase_source") Integer purchaseSource) {
+        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode, purchaseSource);
     }
 
     @PostMapping("/product/group")

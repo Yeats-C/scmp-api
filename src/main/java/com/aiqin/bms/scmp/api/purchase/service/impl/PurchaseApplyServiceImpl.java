@@ -956,7 +956,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode){
+    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode, Integer purchaseSource){
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
@@ -1048,11 +1048,16 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                             applyProduct.setReturnSingle(0);
                         }
                         BeanUtils.copyProperties(applyProduct, response);
-                        if (StringUtils.isBlank((record[6]))) {
-                            response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? big : applyProduct.getPurchaseMax());
-                        } else {
-                            response.setProductPurchaseAmount(new BigDecimal(record[6]));
+                        BigDecimal purchaseAmount = BigDecimal.ZERO;
+                        if(purchaseSource.equals(0)){
+                            if (StringUtils.isNotBlank((record[6]))) {
+                                purchaseAmount = new BigDecimal(record[6]);
+                            }
+                        }else {
+                            purchaseAmount =  applyProduct.getProductPurchaseAmount();
                         }
+                        response.setProductPurchaseAmount(purchaseAmount);
+
                     } else {
                         HandleResponse(response, record, "未查询到对应的商品；", i);
                         errorCount++;

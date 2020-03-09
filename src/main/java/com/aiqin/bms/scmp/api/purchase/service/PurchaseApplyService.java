@@ -41,7 +41,7 @@ public interface PurchaseApplyService {
 
     HttpResponse applySelectionProduct(String purchaseApplyId);
 
-    HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode);
+    HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode, Integer purchaseSource);
 
     HttpResponse purchaseApplyStatus(String purchaseApplyId);
 
