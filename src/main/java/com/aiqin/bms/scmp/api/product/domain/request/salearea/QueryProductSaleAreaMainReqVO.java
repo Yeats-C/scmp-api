@@ -24,23 +24,13 @@ public class QueryProductSaleAreaMainReqVO extends PageReq {
     @ApiModelProperty("是否禁用(0禁用1启用)")
     private Integer beDisable;
 
-    @ApiModelProperty("sku编码")
-    private String skuCode;
-
-    @ApiModelProperty("sku名称")
-    private String skuName;
 
     @ApiModelProperty("允许区域")
     private String allowArea;
 
-    @ApiModelProperty("禁止区域")
-    private String forbiddenArea;
-
     @ApiModelProperty("允许门店")
     private String allowStore;
 
-    @ApiModelProperty("禁止门店")
-    private String forbiddenStore;
 
     @ApiModelProperty("公司编码")
     private String companyCode;

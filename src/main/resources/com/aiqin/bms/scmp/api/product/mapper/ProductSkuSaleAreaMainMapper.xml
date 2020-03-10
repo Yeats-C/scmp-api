@@ -205,14 +205,8 @@
     <if test="allowArea != null and allowArea != ''">
       and c.name like concat('%',#{allowArea},'%') and c.status = 1 and c.type = 1
     </if>
-    <if test="forbiddenArea != null and forbiddenArea != ''">
-      and c.name like concat('%',#{forbiddenArea},'%') and c.status = 0 and c.type = 1
-    </if>
     <if test="allowStore != null and allowStore != ''">
       and c.name like concat('%',#{allowStore},'%') and c.status = 1 and c.type = 2
-    </if>
-    <if test="forbiddenStore != null and forbiddenStore != ''">
-      and c.name like concat('%',#{forbiddenStore},'%') and c.status = 0 and c.type = 2
     </if>
     group by a.id order by a.create_time desc
   </select>
