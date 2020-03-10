@@ -16,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -74,8 +73,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
     private static final BigDecimal big = BigDecimal.valueOf(0);
 
-    private static final String[] importRejectApplyHeaders = new String[]{
+    private static final String[] importRejectApplyHeaders_1 = new String[]{
             "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量", "含税单价",
+    };
+
+    private static final String[] importRejectApplyHeaders_0 = new String[]{
+            "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量",
     };
 
     @Resource
@@ -960,6 +963,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        String[] importRejectApplyHeaders;
+        if(purchaseSource.equals(0)){
+            importRejectApplyHeaders = importRejectApplyHeaders_0;
+        }else {
+            importRejectApplyHeaders = importRejectApplyHeaders_1;
+        }
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
             if(result.length<2){
@@ -975,7 +984,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 }
                 String[] record;
                 SupplyCompany supplier;
-                //LogisticsCenter logisticsCenter;
                 Warehouse warehouse;
                 PurchaseImportResponse response;
                 PurchaseApplyDetailResponse applyProduct;
@@ -987,22 +995,21 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3])) {
-                        HandleResponse(response, record, "导入的数据不全；", i);
+                        HandleResponse(response, record, "导入的数据不全；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if (supplier == null) {
-                        HandleResponse(response, record, "未查询到供应商信息；", i);
+                        HandleResponse(response, record, "未查询到供应商信息；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     warehouse = warehouseDao.selectByWarehouseName(record[3]);
-                    //logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if (warehouse == null) {
-                        HandleResponse(response, record, "未查询到库房信息；", i);
+                        HandleResponse(response, record, "未查询到库房信息；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
@@ -1048,10 +1055,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                             applyProduct.setReturnSingle(0);
                         }
                         BeanUtils.copyProperties(applyProduct, response);
-                        BigDecimal purchaseAmount = BigDecimal.ZERO;
-                        if(!purchaseSource.equals(0)){
+                        BigDecimal purchaseAmount;
+                        if(purchaseSource.equals(1)){
                             if (StringUtils.isNotBlank((record[6]))) {
                                 purchaseAmount = new BigDecimal(record[6]);
+                            }else {
+                                purchaseAmount = applyProduct.getProductPurchaseAmount();
                             }
                         }else {
                             purchaseAmount = applyProduct.getProductPurchaseAmount();
@@ -1059,7 +1068,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                         response.setProductPurchaseAmount(purchaseAmount);
 
                     } else {
-                        HandleResponse(response, record, "未查询到对应的商品；", i);
+                        HandleResponse(response, record, "未查询到对应的商品；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                     }
@@ -1076,15 +1085,17 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i, Integer purchaseSource) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
         response.setWarehouseName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        if(StringUtils.isNotBlank(record[6])){
-            response.setProductPurchaseAmount(new BigDecimal(record[6]));
+        if(purchaseSource.equals(1)){
+            if(StringUtils.isNotBlank(record[6])){
+                response.setProductPurchaseAmount(new BigDecimal(record[6]));
+            }
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }
