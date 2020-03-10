@@ -1081,7 +1081,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             return HttpResponse.success(list);
         } catch (Exception e) {
             LOGGER.error("采购申请单导入异常:{}", e.getMessage());
-            return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888,
+                    "采购申请单导入异常:" + e.getMessage()));
         }
     }
 
