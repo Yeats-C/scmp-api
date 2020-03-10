@@ -21,9 +21,9 @@ public interface PurchaseApplyService {
 
     HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest);
 
-    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String transportCenterCode);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode);
 
-    HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode);
+    HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String warehouseCode);
 
     HttpResponse deleteApplyProduct(String applyProductId);
 
@@ -41,7 +41,7 @@ public interface PurchaseApplyService {
 
     HttpResponse applySelectionProduct(String purchaseApplyId);
 
-    HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode);
+    HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode, Integer purchaseSource);
 
     HttpResponse purchaseApplyStatus(String purchaseApplyId);
 

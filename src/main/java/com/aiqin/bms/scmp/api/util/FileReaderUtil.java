@@ -89,7 +89,7 @@ public class FileReaderUtil {
         int cellNum = row.getLastCellNum();
         if (cellNum > headSize) {
             LOGGER.error("header size not match, expect size : {}, actual size : {}", headSize, cellNum);
-            throw new RuntimeException("头数量不匹配!");
+            throw new RuntimeException("Excel表头数量不匹配!");
         }
         String[] values = new String[headSize];
         Arrays.fill(values, "");
