@@ -332,7 +332,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public HttpResponse purchaseOrder(PurchaseOrderRequest request) {
         if (request == null || request.getPurchaseOrder() == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -353,7 +353,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
         purchaseOrder.setApprovalCode(purchaseOrderCode);
-        purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
+        //purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);
@@ -471,7 +471,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.REVOKE.getCode(),
                             PurchaseOrderLogEnum.REVOKE.getName(), type);
                     // 调用取消入库单
-                    this.cancelInbound(order);
+                    if(order.getInfoStatus().equals(0)){
+                        this.cancelInbound(order);
+                    }
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
