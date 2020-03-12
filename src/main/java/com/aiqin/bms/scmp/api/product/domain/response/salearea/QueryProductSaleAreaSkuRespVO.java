@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.github.pagehelper.Page;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +24,10 @@ import java.util.List;
 @Data
 @ApiModel("销售区域sku列表")
 public class QueryProductSaleAreaSkuRespVO {
+
+    @ApiModelProperty("sku编号")
+    @JsonSerialize(using = ToStringSerializer.class)
+    private Long  id;
 
     @ApiModelProperty("是否禁用(0禁用1启用)")
     private Integer beDisable;
@@ -56,5 +62,5 @@ public class QueryProductSaleAreaSkuRespVO {
     private String skuProcurementCount;
 
     @ApiModelProperty("销售sku信息")
-    private Page<ProductSkuInfo> skuList;
+    private List<ProductSkuInfo> skuList;
 }

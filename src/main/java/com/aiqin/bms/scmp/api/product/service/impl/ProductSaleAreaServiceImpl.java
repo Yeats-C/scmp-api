@@ -759,20 +759,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         return true;
     }
 
-    @Override
-    public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
-        //获取登录人
-        AuthToken currentAuthToken = getUser();
-        String personId=currentAuthToken.getPersonId();
-        reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount(reqVO);
-        if(CollectionUtils.isEmpty(longs)){
-            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
-        }
-        reqVO.setPersonId(personId);
-        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO));
-        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
-    }
+
 
     @Override
     public BasePage<QueryProductSaleAreaForSkuRespVO> skuList(QueryProductSaleAreaForSkuReqVO reqVO) {
@@ -979,5 +966,37 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //增加
         productSkuSaleAreaMapper.insertBatch(reqVO.getSkuList());
         return null;
+    }
+
+
+    @Override
+    public BasePage<QueryProductSaleAreaSkuRespVO> officialSkuList(QueryProductSaleAreaReqVO reqVO) {
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        String personId=currentAuthToken.getPersonId();
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount(reqVO);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        reqVO.setPersonId(personId);
+        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO));
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
+    }
+
+    @Override
+    public BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO) {
+
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        String personId=currentAuthToken.getPersonId();
+        reqVO.setCompanyCode(getUser().getCompanyCode());
+        List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount2(reqVO);
+        if(CollectionUtils.isEmpty(longs)){
+            return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
+        }
+        reqVO.setPersonId(personId);
+        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList2( PageUtil.myPage(longs, reqVO));
+        return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
 }

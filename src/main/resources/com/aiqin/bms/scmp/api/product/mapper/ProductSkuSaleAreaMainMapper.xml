@@ -202,12 +202,18 @@
     <if test="beDisable != null">
       and a.be_disable = #{beDisable}
     </if>
-    <if test="allowArea != null and allowArea != ''">
-      and c.name like concat('%',#{allowArea},'%') and c.status = 1 and c.type = 1
+    <if test="allowAreaProvince != null and allowAreaProvince != ''">
+      and c.code like concat(#{allowAreaProvince},'%')  and c.type = 1
     </if>
-    <if test="allowStore != null and allowStore != ''">
-      and c.name like concat('%',#{allowStore},'%') and c.status = 1 and c.type = 2
+      <if test="allowAreaCity != null and allowAreaCity != ''">
+          and c.name like concat(#{allowAreaCity},'%')  and c.type = 1
+      </if>
+    <if test="allowStoreCode != null and allowStoreCode != ''">
+      and c.code like concat('%',#{allowStoreCode},'%') and c.type = 2
     </if>
+      <if test="allowStoreName != null and allowStoreName != ''">
+          and c.name like concat('%',#{allowStoreName},'%') and c.type = 2
+      </if>
     group by a.id order by a.create_time desc
   </select>
   <resultMap id="selectDetailByCode" type="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaForOfficialMainRespVO">

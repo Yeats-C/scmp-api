@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
+import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO2;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -136,7 +137,7 @@ public class ProductSaleAreaController {
         }
     }
     @PostMapping("/official/skuList")
-    @ApiOperation("sku商品销售区域列表")
+    @ApiOperation("sku商品销售区域列表，按销售区域查询")
     public HttpResponse<BasePage<QueryProductSaleAreaSkuRespVO>> officialSkuList(@RequestBody QueryProductSaleAreaReqVO reqVO) {
         log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
         try {
@@ -150,6 +151,21 @@ public class ProductSaleAreaController {
         }
     }
 
+
+    @PostMapping("/official/skuList2")
+    @ApiOperation("sku商品销售区域列表，按sku商品查询")
+    public HttpResponse<BasePage<QueryProductSaleAreaSkuRespVO2>> officialSkuList2(@RequestBody QueryProductSaleAreaReqVO2 reqVO) {
+        log.info("ProductSaleAreaController--officialSkuList--入参: [{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(productSaleAreaService.officialSkuList2(reqVO));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(e.getMessageId());
+        } catch (Exception ex){
+            ex.printStackTrace();
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @PostMapping ("/official/skuDetail")
     @ApiOperation("sku商品销售详情")
     public HttpResponse<QueryProductSaleAreaSkuRespVO> skuDetail(@RequestBody QueryProductDetailReqVO reqVO) {

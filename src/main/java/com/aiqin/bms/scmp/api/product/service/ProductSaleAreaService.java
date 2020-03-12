@@ -284,4 +284,7 @@ public interface ProductSaleAreaService {
    QueryProductSaleAreaSkuRespVO skuDetail(QueryProductDetailReqVO id);
 
     Boolean skuEdit(QueryProductDetailReqVO reqVO);
+
+
+    BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
 }

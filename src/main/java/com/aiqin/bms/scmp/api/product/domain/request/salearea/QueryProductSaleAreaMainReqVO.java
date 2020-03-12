@@ -25,12 +25,16 @@ public class QueryProductSaleAreaMainReqVO extends PageReq {
     private Integer beDisable;
 
 
-    @ApiModelProperty("允许区域")
-    private String allowArea;
+    @ApiModelProperty("允许区域（省）")
+    private String allowAreaProvince;
 
-    @ApiModelProperty("允许门店")
-    private String allowStore;
+    @ApiModelProperty("允许区域（市）")
+    private String allowAreaCity;
 
+    @ApiModelProperty("允许门店编号")
+    private String allowStoreCode;
+    @ApiModelProperty("允许门店名称")
+    private String allowStoreName;
 
     @ApiModelProperty("公司编码")
     private String companyCode;

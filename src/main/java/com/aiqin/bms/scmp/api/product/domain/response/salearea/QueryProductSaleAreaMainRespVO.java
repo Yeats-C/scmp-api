@@ -20,10 +20,10 @@ import java.util.List;
 @Data
 public class QueryProductSaleAreaMainRespVO {
 
-    @ApiModelProperty("限制区域名称")
+    @ApiModelProperty("销售区域名称")
     private String code;
 
-    @ApiModelProperty("限制区域名称")
+    @ApiModelProperty("销售区域名称")
     private String name;
 
     @ApiModelProperty("是否禁用(0禁用1启用)")
