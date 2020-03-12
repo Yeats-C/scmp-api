@@ -249,4 +249,8 @@ public class PurchaseApplyProduct {
     @JsonProperty("tax_rate")
     private BigDecimal taxRate;
 
+    @ApiModelProperty(value="库存金额")
+    @JsonProperty("stock_amount")
+    private BigDecimal stockAmount;
+
 }

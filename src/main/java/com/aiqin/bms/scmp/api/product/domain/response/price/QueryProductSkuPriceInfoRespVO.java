@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.response.price;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceAreaInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -87,6 +88,9 @@ public class QueryProductSkuPriceInfoRespVO {
 
     @ApiModelProperty("区域信息")
     List<ProductSkuPriceAreaInfo> areaInfos;
+
+    @ApiModelProperty("销售区域信息")
+    List<ProductSkuSaleAreaInfoRespVo> saleAreaInfos;
 
     public void setWarehouseBatchName() {
         if(Objects.isNull(this.transportCenterName)){

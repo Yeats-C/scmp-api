@@ -92,8 +92,8 @@ public class PurchaseApplyController {
     @ApiOperation("查询申请采购单，分仓采购信息")
     public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(
             @RequestParam("purchase_apply_code") String purchaseApplyCode,
-            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode) {
-        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, transportCenterCode);
+            @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, warehouseCode);
     }
 
     @DeleteMapping("/product")
@@ -104,8 +104,10 @@ public class PurchaseApplyController {
 
     @PostMapping("/apply/import")
     @ApiOperation(value = "批量导入采购申请单")
-    public HttpResponse purchaseApplyImport(MultipartFile file, @RequestParam(name = "purchase_group_code") String purchaseGroupCode) {
-        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode);
+    public HttpResponse purchaseApplyImport(MultipartFile file,
+                                            @RequestParam(name = "purchase_group_code") String purchaseGroupCode,
+                                            @RequestParam(name = "purchase_source") Integer purchaseSource) {
+        return purchaseApplyService.purchaseApplyImport(file, purchaseGroupCode, purchaseSource);
     }
 
     @PostMapping("/product/group")

@@ -130,8 +130,8 @@ public class DingApprovalController {
     @ApiOperation("查询申请采购单，分仓采购信息")
     public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(
             @RequestParam("purchase_apply_code") String purchaseApplyCode,
-            @RequestParam(value = "transport_center_code", required = false) String transportCenterCode) {
-        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, transportCenterCode);
+            @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        return purchaseApplyService.transportCenterPurchase(purchaseApplyCode, warehouseCode);
     }
 
     @GetMapping("/form/detail/key/{form_no}")

@@ -16,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuConfig;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPriceInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -74,8 +73,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
     private static final BigDecimal big = BigDecimal.valueOf(0);
 
-    private static final String[] importRejectApplyHeaders = new String[]{
+    private static final String[] importRejectApplyHeaders_1 = new String[]{
             "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量", "含税单价",
+    };
+
+    private static final String[] importRejectApplyHeaders_0 = new String[]{
+            "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量",
     };
 
     @Resource
@@ -352,43 +355,38 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
-        if (CollectionUtils.isEmptyCollection(products)) {
-            LOGGER.info("查询采购申请商品的信息失败...{}:" + purchaseApplyCode);
-            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        // 如果库房为空，则为合计
+        List<PurchaseApplyDetailResponse> products;
+        if(StringUtils.isBlank(warehouseCode)){
+            products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+        }else {
+           products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
         }
-        // 查询采购申请单的公司
-        Stock stock;
-        for (PurchaseApplyDetailResponse detail : products) {
-            // 查询库存数量，库存金额， 在途库存
-            stock = new Stock();
-            stock.setSkuCode(detail.getSkuCode());
-            stock.setTransportCenterCode(detail.getTransportCenterCode());
-            stock.setWarehouseCode(detail.getWarehouseCode());
-            stock.setCompanyCode(Global.COMPANY_09);
-            Stock info = stockDao.stockInfo(stock);
-            if (info != null) {
-                detail.setStockCount(info.getInventoryNum().intValue());
-                detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
+        if(CollectionUtils.isNotEmptyCollection(products)){
+            for(PurchaseApplyDetailResponse product:products){
+                // 计算总计最小单位数量
+                Integer count = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent();
+                Integer sumCount = product.getPurchaseWhole() * count + product.getPurchaseSingle();
+                // 计算含税总价
+                BigDecimal amount = BigDecimal.valueOf(sumCount).multiply(product.getProductPurchaseAmount());
+                product.setProductPurchaseSum(amount);
+                product.setSingleCount(sumCount);
             }
-            Integer totalCount = detail.getPurchaseWhole() * detail.getBaseProductContent() + detail.getPurchaseSingle();
-            detail.setSingleCount(totalCount);
-            detail.setProductPurchaseSum(BigDecimal.valueOf(totalCount).multiply(detail.getProductPurchaseAmount()).
-                    setScale(4, BigDecimal.ROUND_HALF_UP));
-
+        }else {
+            LOGGER.info("未查询采购申请商品的信息...{}:" + purchaseApplyCode);
         }
         return HttpResponse.success(products);
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String transportCenterCode){
+    public HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String warehouseCode){
        if(StringUtils.isBlank(purchaseApplyCode)){
            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
        }
        // 查询各个仓库的分仓信息
        PurchaseApplyTransportCenter center = new PurchaseApplyTransportCenter();
        center.setPurchaseApplyCode(purchaseApplyCode);
-       center.setTransportCenterCode(transportCenterCode);
+       center.setWarehouseCode(warehouseCode);
        List<PurchaseApplyTransportCenter> list = purchaseApplyTransportCenterDao.selectList(center);
        return HttpResponse.success(list);
     }
@@ -445,7 +443,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
              // 计算商品的分仓信息
             transportList = Lists.newArrayList();
             List<PurchaseApplyProduct> centers = proList.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
-                    new TreeSet<>(Comparator.comparing(o -> o.getTransportCenterCode()))), ArrayList::new));
+                    new TreeSet<>(Comparator.comparing(o -> o.getWarehouseCode()))), ArrayList::new));
             // 计算采购申请单的总和
             BigDecimal productCenterAmount = big, returnCenterAmount = big, giftCenterAmount = big;
             for(PurchaseApplyProduct center:centers){
@@ -464,7 +462,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     // 计算商品数量
                     Integer count = product.getPurchaseWhole() * product.getBaseProductContent() + product.getPurchaseSingle();
                     BigDecimal amount = product.getProductPurchaseAmount().multiply(BigDecimal.valueOf(count)).setScale(4, BigDecimal.ROUND_HALF_UP);
-                    if(center.getTransportCenterCode().equals(product.getTransportCenterCode())){
+                    if(center.getWarehouseCode().equals(product.getWarehouseCode())){
                         // 计算每个仓库的商品、实物返、赠品、最小单位数量总和
                         // 根据商品类型判断   0商品 1赠品 2实物返回
                         if(product.getProductType().equals(0)){
@@ -711,7 +709,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             purchaseOrder.setPurchaseSource(0);
             orderRequest.setPurchaseOrder(purchaseOrder);
             // 筛选对应仓库数据
-            applyProductList = productList.stream().filter(s->s.getTransportCenterCode().equals(center.getTransportCenterCode())
+            applyProductList = productList.stream().filter(s->s.getWarehouseCode().equals(center.getWarehouseCode())
             ).collect(Collectors.toList());
             // 赋值采购单商品数据
             proList = Lists.newArrayList();
@@ -961,9 +959,15 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode){
+    public HttpResponse purchaseApplyImport(MultipartFile file, String purchaseGroupCode, Integer purchaseSource){
         if (file == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        String[] importRejectApplyHeaders;
+        if(purchaseSource.equals(0)){
+            importRejectApplyHeaders = importRejectApplyHeaders_0;
+        }else {
+            importRejectApplyHeaders = importRejectApplyHeaders_1;
         }
         try {
             String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
@@ -980,7 +984,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 }
                 String[] record;
                 SupplyCompany supplier;
-                //LogisticsCenter logisticsCenter;
                 Warehouse warehouse;
                 PurchaseImportResponse response;
                 PurchaseApplyDetailResponse applyProduct;
@@ -992,22 +995,21 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     response.setErrorNum(i);
                     if (StringUtils.isBlank(record[0]) || StringUtils.isBlank(record[1]) || StringUtils.isBlank(record[2]) ||
                             StringUtils.isBlank(record[3])) {
-                        HandleResponse(response, record, "导入的数据不全；", i);
+                        HandleResponse(response, record, "导入的数据不全；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     supplier = supplyCompanyDao.selectBySupplierName(record[2]);
                     if (supplier == null) {
-                        HandleResponse(response, record, "未查询到供应商信息；", i);
+                        HandleResponse(response, record, "未查询到供应商信息；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
                     }
                     warehouse = warehouseDao.selectByWarehouseName(record[3]);
-                    //logisticsCenter = logisticsCenterDao.selectByCenterName(record[3]);
                     if (warehouse == null) {
-                        HandleResponse(response, record, "未查询到库房信息；", i);
+                        HandleResponse(response, record, "未查询到库房信息；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                         continue;
@@ -1053,13 +1055,20 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                             applyProduct.setReturnSingle(0);
                         }
                         BeanUtils.copyProperties(applyProduct, response);
-                        if (StringUtils.isBlank((record[6]))) {
-                            response.setProductPurchaseAmount(applyProduct.getPurchaseMax() == null ? big : applyProduct.getPurchaseMax());
-                        } else {
-                            response.setProductPurchaseAmount(new BigDecimal(record[6]));
+                        BigDecimal purchaseAmount;
+                        if(purchaseSource.equals(1)){
+                            if (StringUtils.isNotBlank((record[6]))) {
+                                purchaseAmount = new BigDecimal(record[6]);
+                            }else {
+                                purchaseAmount = applyProduct.getProductPurchaseAmount();
+                            }
+                        }else {
+                            purchaseAmount = applyProduct.getProductPurchaseAmount();
                         }
+                        response.setProductPurchaseAmount(purchaseAmount);
+
                     } else {
-                        HandleResponse(response, record, "未查询到对应的商品；", i);
+                        HandleResponse(response, record, "未查询到对应的商品；", i, purchaseSource);
                         errorCount++;
                         errorList.add(response);
                     }
@@ -1072,19 +1081,22 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             return HttpResponse.success(list);
         } catch (Exception e) {
             LOGGER.error("采购申请单导入异常:{}", e.getMessage());
-            return HttpResponse.failure(ResultCode.IMPORT_PURCHASE_APPLY_ERROR);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 88888,
+                    "采购申请单导入异常:" + e.getMessage()));
         }
     }
 
-    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i) {
+    private void HandleResponse(PurchaseImportResponse response, String[] record, String errorReason, int i, Integer purchaseSource) {
         response.setSkuCode(record[0]);
         response.setSkuName(record[1]);
         response.setSupplierName(record[2]);
         response.setWarehouseName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
-        if(StringUtils.isNotBlank(record[6])){
-            response.setProductPurchaseAmount(new BigDecimal(record[6]));
+        if(purchaseSource.equals(1)){
+            if(StringUtils.isNotBlank(record[6])){
+                response.setProductPurchaseAmount(new BigDecimal(record[6]));
+            }
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);
     }

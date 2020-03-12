@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -46,4 +47,14 @@ public interface ProductSkuSaleAreaInfoMapper {
     Integer selectAreaStatus(@Param("mainCode") String mainCode, @Param("code") String code,
                              @Param("status") Integer status,
                              @Param("type") Integer type);
+
+
+    /**
+     * 查找商品销售区域信息
+     * @author
+     * @date
+     * @param skuCode
+     * @return
+     */
+    List<ProductSkuSaleAreaInfoRespVo> selectBySkuCode(String skuCode);
 }

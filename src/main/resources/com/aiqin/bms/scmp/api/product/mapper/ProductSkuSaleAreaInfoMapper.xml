@@ -183,4 +183,11 @@
       and type = #{type,jdbcType=INTEGER}
     </where>
   </select>
+
+  <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo">
+    SELECT b.name AS sale_area_name,a.* FROM
+    product_sku_sale_area_info a LEFT JOIN product_sku_sale_area_main b
+    ON a.main_code = b.code
+    where a.sku_code = #{skuCode}
+  </select>
 </mapper>
