@@ -975,12 +975,13 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         AuthToken currentAuthToken = getUser();
         String personId=currentAuthToken.getPersonId();
         reqVO.setCompanyCode(getUser().getCompanyCode());
+        reqVO.setPersonId(personId);
         List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount(reqVO);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-        reqVO.setPersonId(personId);
-        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO));
+
+        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList( PageUtil.myPage(longs, reqVO),personId);
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
 
@@ -991,12 +992,13 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         AuthToken currentAuthToken = getUser();
         String personId=currentAuthToken.getPersonId();
         reqVO.setCompanyCode(getUser().getCompanyCode());
+        reqVO.setPersonId(personId);
         List<Long> longs = productSkuSaleAreaMapper.officialSkuListCount2(reqVO);
         if(CollectionUtils.isEmpty(longs)){
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-        reqVO.setPersonId(personId);
-        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList2( PageUtil.myPage(longs, reqVO));
+
+        List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList2( PageUtil.myPage(longs, reqVO),personId);
         return PageUtil.getPageList(reqVO.getPageNo(),reqVO.getPageSize(),longs.size(),list);
     }
 }

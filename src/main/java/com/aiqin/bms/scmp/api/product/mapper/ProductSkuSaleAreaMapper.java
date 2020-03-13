@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetail
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaReqVO2;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
@@ -47,7 +46,7 @@ public interface ProductSkuSaleAreaMapper {
      * @date 2019/6/6
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaSkuRespVO>
      */
-    List<QueryProductSaleAreaSkuRespVO> officialSkuList(List<Long> id);
+    List<QueryProductSaleAreaSkuRespVO> officialSkuList(@Param("list")List<Long> list, @Param("personId")String personId);
     /**
      * 差数量
      * @author NullPointException
@@ -68,5 +67,5 @@ public interface ProductSkuSaleAreaMapper {
 
     List<Long> officialSkuListCount2(QueryProductSaleAreaReqVO2 reqVO);
 
-    List<QueryProductSaleAreaSkuRespVO> officialSkuList2(List<Long> myPage);
+    List<QueryProductSaleAreaSkuRespVO> officialSkuList2(@Param("list")List<Long> list, @Param("personId") String personId);
 }

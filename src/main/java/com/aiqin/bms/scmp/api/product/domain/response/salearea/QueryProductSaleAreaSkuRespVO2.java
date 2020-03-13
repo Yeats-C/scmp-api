@@ -38,6 +38,9 @@ public class QueryProductSaleAreaSkuRespVO2 {
     private String categoriesSupplyChannelsCode;
 
 
+    @ApiModelProperty("直送商家名称")
+    private List<String> saleName;
+
     @ApiModelProperty("供货渠道类别名称")
     private String categoriesSupplyChannelsName;
 

@@ -50,15 +50,16 @@
         a.update_by aupdate_by,
         a.update_time aupdate_time,
         count(c.id) skuCount,
-        count(select id from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         ) skuProcurementCount
         from product_sku_sale_area_main a
-        left join product_sku_sale_area_info c   on a.code = c.main_code
-        left join product_sku ps   on ps.sku_code = c.ps.sku_code
+        left join product_sku_sale_area c   on a.code = c.main_code
+        left join product_sku ps   on ps.sku_code = c.sku_code
         where a.id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
             #{item}
         </foreach>
+        GROUP BY a.id
 </select>
     <select id="officialSkuListCount" resultType="java.lang.Long">
     select a.id from product_sku_sale_area_main a
@@ -432,11 +433,11 @@
     </select>
 
     <select id="officialSkuListCount2" resultType="java.lang.Long">
-    select ps.id form product_sku ps
-     left join product_sku_sale_area_info c on ps.sku_code = c.sku_code
-       left join product_sku_sale_area_info_main a   on a.code = c.main_code
+    select ps.id from product_sku ps
+     left join product_sku_sale_area c on ps.sku_code = c.sku_code
+       left join product_sku_sale_area_main a   on a.code = c.main_code
        <where>
-           where ps.del_flag = 0 and
+            ps.del_flag = 0 and
             a.company_code = #{companyCode}
            <if test="skuCode!=null and skuCode!=''">
                AND ps.sku_code = #{skuCode,jdbcType=VARCHAR}
@@ -502,7 +503,7 @@
            ,a.code
            ,a.name
             form product_sku ps
-        left join product_sku_sale_area_info c on ps.sku_code = c.sku_code
+        left join product_sku_sale_area c on ps.sku_code = c.sku_code
         left join product_sku_sale_area_info_main a   on a.code = c.main_code
         <where>
             ps.id  in
