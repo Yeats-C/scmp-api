@@ -28,6 +28,15 @@ public interface FileInfoService {
      * @return java.lang.String
      */
     String upload(MultipartFile file,Boolean isRename);
+
+    /**
+     * 文件上传
+     * @author zth
+     * @date 2019/3/15
+     * @param file
+     * @return java.lang.String
+     */
+    String upload(MultipartFile file,String fileName);
     /**
      * 批量上传
      * @author NullPointException
