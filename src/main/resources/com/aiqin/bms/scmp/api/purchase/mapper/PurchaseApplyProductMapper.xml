@@ -858,6 +858,6 @@
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
-    group by product_type
+    group by sku_code,product_type
   </select>
 </mapper>
