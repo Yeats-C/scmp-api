@@ -120,7 +120,7 @@ public class FileRecordServiceImpl implements FileRecordService {
                     LOGGER.info("文件名:{},未包含在导入范围内", fileName);
                     continue;
                 }
-                url = fileInfoService.upload(multipartFile,FilePathEnum.PRODUCT_PICTURE.getFilePath()+productSkuDraft.getSkuCode()+"/"+fileName);
+                url = fileInfoService.fileUpload(multipartFile,FilePathEnum.PRODUCT_PICTURE.getCode());
                 LOGGER.info("fileName:{},folderName:{},url:{}", fileName, folderName, url);
                 if (fileName.contains("sm_")) {
                     productSkuPicDescDraft = new ProductSkuPicDescDraft();

@@ -17,7 +17,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="product_sku_code" jdbcType="VARCHAR" property="productSkuCode" />
     <result column="product_sku_name" jdbcType="VARCHAR" property="productSkuName" />
-    <result column="zero_removal_coefficient" jdbcType="DECIMAL" property="zeroRemovalCoefficient"/>
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
   </resultMap>
   <resultMap id="SkuPurchaseInfoMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPurchaseInfo">
     <id column="id" jdbcType="BIGINT" property="id" />
@@ -64,7 +64,7 @@
       #{item.purchaseCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=BIGINT}, #{item.delFlag,jdbcType=TINYINT},
       #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
-      #{item.applyCode,jdbcType=VARCHAR}, #{item.zeroRemovalCoefficient,jdbcType=DECIMAL})
+      #{item.applyCode,jdbcType=VARCHAR}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT})
     </foreach>
   </insert>
   <insert id="insertList" parameterType="java.util.List">
@@ -81,7 +81,7 @@
     #{item.purchaseCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.delFlag,jdbcType=TINYINT},
     #{item.createTime,jdbcType=TIMESTAMP}, #{item.createBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP},
     #{item.updateBy,jdbcType=VARCHAR}, #{item.productSkuCode,jdbcType=VARCHAR}, #{item.productSkuName,jdbcType=VARCHAR},
-    #{item.applyCode,jdbcType=VARCHAR}, #{item.zeroRemovalCoefficient,jdbcType=DECIMAL})
+    #{item.applyCode,jdbcType=VARCHAR}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT})
   </foreach>
   </insert>
   <delete id="deleteDrafts" parameterType="java.util.List">

@@ -10,8 +10,11 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicturesDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuPicturesRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicturesDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPicturesService;
+import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
+import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @功能说明:
@@ -32,6 +36,9 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
     ProductSkuPicturesDao productSkuPicturesDao;
     @Autowired
     private ProductSkuPicturesDraftMapper draftMapper;
+    @Autowired
+    private FileInfoService fileInfoService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     @SaveList
@@ -65,11 +72,28 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
         if (null != applyProductSkuPictures && applyProductSkuPictures.size() > 0){
             List<ProductSkuPictures> productSkuPicturesList = new ArrayList<>();
             List<ProductSkuPictures> oldInfo = productSkuPicturesDao.getInfo(skuCode);
-            applyProductSkuPictures.forEach(item->{
+            String destinationPicKey = new StringBuilder().append(FilePathEnum.PRODUCT_PICTURE.getFilePath()).append(skuCode).append("/").toString();
+            String destinationKey = "";
+            int i = 1;
+            for (ApplyProductSkuPictures item : applyProductSkuPictures) {
                 ProductSkuPictures productSkuPictures = new ProductSkuPictures();
                 BeanCopyUtils.copy(item,productSkuPictures);
+                //重置图片URL
+                if (StringUtils.isNotBlank(item.getProductPicturePath())) {
+                    Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
+                    if(null != map){
+                        destinationKey = new StringBuilder().append(destinationPicKey).append(i).append(map.get("contentType")).toString();
+                        if(!map.get("key").endsWith(destinationKey)){
+                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationKey, false);
+                            if(StringUtils.isNotBlank(newUrl)){
+                                item.setProductPicturePath(newUrl);
+                            }
+                        }
+                    }
+                }
                 productSkuPicturesList.add(productSkuPictures);
-            });
+                i++;
+            }
             if (null != oldInfo && oldInfo.size() > 0){
                 productSkuPicturesDao.deleteList(skuCode);
             }
