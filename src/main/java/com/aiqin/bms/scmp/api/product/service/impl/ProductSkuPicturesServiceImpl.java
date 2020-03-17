@@ -86,7 +86,7 @@ public class ProductSkuPicturesServiceImpl implements ProductSkuPicturesService 
                         if(!map.get("key").endsWith(destinationKey)){
                             String newUrl = fileInfoService.copyObject(map.get("key"), destinationKey, false);
                             if(StringUtils.isNotBlank(newUrl)){
-                                item.setProductPicturePath(newUrl);
+                                productSkuPictures.setProductPicturePath(newUrl);
                             }
                         }
                     }
