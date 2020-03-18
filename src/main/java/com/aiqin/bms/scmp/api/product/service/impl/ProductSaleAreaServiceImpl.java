@@ -961,6 +961,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //获取登录人
         AuthToken currentAuthToken = getUser();
         String personId=currentAuthToken.getPersonId();
+        reqVO.setPersonId(personId);
      //先删除
         productSkuSaleAreaMapper.deleteByCode(reqVO);
         //增加
