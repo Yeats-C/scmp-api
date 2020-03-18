@@ -52,7 +52,7 @@
     <result column="is_main_push" jdbcType="TINYINT" property="isMainPush" />
     <result column="new_product" jdbcType="TINYINT" property="newProduct" />
     <result column="manufacturer_guide_price" jdbcType="DECIMAL" property="manufacturerGuidePrice" />
-    <result column="zero_removal_coefficient" jdbcType="DECIMAL" property="zeroRemovalCoefficient" />
+    <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
@@ -385,7 +385,7 @@
       #{updateBy,jdbcType=VARCHAR}, #{goodsGifts,jdbcType=TINYINT}, #{spuCode,jdbcType=VARCHAR},
       #{logo,jdbcType=VARCHAR}, #{images,jdbcType=VARCHAR}, #{itroImages,jdbcType=VARCHAR},
       #{skuName,jdbcType=VARCHAR}, #{isMainPush,jdbcType=TINYINT}, #{newProduct,jdbcType=TINYINT},
-      #{manufacturerGuidePrice,jdbcType=DECIMAL}, #{zeroRemovalCoefficient,jdbcType=DECIMAL},
+      #{manufacturerGuidePrice,jdbcType=DECIMAL}, #{zeroRemovalCoefficient,jdbcType=BIGINT},
       #{procurementSectionCode,jdbcType=VARCHAR}, #{procurementSectionName,jdbcType=VARCHAR},
       #{seasonalGoods,jdbcType=TINYINT},#{structuralGoods,jdbcType=TINYINT},
       #{warehouseTypeCode,jdbcType=VARCHAR}, #{warehouseTypeName,jdbcType=VARCHAR},
@@ -444,7 +444,7 @@
       #{item.updateBy,jdbcType=VARCHAR}, #{item.goodsGifts,jdbcType=TINYINT}, #{item.spuCode,jdbcType=VARCHAR},
       #{item.logo,jdbcType=VARCHAR}, #{item.images,jdbcType=VARCHAR}, #{item.itroImages,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.isMainPush,jdbcType=TINYINT}, #{item.newProduct,jdbcType=TINYINT},
-      #{item.manufacturerGuidePrice,jdbcType=DECIMAL}, #{item.zeroRemovalCoefficient,jdbcType=DECIMAL},
+      #{item.manufacturerGuidePrice,jdbcType=DECIMAL}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
       #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
       #{item.seasonalGoods,jdbcType=TINYINT},#{item.structuralGoods,jdbcType=TINYINT},
       #{item.warehouseTypeCode,jdbcType=VARCHAR}, #{item.warehouseTypeName,jdbcType=VARCHAR},
@@ -779,7 +779,7 @@
         #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="zeroRemovalCoefficient != null">
-        #{zeroRemovalCoefficient,jdbcType=DECIMAL},
+        #{zeroRemovalCoefficient,jdbcType=BIGINT},
       </if>
       <if test="procurementSectionCode != null">
         #{procurementSectionCode,jdbcType=VARCHAR},
@@ -949,7 +949,7 @@
         manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
       </if>
       <if test="zeroRemovalCoefficient != null">
-        zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=DECIMAL},
+        zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
       </if>
       <if test="procurementSectionCode != null">
         procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
@@ -1020,7 +1020,7 @@
       is_main_push = #{isMainPush,jdbcType=TINYINT},
       new_product = #{newProduct,jdbcType=TINYINT},
       manufacturer_guide_price = #{manufacturerGuidePrice,jdbcType=DECIMAL},
-      zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=DECIMAL},
+      zero_removal_coefficient = #{zeroRemovalCoefficient,jdbcType=BIGINT},
       procurement_section_code = #{procurementSectionCode,jdbcType=VARCHAR},
       procurement_section_name = #{procurementSectionName,jdbcType=VARCHAR},
       inventory_allocation = #{inventoryAllocation,jdbcType=TINYINT},
@@ -1241,7 +1241,7 @@
     <result column="ais_main_push" jdbcType="TINYINT" property="isMainPush" />
     <result column="anew_product" jdbcType="TINYINT" property="newProduct" />
     <result column="amanufacturer_guide_price" jdbcType="DECIMAL" property="manufacturerGuidePrice" />
-    <result column="azero_removal_coefficient" jdbcType="DECIMAL" property="zeroRemovalCoefficient" />
+    <result column="azero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient" />
     <result column="aprocurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode" />
     <result column="aprocurement_section_name" jdbcType="VARCHAR" property="procurementSectionName" />
     <result column="acompany_code" jdbcType="VARCHAR" property="companyCode" />

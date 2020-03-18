@@ -432,7 +432,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         item.setCreateTime(productSkuDraft.getCreateTime());
                         item.setUpdateTime(productSkuDraft.getUpdateTime());
                         item.setBaseProductContent(1);
-                        item.setZeroRemovalCoefficient(BigDecimal.ONE);
+                        item.setZeroRemovalCoefficient(1L);
                         item.setUsageStatus(StatusTypeCode.USE.getStatus());
                     });
                     productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);
@@ -725,12 +725,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     productSkuConfigService.insertDraftList(productSkuConfigs);
                 }
             }
-            String destinationPicKey =  FilePathEnum.PRODUCT_PICTURE.getFilePath()+productSkuDraft.getSkuCode()+"/";
-            String destinationFileKey =  FilePathEnum.PRODUCT_FILE.getFilePath()+productSkuDraft.getSkuCode()+"/";
             //sku图片及介绍
             if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuPicturesDrafts())){
                 List<ProductSkuPicturesDraft> productSkuPicturesDrafts = addSkuInfoReqVO.getProductSkuPicturesDrafts();
-                int i = 1;
                 for (ProductSkuPicturesDraft item : productSkuPicturesDrafts) {
                     item.setProductSkuCode(productSkuDraft.getSkuCode());
                     item.setProductSkuName(productSkuDraft.getSkuName());
@@ -738,20 +735,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     item.setUpdateBy(productSkuDraft.getUpdateBy());
                     item.setCreateTime(productSkuDraft.getCreateTime());
                     item.setUpdateTime(productSkuDraft.getUpdateTime());
-                    //重置图片URL
-                    if (StringUtils.isNotBlank(item.getProductPicturePath())) {
-                        Map<String, String> map = fileInfoService.getKeyAndType(item.getProductPicturePath());
-                        if(null != map){
-                            String destinationKey = destinationPicKey + i + map.get("contentType");
-                            if(!map.get("key").endsWith(destinationKey)){
-                                String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + i + map.get("contentType"), true);
-                                if(StringUtils.isNotBlank(newUrl)){
-                                    item.setProductPicturePath(newUrl);
-                                }
-                            }
-                        }
-                    }
-                    i++;
+
                 }
                 if (flag) {
                     // 计算商品图片是否变更
@@ -778,19 +762,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     item.setUpdateBy(productSkuDraft.getUpdateBy());
                     item.setCreateTime(productSkuDraft.getCreateTime());
                     item.setUpdateTime(productSkuDraft.getUpdateTime());
-                    //重置图片URL
-                    if (StringUtils.isNotBlank(item.getPicDescPath())) {
-                        Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
-                        if(null != map) {
-                            String destinationKey = destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType");
-                            if (!map.get("key").endsWith(destinationKey)) {
-                                String newUrl = fileInfoService.copyObject(map.get("key"), destinationPicKey + "sm_" + (item.getSortingNumber() + 1) + map.get("contentType"), true);
-                                if (StringUtils.isNotBlank(newUrl)) {
-                                    item.setPicDescPath(newUrl);
-                                }
-                            }
-                        }
-                    }
                 });
                 if (flag) {
                     // 计算商品说明是否变更
@@ -808,6 +779,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 productSkuPicDescService.insertDraftList(productSkuPicDescDrafts);
             }
             //sku文件管理
+            String destinationFileKey =  FilePathEnum.PRODUCT_FILE.getFilePath()+productSkuDraft.getSkuCode()+"/";
             if (null != addSkuInfoReqVO.getProductSkuFileDrafts() && addSkuInfoReqVO.getProductSkuFileDrafts().size() > 0){
                 List<ProductSkuFileDraft> productSkuFileDrafts = addSkuInfoReqVO.getProductSkuFileDrafts();
                 for (ProductSkuFileDraft item : productSkuFileDrafts) {
@@ -1088,7 +1060,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 item.setCreateTime(productSkuDraft.getCreateTime());
                 item.setUpdateTime(productSkuDraft.getUpdateTime());
                 item.setBaseProductContent(1);
-                item.setZeroRemovalCoefficient(BigDecimal.ONE);
+                item.setZeroRemovalCoefficient(1L);
                 item.setUsageStatus(StatusTypeCode.USE.getStatus());
             });
             productSkuSalesInfoService.insertDraftList(productSkuSalesInfoDrafts);

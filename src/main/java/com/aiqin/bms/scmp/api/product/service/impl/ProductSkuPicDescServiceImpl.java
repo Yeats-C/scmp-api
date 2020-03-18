@@ -10,8 +10,11 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPicDescDraft;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuPicDescRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPicDescDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPicDescService;
+import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
+import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @功能说明:
@@ -32,6 +36,9 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
     ProductSkuPicDescDao productSkuPicDescDao;
     @Autowired
     private ProductSkuPicDescDraftMapper descDraftMapper;
+    @Autowired
+    private FileInfoService fileInfoService;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     @SaveList
@@ -65,9 +72,23 @@ public class ProductSkuPicDescServiceImpl implements ProductSkuPicDescService {
         if (null != applyProductSkuPicDescs && applyProductSkuPicDescs.size() > 0){
             List<ProductSkuPicDesc> productSkuPicDescs = new ArrayList<>();
             List<ProductSkuPicDesc> oldInfo = productSkuPicDescDao.getInfo(skuCode);
+            String destinationPicKey = new StringBuilder().append(FilePathEnum.PRODUCT_PICTURE.getFilePath()).append(skuCode).append("/").toString();
             applyProductSkuPicDescs.forEach(item->{
                 ProductSkuPicDesc productSkuPicDesc = new ProductSkuPicDesc();
                 BeanCopyUtils.copy(item,productSkuPicDesc);
+                //重置图片URL
+                if (StringUtils.isNotBlank(item.getPicDescPath())) {
+                    Map<String, String> map = fileInfoService.getKeyAndType(item.getPicDescPath());
+                    if(null != map) {
+                        String destinationKey = new StringBuilder().append(destinationPicKey).append("sm_").append(item.getSortingNumber() + 1).append(map.get("contentType")).toString();
+                        if (!map.get("key").endsWith(destinationKey)) {
+                            String newUrl = fileInfoService.copyObject(map.get("key"), destinationKey, false);
+                            if (StringUtils.isNotBlank(newUrl)) {
+                                productSkuPicDesc.setPicDescPath(newUrl);
+                            }
+                        }
+                    }
+                }
                 productSkuPicDescs.add(productSkuPicDesc);
             });
             if (null != oldInfo && oldInfo.size() > 0){

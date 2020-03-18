@@ -71,6 +71,27 @@ public class FileInfoServiceImpl implements FileInfoService {
         }
         return url;
     }
+
+    @Override
+    public String upload(MultipartFile file, String fileName) {
+        String url = null;
+        try {
+            if (file.getBytes().length<=0){
+                throw new BizException(ResultCode.FILE_EMPTY);
+            }
+            if(StringUtils.isBlank(fileName)){
+                throw new BizException(ResultCode.FILE_NAME_EMPTY);
+            }
+            if(!file.getContentType().contains("image")){
+                throw new BizException(ResultCode.PLEASE_UPLOAD_AN_IMAGE);
+            }
+            url = uploadFileUtil.uploadSkuImage(file,fileName);
+        } catch (IOException e) {
+            log.error(Global.ERROR, e);
+        }
+        return url;
+    }
+
     @Override
     public List<String>  multiUpload(List<MultipartFile> files){
         if(CollectionUtils.isEmptyCollection(files)){

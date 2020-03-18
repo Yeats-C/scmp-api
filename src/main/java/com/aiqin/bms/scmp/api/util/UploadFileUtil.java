@@ -113,6 +113,10 @@ public class UploadFileUtil {
         return nativeUpload(file,fileName);
     }
 
+    public String uploadSkuImage(MultipartFile file,String fileName) {
+        return nativeUpload(file,fileName);
+    }
+
     private String nativeUpload(MultipartFile file,String fileName){
         String url = null;
         // 创建OSSClient实例。

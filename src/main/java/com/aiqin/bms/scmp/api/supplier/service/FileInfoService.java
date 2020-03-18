@@ -28,6 +28,8 @@ public interface FileInfoService {
      * @return java.lang.String
      */
     String upload(MultipartFile file,Boolean isRename);
+
+    String upload(MultipartFile file, String fileName);
     /**
      * 批量上传
      * @author NullPointException
