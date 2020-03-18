@@ -495,7 +495,7 @@
             resultMap="officialSkuList2Map">
            select
             ps.id
-            ,ps.sku_code 阿达
+            ,ps.sku_code
            ,ps.sku_name
            ,ps.categories_supply_channels_code
            ,ps.categories_supply_channels_code
