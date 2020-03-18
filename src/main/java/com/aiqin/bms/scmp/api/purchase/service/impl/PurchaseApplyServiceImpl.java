@@ -1411,11 +1411,13 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         }
         // 查询收货部门的信息
         if(StringUtils.isNotBlank(order.getWarehouseCode())){
-            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(order.getWarehouseCode());
             dataMap.put("dept", order.getTransportCenterName());
-            dataMap.put("goodsAddress", warehouse.getProvinceName() + warehouse.getCityName() + "/" + warehouse.getDetailedAddress());
-            dataMap.put("mobile", warehouse.getPhone());
-            dataMap.put("goodsPerson", warehouse.getContact());
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(order.getWarehouseCode());
+            if(warehouse != null){
+                dataMap.put("goodsAddress", warehouse.getProvinceName() + warehouse.getCityName() + "/" + warehouse.getDetailedAddress());
+                dataMap.put("mobile", warehouse.getPhone());
+                dataMap.put("goodsPerson", warehouse.getContact());
+            }
         }
         // 查询采购单的商品信息
         List<PurchaseOrderProduct> list = purchaseOrderProductDao.orderProductInfo(order.getPurchaseOrderId());

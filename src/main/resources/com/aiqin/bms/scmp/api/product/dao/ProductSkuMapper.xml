@@ -1109,7 +1109,7 @@
      #{item.selectionEffectiveStartTime,jdbcType=TIMESTAMP},#{item.selectionEffectiveEndTime,jdbcType=TIMESTAMP},
       #{item.goodsGifts,jdbcType=TINYINT}, #{item.skuName,jdbcType=VARCHAR}, #{item.applyStatus,jdbcType=TINYINT},
       #{item.auditorBy,jdbcType=VARCHAR}, #{item.auditorTime,jdbcType=TIMESTAMP}, #{item.isMainPush,jdbcType=TINYINT},
-      #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=DECIMAL}, #{item.zeroRemovalCoefficient,jdbcType=DECIMAL},
+      #{item.newProduct,jdbcType=TINYINT}, #{item.manufacturerGuidePrice,jdbcType=DECIMAL}, #{item.zeroRemovalCoefficient,jdbcType=BIGINT},
       #{item.procurementSectionCode,jdbcType=VARCHAR}, #{item.procurementSectionName,jdbcType=VARCHAR},
       #{item.formNo,jdbcType=VARCHAR}, #{item.inventoryModel,jdbcType=TINYINT}, #{item.useTime,jdbcType=INTEGER}, #{item.uniqueCode,jdbcType=TINYINT},
       #{item.companyCode,jdbcType=VARCHAR},#{item.companyName,jdbcType=VARCHAR},#{item.remark,jdbcType=VARCHAR},

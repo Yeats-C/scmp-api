@@ -60,5 +60,5 @@ public class PurchaseSaleStockRespVo extends CommonBean {
     private Byte isDefault;
 
     @ApiModelProperty("拆零系数")
-    private BigDecimal zeroRemovalCoefficient;
+    private Long zeroRemovalCoefficient;
 }
