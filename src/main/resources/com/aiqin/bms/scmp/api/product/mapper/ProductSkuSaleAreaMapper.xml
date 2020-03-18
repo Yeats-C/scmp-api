@@ -53,7 +53,7 @@
         (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         ) skuProcurementCount
         from product_sku_sale_area_main a
-        left join product_sku_sale_area c   on a.code = c.main_code
+        left join product_sku_sale_area c   on a.code = c.code
         left join product_sku ps   on ps.sku_code = c.sku_code
         where a.id in
         <foreach collection="list" open="(" close=")" separator="," item="item">
@@ -63,8 +63,8 @@
 </select>
     <select id="officialSkuListCount" resultType="java.lang.Long">
     select a.id from product_sku_sale_area_main a
-        left join product_sku_sale_area_info c
-    on a.code = c.main_code
+        left join product_sku_sale_area c
+    on a.code = c.code
     where a.company_code = #{companyCode}
         <if test="code != null and code != ''">
             and a.code  like concat('%',#{code},'%')
@@ -435,7 +435,7 @@
     <select id="officialSkuListCount2" resultType="java.lang.Long">
     select ps.id from product_sku ps
      left join product_sku_sale_area c on ps.sku_code = c.sku_code
-       left join product_sku_sale_area_main a   on a.code = c.main_code
+       left join product_sku_sale_area_main a   on a.code = c.code
        <where>
             ps.del_flag = 0 and
             a.company_code = #{companyCode}
@@ -504,7 +504,7 @@
            ,a.name
             form product_sku ps
         left join product_sku_sale_area c on ps.sku_code = c.sku_code
-        left join product_sku_sale_area_info_main a   on a.code = c.main_code
+        left join product_sku_sale_area_info_main a   on a.code = c.code
         <where>
             ps.id  in
             <foreach collection="list" open="(" close=")" separator="," item="item">
