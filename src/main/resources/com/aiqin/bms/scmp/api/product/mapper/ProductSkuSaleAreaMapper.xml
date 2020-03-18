@@ -96,7 +96,7 @@
           delete from product_sku_sale_area
          where code = #{code,jdbcType=VARCHAR}
          and
-        sku_code  in (select sku_code from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        sku_code  in (select sku_code from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         )
     </delete>
 
@@ -326,6 +326,7 @@
     </resultMap>
     <select id="skuDetail" parameterType="com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetailReqVO" resultMap="officialSkuDetail">
         select
+        DISTINCT
         a.code acode,
         a.name aname,
         a.be_disable abe_disable,
@@ -333,12 +334,17 @@
         a.create_time acreate_time,
         a.update_by aupdate_by,
         a.update_time aupdate_time,
-        count(select id from sku_product where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+        (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         ) skuCount
         from product_sku_sale_area_main a
         left join product_sku_sale_area_info c   on a.code = c.main_code
-        where a.id =
-            #{id}
+        where  1=1
+        <if test="code!=null and code!=''">
+        and a.code=#{code}
+        </if>
+        <if test="id!=null and id!=''">
+            and   a.id=#{id}
+        </if>
     </select>
 
 
@@ -428,7 +434,13 @@
         left join product_sku_sale_area_info c   on a.code = c.main_code
         left join product_sku ps   on ps.sku_code = c.sku_code
 <where>
-    a.id={id}
+  1=1
+    <if test="code!=null and code!=''">
+    and a.code=#{code}
+    </if>
+    <if test="id!=null and id!=''">
+      and   a.id=#{code}
+    </if>
 </where>
     </select>
 
