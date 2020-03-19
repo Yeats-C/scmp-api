@@ -949,8 +949,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         String personId=currentAuthToken.getPersonId();
         reqVO.setPersonId(personId);
         QueryProductSaleAreaSkuRespVO queryProductSaleAreaSkuRespVO=productSkuSaleAreaMapper.skuDetail(reqVO);
-        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
-        Page<ProductSkuInfo> page=productSkuSaleAreaMapper.getSkuList(reqVO);
+        List<ProductSkuInfo> page=productSkuSaleAreaMapper.getSkuList(reqVO);
         queryProductSaleAreaSkuRespVO.setSkuList(page);
         return queryProductSaleAreaSkuRespVO;
     }

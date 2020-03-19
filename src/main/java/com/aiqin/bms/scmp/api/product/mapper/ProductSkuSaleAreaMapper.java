@@ -60,7 +60,7 @@ public interface ProductSkuSaleAreaMapper {
 
     QueryProductSaleAreaSkuRespVO skuDetail( QueryProductDetailReqVO reqVO);
 
-    Page<ProductSkuInfo> getSkuList(QueryProductDetailReqVO reqVO);
+    List<ProductSkuInfo> getSkuList(QueryProductDetailReqVO reqVO);
 
 
     void deleteByCode(QueryProductDetailReqVO reqVO);
