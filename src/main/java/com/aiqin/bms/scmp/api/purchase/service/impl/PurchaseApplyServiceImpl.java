@@ -190,6 +190,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         pageResData.setTotalCount(count);
         return HttpResponse.success(pageResData);
     }
+
     private HttpResponse stockProductInfo(PurchaseApplyRequest purchases, PageResData pageResData) {
         // 查询库存，商品， 供应商等信息
         List<PurchaseApplyDetailResponse> detail = productSkuDao.purchaseProductList(purchases);
