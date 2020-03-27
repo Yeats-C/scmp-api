@@ -186,7 +186,7 @@
 
   <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo">
     SELECT b.name AS sale_area_name,a.* FROM
-    product_sku_sale a LEFT JOIN product_sku_sale_area_main b
+    product_sku_sale_area a LEFT JOIN product_sku_sale_area_main b
     ON a.code = b.code
     where a.sku_code = #{skuCode}
   </select>
