@@ -215,7 +215,7 @@
     </trim>
   </insert>
     <insert id="insertBatch">
-          insert into product_sku_sale_area (id, code, sku_code,
+          insert into product_sku_sale_area ( code, sku_code,
       sku_name, be_disable, categories_supply_channels_code,
       categories_supply_channels_name, direct_delivery_supplier_code,
       direct_delivery_supplier_name, create_by, create_time,
@@ -223,7 +223,7 @@
       company_name)
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
-    (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+        ( #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR}, #{item.beDisable,jdbcType=INTEGER}, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{item.directDeliverySupplierCode,jdbcType=VARCHAR},
       #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
