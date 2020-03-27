@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Set;
@@ -287,4 +288,6 @@ public interface ProductSaleAreaService {
 
 
     BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
+
+    Boolean importData(MultipartFile file);
 }
