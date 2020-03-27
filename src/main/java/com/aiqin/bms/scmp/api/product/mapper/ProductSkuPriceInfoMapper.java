@@ -91,7 +91,7 @@ public interface ProductSkuPriceInfoMapper {
      * @param code
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
-    ProductSkuPriceInfoRespVO1 selectInfoByCode(String code);
+    ProductSkuPriceInfoRespVO1 selectInfoByCode(@Param("code") String code);
 
     BigDecimal selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
     /**

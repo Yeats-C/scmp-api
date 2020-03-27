@@ -224,10 +224,10 @@
         a.effective_time_start aeffective_time_start, a.be_default abe_default, a.product_time aproduct_time,
         b.product_category_code bproduct_category_code, b.product_category_name bproduct_category_name,
         b.product_brand_name bproduct_brand_name, b.product_property_name bproduct_property_name,
-        c.name cname, c.type ctype, c.status cstatus, c.code ccode
+       c.type ctype, c.status cstatus, c.code ccode
         from product_sku_price_info a
         left join product_sku b on a.sku_code = b.sku_code
-        left join product_sku_price_area_info c on a.code = c.main_code
+        left join product_sku_price_area c on a.code = c.code
         where a.company_code = #{companyCode}
         <if test="priceTypeCode != null and priceTypeCode !=''">
             and a.price_type_code = #{priceTypeCode}
@@ -454,58 +454,8 @@
             <result column="darea_info" jdbcType="VARCHAR" property="areaInfo"/>
         </collection>
     </resultMap>
-    <select id="selectInfoByCode" resultMap="selectInfoByCode">
-           /* select
-             a.sku_code               asku_code,
-             a.sku_name               asku_name,
-             a.price_item_name        aprice_item_name,
-             a.price_type_name        aprice_type_name,
-             a.price_attribute_name   aprice_attribute_name,
-             a.price_tax              aprice_tax,
-             a.price_no_tax           aprice_no_tax,
-             a.tax                    atax,
-             a.purchase_group_name    apurchase_group_name,
-             a.warehouse_batch_number awarehouse_batch_number,
-             a.transport_center_name  atransport_center_name,
-             a.warehouse_name         awarehouse_name,
-             a.batch_remark           abatch_remark,
-             a.effective_time_start   aeffective_time_start,
-             a.effective_time_end     aeffective_time_end,
-             a.be_default             abe_default,
-             a.product_time           aproduct_time,
-             a.supplier_name          asupplier_name,
-             a.be_default             abe_default,
-             a.update_by              aupdate_by,
-             a.update_time            aupdate_time,
-             a.batch_remark           abatch_remark,
-             b.sku_status             bsku_status,
-             b.product_category_name  bproduct_category_name,
-             b.product_brand_name     bproduct_brand_name,
-             b.product_property_name  bproduct_property_name,
-             c.name                   cname,
-             c.type                   ctype,
-             c.status                 cstatus,
-             c.code                   ccode,
-             d.id                     did,
-             d.code                   dcode,
-             d.price_tax              dprice_tax,
-             d.price_no_tax           dprice_no_tax,
-             d.tax                    dtax,
-             d.effective_time_start   deffective_time_start,
-             d.effective_time_end     deffective_time_end,
-             d.status                 dstatus,
-             d.create_by              dcreate_by,
-             d.create_time            dcreate_time,
-             d.remark                 dremark,
-             d.area_info              darea_info
-      from product_sku_price_info a
-             left join product_sku b
-                       on a.sku_code = b.sku_code
-             left join product_sku_price_area_info c
-                       on a.code = c.main_code
-             left join product_sku_price_info_log d
-                       on d.code = a.code
-      where a.code = #{code}*/
+    <select id="selectInfoByCode"  parameterType="java.lang.String" resultMap="selectInfoByCode">
+
       SELECT
              a.sku_code               asku_code,
              a.sku_name               asku_name,
@@ -534,9 +484,7 @@
              b.product_brand_name     bproduct_brand_name,
              b.product_property_name  bproduct_property_name,
              c.`code`                 ccode,
-             c.`main_code`            cmaincode,
-             c.`name`                 cname,
-             c.`type`                 ctype,
+              c.`code`            cmaincode,
              d.id                     did,
              d.code                   dcode,
              d.price_tax              dprice_tax,
@@ -553,13 +501,13 @@
       FROM product_sku_price_info a
              LEFT JOIN product_sku b
                        ON a.sku_code = b.sku_code
-             LEFT JOIN product_sku_sale_area_info c
+             LEFT JOIN product_sku_sale_area c
                        ON a.sku_code  = c.sku_code
              LEFT JOIN product_sku_price_info_log d
                        ON d.code = a.code
              LEFT JOIN product_sku_sale_area_main e
-                       ON c.main_code = e.code
-                    where a.code = #{code}*
+                       ON c.code = e.code
+                    where a.code = #{code}
   </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_price_info
