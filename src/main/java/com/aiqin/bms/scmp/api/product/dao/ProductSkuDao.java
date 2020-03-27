@@ -360,4 +360,5 @@ public interface ProductSkuDao {
 
     List<SkuWarehouseResponse> skuList(PagesRequest request);
 
+    Integer selectByNameAndcode(ProductSkuInfo productSkuInfo);
 }

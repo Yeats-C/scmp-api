@@ -78,4 +78,6 @@ public interface ProductSkuSaleAreaMainMapper {
      * @return java.util.List<com.aiqin.mgs.product.api.domain.pojo.ProductSkuSaleAreaMain>
      */
     List<ProductSkuSaleAreaMain> selectListByStatusAndDate();
+
+    Integer selectByName(String name);
 }

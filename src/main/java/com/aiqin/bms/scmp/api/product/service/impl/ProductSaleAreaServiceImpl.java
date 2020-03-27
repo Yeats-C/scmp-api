@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
@@ -81,6 +83,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Autowired
     private ProductSkuSaleAreaDraftMapper productSkuSaleAreaDraftMapper;
     @Autowired
+    private ProductSkuDao productSkuDao;
+     @Autowired
     private ProductSkuSaleAreaMainDraftMapper productSkuSaleAreaMainDraftMapper;
     @Autowired
     private ProductSkuSaleAreaInfoDraftMapper productSkuSaleAreaInfoDraftMapper;
@@ -1009,8 +1013,34 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     public Boolean importData(MultipartFile file) {
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
         try {
-            List<SkuSaleAreaImport> skuConfigImport = ExcelUtil.readExcel(file, SkuSaleAreaImport.class, 1, 0);
+            List<SkuSaleAreaImport> skuConfigImports = ExcelUtil.readExcel(file, SkuSaleAreaImport.class, 1, 2);
+
+           List<String> saleNames=skuConfigImports.stream().map(x->x.getSaleName()).distinct().collect(Collectors.toList());
+            for (String name:
+                 saleNames) {
+                if(productSkuSaleAreaMainMapper.selectByName(name)<1){
+                    throw new BizException("错误销售名称"+name);
+                }
+            }
+            List<ProductSkuInfo> productSkuList=BeanCopyUtils.copyList(skuConfigImports,ProductSkuInfo.class);
+            for (ProductSkuInfo productSkuInfo:
+                    productSkuList) {
+                if(productSkuDao.selectByNameAndcode(productSkuInfo)<1){
+                    throw new BizException("错误商品名称"+productSkuInfo.getSkuName()+"或者错误商品code"+productSkuInfo.getSkuCode());
+                }
+            }
+            //供货渠道类别
+            List<String> categoriesSupplyChannelsNames=skuConfigImports.stream().map(x->x.getCategoriesSupplyChannelsName()).distinct().collect(Collectors.toList());
+            for (String name:
+                    categoriesSupplyChannelsNames) {
+               if (!name.equals("配送")&&!name.equals("直送")){
+                    throw new BizException("错误配送方法"+name);
+
+                }
+            }
         } catch (ExcelException e) {
             e.printStackTrace();
         }
