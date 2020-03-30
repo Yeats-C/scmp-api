@@ -259,12 +259,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
-            Thread.sleep(1000);
             //编码生成
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+            LOGGER.info("出库单号---------------------：" + outboundOderCode);
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
@@ -283,7 +283,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
 
             //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
+            int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+            LOGGER.info("变更出库单号--------------" + value);
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
