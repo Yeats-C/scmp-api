@@ -75,7 +75,7 @@ public class ProductSaleAreaController {
 
 
     @PostMapping("/skuList")
-    @ApiOperation("获取申请sku列表")
+    @ApiOperation("获取sku列表")
     public HttpResponse< BasePage<QueryProductSaleAreaForSkuRespVO> > skuList(@RequestBody QueryProductSaleAreaForSkuReqVO queryProductSaleAreaForSkuReqVO) {
         log.info("ProductSkuApplyPromotionController---save---入参：[{}]", JSON.toJSONString(queryProductSaleAreaForSkuReqVO));
         try {

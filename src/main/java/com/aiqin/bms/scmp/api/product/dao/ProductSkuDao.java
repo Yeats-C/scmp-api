@@ -317,7 +317,7 @@ public interface ProductSkuDao {
      * @author NullPointException
      * @date 2019/6/6
      */
-    List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(List<Long> ids);
+    List<QueryProductSaleAreaForSkuRespVO> selectSkuListForSaleArea(QueryProductSaleAreaForSkuReqVO reqVO);
 
     /**
      * 查数量

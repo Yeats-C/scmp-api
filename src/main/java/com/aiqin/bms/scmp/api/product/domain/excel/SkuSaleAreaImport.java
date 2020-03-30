@@ -5,6 +5,8 @@ import com.alibaba.excel.metadata.BaseRowModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Description:
  *
@@ -22,6 +24,9 @@ public class SkuSaleAreaImport extends BaseRowModel {
     @ExcelProperty(index = 0 , value = "销售区域名称")
     private String saleName;
 
+    @ApiModelProperty("限制区域code")
+    private String saleCode;
+
     @ApiModelProperty(value = "sku编码")
     @ExcelProperty(index = 1 , value = "sku编码")
     private String skuCode;
@@ -37,6 +42,24 @@ public class SkuSaleAreaImport extends BaseRowModel {
     @ApiModelProperty("直送供应商名称")
     @ExcelProperty(index = 4 , value = "sku名称")
     private String directDeliverySupplierName;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
+
+    @ApiModelProperty("创建时间")
+    private Date createTime;
+
+    @ApiModelProperty("修改人")
+    private String updateBy;
+
+    @ApiModelProperty("修改时间")
+    private Date updateTime;
+
+    @ApiModelProperty("公司编码")
+    private String companyCode;
+
+    @ApiModelProperty("公司名称")
+    private String companyName;
 
 
 }

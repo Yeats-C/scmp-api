@@ -2049,11 +2049,36 @@
                          on a.sku_code = c.product_sku_code and c.categories_supply_channels_code = 2
                left join product_sku_purchase_info d
                          on a.sku_code = d.product_sku_code
-         where a.id in
-         <foreach collection="list" open="(" close=")" separator="," item="item">
-            #{item}
-         </foreach>
-         group by a.id
+         where a.company_code = #{companyCode}
+        <if test="skuCode!=null and skuCode!=''">
+            AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName!=null and skuName!=''">
+            AND a.sku_name LIKE CONCAT('%',#{skuName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productCategoryName!=null and productCategoryName!=''">
+            AND a.product_category_name LIKE CONCAT('%',#{productCategoryName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productBrandName!=null and productBrandName!=''">
+            AND a.product_brand_name LIKE CONCAT('%',#{productBrandName,jdbcType=VARCHAR},'%')
+        </if>
+        <if test="productPropertyCode!=null and productPropertyCode!=''">
+            AND a.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="purchaseGroupCode!=null and purchaseGroupCode!=''">
+            AND a.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+        </if>
+        <if test="supplierCode!=null and supplierCode!=''">
+            AND c.supply_unit_code = #{supplierCode,}
+        </if>
+        <if test="skuCodes!=null and skuCodes.size>0">
+            AND a.sku_code in
+            <foreach collection="skuCodes" item="item" close=")" open="(" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        group by a.id order by a.create_time desc
+    </select>
     </select>
   <select id="selectSkuListForSaleAreaCount" resultType="java.lang.Long">
         select

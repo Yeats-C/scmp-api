@@ -79,5 +79,5 @@ public interface ProductSkuSaleAreaMainMapper {
      */
     List<ProductSkuSaleAreaMain> selectListByStatusAndDate();
 
-    Integer selectByName(String name);
+    ProductSkuSaleAreaMain selectByName(String name);
 }

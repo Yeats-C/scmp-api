@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetailReqVO;
@@ -68,4 +69,6 @@ public interface ProductSkuSaleAreaMapper {
     List<Long> officialSkuListCount2(QueryProductSaleAreaReqVO2 reqVO);
 
     List<QueryProductSaleAreaSkuRespVO> officialSkuList2(@Param("list")List<Long> list, @Param("personId") String personId);
+
+    void insertImports(SkuSaleAreaImport skuConfigImports);
 }
