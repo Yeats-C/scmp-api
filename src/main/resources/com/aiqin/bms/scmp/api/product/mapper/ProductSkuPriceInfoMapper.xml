@@ -348,7 +348,7 @@
         </if>
     </select>
     <resultMap id="selectInfoByCode"
-               type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO">
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1">
         <result column="asku_code" property="skuCode"/>
         <result column="asku_name" property="skuName"/>
         <result column="apurchase_group_name" property="purchaseGroupName"/>
