@@ -2079,7 +2079,6 @@
         </if>
         group by a.id order by a.create_time desc
     </select>
-    </select>
   <select id="selectSkuListForSaleAreaCount" resultType="java.lang.Long">
         select
                a.id
