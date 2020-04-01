@@ -23,7 +23,7 @@ wms:
   url: http://abutment.api.aiqin.com
 ground:
   druid:
-    url: jdbc:mysql://mq-002/preheat_bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
+    url: jdbc:mysql://rm-2ze48puce4v05ig2v.mysql.rds.aliyuncs.com/preheat_bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true&useSSL=false
     username: p_scmp_write
     password: grg4y4cDWA7XM8jraDnt7Q
     initial-size: 5
