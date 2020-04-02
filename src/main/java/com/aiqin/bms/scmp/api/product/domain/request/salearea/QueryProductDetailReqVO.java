@@ -21,10 +21,6 @@ import java.util.List;
 @ApiModel("sku销售詳情vo")
 public class QueryProductDetailReqVO extends PageReq {
 
-    @ApiModelProperty("销售区域id")
-    @JsonSerialize(using= ToStringSerializer.class)
-    private Long id;
-
     @ApiModelProperty("销售区域编码编码")
     private String  code;
 

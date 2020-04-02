@@ -224,9 +224,9 @@
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
         ( #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
-      #{item.skuName,jdbcType=VARCHAR}, #{item.beDisable,jdbcType=INTEGER}, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR}, 1, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{item.directDeliverySupplierCode,jdbcType=VARCHAR},
-      #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, now(),
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.companyName,jdbcType=VARCHAR})
     </foreach>
