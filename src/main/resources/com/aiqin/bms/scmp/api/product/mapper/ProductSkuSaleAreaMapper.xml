@@ -441,7 +441,7 @@
         <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
     </resultMap>
     <select id="getSkuList" resultMap="getSkuListMap">
- select
+       select distinct
         ps.*
         from product_sku_sale_area_main a
         left join product_sku_sale_area c   on a.code = c.code

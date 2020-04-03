@@ -147,6 +147,12 @@
       <if test="warehouseOrder != null">
         warehouse_order,
       </if>
+        <if test="isPurchase != null">
+            is_purchase,
+        </if>
+        <if test="batchManage != null">
+            batch_manage,
+        </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -224,6 +230,12 @@
       <if test="warehouseOrder != null">
         #{warehouseOrder,jdbcType=INTEGER},
       </if>
+        <if test="isPurchase != null">
+            #{isPurchase,jdbcType=INTEGER},
+        </if>
+        <if test="batchManage != null">
+            #{batchManage,jdbcType=INTEGER},
+        </if>
     </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO">
