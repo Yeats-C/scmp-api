@@ -1755,7 +1755,7 @@
       i.warehouse_code        as warehouseCode,
       i.warehouse_name        as warehouseName,
       i.batch_remark          as batchRemark,
-      i.production_date       as productTime
+      i.product_date       as productTime
       from product_sku a
       left join product b
       on a.spu_code = b.product_code
