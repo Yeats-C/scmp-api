@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Set;
 
@@ -290,4 +291,6 @@ public interface ProductSaleAreaService {
     BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
 
     Boolean importData(MultipartFile file);
+
+    HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode);
 }

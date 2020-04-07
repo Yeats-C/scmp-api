@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAre
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuConfigImport;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoExport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -48,6 +49,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.component.service.AreaBasicService;
+import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.Page;
@@ -65,6 +67,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1068,5 +1071,29 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             e.printStackTrace();
         }
         return true;
+    }
+
+    @Override
+    public HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode) {
+        QueryProductDetailReqVO reqVO=new QueryProductDetailReqVO();
+        reqVO.setCode(saleCode);
+        List<ProductSkuInfo> skuList = productSkuSaleAreaMapper.getSkuList(reqVO);
+        Integer length = skuList.size();
+        if(length > 50000){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "最大导出量为5W条数据,筛选的数据量已超过本限制,请根据采购组/品类/时间过滤"));
+        }
+        if(length == 0){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "没有找到需要导出的数据"));
+        }
+        List<SkuInfoExport> list=BeanCopyUtils.copyList(skuList,SkuInfoExport.class);
+        try {
+            ExcelUtil.writeExcel(resp, list, "商品导出模板", "商品导出模板", ExcelTypeEnum.XLSX,SkuInfoExport.class);
+        } catch (ExcelException e) {
+            e.printStackTrace();
+            return HttpResponse.success("导出失败");
+
+        }
+        return HttpResponse.success();
+
     }
 }
