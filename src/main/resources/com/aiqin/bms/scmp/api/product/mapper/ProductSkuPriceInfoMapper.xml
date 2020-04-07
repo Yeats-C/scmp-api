@@ -483,8 +483,9 @@
              b.product_category_name  bproduct_category_name,
              b.product_brand_name     bproduct_brand_name,
              b.product_property_name  bproduct_property_name,
-             c.`code`                 ccode,
-              c.`code`            cmaincode,
+             c.code                 ccode,
+              c.name               cname,
+             c.main_code              cmainname,
              d.id                     did,
              d.code                   dcode,
              d.price_tax              dprice_tax,
@@ -496,17 +497,16 @@
              d.create_by              dcreate_by,
              d.create_time            dcreate_time,
              d.remark                 dremark,
-             d.area_info              darea_info,
-             e.`name`                 ename
+             d.area_info              darea_info
       FROM product_sku_price_info a
              LEFT JOIN product_sku b
                        ON a.sku_code = b.sku_code
-             LEFT JOIN product_sku_sale_area c
-                       ON a.sku_code  = c.sku_code
+             LEFT JOIN product_sku_change_price_info e
+                       ON a.sku_code  = e.sku_code
              LEFT JOIN product_sku_price_info_log d
                        ON d.code = a.code
-             LEFT JOIN product_sku_sale_area_main e
-                       ON c.code = e.code
+             LEFT JOIN product_sku_change_price_area_info c
+                       ON c.main_code = e.code
                     where a.code = #{code}
   </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

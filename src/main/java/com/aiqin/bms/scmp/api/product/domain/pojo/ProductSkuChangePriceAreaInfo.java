@@ -16,16 +16,10 @@ public class ProductSkuChangePriceAreaInfo {
     @ApiModelProperty("主表编码")
     private String mainCode;
 
-    @ApiModelProperty("1区域2门店")
-    private Integer type;
-
-    @ApiModelProperty("0禁止1开放")
-    private Integer status;
-
-    @ApiModelProperty("区域或门店名称")
+    @ApiModelProperty("区域名称")
     private String name;
 
-    @ApiModelProperty("区域或门店编码")
+    @ApiModelProperty("区域编码")
     private String code;
 
     @ApiModelProperty("公司编码")
