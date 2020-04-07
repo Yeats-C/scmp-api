@@ -136,10 +136,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         saveData(reqVO);
         //保存日志
         supplierCommonService.getInstance(reqVO.getCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.CHANGE_PRICE.getStatus(), HandleTypeCoce.ADD_CHANGEPRICE.getName(), null, HandleTypeCoce.ADD.getName(), getUser().getPersonName());
-//        if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
-//          //审批
-//            callWorkflow(reqVO);
-//        }
+        if (CommonConstant.SUBMIT.equals(reqVO.getOperation())) {
+          //审批
+            callWorkflow(reqVO);
+        }
         return true;
     }
 
