@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
@@ -149,6 +150,13 @@ public class AllocationController {
     @ApiOperation("根据formNo获取主键ID")
     public HttpResponse<Long> getIdByFormNo(@RequestParam String formNo){
         return HttpResponse.success(allocationService.getIdByFormNo(formNo));
+    }
+
+    @GetMapping("/getNumberByBatchAndSkuCode")
+    @ApiOperation("根据批次号sku获取该批次sku的库存数量")
+    public HttpResponse<StockBatch> getNumberByBatchAndSkuCode(@RequestParam @ApiParam(value = "sku编码",required = true) String skuCode ,
+                                                               @RequestParam @ApiParam(value = "批次号",required = true) String batchCode){
+        return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchCode));
     }
 
 }

@@ -202,7 +202,7 @@
       update_time, update_by ,form_no,
       company_code,company_name,
       direct_supervisor_code,direct_supervisor_name,
-      undertaking_unit_code,undertaking_unit_name,remark)
+      undertaking_unit_code,undertaking_unit_name,remark,logistics_outlay)
     values (#{id,jdbcType=BIGINT}, #{allocationCode,jdbcType=VARCHAR}, #{callOutLogisticsCenterCode,jdbcType=VARCHAR}, 
       #{callOutLogisticsCenterName,jdbcType=VARCHAR}, #{callOutWarehouseCode,jdbcType=VARCHAR}, 
       #{callOutWarehouseName,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -215,7 +215,7 @@
       #{updateTime,jdbcType=TIMESTAMP}, #{update,jdbcType=VARCHAR},#{formNo,jdbcType=VARCHAR},
       #{company_code, jdbcType=VARCHAR },#{company_name,jdbcType=VARCHAR},
       #{directSupervisorCode,jdbcType=VARCHAR}, #{directSupervisorName,jdbcType=VARCHAR},
-      #{undertakingUnitCode,jdbcType=VARCHAR},#{undertakingUnitName,jdbcType=VARCHAR},#{remark,jdbcType=CLOB})
+      #{undertakingUnitCode,jdbcType=VARCHAR},#{undertakingUnitName,jdbcType=VARCHAR},#{remark,jdbcType=CLOB},#{logisticsOutlay,jdbcType=BIGINT})
 </insert>
   <insert id="insertSelective"  keyProperty="id" useGeneratedKeys="true" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Allocation">
     insert into allocation
@@ -322,6 +322,9 @@
       <if test="remark != null">
         remark,
       </if>
+      <if test="logisticsOutlay != null">
+        logistics_outlay,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -425,6 +428,9 @@
       </if>
       <if test="remark != null">
        #{remark,jdbcType=CLOB},
+      </if>
+      <if test="logisticsOutlay != null">
+       #{logisticsOutlay,jdbcType=BIGINT},
       </if>
     </trim>
   </insert>
@@ -1178,5 +1184,11 @@
     <foreach collection="list" separator="," open="(" close=")" item="item">
       #{item}
     </foreach>
+  </select>
+
+  <select id="selectNumberByBatchAndSkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
+    select id, ifnull(available_count,0) as availableNum
+    from stock_batch
+    where sku_code=#{skuCode} and batch_code=#{batchCode}
   </select>
 </mapper>

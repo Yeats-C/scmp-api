@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -751,6 +752,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
         }
         return allocation.getId();
+    }
+
+    @Override
+    public StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode) {
+        StockBatch stockBatch = allocationMapper.selectNumberByBatchAndSkuCode(skuCode, batchCode);
+        return stockBatch;
     }
 
 
