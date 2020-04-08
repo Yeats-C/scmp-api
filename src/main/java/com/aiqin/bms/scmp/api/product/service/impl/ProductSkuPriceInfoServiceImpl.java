@@ -67,7 +67,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
             for(QueryProductSkuPriceInfoRespVO sku:list){
                 categoryId = sku.getProductCategoryCode();
                 if (StringUtils.isNotBlank(categoryId)) {
-                   sku.setProductCategoryName(dataManageService.selectCategoryName(categoryId));
+//                  sku.setProductCategoryName(dataManageService.selectCategoryName(categoryId));
                     //通过skucode获取销售区域信息
                     List<ProductSkuSaleAreaInfoRespVo> productSkuSaleAreaInfoList = productSkuSaleAreaInfoMapper.selectBySkuCode(sku.getSkuCode());
                     sku.setSaleAreaInfos(productSkuSaleAreaInfoList);
