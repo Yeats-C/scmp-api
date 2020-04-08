@@ -479,8 +479,6 @@
                b.be_synchronize bbe_synchronize,
                c.id cid,
                c.main_code cmain_code,
-               c.type ctype,
-               c.status cstatus,
                c.name cname,
                c.code ccode,
                c.company_code ccompany_code,
