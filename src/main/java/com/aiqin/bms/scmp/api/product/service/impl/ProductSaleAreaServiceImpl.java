@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
+import com.aiqin.bms.scmp.api.product.domain.excel.SaleSkuInfoExport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuConfigImport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoExport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
@@ -68,6 +69,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1085,9 +1088,13 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if(length == 0){
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "没有找到需要导出的数据"));
         }
-        List<SkuInfoExport> list=BeanCopyUtils.copyList(skuList,SkuInfoExport.class);
+        List<SaleSkuInfoExport> list=BeanCopyUtils.copyList(skuList,SaleSkuInfoExport.class);
         try {
-            ExcelUtil.writeExcel(resp, list, "商品导出模板", "商品导出模板", ExcelTypeEnum.XLSX,SkuInfoExport.class);
+            ProductSaleAreaForOfficialMainRespVO productSaleAreaForOfficialMainRespVO= productSkuSaleAreaMainMapper.selectDetailByCode(saleCode);
+
+            String timeStr1= LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+
+            ExcelUtil.writeExcel(resp, list, productSaleAreaForOfficialMainRespVO.getName()+timeStr1, "商品导出模板", ExcelTypeEnum.XLSX, SaleSkuInfoExport.class);
         } catch (ExcelException e) {
             e.printStackTrace();
             return HttpResponse.success("导出失败");
