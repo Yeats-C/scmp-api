@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
@@ -18,9 +19,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -154,9 +153,51 @@ public class AllocationController {
 
     @GetMapping("/getNumberByBatchAndSkuCode")
     @ApiOperation("根据批次号sku获取该批次sku的库存数量")
-    public HttpResponse<StockBatch> getNumberByBatchAndSkuCode(@RequestParam @ApiParam(value = "sku编码",required = true) String skuCode ,
+    public HttpResponse<StockBatch> getNumberByBatchAndSkuCode(@RequestParam @ApiParam(value = "sku编码",required = true) String skuCode,
                                                                @RequestParam @ApiParam(value = "批次号",required = true) String batchCode){
         return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchCode));
+    }
+
+    @GetMapping("/getManualChoseProduct")
+    @ApiOperation("手动选择商品")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "transport_center_code", value = "仓编码(物流中心编码)", type = "String"),
+            @ApiImplicitParam(name = "warehouse_code", value = "库房编码", type = "String"),
+            @ApiImplicitParam(name = "purchase_group_code", value = "采购组编码", type = "String"),
+            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
+            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
+            @ApiImplicitParam(name = "product_brand_code", value = "品牌code", type = "String"),
+            @ApiImplicitParam(name = "product_category_code", value = "品类code", type = "String"),
+            @ApiImplicitParam(name = "product_property_code", value = "商品属性", type = "String"),
+            @ApiImplicitParam(name = "spu_code", value = "spu编码", type = "String"),
+            @ApiImplicitParam(name = "spu_name", value = "spu名称", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "String"),
+            @ApiImplicitParam(name = "page_size", value = "当前条数", type = "String"),
+    })
+    public HttpResponse<BasePage<ManualChoseProductReq>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
+                                                                               @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
+                                                                               @RequestParam(value = "purchase_group_code",required = false) String purchaseGroupCode,
+                                                                               @RequestParam(value = "sku_code",required = false) String skuCode,
+                                                                               @RequestParam(value = "sku_name",required = false) String skuName,
+                                                                               @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
+                                                                               @RequestParam(value = "product_category_code",required = false) String productCategoryCode,
+                                                                               @RequestParam(value = "product_property_code",required = false) String productPropertyCode,
+                                                                               @RequestParam(value = "spu_code",required = false) String spuCode,
+                                                                               @RequestParam(value = "spu_name",required = false) String spuName,
+                                                                               @RequestParam(value = "page_no",required = false) Integer pageNo,
+                                                                               @RequestParam(value = "page_size",required = false) Integer pageSize){
+        ManualChoseProductReq m = new ManualChoseProductReq();
+        m.setPurchaseGroupCode(purchaseGroupCode);
+        m.setSkuCode(skuCode);
+        m.setSkuName(skuName);
+        m.setProductBrandCode(productBrandCode);
+        m.setProductCategoryCode(productCategoryCode);
+        m.setProductPropertyCode(productPropertyCode);
+        m.setSpuCode(spuCode);
+        m.setSpuName(spuName);
+        m.setPageNo(pageNo);
+        m.setPageSize(pageSize);
+        return HttpResponse.success(allocationService.getManualChoseProduct(m));
     }
 
 }

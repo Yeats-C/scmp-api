@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
@@ -138,4 +139,11 @@ public interface AllocationService extends BaseService {
      * @return
      */
     StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode);
+
+    /**
+     *
+     * @param m
+     * @return
+     */
+    BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
 }

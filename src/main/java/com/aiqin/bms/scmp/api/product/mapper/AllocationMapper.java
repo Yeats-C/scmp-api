@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
@@ -117,4 +118,8 @@ public interface AllocationMapper {
     List<Allocation> listByOutboundCodes(List<String> list);
 
     StockBatch selectNumberByBatchAndSkuCode(@Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+
+    List<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+
+    Long getManualChoseProductCount(ManualChoseProductReq m);
 }

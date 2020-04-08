@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
@@ -758,6 +759,17 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode) {
         StockBatch stockBatch = allocationMapper.selectNumberByBatchAndSkuCode(skuCode, batchCode);
         return stockBatch;
+    }
+
+    @Override
+    public BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m) {
+        List<ManualChoseProductReq> mLists = allocationMapper.getManualChoseProduct(m);
+        Long mCount = allocationMapper.getManualChoseProductCount(m);
+
+        BasePage basePage = new BasePage();
+        basePage.setDataList(mLists);
+        basePage.setTotalCount(mCount);
+        return basePage;
     }
 
 

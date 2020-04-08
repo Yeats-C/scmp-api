@@ -1191,4 +1191,77 @@
     from stock_batch
     where sku_code=#{skuCode} and batch_code=#{batchCode}
   </select>
+
+  <sql id="Allocation_Chose_Product_List">
+    ps.sku_code as skuCode, ps.sku_name as skuName,
+    ps.product_category_code as productCategoryCode, ps.product_category_name as productCategoryName,
+    ps.product_brand_code as productBrandCode, ps.product_brand_name as productBrandName,
+    goods_gifts as goodsGifts, spec, model_number as modelNumber,
+    color_code as colorCode, color_name as colorName,
+    unit_code as unitCode, unit_name as unitName,
+    product_property_code as productPropertyCode,
+    product_property_name as productPropertyName,
+    ifnull(available_num,0) as availableNum,
+    ifnull(tax_rate,0) as taxRate, ifnull(tax_cost,0) as taxCost
+  </sql>
+
+  <sql id="Allocation_Chose_Product_Where">
+    <where>
+    1=1
+      <if test="transportCenterCode != null and transportCenterCode != ''">
+        and transport_center_code = #{transportCenterCode}
+      </if>
+      <if test="warehouseCode != null and warehouseCode != ''">
+        and s.warehouse_code = #{warehouseCode}
+      </if>
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+        and purchase_group_code = #{purchaseGroupCode}
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and ps.sku_code = #{skuCode}
+      </if>
+      <if test="skuName != null and skuName != ''">
+        and ps.sku_name = #{skuName}
+      </if>
+      <if test="productCategoryCode != null and productCategoryCode != ''">
+        and ps.product_category_code = #{productCategoryCode}
+      </if>
+      <if test="productBrandCode != null and productBrandCode != ''">
+        and ps.product_brand_code = #{productBrandCode}
+      </if>
+      <if test="productPropertyCode != null and productPropertyCode != ''">
+        and ps.product_property_code = #{productPropertyCode}
+      </if>
+      <if test="spuCode != null and spuCode != ''">
+        and ps.product_code = #{spuCode}
+      </if>
+      <if test="spuName != null and spuName != ''">
+        and ps.product_name = #{spuName}
+      </if>
+    </where>
+  </sql>
+
+
+  <select id="getManualChoseProduct" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq"
+          resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo">
+        select
+         <include refid="Allocation_Chose_Product_List"/>
+        from stock s
+        left join warehouse w on s.warehouse_code = w.warehouse_code
+        left join product_sku ps on s.sku_code = ps.sku_code
+        <include refid="Allocation_Chose_Product_Where"/>
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="getManualChoseProductCount" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq"
+          resultType="java.lang.Long">
+    select count(1)
+    from
+    (select
+    <include refid="Allocation_Chose_Product_List"/>
+    from stock s
+    left join warehouse w on s.warehouse_code = w.warehouse_code
+    left join product_sku ps on s.sku_code = ps.sku_code
+    <include refid="Allocation_Chose_Product_Where"/>
+    ) stock
+  </select>
 </mapper>
