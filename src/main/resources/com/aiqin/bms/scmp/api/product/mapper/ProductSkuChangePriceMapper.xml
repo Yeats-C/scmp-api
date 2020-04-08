@@ -328,9 +328,7 @@
              c.name cname,
              c.url curl,
              d.name dname,
-             d.code dcode,
-             d.status dstatus,
-             d.type dtype
+             d.code dcode
              from product_sku_change_price a
              left join product_sku_change_price_info b
              on a.code = b.code
