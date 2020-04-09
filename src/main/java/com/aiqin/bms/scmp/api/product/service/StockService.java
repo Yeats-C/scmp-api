@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReq
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
@@ -138,6 +139,8 @@ public interface StockService {
     String stockFlow(StockFlowRequest reqVo);
 
     HttpResponse changeStock(StockChangeRequest stockChangeRequest);
+
+    HttpResponse stockAndBatchChange(ChangeStockRequest request);
 
     boolean changeWayNum(StockWayNumRequest stockWayNumRequest) throws Exception;
 

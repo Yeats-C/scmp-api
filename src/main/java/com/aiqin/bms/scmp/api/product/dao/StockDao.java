@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
@@ -18,10 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelFo
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
@@ -94,7 +92,7 @@ public interface StockDao {
 
     Integer updateByPrimaryKey(Stock stock);
 
-    List<Stock> selectListByCodesAndSkuCode(@Param("stockVoRequests") List<StockVoRequest> stockVoRequests);
+    List<Stock> stockByWarehouseAndSku(@Param("stockList") List<StockInfoRequest> stockList);
 
     void updateBatch(@Param("stocks") List<Stock> stocks);
 
@@ -272,5 +270,7 @@ public interface StockDao {
 
     StockBatchRespVO byCityAndProvinceAndskuCode(String provinceCode, String cityCode);
 
+    StockBatchDetailResponse stockInfoByBatchDetail( @Param("skuCode") String skuCode,
+                                               @Param("warehouseCode") String warehouseCode);
 
 }

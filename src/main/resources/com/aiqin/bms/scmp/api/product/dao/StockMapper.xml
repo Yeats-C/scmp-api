@@ -13,43 +13,26 @@
         <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
-        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
-        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
-        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
+        <result column="inventory_count" jdbcType="BIGINT" property="inventoryCount"/>
+        <result column="available_count" jdbcType="BIGINT" property="availableCount"/>
+        <result column="lock_count" jdbcType="BIGINT" property="lockCount"/>
+        <result column="purchase_way_count" jdbcType="BIGINT" property="purchaseWayCount"/>
+        <result column="allocation_way_count" jdbcType="BIGINT" property="allocationWayCount"/>
+        <result column="total_way_count" jdbcType="BIGINT" property="totalWayCount"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
         <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
-        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
-        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
-        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
-        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
-        <result column="sale_num" jdbcType="BIGINT" property="saleNum"/>
-        <result column="sale_lock_num" jdbcType="BIGINT" property="saleLockNum"/>
-        <result column="sale_way_num" jdbcType="BIGINT" property="saleWayNum"/>
-        <result column="sale_purchase_way_num" jdbcType="BIGINT" property="salePurchaseWayNum"/>
-        <result column="gift_num" jdbcType="BIGINT" property="giftNum"/>
-        <result column="gift_lock_num" jdbcType="BIGINT" property="giftLockNum"/>
-        <result column="gift_way_num" jdbcType="BIGINT" property="giftWayNum"/>
-        <result column="gift_purchase_way_num" jdbcType="BIGINT" property="giftPurchaseWayNum"/>
-        <result column="special_sale_num" jdbcType="BIGINT" property="specialSaleNum"/>
-        <result column="special_sale_lock_num" jdbcType="BIGINT" property="specialSaleLockNum"/>
-        <result column="special_sale_way_num" jdbcType="BIGINT" property="specialSaleWayNum"/>
-        <result column="bad_num" jdbcType="BIGINT" property="badNum"/>
-        <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
-        <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
         <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
-        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
+        <result column="use_status" jdbcType="VARCHAR" property="useStatus"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="createByName"/>
     </resultMap>
     <resultMap id="BaseBatchResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -339,18 +322,17 @@
         <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
     </resultMap>
 
-
     <sql id="Stock_flow_Column">
         id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,before_inventory_num,after_inventory_num,
         before_available_num,after_available_num,before_lock_num,after_lock_num,before_purchase_way_num,after_purchase_way_num,
         before_allocation_way_num,after_allocation_way_num,before_total_way_num,after_total_way_num,change_num,operation_type
     </sql>
     <sql id="Base_Column_List">
-        id,stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
-        sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,new_delivery,new_delivery_name,
-        new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,tax_price,tax_rate,create_time,create_by,update_time,update_by,
-        sale_num,sale_lock_num,sale_way_num,sale_purchase_way_num,gift_num,gift_lock_num,gift_way_num,gift_purchase_way_num,special_sale_num,special_sale_lock_num,special_sale_way_num,
-        bad_num,bad_lock_num,bad_way_num,purchase_way_num,allocation_way_num,total_way_num
+        id, stock_code, company_code, company_name, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
+        warehouse_type, sku_code, sku_name, inventory_count, available_count, lock_count, purchase_way_count, allocation_way_count,
+        total_way_count, new_delivery, new_delivery_name, new_purchase_price, unit_code, unit_name, tax_rate,
+        purchase_way_count, allocation_way_count,total_way_count, use_status, tax_cost, create_time,
+        create_by_id, update_time, update_by_id, create_by_name, update_by_name
     </sql>
     <sql id="Base_Batch_Column_List">
         id,stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
@@ -1424,18 +1406,19 @@
         </set>
         where id=#{id}
     </update>
-    <select id="selectListByCodesAndSkuCode" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"></include> from stock
+    <select id="stockByWarehouseAndSku" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from stock
         where transport_center_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.transportCenterCode}
         </foreach>
         and warehouse_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.warehouseCode}
         </foreach>
         and sku_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.skuCode}
         </foreach>
     </select>
@@ -2786,5 +2769,25 @@
         where a.del_flag = 0
         and a.sku_code = #{skuCode}
         and a.transport_center_code= #{transportCenterCode}
+    </select>
+    <select id="stockInfoByBatchDetail" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchDetailResponse">
+        select
+          a.sku_code skuCode, a.sku_name skuName, b.product_category_code productCategoryCode,
+          b.product_category_name productCategoryName, b.product_brand_code productBrandCode,
+          b.product_brand_name productBrandName, b.color_name colorName, b.model_number modelNumber,
+          d.spec productSpec, d.unit_name unitName, CONCAT(d.base_product_content, '/', d.unit_name) boxGauge,
+          b.product_property_code productPropertyCode, b.product_property_name productPropertyName,
+          c.config_status configStatus, a.warehouse_code warehouseCode, a.warehouse_name warehouseName,
+          a.transport_center_code transportCenterCode, a.transport_center_name transportCenterName,
+          a.warehouse_type warehouseType, a.inventory_num inventoryCount, a.available_num availableCount,
+          a.lock_num lockCount, a.purchase_way_num purchaseWayCount, a.allocation_way_num allocationWayCount,
+          a.total_way_num totalWayCount, a.new_purchase_price newPurchaseAmount, a.new_delivery_name newSupplierName,
+          ifnull(a.tax_rate, 0) taxRate, ifnull(a.tax_cost, 0) taxCost
+        from stock a
+        inner join product_sku b on a.sku_code = b.sku_code
+        inner join product_sku_config c on a.sku_code = c.sku_code and c.transport_center_code = a.transport_center_code
+        inner join product_sku_purchase_info d on a.sku_code = d.product_sku_code
+        where a.sku_code = #{skuCode,jdbcType=VARCHAR}
+        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
 </mapper>

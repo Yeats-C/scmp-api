@@ -318,13 +318,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         stock.setCompanyCode(detail.getCompanyCode());
         Stock info = stockDao.stockInfo(stock);
         if (info != null) {
-            detail.setStockCount(info.getInventoryNum().intValue());
-            detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryNum())).setScale(4, BigDecimal.ROUND_HALF_UP));
+            detail.setStockCount(info.getInventoryCount().intValue());
+            detail.setStockAmount(info.getTaxCost().multiply(BigDecimal.valueOf(info.getInventoryCount())).setScale(4, BigDecimal.ROUND_HALF_UP));
             Long avgSales = proSuggestReplenishmentDao.biAppSuggestReplenishmentAll(detail.getTransportCenterCode(), detail.getSkuCode(),
                     detail.getWarehouseCode());
             // 库存周转期， 预计到货周转期
-            Integer stockTurnover = (avgSales == null || avgSales == 0) ? 0 : info.getInventoryNum().intValue() / avgSales.intValue();
-            Integer num = info.getInventoryNum().intValue() + info.getTotalWayNum().intValue() + detail.getSingleCount();
+            Integer stockTurnover = (avgSales == null || avgSales == 0) ? 0 : info.getInventoryCount().intValue() / avgSales.intValue();
+            Integer num = info.getInventoryCount().intValue() + info.getTotalWayCount().intValue() + detail.getSingleCount();
             Integer receiptTurnover = (avgSales == null || avgSales == 0) ? 0 : num / avgSales.intValue();
             detail.setStockTurnover(stockTurnover);
             detail.setReceiptTurnover(receiptTurnover);

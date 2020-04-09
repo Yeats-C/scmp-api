@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
@@ -164,10 +165,17 @@ public class StockController {
         return HttpResponse.success(stockService.stockFlow(reqVo));
     }
 
-    @PostMapping("change")
+    @PostMapping("change1")
     @ApiOperation(value = "库存修改")
     public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
+        //return HttpResponse.success();
         return stockService.changeStock(stockChangeRequest);
+    }
+
+    @PostMapping("/change")
+    @ApiOperation(value = "库存修改")
+    public HttpResponse stockAndBatchChange(@RequestBody ChangeStockRequest request) {
+        return stockService.stockAndBatchChange(request);
     }
 
     @PostMapping("/logs")
@@ -215,7 +223,8 @@ public class StockController {
                                                                                   @RequestParam(value = "product_property_name", required = false) String productPropertyName,
                                                                                   @RequestParam(value = "page_no", required = false) Integer page_no,
                                                                                   @RequestParam(value = "page_size", required = false) Integer page_size) {
-        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
+        //QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
+        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo();
         reqVO.setPageNo(page_no);
         reqVO.setPageSize(page_size);
         PageInfo<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage(reqVO);
