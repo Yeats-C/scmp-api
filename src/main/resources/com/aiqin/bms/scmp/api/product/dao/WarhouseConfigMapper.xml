@@ -42,59 +42,57 @@
     </select>
 
     <select id="getList" parameterType="java.lang.Long" resultMap="BaseResultMap">
-        <!--
-          This element was generated on Thu Apr 09 17:36:59 CST 2020.
-        -->
         select
         <include refid="Base_Column_List" />
         from warhouse_config
-        where   <if test="warehouseName != null">
-        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-    </if>
+        where  1=1
+         <if test="warehouseName != null">
+             and warehouse_name LIKE concat('%', #{warehouseName,jdbcType=VARCHAR}, '%')
+         </if>
         <if test="warehouseCode != null">
-            warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            and  warehouse_code LIKE concat('%', #{warehouseCode,jdbcType=VARCHAR}, '%')
         </if>
         <if test="warehouseType != null">
-            warehouse_type = #{warehouseType,jdbcType=VARCHAR},
+            and    warehouse_type = #{warehouseType,jdbcType=VARCHAR}
         </if>
         <if test="stockCode != null">
-            stock_code = #{stockCode,jdbcType=VARCHAR},
+            and   stock_code LIKE concat('%',  #{stockCode,jdbcType=VARCHAR}, '%')
         </if>
         <if test="stockName != null">
-            stock_name = #{stockName,jdbcType=VARCHAR},
+            and   stock_name LIKE concat('%',  #{stockName,jdbcType=VARCHAR}, '%')
         </if>
         <if test="dockingType != null">
-            docking_type = #{dockingType,jdbcType=INTEGER},
+            and   docking_type = #{dockingType,jdbcType=INTEGER}
         </if>
         <if test="dockingSystem != null">
-            docking_system = #{dockingSystem,jdbcType=INTEGER},
+            and  docking_system = #{dockingSystem,jdbcType=INTEGER}
         </if>
         <if test="counterpartWarehouseName != null">
-            counterpart_warehouse_name = #{counterpartWarehouseName,jdbcType=VARCHAR},
+            and  counterpart_warehouse_name  LIKE concat('%',  #{counterpartWarehouseName,jdbcType=VARCHAR}, '%')
         </if>
         <if test="counterpartWarehouseCode != null">
-            counterpart_warehouse_code = #{counterpartWarehouseCode,jdbcType=VARCHAR},
+            and    counterpart_warehouse_code LIKE concat('%',  #{counterpartWarehouseCode,jdbcType=VARCHAR}, '%')
         </if>
         <if test="counterpartStockCode != null">
-            counterpart_stock_code = #{counterpartStockCode,jdbcType=VARCHAR},
+            and   counterpart_stock_code LIKE concat('%',  #{counterpartStockCode,jdbcType=VARCHAR}, '%')
         </if>
         <if test="counterpartStockName != null">
-            counterpart_stock_name = #{counterpartStockName,jdbcType=VARCHAR},
+            and   counterpart_stock_name LIKE concat('%',  #{counterpartStockName,jdbcType=VARCHAR}, '%')
         </if>
         <if test="enable != null">
-            enable = #{enable,jdbcType=BIT},
+            and     enable = #{enable,jdbcType=BIT}
         </if>
         <if test="createBy != null">
-            create_by = #{createBy,jdbcType=VARCHAR},
+            and  create_by = #{createBy,jdbcType=VARCHAR}
         </if>
         <if test="createTime != null">
-            create_time = #{createTime,jdbcType=TIMESTAMP},
+            and   create_time = #{createTime,jdbcType=TIMESTAMP}
         </if>
         <if test="updateBy != null">
-            update_by = #{updateBy,jdbcType=VARCHAR},
+            and    update_by = #{updateBy,jdbcType=VARCHAR}
         </if>
         <if test="updateTime != null">
-            update_time = #{updateTime,jdbcType=TIMESTAMP},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
         </if>
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

@@ -42,8 +42,7 @@ import java.util.List;
 @Slf4j
 public class WarehouseConfigController {
 
-     @Resource
-    private StockService stockService;
+
 
     @Resource
     private WarehouseConfigService warehouseConfigService;
@@ -51,6 +50,7 @@ public class WarehouseConfigController {
     @PostMapping("/search/page")
     @ApiOperation(value = "库房管理列表")
     public HttpResponse<BasePage<WarehouseConfigResp>> getPage(@RequestBody WarehouseConfigReq warehouseConfigReq) {
+        log.info("进来咯");
         return HttpResponse.success(warehouseConfigService.getPage(warehouseConfigReq));
     }
 
@@ -63,7 +63,7 @@ public class WarehouseConfigController {
 
     @GetMapping("/load")
     @ApiOperation(value = "库房配置详情")
-    public HttpResponse<WarehouseConfigResp> load( Long id) {
+    public HttpResponse<WarehouseConfigResp> load(@RequestBody Long id) {
         return HttpResponse.success(warehouseConfigService.load(id));
     }
 

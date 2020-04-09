@@ -31,7 +31,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 表字段 : warhouse_config.warehouse_name
      */
     @ApiModelProperty("库房名称")
-    @JsonProperty("warehouse_Name")
+    @JsonProperty("warehouse_name")
     private String warehouseName;
 
     /**
@@ -39,7 +39,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 表字段 : warhouse_config.warehouse_code
      */
     @ApiModelProperty("库房编码")
-    @JsonProperty("warehouse_Name")
+    @JsonProperty("warehouse_code")
     private String warehouseCode;
 
     /**
@@ -84,7 +84,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 表字段 : warhouse_config.docking_system
      */
     @ApiModelProperty("对接系统(0：DL系统 1：巨沃系统 2:富勒系统 3：德邦系统)")
-    @JsonProperty("docking_type")
+    @JsonProperty("docking_system")
     private Integer dockingSystem;
 
     /**
