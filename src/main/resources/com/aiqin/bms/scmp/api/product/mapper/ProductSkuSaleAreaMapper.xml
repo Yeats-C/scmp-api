@@ -455,7 +455,7 @@
     </select>
 
     <select id="officialSkuListCount2" resultType="java.lang.Long">
-    select ps.id from product_sku ps
+    select  distinct c.id from product_sku ps
      left join product_sku_sale_area c on ps.sku_code = c.sku_code
        left join product_sku_sale_area_main a   on a.code = c.code
        <where>
@@ -515,8 +515,8 @@
     </resultMap>
     <select id="officialSkuList2" parameterType="java.util.List"
             resultMap="officialSkuList2Map">
-           select
-            ps.id
+           select distinct
+           ps.id
             ,ps.sku_code
            ,ps.sku_name
            ,ps.categories_supply_channels_code
@@ -524,16 +524,15 @@
            ,c.be_disable
            ,a.code
            ,a.name
-            form product_sku ps
-        left join product_sku_sale_area c on ps.sku_code = c.sku_code
-        left join product_sku_sale_area_info_main a   on a.code = c.code
+        from  product_sku_sale_area c
+        inner join product_sku ps on ps.sku_code = c.sku_code
+        inner join product_sku_sale_area_main a   on a.code = c.code
         <where>
-            ps.id  in
+            c.id  in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </where>
-
     </select>
 
 </mapper>
