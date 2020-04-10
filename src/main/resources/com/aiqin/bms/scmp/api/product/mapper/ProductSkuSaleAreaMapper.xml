@@ -63,7 +63,7 @@
 </select>
     <select id="officialSkuListCount" resultType="java.lang.Long">
     select a.id from product_sku_sale_area_main a
-        left join product_sku_sale_area c
+        left join product_sku_sale_area_info c
     on a.code = c.code
     where a.company_code = #{companyCode}
         <if test="code != null and code != ''">
@@ -73,10 +73,10 @@
             and a.name like concat('%',#{name},'%')
         </if>
         <if test="allowAreaName!= null and allowAreaName != ''">
-            and c.code like concat('%',#{allowAreaProvince},'%')  and c.type = 1
+            and c.name like concat('%',#{allowAreaName},'%')  and c.type = 1
         </if>
         <if test="allowStoreName != null and allowStoreName != ''">
-            and c.name like concat('%',#{allowAreaCity},'%')  and c.type = 2
+            and c.name like concat('%',#{allowStoreName},'%')  and c.type = 2
         </if>
     group by a.id
     order by a.create_time desc
