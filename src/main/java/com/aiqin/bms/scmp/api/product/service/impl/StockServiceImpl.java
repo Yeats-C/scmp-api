@@ -1137,6 +1137,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             });
 
             StockFlow stockFlow;
+            Stock stock;
             List<Stock> updates = new ArrayList<>();
             List<Stock> adds = new ArrayList<>();
             Boolean flage = false;
@@ -1146,22 +1147,24 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             for (StockInfoRequest stockInfoRequest : request.getStockList()) {
                 // 给sku加锁
                 long time = System.currentTimeMillis() + 30;
-                if(!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))){
+                if (!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))) {
                     LOGGER.info("redis给sku加锁失败：" + stockInfoRequest.getSkuCode());
                     throw new BizException("redis给sku加锁失败：" + stockInfoRequest.getSkuCode());
                 }
 
-                // 设置库存流水值
+                // 设置库存公共流水值
                 stockFlow = new StockFlow();
                 stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
                 stockFlow.setCreateByName(stockInfoRequest.getOperatorName());
                 stockFlow.setUpdateByName(stockInfoRequest.getOperatorName());
                 stockFlow.setCreateById(stockInfoRequest.getOperatorId());
                 stockFlow.setUpdateById(stockInfoRequest.getOperatorId());
+                stockFlow.setChangeCount(stockInfoRequest.getChangeCount());
+                stockFlow.setOperationType(request.getOperationType());
 
                 if (stockMap.containsKey(stockInfoRequest.getSkuCode() + stockInfoRequest.getWarehouseCode())) {
-                    Stock stock = stockMap.get(stockInfoRequest.getSkuCode() + stockInfoRequest.getWarehouseCode());
-
+                    stock = stockMap.get(stockInfoRequest.getSkuCode() + stockInfoRequest.getWarehouseCode());
+                    // 设置库存流水变更前的值
                     stockFlow.setStockCode(stock.getStockCode());
                     stockFlow.setSkuCode(stock.getSkuCode());
                     stockFlow.setSkuName(stock.getSkuName());
@@ -1173,7 +1176,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stockFlow.setBeforePurchaseWayCount(stock.getPurchaseWayCount());
                     stockFlow.setBeforeTotalWayCount(stock.getTotalWayCount());
 
-                    stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
+                    // 按照不同的单据类型变更相对应的库存数量
+                    stock = stockVoRequestToStock(stock, stockInfoRequest, request.getOperationType());
                     if (null != stock) {
                         updates.add(stock);
                     } else {
@@ -1181,88 +1185,40 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         break;
                     }
 
-                    //设置库存流水变化后值
-                    stockFlow.setChangeCount(stockInfoRequest.getChangeCount());
-                    stockFlow.setOperationType(request.getOperationType());
+                    // 设置库存流水变化后值
                     stockFlow.setAfterInventoryCount(stock.getInventoryCount());
                     stockFlow.setAfterLockCount(stock.getLockCount());
                     stockFlow.setAfterAvailableCount(stock.getAvailableCount());
                     stockFlow.setAfterAllocationWayCount(stock.getAllocationWayCount());
                     stockFlow.setAfterPurchaseWayCount(stock.getPurchaseWayCount());
                     stockFlow.setAfterTotalWayCount(stock.getTotalWayCount());
-
                     stockFlow.setDocumentCode(stockInfoRequest.getDocumentCode());
                     stockFlow.setDocumentType(stockInfoRequest.getDocumentType());
-
-                    //1入库
-                    if (stockVoRequest.getDocumentType() == 1) {
-                        //采购
-                        if (stockVoRequest.getSourceDocumentType() == 1) {
-                            stockFlow.setSourceDocumentType(3);
-                            //调拨
-                        } else if (stockVoRequest.getSourceDocumentType() == 2) {
-                            stockFlow.setSourceDocumentType(4);
-                            //退货
-                        } else if (stockVoRequest.getSourceDocumentType() == 3) {
-                            stockFlow.setSourceDocumentType(5);
-                            //移库
-                        } else if (stockVoRequest.getSourceDocumentType() == 4) {
-                            stockFlow.setSourceDocumentType(6);
-                            //监管仓入库
-                        } else if (stockVoRequest.getSourceDocumentType() == 5) {
-                            stockFlow.setSourceDocumentType(7);
-                            //报废
-                        } else if (stockVoRequest.getSourceDocumentType() == 6) {
-                            stockFlow.setSourceDocumentType(8);
-                        }
-                        //0 出库
-                    } else if (stockVoRequest.getDocumentType() == 0) {
-                        //退供
-                        if (stockVoRequest.getSourceDocumentType() == 1) {
-                            stockFlow.setSourceDocumentType(2);
-                            //调拨
-                        } else if (stockVoRequest.getSourceDocumentType() == 2) {
-                            stockFlow.setSourceDocumentType(4);
-                            //订单
-                        } else if (stockVoRequest.getSourceDocumentType() == 3) {
-                            stockFlow.setSourceDocumentType(9);
-                            //移库
-                        } else if (stockVoRequest.getSourceDocumentType() == 4) {
-                            stockFlow.setSourceDocumentType(6);
-                            //监管仓出库
-                        } else if (stockVoRequest.getSourceDocumentType() == 5) {
-                            stockFlow.setSourceDocumentType(10);
-                        }
-                    }
-                    stockFlow.setSourceDocumentCode(stockInfoRequest.getSourceDocumentNum());
-                    // stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
+                    stockFlow.setSourceDocumentCode(stockInfoRequest.getSourceDocumentCode());
+                    stockFlow.setSourceDocumentType(stockInfoRequest.getSourceDocumentType());
                     stockFlow.setRemark(stockInfoRequest.getRemark());
                     stockFlow.setStockCost(stockInfoRequest.getNewPurchasePrice());
                     stockFlows.add(stockFlow);
                 } else {
-                    Stock stock = new Stock();
-                    //设置库存流水期初值
-                    StockFlow stockFlow = new StockFlow();
-                    stockFlow.setFlowCode("FL" + IdSequenceUtils.getInstance().nextId());
-//                    stockFlow.setOrderCode(stockChangeRequest.getOrderCode());
-//                    stockFlow.setOrderType(stockChangeRequest.getOrderType());
-//                    stockFlow.setOrderSource();
-                    stockFlow.setSkuCode(stockVoRequest.getSkuCode());
-                    stockFlow.setSkuName(stockVoRequest.getSkuName());
-                    stockFlow.setOperationType(stockChangeRequest.getOperationType());
-                    stockFlow.setChangeCount(stockVoRequest.getChangeNum());
-                    stockFlow.setBeforeInventoryCount(0l);
-                    stockFlow.setBeforeLockCount(0l);
-                    stockFlow.setBeforeAvailableCount(0l);
-                    stockFlow.setBeforeAllocationWayCount(0l);
-                    stockFlow.setBeforePurchaseWayCount(0l);
-                    stockFlow.setBeforeTotalWayCount(0l);
-                    stock = stockVoRequestToStock(stock, stockVoRequest, stockChangeRequest.getOperationType());
+                    stock = new Stock();
+                    // 设置库存流水变更前的值
+                    stockFlow.setSkuCode(stockInfoRequest.getSkuCode());
+                    stockFlow.setSkuName(stockInfoRequest.getSkuName());
+                    stockFlow.setBeforeInventoryCount(0L);
+                    stockFlow.setBeforeLockCount(0L);
+                    stockFlow.setBeforeAvailableCount(0L);
+                    stockFlow.setBeforeAllocationWayCount(0L);
+                    stockFlow.setBeforePurchaseWayCount(0L);
+                    stockFlow.setBeforeTotalWayCount(0L);
+
+                    // 按照不同的单据类型变更相对应的库存数量
+                    stock = stockVoRequestToStock(stock, stockInfoRequest, request.getOperationType());
                     ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stock.getSkuCode());
                     if (productSkuInfo == null) {
                         flage = true;
                         break;
                     }
+
                     stock.setUnitCode(productSkuInfo.getUnitCode());
                     stock.setUnitName(productSkuInfo.getUnitName());
                     if (stock != null) {
@@ -1271,8 +1227,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         flage = true;
                         break;
                     }
-                    //设置库存流水修改后的值
-                    stockFlow.setOperationType(stockChangeRequest.getOperationType());
+
+                    // 设置库存流水变更后的值
                     stockFlow.setStockCode(stock.getStockCode());
                     stockFlow.setAfterInventoryCount(stock.getInventoryCount());
                     stockFlow.setAfterLockCount(stock.getLockCount());
@@ -1280,64 +1236,24 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stockFlow.setAfterAllocationWayCount(stock.getAllocationWayCount());
                     stockFlow.setAfterPurchaseWayCount(stock.getPurchaseWayCount());
                     stockFlow.setAfterTotalWayCount(stock.getTotalWayCount());
-                    stockFlow.setCreateByName(stockVoRequest.getOperator());
-                    stockFlow.setUpdateByName(stockVoRequest.getOperator());
-                    stockFlow.setDocumentCode(stockVoRequest.getDocumentNum());
-                    stockFlow.setDocumentType(stockVoRequest.getDocumentType());
-                    //1入库
-                    if (stockVoRequest.getDocumentType() == 1) {
-                        //采购
-                        if (stockVoRequest.getSourceDocumentType() == 1) {
-                            stockFlow.setSourceDocumentType(3);
-                            //调拨
-                        } else if (stockVoRequest.getSourceDocumentType() == 2) {
-                            stockFlow.setSourceDocumentType(4);
-                            //退货
-                        } else if (stockVoRequest.getSourceDocumentType() == 3) {
-                            stockFlow.setSourceDocumentType(5);
-                            //移库
-                        } else if (stockVoRequest.getSourceDocumentType() == 4) {
-                            stockFlow.setSourceDocumentType(6);
-                            //监管仓入库
-                        } else if (stockVoRequest.getSourceDocumentType() == 5) {
-                            stockFlow.setSourceDocumentType(7);
-                            //报废
-                        } else if (stockVoRequest.getSourceDocumentType() == 6) {
-                            stockFlow.setSourceDocumentType(8);
-                        }
-                        //0 出库
-                    } else if (stockVoRequest.getDocumentType() == 0) {
-                        //退供
-                        if (stockVoRequest.getSourceDocumentType() == 1) {
-                            stockFlow.setSourceDocumentType(2);
-                            //调拨
-                        } else if (stockVoRequest.getSourceDocumentType() == 2) {
-                            stockFlow.setSourceDocumentType(4);
-                            //订单
-                        } else if (stockVoRequest.getSourceDocumentType() == 3) {
-                            stockFlow.setSourceDocumentType(9);
-                            //移库
-                        } else if (stockVoRequest.getSourceDocumentType() == 4) {
-                            stockFlow.setSourceDocumentType(6);
-                            //监管仓出库
-                        } else if (stockVoRequest.getSourceDocumentType() == 5) {
-                            stockFlow.setSourceDocumentType(10);
-                        }
-                    }
-                    stockFlow.setSourceDocumentCode(stockVoRequest.getSourceDocumentNum());
-                    //  stockFlow.setSourceDocumentType(stockVoRequest.getSourceDocumentType());
-                    stockFlow.setRemark(stockVoRequest.getRemark());
-                    stockFlow.setStockCost(stockVoRequest.getNewPurchasePrice());
-                    flows.add(stockFlow);
+                    stockFlow.setDocumentCode(stockInfoRequest.getDocumentCode());
+                    stockFlow.setDocumentType(stockInfoRequest.getDocumentType());
+                    stockFlow.setSourceDocumentCode(stockInfoRequest.getSourceDocumentCode());
+                    stockFlow.setSourceDocumentType(stockInfoRequest.getSourceDocumentType());
+                    stockFlow.setRemark(stockInfoRequest.getRemark());
+                    stockFlow.setStockCost(stockInfoRequest.getNewPurchasePrice());
+                    stockFlows.add(stockFlow);
                 }
-                // 给sku解锁
-                redisLockService.unlock(stockVoRequest.getSkuCode(), String.valueOf(time));
+
+                // 给sku解锁 - redis
+                redisLockService.unlock(stockInfoRequest.getSkuCode(), String.valueOf(time));
             }
+
             if (flage) {
                 return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
             }
-            if (CollectionUtils.isNotEmpty(flows)) {
-                stockFlowDao.insertBatch(flows);
+            if (CollectionUtils.isNotEmpty(stockFlows)) {
+                stockFlowDao.insertAll(stockFlows);
             }
             if (CollectionUtils.isNotEmpty(updates)) {
                 stockDao.updateBatch(updates);
@@ -1353,121 +1269,161 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return HttpResponse.success();
     }
 
-    /**
-     * 参数转换成库存数据
-     *
-     * @param stock          库存实体
-     * @param stockVoRequest 请求改变实体
+    /** 参数转换成库存数据
+     * @param stock  库存实体
+     * @param request 请求改变实体
      * @param operationType  操作类型
-     * @return
      */
-    private Stock stockVoRequestToStock(Stock stock, StockVoRequest stockVoRequest, Integer operationType) {
-        if (stockVoRequest.getWarehouseCode() != null) {
-            StockVoRequest warehouseTypeCode = stockDao.selectWarehouseTypeBycode(stockVoRequest.getWarehouseCode());
-            stockVoRequest.setWarehouseType(warehouseTypeCode.getWarehouseType());
+    private Stock stockVoRequestToStock(Stock stock, StockInfoRequest request, Integer operationType) {
+        if (request.getWarehouseCode() != null) {
+            Integer warehouseType = stockDao.selectWarehouseType(request.getWarehouseCode());
+            request.setWarehouseType(warehouseType);
         }
         if (null == stock.getId()) {
-            BeanCopyUtils.copy(stockVoRequest, stock);
-            stock.setLockCount(0L);
+            BeanCopyUtils.copy(request, stock);
+            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
             stock.setInventoryCount(0L);
             stock.setAvailableCount(0L);
+            stock.setLockCount(0L);
             stock.setPurchaseWayCount(0L);
             stock.setAllocationWayCount(0L);
             stock.setTotalWayCount(0L);
-            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
             stock.setTaxRate(BigDecimal.ZERO);
-            stock.setTaxCost(BigDecimal.valueOf(0));
-            stock.setUpdateByName(stockVoRequest.getOperator());
-            stock.setCreateByName(stockVoRequest.getOperator());
+            stock.setTaxCost(BigDecimal.ZERO);
+            stock.setCreateById(request.getOperatorId());
+            stock.setCreateByName(request.getOperatorName());
         }
-        stock.setUpdateByName(stockVoRequest.getOperator());
-        if (stockVoRequest.getNewPurchasePrice() != null && stockVoRequest.getNewPurchasePrice() != BigDecimal.valueOf(0)) {
-            stock.setNewPurchasePrice(stockVoRequest.getNewPurchasePrice());
+        stock.setUpdateById(request.getOperatorId());
+        stock.setUpdateByName(request.getOperatorName());
+
+        // 赋值最新采购价
+        if (request.getNewPurchasePrice() != null) {
+            stock.setNewPurchasePrice(request.getNewPurchasePrice());
         }
-        //stock.setTaxPrice(stockVoRequest.getNewPurchasePrice());
-        if (stockVoRequest.getTaxRate() != null) {
-            stock.setTaxRate(stockVoRequest.getTaxRate());
+
+        // 赋值库存税率
+        if (request.getTaxRate() != null) {
+            stock.setTaxRate(request.getTaxRate());
         }
-        stock.setNewDelivery(stockVoRequest.getNewDelivery());
-        stock.setNewDeliveryName(stockVoRequest.getNewDeliveryName());
-        Long purchaseWayNum = stock.getPurchaseWayCount() == null ? 0L : stock.getPurchaseWayCount();
-        Long totalWayNum = stock.getTotalWayCount() == null ? 0L : stock.getTotalWayCount();
-        Long lockNum = stock.getLockCount() == null ? 0L : stock.getLockCount();
-        Long availableNum = stock.getAvailableCount() == null ? 0L : stock.getAvailableCount();
-        Long inventoryNum = stock.getInventoryCount() == null ? 0L : stock.getInventoryCount();
-        Long allocationWayNum = stock.getAllocationWayCount() == null ? 0L : stock.getAllocationWayCount();
+        stock.setNewDelivery(request.getNewDelivery());
+        stock.setNewDeliveryName(request.getNewDeliveryName());
+        Long inventoryCount = stock.getInventoryCount() == null ? 0L : stock.getInventoryCount();
+        Long availableCount = stock.getAvailableCount() == null ? 0L : stock.getAvailableCount();
+        Long lockCount = stock.getLockCount() == null ? 0L : stock.getLockCount();
+        Long purchaseWayCount = stock.getPurchaseWayCount() == null ? 0L : stock.getPurchaseWayCount();
+        Long totalWayCount = stock.getTotalWayCount() == null ? 0L : stock.getTotalWayCount();
+        Long allocationWayCount = stock.getAllocationWayCount() == null ? 0L : stock.getAllocationWayCount();
+
+        // 变更库存数
+        Long changeCount = request.getChangeCount() == null ? 0L : request.getChangeCount();
+        // 操作类型 1.锁定库存 2.减库存并解锁 3.解锁库存. 4.减库存 5.加并锁定库存 6.加库存 7.加在途 8.减在途 9.锁转移(锁定库存移入/移出)
         switch (operationType) {
-            //锁定库存数
+            //锁定库存 - 库存不变，锁定库存增加，可用库存减少
             case 1:
-                // 判断锁定库存时， 可用库存是否够用
-                if(availableNum < stockVoRequest.getChangeNum()){
-                    LOGGER.error("可用库存小于锁定库存，不可锁定库存");
-                    return null;
+                // 验证可用库存在操作前后都不能为负。实际操作为：加锁定库存、减可用库存。
+                if(availableCount < changeCount){
+                    LOGGER.error("锁定库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    throw new BizException("锁定库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
-                stock.setLockCount(lockNum + stockVoRequest.getChangeNum());
-                stock.setAvailableCount(availableNum - stockVoRequest.getChangeNum());
+                stock.setLockCount(lockCount + changeCount);
+                stock.setAvailableCount(availableCount - changeCount);
                 break;
-            //减少库存并解锁
+
+            // 减库存并解锁 - 库存减少，锁定库存减少，可用库存不变
             case 2:
-                stock.setInventoryCount(inventoryNum - stockVoRequest.getChangeNum());
-                stock.setLockCount(lockNum - stockVoRequest.getChangeNum());
+                // 验证锁定库存在操作前后都不能为负。实际操作为：减总库存、减锁定库存。
+                if(lockCount < changeCount || inventoryCount < changeCount){
+                    LOGGER.error("减库存并解锁: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("减库存并解锁: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setInventoryCount(inventoryCount - changeCount);
+                stock.setLockCount(lockCount - changeCount);
                 break;
-            //解锁锁定库存
+
+            // 解锁库存 - 库存不变，锁定库存减少，可用库存增加
             case 3:
-                stock.setAvailableCount(availableNum + stockVoRequest.getChangeNum());
-                stock.setLockCount(lockNum - stockVoRequest.getChangeNum());
+                // 验证锁定库存在操作前后都不能为负。实际操作为：减锁定库存、加可用库存。
+                if(lockCount < changeCount){
+                    LOGGER.error("解锁库存: 锁定库存在操作前后都不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("解锁库存: 锁定库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setAvailableCount(availableCount + changeCount);
+                stock.setLockCount(lockCount - changeCount);
                 break;
-            //无锁定直接减库存 总库存减可用库存减
+
+            // 减库存 - 库存减少，锁定库存不变，可用库存减少
             case 4:
-                stock.setAvailableCount(availableNum - stockVoRequest.getChangeNum());
-                stock.setInventoryCount(inventoryNum - stockVoRequest.getChangeNum());
+                // 验证总库存、可用库存在操作前后都不能为负。实际操作为：减总库存、减可用库存。
+                if(availableCount < changeCount || inventoryCount < changeCount ){
+                    LOGGER.error("减库存: 可用库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("减库存:可用库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setAvailableCount(availableCount - changeCount);
+                stock.setInventoryCount(inventoryCount - changeCount);
                 break;
-            //加库存并锁定库存
+
+            // 加并锁定库存 - 库存增加，锁定库存增加，可用库存不变
             case 5:
-                stock.setInventoryCount(inventoryNum + stockVoRequest.getChangeNum());
-                stock.setLockCount(lockNum + stockVoRequest.getChangeNum());
+                // 不验证任何库存。实际操作为：加总库存、加锁定库存。
+                stock.setInventoryCount(inventoryCount + changeCount);
+                stock.setLockCount(lockCount + changeCount);
                 break;
-            //只改变采购在途数和在途总数
+
+            // 加库存 - 库存增加，锁定库存不变，可用库存增加
             case 6:
-                stock.setPurchaseWayCount(purchaseWayNum + stockVoRequest.getChangeNum());
-                stock.setTotalWayCount(totalWayNum + stockVoRequest.getChangeNum());
+                // 不验证任何库存。实际操作为：加总库存、加可用库存
+                stock.setInventoryCount(inventoryCount + changeCount);
+                stock.setAvailableCount(availableCount + changeCount);
                 break;
-            //只改变调拨在途和在途总数
+
+            // 加在途(采购、调拨) - 不验证在途数。实际操作为：加在途数。
             case 7:
-                stock.setAllocationWayCount(allocationWayNum + stockVoRequest.getChangeNum());
-                stock.setTotalWayCount(totalWayNum + stockVoRequest.getChangeNum());
+                if(request.getSourceDocumentType() == 3){
+                    // 采购加在途
+                    stock.setPurchaseWayCount(purchaseWayCount + changeCount);
+                    stock.setTotalWayCount(totalWayCount + changeCount);
+                }else if(request.getSourceDocumentType() == 4){
+                    // 加调拨加在途
+                    stock.setAllocationWayCount(allocationWayCount + changeCount);
+                    stock.setTotalWayCount(totalWayCount + changeCount);
+                }
                 break;
-            //调拨在途变成可用及库存数
+
+            // 减在途(采购、调拨) - 验证在途数不能为负，操作后在途数不能为负。
             case 8:
-                stock.setAllocationWayCount(allocationWayNum - stockVoRequest.getChangeNum());
-                stock.setTotalWayCount(stock.getPurchaseWayCount() + stock.getAllocationWayCount());
-                stock.setInventoryCount(inventoryNum + stockVoRequest.getChangeNum());
-                stock.setAvailableCount(availableNum + stockVoRequest.getChangeNum());
+                // 预计在途数
+                Long preWayCount = request.getPreWayCount() == null ? 0L : request.getPreWayCount();
+                if(request.getSourceDocumentType() == 3){
+                    // 采购减在途
+                    if(purchaseWayCount < preWayCount){
+                        LOGGER.error("采购减在途: 采购在途数不能为负,sku:" + request.getSkuCode());
+                        throw new BizException("采购减在途: 采购在途数不能为负，sku:" + request.getSkuCode());
+                    }
+                    stock.setPurchaseWayCount(purchaseWayCount - preWayCount);
+                    stock.setTotalWayCount(stock.getPurchaseWayCount() + stock.getAllocationWayCount());
+                    stock.setInventoryCount(inventoryCount + changeCount);
+                    stock.setAvailableCount(availableCount + changeCount);
+
+                }else if(request.getSourceDocumentType() == 4){
+                    // 调拨减在途
+                    if(allocationWayCount < preWayCount){
+                        LOGGER.error("调拨减在途: 采购在途数不能为负,sku:" + request.getSkuCode());
+                        throw new BizException("调拨减在途: 采购在途数不能为负，sku:" + request.getSkuCode());
+                    }
+                    stock.setAllocationWayCount(allocationWayCount - preWayCount);
+                    stock.setTotalWayCount(stock.getPurchaseWayCount() + stock.getAllocationWayCount());
+                    stock.setInventoryCount(inventoryCount + changeCount);
+                    stock.setAvailableCount(availableCount + changeCount);
+                }
                 break;
-            //采购在途变成可用及库存数
+
+            // 锁转移(锁定库存移入/移出)
             case 9:
-                stock.setPurchaseWayCount(purchaseWayNum - stockVoRequest.getChangeNum());
-                stock.setTotalWayCount(stock.getPurchaseWayCount() + stock.getAllocationWayCount());
-                stock.setInventoryCount(inventoryNum + stockVoRequest.getChangeNum());
-                stock.setAvailableCount(availableNum + stockVoRequest.getChangeNum());
-                break;
-            //直接加库存
-            case 10:
-                stock.setInventoryCount(inventoryNum + stockVoRequest.getChangeNum());
-                stock.setAvailableCount(availableNum + stockVoRequest.getChangeNum());
-                break;
-            //只改变采购在途数和在途总数(减订单完成差异价)
-            case 11:
-                stock.setPurchaseWayCount(purchaseWayNum - stockVoRequest.getChangeNum());
-                stock.setTotalWayCount(totalWayNum - stockVoRequest.getChangeNum());
+                // 不验证任何库存。实际操作为：库存不变动，库存日志新增了减锁定和加锁定
                 break;
             default:
                 return null;
         }
-        //库存不管是锁定数还是可以数还是库存数都不能为负
-//        if (lockNum < 0 || inventoryNum < 0 || availableNum < 0 || allocationWayNum < 0 || totalWggit ayNum < 0) {
-//            return null;
-//        }
         return stock;
     }
 

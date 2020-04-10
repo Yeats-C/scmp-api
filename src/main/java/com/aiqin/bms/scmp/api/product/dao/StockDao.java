@@ -43,15 +43,9 @@ public interface StockDao {
 
     Integer countStorehouseStockInfoByPage(StockRequest stockRequest);
 
-    // 通过库房code查询库存类型name
-    StockVoRequest selectWarehouseTypeBycode(@Param("warehouseCode") String warehouseCode);
+    Integer selectWarehouseType(@Param("warehouseCode") String warehouseCode);
 
-    /**
-     * 查询商品总库存
-     *
-     * @author gary.diao
-     * @date 2019/1/7
-     **/
+    /** 查询商品总库存*/
     List<StockRespVO> selectStockSumInfoByPage(StockRequest stockRequest);
 
     Integer selectStockSumInfoByPageCount(StockRequest stockRequest);
@@ -62,30 +56,13 @@ public interface StockDao {
 
     Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 
-    /**
-     * 功能描述: 查询库存商品(采购退供使用) list
-     *
-     * @param vo
-     * @return List<QueryStockSkuRespVo>
-     * @auther knight.xie
-     * @date 2019/1/7 9:36
-     */
+    /** 功能描述: 查询库存商品(采购退供使用) list*/
     List<QueryStockSkuRespVo> selectStockSkuInfoByPage(QueryStockSkuReqVo vo);
 
-    /**
-     * 批量更新库存
-     *
-     * @param vos
-     * @return
-     */
+    /** 批量更新库存*/
     Integer updateBatchStock(List<UpdateStockReqVo> vos);
 
-    /**
-     * 根据公司编码和sku集合查询商品库存
-     *
-     * @param reqVo
-     * @return
-     */
+    /** 根据公司编码和sku集合查询商品库存*/
     List<QueryMerchantStockRepVo> selectStockByCompanyCodeAndSkuList(QueryMerchantStockReqVo reqVo);
 
     Integer insertBatch(@Param("list") List<Stock> stocks);
@@ -106,19 +83,13 @@ public interface StockDao {
 
     List<Stock> selectListByWareHouseCode(Stock stock);
 
-    /**
-     * 批次库存管理查询
-     *
-     * @param stockBatchRequest
-     * @return
+    /** 批次库存管理查询
      */
     List<StockBatchRespVO> selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
 
     Integer countStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
 
-    /**
-     * 批量插入数据
-     */
+    /** 批量插入数据*/
     List<StockBatchRespVO> selectStockBatchDistinct();
 
     List<StockBatchProductSkuRespVO> selectProductSku();
@@ -129,11 +100,7 @@ public interface StockDao {
 
     Integer insertStockBatchFlow(@Param("list") List<StockBatchFlow> flows);
 
-    /**
-     * 根据stockBatchId查询单个库存信息
-     *
-     * @param stockBatchId
-     * @return
+    /** 根据stockBatchId查询单个库存信息
      */
     List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
@@ -212,56 +179,24 @@ public interface StockDao {
 
     List<Stock> stockInfoList(@Param("skuList") List<String> skuList);
 
-    /**
-     * 销售库存量
-     *
-     * @param
-     * @param
-     * @return
-     */
+    /**销售库存量*/
     Long selectSkuCodeBySaleSum(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
-    /**
-     * 销售特卖库存量
-     *
-     * @param
-     * @param
-     * @return
-     */
+
+    /** 销售特卖库存量*/
     Long selectSkuCodeBySpecialSum(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
-    /**
-     * 销售可用
-     * @param
-     * @return
-     */
+
+    /**销售可用*/
     Long selectSkuAndCompanyByQueryAvailableSum(@Param("skuCode")String skuCode,@Param("companyCode") String companyCode);
 
-    /**
-     * 查询可以使用sku 以及库存数量
-     *
-     * @param provinceCode
-     * @param cityCode
-     * @param orderByType
-     * @return
-     */
+    /** 查询可以使用sku 以及库存数量*/
     List<String> byCityCodeAndprovinceCode(@Param("provinceCode") String provinceCode, @Param("cityCode") String cityCode, @Param("tagCode") String tagCode,
                                            @Param("exitStock") String exitStock,@Param("orderByType") String orderByType,@Param("companyCode") String companyCode);
-    /**
-     * 查询可以使用 sku以及仓库
-     * @param skuCode
-     * @param provinceCode
-     * @param cityCode
-     * @return
-     */
+    /** 查询可以使用 sku以及仓库*/
     StockBatchRespVO byCityAndProvinceAndskuCode(@Param("skuCode") String skuCode,
                                                  @Param("provinceCode")  String provinceCode,
                                                  @Param("cityCode") String cityCode);
 
-    /**
-     * 查询可以使用 sku以及仓库
-     * @param provinceCode
-     * @param cityCode
-     * @return
-     */
+    /** 查询可以使用 sku以及仓库*/
     StockBatchRespVO byCityAndProvinceAndtransportCenterCode(@Param("transportCenterCode") String transportCenterCode,
                                                              @Param("provinceCode")  String provinceCode,
                                                              @Param("cityCode") String cityCode);

@@ -26,7 +26,7 @@
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
-        <result column="use_status" jdbcType="VARCHAR" property="useStatus"/>
+        <result column="use_status" jdbcType="INTEGER" property="useStatus"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
         <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
@@ -2496,13 +2496,10 @@
             </foreach>
         </if>
     </select>
-    <select id="selectWarehouseTypeBycode" resultType="com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest">
+    <select id="selectWarehouseType" resultType="java.lang.Integer">
         select warehouse_type_code as warehouseType
         FROM warehouse
-        where 1=1
-        <if test="warehouseCode!=null and warehouseCode!=''">
-            AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-        </if>
+        where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
     <select id="stockCountByOtherInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse">
         SELECT s.sku_code as skuCode,s.sku_name as skuName,s.transport_center_code as transportCenterCode,

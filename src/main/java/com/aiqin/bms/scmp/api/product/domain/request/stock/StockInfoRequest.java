@@ -100,4 +100,8 @@ public class StockInfoRequest {
     @ApiModelProperty("库存成本")
     @JsonProperty(value = "stock_cost")
     private BigDecimal stockCost;
+
+    @ApiModelProperty("预计在途数")
+    @JsonProperty(value = "pre_way_count")
+    private Long preWayCount;
 }
