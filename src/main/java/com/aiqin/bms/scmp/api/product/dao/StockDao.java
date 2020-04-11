@@ -37,8 +37,6 @@ public interface StockDao {
 
     Integer selectTransportStockInfoByPageCount(StockRequest stockRequest);
 
-    List<StockRespVO> countTransportStockInfoByPage(StockRequest stockRequest);
-
     List<StockRespVO> selectStorehouseStockInfoByPage(StockRequest stockRequest);
 
     Integer countStorehouseStockInfoByPage(StockRequest stockRequest);
@@ -50,11 +48,7 @@ public interface StockDao {
 
     Integer selectStockSumInfoByPageCount(StockRequest stockRequest);
 
-    List<StockRespVO> countStockSumInfoByPage(StockRequest stockRequest);
-
     List<StockFlowRespVo> selectOneStockInfoByStockId(@Param("stockCode") String stockCode);
-
-    Long selectOneStockInfoByStockIdInfoByPage(Long stockId);
 
     /** 功能描述: 查询库存商品(采购退供使用) list*/
     List<QueryStockSkuRespVo> selectStockSkuInfoByPage(QueryStockSkuReqVo vo);
@@ -83,8 +77,7 @@ public interface StockDao {
 
     List<Stock> selectListByWareHouseCode(Stock stock);
 
-    /** 批次库存管理查询
-     */
+    /** 批次库存管理查询*/
     List<StockBatchRespVO> selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
 
     Integer countStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
@@ -100,31 +93,15 @@ public interface StockDao {
 
     Integer insertStockBatchFlow(@Param("list") List<StockBatchFlow> flows);
 
-    /** 根据stockBatchId查询单个库存信息
-     */
+    /** 根据stockBatchId查询单个库存信息*/
     List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
 
-    Long selectOneStockBatchInfoByStockBatchIdInfoByPage(Long stockBatchId);
-
-    /**
-     * 功能描述: 批次查询库存商品(采购退供使用) list
-     *
-     * @param vo
-     * @return List<QueryStockBatchSkuRespVo>
-     * @date 2019/6/26 16:10
-     */
+    /**功能描述: 批次查询库存商品(采购退供使用) list*/
     List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
-
-    QueryStockBatchSkuRespVo selectSkuBatchCode(@Param("procurementSectionCode") String procurementSectionCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
 
     RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode, @Param("productType") Integer productType, @Param("purchaseGroupCode") String procurementSectionCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
 
-    /**
-     * 库房管理新增调拨,移库,报废列表查询
-     *
-     * @param reqVO
-     * @return
-     */
+    /** 库房管理新增调拨,移库,报废列表查询*/
     List<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
 
     List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
@@ -141,13 +118,7 @@ public interface StockDao {
 
     List<String> importStockSkuList();
 
-    List<String> selectSkuCodeByQueryBatchCode(@Param("skuCode") String skuCode);
-
-    Long selectSkuCodeByQueryAvailableNum(@Param("skuCode") String skuCode);
-
     Long selectSkuCodeByQueryAvailableSum(@Param("skuCode") String skuCode);
-
-    List<String> selectSkuCodeByQueryProductionDateList(@Param("skuCode") String skuCode);
 
     List<QueryStockSkuListRespVo> queryStockBatch(QueryImportStockSkuListReqVo reqVO);
 
