@@ -896,9 +896,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 计算采购单的实际商品 0商品 1赠品 2实物返回
             // 查询含税单价
             BigDecimal amount = orderProduct.getProductAmount() == null ? BigDecimal.ZERO : orderProduct.getProductAmount();
-            if(orderProduct.equals(Global.PRODUCT_TYPE_0)) {
+            if(orderProduct.getProductType().equals(Global.PRODUCT_TYPE_0)) {
                 actualProductAmount = amount.add(actualProductAmount);
-            }else if(orderProduct.equals(Global.PRODUCT_TYPE_1)) {
+            }else if(orderProduct.getProductType().equals(Global.PRODUCT_TYPE_1)) {
                 actualGiftAmount = amount.add(actualGiftAmount);
             }else {
                 actualReturnAmount = amount.add(actualReturnAmount);
