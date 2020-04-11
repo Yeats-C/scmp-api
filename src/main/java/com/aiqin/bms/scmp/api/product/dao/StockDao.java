@@ -56,9 +56,6 @@ public interface StockDao {
     /** 批量更新库存*/
     Integer updateBatchStock(List<UpdateStockReqVo> vos);
 
-    /** 根据公司编码和sku集合查询商品库存*/
-    List<QueryMerchantStockRepVo> selectStockByCompanyCodeAndSkuList(QueryMerchantStockReqVo reqVo);
-
     Integer insertBatch(@Param("list") List<Stock> stocks);
 
     Integer updateByPrimaryKey(Stock stock);
@@ -68,8 +65,6 @@ public interface StockDao {
     void updateBatch(@Param("stocks") List<Stock> stocks);
 
     List<Stock> getLatestPurchasePriceBySkuCodes(@Param("list") List<String> list);
-
-    List<Stock> selectByQueryList(@Param("centerCodes") List<String> centerCodes, @Param("warehouseCodes") List<String> warehouseCodes, @Param("skuCodes") List<String> skuCodes, @Param("companyCode") String companyCode);
 
     List<StockFlow> selectStockLogs(StockLogsRequest stockLogsRequest);
 
@@ -115,8 +110,6 @@ public interface StockDao {
     void updateBatchStocks(@Param("stockBatches") List<StockBatch> stockBatches);
 
     Integer insertBatchStockAdd(@Param("stockBatches") List<StockBatch> stockBatches);
-
-    List<String> importStockSkuList();
 
     Long selectSkuCodeByQueryAvailableSum(@Param("skuCode") String skuCode);
 

@@ -698,35 +698,6 @@
         <include refid="Query_Stock_Sku_Where"/>
         order by sku_code asc
     </select>
-    <select id="selectStockByCompanyCodeAndSkuList"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo">
-        SELECT
-        sku_code as skuCode,
-        sku_name as skuName,
-        warehouse_code as warehouseCode,
-        warehouse_name as warehouseName,
-        SUM( available_num ) as num
-        FROM
-        stock
-        <where>
-            <if test="companyCode != null and companyCode != '' ">
-                company_code = #{companyCode, jdbcType=VARCHAR}
-            </if>
-            <if test="skuList != null ">
-                and sku_code in
-                <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
-                    #{id, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-        </where>
-        GROUP BY
-        sku_code,
-        sku_name,
-        warehouse_code,
-        warehouse_name
-    </select>
-
-
     <update id="updateBatchStock" parameterType="java.util.List">
         <foreach collection="list" item="item" index="index" open="" close="" separator=";">
             update stock
@@ -1365,34 +1336,6 @@
                 #{item,jdbcType=VARCHAR}
             </foreach>
         </if>
-    </select>
-    <select id="selectByQueryList" resultMap="BaseResultMap">
-        select  a.id as id,
-        a.warehouse_type as warehouse_type,
-        a.warehouse_code as warehouse_code,
-        a.warehouse_name as warehouse_name,
-        a.transport_center_code as transport_center_code,
-        a.transport_center_name as transport_center_name,
-        a.sku_code as sku_code,
-        sum(a.available_num) as available_num
-        from stock a
-        left join product_sku_config b
-        on b.sku_code = a.sku_code and b.transport_center_code = a.transport_center_code
-        where a.transport_center_code in
-        <foreach collection="centerCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and a.warehouse_code in
-        <foreach collection="warehouseCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and a.sku_code in
-        <foreach collection="skuCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and b.config_status = 0
-        and a.company_code = #{companyCode,jdbcType=VARCHAR}
-        group by a.warehouse_code, a.sku_code, a.transport_center_code
     </select>
     <select id="selectStockLogs" resultMap="StockFlowMap">
         select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
@@ -2059,12 +2002,6 @@
             )
         </foreach>
     </insert>
-    <select id="importStockSkuList" resultType="String">
-        SELECT
-        sb.sku_code
-        FROM stock_batch sb
-        group by sb.sku_code
-    </select>
     <select id="queryStockBatch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryImportStockSkuListReqVo"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo" resultMap="QueryStockSkuListResultMap">
         select
