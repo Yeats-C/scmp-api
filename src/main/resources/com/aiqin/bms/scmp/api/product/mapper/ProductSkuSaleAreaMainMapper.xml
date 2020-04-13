@@ -199,7 +199,7 @@
       and a.be_disable = #{beDisable}
     </if>
     <if test="allowAreaProvince != null and allowAreaProvince != ''">
-      and c.code like concat(#{allowAreaProvince},'%')  and c.type = 1
+      and c.province_id like concat(#{allowAreaProvince},'%')  and c.type = 1
     </if>
       <if test="allowAreaCity != null and allowAreaCity != ''">
           and c.name like concat(#{allowAreaCity},'%')  and c.type = 1
