@@ -7,13 +7,10 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.SaleSkuInfoExport;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuConfigImport;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoExport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -22,7 +19,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
 import com.aiqin.bms.scmp.api.product.domain.response.product.apply.QueryProductApplyReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSaleAreaService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
@@ -53,7 +49,6 @@ import com.aiqin.mgs.control.component.service.AreaBasicService;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -67,7 +62,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import javax.servlet.http.HttpServletResponse;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -223,6 +217,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 //            }
 //        });
     }
+
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1002,14 +998,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         if (CollectionUtils.isEmpty(longs)) {
             return PageUtil.getPageList(reqVO.getPageNo(), Lists.newArrayList());
         }
-
         List<QueryProductSaleAreaSkuRespVO> list = productSkuSaleAreaMapper.officialSkuList(PageUtil.myPage(longs, reqVO), personId);
         return PageUtil.getPageList(reqVO.getPageNo(), reqVO.getPageSize(), longs.size(), list);
     }
 
     @Override
     public BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO) {
-
         //获取登录人
         AuthToken currentAuthToken = getUser();
         String personId = currentAuthToken.getPersonId();
@@ -1025,36 +1019,41 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean importData(MultipartFile file) {
         //获取登录人
         AuthToken currentAuthToken = getUser();
         try {
             List<SkuSaleAreaImport> skuConfigImports = ExcelUtil.readExcel(file, SkuSaleAreaImport.class, 1, 2);
 
-
-
-
             //供货渠道类别
             skuConfigImports = skuConfigImports.stream().distinct().collect(Collectors.toList());
             for (SkuSaleAreaImport skuSaleAreaImport :
                     skuConfigImports) {
-
+                if (StringUtils.isEmpty(skuSaleAreaImport.getSkuCode())||StringUtils.isEmpty(skuSaleAreaImport.getSaleName())||StringUtils.isEmpty(skuSaleAreaImport.getCategoriesSupplyChannelsName())) {
+                    throw new BizException("有必填项为空");
+                }
                 ProductSkuInfo productSkuInfo = new ProductSkuInfo();
                 BeanUtils.copyProperties(skuSaleAreaImport, productSkuInfo);
 
                 if (productSkuDao.selectByNameAndcode(productSkuInfo) < 1) {
-                    throw new BizException("错误商品名称" + productSkuInfo.getSkuName() + "或者错误商品code" + productSkuInfo.getSkuCode());
+                    throw new BizException("或者错误商品code" + productSkuInfo.getSkuCode());
                 }
                 ProductSkuSaleAreaMain productSkuSaleAreaMain= productSkuSaleAreaMainMapper.selectByName(skuSaleAreaImport.getSaleName());
                 if (ObjectUtils.equals(null,productSkuSaleAreaMain)) {
-                    throw new BizException("错误销售区域名称" + skuSaleAreaImport.getSaleName());
+                    throw new BizException("错误销售区域名称"+skuSaleAreaImport.getSaleName());
                 }else {
                     skuSaleAreaImport.setSaleCode(productSkuSaleAreaMain.getCode());
                 }
 
                 if (!skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("配送") && !skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("直送")) {
                     throw new BizException("错误配送方法" + skuSaleAreaImport.getCategoriesSupplyChannelsName());
+                }
 
+                if (skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("配送") ) {
+                    skuSaleAreaImport.setCategoriesSupplyChannelsCode(2);
+                }else if (skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("直送") ) {
+                    skuSaleAreaImport.setCategoriesSupplyChannelsCode(3);
                 }
 
                 if (skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("直送") && StringUtils.isEmpty(skuSaleAreaImport.getDirectDeliverySupplierName())) {

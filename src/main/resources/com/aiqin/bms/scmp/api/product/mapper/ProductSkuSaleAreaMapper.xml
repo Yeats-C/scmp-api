@@ -235,14 +235,14 @@
     <insert id="insertImports">
         insert into product_sku_sale_area ( code, sku_code,
         sku_name, be_disable, categories_supply_channels_code,
-        categories_supply_channels_name, direct_delivery_supplier_code,
+        categories_supply_channels_name,
         direct_delivery_supplier_name, create_by, create_time,
         update_by, update_time, company_code,
         company_name)
         values
-      ( #{code,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
-      #{skuName,jdbcType=VARCHAR}, #{beDisable,jdbcType=INTEGER}, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
-      #{categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{directDeliverySupplierCode,jdbcType=VARCHAR},
+      ( #{saleCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
+      #{skuName,jdbcType=VARCHAR}, 1, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
       #{directDeliverySupplierName,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, now(),
       #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR})

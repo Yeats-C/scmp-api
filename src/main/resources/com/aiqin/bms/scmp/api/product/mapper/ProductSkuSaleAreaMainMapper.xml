@@ -10,10 +10,6 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
-    <result column="be_effective" jdbcType="INTEGER" property="beEffective" />
-    <result column="selection_effective_time" jdbcType="TINYINT" property="selectionEffectiveTime" />
-    <result column="selection_effective_start_time" jdbcType="TIMESTAMP" property="selectionEffectiveStartTime" />
     <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
     <result column="company_name" jdbcType="VARCHAR" property="companyName" />
   </resultMap>
@@ -226,7 +222,6 @@
     <result column="abe_disable"  property="beDisable" />
     <collection property="areaList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaInfoRespVO">
       <result column="ctype"  property="type" />
-      <result column="cstatus"  property="status" />
       <result column="cname"  property="name" />
       <result column="ccode"  property="code" />
     </collection>
@@ -264,9 +259,9 @@
     </select>
     <select id="selectByName" resultMap="BaseResultMap">
         select
-       code saleCode,name saleName
+       code ,name
         from product_sku_sale_area_main
-        where be_effective =1 and name = #{name}
+        where be_disable =0 and name = #{name}
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_sale_area_main
@@ -414,7 +409,7 @@
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
+                update_time = now(),
             </if>
             <if test="companyCode != null">
                 company_code = #{companyCode,jdbcType=VARCHAR},
@@ -423,7 +418,7 @@
                 company_name = #{companyName,jdbcType=VARCHAR},
             </if>
         </set>
-        where id = #{id,jdbcType=BIGINT}
+        where code = #{code,jdbcType=BIGINT}
     </update>
 
 

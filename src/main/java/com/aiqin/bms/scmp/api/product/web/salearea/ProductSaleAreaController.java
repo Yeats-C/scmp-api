@@ -203,12 +203,13 @@ public class ProductSaleAreaController {
 
 
     @PostMapping("/importConfig")
-    @ApiOperation(("sku文件导入，"))
+    @ApiOperation(("sku文件导入"))
     public HttpResponse<Boolean> importData (MultipartFile file) {
         try {
             return HttpResponse.success(productSaleAreaService.importData(file));
         } catch (BizException e) {
-            return HttpResponse.failure(e.getMessageId());
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
