@@ -304,4 +304,121 @@
     inner join supply_company b on b.supply_code = a.supplier_code
     where a.stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
   </select>
+  <select id="stockBatchAndSku" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where transport_center_code in
+    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
+      #{item.transportCenterCode}
+    </foreach>
+    and warehouse_code in
+    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
+      #{item.warehouseCode}
+    </foreach>
+    and sku_code in
+    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
+      #{item.skuCode}
+    </foreach>
+  </select>
+  <update id="updateBatchAll">
+    <foreach collection="list" item="item" separator=";">
+      update stock_batch
+      <set>
+        <if test="item.stockBatchCode != null">
+          stock_batch_code = #{item.stockBatchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.companyCode != null">
+          company_code = #{item.companyCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.companyName != null">
+          company_name = #{item.companyName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.transportCenterCode != null">
+          transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.transportCenterName != null">
+          transport_center_name = #{item.transportCenterName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseCode != null">
+          warehouse_code = #{item.warehouseCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseName != null">
+          warehouse_name = #{item.warehouseName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseType != null">
+          warehouse_type = #{item.warehouseType,jdbcType=VARCHAR},
+        </if>
+        <if test="item.supplierCode != null">
+          supplier_code = #{item.supplierCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuCode != null">
+          sku_code = #{item.skuCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuName != null">
+          sku_name = #{item.skuName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.batchCode != null">
+          batch_code = #{item.batchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.wmsBatchCode != null">
+          wms_batch_code = #{item.wmsBatchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productDate != null">
+          product_date = #{item.productDate,jdbcType=VARCHAR},
+        </if>
+        <if test="item.beOverdueData != null">
+          be_overdue_data = #{item.beOverdueData,jdbcType=VARCHAR},
+        </if>
+        <if test="item.batchRemark != null">
+          batch_remark = #{item.batchRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="item.inventoryCount != null">
+          inventory_count = #{item.inventoryCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.availableCount != null">
+          available_count = #{item.availableCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.lockCount != null">
+          lock_count = #{item.lockCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.purchasePrice != null">
+          purchase_price = #{item.purchasePrice,jdbcType=DECIMAL},
+        </if>
+        <if test="item.taxCost != null">
+          tax_cost = #{item.taxCost,jdbcType=DECIMAL},
+        </if>
+        <if test="item.taxRate != null">
+          tax_rate = #{item.taxRate,jdbcType=DECIMAL},
+        </if>
+          update_time = NOW(),
+        <if test="item.updateById != null">
+          update_by_id = #{item.updateById,jdbcType=VARCHAR},
+        </if>
+        <if test="item.updateByName != null">
+          update_by_name = #{item.updateByName,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where id = #{id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="insertAll">
+    insert into stock_batch (stock_batch_code, company_code, company_name, transport_center_code, transport_center_name,
+      warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
+      batch_code, wms_batch_code, product_date, be_overdue_data, batch_remark, inventory_count,
+      available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
+      create_by_id, create_by_name, update_time, update_by_id, update_by_name)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.stockBatchCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
+      #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.wmsBatchCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
+      #{item.beOverdueData,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.inventoryCount,jdbcType=BIGINT},
+      #{item.availableCount,jdbcType=BIGINT}, #{item.lockCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL},
+      #{item.taxCost,jdbcType=DECIMAL}, #{item.taxRate,jdbcType=DECIMAL},
+      NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
+      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
 </mapper>

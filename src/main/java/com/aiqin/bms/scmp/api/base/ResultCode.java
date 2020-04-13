@@ -107,21 +107,20 @@ public interface ResultCode {
     /**
      * 库存相关返回
      */
-    MessageId STOCK_RETURN_SUPPLY_SKU_EMPTY = MessageId.create(Project.PRODUCT_API, 45, "退供商品信息为空");
-    MessageId STOCK_RETURN_SUPPLY_COMPANY_EMPTY = MessageId.create(Project.PRODUCT_API, 46, "退供公司信息为空");
-    MessageId STOCK_RETURN_SUPPLY_SUPPLY_EMPTY = MessageId.create(Project.PRODUCT_API, 47, "退供供货单位信息为空");
-    MessageId STOCK_RETURN_SUPPLY_TRANSPORT_CENTER_EMPTY = MessageId.create(Project.PRODUCT_API, 48, "退供物流中心信息为空");
-    MessageId STOCK_RETURN_SUPPLY_WAREHOUSE_EMPTY = MessageId.create(Project.PRODUCT_API, 49, "退供库房信息为空");
-    MessageId STOCK_RETURN_SUPPLY_PURCHASE_GROUP_EMPTY = MessageId.create(Project.PRODUCT_API, 50, "退供采购组信息为空");
-    MessageId STOCK_RETURN_SUPPLY_VERIFY_ERROR = MessageId.create(Project.PRODUCT_API, 51, "退供商品信息验证失败");
-    MessageId STOCK_LOCK_ERROR = MessageId.create(Project.PRODUCT_API, 53, "库存锁定失败");
-    MessageId OUTBOUND_SAVE_ERROR = MessageId.create(Project.PRODUCT_API, 54, "出库单保存失败");
-    MessageId STOCK_UNLOCK_ERROR = MessageId.create(Project.PRODUCT_API, 55, "库存解锁失败");
-    MessageId STOCK_REDUCE_UNLOCK_STOCK_ERROR = MessageId.create(Project.PRODUCT_API, 55, "减库存并解锁");
+    MessageId STOCK_RETURN_SUPPLY_SKU_EMPTY = MessageId.create(Project.SCMP_API, 45, "退供商品信息为空");
+    MessageId STOCK_RETURN_SUPPLY_COMPANY_EMPTY = MessageId.create(Project.SCMP_API, 46, "退供公司信息为空");
+    MessageId STOCK_RETURN_SUPPLY_SUPPLY_EMPTY = MessageId.create(Project.SCMP_API, 47, "退供供货单位信息为空");
+    MessageId STOCK_RETURN_SUPPLY_TRANSPORT_CENTER_EMPTY = MessageId.create(Project.SCMP_API, 48, "退供物流中心信息为空");
+    MessageId STOCK_RETURN_SUPPLY_WAREHOUSE_EMPTY = MessageId.create(Project.SCMP_API, 49, "退供库房信息为空");
+    MessageId STOCK_RETURN_SUPPLY_PURCHASE_GROUP_EMPTY = MessageId.create(Project.SCMP_API, 50, "退供采购组信息为空");
+    MessageId STOCK_RETURN_SUPPLY_VERIFY_ERROR = MessageId.create(Project.SCMP_API, 51, "退供商品信息验证失败");
+    MessageId STOCK_LOCK_ERROR = MessageId.create(Project.SCMP_API, 52, "库存锁定失败");
+    MessageId OUTBOUND_SAVE_ERROR = MessageId.create(Project.SCMP_API, 53, "出库单保存失败");
+    MessageId STOCK_UNLOCK_ERROR = MessageId.create(Project.SCMP_API, 54, "库存解锁失败");
+    MessageId STOCK_REDUCE_UNLOCK_STOCK_ERROR = MessageId.create(Project.SCMP_API, 55, "减库存并解锁");
+    MessageId STOCK_BATCH_INFO_NULL = MessageId.create(Project.SCMP_API, 56, "批次库存的数据为空");
 
-    /**
-     * 调拨单相关返回
-     */
+    /** 调拨单相关返回*/
     MessageId ALLOCATION_RETURN_ADD_ERROR = MessageId.create(Project.PRODUCT_API, 52, "调拨单添加失败");
     MessageId ALLOCATION_RETURN_REVOCATION_ERROR = MessageId.create(Project.PRODUCT_API, 52, "调拨单撤销失败");
     MessageId STOCK_CHANGE_ERROR = MessageId.create(Project.PRODUCT_API, 56, "修改库存失败");

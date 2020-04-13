@@ -31,5 +31,5 @@ public class ChangeStockRequest {
 
     @ApiModelProperty("批次库存集合")
     @JsonProperty(value = "stock_batch_list")
-    private List<StockBatchRequest> stockBatchList;
+    private List<StockBatchInfoRequest> stockBatchList;
 }

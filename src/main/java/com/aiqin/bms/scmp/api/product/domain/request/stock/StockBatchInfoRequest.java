@@ -5,14 +5,13 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 /**
  * @author: zhao shuai
  * @create: 2020-04-08
  **/
 @Data
-public class StockBatchRequest {
+public class StockBatchInfoRequest {
 
     @ApiModelProperty("公司编码")
     @JsonProperty(value = "company_code")

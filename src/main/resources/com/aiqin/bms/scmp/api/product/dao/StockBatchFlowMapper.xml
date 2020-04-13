@@ -147,4 +147,24 @@
       from stock_batch_flow
       where stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
   </select>
+  <insert id="insertAll">
+    insert into stock_batch_flow (stock_batch_code, flow_batch_code, batch_code, sku_code, sku_name,
+      operation_type, document_type, document_code, source_document_type, source_document_code, remark,
+      before_inventory_count, after_inventory_count, before_available_count, after_available_count,
+      before_lock_count, after_lock_count, change_count, create_time, create_by_id, create_by_name,
+      update_time, update_by_id, update_by_name)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.stockBatchCode,jdbcType=VARCHAR}, #{item.flowBatchCode,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.operationType,jdbcType=INTEGER}, #{item.documentType,jdbcType=INTEGER}, #{item.documentCode,jdbcType=VARCHAR},
+      #{item.sourceDocumentType,jdbcType=INTEGER}, #{item.sourceDocumentCode,jdbcType=VARCHAR},
+      #{item.remark,jdbcType=VARCHAR}, #{item.beforeInventoryCount,jdbcType=BIGINT}, #{item.afterInventoryCount,jdbcType=BIGINT},
+      #{item.beforeAvailableCount,jdbcType=BIGINT}, #{item.afterAvailableCount,jdbcType=BIGINT},
+      #{item.beforeLockCount,jdbcType=BIGINT}, #{item.afterLockCount,jdbcType=BIGINT}, #{item.changeCount,jdbcType=BIGINT},
+      NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
+      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
 </mapper>

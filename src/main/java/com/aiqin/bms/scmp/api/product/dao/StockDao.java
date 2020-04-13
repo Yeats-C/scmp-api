@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
@@ -17,7 +16,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectProductRequest;
@@ -102,14 +100,6 @@ public interface StockDao {
     List<QueryStockSkuListRespVo> selectSkuCodeByQueryBatchCodeList(@Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
 
     void updateStorehouseById(@Param("list") List<StockRespVO> stockRespVO);
-
-    List<StockBatch> selectListByCodesAndSkuCodeBatch(@Param("stockBatchVoRequest") List<StockBatchVoRequest> stockBatchVoRequest);
-
-    void insertStockBatchFlows(@Param("stockBatchFlows") List<StockBatchFlow> stockBatchFlows);
-
-    void updateBatchStocks(@Param("stockBatches") List<StockBatch> stockBatches);
-
-    Integer insertBatchStockAdd(@Param("stockBatches") List<StockBatch> stockBatches);
 
     Long selectSkuCodeByQueryAvailableSum(@Param("skuCode") String skuCode);
 

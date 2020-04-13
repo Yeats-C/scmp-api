@@ -163,8 +163,8 @@ public class StockController {
 
     @PostMapping("/change/stock/batch")
     @ApiOperation(value = "批次库存修改")
-    public HttpResponse changeStockBatch(@RequestBody StockChangeRequest stockChangeRequest){
-        return stockService.changeStockBatch(stockChangeRequest);
+    public HttpResponse changeStockBatch(@RequestBody ChangeStockRequest request){
+        return stockService.changeStockBatch(request);
     }
 
     @PostMapping("/logs")

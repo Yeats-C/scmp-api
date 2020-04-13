@@ -120,7 +120,7 @@ public interface StockService {
     /** 退供锁定批次库存*/
     Boolean returnSupplyLockStockBatch(ILockStockBatchReqVO reqVO);
 
-    HttpResponse changeStockBatch(StockChangeRequest stockChangeRequest);
+    HttpResponse changeStockBatch(ChangeStockRequest request);
 
     PageInfo<QueryStockSkuListRespVo> importStockSkuList(QueryImportStockSkuListReqVo reqVO);
 
