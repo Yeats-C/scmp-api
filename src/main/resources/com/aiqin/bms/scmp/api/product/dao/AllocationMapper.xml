@@ -582,6 +582,12 @@
     from allocation
     where form_no = #{formNo,jdbcType=BIGINT}
   </select>
+  <select id="findIdByAllocationCode" parameterType="java.lang.String" resultType="long">
+    select
+    id
+    from allocation
+    where allocation_code = #{allocationCode}
+  </select>
   <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

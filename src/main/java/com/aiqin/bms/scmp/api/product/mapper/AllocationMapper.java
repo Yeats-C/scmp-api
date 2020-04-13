@@ -81,6 +81,8 @@ public interface AllocationMapper {
 
     Long findIdByFormNo(String FormNo);
 
+    Long findIdByAllocationCode(String allocationCode);
+
     /**
      * 根据编码查询调拨单主体
      * @param allocationCode

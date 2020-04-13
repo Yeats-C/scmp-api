@@ -97,7 +97,7 @@ public class AllocationReqVo {
     private String allocationTypeName;
 
     @ApiModelProperty("物流费用")
-    @NotEmpty(message = "物流费用不能为空")
+    //@NotEmpty(message = "物流费用不能为空")
     private Long logisticsOutlay;
 
     @ApiModelProperty("sku列表")

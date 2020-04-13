@@ -146,4 +146,6 @@ public interface AllocationService extends BaseService {
      * @return
      */
     BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+
+    int updateWmsStatus(Byte status, String allocationCode);
 }
