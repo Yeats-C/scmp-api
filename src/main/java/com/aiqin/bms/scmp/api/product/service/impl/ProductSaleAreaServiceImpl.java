@@ -272,10 +272,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveDraftData(ProductSkuSaleAreaMainDraft copy, List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts, List<ProductSkuSaleAreaChannelDraft> channelDrafts) {
-        int insert = productSkuSaleAreaMainDraftMapper.insert(copy);
-        if (insert <= 0) {
+       if(!ObjectUtils.equals(null,copy)){
+         int insert = productSkuSaleAreaMainDraftMapper.insert(copy);
+         if (insert <= 0) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "保存主表数据失败"));
         }
+       }
         //插入sku信息
 //        int i = productSkuSaleAreaDraftMapper.insertBatch(skuSaleAreaDrafts);
 //        if (i != skuSaleAreaDrafts.size()) {
@@ -748,9 +750,13 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean editView(ProductSkuSaleAreaMainReqVO productSkuSaleAreaMainReqVO) throws Exception {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        productSkuSaleAreaMainReqVO.setCompanyCode(currentAuthToken.getCompanyCode());
+        productSkuSaleAreaMainReqVO.setCompanyName(currentAuthToken.getCompanyName());
         //对主表进行修改
         ProductSkuSaleAreaMain productSkuSaleAreaMain = new ProductSkuSaleAreaMain();
         BeanUtils.copyProperties(productSkuSaleAreaMainReqVO, productSkuSaleAreaMain);
+
         int num = productSkuSaleAreaMainMapper.updateByPrimaryKeySelective(productSkuSaleAreaMain);
         if (num < 1) {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "对应编码的数据异常!"));
@@ -760,10 +766,23 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         productSkuSaleAreaChannelMapper.deleteByCode(productSkuSaleAreaMain.getCode());
         //重新保存数据
         //拼装实体
-        ProductSkuSaleAreaMainDraft copy = BeanCopyUtils.copy(productSkuSaleAreaMainReqVO, ProductSkuSaleAreaMainDraft.class);
-        List<ProductSkuSaleAreaChannelDraft> channelDrafts = BeanCopyUtils.copyList(productSkuSaleAreaMainReqVO.getChannelList(), ProductSkuSaleAreaChannelDraft.class);
+        List<ProductSkuSaleAreaChannelDraft> channelDrafts = BeanCopyUtils
+                .copyList(productSkuSaleAreaMainReqVO.getChannelList(), ProductSkuSaleAreaChannelDraft.class);
+        channelDrafts.forEach(x->{
+            x.setCode(productSkuSaleAreaMainReqVO.getCode());
+            x.setCompanyCode(productSkuSaleAreaMainReqVO.getCompanyCode());
+            x.setCompanyName(productSkuSaleAreaMainReqVO.getCompanyName());
+        });
+
         List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts = BeanCopyUtils.copyList(productSkuSaleAreaMainReqVO.getAreaList(), ProductSkuSaleAreaInfoDraft.class);
-        saveDraftData(copy, productSkuSaleAreaInfoDrafts, channelDrafts);
+        productSkuSaleAreaInfoDrafts.forEach(x->{
+            x.setMainCode(productSkuSaleAreaMainReqVO.getCode());
+            x.setCompanyCode(productSkuSaleAreaMainReqVO.getCompanyCode());
+            x.setCompanyName(productSkuSaleAreaMainReqVO.getCompanyName());
+
+        });
+
+        saveDraftData(null, productSkuSaleAreaInfoDrafts, channelDrafts);
         //新增日志
         SupplierOperationLog supplierOperationLog = new SupplierOperationLog();
         supplierOperationLog.setObjectId(productSkuSaleAreaMainReqVO.getCode());
