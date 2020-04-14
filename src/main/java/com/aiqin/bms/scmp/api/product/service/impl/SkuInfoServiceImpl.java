@@ -38,6 +38,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuUpdate;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -60,12 +61,15 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -197,6 +201,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private ProductSkuConfigMapper productSkuConfigMapper;
     @Autowired
     private ProductSkuFileDao productSkuFileDao;
+    @Autowired
+    private UrlConfig urlConfig;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1878,12 +1884,47 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSku.setId(applyProductSkus.get(i).getId());
                 applyProductSku.setSelectionEffectiveEndTime(auditorTime);
                 applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
+                //审批通过之后传输给wms
+                ProductSkuInfoWms productSkuInfoWms=new ProductSkuInfoWms();
+                productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());
+                productSkuInfoWms.setSkuName(productSkuInfo.getSkuName());
+                productSkuInfoWms.setProductBrandCode(productSkuInfo.getProductBrandCode());
+                productSkuInfoWms.setProductBrandName(productSkuInfo.getProductBrandName());
+                productSkuInfoWms.setProductCategoryCode(productSkuInfo.getProductCategoryCode());
+                productSkuInfoWms.setProductCategoryName(productSkuInfo.getProductCategoryName());
+                productSkuInfoWms.setSkuAbbreviation(productSkuInfo.getSkuAbbreviation());
+                productSkuInfoWms.setModelNumber(productSkuInfo.getModelNumber());
+                productSkuInfoWms.setQualityAssuranceManagement(productSkuInfo.getQualityAssuranceManagement());
+                productSkuInfoWms.setQualityDate(productSkuInfo.getQualityDate());
+                productSkuInfoWms.setUpdateTime(productSkuInfo.getUpdateTime());
+                productSkuInfoWms.setGoodsGifts(productSkuInfo.getGoodsGifts());
+                productSkuInfoWms.setManufacturerGuidePrice(productSkuInfo.getManufacturerGuidePrice());
+                sendWms(productSkuInfoWms);
+
             }
         }
         //更新审批状态
         applyProductSkuMapper.updateStatusByFormNo(ApplyStatus.APPROVAL_SUCCESS.getNumber(), vo.getFormNo(), vo.getApprovalUserName(), auditorTime);
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
+
+    private void sendWms(ProductSkuInfoWms productSkuInfoWms) {
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/productInfoPush" );
+//            HttpClient httpClient = HttpClient.get(url.toString());
+            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(productSkuInfoWms).timeout(30000);
+            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
+            });
+            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+                log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JSON.toJSONString(productSkuInfoWms));
+        }
+    }
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void toBeEffective(List<ApplyProductSku> applyProductSkus){

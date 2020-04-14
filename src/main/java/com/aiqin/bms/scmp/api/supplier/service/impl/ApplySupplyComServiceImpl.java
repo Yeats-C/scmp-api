@@ -5,7 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
+import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
 import com.aiqin.bms.scmp.api.supplier.domain.SpecialArea;
@@ -37,20 +37,19 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -122,7 +121,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private SupplierFileMapper supplierFileMapper;
     @Autowired
     private ApprovalFileInfoService approvalFileInfoService;
-
+    @Autowired
+    private  UrlConfig urlConfig;
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -822,6 +822,22 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 supplyCompanyPurchaseGroupMapper.insertBatch(supplyCompanyPurchaseGroups);
             }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
+          //审批成功之后将数据传给wms
+           SupplierWms supplierWms=new SupplierWms();
+           supplierWms.setAddress(applySupplyCompany.getAddress());
+           supplierWms.setArea(applySupplyCompany.getArea());
+           supplierWms.setContactName(applySupplyCompany.getContactName());
+           supplierWms.setDelFlag(applySupplyCompany.getDelFlag());
+           supplierWms.setEmail(applySupplyCompany.getEmail());
+           supplierWms.setMobilePhone(applySupplyCompany.getMobilePhone());
+           supplierWms.setRemark(applySupplyCompany.getRemark());
+           supplierWms.setSupplierAbbreviation(applySupplyCompany.getApplyAbbreviation());
+           supplierWms.setSupplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+           supplierWms.setSupplyName(applySupplyCompany.getApplySupplyName());
+           supplierWms.setSupplyType(applySupplyCompany.getApplySupplyType());
+           supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
+           sendWms(supplierWms);
+
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
             SupplyCompany oldSupplyCompany = supplyCompanyDao.getSupplyComByApplyCode(applySupplyCompany.getApplySupplyCompanyCode());
@@ -1330,9 +1346,27 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         if(Objects.isNull(applySupplyCompany)){
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
+
+
+
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
-
+    private void sendWms( SupplierWms supplierWms ) {
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+//            HttpClient httpClient = HttpClient.get(url.toString());
+            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
+            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
+            });
+            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+                log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+        }
+    }
 
 
     public Map<String, AreaInfo> getAreaTree() {
