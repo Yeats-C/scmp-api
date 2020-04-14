@@ -2022,6 +2022,8 @@
       <result column="goods_gifts" property="goodsGifts"/>
       <result column="product_property_name" property="productPropertyName"/>
       <result column="priceChannelName" property="priceChannelName"/>
+        <result column="procurement_section_code" property="procurementSectionCode"/>
+        <result column="procurement_section_name" property="procurementSectionName"/>
       <collection property="supplierList" ofType="com.aiqin.bms.scmp.api.product.domain.response.salearea.ProductSaleAreaSupplierInfo">
         <result column="directDeliverySupplierCode" property="directDeliverySupplierCode"/>
         <result column="directDeliverySupplierName" property="directDeliverySupplierName"/>
@@ -2039,6 +2041,8 @@
                a.color_name,
                a.model_number,
                d.unit_name,
+               a.procurement_section_code ,
+               a.procurement_section_name,
                group_concat(b.price_channel_name) priceChannelName,
                c.supply_unit_name directDeliverySupplierName,
                c.supply_unit_code directDeliverySupplierCode
