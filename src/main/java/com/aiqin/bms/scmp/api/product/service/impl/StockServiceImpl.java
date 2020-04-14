@@ -3,8 +3,6 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.Save;
-import com.aiqin.bms.scmp.api.common.StockStatusEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.converter.*;
@@ -15,18 +13,14 @@ import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReq
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
@@ -55,7 +49,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -75,8 +68,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     @Autowired
     private StockDao stockDao;
     @Autowired
-    private OutboundService outboundService;
-    @Autowired
     private InboundService inboundService;
     @Autowired
     private SkuService skuService;
@@ -92,7 +83,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private StockBatchDao stockBatchDao;
     @Autowired
     private StockBatchFlowDao stockBatchFlowDao;
-
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -207,12 +197,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     /**
      * 功能描述: 查询库存商品(采购退供使用) 不分页
-     *
-     * @param reqVO
-     * @param reqVO
-     * @return List
-     * @auther knight.xie
-     * @date 2019/1/7 17:38
      */
     @Override
     public List<QueryStockSkuRespVo> selectStockSkus(QueryStockSkuReqVo reqVO) {
@@ -320,112 +304,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
     }
 
-    /**
-     * 功能描述: 验证退供商品信息,有错误则会返回list,否则list为空
-     * @param reqVo
-     * @return List
-     * @auther knight.xie
-     * @date 2019/1/8 15:14
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(VerifyReturnSupplyReqVo reqVo) {
-        HttpResponse httpResponse = null;
-        try {
-            httpResponse = HttpResponse.success();
-            if (StringUtils.isBlank(reqVo.getCompanyCode())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_COMPANY_EMPTY);
-            }
-            if (StringUtils.isBlank(reqVo.getSupplyCode())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_SUPPLY_EMPTY);
-            }
-            if (StringUtils.isBlank(reqVo.getTransportCenterCode())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_TRANSPORT_CENTER_EMPTY);
-            }
-            if (StringUtils.isBlank(reqVo.getWarehouseCode())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_WAREHOUSE_EMPTY);
-            }
-            if (StringUtils.isBlank(reqVo.getPurchaseGroupCode())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_PURCHASE_GROUP_EMPTY);
-            }
-            //如果没有sku
-            if (CollectionUtils.isEmpty(reqVo.getItemReqVos())) {
-                return httpResponse.setMessageId(ResultCode.STOCK_RETURN_SUPPLY_SKU_EMPTY);
-            }
-            //验证item数据  TODO 商品数据不全 暂时不验证
-//            List<VerifyReturnSupplyErrorRespVo> errorRespVos = lockStock(reqVo);
-            PurchaseOutBoundRespVO respVO = lockStock(reqVo);
-//            List<VerifyReturnSupplyErrorRespVo> errorRespVos = Lists.newArrayList();
-//            PurchaseOutBoundRespVO respVO = new PurchaseOutBoundRespVO();
-//            respVO.setOutBoundCode("123456");
-//            respVO.setSupplyErrorRespVos(errorRespVos);
-            httpResponse.setData(respVO);
-//            if(CollectionUtils.isNotEmpty(errorRespVos)) {
-//                httpResponse.setData(errorRespVos);
-//            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            if (e instanceof BizException) {
-                throw e;
-            } else {
-                throw new BizException(ResultCode.STOCK_RETURN_SUPPLY_VERIFY_ERROR);
-            }
-        }
-        return httpResponse;
-    }
-
-    /**
-     * 库存锁定
-     *
-     * @param reqVO
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public PurchaseOutBoundRespVO lockStock(ILockStockReqVO reqVO) {
-        PurchaseOutBoundRespVO respVO = new PurchaseOutBoundRespVO();
-        respVO.setSupplyErrorRespVos(Lists.newArrayList());
-        respVO.setOutBoundCode("LS123");
-        try {
-            //验证商品数据
-            List<VerifyReturnSupplyErrorRespVo> errorRespVos = verifyReturnSupplyItem(reqVO);
-            if (CollectionUtils.isNotEmpty(errorRespVos)) {
-                respVO.setSupplyErrorRespVos(errorRespVos);
-                return respVO;
-            }
-            List<ILockStockItemReqVo> itemReqVos = (List<ILockStockItemReqVo>) reqVO.getItemReqVos();
-            List<String> skuCodes = itemReqVos.stream().map(ILockStockItemReqVo::getSkuCode).collect(Collectors.toList());
-//            List<UpdateStockReqVo> updateStockReqVos = Lists.newLinkedList();
-//            Map<String, Long> map = skuService.getSkuConvertNumBySkuCodes(skuCodes);
-//            for (ILockStockItemReqVo itemReqVo : itemReqVos) {
-//                UpdateStockReqVo updateStockReqVo = new UpdateStockReqVo(reqVO.getCompanyCode(), reqVO.getTransportCenterCode(), reqVO.getWarehouseCode(), itemReqVo.getSkuCode(), itemReqVo.getNum(), StockStatusEnum.LOCK_STOCK.getCode());
-//                updateStockReqVos.add(updateStockReqVo);
-//            }
-//            log.info("需要更新库存的数据{}", JSON.toJSON(updateStockReqVos));
-//            //更新库存信息
-//            Integer updateNum = stockDao.updateBatchStock(updateStockReqVos);
-//            log.info("更新成功条数:{}", updateNum);
-//            if (updateNum > 0) {
-//                //创建出库单信息（废弃）
-//                // 这里应该生成流水生成流水
-////                String s = outboundService.saveOutBoundInfo(reqVO);
-//                respVO.setOutBoundCode("LS123");
-//            }
-            Boolean b = returnSupplyLockStock(reqVO);
-            if (!b) {
-                throw new BizException(ResultCode.STOCK_LOCK_ERROR);
-            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            if (e instanceof BizException) {
-                throw e;
-            } else {
-                throw new BizException(ResultCode.STOCK_LOCK_ERROR);
-            }
-
-        }
-        return respVO;
-
-    }
 
     @Override
     public Boolean returnSupplyLockStock(ILockStockReqVO reqVO) {

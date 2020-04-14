@@ -7,10 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
@@ -56,12 +54,6 @@ public interface StockService {
 
     /** 根据stockid查询单个库存信息*/
     PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size);
-
-    /** 功能描述: 验证退供商品信息,有错误则会返回list,否则list为空*/
-    HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(VerifyReturnSupplyReqVo reqVo);
-
-    /** 库存锁定*/
-    PurchaseOutBoundRespVO lockStock(ILockStockReqVO reqVO);
 
     /** 退供锁定库存*/
     Boolean returnSupplyLockStock(ILockStockReqVO reqVO);

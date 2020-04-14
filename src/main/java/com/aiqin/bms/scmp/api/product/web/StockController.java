@@ -1,8 +1,6 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
@@ -98,12 +96,6 @@ public class StockController {
     public HttpResponse<List<QueryStockSkuRespVo>> selectStockSkus(@RequestBody QueryStockSkuReqVo reqVO) {
         List<QueryStockSkuRespVo> queryStockSkuRespVos = stockService.selectStockSkus(reqVO);
         return HttpResponse.success(queryStockSkuRespVos);
-    }
-
-    @PostMapping("/verify/returnSupply")
-    @ApiOperation(value = "验证退供商品信息,有错误则会返回list,否则list为空")
-    public HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
-        return stockService.verifyReturnSupply(reqVO);
     }
 
     //因为目前对接中心没介入,所以直接接收采购单
