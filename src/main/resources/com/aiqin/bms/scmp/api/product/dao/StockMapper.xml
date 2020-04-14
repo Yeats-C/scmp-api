@@ -509,62 +509,6 @@
         <include refid="Query_Stock_Sku_Where"/>
         order by sku_code asc
     </select>
-    <update id="updateBatchStock" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-            update stock
-            <set>
-                <!--加库存  商品库存增加 -->
-                <if test="item.stockStatusCode == 1">
-                    authentic_num = authentic_num + #{item.num,jdbcType=BIGINT},
-                    available_num = available_num + #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num + #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减少并锁库  可售库存减少,锁定库存增减 -->
-                <if test="item.stockStatusCode == 2">
-                    available_num = available_num - #{item.num,jdbcType=BIGINT},
-                    lock_num = lock_num + #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减库存并解锁  库存数量减少，可售库存数量不变 -->
-                <if test="item.stockStatusCode == 3">
-                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
-                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减少解锁库存 -->
-                <if test="item.stockStatusCode == 4">
-                    available_num = available_num + #{item.num,jdbcType=BIGINT},
-                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减库存 商品库存减少。不经锁定，直接减少库存 -->
-                <if test="item.stockStatusCode == 5">
-                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
-                    available_num = available_num - #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
-                </if>
-            </set>
-            <where>
-                <if test="item.companyCode != null and item.companyCode != ''">
-                    company_code = #{item.companyCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.supplyCode != null and item.supplyCode != ''">
-                    and new_delivery = #{item.supplyCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.transportCenterCode != null and item.transportCenterCode != ''">
-                    and transport_center_code = #{item.transportCenterCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.warehouseCode != null and item.warehouseCode != ''">
-                    and warehouse_code = #{item.warehouseCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.purchaseGroupCode != null and item.purchaseGroupCode != ''">
-                    and purchase_group_code = #{item.purchaseGroupCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.skuCode != null and item.skuCode != ''">
-                    and sku_code = #{item.skuCode, jdbcType=VARCHAR}
-                </if>
-            </where>
-        </foreach>
-    </update>
-
     <select id="selectTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
@@ -1768,28 +1712,6 @@
         </if>
         limit 100
     </select>
-
-    <select id="byCityAndProvinceAndskuCode"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        SELECT s.transport_center_code transportCenterCode,
-        ps.sku_code skuCode,
-        ps.sku_name skuName,
-        s.available_num availableNum
-        FROM logistics_center_area l
-        inner  join  stock s on l.logistics_center_code=s.transport_center_code
-        inner  join  product_sku ps on s.sku_code=ps.sku_code
-        <where>
-            l.del_flag=0 and
-            l.province_code = #{provinceCode} and
-            s.warehouse_type=1 and
-            l.city_code=#{cityCode} and
-            ps.sku_code = #{skuCode}
-        </where>
-        order by s.logistics_center_code desc
-        limit 1
-    </select>
-
-
     <select id="byCityAndProvinceAndtransportCenterCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         SELECT s.transport_center_code transportCenterCode,
@@ -1809,7 +1731,6 @@
         order by s.logistics_center_code desc
         limit 1
     </select>
-
     <select id="findSpareWarehouse"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         select

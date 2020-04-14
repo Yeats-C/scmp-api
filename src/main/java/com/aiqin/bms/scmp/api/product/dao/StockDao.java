@@ -2,14 +2,11 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
@@ -50,9 +47,6 @@ public interface StockDao {
 
     /** 功能描述: 查询库存商品(采购退供使用) list*/
     List<QueryStockSkuRespVo> selectStockSkuInfoByPage(QueryStockSkuReqVo vo);
-
-    /** 批量更新库存*/
-    Integer updateBatchStock(List<UpdateStockReqVo> vos);
 
     Integer insertBatch(@Param("list") List<Stock> stocks);
 
@@ -134,8 +128,6 @@ public interface StockDao {
                                                              @Param("cityCode") String cityCode);
 
     SkuConfigsRepsVo findSpareWarehouse(StockBatchRespVO stockBatchRespVO);
-
-    StockBatchRespVO byCityAndProvinceAndskuCode(String provinceCode, String cityCode);
 
     StockBatchDetailResponse stockInfoByBatchDetail( @Param("skuCode") String skuCode,
                                                @Param("warehouseCode") String warehouseCode);
