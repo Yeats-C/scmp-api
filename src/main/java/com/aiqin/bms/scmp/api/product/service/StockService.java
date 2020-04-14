@@ -68,23 +68,12 @@ public interface StockService {
 
     Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO);
 
-    /**退供解锁库存*/
-    Boolean returnSupplyUnLockStock(ILockStockReqVO reqVO);
-
     Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO);
-
-    /** 解锁库存*/
-    HttpResponse unLockStock(UnLockStockReqVo reqVo);
-
-    /** 减少并解锁库存*/
-    HttpResponse reduceUnlockStock(UpdateOutBoundReqVO reqVo);
 
     /** 接受采购单,保存或更新库存,保存入库流水*/
     InboundReqVo save(InboundReqVo reqVo);
 
     Boolean purchaseSaveStockInfo(InboundReqVo reqVo) throws Exception;
-
-    String stockFlow(StockFlowRequest reqVo);
 
     HttpResponse changeStock(StockChangeRequest stockChangeRequest);
 
@@ -100,17 +89,6 @@ public interface StockService {
 
     /** 订单锁库的方法*/
     List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo);
-
-    /** 批次库存*/
-    PageResData selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
-
-    /** 根据stockBatchId查询单个stockBatch信息*/
-    PageInfo<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId,Integer page_no,Integer page_size);
-
-    HttpResponse operationStockBatch(StockChangeRequest stockChangeRequest);
-
-    /** 功能描述: 批次查询库存商品(采购退供使用) 分页*/
-    PageInfo<QueryStockBatchSkuRespVo> selectStockBatchSkuPage(QueryStockBatchSkuReqVo reqVO);
 
     /** 库房管理新增调拨,移库,报废列表查询*/
     PageInfo<QueryStockSkuListRespVo> selectStockSkuList(QueryStockSkuListReqVo reqVO);
@@ -129,8 +107,6 @@ public interface StockService {
     List<SkuBatchRespVO> querySkuBatchList(SkuBatchReqVO reqVO);
 
     List<Stock> selectSkuCost();
-
-    HttpResponse lockErpStock(MerchantLockStockReqVo vo);
 
     String byCityCodeAndprovinceCode(String provinceCode, String cityCode, String tagCode, String exitStock, String orderByType);
 

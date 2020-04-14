@@ -70,28 +70,6 @@ public interface StockDao {
 
     List<Stock> selectListByWareHouseCode(Stock stock);
 
-    /** 批次库存管理查询*/
-    List<StockBatchRespVO> selectStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
-
-    Integer countStockBatchInfoByPage(StockBatchRequest stockBatchRequest);
-
-    /** 批量插入数据*/
-    List<StockBatchRespVO> selectStockBatchDistinct();
-
-    List<StockBatchProductSkuRespVO> selectProductSku();
-
-    Integer insertStockBatch(@Param("list") List<StockBatch> stockBatches);
-
-    Integer updateStockBatch(@Param("list") List<StockBatch> stockBatches);
-
-    Integer insertStockBatchFlow(@Param("list") List<StockBatchFlow> flows);
-
-    /** 根据stockBatchId查询单个库存信息*/
-    List<StockBatchRespVO> selectOneStockBatchInfoByStockBatchId(Long stockBatchId);
-
-    /**功能描述: 批次查询库存商品(采购退供使用) list*/
-    List<QueryStockBatchSkuRespVo> selectStockBatchSkuInfoByPage(QueryStockBatchSkuReqVo vo);
-
     RejectApplyDetailHandleResponse rejectProductInfo(@Param("supplierCode") String supplierCode, @Param("productType") Integer productType, @Param("purchaseGroupCode") String procurementSectionCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode, @Param("skuCode") String skuCode);
 
     /** 库房管理新增调拨,移库,报废列表查询*/
