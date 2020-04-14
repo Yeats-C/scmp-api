@@ -639,6 +639,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             if (CollectionUtils.isNotEmpty(adds)) {
                 stockDao.insertBatch(adds);
             }
+            LOGGER.info("库存操作结束");
+            // 调用批次库存操作
+            if(!request.getOperationType().equals(7) || !request.getOperationType().equals(8)){
+                this.changeStockBatch(request);
+            }
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             LOGGER.error("操作库存失败", e);

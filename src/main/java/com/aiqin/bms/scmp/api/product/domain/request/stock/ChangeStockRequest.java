@@ -13,7 +13,8 @@ import java.util.List;
 @Data
 public class ChangeStockRequest {
 
-    @ApiModelProperty("操作类型")
+    @ApiModelProperty("操作类型 1.锁定库存 2.减库存并解锁 3.解锁库存. 4.减库存 5.加并锁定库存 6.加库存 " +
+            "7.加在途 8.减在途 9.锁转移(锁定库存移入/移出)'")
     @JsonProperty(value = "operation_type")
     private Integer operationType;
 
