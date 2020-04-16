@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsWmsRepsVo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -22,6 +23,24 @@ public class ProductSkuInfoWms extends CommonBean {
     @ApiModelProperty("商品品类名称")
     @JsonProperty("product_category_name")
     private String productCategoryName;
+
+    @ApiModelProperty("单位code")
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty("单位名称")
+    @JsonProperty("unit_name")
+    private String unitName;
+
+
+    @ApiModelProperty("规格")
+    @JsonProperty("spec")
+    private String spec;
+
+
+    @ApiModelProperty("条形码")
+    @JsonProperty("bar_code")
+    private String barCode;
 
     @ApiModelProperty("sku编号")
     @JsonProperty("sku_code")
@@ -75,5 +94,7 @@ public class ProductSkuInfoWms extends CommonBean {
     private BigDecimal manufacturerGuidePrice;
 
 
-
+    @ApiModelProperty("改sku下仓库配置")
+    @JsonProperty("sku_configs_wms_reps_vos")
+    private List<SkuConfigsWmsRepsVo> skuConfigsWmsRepsVos;
 }

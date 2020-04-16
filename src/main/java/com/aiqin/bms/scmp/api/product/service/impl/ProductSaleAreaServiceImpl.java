@@ -1047,26 +1047,26 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
             //供货渠道类别
             skuConfigImports = skuConfigImports.stream().distinct().collect(Collectors.toList());
-            for (SkuSaleAreaImport skuSaleAreaImport :
-                    skuConfigImports) {
+            for (int i =0;i<skuConfigImports.size();i++) {
+                SkuSaleAreaImport skuSaleAreaImport=skuConfigImports.get(i);
                 if (StringUtils.isEmpty(skuSaleAreaImport.getSkuCode())||StringUtils.isEmpty(skuSaleAreaImport.getSaleName())||StringUtils.isEmpty(skuSaleAreaImport.getCategoriesSupplyChannelsName())) {
-                    throw new BizException("有必填项为空");
+                    throw new BizException("第"+i+2+"有必填项为空");
                 }
                 ProductSkuInfo productSkuInfo = new ProductSkuInfo();
                 BeanUtils.copyProperties(skuSaleAreaImport, productSkuInfo);
 
                 if (productSkuDao.selectByNameAndcode(productSkuInfo) < 1) {
-                    throw new BizException("或者错误商品code" + productSkuInfo.getSkuCode());
+                    throw new BizException("第"+i+2+"或者错误商品code" + productSkuInfo.getSkuCode());
                 }
                 ProductSkuSaleAreaMain productSkuSaleAreaMain= productSkuSaleAreaMainMapper.selectByName(skuSaleAreaImport.getSaleName());
                 if (ObjectUtils.equals(null,productSkuSaleAreaMain)) {
-                    throw new BizException("错误销售区域名称"+skuSaleAreaImport.getSaleName());
+                    throw new BizException("第"+i+2+"错误销售区域名称"+skuSaleAreaImport.getSaleName());
                 }else {
                     skuSaleAreaImport.setSaleCode(productSkuSaleAreaMain.getCode());
                 }
 
                 if (!skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("配送") && !skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("直送")) {
-                    throw new BizException("错误配送方法" + skuSaleAreaImport.getCategoriesSupplyChannelsName());
+                    throw new BizException("第"+i+2+"错误配送方法" + skuSaleAreaImport.getCategoriesSupplyChannelsName());
                 }
 
                 if (skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("配送") ) {
@@ -1076,7 +1076,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 }
 
                 if (skuSaleAreaImport.getCategoriesSupplyChannelsName().equals("直送") && StringUtils.isEmpty(skuSaleAreaImport.getDirectDeliverySupplierName())) {
-                    throw new BizException("直送供应商的名称。如果供货渠道类别为自送，那么必填");
+                    throw new BizException("第"+i+2+"直送供应商的名称。如果供货渠道类别为自送，那么必填");
 
                 }
                 skuSaleAreaImport.setCompanyCode(currentAuthToken.getCompanyCode());
@@ -1086,10 +1086,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
             }
 
 
-
-
         } catch (ExcelException e) {
             e.printStackTrace();
+            return false;
         }
         return true;
     }

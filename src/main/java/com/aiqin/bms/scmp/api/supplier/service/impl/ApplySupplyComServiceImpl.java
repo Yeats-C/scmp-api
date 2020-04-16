@@ -823,20 +823,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
           //审批成功之后将数据传给wms
-           SupplierWms supplierWms=new SupplierWms();
-           supplierWms.setAddress(applySupplyCompany.getAddress());
-           supplierWms.setArea(applySupplyCompany.getArea());
-           supplierWms.setContactName(applySupplyCompany.getContactName());
-           supplierWms.setDelFlag(applySupplyCompany.getDelFlag());
-           supplierWms.setEmail(applySupplyCompany.getEmail());
-           supplierWms.setMobilePhone(applySupplyCompany.getMobilePhone());
-           supplierWms.setRemark(applySupplyCompany.getRemark());
-           supplierWms.setSupplierAbbreviation(applySupplyCompany.getApplyAbbreviation());
-           supplierWms.setSupplyCode(applySupplyCompany.getApplySupplyCompanyCode());
-           supplierWms.setSupplyName(applySupplyCompany.getApplySupplyName());
-           supplierWms.setSupplyType(applySupplyCompany.getApplySupplyType());
-           supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
-           sendWms(supplierWms);
+            sendWms(applySupplyCompany);
 
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
@@ -880,6 +867,36 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         String content = applyStatus.getContent().replace(Global.CREATE_BY, applySupplyCompany.getCreateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
+    }
+
+    private void sendWms(ApplySupplyCompany applySupplyCompany) {
+        SupplierWms supplierWms=new SupplierWms();
+        supplierWms.setAddress(applySupplyCompany.getAddress());
+        supplierWms.setArea(applySupplyCompany.getArea());
+        supplierWms.setContactName(applySupplyCompany.getContactName());
+        supplierWms.setDelFlag(applySupplyCompany.getDelFlag());
+        supplierWms.setEmail(applySupplyCompany.getEmail());
+        supplierWms.setMobilePhone(applySupplyCompany.getMobilePhone());
+        supplierWms.setRemark(applySupplyCompany.getRemark());
+        supplierWms.setSupplierAbbreviation(applySupplyCompany.getApplyAbbreviation());
+        supplierWms.setSupplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+        supplierWms.setSupplyName(applySupplyCompany.getApplySupplyName());
+        supplierWms.setSupplyType(applySupplyCompany.getApplySupplyType());
+        supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
+        try {
+            StringBuilder url = new StringBuilder();
+            url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+//            HttpClient httpClient = HttpClient.get(url.toString());
+            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
+            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
+            });
+            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+                log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+        }
     }
 
     @Override
@@ -1351,7 +1368,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
-    private void sendWms( SupplierWms supplierWms ) {
+    private void sendWms2( SupplierWms supplierWms ) {
         try {
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
@@ -2330,5 +2347,25 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             num = ((ApplySupplyComService) AopContext.currentProxy()).updateApply(applySupplyCompanyReqVO).intValue();
         }
         return num;
+    }
+
+    @Override
+    public HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
+        SupplierWms supplierWms=new SupplierWms();
+        supplierWms.setAddress("测试地址");
+        supplierWms.setArea("测试地区");
+        supplierWms.setContactName("张三");
+        supplierWms.setDelFlag((byte) 1);
+        supplierWms.setEmail("13213@qq.com");
+        supplierWms.setMobilePhone("2111123213123");
+        supplierWms.setRemark("备注");
+        supplierWms.setSupplierAbbreviation("测试简称");
+        supplierWms.setSupplyCode("testcode001");
+        supplierWms.setSupplyName("testname001");
+        supplierWms.setSupplyType("testtype001");
+        supplierWms.setUpdateTime(new Date());
+        sendWms2(supplierWms);
+        log.info(JSON.toJSONString(supplierWms));
+        return HttpResponse.success();
     }
 }
