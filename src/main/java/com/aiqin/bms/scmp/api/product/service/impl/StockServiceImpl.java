@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
@@ -83,6 +84,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private StockBatchDao stockBatchDao;
     @Autowired
     private StockBatchFlowDao stockBatchFlowDao;
+    @Autowired
+    private ProductSkuStockInfoMapper productSkuStockInfoDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -539,6 +542,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stockFlow.setUpdateById(stockInfoRequest.getOperatorId());
                 stockFlow.setChangeCount(stockInfoRequest.getChangeCount());
                 stockFlow.setOperationType(request.getOperationType());
+                stockFlow.setUseStatus(0);
 
                 if (stockMap.containsKey(stockInfoRequest.getSkuCode() + stockInfoRequest.getWarehouseCode())) {
                     stock = stockMap.get(stockInfoRequest.getSkuCode() + stockInfoRequest.getWarehouseCode());
@@ -591,14 +595,14 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
                     // 按照不同的单据类型变更相对应的库存数量
                     stock = stockVoRequestToStock(stock, stockInfoRequest, request.getOperationType());
-                    ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stock.getSkuCode());
-                    if (productSkuInfo == null) {
+                    ProductSkuStockInfo skuStockInfo = productSkuStockInfoDao.getBySkuCode(stock.getSkuCode());
+                    if (skuStockInfo == null) {
                         flage = true;
                         break;
                     }
 
-                    stock.setUnitCode(productSkuInfo.getUnitCode());
-                    stock.setUnitName(productSkuInfo.getUnitName());
+                    stock.setUnitCode(skuStockInfo.getUnitCode());
+                    stock.setUnitName(skuStockInfo.getUnitName());
                     if (stock != null) {
                         adds.add(stock);
                     } else {
@@ -645,9 +649,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 this.changeStockBatch(request);
             }
         } catch (Exception e) {
-            e.printStackTrace();
-            log.error(Global.ERROR, e);
-            LOGGER.error("操作库存失败", e);
+            LOGGER.error("操作库存失败", e.getMessage());
             throw new BizException("操作库存失败");
         }
         return HttpResponse.success();
@@ -940,7 +942,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     s.getBatchCode() + "_" + s.getSupplierCode() + "_" + s.getTaxCost(), s);
         });
 
-        StockBatch stockBatch = null;
+        StockBatch stockBatch;
         List<StockBatch> updates = new ArrayList<>();
         List<StockBatch> adds = new ArrayList<>();
         Boolean flage = false;
@@ -997,6 +999,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stockBatchFlow.setAfterLockCount(stockBatch.getLockCount());
                 flows.add(stockBatchFlow);
             } else {
+                stockBatch = new StockBatch();
                 // 设置库存流水修改前的值
                 stockBatchFlow.setBeforeInventoryCount(0L);
                 stockBatchFlow.setBeforeAvailableCount(0L);
@@ -1010,11 +1013,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     break;
                 }
 
-                ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stockBatch.getSkuCode());
-                if (productSkuInfo == null) {
-                    flage = true;
-                    break;
-                }
+//                ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stockBatch.getSkuCode());
+//                if (productSkuInfo == null) {
+//                    flage = true;
+//                    break;
+//                }
 
                 //设置库存流水修改后的值
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
@@ -1045,28 +1048,31 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     }
 
     /** 参数转换成库存数据*/
-    private StockBatch stockBatchRequestToStockBatch(StockBatch stockBatch, StockBatchInfoRequest request, Integer operationType) {
+    private StockBatch stockBatchRequestToStockBatch(StockBatch stockBatch, StockBatchInfoRequest stockBatchInfo, Integer operationType) {
         if (null == stockBatch.getId()) {
-            BeanCopyUtils.copy(request, stockBatch);
+            BeanCopyUtils.copy(stockBatchInfo, stockBatch);
             stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
             stockBatch.setLockCount(0L);
             stockBatch.setInventoryCount(0L);
             stockBatch.setAvailableCount(0L);
         }
-        stockBatch.setTaxRate(request.getTaxRate());
+        stockBatch.setCreateById(stockBatchInfo.getOperatorId());
+        stockBatch.setCreateByName(stockBatchInfo.getOperatorName());
+        stockBatch.setUpdateByName(stockBatchInfo.getOperatorName());
+        stockBatch.setUpdateById(stockBatchInfo.getOperatorId());
         Long inventoryCount = stockBatch.getInventoryCount() == null ? 0L : stockBatch.getInventoryCount();
         Long availableCount = stockBatch.getAvailableCount() == null ? 0L : stockBatch.getAvailableCount();
         Long lockCount = stockBatch.getLockCount() == null ? 0L : stockBatch.getLockCount();
         // 变更库存数
-        Long changeCount = request.getChangeCount() == null ? 0L : request.getChangeCount();
+        Long changeCount = stockBatchInfo.getChangeCount() == null ? 0L : stockBatchInfo.getChangeCount();
         // 操作类型 1.锁定库存 2.减库存并解锁 3.解锁库存. 4.减库存 5.加并锁定库存 6.加库存 7.加在途 8.减在途 9.锁转移(锁定库存移入/移出)
         switch (operationType) {
             //锁定库存 - 库存不变，锁定库存增加，可用库存减少
             case 1:
                 // 验证批次可用库存在操作前后都不能为负。实际操作为：加锁定库存、减可用库存。
                 if(availableCount < changeCount){
-                    LOGGER.error("锁定批次库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
-                    throw new BizException("锁定批次库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    LOGGER.error("锁定批次库存: 可用库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
+                    throw new BizException("锁定批次库存: 可用库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setLockCount(stockBatch.getLockCount() + changeCount);
                 stockBatch.setAvailableCount(stockBatch.getAvailableCount() - changeCount);
@@ -1076,8 +1082,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             case 2:
                 // 验证批次锁定库存在操作前后都不能为负。实际操作为：减总库存、减锁定库存。
                 if(lockCount < changeCount || inventoryCount < changeCount){
-                    LOGGER.error("批次减库存并解锁: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
-                    throw new BizException("批次减库存并解锁: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    LOGGER.error("批次减库存并解锁: 锁定库存、总库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
+                    throw new BizException("批次减库存并解锁: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setInventoryCount(inventoryCount - changeCount);
                 stockBatch.setLockCount(lockCount - changeCount);
@@ -1087,8 +1093,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             case 3:
                 // 验证批次锁定库存在操作前后都不能为负。实际操作为：减锁定库存、加可用库存。
                 if(lockCount < changeCount){
-                    LOGGER.error("批次解锁库存: 锁定库存在操作前后都不能为负,sku:" + request.getSkuCode());
-                    throw new BizException("批次解锁库存: 锁定库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    LOGGER.error("批次解锁库存: 锁定库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
+                    throw new BizException("批次解锁库存: 锁定库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setAvailableCount(availableCount + changeCount);
                 stockBatch.setLockCount(lockCount - changeCount);
@@ -1098,8 +1104,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             case 4:
                 // 验证总库存、可用库存在操作前后都不能为负。实际操作为：减总库存、减可用库存。
                 if(availableCount < changeCount || inventoryCount < changeCount ){
-                    LOGGER.error("批次减库存: 可用库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
-                    throw new BizException("批次减库存:可用库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    LOGGER.error("批次减库存: 可用库存、总库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
+                    throw new BizException("批次减库存:可用库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setAvailableCount(availableCount - changeCount);
                 stockBatch.setInventoryCount(inventoryCount - changeCount);

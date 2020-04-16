@@ -108,6 +108,10 @@ public class Stock {
     @JsonProperty(value = "tax_cost")
     private BigDecimal taxCost;
 
+    @ApiModelProperty(value="0 启用  1.禁用")
+    @JsonProperty("use_status")
+    private Integer useStatus;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

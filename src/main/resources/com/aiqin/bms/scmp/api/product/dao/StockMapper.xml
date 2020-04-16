@@ -996,44 +996,44 @@
                 <if test="item.companyName!=null and item.companyName!=''">
                     company_name=#{item.companyName},
                 </if>
-                <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
+                <if test="item.transportCenterCode != null and item.transportCenterCode != ''">
                     transport_center_code=#{item.transportCenterCode},
                 </if>
-                <if test="item.transportCenterName!=null and item.transportCenterName!=''">
+                <if test="item.transportCenterName != null and item.transportCenterName != ''">
                     transport_center_name=#{item.transportCenterName},
                 </if>
-                <if test="item.warehouseCode!=null and item.warehouseCode!=''">
+                <if test="item.warehouseCode != null and item.warehouseCode != ''">
                     warehouse_code=#{item.warehouseCode},
                 </if>
-                <if test="item.warehouseName!=null and item.warehouseName!=''">
+                <if test="item.warehouseName != null and item.warehouseName != ''">
                     warehouse_name=#{item.warehouseName},
                 </if>
-                <if test="item.warehouseType!=null and item.warehouseType!=''">
+                <if test="item.warehouseType != null and item.warehouseType != ''">
                     warehouse_type=#{item.warehouseType},
                 </if>
-                <if test="item.skuCode!=null and item.skuCode!=''">
+                <if test="item.skuCode != null and item.skuCode != ''">
                     sku_code=#{item.skuCode},
                 </if>
-                <if test="item.skuName!=null and item.skuName!=''">
+                <if test="item.skuName != null and item.skuName != ''">
                     sku_name=#{item.skuName},
                 </if>
-                <if test="item.inventoryNum!=null">
-                    inventory_num=#{item.inventoryNum},
+                <if test="item.inventoryCount != null">
+                    inventory_count=#{item.inventoryCount},
                 </if>
-                <if test="item.availableNum!=null">
-                    available_num=#{item.availableNum},
+                <if test="item.availableCount != null">
+                    available_count=#{item.availableCount},
                 </if>
-                <if test="item.lockNum!=null">
-                    lock_num=#{item.lockNum},
+                <if test="item.lockCount!=null">
+                    lock_count=#{item.lockCount},
                 </if>
-                <if test="item.purchaseWayNum!=null">
-                    purchase_way_num=#{item.purchaseWayNum},
+                <if test="item.purchaseWayCount != null">
+                    purchase_way_count=#{item.purchaseWayCount},
                 </if>
-                <if test="item.allocationWayNum!=null">
-                    allocation_way_num=#{item.allocationWayNum},
+                <if test="item.allocationWayCount != null">
+                    allocation_way_count=#{item.allocationWayCount},
                 </if>
-                <if test="item.totalWayNum!=null">
-                    total_way_num=#{item.totalWayNum},
+                <if test="item.totalWayCount != null">
+                    total_way_count=#{item.totalWayCount},
                 </if>
                 <if test="item.newDelivery!=null and item.newDelivery!=''">
                     new_delivery=#{item.newDelivery},
@@ -1044,35 +1044,21 @@
                 <if test="item.newPurchasePrice!=null">
                     new_purchase_price=#{item.newPurchasePrice},
                 </if>
-                <if test="item.purchaseGroupCode!=null and item.purchaseGroupCode!=''">
-                    purchase_group_code=#{item.purchaseGroupCode},
+                <if test="item.unitCode != null and item.unitCode != ''">
+                    unit_code=#{item.unitCode},
                 </if>
-                <if test="item.purchaseGroupName!=null and item.purchaseGroupName!=''">
-                    purchase_group_name=#{item.purchaseGroupName},
-                </if>
-                <if test="item.stockUnitCode!=null and item.stockUnitCode!=''">
-                    stock_unit_code=#{item.stockUnitCode},
-                </if>
-                <if test="item.stockUnitName!=null and item.stockUnitName!=''">
-                    stock_unit_name=#{item.stockUnitName},
-                </if>
-                <if test="item.taxPrice!=null">
-                    tax_price=#{item.taxPrice},
+                <if test="item.unitName!=null and item.unitName!=''">
+                    unit_name=#{item.unitName},
                 </if>
                 <if test="item.taxRate!=null">
                     tax_rate=#{item.taxRate},
                 </if>
-                <if test="item.createTime!=null">
-                    create_time=#{item.createTime},
-                </if>
-                <if test="item.createBy!=null and item.createBy!=''">
-                    create_by=#{item.createBy},
-                </if>
-                <if test="item.updateTime!=null">
                     update_time=NOW(),
+                <if test="item.updateById!=null and item.updateById!=''">
+                    update_by_id = #{item.updateById},
                 </if>
-                <if test="item.updateBy!=null and item.updateBy!=''">
-                    update_by=#{item.updateBy},
+                <if test="item.updateByName != null and item.updateByName != ''">
+                    update_by_name = #{item.updateByName},
                 </if>
             </set>
             where id=#{item.id}
