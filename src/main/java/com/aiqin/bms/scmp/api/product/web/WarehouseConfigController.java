@@ -63,7 +63,7 @@ public class WarehouseConfigController {
 
     @GetMapping("/load")
     @ApiOperation(value = "库房配置详情")
-    public HttpResponse<WarehouseConfigResp> load(@RequestBody Long id) {
+    public HttpResponse<WarehouseConfigResp> load(Long id) {
         return HttpResponse.success(warehouseConfigService.load(id));
     }
 

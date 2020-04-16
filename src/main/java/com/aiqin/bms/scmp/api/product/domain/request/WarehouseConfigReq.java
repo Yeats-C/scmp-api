@@ -46,7 +46,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 库房类型
      * 表字段 : warhouse_config.warehouse_type
      */
-    @ApiModelProperty("库房类型")
+    @ApiModelProperty("库房类型（1.销售库 2.特卖库 3.残品库 4.监管库）")
     @JsonProperty("warehouse_type")
     private String warehouseType;
 
