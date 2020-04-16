@@ -16,6 +16,9 @@ center:
     #url: http://39.106.215.2:9003
   #中控前端
     host: http://control.mgs.aiqin.com
+  # wms
+  wms:
+    url: http://39.96.89.2:9001
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
