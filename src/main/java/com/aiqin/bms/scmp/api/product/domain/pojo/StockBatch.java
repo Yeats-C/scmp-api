@@ -60,13 +60,13 @@ public class StockBatch {
     @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty(value="批次号")
+    @ApiModelProperty(value="wms批次号/批次号")
     @JsonProperty("batch_code")
     private String batchCode;
 
-    @ApiModelProperty(value="wms批次号")
-    @JsonProperty("wms_batch_code")
-    private String wmsBatchCode;
+    @ApiModelProperty(value="批次编号")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
 
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")

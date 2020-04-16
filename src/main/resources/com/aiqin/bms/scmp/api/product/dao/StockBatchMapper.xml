@@ -15,7 +15,7 @@
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
-    <result column="wms_batch_code" jdbcType="VARCHAR" property="wmsBatchCode" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
     <result column="be_overdue_data" jdbcType="VARCHAR" property="beOverdueData" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
@@ -35,7 +35,7 @@
   <sql id="Base_Column_List">
     id, stock_batch_code, company_code, company_name, transport_center_code, transport_center_name, 
     warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name, 
-    batch_code, wms_batch_code, product_date, be_overdue_data, batch_remark, inventory_count, 
+    batch_code, batch_info_code, product_date, be_overdue_data, batch_remark, inventory_count, 
     available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time, create_by_id, 
     create_by_name, update_time, update_by_id, update_by_name
   </sql>
@@ -44,7 +44,7 @@
       company_name, transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, warehouse_type, 
       supplier_code, sku_code, sku_name, 
-      batch_code, wms_batch_code, product_date, 
+      batch_code, batch_info_code, product_date, 
       be_overdue_data, batch_remark, inventory_count, 
       available_count, lock_count, purchase_price, 
       tax_cost, tax_rate, create_time, 
@@ -54,7 +54,7 @@
       #{companyName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseType,jdbcType=VARCHAR}, 
       #{supplierCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
-      #{batchCode,jdbcType=VARCHAR}, #{wmsBatchCode,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR},
+      #{batchCode,jdbcType=VARCHAR}, #{batchInfoCode,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR},
       #{beOverdueData,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{inventoryCount,jdbcType=BIGINT},
       #{availableCount,jdbcType=BIGINT}, #{lockCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, 
       #{taxCost,jdbcType=DECIMAL}, #{taxRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
@@ -100,8 +100,8 @@
       <if test="batchCode != null">
         batch_code = #{batchCode,jdbcType=VARCHAR},
       </if>
-      <if test="wmsBatchCode != null">
-        wms_batch_code = #{wmsBatchCode,jdbcType=VARCHAR},
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
       </if>
       <if test="productDate != null">
         product_date = #{productDate,jdbcType=VARCHAR},
@@ -296,7 +296,7 @@
   <select id="stockBatchDetail" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse">
     select
       a.stock_batch_code stockBatchCode, a.product_date productDate, a.batch_remark batchRemark,
-      a.be_overdue_data beOverdueData, a.batch_code batchCode, a.wms_batch_code wmsBatchCode,
+      a.be_overdue_data beOverdueData, a.batch_code batchCode, a.batch_info_code batchInfoCode,
       a.supplier_code supplierCode, b.supply_name supplierName, a.tax_cost taxCost,
       a.create_time createTime, a.update_time updateTime, a.create_by_name createByName,
       a.update_by_name updateByName, a.sku_code skuCode, a.warehouse_code warehouseCode
@@ -307,17 +307,25 @@
   <select id="stockBatchAndSku" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from stock_batch
-    where transport_center_code in
+    where sku_code in
     <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.transportCenterCode}
+      #{item.skuCode}
     </foreach>
     and warehouse_code in
     <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
       #{item.warehouseCode}
     </foreach>
-    and sku_code in
+    and batch_code in
     <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.skuCode}
+      #{item.batchCode}
+    </foreach>
+    and supplier_code in
+    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
+      #{item.supplierCode}
+    </foreach>
+    and tax_cost in
+    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
+      #{item.taxCost}
     </foreach>
   </select>
   <update id="updateBatchAll">
@@ -360,8 +368,8 @@
         <if test="item.batchCode != null">
           batch_code = #{item.batchCode,jdbcType=VARCHAR},
         </if>
-        <if test="item.wmsBatchCode != null">
-          wms_batch_code = #{item.wmsBatchCode,jdbcType=VARCHAR},
+        <if test="item.batchInfoCode != null">
+          batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR},
         </if>
         <if test="item.productDate != null">
           product_date = #{item.productDate,jdbcType=VARCHAR},
@@ -404,7 +412,7 @@
   <insert id="insertAll">
     insert into stock_batch (stock_batch_code, company_code, company_name, transport_center_code, transport_center_name,
       warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
-      batch_code, wms_batch_code, product_date, be_overdue_data, batch_remark, inventory_count,
+      batch_code, batch_info_code, product_date, be_overdue_data, batch_remark, inventory_count,
       available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
       create_by_id, create_by_name, update_time, update_by_id, update_by_name)
     values
@@ -413,7 +421,7 @@
       #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
       #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
-      #{item.batchCode,jdbcType=VARCHAR}, #{item.wmsBatchCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
       #{item.beOverdueData,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.inventoryCount,jdbcType=BIGINT},
       #{item.availableCount,jdbcType=BIGINT}, #{item.lockCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL},
       #{item.taxCost,jdbcType=DECIMAL}, #{item.taxRate,jdbcType=DECIMAL},

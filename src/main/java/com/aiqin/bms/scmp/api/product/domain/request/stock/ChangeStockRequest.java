@@ -18,13 +18,13 @@ public class ChangeStockRequest {
     @JsonProperty(value = "operation_type")
     private Integer operationType;
 
-    @ApiModelProperty("订单编号")
-    @JsonProperty(value = "order_code")
-    private String orderCode;
-
-    @ApiModelProperty("订单类型")
-    @JsonProperty(value = "order_type")
-    private Integer orderType;
+//    @ApiModelProperty("订单编号")
+//    @JsonProperty(value = "order_code")
+//    private String orderCode;
+//
+//    @ApiModelProperty("订单类型")
+//    @JsonProperty(value = "order_type")
+//    private Integer orderType;
 
     @ApiModelProperty("库存集合")
     @JsonProperty(value = "stock_list")

@@ -645,6 +645,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 this.changeStockBatch(request);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             log.error(Global.ERROR, e);
             LOGGER.error("操作库存失败", e);
             throw new BizException("操作库存失败");
@@ -934,8 +935,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         //查询需要做修改的库存数据
         List<StockBatch> stockBatches = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
         Map<String, StockBatch> stockBatchMap = new HashMap<>();
-        stockBatches.forEach(stockBatch -> {
-            stockBatchMap.put(stockBatch.getSkuCode() + stockBatch.getWarehouseCode(), stockBatch);
+        stockBatches.forEach(s -> {
+            stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
+                    s.getBatchCode() + "_" + s.getSupplierCode() + "_" + s.getTaxCost(), s);
         });
 
         StockBatch stockBatch = null;
@@ -970,8 +972,10 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             stockBatchFlow.setUpdateById(stockBatchInfo.getOperatorId());
             stockBatchFlow.setUpdateByName(stockBatchInfo.getOperatorName());
 
-            if (stockBatchMap.containsKey(stockBatchInfo.getSkuCode() + stockBatchInfo.getWarehouseCode())) {
-                stockBatch = stockBatchMap.get(stockBatchInfo.getSkuCode() + stockBatchInfo.getWarehouseCode());
+            String key = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+                    stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + stockBatchInfo.getTaxCost();
+            if (stockBatchMap.containsKey(key)) {
+                stockBatch = stockBatchMap.get(key);
 
                 //设置库存流水变化前值
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
@@ -998,6 +1002,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stockBatchFlow.setBeforeAvailableCount(0L);
                 stockBatchFlow.setBeforeLockCount(0L);
                 stockBatch = stockBatchRequestToStockBatch(stockBatch, stockBatchInfo, request.getOperationType());
+                stockBatch.setBatchInfoCode(key);
                 if (stockBatch != null) {
                     adds.add(stockBatch);
                 } else {

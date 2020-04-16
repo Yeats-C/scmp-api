@@ -57,6 +57,10 @@ public class StockBatchInfoRequest {
     @JsonProperty(value = "product_date")
     private String productDate;
 
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_data")
+    private String beOverdueData;
+
     @ApiModelProperty("批次备注")
     @JsonProperty(value = "batch_remark")
     private String batchRemark;
@@ -100,6 +104,10 @@ public class StockBatchInfoRequest {
     @ApiModelProperty("操作人名称")
     @JsonProperty(value = "operator_name")
     private String operatorName;
+
+    @ApiModelProperty(value="成本")
+    @JsonProperty("tax_cost")
+    private BigDecimal taxCost;
 
 //    @ApiModelProperty("批次号集合")
 //    @JsonProperty(value = "batch_code")
