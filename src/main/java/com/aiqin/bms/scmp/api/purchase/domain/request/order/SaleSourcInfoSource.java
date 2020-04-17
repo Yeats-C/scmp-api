@@ -1,5 +1,6 @@
-package com.aiqin.bms.scmp.api.product.domain.request.order;
+package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +15,7 @@ import java.util.List;
 @Data
 public class SaleSourcInfoSource implements Serializable {
 
-    @ApiModelProperty(value="配货单号")
+    @ApiModelProperty(value="配货单号（销售单号）")
     @JsonProperty("order_code")
     private String orderCode;
 
@@ -150,7 +151,11 @@ public class SaleSourcInfoSource implements Serializable {
     private String gwf5;
 
 
-    @ApiModelProperty(value="销售出库推送源数据明细")
+    @ApiModelProperty(value="销售出库推送源商品数据明细")
     @JsonProperty("sale_outbound_detailed_source")
     private List<SaleOutboundDetailedSource> saleOutboundDetailedSource;
+
+    @ApiModelProperty(value="销售出库推送源商品批次数据明细")
+    @JsonProperty("order_info_item_product_batch")
+    private List<BatchWmsInfo> orderInfoItemProductBatches;
 }

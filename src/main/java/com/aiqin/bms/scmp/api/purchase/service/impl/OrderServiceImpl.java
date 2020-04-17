@@ -12,8 +12,8 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.request.order.SaleOutboundDetailedSource;
-import com.aiqin.bms.scmp.api.product.domain.request.order.SaleSourcInfoSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleOutboundDetailedSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleSourcInfoSource;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -485,7 +485,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(request, outboundOderCode);
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(request);
                 String url = centerWmsUrl+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -503,10 +503,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(ErpOrderInfo request, String outboundOderCode) {
+    private SaleSourcInfoSource insertWms(ErpOrderInfo request) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
-        ssis.setOrderCode(outboundOderCode);
+        ssis.setOrderCode(request.getOrderStoreCode());
         ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setFromType("销售单");
@@ -543,20 +543,39 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
         List<ErpOrderItem> itemList = request.getItemList();
-        for (ErpOrderItem list : itemList) {
-            SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
-            sods.setSku(list.getSkuCode());
-            sods.setQty(list.getProductCount().intValue());
-            sods.setPrice(list.getPreferentialAmount().doubleValue());
-            sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
-            sods.setGwf1(list.getOrderStoreCode());
-            sods.setGwf2(list.getLineCode().toString());
-            sods.setGwf3(list.getColorName());
-            sods.setGwf4(list.getModelCode());
-            sods.setGwf5(list.getUnitName());
-            plists.add(sods);
-        }
+       if(itemList != null){
+           for (ErpOrderItem list : itemList) {
+               SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
+               sods.setSku(list.getSkuCode());
+               sods.setQty(list.getProductCount().intValue());
+               sods.setPrice(list.getPreferentialAmount().doubleValue());
+               sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
+               sods.setGwf1(list.getOrderStoreCode());
+               sods.setGwf2(list.getLineCode().toString());
+               sods.setGwf3(list.getColorName());
+               sods.setGwf4(list.getModelCode());
+               sods.setGwf5(list.getUnitName());
+               plists.add(sods);
+           }
+       }
         ssis.setSaleOutboundDetailedSource(plists);
+        List<BatchWmsInfo> pBatchLists = new ArrayList<>();
+        List<OrderInfoItemProductBatch> itemBatchLists = request.getItemBatchList();
+        if(itemBatchLists != null){
+            for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
+                BatchWmsInfo pBtachList = new BatchWmsInfo();
+                pBtachList.setLine_code(itemBatchList.getLineCode().intValue());
+                pBtachList.setSku_code(itemBatchList.getSkuCode());
+                pBtachList.setSku_name(itemBatchList.getSkuName());
+                pBtachList.setBatch_code(itemBatchList.getBatchCode());
+                pBtachList.setProdcut_date(itemBatchList.getProductDate());
+                pBtachList.setBe_overdue_data(itemBatchList.getBeOverdueData());
+                pBtachList.setBatch_remark(itemBatchList.getBatchRemark());
+                pBtachList.setActual_total_count(itemBatchList.getActualTotalCount());
+                pBatchLists.add(pBtachList);
+            }
+        }
+        ssis.setOrderInfoItemProductBatches(pBatchLists);
         return ssis;
     }
 

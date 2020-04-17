@@ -2,10 +2,12 @@ package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import java.util.Date;
 
 @ApiModel("订单商品批次表")
+@Data
 public class OrderInfoItemProductBatch {
     @ApiModelProperty("主键")
     private Long id;
@@ -13,10 +15,16 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("订单编码")
     private String orderCode;
 
-    @ApiModelProperty("商品行号")
+    @ApiModelProperty("库位号")
+    private String locationCode;
+
+    @ApiModelProperty("商品行号(要废弃)")
     private Long productLineNum;
 
-    @ApiModelProperty("原行号")
+    @ApiModelProperty("商品行号(以sku为主的行号)")
+    private Long lineCode;
+
+    @ApiModelProperty("原行号（以dl传的行号）")
     private Long originalLineNum;
 
     @ApiModelProperty("sku编号")
@@ -25,23 +33,74 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("数量")
+    @ApiModelProperty("数量(要废弃)")
     private Long num;
 
-    @ApiModelProperty("实发数量")
+    @ApiModelProperty("实发数量(要废弃)")
     private Long actualDeliverNum;
 
-    @ApiModelProperty("生产日期")
+    @ApiModelProperty("数量(最小单位数量)")
+    private Long totalCount;
+
+    @ApiModelProperty("实发数量(实际最小单位数量)")
+    private Long actualTotalCount;
+
+    @ApiModelProperty("退货数量")
+    private Long returnGoodCount;
+
+    @ApiModelProperty("生产日期(要删除)")
     private Date productTime;
+
+    @ApiModelProperty("生产日期")
+    private String productDate;
 
     @ApiModelProperty("批次备注")
     private String batchRemark;
 
+    @ApiModelProperty("批次业务id")
+    private String batchId;
+
     @ApiModelProperty("批次号")
     private String batchNumber;
 
-    @ApiModelProperty("锁定类型")
+    @ApiModelProperty("批次号(要删除)")
+    private String batchCode;
+
+    @ApiModelProperty("锁定类型（1.下单 2.分配）")
     private Integer lockType;
+
+    @ApiModelProperty("供应商code")
+    private String supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
+    @ApiModelProperty("批次编号")
+    private String batchInfoCode;
+
+    @ApiModelProperty("wms批次编号")
+    private String wmsBatchCode;
+
+    @ApiModelProperty("过期日期")
+    private String beOverdueData;
+
+    @ApiModelProperty("创建时间")
+    private Date create_time;
+
+    @ApiModelProperty("修改时间")
+    private Date update_time;
+
+    @ApiModelProperty("创建人id")
+    private String createById;
+
+    @ApiModelProperty("修改人id")
+    private String updateById;
+
+    @ApiModelProperty("创建人名称")
+    private String createByName;
+
+    @ApiModelProperty("修改人名称")
+    private String updateByName;
 
     @ApiModelProperty("物流中心名称")
     private String transportCenterName;
@@ -60,170 +119,4 @@ public class OrderInfoItemProductBatch {
 
     @ApiModelProperty("公司名称")
     private String companyName;
-
-    @ApiModelProperty("供应商code")
-    private String supplierCode;
-
-    @ApiModelProperty("供应商名称")
-    private String supplierName;
-
-    public String getSupplierName() {
-        return supplierName;
-    }
-
-    public void setSupplierName(String supplierName) {
-        this.supplierName = supplierName;
-    }
-
-    public String getSupplierCode() {
-        return supplierCode;
-    }
-
-    public void setSupplierCode(String supplierCode) {
-        this.supplierCode = supplierCode;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getOrderCode() {
-        return orderCode;
-    }
-
-    public void setOrderCode(String orderCode) {
-        this.orderCode = orderCode == null ? null : orderCode.trim();
-    }
-
-    public Long getProductLineNum() {
-        return productLineNum;
-    }
-
-    public void setProductLineNum(Long productLineNum) {
-        this.productLineNum = productLineNum;
-    }
-
-    public Long getOriginalLineNum() {
-        return originalLineNum;
-    }
-
-    public void setOriginalLineNum(Long originalLineNum) {
-        this.originalLineNum = originalLineNum;
-    }
-
-    public String getSkuCode() {
-        return skuCode;
-    }
-
-    public void setSkuCode(String skuCode) {
-        this.skuCode = skuCode == null ? null : skuCode.trim();
-    }
-
-    public String getSkuName() {
-        return skuName;
-    }
-
-    public void setSkuName(String skuName) {
-        this.skuName = skuName == null ? null : skuName.trim();
-    }
-
-    public Long getNum() {
-        return num;
-    }
-
-    public void setNum(Long num) {
-        this.num = num;
-    }
-
-    public Long getActualDeliverNum() {
-        return actualDeliverNum;
-    }
-
-    public void setActualDeliverNum(Long actualDeliverNum) {
-        this.actualDeliverNum = actualDeliverNum;
-    }
-
-    public Date getProductTime() {
-        return productTime;
-    }
-
-    public void setProductTime(Date productTime) {
-        this.productTime = productTime;
-    }
-
-    public String getBatchRemark() {
-        return batchRemark;
-    }
-
-    public void setBatchRemark(String batchRemark) {
-        this.batchRemark = batchRemark == null ? null : batchRemark.trim();
-    }
-
-    public String getBatchNumber() {
-        return batchNumber;
-    }
-
-    public void setBatchNumber(String batchNumber) {
-        this.batchNumber = batchNumber == null ? null : batchNumber.trim();
-    }
-
-    public Integer getLockType() {
-        return lockType;
-    }
-
-    public void setLockType(Integer lockType) {
-        this.lockType = lockType;
-    }
-
-    public String getTransportCenterName() {
-        return transportCenterName;
-    }
-
-    public void setTransportCenterName(String transportCenterName) {
-        this.transportCenterName = transportCenterName == null ? null : transportCenterName.trim();
-    }
-
-    public String getTransportCenterCode() {
-        return transportCenterCode;
-    }
-
-    public void setTransportCenterCode(String transportCenterCode) {
-        this.transportCenterCode = transportCenterCode == null ? null : transportCenterCode.trim();
-    }
-
-    public String getWarehouseName() {
-        return warehouseName;
-    }
-
-    public void setWarehouseName(String warehouseName) {
-        this.warehouseName = warehouseName == null ? null : warehouseName.trim();
-    }
-
-    public String getWarehouseCode() {
-        return warehouseCode;
-    }
-
-    public void setWarehouseCode(String warehouseCode) {
-        this.warehouseCode = warehouseCode == null ? null : warehouseCode.trim();
-    }
-
-    public String getCompanyCode() {
-        return companyCode;
-    }
-
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode == null ? null : companyCode.trim();
-    }
-
-    public String getCompanyName() {
-        return companyName;
-    }
-
-    public void setCompanyName(String companyName) {
-        this.companyName = companyName == null ? null : companyName.trim();
-    }
 }
