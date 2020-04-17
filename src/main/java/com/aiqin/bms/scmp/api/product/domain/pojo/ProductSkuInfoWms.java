@@ -24,6 +24,11 @@ public class ProductSkuInfoWms extends CommonBean {
     @JsonProperty("product_category_name")
     private String productCategoryName;
 
+
+    @ApiModelProperty("货号")
+    @JsonProperty("item_number")
+    private String itemNumber; //TODO
+
     @ApiModelProperty("单位code")
     @JsonProperty("unit_code")
     private String unitCode;
@@ -84,7 +89,7 @@ public class ProductSkuInfoWms extends CommonBean {
     private Date updateTime;
 
 
-    @ApiModelProperty("商品/赠品(0:商品，1:赠品 2:组合商品)")
+    @ApiModelProperty("商品类型(0:商品，1:赠品 2:组合商品)")
     @JsonProperty("goods_gifts")
     private Byte goodsGifts;
 
@@ -93,6 +98,54 @@ public class ProductSkuInfoWms extends CommonBean {
     @JsonProperty("manufacturer_guide_price")
     private BigDecimal manufacturerGuidePrice;
 
+
+    @ApiModelProperty("颜色code")
+    @JsonProperty("color_code")
+    private String colorCode;
+
+    @ApiModelProperty("颜色名称")
+    @JsonProperty("color_name")
+    private String colorName;
+
+    @ApiModelProperty("包装箱子长度")
+    @JsonProperty("box_length")
+    private Long boxLength;
+
+    @ApiModelProperty("宽度（mm）")
+    @JsonProperty("box_width")
+    private Long boxWidth;
+
+    @ApiModelProperty("箱子高度")
+    @JsonProperty("box_height")
+    private Long boxHeight;
+
+    @ApiModelProperty("箱子体积")
+    @JsonProperty("box_volume")
+    private Long boxVolume;
+
+    @ApiModelProperty("毛重")
+    @JsonProperty("box_gross_weight")
+    private BigDecimal boxGrossWeight;
+
+    @ApiModelProperty("净重")
+    @JsonProperty("net_weight")
+    private BigDecimal netWeight;
+
+    @ApiModelProperty("供应商名称")
+    @JsonProperty("supply_unit_code")
+    private String supplyUnitCode;
+
+    @ApiModelProperty("供货单位名称")
+    @JsonProperty("supply_unit_name")
+    private String supplyUnitName;
+
+    @ApiModelProperty("sku状态，0为启用，1为禁用")
+    @JsonProperty("sku_status")
+    private Byte skuStatus;
+
+    @ApiModelProperty("季节波段")
+    @JsonProperty("season_band")
+    private String seasonBand;
 
     @ApiModelProperty("改sku下仓库配置")
     @JsonProperty("sku_configs_wms_reps_vos")

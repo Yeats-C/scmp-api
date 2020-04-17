@@ -50,14 +50,14 @@ public class SupplierWms extends CommonBean {
     @JsonProperty("address")
     private String address;
 
-    @ApiModelProperty("删除标记(0:正常 1:删除")
-    @JsonProperty("del_flag")
-    private Byte delFlag;
 
     @ApiModelProperty("备注")
     @JsonProperty("remark")
     private String remark;
 
+    @ApiModelProperty("是否禁用(0:正常 1:禁用)")
+    @JsonProperty("enable")
+    private Byte enable;
 
     @ApiModelProperty("修改时间")
     @JsonProperty("update_time")
