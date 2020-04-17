@@ -70,7 +70,7 @@ public class WarehouseConfigController {
 
     @PostMapping("/update")
     @ApiOperation(value = "库房配置详情")
-    public HttpResponse<Boolean> update( WarehouseConfigReq warehouseConfigReq) {
+    public HttpResponse<Boolean> update( @RequestBody WarehouseConfigReq warehouseConfigReq) {
         return HttpResponse.success(warehouseConfigService.update(warehouseConfigReq));
     }
 }

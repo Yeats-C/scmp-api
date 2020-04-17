@@ -103,17 +103,15 @@
         where id = #{id,jdbcType=BIGINT}
     </delete>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
-        <!--
-          This element was generated on Thu Apr 09 17:36:59 CST 2020.
-        -->
-        insert into warhouse_config (id, warehouse_name, warehouse_code, 
+
+        insert into warhouse_config (warehouse_name, warehouse_code,
             warehouse_type, stock_code, stock_name, 
             docking_type, docking_system, counterpart_warehouse_name, 
             counterpart_warehouse_code, counterpart_stock_code, 
             counterpart_stock_name, enable, create_by, 
             create_time, update_by, update_time
             )
-        values (#{id,jdbcType=BIGINT}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, 
+        values ( #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},
             #{warehouseType,jdbcType=VARCHAR}, #{stockCode,jdbcType=VARCHAR}, #{stockName,jdbcType=VARCHAR}, 
             #{dockingType,jdbcType=INTEGER}, #{dockingSystem,jdbcType=INTEGER}, #{counterpartWarehouseName,jdbcType=VARCHAR}, 
             #{counterpartWarehouseCode,jdbcType=VARCHAR}, #{counterpartStockCode,jdbcType=VARCHAR}, 
