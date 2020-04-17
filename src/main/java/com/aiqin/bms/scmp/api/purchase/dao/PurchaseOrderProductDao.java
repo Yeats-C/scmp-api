@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -20,8 +19,6 @@ public interface PurchaseOrderProductDao {
     List<PurchaseOrderProduct> purchaseOrderList(PurchaseOrderProductRequest request);
 
     Integer purchaseOrderCount(PurchaseOrderProductRequest request);
-
-    List<PurchaseOrderProduct> orderBySku(String purchaseOrderId);
 
     PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderCode")String purchaseOrderCode,@Param("linnum") Integer linnum);
 

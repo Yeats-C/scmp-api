@@ -185,12 +185,6 @@
       #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})
     </foreach>
   </insert>
-  <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
-    select sku_code as skuCode, sku_name as skuName
-    from purchase_order_product
-    where  purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
-    GROUP BY sku_code
-  </select>
   <select id="warehousingInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
     sku_code as skuCode, sku_name as skuName, brand_id as brandId, brand_name as brandName, category_id as categoryId,

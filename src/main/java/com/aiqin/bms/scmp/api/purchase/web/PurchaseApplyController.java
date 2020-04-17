@@ -140,18 +140,6 @@ public class PurchaseApplyController {
         return purchaseApplyService.purchaseNewEdit(purchaseApplyId);
     }
 
-//    @PostMapping("/purchase/form")
-//    @ApiOperation("生成采购申请单")
-//    public HttpResponse purchaseApplyForm(@RequestBody PurchaseApplyProductRequest applyProductRequest) {
-//        return purchaseApplyService.purchaseApplyForm(applyProductRequest);
-//    }
-
-//    @GetMapping("/product/basic")
-//    @ApiOperation("查询采购申请-编辑采购申请-商品基本信息")
-//    public HttpResponse applyProductBasic(@RequestParam("purchase_apply_id") String purchaseApplyId) {
-//        return purchaseApplyService.applyProductBasic(purchaseApplyId);
-//    }
-
     @GetMapping("/selection/product")
     @ApiOperation("查询采购申请-编辑采购申请-选中商品列表")
     public HttpResponse applySelectionProduct(@RequestParam("purchase_apply_id") String purchaseApplyId) {
@@ -181,12 +169,6 @@ public class PurchaseApplyController {
         return automaticPurchaseService.automaticPurchase(data);
     }
 
-//    @GetMapping("/execute/warehousing")
-//    @ApiOperation("定时执行有效期到期入库完成（备货确认开始）")
-//    public HttpResponse executeWarehousing() {
-//        return automaticPurchaseService.executeWarehousing();
-//    }
-
     @GetMapping("/intellect/purchase")
     @ApiOperation("智能采购-生成建议补货数(yy-mmmm)")
     public HttpResponse intellect(@RequestParam("months") String months) {
@@ -204,11 +186,5 @@ public class PurchaseApplyController {
     public HttpResponse importPdf(@RequestParam("purchase_order_code") String purchaseOrderCode, HttpServletResponse response) {
         return  purchaseApplyService.importPdf(purchaseOrderCode, response);
     }
-
-//    @GetMapping("/delete")
-//    @ApiOperation("删除采购申请单")
-//    public HttpResponse purchaseDelete(@RequestParam("purchase_order_id") String purchaseOrderId) {
-//        return purchaseApplyService.purchaseDelete(purchaseOrderId);
-//    }
 
 }
