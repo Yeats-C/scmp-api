@@ -490,7 +490,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
                 if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    return HttpResponse.failure(null, "调用wms失败");
+                    return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
                 }
             }
             logs.add(log);
@@ -524,7 +524,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setConsignee(request.getCustomerName());
         ssis.setProvinceName(request.getProvinceName());
         ssis.setCityName(request.getCityName());
-        ssis.setAreaName(request.getDistrictName());
+        // 直辖市情况下 区/县为null
+        if(request.getDistrictName() == null){
+            ssis.setAreaName(request.getCityName());
+        }else {
+            ssis.setAreaName(request.getDistrictName());
+        }
         ssis.setAddress(request.getReceiveAddress());
         ssis.setMobile(request.getReceiveMobile());
         ssis.setTel(request.getReceiveMobile());
