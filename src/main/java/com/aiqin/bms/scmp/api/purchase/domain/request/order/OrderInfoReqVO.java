@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -216,6 +217,23 @@ public class OrderInfoReqVO {
     @ApiModelProperty("公司编码")
     @NotNull(message = "companyCode can not be null！")
     private String companyCode;
+
+    // 销售单新加字段
+    @ApiModelProperty(value = "发票地址")
+    @JsonProperty("invoice_address")
+    private String invoiceAddress;
+
+    @ApiModelProperty(value = "发票电话")
+    @JsonProperty("invoice_mobile")
+    private String invoiceMobile;
+
+    @ApiModelProperty(value = "发票开户银行")
+    @JsonProperty("invoice_bank")
+    private String invoiceBank;
+
+    @ApiModelProperty(value = "发票银行账号")
+    @JsonProperty("invoice_bank_account")
+    private String invoiceBankAccount;
 
     @ApiModelProperty("商品信息")
     private List<OrderInfoItemReqVO> productList;
