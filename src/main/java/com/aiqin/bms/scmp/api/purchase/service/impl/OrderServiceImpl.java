@@ -12,6 +12,8 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
+import com.aiqin.bms.scmp.api.product.domain.request.order.SaleOutboundDetailedSource;
+import com.aiqin.bms.scmp.api.product.domain.request.order.SaleSourcInfoSource;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -33,10 +35,9 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -45,6 +46,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +83,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private ProductSkuCheckoutDao productSkuCheckoutDao;
     @Autowired
     private OrderCallbackService orderCallbackService;
+    @Value("${center.wms.url}")
+    private String centerWmsUrl;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -462,6 +466,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         orders.add(info);
         List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
         orderItems.addAll(orderItem);
+
+        // 调用销售单生成出库单信息
+        String outboundOderCode = this.insertOutbound(vo);
+
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -475,6 +483,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                        OrderStatus.WAITING_FOR_PICKING.getBackgroundOrderStatus(),
                        OrderStatus.WAITING_FOR_PICKING.getExplain(), OrderStatus.WAITING_FOR_PICKING.getStandardDescription(),
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
+
+               // 配送的情况下 调用wms
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(request, outboundOderCode);
+                String url = centerWmsUrl+"/sale/source/outbound";
+                HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
+                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
+                }
             }
             logs.add(log);
         }
@@ -482,9 +499,65 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveData(orderItems, orders);
         //存日志
         saveLog(logs);
-        // 调用销售单生成出库单信息
-        this.insertOutbound(vo);
         return HttpResponse.success();
+    }
+
+    // 将数据传给wms
+    private SaleSourcInfoSource insertWms(ErpOrderInfo request, String outboundOderCode) {
+        SaleSourcInfoSource ssis = new SaleSourcInfoSource();
+        // 出库单信息
+        ssis.setOrderCode(outboundOderCode);
+        ssis.setBity("OFFLINE");
+        ssis.setWarehouseCode(request.getWarehouseCode());
+        ssis.setFromType("销售单");
+        ssis.setFromCode(request.getSourceCode());
+        ssis.setPlatformCode("99");
+        ssis.setPlatformName("独立网店");
+        ssis.setIsUrgency("0");
+        ssis.setDownDate(request.getCreateTime());
+        ssis.setPayTime(request.getPaymentTime());
+        ssis.setAuditTime(new Date());
+        ssis.setIsDeliveryPay(false);
+        ssis.setShopCode(request.getCustomerCode());
+        ssis.setShopName(request.getCustomerName());
+        ssis.setBunick(request.getCustomerName());
+        ssis.setConsignee(request.getCustomerName());
+        ssis.setProvinceName(request.getProvinceName());
+        ssis.setCityName(request.getCityName());
+        // 直辖市情况下 区/县为null
+        if(request.getDistrictName() == null){
+            ssis.setAreaName(request.getCityName());
+        }else {
+            ssis.setAreaName(request.getDistrictName());
+        }
+        ssis.setAddress(request.getReceiveAddress());
+        ssis.setMobile(request.getReceiveMobile());
+        ssis.setTel(request.getReceiveMobile());
+        ssis.setOrderPrice(request.getTotalProductAmount().doubleValue());
+        ssis.setAmountReceivable(0.0);
+        ssis.setIsinvoice(true);
+        ssis.setInvoiceName(request.getInvoiceTitle());
+        ssis.setGoodsOwner(request.getReceivePerson()); // 货主 取收货人 要确认
+        ssis.setRemark(request.getRemake());
+
+        // 出库单商品信息
+        List<SaleOutboundDetailedSource> plists = new ArrayList<>();
+        List<ErpOrderItem> itemList = request.getItemList();
+        for (ErpOrderItem list : itemList) {
+            SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
+            sods.setSku(list.getSkuCode());
+            sods.setQty(list.getProductCount().intValue());
+            sods.setPrice(list.getPreferentialAmount().doubleValue());
+            sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
+            sods.setGwf1(list.getOrderStoreCode());
+            sods.setGwf2(list.getLineCode().toString());
+            sods.setGwf3(list.getColorName());
+            sods.setGwf4(list.getModelCode());
+            sods.setGwf5(list.getUnitName());
+            plists.add(sods);
+        }
+        ssis.setSaleOutboundDetailedSource(plists);
+        return ssis;
     }
 
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
@@ -562,7 +635,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 出库单参数填充
-    private void insertOutbound(OrderInfoReqVO vo) {
+    private String insertOutbound(OrderInfoReqVO vo) {
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         // 公司
         outboundReqVo.setCompanyCode(Global.COMPANY_09);
@@ -649,7 +722,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 税额
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
-        outboundService.saveOutbound(outboundReqVo);
+        String outboundOderCode = outboundService.saveOutbound(outboundReqVo);
+        return outboundOderCode;
     }
 
     @Override
