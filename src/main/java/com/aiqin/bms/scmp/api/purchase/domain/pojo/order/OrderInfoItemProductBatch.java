@@ -18,9 +18,6 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("库位号")
     private String locationCode;
 
-    @ApiModelProperty("商品行号(要废弃)")
-    private Long productLineNum;
-
     @ApiModelProperty("商品行号(以sku为主的行号)")
     private Long lineCode;
 
@@ -33,12 +30,6 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("数量(要废弃)")
-    private Long num;
-
-    @ApiModelProperty("实发数量(要废弃)")
-    private Long actualDeliverNum;
-
     @ApiModelProperty("数量(最小单位数量)")
     private Long totalCount;
 
@@ -47,9 +38,6 @@ public class OrderInfoItemProductBatch {
 
     @ApiModelProperty("退货数量")
     private Long returnGoodCount;
-
-    @ApiModelProperty("生产日期(要删除)")
-    private Date productTime;
 
     @ApiModelProperty("生产日期")
     private String productDate;
@@ -61,9 +49,6 @@ public class OrderInfoItemProductBatch {
     private String batchId;
 
     @ApiModelProperty("批次号")
-    private String batchNumber;
-
-    @ApiModelProperty("批次号(要删除)")
     private String batchCode;
 
     @ApiModelProperty("锁定类型（1.下单 2.分配）")
@@ -102,21 +87,4 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("修改人名称")
     private String updateByName;
 
-    @ApiModelProperty("物流中心名称")
-    private String transportCenterName;
-
-    @ApiModelProperty("物流中心编码")
-    private String transportCenterCode;
-
-    @ApiModelProperty("仓库名称")
-    private String warehouseName;
-
-    @ApiModelProperty("仓库编码")
-    private String warehouseCode;
-
-    @ApiModelProperty("公司编码")
-    private String companyCode;
-
-    @ApiModelProperty("公司名称")
-    private String companyName;
 }
