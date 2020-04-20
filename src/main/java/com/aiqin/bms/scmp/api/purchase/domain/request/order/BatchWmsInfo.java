@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -13,33 +14,39 @@ import java.util.Date;
 public class BatchWmsInfo {
 
     @ApiModelProperty(value = "批次号")
-    private String batch_code;
+    @JsonProperty("batch_code")
+    private String batchCode;
 
-    @NotBlank(message = "sku编码不能为空")
     @ApiModelProperty(value = "sku编码")
-    private String sku_code;
+    @JsonProperty("sku_code")
+    private String skuCode;
 
-    @NotBlank(message = "sku名称不能为空")
     @ApiModelProperty(value = "sku名称")
-    private String sku_name;
+    @JsonProperty("sku_name")
+    private String skuName;
 
-    @NotBlank(message = "生产日期不能为空")
     @ApiModelProperty(value = "生产日期")
-    private String prodcut_date;
+    @JsonProperty("prodcut_date")
+    private String prodcutDate;
 
     @ApiModelProperty(value = "批次备注")
-    private String batch_remark;
+    @JsonProperty("batch_remark")
+    private String batchRemark;
 
     @ApiModelProperty(value = "最小单位数量")
-    private Long total_count;
+    @JsonProperty("total_count")
+    private Long totalCount;
 
     @ApiModelProperty(value = "实际最小单位数量")
-    private Long actual_total_count;
+    @JsonProperty("actual_total_count")
+    private Long actualTotalCount;
 
     @ApiModelProperty(value = "行号")
-    private Integer line_code;
+    @JsonProperty("line_code")
+    private Integer lineCode;
 
     @ApiModelProperty(value = "过期日期")
-    private String be_overdue_data;
+    @JsonProperty("be_overdue_data")
+    private String beOverdueData;
 
 }
