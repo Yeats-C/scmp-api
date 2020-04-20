@@ -16,6 +16,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -682,39 +684,53 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success(inbound);
     }
 
-    // 修改库存在途数
+    // 采购单加减在途数
     private void wayNum(PurchaseOrder order, Integer type){
-        StockChangeRequest stock = new StockChangeRequest();
-        stock.setOperationType(type);
-        List<StockVoRequest> list = Lists.newArrayList();
-        StockVoRequest stockVo;
+        ChangeStockRequest request = new ChangeStockRequest();
+        request.setOperationType(type);
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfo;
+        // 查询入库单号
+        String documentCode = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode());
         // 查询该采购单的商品
-        List<PurchaseApplyDetailResponse> products = purchaseOrderProductDao.orderProductInfoByGroup(order.getPurchaseOrderId());
+        List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductByGroup(order.getPurchaseOrderId());
         if(CollectionUtils.isNotEmptyCollection(products)){
-            for(PurchaseApplyDetailResponse product:products){
+            for(PurchaseOrderProduct product:products){
                 long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
                 long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
                 if(singleCount - actualSingleCount == 0){
                     continue;
                 }
-                stockVo = new StockVoRequest();
-                stockVo.setTransportCenterCode(product.getTransportCenterCode());
-                stockVo.setTransportCenterName(product.getTransportCenterName());
-                stockVo.setWarehouseCode(product.getWarehouseCode());
-                stockVo.setWarehouseName(product.getWarehouseName());
-                stockVo.setOperator(product.getCreateByName());
-                stockVo.setSkuCode(product.getSkuCode());
-                stockVo.setSkuName(product.getSkuName());
-                stockVo.setChangeNum(singleCount - actualSingleCount);
-                stockVo.setDocumentNum(product.getPurchaseOrderCode());
-                stockVo.setDocumentType(3);
-                stockVo.setTaxRate(product.getTaxRate());
-                stockVo.setCompanyCode(order.getCompanyCode());
-                stockVo.setCompanyName(order.getCompanyName());
-                list.add(stockVo);
+                stockInfo = new StockInfoRequest();
+                stockInfo.setCompanyCode(order.getCompanyCode());
+                stockInfo.setCompanyName(order.getCompanyName());
+                stockInfo.setTransportCenterCode(order.getTransportCenterCode());
+                stockInfo.setTransportCenterName(order.getTransportCenterName());
+                stockInfo.setWarehouseCode(order.getWarehouseCode());
+                stockInfo.setWarehouseName(order.getWarehouseName());
+                stockInfo.setWarehouseType(1);
+                stockInfo.setSkuCode(product.getSkuCode());
+                stockInfo.setSkuName(product.getSkuName());
+                stockInfo.setTaxRate(product.getTaxRate());
+                stockInfo.setDocumentCode(documentCode);
+                stockInfo.setDocumentType(1);
+                stockInfo.setSourceDocumentCode(order.getPurchaseOrderCode());
+                stockInfo.setSourceDocumentType(3);
+                stockInfo.setOperatorId(order.getCreateById());
+                stockInfo.setOperatorName(order.getCreateByName());
+                // 加在途
+                if(type == 7){
+                    stockInfo.setChangeCount(singleCount);
+                }else {
+                    // 减在途并加库存
+                    // TODO
+                    stockInfo.setChangeCount(singleCount - actualSingleCount);
+                    //stockInfo.setPreWayCount();
+                }
+                list.add(stockInfo);
             }
-            stock.setStockVoRequests(list);
-            stockService.changeStock(stock);
+            request.setStockList(list);
+            stockService.stockAndBatchChange(request);
         }
     }
 

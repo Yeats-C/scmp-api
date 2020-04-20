@@ -21,11 +21,11 @@ public class StockInfoRequest {
     @JsonProperty(value = "company_name")
     private String companyName;
 
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty("仓库编码")
     @JsonProperty(value = "transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("物流中心名称")
+    @ApiModelProperty("仓库名称")
     @JsonProperty(value = "transport_center_name")
     private String transportCenterName;
 

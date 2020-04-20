@@ -28,7 +28,7 @@ public interface PurchaseOrderProductDao {
 
     PurchaseOrderProduct selectPreNumAndPraNumBySkuCodeAndSource(@Param("code")String code, @Param("skuCode")String skuCode, @Param("linnum")Integer linnum);
 
-    List<PurchaseApplyDetailResponse> orderProductInfoByGroup(String purchaseOrderId);
+    List<PurchaseOrderProduct> orderProductByGroup(String purchaseOrderId);
 
     List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
 

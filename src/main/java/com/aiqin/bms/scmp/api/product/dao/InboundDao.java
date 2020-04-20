@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
@@ -12,13 +11,9 @@ import java.util.List;
 
 public interface InboundDao {
 
-
-    /**
-     * 分页查询模糊搜索
-     * @param vo  请求实体
-     * @return  入库单主体
-     */
+    /**分页查询模糊搜索*/
     List<Inbound> getInboundList(QueryInboundReqVo vo);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(Inbound record);
@@ -34,13 +29,8 @@ public interface InboundDao {
     List<Inbound> selectInboundInfoByBoundSearch(BoundRequest boundRequest);
 
     Inbound selectByCode(String inboundOderCode);
-    /**
-     * 批量保存入库信息
-     * @author NullPointException
-     * @date 2019/6/28
-     * @param inboundList
-     * @return int
-     */
+
+    /*** 批量保存入库信息*/
     int insertBatch(List<Inbound> inboundList);
 
     Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
@@ -56,4 +46,6 @@ public interface InboundDao {
     void updateByOrderCodes(List<String> list);
 
     String cancelById(String code);
+
+    String inboundCodeOrderLast(String sourceOderCode);
 }

@@ -220,16 +220,10 @@
     and sku_code = #{skuCode, jdbcType=VARCHAR}
     and linnum = #{linnum, jdbcType=INTEGER}
   </select>
-  <select id="orderProductInfoByGroup" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select
-    p.sku_code as skuCode, p.sku_name as skuName, sum(p.single_count) as singleCount,
-    sum(p.actual_single_count) as actualSingleCount, o.create_by_name as createByName,
-		o.purchase_order_code as purchaseOrderCode, o.transport_center_code as transportCenterCode,
-		o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
-		o.warehouse_name as warehouseName, p.tax_rate as taxRate
-    from purchase_order_product p
-	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
-    where o.purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY o.transport_center_code, o.warehouse_code, p.sku_code
+  <select id="orderProductByGroup" resultMap="BaseResultMap">
+    select sku_code, sku_name, sum(single_count), sum(actual_single_count), tax_rate
+    from purchase_order_product
+    where purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY sku_code
   </select>
   <select id="orderProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select
