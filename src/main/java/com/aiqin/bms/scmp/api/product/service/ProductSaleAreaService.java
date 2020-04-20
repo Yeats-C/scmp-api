@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
@@ -290,7 +291,9 @@ public interface ProductSaleAreaService {
 
     BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
 
-    Boolean importData(MultipartFile file);
+    List<SkuSaleAreaImport>  importData(MultipartFile file);
 
     HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode);
+
+    Boolean importDataConfirm(  List<SkuSaleAreaImport> list);
 }

@@ -116,7 +116,7 @@
             #{dockingType,jdbcType=INTEGER}, #{dockingSystem,jdbcType=INTEGER}, #{counterpartWarehouseName,jdbcType=VARCHAR}, 
             #{counterpartWarehouseCode,jdbcType=VARCHAR}, #{counterpartStockCode,jdbcType=VARCHAR}, 
             #{counterpartStockName,jdbcType=VARCHAR}, #{enable,jdbcType=BIT}, #{createBy,jdbcType=VARCHAR}, 
-            #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+           now(), #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
             )
     </insert>
     <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
@@ -282,9 +282,8 @@
             <if test="updateBy != null">
                 update_by = #{updateBy,jdbcType=VARCHAR},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
+                update_time = now()
+
         </set>
         where id = #{id,jdbcType=BIGINT}
     </update>

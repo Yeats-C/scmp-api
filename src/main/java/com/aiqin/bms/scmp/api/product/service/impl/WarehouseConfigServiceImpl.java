@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.dao.WarehouseConfigDao;
 import com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq;
 import com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp;
 import com.aiqin.bms.scmp.api.product.service.WarehouseConfigService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
@@ -41,7 +43,10 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
 
     @Override
     public Boolean save(WarehouseConfigReq warehouseConfigReq) {
-        try {
+
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        warehouseConfigReq.setCreateBy(currentAuthToken.getPersonName());
+                try {
            warehouseConfigDao.insert(warehouseConfigReq);
             return true;
         } catch (Exception e) {
@@ -66,6 +71,8 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
 
     @Override
     public Boolean update(WarehouseConfigReq req) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        req.setUpdateBy(currentAuthToken.getPersonName());
         try {
             warehouseConfigDao.updateById(req);
             return true;
