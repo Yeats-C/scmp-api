@@ -122,8 +122,9 @@ public class DingApprovalController {
     @GetMapping("/purchase/product/apply")
     @ApiOperation("查询申请采购单，商品详情列表")
     public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(@RequestParam("product_apply_code") String purchaseApplyCode,
-                                                                              @RequestParam(value = "transport_center_code",required = false) String transportCenterCode) {
-        return purchaseApplyService.searchApplyProduct(purchaseApplyCode, transportCenterCode);
+                                                                              @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
+                                                                              @RequestParam(value = "apply_type",required = false) Integer applyType) {
+        return purchaseApplyService.searchApplyProduct(purchaseApplyCode, warehouseCode, applyType);
     }
 
     @GetMapping("/transport/center/info")
