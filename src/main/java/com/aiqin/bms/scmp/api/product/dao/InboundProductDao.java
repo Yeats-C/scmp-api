@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
@@ -13,7 +12,6 @@ import java.util.List;
 
 public interface InboundProductDao {
 
-
     int deleteByPrimaryKey(Long id);
 
     int insert(InboundProduct record);
@@ -22,8 +20,6 @@ public interface InboundProductDao {
 
     /**
      * 通过入库单编码查询sku
-     * @param inboundOderCode
-     * @return
      */
     List<InboundProduct> selectByInboundOderCode(String inboundOderCode);
 
@@ -35,23 +31,17 @@ public interface InboundProductDao {
 
     /**
      * sku 批量插入
-     * @param inboundProducts
-     * @return
      */
     int insertBatch(List<InboundProduct> inboundProducts);
 
-
     List<InboundProduct> selectInboundProductListByInboundOderCodeList(@Param("inBoundOderCodeList") List<String> inboundOderCodeList);
-
 
     /**
      * 通过入库单编码查询sku
-     * @param inboundOderCode
-     * @return
      */
     List<InboundProductWmsReqVO> selectMmsReqByInboundOderCode(String inboundOderCode);
 
-    ReturnInboundProduct selectByLinenum(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
+    ReturnInboundProduct inboundByLineCode(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     List<PurchaseApplyDetailResponse> selectPurchaseInfoByPurchaseNum(Inbound inbound);
 

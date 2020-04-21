@@ -18,6 +18,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
@@ -493,54 +494,46 @@ public class InboundServiceImpl implements InboundService {
 
     @Override
 //    @Async("myTaskAsyncPool")
-    public void workFlowCallBack(InboundCallBackReqVo reqVo) {
-
-        log.info("入库单回调实体传入实体:[{}]",JSON.toJSONString(reqVo));
-        //根据编码，查询入库单主体
-//        Inbound inbound = inboundDao.selectByCode(reqVo.getInboundOderCode());
-        Inbound inbound = inboundDao.selectById(reqVo.getId().toString());
+    public void workFlowCallBack(InboundCallBackRequest request) {
+        log.info("入库单回调实体传入实体:[{}]",JSON.toJSONString(request));
+        // 根据入库单号，查询入库单主体
+        Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
         if(inbound == null){
-            log.info("DL 采购单回传，耘链未查询到此入库单，请联系管理员：" + reqVo );
-            throw  new GroundRuntimeException("DL 采购单回传，耘链未查询到此入库单，请联系管理员");
+            log.info("WMS入库单回传，耘链未查询到此入库单，回传失败：" + request);
+            throw  new GroundRuntimeException("WMS入库单回传，耘链未查询到此入库单，回传失败");
         }
-        //设置默认实际数量
-        inbound.setInboundTime(Calendar.getInstance().getTime());
+
+        //inbound.setInboundTime(Calendar.getInstance().getTime());
+        // 设置默认实际数量，实际数量与金额
         inbound.setPraInboundNum(0L);
         inbound.setPraMainUnitNum(0L);
-        //实际含税总金额
-        inbound.setPraTaxAmount(big);
-        // 实际税额
-        inbound.setPraTax(big);
-        //实际不含税总金额
-        inbound.setPraAmount(big);
+        inbound.setPraTaxAmount(BigDecimal.ZERO);
+        inbound.setPraTax(BigDecimal.ZERO);
+        inbound.setPraAmount(BigDecimal.ZERO);
         // 设置已回传状态
         inbound.setInboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
         inbound.setInboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
 
-        //更新sku 数量
-        List<InboundProductCallBackReqVo> list = reqVo.getList();
+        // 变更库存与批次库存
+        ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+        // 采购与调拨加库存并减在途 - 入库类型编码 1.采购 2.调拨 3.退货 4.移库
+        if(Objects.equals(inbound.getInboundTypeCode(), InboundTypeEnum.RETURN_SUPPLY.getCode()) ||
+                Objects.equals(inbound.getInboundTypeCode(), InboundTypeEnum.ALLOCATE.getCode())){
+            changeStockRequest.setOperationType(8);
+        }else if(Objects.equals(inbound.getInboundTypeCode(), InboundTypeEnum.ORDER.getCode()) ||
+                Objects.equals(inbound.getInboundTypeCode(), InboundTypeEnum.MOVEMENT.getCode())){
+            // 退货、移库 - 加库存批次库存
+            changeStockRequest.setOperationType(6);
+        }
+
         //批次
 //        List<InboundBatchCallBackReqVo> inboundBatchCallBackReqVoList = reqVo.getInboundBatchCallBackReqVos();
 
-        // 减在途数并且增加库存 实体
-        StockChangeRequest  stockChangeRequest = new StockChangeRequest();
-        stockChangeRequest.setOrderCode(inbound.getInboundOderCode());
-        //如果不是调拨在途数 状态则是9，退货是10.调拨是8
-        if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.ALLOCATE.getCode())){
-             stockChangeRequest.setOperationType(8);
-        }else if(Objects.equals( inbound.getInboundTypeCode(),InboundTypeEnum.MOVEMENT.getCode())){
-             // 如果是移库
-            stockChangeRequest.setOperationType(10);
-        }else {
-            stockChangeRequest.setOperationType(9);
-        }
-
-        List<StockVoRequest> stockVoRequestList = new ArrayList<>();
-//        List<StockBatchVoRequest> stockBatchVoRequestList = new ArrayList<>();
-
-        for (InboundProductCallBackReqVo inboundProductCallBackReqVo : list) {
-
-            ReturnInboundProduct returnInboundProduct = inboundProductDao.selectByLinenum(inbound.getInboundOderCode(),inboundProductCallBackReqVo.getSkuCode() ,inboundProductCallBackReqVo.getLinenum());
+        List<StockVoRequest> stockVoRequestList = Lists.newArrayList();
+        // 更新入库商品的信息
+        for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+            // 查询对应订单的sku
+            ReturnInboundProduct returnInboundProduct = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
             InboundProduct inboundProduct = new InboundProduct();
             // 复制旧的sku
             BeanCopyUtils.copy(returnInboundProduct,inboundProduct);

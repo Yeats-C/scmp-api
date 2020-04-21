@@ -39,8 +39,6 @@ public interface InboundDao {
 
     PurchaseOrderDetails selectCreateById(String inboundOderCode);
 
-    Inbound selectById(String id);
-
     List<Inbound> listForSap(SapOrderRequest sapOrderRequest);
 
     void updateByOrderCodes(List<String> list);
