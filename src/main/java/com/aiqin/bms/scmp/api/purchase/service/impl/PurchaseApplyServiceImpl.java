@@ -359,7 +359,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 如果库房为空，则为合计
         List<PurchaseApplyDetailResponse> products;
         // 判断是否需要分仓统计，编辑也不需要 applyType = 1 为编辑所用
-        if(applyType == 1){
+        if(applyType != null && applyType == 1){
             products = purchaseApplyProductDao.productList(purchaseApplyCode);
         }else {
             if(StringUtils.isBlank(warehouseCode)){
