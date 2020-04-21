@@ -48,6 +48,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -1031,6 +1032,18 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
 
     }
+
+    /**
+     *  根据销售单号修改wms回传状态和时间
+     * @param outbound
+     * @return
+     */
+    @Override
+    public HttpResponse<Boolean> updateWmsSaleOutboundStutas(Outbound outbound) {
+        outboundDao.updateWmsSaleOutboundStutas(outbound);
+        return HttpResponse.success(Boolean.TRUE);
+    }
+
     /**
      * 补充出库单数据
      * @author NullPointException

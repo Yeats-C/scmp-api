@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -12,8 +13,8 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.product.domain.request.order.SaleOutboundDetailedSource;
-import com.aiqin.bms.scmp.api.product.domain.request.order.SaleSourcInfoSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleOutboundDetailedSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleSourcInfoSource;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -287,6 +288,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         order.setOperatorCode(reqVO.getOperatorCode());
         order.setOperatorTime(date);
         order.setRemake(reqVO.getRemark());
+        order.setDeliveryTime(reqVO.getDeliveryTime());
         //更新
         updateByOrderCode(order);
         //存日志
@@ -485,7 +487,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(request, outboundOderCode);
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(request);
                 String url = centerWmsUrl+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -503,10 +505,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(ErpOrderInfo request, String outboundOderCode) {
+    private SaleSourcInfoSource insertWms(ErpOrderInfo request) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
-        ssis.setOrderCode(outboundOderCode);
+        ssis.setOrderCode(request.getOrderStoreCode());
         ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setFromType("销售单");
@@ -543,20 +545,39 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
         List<ErpOrderItem> itemList = request.getItemList();
-        for (ErpOrderItem list : itemList) {
-            SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
-            sods.setSku(list.getSkuCode());
-            sods.setQty(list.getProductCount().intValue());
-            sods.setPrice(list.getPreferentialAmount().doubleValue());
-            sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
-            sods.setGwf1(list.getOrderStoreCode());
-            sods.setGwf2(list.getLineCode().toString());
-            sods.setGwf3(list.getColorName());
-            sods.setGwf4(list.getModelCode());
-            sods.setGwf5(list.getUnitName());
-            plists.add(sods);
-        }
+       if(itemList != null){
+           for (ErpOrderItem list : itemList) {
+               SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
+               sods.setSku(list.getSkuCode());
+               sods.setQty(list.getProductCount().intValue());
+               sods.setPrice(list.getPreferentialAmount().doubleValue());
+               sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
+               sods.setGwf1(list.getOrderStoreCode());
+               sods.setGwf2(list.getLineCode().toString());
+               sods.setGwf3(list.getColorName());
+               sods.setGwf4(list.getModelCode());
+               sods.setGwf5(list.getUnitName());
+               plists.add(sods);
+           }
+       }
         ssis.setSaleOutboundDetailedSource(plists);
+        List<BatchWmsInfo> pBatchLists = new ArrayList<>();
+        List<OrderInfoItemProductBatch> itemBatchLists = request.getItemBatchList();
+        if(itemBatchLists != null){
+            for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
+                BatchWmsInfo pBtachList = new BatchWmsInfo();
+                pBtachList.setLineCode(itemBatchList.getLineCode().intValue());
+                pBtachList.setSkuCode(itemBatchList.getSkuCode());
+                pBtachList.setSkuName(itemBatchList.getSkuName());
+                pBtachList.setBatchCode(itemBatchList.getBatchCode());
+                pBtachList.setProdcutDate(itemBatchList.getProductDate());
+                pBtachList.setBeOverdueData(itemBatchList.getBeOverdueData());
+                pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
+                pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
+                pBatchLists.add(pBtachList);
+            }
+        }
+        ssis.setOrderInfoItemProductBatches(pBatchLists);
         return ssis;
     }
 
@@ -755,6 +776,76 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             return HttpResponse.success(false);
         }
         return HttpResponse.success(true);
+    }
+
+    @Override
+    public HttpResponse updateSaleOrder(WmsOrderInfo vo) {
+        /*
+        耘链逻辑：接收信息后，根据状态。
+        如果是“开始拣货”更新：出库单状态开始作业、出库开始时间；销售单状态开始拣货。
+        如果是“扫描完成”更新：销售单状态扫描完成。
+        如果是“已全部发货”更新：出库单状态完成，出库结束时间，如果有出库开始时间也更新；销售单状态已全部发货，发货时间
+            WMS对接平台逻辑：根据WMS情况，可回传一次、两次或三次，
+            分别在开始拣货时、扫描完成时和已全部发货时，并回传相应状态
+         */
+        if(Global.WMS_SALE_STATUS_1.equals(vo.getOrderStatus())){
+            WmsPrcking(vo);
+        }else if(Global.WMS_SALE_STATUS_2.equals(vo.getOrderStatus())){
+            if(vo.getPickingDate() != null && vo.getPickingDate().toString().length() <= 0){
+                WmsPrcking(vo);
+            }
+            ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+            changeOrderStatusReqVO.setOrderStatus(OrderStatus.SCAN_COMPLETED.getStatusCode());
+            changeOrderStatusReqVO.setOrderCode(vo.getOrderStoreCode());
+            changeOrderStatusReqVO.setOperator(vo.getOutboundOperator());
+            changeStatus(changeOrderStatusReqVO);
+            OrderInfoLog log = new OrderInfoLog(null,vo.getOrderStoreCode(), OrderStatus.SCAN_COMPLETED.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.SCAN_COMPLETED.getStatusCode()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(OrderStatus.SCAN_COMPLETED.getStatusCode()).getStandardDescription(),null,vo.getOutboundOperator(),new Date(),null,null);
+            List<OrderInfoLog> logs = Lists.newArrayList();
+            logs.add(log);
+            saveLog(logs);
+        }else if(Global.WMS_SALE_STATUS_3.equals(vo.getOrderStatus())){
+            // 拣货时间不为null/空
+            if(vo.getPickingDate() != null && vo.getPickingDate().toString().length() <= 0){
+                WmsPrcking(vo);
+                // 扫描完成 更新状态扫描完成
+                ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+                changeOrderStatusReqVO.setOrderStatus(OrderStatus.SCAN_COMPLETED.getStatusCode());
+                changeOrderStatusReqVO.setOrderCode(vo.getOrderStoreCode());
+                changeOrderStatusReqVO.setOperator(vo.getOutboundOperator());
+                changeStatus(changeOrderStatusReqVO);
+                OrderInfoLog log = new OrderInfoLog(null,vo.getOrderStoreCode(), OrderStatus.SCAN_COMPLETED.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.SCAN_COMPLETED.getStatusCode()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(OrderStatus.SCAN_COMPLETED.getStatusCode()).getStandardDescription(),null,vo.getOutboundOperator(),new Date(),null,null);
+                List<OrderInfoLog> logs = Lists.newArrayList();
+                logs.add(log);
+                saveLog(logs);
+            }
+            // 已全部发货
+            ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+            changeOrderStatusReqVO.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
+            changeOrderStatusReqVO.setOrderCode(vo.getOrderStoreCode());
+            changeOrderStatusReqVO.setOperator(vo.getOutboundOperator());
+            changeOrderStatusReqVO.setDeliveryTime(vo.getOutboundDate());
+            changeStatus(changeOrderStatusReqVO);
+            OrderInfoLog log = new OrderInfoLog(null,vo.getOrderStoreCode(), OrderStatus.ALL_SHIPPED.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.ALL_SHIPPED.getStatusCode()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(OrderStatus.ALL_SHIPPED.getStatusCode()).getStandardDescription(),null,vo.getOutboundOperator(),new Date(),null,null);
+            List<OrderInfoLog> logs = Lists.newArrayList();
+            logs.add(log);
+            saveLog(logs);
+        }else {
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+        }
+        return HttpResponse.success(true);
+    }
+
+    private void WmsPrcking(WmsOrderInfo vo) {
+        ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
+        changeOrderStatusReqVO.setOrderStatus(OrderStatus.PICKING.getStatusCode());
+        changeOrderStatusReqVO.setOrderCode(vo.getOrderStoreCode());
+        changeOrderStatusReqVO.setOperator(vo.getOutboundOperator());
+        changeStatus(changeOrderStatusReqVO);
+        //存日志
+        OrderInfoLog log = new OrderInfoLog(null,vo.getOrderStoreCode(), OrderStatus.PICKING.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getStandardDescription(),null,vo.getOutboundOperator(),new Date(),null,null);
+        List<OrderInfoLog> logs = Lists.newArrayList();
+        logs.add(log);
+        saveLog(logs);
     }
 
 }

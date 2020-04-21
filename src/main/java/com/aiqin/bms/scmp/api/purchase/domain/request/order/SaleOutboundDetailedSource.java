@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.request.order;
+package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
