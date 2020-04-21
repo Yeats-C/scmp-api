@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.price.PricePromotionProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.*;
@@ -202,9 +203,24 @@ public class ProductSaleAreaController {
     }
 
 
+    @PostMapping("/importConfig/confirm")
+    @ApiOperation(("确认导入"))
+    public HttpResponse<Boolean> importDataConfirm (List<SkuSaleAreaImport> skuSaleAreaImports) {
+        try {
+            return HttpResponse.success(productSaleAreaService.importDataConfirm(skuSaleAreaImports));
+        } catch (BizException e) {
+            log.error(e.getMessageId().getMessage());
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+
     @PostMapping("/importConfig")
     @ApiOperation(("sku文件导入"))
-    public HttpResponse<Boolean> importData (MultipartFile file) {
+    public HttpResponse<List<SkuSaleAreaImport>> importData (MultipartFile file) {
         try {
             return HttpResponse.success(productSaleAreaService.importData(file));
         } catch (BizException e) {
@@ -215,7 +231,6 @@ public class ProductSaleAreaController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
-
 
     @PostMapping("/official/skuList2")
     @ApiOperation("sku商品销售区域列表，按sku商品查询")

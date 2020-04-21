@@ -1039,11 +1039,12 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean importData(MultipartFile file) {
+    public List<SkuSaleAreaImport>  importData(MultipartFile file) {
+        List<SkuSaleAreaImport> skuConfigImports=Lists.newArrayList();
         //获取登录人
         AuthToken currentAuthToken = getUser();
         try {
-            List<SkuSaleAreaImport> skuConfigImports = ExcelUtil.readExcel(file, SkuSaleAreaImport.class, 1, 2);
+            skuConfigImports = ExcelUtil.readExcel(file, SkuSaleAreaImport.class, 1, 2);
 
             //供货渠道类别
             skuConfigImports = skuConfigImports.stream().distinct().collect(Collectors.toList());
@@ -1082,16 +1083,33 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
                 skuSaleAreaImport.setCompanyCode(currentAuthToken.getCompanyCode());
                 skuSaleAreaImport.setCompanyName(currentAuthToken.getCompanyName());
                 skuSaleAreaImport.setCreateBy(currentAuthToken.getPersonName());
-                productSkuSaleAreaMapper.insertImports(skuSaleAreaImport);
             }
 
 
         } catch (ExcelException e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
-        return true;
+        return skuConfigImports;
     }
+
+    @Override
+    public Boolean importDataConfirm(List<SkuSaleAreaImport> skuSaleAreaImports) {
+
+        //获取登录人
+        AuthToken currentAuthToken = getUser();
+        for (SkuSaleAreaImport skuSaleAreaImport:
+        skuSaleAreaImports ) {
+            skuSaleAreaImport.setCompanyCode(currentAuthToken.getCompanyCode());
+            skuSaleAreaImport.setCompanyName(currentAuthToken.getCompanyName());
+            skuSaleAreaImport.setCreateBy(currentAuthToken.getPersonName());
+
+            productSkuSaleAreaMapper.insertImports(skuSaleAreaImport);
+        }
+        return null;
+    }
+
+
 
     @Override
     public HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode) {
@@ -1120,4 +1138,6 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         return HttpResponse.success();
 
     }
+
+
 }
