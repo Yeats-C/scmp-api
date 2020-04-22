@@ -25,9 +25,7 @@ public interface InboundProductDao {
 
     InboundProduct selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(InboundProduct record);
-
-    int updateByPrimaryKey(InboundProduct record);
+    Integer update(InboundProduct record);
 
     /**
      * sku 批量插入
@@ -41,7 +39,7 @@ public interface InboundProductDao {
      */
     List<InboundProductWmsReqVO> selectMmsReqByInboundOderCode(String inboundOderCode);
 
-    ReturnInboundProduct inboundByLineCode(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
+    InboundProduct inboundByLineCode(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     List<PurchaseApplyDetailResponse> selectPurchaseInfoByPurchaseNum(Inbound inbound);
 

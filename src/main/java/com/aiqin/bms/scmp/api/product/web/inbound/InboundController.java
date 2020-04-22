@@ -5,7 +5,6 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
@@ -19,7 +18,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -98,6 +96,7 @@ public class InboundController {
     public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
                                                                               @RequestParam(value = "page_size", required = false)Integer pageSize,
                                                                               @RequestParam(value = "page_no", required = false)Integer pageNo){
-        return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+        //return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+        return HttpResponse.success();
     }
 }

@@ -5,37 +5,41 @@
 
 <generatorConfiguration>
 
-    <context id="psc-api">
-        <plugin type="mybatis.generator.plugins.GeneratorSwagger2Doc"/>
+    <context id="scmp-api">
+        <plugin type="mybatis.generator.plugins.GeneratorSwagger2Doc">
+            <property name="apiModelAnnotationPackage" value="io.swagger.annotations.ApiModel" />
+            <property name="apiModelPropertyAnnotationPackage" value="io.swagger.annotations.ApiModelProperty" />
+        </plugin>
+
         <commentGenerator>
             <property name="suppressAllComments" value="true"/>
             <property name="suppressDate" value="true"/>
         </commentGenerator>
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://127.0.0.1:3306/bms_scmp"
-                        userId="develop"
-                        password="develop">
+                        connectionURL="jdbc:mysql://rm-2zedpm9s6b931qhe2yo.mysql.rds.aliyuncs.com/bms_scmp"
+                        userId="scmp_write"
+                        password="nCUdR4jBQPVnSDVTSxFaA">
         </jdbcConnection>
 
         <javaTypeResolver>
             <property name="forceBigDecimals" value="false"/>
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.aiqin.bms.scmp.api.purchase.domain" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="com.aiqin.bms.scmp.api.product.domain.pojo" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
             <property name="trimStrings" value="false"/>
         </javaModelGenerator>
 
-        <sqlMapGenerator targetPackage="com.aiqin.bms.scmp.api.purchase.mapper" targetProject="src/main/resources">
+        <sqlMapGenerator targetPackage="com.aiqin.bms.scmp.api.product.dao" targetProject="src/main/resources">
             <property name="trimStrings" value="true"/>
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.aiqin.bms.scmp.api.purchase.dao" targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.aiqin.bms.scmp.api.product.dao" targetProject="src/main/java">
             <property name="enableSubPackages" value="true"/>
         </javaClientGenerator>
 
         <!--对应数据库表 mysql可以加入主键自增 字段命名 忽略某字段等-->
-        <table tableName="apply_reject_record" />
-        <table tableName="apply_reject_record_detail" />
+        <table tableName="inbound_batch_2"/>
+
     </context>
 </generatorConfiguration>

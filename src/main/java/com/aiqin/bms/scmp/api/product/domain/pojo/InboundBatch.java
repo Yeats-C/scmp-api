@@ -1,79 +1,97 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
-import com.aiqin.bms.scmp.api.base.PagesRequest;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.util.Date;
 
-/**
- * Created by 爱亲 on 2019/6/20.
- */
-@ApiModel("入库批次详情表")
+@ApiModel
 @Data
-public class InboundBatch extends PagesRequest{
-
-    @ApiModelProperty("主键")
+public class InboundBatch {
+    @ApiModelProperty(value="")
+    @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("入库单号")
+    @ApiModelProperty(value="入库单号")
+    @JsonProperty("inbound_oder_code")
     private String inboundOderCode;
 
-    @ApiModelProperty("sku编号")
+    @ApiModelProperty(value="批次号/wms批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty(value="批次编号")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
+    @ApiModelProperty(value="sku编码")
+    @JsonProperty("sku_code")
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
+    @ApiModelProperty(value="SKU名称")
+    @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("批次号")
-    private String inboundBatchCode;
-
-    @ApiModelProperty("生产日期")
-    private Date manufactureTime;
-
-    @ApiModelProperty("批次备注")
-    private String batchRemark;
-
-    @ApiModelProperty("预计数量")
-    private Long preQty;
-
-    @ApiModelProperty("实际数量")
-    private Long praQty;
-
-    @ApiModelProperty("库位号")
-    private String storeHouseCode;
-
-    @ApiModelProperty("创建人")
-    private String createBy;
-
-    @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date createTime;
-
-    @ApiModelProperty("更新人")
-    private String updateBy;
-
-    @ApiModelProperty("更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss", timezone = "GMT+8")
-    private Date updateTime;
-
-    @ApiModelProperty("行号")
-    private Long linenum;
-
-    @ApiModelProperty("供应商code")
+    @ApiModelProperty(value="供应商编码")
+    @JsonProperty("supplier_code")
     private String supplierCode;
 
-    @ApiModelProperty("供应商name")
+    @ApiModelProperty(value="供应商名称")
+    @JsonProperty("supplier_name")
     private String supplierName;
 
-    public InboundBatch(String inboundOderCode, Integer pageSize, Integer pageNo) {
-        this.inboundOderCode = inboundOderCode;
-        super.setPageSize(pageSize);
-        super.setPageNo(pageNo);
-    }
+    @ApiModelProperty(value="批次备注")
+    @JsonProperty("batch_remark")
+    private String batchRemark;
 
-    public InboundBatch() {
-    }
+    @ApiModelProperty(value="生产日期")
+    @JsonProperty("product_time")
+    private String productTime;
+
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_data")
+    private String beOverdueData;
+
+    @ApiModelProperty(value="最小单位数量")
+    @JsonProperty("total_count")
+    private Long totalCount;
+
+    @ApiModelProperty(value="实际最小单位数量")
+    @JsonProperty("actual_total_count")
+    private Long actualTotalCount;
+
+    @ApiModelProperty(value="库位号")
+    @JsonProperty("location_code")
+    private String locationCode;
+
+    @ApiModelProperty(value="行号")
+    @JsonProperty("line_code")
+    private Integer lineCode;
+
+    @ApiModelProperty(value="创建时间")
+    @JsonProperty("create_time")
+    private Date createTime;
+
+    @ApiModelProperty(value="修改时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
+
+    @ApiModelProperty(value="创建人编码")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value="创建人编码")
+    @JsonProperty("update_by_id")
+    private String updateById;
+
+    @ApiModelProperty(value="修改人名称")
+    @JsonProperty("create_by_name")
+    private String createByName;
+
+    @ApiModelProperty(value="修改人名称")
+    @JsonProperty("update_by_name")
+    private String updateByName;
+
 }

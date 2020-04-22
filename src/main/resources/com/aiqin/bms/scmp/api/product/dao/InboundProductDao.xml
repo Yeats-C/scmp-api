@@ -288,7 +288,7 @@
     from inbound_product
     where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
+  <update id="update">
     update inbound_product
     <set>
       <if test="inboundOderCode != null">
@@ -351,54 +351,16 @@
       <if test="praTaxAmount != null">
         pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
       <if test="linenum != null">
         linenum = #{linenum,jdbcType=BIGINT},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct">
-    update inbound_product
-    set inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR},
-      sku_code = #{skuCode,jdbcType=VARCHAR},
-      sku_name = #{skuName,jdbcType=VARCHAR},
-      picture_url = #{pictureUrl,jdbcType=VARCHAR},
-      norms = #{norms,jdbcType=VARCHAR},
-      color_name = #{colorName,jdbcType=VARCHAR},
-      color_code = #{colorCode,jdbcType=VARCHAR},
-      model = #{model,jdbcType=VARCHAR},
-      unit_code = #{unitCode,jdbcType=VARCHAR},
-      unit_name = #{unitName,jdbcType=VARCHAR},
-      inbound_norms = #{inboundNorms,jdbcType=VARCHAR},
-      inbound_base_content = #{inboundBaseContent,jdbcType=VARCHAR},
-      pre_inbound_num = #{preInboundNum,jdbcType=BIGINT},
-      pre_inbound_main_num = #{preInboundMainNum,jdbcType=BIGINT},
-      pre_tax_purchase_amount = #{preTaxPurchaseAmount,jdbcType=DECIMAL},
-      pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
-      pra_inbound_num = #{praInboundNum,jdbcType=BIGINT},
-      pra_inbound_main_num = #{praInboundMainNum,jdbcType=BIGINT},
-      pra_tax_purchase_amount = #{praTaxPurchaseAmount,jdbcType=DECIMAL},
-      pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
-      create_by = #{createBy,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      linenum = #{linenum,jdbcType=BIGINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-
   <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true" parameterType="java.util.List">
     insert into inbound_product(inbound_oder_code, sku_code, sku_name, picture_url, norms, color_name, color_code,
     model, unit_code, unit_name, inbound_norms, inbound_base_unit, inbound_base_content, pre_inbound_num,
@@ -460,15 +422,14 @@
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectByLinenum"  resultMap="BaseResultLinenumMap">
+  <select id="inboundByLineCode" resultMap="BaseResultMap">
     select
-    <include refid="Base_Column_ByLinenum" />
-    from inbound_product  a left JOIN product_sku_checkout b on a.sku_code = b.sku_code
+      a.*, b.Input_tax_rate as tax
+    from inbound_product a
+    LEFT JOIN product_sku_checkout b on a.sku_code = b.sku_code
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
     and a.sku_code = #{skuCode,jdbcType=VARCHAR}
-    <if test="linenum != null">
     and a.linenum = #{linenum,jdbcType=BIGINT}
-    </if>
   </select>
   <select id="selectPurchaseInfoByPurchaseNum" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select a.pra_inbound_main_num as actualSingleCount, a.sku_code as skuCode, a.sku_name as skuName,
