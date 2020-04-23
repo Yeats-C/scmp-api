@@ -205,7 +205,7 @@ public class ProductSaleAreaController {
 
     @PostMapping("/importConfig/confirm")
     @ApiOperation(("确认导入"))
-    public HttpResponse<Boolean> importDataConfirm (List<SkuSaleAreaImport> skuSaleAreaImports) {
+    public HttpResponse<Boolean> importDataConfirm (@RequestBody List<SkuSaleAreaImport> skuSaleAreaImports) {
         try {
             return HttpResponse.success(productSaleAreaService.importDataConfirm(skuSaleAreaImports));
         } catch (BizException e) {

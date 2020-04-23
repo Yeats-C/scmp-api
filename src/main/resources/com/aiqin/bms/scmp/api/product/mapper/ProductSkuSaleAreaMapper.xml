@@ -49,7 +49,7 @@
         a.create_time acreate_time,
         a.update_by aupdate_by,
         a.update_time aupdate_time,
-        count(c.id) skuCount,
+        (select count(id) from product_sku)  skuCount,
         (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         ) skuProcurementCount
         from product_sku_sale_area_main a
@@ -334,6 +334,7 @@
         <result column="aupdate_by"  property="updateBy" />
         <result column="aupdate_time"  property="updateTime" />
         <result column="skuCount"  property="skuCount" />
+        <result column="skuProcurementCount"  property="skuProcurementCount" />
         <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo">
 
 
@@ -350,8 +351,9 @@
         a.create_time acreate_time,
         a.update_by aupdate_by,
         a.update_time aupdate_time,
+        (select count(id) from product_sku) skuCount,
         (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
-        ) skuCount
+        ) skuProcurementCount
         from product_sku_sale_area_main a
         left join product_sku_sale_area_info c   on a.code = c.main_code
         where  1=1

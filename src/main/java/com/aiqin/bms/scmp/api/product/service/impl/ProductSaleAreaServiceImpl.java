@@ -1001,7 +1001,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         productSkuSaleAreaMapper.deleteByCode(reqVO);
         //增加
         reqVO.getSkuList().stream().forEach(x->x.setCode(reqVO.getCode()));
-        productSkuSaleAreaMapper.insertBatch(reqVO.getSkuList());
+        if(CollectionUtils.isNotEmpty(reqVO.getSkuList())) {
+            productSkuSaleAreaMapper.insertBatch(reqVO.getSkuList());
+        }
         return true;
     }
 
