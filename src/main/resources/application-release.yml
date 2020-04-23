@@ -18,7 +18,7 @@ center:
     host: http://control.mgs.aiqin.com
   #wms
   wms:
-    url: http://39.96.89.2:9001
+    url: http://abutment.api.aiqin.com
   wms2:
     url: http://39.96.89.2:9001
 product:
