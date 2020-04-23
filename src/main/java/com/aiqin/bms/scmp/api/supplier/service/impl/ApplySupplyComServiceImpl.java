@@ -885,7 +885,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
             HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
@@ -1371,7 +1371,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private void sendWms2( SupplierWms supplierWms ) {
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS2_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
             HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
