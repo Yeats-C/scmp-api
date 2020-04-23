@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.supplier.domain.request.score.SavePurchaseScoreReqVo;
@@ -63,4 +64,8 @@ public class PurchaseStorageRequest {
     @ApiModelProperty(value="入库单code")
     @JsonProperty("inbound_oder_code")
     private String inboundOderCode;
+
+    @ApiModelProperty(value="采购单批次")
+    @JsonProperty("batch_list")
+    private List<PurchaseBatch> batchList;
 }

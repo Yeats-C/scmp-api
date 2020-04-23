@@ -133,9 +133,14 @@
     where id = #{id,jdbcType=BIGINT}
   </update>
   <select id="inboundBatchByInfoCode" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
+    select <include refid="Base_Column_List" />
     from inbound_batch
     where batch_info_code = #{batchInfoCode, jdbcType=VARCHAR}
+    and inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+  </select>
+  <select id="selectInboundBatchList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from inbound_batch
+    where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
   </select>
 </mapper>

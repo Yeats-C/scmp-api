@@ -79,7 +79,7 @@ public interface InboundService {
     /**
      * 回调采购接口
      */
-    void returnPurchase(StorageResultReqVo storageResultItemReqVo);
+    //void returnPurchase(StorageResultReqVo storageResultItemReqVo);
 
     /**
      * 入库单回传调拨
