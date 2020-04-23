@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @ApiModel("SKU信息")
 @Data
@@ -247,4 +248,8 @@ public class ProductSkuInfo extends CommonBean {
 
     @ApiModelProperty("通货等级名称")
     private String currencyLevelName;
+
+    @ApiModelProperty("直送商家名称")
+    private List<String> saleName;
+
 }

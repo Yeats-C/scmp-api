@@ -1,0 +1,313 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.WarehouseConfigDao">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType" />
+        <result column="stock_code" jdbcType="VARCHAR" property="stockCode" />
+        <result column="stock_name" jdbcType="VARCHAR" property="stockName" />
+        <result column="docking_type" jdbcType="INTEGER" property="dockingType" />
+        <result column="docking_system" jdbcType="INTEGER" property="dockingSystem" />
+        <result column="counterpart_warehouse_name" jdbcType="VARCHAR" property="counterpartWarehouseName" />
+        <result column="counterpart_warehouse_code" jdbcType="VARCHAR" property="counterpartWarehouseCode" />
+        <result column="counterpart_stock_code" jdbcType="VARCHAR" property="counterpartStockCode" />
+        <result column="counterpart_stock_name" jdbcType="VARCHAR" property="counterpartStockName" />
+        <result column="enable" jdbcType="BIT" property="enable" />
+        <result column="create_by" jdbcType="VARCHAR" property="createBy" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        id, warehouse_name, warehouse_code, warehouse_type, stock_code, stock_name, docking_type, 
+        docking_system, counterpart_warehouse_name, counterpart_warehouse_code, counterpart_stock_code, 
+        counterpart_stock_name, enable, create_by, create_time, update_by, update_time
+    </sql>
+    <select id="load" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        select 
+        <include refid="Base_Column_List" />
+        from warhouse_config
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <select id="getList" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from warhouse_config
+        where  1=1
+         <if test="warehouseName != null">
+             and warehouse_name LIKE concat('%', #{warehouseName,jdbcType=VARCHAR}, '%')
+         </if>
+        <if test="warehouseCode != null">
+            and  warehouse_code LIKE concat('%', #{warehouseCode,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="warehouseType != null">
+            and    warehouse_type = #{warehouseType,jdbcType=VARCHAR}
+        </if>
+        <if test="stockCode != null">
+            and   stock_code LIKE concat('%',  #{stockCode,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="stockName != null">
+            and   stock_name LIKE concat('%',  #{stockName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="dockingType != null">
+            and   docking_type = #{dockingType,jdbcType=INTEGER}
+        </if>
+        <if test="dockingSystem != null">
+            and  docking_system = #{dockingSystem,jdbcType=INTEGER}
+        </if>
+        <if test="counterpartWarehouseName != null">
+            and  counterpart_warehouse_name  LIKE concat('%',  #{counterpartWarehouseName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="counterpartWarehouseCode != null">
+            and    counterpart_warehouse_code LIKE concat('%',  #{counterpartWarehouseCode,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="counterpartStockCode != null">
+            and   counterpart_stock_code LIKE concat('%',  #{counterpartStockCode,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="counterpartStockName != null">
+            and   counterpart_stock_name LIKE concat('%',  #{counterpartStockName,jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="enable != null">
+            and     enable = #{enable,jdbcType=BIT}
+        </if>
+        <if test="createBy != null">
+            and  create_by = #{createBy,jdbcType=VARCHAR}
+        </if>
+        <if test="createTime != null">
+            and   create_time = #{createTime,jdbcType=TIMESTAMP}
+        </if>
+        <if test="updateBy != null">
+            and    update_by = #{updateBy,jdbcType=VARCHAR}
+        </if>
+        <if test="updateTime != null">
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        </if>
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        delete from warhouse_config
+        where id = #{id,jdbcType=BIGINT}
+    </delete>
+    <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
+
+        insert into warhouse_config (warehouse_name, warehouse_code,
+            warehouse_type, stock_code, stock_name, 
+            docking_type, docking_system, counterpart_warehouse_name, 
+            counterpart_warehouse_code, counterpart_stock_code, 
+            counterpart_stock_name, enable, create_by, 
+            create_time, update_by, update_time
+            )
+        values ( #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},
+            #{warehouseType,jdbcType=VARCHAR}, #{stockCode,jdbcType=VARCHAR}, #{stockName,jdbcType=VARCHAR}, 
+            #{dockingType,jdbcType=INTEGER}, #{dockingSystem,jdbcType=INTEGER}, #{counterpartWarehouseName,jdbcType=VARCHAR}, 
+            #{counterpartWarehouseCode,jdbcType=VARCHAR}, #{counterpartStockCode,jdbcType=VARCHAR}, 
+            #{counterpartStockName,jdbcType=VARCHAR}, #{enable,jdbcType=BIT}, #{createBy,jdbcType=VARCHAR}, 
+           now(), #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}
+            )
+    </insert>
+    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        insert into warhouse_config
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="warehouseName != null">
+                warehouse_name,
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code,
+            </if>
+            <if test="warehouseType != null">
+                warehouse_type,
+            </if>
+            <if test="stockCode != null">
+                stock_code,
+            </if>
+            <if test="stockName != null">
+                stock_name,
+            </if>
+            <if test="dockingType != null">
+                docking_type,
+            </if>
+            <if test="dockingSystem != null">
+                docking_system,
+            </if>
+            <if test="counterpartWarehouseName != null">
+                counterpart_warehouse_name,
+            </if>
+            <if test="counterpartWarehouseCode != null">
+                counterpart_warehouse_code,
+            </if>
+            <if test="counterpartStockCode != null">
+                counterpart_stock_code,
+            </if>
+            <if test="counterpartStockName != null">
+                counterpart_stock_name,
+            </if>
+            <if test="enable != null">
+                enable,
+            </if>
+            <if test="createBy != null">
+                create_by,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateBy != null">
+                update_by,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="warehouseName != null">
+                #{warehouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouseCode != null">
+                #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouseType != null">
+                #{warehouseType,jdbcType=VARCHAR},
+            </if>
+            <if test="stockCode != null">
+                #{stockCode,jdbcType=VARCHAR},
+            </if>
+            <if test="stockName != null">
+                #{stockName,jdbcType=VARCHAR},
+            </if>
+            <if test="dockingType != null">
+                #{dockingType,jdbcType=INTEGER},
+            </if>
+            <if test="dockingSystem != null">
+                #{dockingSystem,jdbcType=INTEGER},
+            </if>
+            <if test="counterpartWarehouseName != null">
+                #{counterpartWarehouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartWarehouseCode != null">
+                #{counterpartWarehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartStockCode != null">
+                #{counterpartStockCode,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartStockName != null">
+                #{counterpartStockName,jdbcType=VARCHAR},
+            </if>
+            <if test="enable != null">
+                #{enable,jdbcType=BIT},
+            </if>
+            <if test="createBy != null">
+                #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                #{updateBy,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateById" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        update warhouse_config
+        <set>
+            <if test="warehouseName != null">
+                warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouseCode != null">
+                warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="warehouseType != null">
+                warehouse_type = #{warehouseType,jdbcType=VARCHAR},
+            </if>
+            <if test="stockCode != null">
+                stock_code = #{stockCode,jdbcType=VARCHAR},
+            </if>
+            <if test="stockName != null">
+                stock_name = #{stockName,jdbcType=VARCHAR},
+            </if>
+            <if test="dockingType != null">
+                docking_type = #{dockingType,jdbcType=INTEGER},
+            </if>
+            <if test="dockingSystem != null">
+                docking_system = #{dockingSystem,jdbcType=INTEGER},
+            </if>
+            <if test="counterpartWarehouseName != null">
+                counterpart_warehouse_name = #{counterpartWarehouseName,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartWarehouseCode != null">
+                counterpart_warehouse_code = #{counterpartWarehouseCode,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartStockCode != null">
+                counterpart_stock_code = #{counterpartStockCode,jdbcType=VARCHAR},
+            </if>
+            <if test="counterpartStockName != null">
+                counterpart_stock_name = #{counterpartStockName,jdbcType=VARCHAR},
+            </if>
+            <if test="enable != null">
+                enable = #{enable,jdbcType=BIT},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy,jdbcType=VARCHAR},
+            </if>
+                update_time = now()
+
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq">
+        <!--
+          This element was generated on Thu Apr 09 17:36:59 CST 2020.
+        -->
+        update warhouse_config
+        set warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+            warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+            warehouse_type = #{warehouseType,jdbcType=VARCHAR},
+            stock_code = #{stockCode,jdbcType=VARCHAR},
+            stock_name = #{stockName,jdbcType=VARCHAR},
+            docking_type = #{dockingType,jdbcType=INTEGER},
+            docking_system = #{dockingSystem,jdbcType=INTEGER},
+            counterpart_warehouse_name = #{counterpartWarehouseName,jdbcType=VARCHAR},
+            counterpart_warehouse_code = #{counterpartWarehouseCode,jdbcType=VARCHAR},
+            counterpart_stock_code = #{counterpartStockCode,jdbcType=VARCHAR},
+            counterpart_stock_name = #{counterpartStockName,jdbcType=VARCHAR},
+            enable = #{enable,jdbcType=BIT},
+            create_by = #{createBy,jdbcType=VARCHAR},
+            create_time = #{createTime,jdbcType=TIMESTAMP},
+            update_by = #{updateBy,jdbcType=VARCHAR},
+            update_time = #{updateTime,jdbcType=TIMESTAMP}
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+</mapper>

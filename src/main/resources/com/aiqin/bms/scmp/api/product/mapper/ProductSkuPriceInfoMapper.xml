@@ -223,13 +223,12 @@
         a.warehouse_name awarehouse_name, a.batch_remark abatch_remark, a.effective_time_end aeffective_time_end,
         a.effective_time_start aeffective_time_start, a.be_default abe_default, a.product_time aproduct_time,
         b.product_category_code bproduct_category_code, b.product_category_name bproduct_category_name,
-        b.product_brand_name bproduct_brand_name, b.product_property_name bproduct_property_name,
-        c.name cname, c.type ctype, c.status cstatus, c.code ccode
+        b.product_brand_name bproduct_brand_name, b.product_property_name bproduct_property_name
         from product_sku_price_info a
         left join product_sku b on a.sku_code = b.sku_code
         left join product_sku_price_area_info c on a.code = c.main_code
         where a.company_code = #{companyCode}
-        <if test="priceTypeCode != null and priceTypeCode !=''">
+        <if test="priceTypeCode != null and  priceTypeCode !=''">
             and a.price_type_code = #{priceTypeCode}
         </if>
         <if test="priceItemCode != null and priceItemCode !=''">
@@ -348,7 +347,7 @@
         </if>
     </select>
     <resultMap id="selectInfoByCode"
-               type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO">
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1">
         <result column="asku_code" property="skuCode"/>
         <result column="asku_name" property="skuName"/>
         <result column="apurchase_group_name" property="purchaseGroupName"/>
@@ -400,8 +399,63 @@
             <result column="darea_info" jdbcType="VARCHAR" property="areaInfo"/>
         </collection>
     </resultMap>
-    <select id="selectInfoByCode" resultMap="selectInfoByCode">
-            select
+    <resultMap id="selectInfoByCodeNew"
+               type="com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1">
+        <result column="asku_code" property="skuCode"/>
+        <result column="asku_name" property="skuName"/>
+        <result column="apurchase_group_name" property="purchaseGroupName"/>
+        <result column="aprice_item_name" property="priceItemName"/>
+        <result column="aprice_type_name" property="priceTypeName"/>
+        <result column="aprice_attribute_name" property="priceAttributeName"/>
+        <result column="aprice_tax" property="priceTax"/>
+        <result column="aprice_no_tax" property="priceNoTax"/>
+        <result column="atax" property="tax"/>
+        <result column="aeffective_time_start" property="effectiveTimeStart"/>
+        <result column="aeffective_time_end" property="effectiveTimeEnd"/>
+        <result column="asupplier_name" property="supplierName"/>
+        <result column="abe_default" property="beDefault"/>
+        <result column="aupdate_by" property="updateBy"/>
+        <result column="aupdate_time" property="updateTime"/>
+        <result column="awarehouse_batch_number" property="warehouseBatchNumber"/>
+        <result column="awarehouse_batch_name" property="warehouseBatchName"/>
+        <result column="atransport_center_name" property="transportCenterName"/>
+        <result column="awarehouse_name" property="warehouseName"/>
+        <result column="abatch_remark" property="batchRemark"/>
+        <result column="aproduct_time" property="productTime"/>
+        <result column="abe_default" property="beDefault"/>
+        <result column="asupplier_name" property="supplierName"/>
+        <result column="aupdate_by" property="updateBy"/>
+        <result column="aupdate_time" property="updateTime"/>
+        <result column="abatch_remark" property="batchRemark"/>
+        <result column="bproduct_category_name" property="productCategoryName"/>
+        <result column="bproduct_brand_name" property="productBrandName"/>
+        <result column="bproduct_property_name" property="productPropertyName"/>
+        <result column="bsku_status" property="productStatus"/>
+        <result column="ename" property="saleName"/>
+        <collection property="areaInfos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfo">
+            <result column="ctype" jdbcType="INTEGER" property="type"/>
+            <result column="cmaincode" jdbcType="VARCHAR" property="mainCode"/>
+            <result column="cname" jdbcType="VARCHAR" property="name"/>
+            <result column="ccode" jdbcType="VARCHAR" property="code"/>
+        </collection>
+        <collection property="logs" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPriceInfoLog">
+            <id column="did" jdbcType="BIGINT" property="id"/>
+            <result column="dcode" jdbcType="VARCHAR" property="code"/>
+            <result column="dprice_tax" jdbcType="BIGINT" property="priceTax"/>
+            <result column="dprice_no_tax" jdbcType="BIGINT" property="priceNoTax"/>
+            <result column="dtax" jdbcType="BIGINT" property="tax"/>
+            <result column="deffective_time_start" jdbcType="TIMESTAMP" property="effectiveTimeStart"/>
+            <result column="deffective_time_end" jdbcType="TIMESTAMP" property="effectiveTimeEnd"/>
+            <result column="dstatus" jdbcType="INTEGER" property="status"/>
+            <result column="dcreate_by" jdbcType="VARCHAR" property="createBy"/>
+            <result column="dcreate_time" jdbcType="TIMESTAMP" property="createTime"/>
+            <result column="dremark" jdbcType="VARCHAR" property="remark"/>
+            <result column="darea_info" jdbcType="VARCHAR" property="areaInfo"/>
+        </collection>
+    </resultMap>
+    <select id="selectInfoByCode"  parameterType="java.lang.String" resultMap="selectInfoByCode">
+
+      SELECT
              a.sku_code               asku_code,
              a.sku_name               asku_name,
              a.price_item_name        aprice_item_name,
@@ -428,10 +482,9 @@
              b.product_category_name  bproduct_category_name,
              b.product_brand_name     bproduct_brand_name,
              b.product_property_name  bproduct_property_name,
-             c.name                   cname,
-             c.type                   ctype,
-             c.status                 cstatus,
-             c.code                   ccode,
+             c.code                 ccode,
+              c.name               cname,
+             c.main_code              cmainname,
              d.id                     did,
              d.code                   dcode,
              d.price_tax              dprice_tax,
@@ -444,14 +497,16 @@
              d.create_time            dcreate_time,
              d.remark                 dremark,
              d.area_info              darea_info
-      from product_sku_price_info a
-             left join product_sku b
-                       on a.sku_code = b.sku_code
-             left join product_sku_price_area_info c
-                       on a.code = c.main_code
-             left join product_sku_price_info_log d
-                       on d.code = a.code
-      where a.code = #{code}
+      FROM product_sku_price_info a
+             LEFT JOIN product_sku b
+                       ON a.sku_code = b.sku_code
+             LEFT JOIN product_sku_change_price_info e
+                       ON a.sku_code  = e.sku_code
+             LEFT JOIN product_sku_price_info_log d
+                       ON d.code = a.code
+             LEFT JOIN product_sku_change_price_area_info c
+                       ON c.main_code = e.code
+                    where a.code = #{code}
   </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from product_sku_price_info

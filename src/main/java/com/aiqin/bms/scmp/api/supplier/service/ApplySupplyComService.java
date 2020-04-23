@@ -201,4 +201,6 @@ public interface ApplySupplyComService {
      * @return
      */
     Integer reUpdateApply(String applyCode);
+
+    HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
 }

@@ -76,4 +76,10 @@ public class WarehouseDTO extends CommonBean {
 
     @ApiModelProperty("排序")
     private Integer warehouseOrder;
+
+    @ApiModelProperty("是否采购 0：是 1：不是")
+    private Integer isPurchase;
+
+    @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    private Integer batchManage;
 }

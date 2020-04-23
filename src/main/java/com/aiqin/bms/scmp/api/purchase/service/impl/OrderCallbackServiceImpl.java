@@ -33,9 +33,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDe
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -67,7 +64,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -316,8 +312,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 if (infoItem == null) {
                     throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
                 }
-                orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
-                orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setTotalCount(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setActualTotalCount(supplyDetailRequest.getActualDeliverNum());
                 orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
                 orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
                 orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
@@ -1435,20 +1431,20 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setNum(batch.getProductCount());
-                productBatch.setActualDeliverNum(batch.getActualTotalCount());
-                productBatch.setProductTime(batch.getProductDate());
-                productBatch.setBatchNumber(batch.getBatchCode());
+                productBatch.setTotalCount(batch.getProductCount());
+                productBatch.setActualTotalCount(batch.getActualTotalCount());
+                productBatch.setProductDate(batch.getProductDate().toString());
+                productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
-                productBatch.setTransportCenterCode(response.getTransportCenterCode());
-                productBatch.setTransportCenterName(response.getTransportCenterName());
-                productBatch.setWarehouseCode(response.getWarehouseCode());
-                productBatch.setWarehouseName(response.getWarehouseName());
-                productBatch.setCompanyCode(response.getCompanyCode());
-                productBatch.setCompanyName(response.getCompanyName());
+             //   productBatch.setTransportCenterCode(response.getTransportCenterCode());
+             //   productBatch.setTransportCenterName(response.getTransportCenterName());
+             //   productBatch.setWarehouseCode(response.getWarehouseCode());
+             //   productBatch.setWarehouseName(response.getWarehouseName());
+             //   productBatch.setCompanyCode(response.getCompanyCode());
+             //   productBatch.setCompanyName(response.getCompanyName());
                 productBatch.setSupplierCode(response.getSupplierCode());
                 productBatch.setSupplierName(response.getSupplierName());
-                productBatch.setProductLineNum(batch.getLineCode());
+                productBatch.setLineCode(batch.getLineCode());
                 batchList.add(productBatch);
             }
             orderInfoItemProductBatchDao.insertBatch(batchList);

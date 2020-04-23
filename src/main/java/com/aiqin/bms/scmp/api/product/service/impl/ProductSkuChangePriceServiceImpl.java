@@ -8,6 +8,8 @@ import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuChangePriceSaleAreaMapper;
+import com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
@@ -97,6 +99,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     private OperationLogService operationLogService;
     @Autowired
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+    @Autowired
+    private ProductSkuChangePriceSaleAreaMapper productSkuChangePriceSaleAreaMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -279,6 +283,22 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "区域数据插入异常！"));
             }
         }
+        //变价销售区域中间表数据
+        if (CollectionUtils.isNotEmpty(reqVO.getAreaList())) {
+            List<ProductSkuChangePriceAreaInfoReqVO> areaList = reqVO.getAreaList();
+            for (ProductSkuChangePriceAreaInfoReqVO productSkuChangePriceAreaInfoReqVO : areaList) {
+                ProductSkuChangePriceSaleArea productSkuChangePriceSaleArea = new ProductSkuChangePriceSaleArea();
+                productSkuChangePriceSaleArea.setChangePriceCode(reqVO.getCode());
+                productSkuChangePriceSaleArea.setSaleAreaCode(productSkuChangePriceAreaInfoReqVO.getCode());
+                productSkuChangePriceSaleArea.setSaleAreaName(productSkuChangePriceAreaInfoReqVO.getName());
+                productSkuChangePriceSaleArea.setStatus(productSkuChangePriceAreaInfoReqVO.getStatus());
+                int num = productSkuChangePriceSaleAreaMapper.insertSelective(productSkuChangePriceSaleArea);
+                if (num != 1) {
+                    throw new BizException(MessageId.create(Project.PRODUCT_API, 97, "区域数据插入异常！"));
+                }
+            }
+
+        }
     }
 
     @Override
@@ -294,6 +314,10 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         OperationLogBean operationLogBean = new OperationLogBean(code, null, ObjectTypeCode.CHANGE_PRICE.getStatus(), null, null);
         List<LogData> log = operationLogService.selectListByVO(operationLogBean);
         respVO.setLogData(log);
+        //查询区域信息
+        List<ProductSkuChangePriceSaleArea> areaList = productSkuChangePriceSaleAreaMapper.selectByChangePriceCode(code);
+        //todo 将区域信息添加至返回值 现在查的是中间表 需要修改sql进行联查
+        respVO.setSaleAreaList(areaList);
         return respVO;
     }
 
@@ -434,10 +458,11 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //根据价格作不同的处理
         //判断类型
+        dto.setChangePriceType("2");
         switch (dto.getChangePriceType()) {
-            case CommonConstant.PURCHASE_CHANGE_PRICE:
-                 savePurchaseChangePrice(newVO, dto);
-                break;
+//            case CommonConstant.PURCHASE_CHANGE_PRICE:
+//                 savePurchaseChangePrice(newVO, dto);
+//                break;
             case CommonConstant.SALE_CHANGE_PRICE:
                 if(dto.getBeContainArea() == 0) {
                     saveSaleChangePrice(newVO, dto);
@@ -445,13 +470,13 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                     saveSaleAreaChangePrice(newVO, dto);
                 }
                 break;
-            case CommonConstant.TEMPORARY_CHANGE_PRICE:
-                if(dto.getBeContainArea() == 0) {
-                    saveTemporaryChangePrice(newVO, dto);
-                }else {
-                    saveTemporaryAreaChangePrice(newVO, dto);
-                }
-                break;
+//            case CommonConstant.TEMPORARY_CHANGE_PRICE:
+//                if(dto.getBeContainArea() == 0) {
+//                    saveTemporaryChangePrice(newVO, dto);
+//                }else {
+//                    saveTemporaryAreaChangePrice(newVO, dto);
+//                }
+//                break;
 //            case CommonConstant.SALE_AREA_CHANGE_PRICE:
 //                saveSaleAreaChangePrice(newVO, dto);
 //                break;

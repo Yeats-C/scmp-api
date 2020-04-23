@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
+import com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -85,6 +86,9 @@ public class ProductSkuChangePriceRespVO {
 
     @ApiModelProperty("区域详情")
     List<ProductSkuChangePriceAreaInfoRespVO> areaList;
+
+    @ApiModelProperty("销售区域详情")
+    List<ProductSkuChangePriceSaleArea> saleAreaList;
 
     @ApiModelProperty("区域详情")
     List<LogData> logData;

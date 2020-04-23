@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -373,8 +374,29 @@ public class ErpOrderInfo {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    // 销售单新加字段
+    @ApiModelProperty(value = "发票地址")
+    @JsonProperty("invoice_address")
+    private String invoiceAddress;
+
+    @ApiModelProperty(value = "发票电话")
+    @JsonProperty("invoice_mobile")
+    private String invoiceMobile;
+
+    @ApiModelProperty(value = "发票开户银行")
+    @JsonProperty("invoice_bank")
+    private String invoiceBank;
+
+    @ApiModelProperty(value = "发票银行账号")
+    @JsonProperty("invoice_bank_account")
+    private String invoiceBankAccount;
+
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;
+
+    @ApiModelProperty(value = "订单商品批次明细表")
+    @JsonProperty("item_batch_list")
+    private List<OrderInfoItemProductBatch> itemBatchList;
 
 }

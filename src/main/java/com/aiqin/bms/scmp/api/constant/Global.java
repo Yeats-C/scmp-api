@@ -179,4 +179,11 @@ public final class Global {
     public static final String AUDITOR_BY = "AUDITORBY";
     public static final String APPLY_TYPE = "APPLYTYPE";
 
+    /**
+     *  wms销售出库回传状态 (1开始拣货 2扫描完成 3已全部发货)
+     */
+    public static final Integer WMS_SALE_STATUS_1 = 1;
+    public static final Integer WMS_SALE_STATUS_2 = 2;
+    public static final Integer WMS_SALE_STATUS_3 = 3;
+
 }

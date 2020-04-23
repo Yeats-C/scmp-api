@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.response.order;
 
 import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -79,6 +80,23 @@ public class QueryOrderListRespVO {
     @ApiModelProperty("修改时间")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    // 销售单新加字段
+    @ApiModelProperty(value = "发票地址")
+    @JsonProperty("invoice_address")
+    private String invoiceAddress;
+
+    @ApiModelProperty(value = "发票电话")
+    @JsonProperty("invoice_mobile")
+    private String invoiceMobile;
+
+    @ApiModelProperty(value = "发票开户银行")
+    @JsonProperty("invoice_bank")
+    private String invoiceBank;
+
+    @ApiModelProperty(value = "发票银行账号")
+    @JsonProperty("invoice_bank_account")
+    private String invoiceBankAccount;
 
     public void setOrderStatus(Integer orderStatus) {
         this.orderStatus = OrderStatus.getAllStatus().get(orderStatus).getBackgroundOrderStatus();

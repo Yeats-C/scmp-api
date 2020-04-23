@@ -3,9 +3,11 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
@@ -130,4 +132,20 @@ public interface AllocationService extends BaseService {
      */
     Long getIdByFormNo(String formNo);
 
+    /**
+     *  根据批次号和sku编码查询对应库存数量
+     * @param skuCode
+     * @param batchCode
+     * @return
+     */
+    StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode);
+
+    /**
+     *
+     * @param m
+     * @return
+     */
+    BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+
+    int updateWmsStatus(Byte status, String allocationCode);
 }

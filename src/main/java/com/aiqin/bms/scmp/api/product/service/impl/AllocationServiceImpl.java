@@ -7,12 +7,14 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToOutboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -44,7 +46,9 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -54,9 +58,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -99,6 +105,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private OutboundService outboundService;
     @Autowired
     private WarehouseService warehouseService;
+    @Value("${center.wms.url}")
+    private String centerWmsUrl;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -169,13 +177,13 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
              stockChangeRequest.setStockVoRequests(list1);
              // 调用锁定库存数
-             HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+            /* HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
              if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
 
              }else{
                  log.error(httpResponse.getMessage());
                  throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
-             }
+             }*/
              //调用审批流
              workFlow(k,form);
              return  k;
@@ -415,12 +423,60 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateSubmit(Byte status, String formNo) {
+        // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
+        // 待出库状态时调用wms。 出库
+        if(status == 2){
+            // 接收对象
+            AllocationOutboundSource allocationOutboundSource = new AllocationOutboundSource();
+            List<AllocationInboundDetailedSource> aOutboundDetails = new ArrayList<>();
+
+            String url = centerWmsUrl+"/allocation/source/inbound";
+            HttpClient httpClient = HttpClient.post(url).json(allocationOutboundSource).timeout(200000);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                return 0;
+            }
+        }
         Allocation allocation = new Allocation();
         Long id  = allocationMapper.findIdByFormNo(formNo);
         allocation.setId(id);
         allocation.setAllocationStatusCode(status);
         allocation.setAllocationStatusName(AllocationEnum.getAllocationEnumNameByCode(status));
-        return allocationMapper.updateByPrimaryKeySelective(allocation);
+        int i = allocationMapper.updateByPrimaryKeySelective(allocation);
+
+
+        return i;
+    }
+
+    /**
+     *  获取wms返回状态更新数据
+     * @param status
+     * @param allocationCode
+     * @return
+     */
+    @Override
+    public int updateWmsStatus(Byte status, String allocationCode) {
+        // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
+        // 已完成状态时调用wms。 入库
+        AllocationInboundSource allocationInboundSource = new AllocationInboundSource();
+        List<AllocationInboundDetailedSource> aOutboundDetails = new ArrayList<>();
+        if(status == 5){
+
+            String url = centerWmsUrl+"/allocation/source/outbound";
+            HttpClient httpClient = HttpClient.post(url).json(allocationInboundSource).timeout(200000);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                return 0;
+            }
+        }
+
+        Allocation allocation = new Allocation();
+        Long id  = allocationMapper.findIdByAllocationCode(allocationCode);
+        allocation.setId(id);
+        allocation.setAllocationStatusCode(status);
+        allocation.setAllocationStatusName(AllocationEnum.getAllocationEnumNameByCode(status));
+        int i = allocationMapper.updateByPrimaryKeySelective(allocation);
+        return i;
     }
 
     @Override
@@ -751,6 +807,23 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             throw new BizException(ResultCode.OBJECT_EMPTY_BY_FORMNO);
         }
         return allocation.getId();
+    }
+
+    @Override
+    public StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode) {
+        StockBatch stockBatch = allocationMapper.selectNumberByBatchAndSkuCode(skuCode, batchCode);
+        return stockBatch;
+    }
+
+    @Override
+    public BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m) {
+        List<ManualChoseProductReq> mLists = allocationMapper.getManualChoseProduct(m);
+        Long mCount = allocationMapper.getManualChoseProductCount(m);
+
+        BasePage basePage = new BasePage();
+        basePage.setDataList(mLists);
+        basePage.setTotalCount(mCount);
+        return basePage;
     }
 
 

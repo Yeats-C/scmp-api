@@ -1,8 +1,10 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
 
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
@@ -12,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.QueryScrapResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.scrap.ScrapResVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -78,6 +81,8 @@ public interface AllocationMapper {
 
     Long findIdByFormNo(String FormNo);
 
+    Long findIdByAllocationCode(String allocationCode);
+
     /**
      * 根据编码查询调拨单主体
      * @param allocationCode
@@ -113,4 +118,10 @@ public interface AllocationMapper {
     List<Allocation> listByInboundCodes(List<String> list);
 
     List<Allocation> listByOutboundCodes(List<String> list);
+
+    StockBatch selectNumberByBatchAndSkuCode(@Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+
+    List<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+
+    Long getManualChoseProductCount(ManualChoseProductReq m);
 }

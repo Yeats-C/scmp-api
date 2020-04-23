@@ -52,6 +52,12 @@ public class QueryProductSaleAreaForSkuRespVO {
     @ApiModelProperty("渠道")
     private String priceChannelName;
 
+    @ApiModelProperty("采购组编码")
+    private String procurementSectionCode;
+
+    @ApiModelProperty("采购组名称")
+    private String procurementSectionName;
+
     @ApiModelProperty("供应商集合")
     private List<ProductSaleAreaSupplierInfo> supplierList;
 }
