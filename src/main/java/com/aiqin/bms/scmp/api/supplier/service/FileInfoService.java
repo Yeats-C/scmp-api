@@ -36,7 +36,7 @@ public interface FileInfoService {
      * @param file
      * @return java.lang.String
      */
-    String upload(MultipartFile file,String fileName);
+    String upload(MultipartFile file, String fileName);
     /**
      * 批量上传
      * @author NullPointException
