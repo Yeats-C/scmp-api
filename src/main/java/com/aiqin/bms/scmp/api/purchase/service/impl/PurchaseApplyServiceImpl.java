@@ -352,16 +352,21 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode) {
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode, Integer applyType) {
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 如果库房为空，则为合计
         List<PurchaseApplyDetailResponse> products;
-        if(StringUtils.isBlank(warehouseCode)){
-            products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+        // 判断是否需要分仓统计，编辑也不需要 applyType = 1 为编辑所用
+        if(applyType != null && applyType == 1){
+            products = purchaseApplyProductDao.productList(purchaseApplyCode);
         }else {
-           products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
+            if(StringUtils.isBlank(warehouseCode)){
+                products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+            }else {
+                products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
+            }
         }
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseApplyDetailResponse product:products){
@@ -799,7 +804,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
         }
         // 采购申请单id
-        String newApplyId = IdUtil.purchaseId();;
+        String newApplyId = IdUtil.purchaseId();
         // 获取采购申请单号
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
         String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());

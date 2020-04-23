@@ -53,7 +53,6 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -1531,9 +1530,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         for (int i = 0; i < vo.size(); i++) {
             LockOrderItemBatchReqVO reqVO = vo.get(i);
             OrderInfoItemProductBatch copy = BeanCopyUtils.copy(reqVO, OrderInfoItemProductBatch.class);
-            copy.setBatchNumber(System.currentTimeMillis() + i + "");
-            copy.setProductTime(date);
-            copy.setProductLineNum((long) i);
+            copy.setBatchCode(System.currentTimeMillis() + i + "");
+            copy.setProductDate(date.toString());
+            copy.setLineCode((long) i);
             list.add(copy);
         }
         return list;
