@@ -16,16 +16,13 @@ center:
     #url: http://39.106.215.2:9003
   #中控前端
     host: http://control.mgs.aiqin.com
-  #wms
-  wms:
-    url: http://abutment.api.aiqin.com
-  wms2:
-    url: http://39.96.89.2:9001
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 wms:
   url: http://abutment.api.aiqin.com
+wms2:
+  url: http://39.96.89.2:9001
 ground:
   druid:
     url: jdbc:mysql://rm-2zeela0dj4k34987s.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
