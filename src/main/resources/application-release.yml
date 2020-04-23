@@ -19,6 +19,8 @@ center:
   #wms
   wms:
     url: http://39.96.89.2:9001
+  wms2:
+    url: http://39.96.89.2:9001
 product:
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com

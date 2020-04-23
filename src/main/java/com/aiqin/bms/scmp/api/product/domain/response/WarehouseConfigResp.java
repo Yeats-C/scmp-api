@@ -42,7 +42,7 @@ public class WarehouseConfigResp {
      * 库房类型
      * 表字段 : warhouse_config.warehouse_type
      */
-    @ApiModelProperty("库房类型")
+    @ApiModelProperty("库房类型 :1.销售库 2.特卖库 3.残品库 4.监管库")
     @JsonProperty("warehouse_type")
     private String warehouseType;
 
@@ -55,7 +55,7 @@ public class WarehouseConfigResp {
      * 库房类型
      * 表字段 : warhouse_config.warehouse_type
      */
-    @ApiModelProperty("库房编码")
+    @ApiModelProperty("仓库编号")
     @JsonProperty("stock_code")
     private String stockCode;
 
@@ -63,7 +63,7 @@ public class WarehouseConfigResp {
      *
      * 表字段 : warhouse_config.stock_name
      */
-    @ApiModelProperty("库房名称")
+    @ApiModelProperty("仓库名称")
     @JsonProperty("stock_name")
     private String stockName;
 

@@ -20,4 +20,6 @@ public interface WarehouseConfigService {
     WarehouseConfigResp load(Long id);
 
     Boolean update(WarehouseConfigReq warehouseConfigReq);
+
+    WarehouseConfigResp refresh(String stock_code);
 }

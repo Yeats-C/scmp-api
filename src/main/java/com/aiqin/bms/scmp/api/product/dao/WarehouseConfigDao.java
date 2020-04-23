@@ -24,4 +24,6 @@ public interface WarehouseConfigDao {
     WarehouseConfigResp load(Long id);
 
     void updateById(WarehouseConfigReq warehouseConfigReq);
+
+    WarehouseConfigResp refresh(String stock_code);
 }

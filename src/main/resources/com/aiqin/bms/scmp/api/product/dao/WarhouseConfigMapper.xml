@@ -95,6 +95,17 @@
             update_time = #{updateTime,jdbcType=TIMESTAMP}
         </if>
     </select>
+    <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
+        select
+        s.warehouse_name warehouseName,
+        s.warehouse_code warehouseName,
+        s.warehouse_type warehouseType,
+        s.transport_center_code stockName,
+        s.transport_center_name stockCode
+        from stock s inner join warehouse w  on  s.warehouse_code=w.warehouse_code and s.transport_center_code =w.logistics_center_code
+        where id = #{id,jdbcType=BIGINT}
+
+    </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
         <!--
           This element was generated on Thu Apr 09 17:36:59 CST 2020.
