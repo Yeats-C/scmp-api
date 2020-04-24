@@ -105,8 +105,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private OutboundService outboundService;
     @Autowired
     private WarehouseService warehouseService;
-    @Value("${center.wms.url}")
-    private String centerWmsUrl;
+    @Autowired
+    private UrlConfig urlConfig;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -430,7 +430,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             AllocationOutboundSource allocationOutboundSource = new AllocationOutboundSource();
             List<AllocationInboundDetailedSource> aOutboundDetails = new ArrayList<>();
 
-            String url = centerWmsUrl+"/allocation/source/inbound";
+            String url = urlConfig.WMS2_API_URL+"/allocation/source/inbound";
             HttpClient httpClient = HttpClient.post(url).json(allocationOutboundSource).timeout(200000);
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
@@ -462,7 +462,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         List<AllocationInboundDetailedSource> aOutboundDetails = new ArrayList<>();
         if(status == 5){
 
-            String url = centerWmsUrl+"/allocation/source/outbound";
+            String url = urlConfig.WMS2_API_URL+"/allocation/source/outbound";
             HttpClient httpClient = HttpClient.post(url).json(allocationInboundSource).timeout(200000);
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
