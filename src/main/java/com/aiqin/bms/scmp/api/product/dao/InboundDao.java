@@ -45,5 +45,5 @@ public interface InboundDao {
 
     String cancelById(String code);
 
-    String inboundCodeOrderLast(String sourceOderCode);
+    Inbound inboundCodeOrderLast(String sourceOderCode);
 }

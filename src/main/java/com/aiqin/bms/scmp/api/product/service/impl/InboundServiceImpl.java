@@ -26,10 +26,7 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
-import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -551,7 +548,7 @@ public class InboundServiceImpl implements InboundService {
             // 查询对应订单的sku
             key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
             InboundProduct product = products.get(key);
-            Long actualTotalCount = inboundProduct.getActualTotalCount() + product.getPraInboundMainNum();
+            Long actualTotalCount = inboundProduct.getActualTotalCount();
             product.setPraInboundMainNum(actualTotalCount);
             product.setPraInboundNum(actualTotalCount / Long.valueOf(product.getInboundBaseContent()));
             //实际含税进价
@@ -795,21 +792,12 @@ public class InboundServiceImpl implements InboundService {
         // 采购
         if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
             try {
-//                StorageResultReqVo storageResultReqVo = new StorageResultReqVo();
-//                storageResultReqVo.setPurchaseCode(inbound.getSourceOderCode());
-//                storageResultReqVo.setUserName("张云童");
-//                storageResultReqVo.setActualAmount(inbound.getPraTaxAmount());
-//                storageResultReqVo.setActualNum(inbound.getPraInboundNum());
-//                storageResultReqVo.setNoTaxActualAmount(inbound.getPraAmount());
-//                storageResultReqVo.setSaleUnitActualNum(inbound.getPraMainUnitNum());
-//                List<StorageResultItemReqVo> list1 = BeanCopyUtils.copyList(list, StorageResultItemReqVo.class);
-//                storageResultReqVo.setItemReqVos(list1);
                 // 调用采购回调
-                returnPurchase(inbound, list, batchList);
+                returnPurchase(inbound.getSourceOderCode(), list, batchList);
+
                 // 将入库单状态修改为完成
                 inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-
                 inbound.setInboundTime(new Date());
                 int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
@@ -872,30 +860,30 @@ public class InboundServiceImpl implements InboundService {
      */
     //@Override
     @Async("myTaskAsyncPool")
-    public void returnPurchase(Inbound inbound, List<InboundProduct> list, List<InboundBatch> batchList) {
+    public void returnPurchase(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
         try {
             List<PurchaseOrderProduct> purchaseOrderProducts = Lists.newArrayList();
-            //List<StorageResultItemReqVo> storageResultItemReqVos = storageResultReqVo.getItemReqVos();
             PurchaseOrderProduct purchaseOrderProduct;
+            // 传送采购商品信息
             for(InboundProduct product : list){
                 purchaseOrderProduct = new PurchaseOrderProduct();
-                purchaseOrderProduct.setPurchaseOrderCode(inbound.getSourceOderCode());
+                purchaseOrderProduct.setPurchaseOrderCode(sourceOderCode);
                 purchaseOrderProduct.setActualSingleCount(product.getPraInboundMainNum().intValue());
                 purchaseOrderProduct.setSkuCode(product.getSkuCode());
                 purchaseOrderProduct.setLinnum(product.getLinenum().intValue());
                 purchaseOrderProducts.add(purchaseOrderProduct);
             }
-            List<Inbound> inboundList = inboundDao.selectTimeAndSatusBySourchAndNum(storageResultReqVo.getPurchaseCode());
-            if(CollectionUtils.isNotEmpty(inboundList)){
-                Inbound inbound = inboundList.get(inboundList.size()-1);
-                purchaseStorage.setCompanyName(inbound.getCompanyName());
-                purchaseStorage.setCompanyCode(inbound.getCompanyCode());
-                purchaseStorage.setCreateByName(inbound.getCreateBy());
-                purchaseStorage.setPurchaseNum(inbound.getPurchaseNum());
-            }
-            purchaseStorage.setPurchaseOrderCode(storageResultReqVo.getPurchaseCode());
             purchaseStorage.setOrderList(purchaseOrderProducts);
+            // 回传采购批次信息
+            List<PurchaseBatch> orderItem = BeanCopyUtils.copyList(batchList, PurchaseBatch.class);
+            purchaseStorage.setBatchList(orderItem);
+            Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode);
+            purchaseStorage.setCompanyName(inbound.getCompanyName());
+            purchaseStorage.setCompanyCode(inbound.getCompanyCode());
+            purchaseStorage.setCreateByName(inbound.getCreateBy());
+            purchaseStorage.setPurchaseNum(inbound.getPurchaseNum());
+            purchaseStorage.setPurchaseOrderCode(sourceOderCode);
             HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseStorage);
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");

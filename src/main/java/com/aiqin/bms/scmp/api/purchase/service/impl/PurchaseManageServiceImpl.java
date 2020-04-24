@@ -582,6 +582,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 productList.add(orderProduct);
             }
 
+            // 更新采购的批次信息
+            if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList())){
+                for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
+
+                }
+            }
+
             // 计算采购单的实际商品 0商品 1赠品 2实物返回
             // 查询含税单价
             BigDecimal amount = orderProduct.getProductAmount() == null ? BigDecimal.ZERO : orderProduct.getProductAmount();
@@ -652,7 +659,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), purchaseOrder.getApplyTypeForm());
             // 减在途数
-            this.wayNum(purchaseOrder, 11);
+            //this.wayNum(purchaseOrder, 11);
         }
         return HttpResponse.success();
     }
@@ -691,7 +698,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfo;
         // 查询入库单号
-        String documentCode = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode());
+        Inbound inbound = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode());
         // 查询该采购单的商品
         List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductByGroup(order.getPurchaseOrderId());
         if(CollectionUtils.isNotEmptyCollection(products)){
@@ -712,7 +719,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 stockInfo.setSkuCode(product.getSkuCode());
                 stockInfo.setSkuName(product.getSkuName());
                 stockInfo.setTaxRate(product.getTaxRate());
-                stockInfo.setDocumentCode(documentCode);
+                stockInfo.setDocumentCode(inbound.getInboundOderCode());
                 stockInfo.setDocumentType(1);
                 stockInfo.setSourceDocumentCode(order.getPurchaseOrderCode());
                 stockInfo.setSourceDocumentType(3);
