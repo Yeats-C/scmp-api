@@ -21,5 +21,5 @@ public interface WarehouseConfigService {
 
     Boolean update(WarehouseConfigReq warehouseConfigReq);
 
-    WarehouseConfigResp refresh(String stock_code);
+    WarehouseConfigResp refresh(String warehouseCode);
 }
