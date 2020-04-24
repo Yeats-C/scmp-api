@@ -127,11 +127,7 @@ transport_number
              create_by_name createByName,
              create_time createTime,
              update_by_name updateByName,
-             update_time updateTime,
-             invoice_address invoiceAddress,
-             invoice_mobile invoiceMobile,
-             invoice_bank invoiceBank,
-             invoice_bank_account invoiceBankAccount
+             update_time updateTime
       from order_info
       where company_code = #{companyCode} and order_type_code = #{orderType}
       <if test="createDateStart != null">
@@ -374,11 +370,11 @@ transport_number
              c.operator_time coperator_time,
              d.sku_code dsku_code,
              d.sku_name dsku_name,
-             d.total_count dnum,
-             d.actual_total_count dactualDeliverNum,
-             d.product_date dproduct_time,
+             d.num dnum,
+             d.actual_deliver_num dactualDeliverNum,
+             d.product_time dproduct_time,
              d.batch_remark dbatch_remark,
-             d.batch_code dbatch_number,
+             d.batch_number dbatch_number,
              d.lock_type dlock_type,
              d.supplier_code dsupplier_code,
              d.supplier_name dsupplier_name
@@ -962,8 +958,7 @@ transport_number
       logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
       order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
       actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
-      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
-      invoice_address, invoice_mobile, invoice_bank, invoice_bank_account)
+      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
@@ -993,8 +988,7 @@ transport_number
       now(), #{item.actualProductChannelTotalAmount,jdbcType=DECIMAL},
       #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
-      #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
-      #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},#{item.invoiceBankAccount,jdbcType=VARCHAR}
+      #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

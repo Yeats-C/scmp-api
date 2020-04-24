@@ -85,10 +85,9 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
     }
 
     @Override
-    public WarehouseConfigResp refresh(String stock_code) {
-        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();;
+    public WarehouseConfigResp refresh(String warehouseCode) {
         try {
-           return warehouseConfigDao.refresh(stock_code);
+           return warehouseConfigDao.refresh(warehouseCode);
 
         } catch (Exception e) {
             log.error("修改仓库配置失败");

@@ -56,9 +56,8 @@ public class WarehouseConfigController {
 
     @GetMapping("/refresh")
     @ApiOperation(value = "刷新")
-    public HttpResponse<WarehouseConfigResp> refresh(@RequestParam("stock_code") String stock_code) {
-        log.info("进来咯");
-        return HttpResponse.success(warehouseConfigService.refresh(stock_code));
+    public HttpResponse<WarehouseConfigResp> refresh(@RequestParam("warehouse_code") String warehouseCode) {
+        return HttpResponse.success(warehouseConfigService.refresh(warehouseCode));
     }
 
     @PostMapping("/save")

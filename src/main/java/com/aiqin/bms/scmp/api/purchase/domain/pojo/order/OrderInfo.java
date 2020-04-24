@@ -259,18 +259,6 @@ public class OrderInfo {
     @ApiModelProperty("预计商品数量")
     private Long preProductNum;
 
-    @ApiModelProperty("发票地址")
-    private String invoiceAddress;
-
-    @ApiModelProperty("发票电话")
-    private String invoiceMobile;
-
-    @ApiModelProperty("发票开户银行")
-    private String invoiceBank;
-
-    @ApiModelProperty("发票银行账号")
-    private String invoiceBankAccount;
-
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
 
