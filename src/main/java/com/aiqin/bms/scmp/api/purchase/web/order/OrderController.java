@@ -152,13 +152,6 @@ public class OrderController {
         return orderService.insertSaleOrder(vo);
     }
 
-    @PostMapping("/wms/sale/return")
-    @ApiOperation(value = "根据wms回传数据 修改耘链对应状态 和日志添加")
-    public HttpResponse updateSaleOrder(@RequestBody WmsOrderInfo vo) {
-        log.info("wms回传销售单参数", vo);
-        return orderService.updateSaleOrder(vo);
-    }
-
     @GetMapping("/cancel")
     @ApiOperation("订单的取消")
     public HttpResponse orderCancel(@RequestParam("order_code") String orderCode,

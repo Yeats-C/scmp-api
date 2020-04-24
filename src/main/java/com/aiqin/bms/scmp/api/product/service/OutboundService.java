@@ -20,7 +20,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.outbound.SupplyOrderInfoRe
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -170,7 +169,6 @@ public interface OutboundService {
      */
     void saveData(List<Outbound> list, List<OutboundProduct> productList, List<OutboundBatch> batchList);
 
-    HttpResponse<Boolean> updateWmsSaleOutboundStutas(Outbound outbound);
 }
 
 

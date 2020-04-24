@@ -687,23 +687,4 @@
     from outbound
     where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
   </select>
-  <update id="updateWmsSaleOutboundStutas">
-     update
-      outbound
-    set
-    <if test="outboundStatusCode != null">
-      outbound_status_code = #{outboundStatusCode,jdbcType=DECIMAL},
-    </if>
-    <if test="outboundStatusName != null">
-      outbound_status_name = #{outboundStatusName,jdbcType=DECIMAL},
-    </if>
-    <if test="createTime != null">
-      create_time = #{createTime,jdbcType=DECIMAL},
-    </if>
-    <if test="updateTime != null">
-      update_time = #{updateTime,jdbcType=DECIMAL}0
-    </if>
-    where
-    outbound_oder_code = #{outboundOderCode}
-  </update>
 </mapper>
