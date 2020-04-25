@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.Purchase;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
 import com.aiqin.bms.scmp.api.base.PageResData;
@@ -93,6 +94,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private PurchaseApplyDao purchaseApplyDao;
     @Resource
     private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
+    @Resource
+    private PurchaseBatchDao purchaseBatchDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -582,13 +585,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 productList.add(orderProduct);
             }
 
-            // 更新采购的批次信息
-            if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList())){
-                for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
-
-                }
-            }
-
             // 计算采购单的实际商品 0商品 1赠品 2实物返回
             // 查询含税单价
             BigDecimal amount = orderProduct.getProductAmount() == null ? BigDecimal.ZERO : orderProduct.getProductAmount();
@@ -601,12 +597,21 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
             actualTotalCount += actualSingleCount;
         }
-
         order.setActualTotalCount(actualTotalCount);
         order.setActualProductAmount(actualProductAmount);
         order.setActualGiftAmount(actualGiftAmount);
         order.setActualReturnAmount(actualReturnAmount);
         order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
+
+        // 更新采购的批次信息
+        if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList())){
+            for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
+                // 根据批次编号 采购单号确认批次是否存在
+                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(), purchaseOrder.getPurchaseOrderCode());
+
+
+            }
+        }
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
         if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&

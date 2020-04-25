@@ -114,4 +114,10 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="purchaseInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+  </select>
 </mapper>
