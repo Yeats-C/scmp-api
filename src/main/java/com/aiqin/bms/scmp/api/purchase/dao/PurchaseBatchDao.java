@@ -3,9 +3,11 @@ package com.aiqin.bms.scmp.api.purchase.dao;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 public interface PurchaseBatchDao {
 
-    Integer insert(PurchaseBatch record);
+    Integer insertAll(@Param("list")List<PurchaseBatch> record);
 
     Integer update(PurchaseBatch record);
 

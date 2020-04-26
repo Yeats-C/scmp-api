@@ -540,6 +540,11 @@ public class InboundServiceImpl implements InboundService {
         List<StockInfoRequest> productList = Lists.newArrayList();
         List<StockBatchInfoRequest> batchList = Lists.newArrayList();
         StockBatchInfoRequest stockBatchInfo;
+        PurchaseOrder purchase = new PurchaseOrder();
+        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            purchase.setPurchaseOrderCode(inbound.getSourceOderCode());
+            purchase = purchaseOrderDao.purchaseOrderInfo(purchase);
+        }
 
         // 更新入库商品的信息
         Long praInboundNum = 0L, praMainUnitNum = 0L;
@@ -589,12 +594,16 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
             stockInfo.setOperatorId(request.getOperatorId());
             stockInfo.setOperatorName(request.getOperatorName());
-            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
+            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
                 // 查询对应的采购商品
                 PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource
                         (inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
                 if(purchaseOrderProduct.getProductType() != 2){
                     stockInfo.setNewPurchasePrice(product.getPraTaxPurchaseAmount());
+                }
+                // 判断是否为最后一次采购
+                if(purchase.getInboundLine() == inbound.getPurchaseNum()){
+                    stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - purchaseOrderProduct.getActualSingleCount().longValue());
                 }
             }
             productList.add(stockInfo);
@@ -641,7 +650,7 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setSupplierName(inbound.getSupplierName());
                 productBatch.setSkuCode(product.getSkuCode());
                 productBatch.setSkuName(product.getSkuName());
-                productBatch.setProductTime(productDate);
+                productBatch.setProductDate(productDate);
                 productBatch.setTotalCount(product.getPreInboundMainNum());
                 productBatch.setActualTotalCount(product.getPraInboundMainNum());
                 productBatch.setLineCode(product.getLinenum().intValue());
@@ -688,7 +697,7 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setSupplierName(inbound.getSupplierName());
                 productBatch.setSkuCode(batchInfo.getSkuCode());
                 productBatch.setSkuName(batchInfo.getSkuName());
-                productBatch.setProductTime(batchInfo.getProductDate());
+                productBatch.setProductDate(batchInfo.getProductDate());
                 productBatch.setBeOverdueData(batchInfo.getBeOverdueData());
                 productBatch.setTotalCount(product.getPreInboundMainNum());
                 productBatch.setActualTotalCount(batchInfo.getActualTotalCount());

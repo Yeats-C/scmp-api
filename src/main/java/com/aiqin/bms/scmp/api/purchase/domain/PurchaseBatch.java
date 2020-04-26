@@ -47,8 +47,8 @@ public class PurchaseBatch {
     private String batchRemark;
 
     @ApiModelProperty(value="生产日期")
-    @JsonProperty("product_time")
-    private String productTime;
+    @JsonProperty("product_date")
+    private String productData;
 
     @ApiModelProperty(value="过期日期")
     @JsonProperty("be_overdue_data")

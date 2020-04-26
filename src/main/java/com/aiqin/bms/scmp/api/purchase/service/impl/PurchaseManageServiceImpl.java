@@ -36,6 +36,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -605,12 +606,23 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
 
         // 更新采购的批次信息
         if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList())){
+            List<PurchaseBatch> purchaseBatches = Lists.newArrayList();
             for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
                 // 根据批次编号 采购单号确认批次是否存在
                 PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(), purchaseOrder.getPurchaseOrderCode());
-
-
+                if(batchInfo != null){
+                    batchInfo.setActualTotalCount(batchInfo.getActualTotalCount() + purchaseBatch.getActualTotalCount());
+                    batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());
+                    batchInfo.setUpdateById(purchaseBatch.getUpdateById());
+                    Integer count = purchaseBatchDao.update(batchInfo);
+                    LOGGER.info("变更采购单批次参数：" + JsonUtil.toJson(batchInfo)+ "，-条数：", count);
+                    continue;
+                }
+                PurchaseBatch info = BeanCopyUtils.copy(purchaseBatch, PurchaseBatch.class);
+                purchaseBatches.add(info);
             }
+            Integer count = purchaseBatchDao.insertAll(purchaseBatches);
+            LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
         }
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
