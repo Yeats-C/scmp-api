@@ -96,7 +96,7 @@
         </if>
     </select>
     <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
-        select
+        select distinct
         s.warehouse_name warehouseName,
         s.warehouse_code warehouseName,
         s.warehouse_type warehouseType,
