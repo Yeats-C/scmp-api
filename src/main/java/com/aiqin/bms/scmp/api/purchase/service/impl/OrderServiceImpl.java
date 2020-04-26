@@ -84,8 +84,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private ProductSkuCheckoutDao productSkuCheckoutDao;
     @Autowired
     private OrderCallbackService orderCallbackService;
-    @Value("${center.wms.url}")
-    private String centerWmsUrl;
+    @Autowired
+    private UrlConfig urlConfig;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -488,7 +488,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                // 配送的情况下 调用wms
                 SaleSourcInfoSource saleSourcInfoSource = insertWms(request);
-                String url = centerWmsUrl+"/sale/source/outbound";
+                String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
                 if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
