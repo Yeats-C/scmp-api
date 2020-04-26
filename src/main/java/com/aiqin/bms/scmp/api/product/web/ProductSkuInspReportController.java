@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -86,4 +87,16 @@ public class ProductSkuInspReportController {
         }
     }
 
+
+    @PostMapping("/upload/files")
+    @ApiOperation("文件批量上传")
+    public HttpResponse<String> uploadFiles(@RequestParam(value="files",required=true) MultipartFile[] multipartFiles, @RequestParam("skuCode")String skuCode) {
+//        try {
+//            return productFileService.uploadFiles(multipartFiles,skuCode);
+//        } catch (Exception e) {
+//            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR);
+//        }
+
+    }
 }
