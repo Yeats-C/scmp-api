@@ -613,7 +613,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 新增入库批次的信息
         List<InboundBatch> InboundBatchList = Lists.newArrayList();
-        InboundBatch productBatch;
+        InboundBatch productBatch ;
         if(CollectionUtils.isEmpty(request.getBatchList())){
             for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
                 key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
@@ -624,8 +624,6 @@ public class InboundServiceImpl implements InboundService {
                         batchCode + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
                 // 根据批次编号查询批次是否存在
                 productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode());
-                productBatch.setUpdateById(request.getOperatorId());
-                productBatch.setUpdateByName(request.getOperatorName());
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -638,12 +636,17 @@ public class InboundServiceImpl implements InboundService {
                 batchList.add(stockBatchInfo);
 
                 if(productBatch != null){
+                    productBatch.setUpdateById(request.getOperatorId());
+                    productBatch.setUpdateByName(request.getOperatorName());
                     productBatch.setActualTotalCount(product.getPraInboundMainNum() + productBatch.getActualTotalCount());
                     Integer count = inboundBatchDao.update(productBatch);
                     log.info("更新批次库存实际数量:" + productBatch + ",条数:", count);
                     continue;
                 }
                 // 查询对应订单的sku
+                productBatch = new InboundBatch();
+                productBatch.setUpdateById(request.getOperatorId());
+                productBatch.setUpdateByName(request.getOperatorName());
                 productBatch.setInboundOderCode(product.getInboundOderCode());
                 productBatch.setBatchCode(batchCode);
                 productBatch.setBatchInfoCode(batchInfoCode);
@@ -676,7 +679,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo = new StockBatchInfoRequest();
                 this.addStockBatch(stockBatchInfo, product, inbound);
                 stockBatchInfo.setProductDate(batchInfo.getProductDate());
-                stockBatchInfo.setBeOverdueData(batchInfo.getBeOverdueData());
+                stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
                 stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
                 stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
                 stockBatchInfo.setOperatorId(request.getOperatorId());
@@ -699,7 +702,7 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setSkuCode(batchInfo.getSkuCode());
                 productBatch.setSkuName(batchInfo.getSkuName());
                 productBatch.setProductDate(batchInfo.getProductDate());
-                productBatch.setBeOverdueData(batchInfo.getBeOverdueData());
+                productBatch.setBeOverdueDate(batchInfo.getBeOverdueDate());
                 productBatch.setTotalCount(product.getPreInboundMainNum());
                 productBatch.setActualTotalCount(batchInfo.getActualTotalCount());
                 productBatch.setLineCode(batchInfo.getLineCode().intValue());

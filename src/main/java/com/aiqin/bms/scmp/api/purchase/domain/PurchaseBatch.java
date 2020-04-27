@@ -48,11 +48,11 @@ public class PurchaseBatch {
 
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
-    private String productData;
+    private String productDate;
 
     @ApiModelProperty(value="过期日期")
-    @JsonProperty("be_overdue_data")
-    private String beOverdueData;
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
 
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")

@@ -51,8 +51,8 @@ public class InboundBatch {
     private String productDate;
 
     @ApiModelProperty(value="过期日期")
-    @JsonProperty("be_overdue_data")
-    private String beOverdueData;
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
 
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")

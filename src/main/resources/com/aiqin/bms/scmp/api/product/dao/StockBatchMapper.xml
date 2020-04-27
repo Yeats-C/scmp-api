@@ -17,7 +17,7 @@
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
-    <result column="be_overdue_data" jdbcType="VARCHAR" property="beOverdueData" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="inventory_count" jdbcType="BIGINT" property="inventoryCount" />
     <result column="available_count" jdbcType="BIGINT" property="availableCount" />
@@ -35,7 +35,7 @@
   <sql id="Base_Column_List">
     id, stock_batch_code, company_code, company_name, transport_center_code, transport_center_name, 
     warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name, 
-    batch_code, batch_info_code, product_date, be_overdue_data, batch_remark, inventory_count, 
+    batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
     available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time, create_by_id, 
     create_by_name, update_time, update_by_id, update_by_name
   </sql>
@@ -45,7 +45,7 @@
       warehouse_code, warehouse_name, warehouse_type, 
       supplier_code, sku_code, sku_name, 
       batch_code, batch_info_code, product_date, 
-      be_overdue_data, batch_remark, inventory_count, 
+      be_overdue_date, batch_remark, inventory_count,
       available_count, lock_count, purchase_price, 
       tax_cost, tax_rate, create_time, 
       create_by_id, create_by_name, update_time, 
@@ -55,7 +55,7 @@
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseType,jdbcType=VARCHAR}, 
       #{supplierCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{batchCode,jdbcType=VARCHAR}, #{batchInfoCode,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR},
-      #{beOverdueData,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{inventoryCount,jdbcType=BIGINT},
+      #{beOverdueDate,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{inventoryCount,jdbcType=BIGINT},
       #{availableCount,jdbcType=BIGINT}, #{lockCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, 
       #{taxCost,jdbcType=DECIMAL}, #{taxRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
@@ -106,8 +106,8 @@
       <if test="productDate != null">
         product_date = #{productDate,jdbcType=VARCHAR},
       </if>
-      <if test="beOverdueData != null">
-        be_overdue_data = #{beOverdueData,jdbcType=VARCHAR},
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
       </if>
       <if test="batchRemark != null">
         batch_remark = #{batchRemark,jdbcType=VARCHAR},
@@ -296,7 +296,7 @@
   <select id="stockBatchDetail" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse">
     select
       a.stock_batch_code stockBatchCode, a.product_date productDate, a.batch_remark batchRemark,
-      a.be_overdue_data beOverdueData, a.batch_code batchCode, a.batch_info_code batchInfoCode,
+      a.be_overdue_date beOverdueDate, a.batch_code batchCode, a.batch_info_code batchInfoCode,
       a.supplier_code supplierCode, b.supply_name supplierName, a.tax_cost taxCost,
       a.create_time createTime, a.update_time updateTime, a.create_by_name createByName,
       a.update_by_name updateByName, a.sku_code skuCode, a.warehouse_code warehouseCode
@@ -374,8 +374,8 @@
         <if test="item.productDate != null">
           product_date = #{item.productDate,jdbcType=VARCHAR},
         </if>
-        <if test="item.beOverdueData != null">
-          be_overdue_data = #{item.beOverdueData,jdbcType=VARCHAR},
+        <if test="item.beOverdueDate != null">
+          be_overdue_date = #{item.beOverdueDate,jdbcType=VARCHAR},
         </if>
         <if test="item.batchRemark != null">
           batch_remark = #{item.batchRemark,jdbcType=VARCHAR},
@@ -412,7 +412,7 @@
   <insert id="insertAll">
     insert into stock_batch (stock_batch_code, company_code, company_name, transport_center_code, transport_center_name,
       warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
-      batch_code, batch_info_code, product_date, be_overdue_data, batch_remark, inventory_count,
+      batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
       available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
       create_by_id, create_by_name, update_time, update_by_id, update_by_name)
     values
@@ -422,7 +422,7 @@
       #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.batchCode,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
-      #{item.beOverdueData,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.inventoryCount,jdbcType=BIGINT},
+      #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.inventoryCount,jdbcType=BIGINT},
       #{item.availableCount,jdbcType=BIGINT}, #{item.lockCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL},
       #{item.taxCost,jdbcType=DECIMAL}, #{item.taxRate,jdbcType=DECIMAL},
       NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},

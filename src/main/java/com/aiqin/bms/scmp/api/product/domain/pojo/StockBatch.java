@@ -73,8 +73,8 @@ public class StockBatch {
     private String productDate;
 
     @ApiModelProperty(value="过期日期")
-    @JsonProperty("be_overdue_data")
-    private String beOverdueData;
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
 
     @ApiModelProperty(value="批次备注")
     @JsonProperty("batch_remark")

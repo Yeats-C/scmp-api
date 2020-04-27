@@ -11,8 +11,8 @@
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="product_date" jdbcType="VARCHAR" property="productData" />
-    <result column="be_overdue_data" jdbcType="VARCHAR" property="beOverdueData" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="total_count" jdbcType="BIGINT" property="totalCount" />
     <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
@@ -26,20 +26,20 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code, 
-    supplier_name, batch_remark, product_date, be_overdue_data, total_count, actual_total_count,
+    supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count,
     location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name, 
     update_by_name
   </sql>
   <insert id="insert">
     insert into purchase_batch (purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name,
-      supplier_code, supplier_name, batch_remark, product_date, be_overdue_data, total_count,
+      supplier_code, supplier_name, batch_remark, product_date, be_overdue_date, total_count,
       actual_total_count, location_code, line_code, create_time, update_time, create_by_id,
       update_by_id, create_by_name, update_by_name) values
     <foreach collection="list" index="index" item="item" separator=",">
      (#{item.purchaseOderCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
       #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
-      #{item.productData,jdbcType=VARCHAR}, #{item.beOverdueData,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=BIGINT},
+      #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=BIGINT},
       #{item.actualTotalCount,jdbcType=BIGINT}, #{item.locationCode,jdbcType=VARCHAR}, #{item.lineCode,jdbcType=INTEGER},
       now(), now(), #{item.createById,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
       #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}
@@ -67,11 +67,11 @@
       <if test="batchRemark != null">
         batch_remark = #{batchRemark,jdbcType=VARCHAR},
       </if>
-      <if test="productData != null">
-        product_date = #{productData,jdbcType=VARCHAR},
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
       </if>
-      <if test="beOverdueData != null">
-        be_overdue_data = #{beOverdueData,jdbcType=VARCHAR},
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
       </if>
       <if test="totalCount != null">
         total_count = #{totalCount,jdbcType=BIGINT},
