@@ -609,7 +609,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             List<PurchaseBatch> purchaseBatches = Lists.newArrayList();
             for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
                 // 根据批次编号 采购单号确认批次是否存在
-                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(), purchaseOrder.getPurchaseOrderCode());
+                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(),
+                        purchaseOrder.getPurchaseOrderCode(), purchaseBatch.getLineCode());
                 if(batchInfo != null){
                     batchInfo.setActualTotalCount(batchInfo.getActualTotalCount() + purchaseBatch.getActualTotalCount());
                     batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());

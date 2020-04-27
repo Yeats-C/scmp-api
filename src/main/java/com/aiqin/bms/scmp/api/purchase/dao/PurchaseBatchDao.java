@@ -12,6 +12,7 @@ public interface PurchaseBatchDao {
     Integer update(PurchaseBatch record);
 
     PurchaseBatch purchaseInfo(@Param("batchInfoCode") String batchInfoCode,
-                               @Param("purchaseOderCode") String purchaseOderCode);
+                               @Param("purchaseOderCode") String purchaseOderCode,
+                               @Param("lineCode") Integer lineCode);
 
 }

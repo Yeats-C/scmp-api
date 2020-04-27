@@ -645,10 +645,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
             LOGGER.info("库存操作结束");
             // 调用批次库存操作
-            if(!request.getOperationType().equals(7) || !request.getOperationType().equals(8)){
+            if(!request.getOperationType().equals(7)){
                 this.changeStockBatch(request);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("操作库存失败", e.getMessage());
             throw new BizException("操作库存失败");
         }
@@ -1005,7 +1006,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stockBatchFlow.setBeforeAvailableCount(0L);
                 stockBatchFlow.setBeforeLockCount(0L);
                 stockBatch = stockBatchRequestToStockBatch(stockBatch, stockBatchInfo, request.getOperationType());
-                stockBatch.setBatchInfoCode(key);
                 if (stockBatch != null) {
                     adds.add(stockBatch);
                 } else {
@@ -1020,6 +1020,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 //                }
 
                 //设置库存流水修改后的值
+                String batchInfoCode = stockBatch.getSkuCode() + "_" + stockBatch.getWarehouseCode() + "_" +
+                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" + stockBatch.getTaxCost();
+                stockBatch.setBatchInfoCode(batchInfoCode);
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
                 stockBatchFlow.setAfterInventoryCount(stockBatch.getInventoryCount());

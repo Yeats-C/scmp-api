@@ -137,6 +137,7 @@
     from inbound_batch
     where batch_info_code = #{batchInfoCode, jdbcType=VARCHAR}
     and inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
   <select id="selectInboundBatchList" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />

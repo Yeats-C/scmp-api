@@ -25,7 +25,8 @@ public interface InboundBatchDao {
     Integer update(InboundBatch inboundBatch);
 
     InboundBatch inboundBatchByInfoCode(@Param("batchInfoCode") String batchInfoCode,
-                                        @Param("inboundOderCode") String inboundOderCode);
+                                        @Param("inboundOderCode") String inboundOderCode,
+                                        @Param("lineCode") Long lineCode);
 
     List<InboundBatch> selectInboundBatchList(String inboundOderCode);
 

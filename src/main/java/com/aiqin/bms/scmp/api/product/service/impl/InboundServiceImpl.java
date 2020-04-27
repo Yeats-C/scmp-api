@@ -561,6 +561,7 @@ public class InboundServiceImpl implements InboundService {
             //单个SKU的实际含税金额
             product.setPraTaxAmount(product.getPraTaxPurchaseAmount().multiply(BigDecimal.valueOf(actualTotalCount))
                     .setScale(4, BigDecimal.ROUND_HALF_UP));
+            product.setUpdateBy(request.getOperatorName());
             // 更新每个商品实际数量，金额
             Integer count = inboundProductDao.update(product);
             log.info("更新入库单商品信息" + product, count);
@@ -622,8 +623,6 @@ public class InboundServiceImpl implements InboundService {
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
                 String batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
                         batchCode + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
-                // 根据批次编号查询批次是否存在
-                productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode());
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -635,6 +634,8 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 batchList.add(stockBatchInfo);
 
+                // 根据批次编号查询批次是否存在
+                productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode(), inboundProduct.getLineCode());
                 if(productBatch != null){
                     productBatch.setUpdateById(request.getOperatorId());
                     productBatch.setUpdateByName(request.getOperatorName());
@@ -662,7 +663,10 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setCreateByName(request.getOperatorName());
                 InboundBatchList.add(productBatch);
             }
-            inboundBatchDao.insertAll(InboundBatchList);
+            if(CollectionUtils.isNotEmpty(InboundBatchList)){
+                Integer count = inboundBatchDao.insertAll(InboundBatchList);
+                log.info("入库单添加批次信息", count);
+            }
         }else {
             // 更新入库批次的信息
             for (InboundBatchCallBackRequest batchInfo : request.getBatchList()){
@@ -671,7 +675,7 @@ public class InboundServiceImpl implements InboundService {
                 // 根据批次编号查询批次是否存在
                 String batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
                         batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
-                productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode());
+                productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode(), batchInfo.getLineCode());
                 productBatch.setUpdateById(request.getOperatorId());
                 productBatch.setUpdateByName(request.getOperatorName());
 
@@ -711,7 +715,10 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setCreateByName(request.getOperatorName());
                 InboundBatchList.add(productBatch);
             }
-            inboundBatchDao.insertAll(InboundBatchList);
+            if(CollectionUtils.isNotEmpty(InboundBatchList)){
+                Integer count = inboundBatchDao.insertAll(InboundBatchList);
+                log.info("入库单添加批次信息", count);
+            }
         }
         changeStockRequest.setStockBatchList(batchList);
 
@@ -723,6 +730,7 @@ public class InboundServiceImpl implements InboundService {
         inbound.setPraAmount(praAmount);
         //实际税额
         inbound.setPraTax(praTaxAmount.subtract(praAmount));
+        inbound.setUpdateBy(request.getOperatorName());
         // 保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(),
                 ObjectTypeCode.INBOUND_ODER.getStatus(), request, HandleTypeCoce.RETURN_INBOUND_ODER.getName(), new Date(), request.getOperatorName(), request.getRemark());
@@ -761,7 +769,7 @@ public class InboundServiceImpl implements InboundService {
         Integer k = inboundDao.updateByPrimaryKeySelective(inbound);
         log.info("入库单更新条数:{}",k);
         // 回传给来源编号
-        //returnSource(inbound.getId());
+        returnSource(inbound.getId());
     }
 
     // 添加批次库存

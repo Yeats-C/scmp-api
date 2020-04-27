@@ -30,7 +30,7 @@
     location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name, 
     update_by_name
   </sql>
-  <insert id="insert">
+  <insert id="insertAll">
     insert into purchase_batch (purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name,
       supplier_code, supplier_name, batch_remark, product_date, be_overdue_date, total_count,
       actual_total_count, location_code, line_code, create_time, update_time, create_by_id,
@@ -100,5 +100,6 @@
     from purchase_batch
     where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
     and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
 </mapper>
