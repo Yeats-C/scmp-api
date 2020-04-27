@@ -57,4 +57,5 @@ public interface ProductSkuInspReportDao {
 
     Integer updateInspection(ProductSkuInspReport productSkuInspReport);
 
+    Integer getPersonIdByskuCode(String personId, String skuCode);
 }

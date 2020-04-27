@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
@@ -18,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
 import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
 import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
@@ -42,7 +44,7 @@ import java.util.stream.Collectors;
  * @date: 2019/3/13 0013 16:32
  */
 @Service
-public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportService {
+public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements ProductSkuInspReportService {
     @Autowired
     ProductSkuInspReportDao productSkuInspReportDao;
     @Autowired
@@ -273,7 +275,13 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     @Override
     @Transactional(rollbackFor = Exception.class)
         public HttpResponse<String> uploadFiles(MultipartFile[] multipartFiles, String skuCode) {
-        List<MultipartFile> multipartFileList= Arrays.stream(multipartFiles).collect(Collectors.toList());
+        AuthToken authToken=getUser();
+        String personId= authToken.getPersonId();
+       Integer num= productSkuInspReportDao.getPersonIdByskuCode(personId,skuCode);
+        if (num<1){
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,"该采购组没有对应的skuCode");
+        }
+       List<MultipartFile> multipartFileList= Arrays.stream(multipartFiles).collect(Collectors.toList());
         List<String> multipartFileListName=multipartFileList.stream().map(x->x.getName()).distinct().collect(Collectors.toList());
         if(multipartFileListName.size()!=multipartFileList.size()){
             return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR3);
@@ -293,6 +301,7 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
             //使用SimpleDateFormat的parse()方法生成Date
             try {
                 Date date = sf.parse(multipartFile.getName());
+                saveProductSkuInspReportItemReqVo.setProductionDate(date);
             } catch (ParseException e) {
                 e.printStackTrace();
                 return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR4);

@@ -140,7 +140,13 @@
       and production_date =  #{productionDate,jdbcType=TIMESTAMP}
     </if>
   </select>
-  <delete id="deleteDrafts" parameterType="java.util.List">
+    <select id="getPersonIdByskuCode" resultType="java.lang.Integer">
+        select count(id) from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR} procurement_section_code in
+        (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
+    </select>
+
+
+    <delete id="deleteDrafts" parameterType="java.util.List">
     DELETE FROM product_sku_inspection_report_draft WHERE sku_code IN
     <foreach collection="productSkus" item="item" open="(" separator="," close=")">
       #{item.skuCode,jdbcType=VARCHAR}

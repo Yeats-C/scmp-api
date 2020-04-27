@@ -98,7 +98,7 @@
     <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
         select distinct
         s.warehouse_name warehouseName,
-        s.warehouse_code warehouseName,
+        s.warehouse_code warehouseCode,
         s.warehouse_type warehouseType,
         s.transport_center_code stockName,
         s.transport_center_name stockCode
