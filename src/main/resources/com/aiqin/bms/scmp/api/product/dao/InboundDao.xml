@@ -48,7 +48,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, company_code, company_name, inbound_status_code, inbound_status_name, inbound_oder_code, 
+    id, company_code, company_name, inbound_status_code, inbound_status_name, inbound_oder_code,
     inbound_type_code, inbound_type_name, source_oder_code, inbound_time, logistics_center_code, 
     logistics_center_name, warehouse_code, warehouse_name, supplier_code, supplier_name, 
     pre_arrival_time, wms_document_code, pre_inbound_num, pre_main_unit_num, pre_tax_amount, 

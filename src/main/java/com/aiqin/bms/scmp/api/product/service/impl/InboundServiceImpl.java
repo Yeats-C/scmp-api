@@ -603,7 +603,8 @@ public class InboundServiceImpl implements InboundService {
                 }
                 // 判断是否为最后一次采购
                 if(purchase.getInboundLine() == inbound.getPurchaseNum()){
-                    stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - purchaseOrderProduct.getActualSingleCount().longValue());
+                    Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
+                    stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
                 }
             }
             productList.add(stockInfo);
@@ -757,7 +758,7 @@ public class InboundServiceImpl implements InboundService {
         Integer k = inboundDao.updateByPrimaryKeySelective(inbound);
         log.info("入库单更新条数:{}",k);
         // 回传给来源编号
-        returnSource(inbound.getId());
+        //returnSource(inbound.getId());
     }
 
     // 添加批次库存
