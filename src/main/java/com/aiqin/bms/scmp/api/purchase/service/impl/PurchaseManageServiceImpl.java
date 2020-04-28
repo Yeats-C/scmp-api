@@ -620,6 +620,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     continue;
                 }
                 PurchaseBatch info = BeanCopyUtils.copy(purchaseBatch, PurchaseBatch.class);
+                info.setPurchaseOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseBatches.add(info);
             }
             Integer count = purchaseBatchDao.insertAll(purchaseBatches);

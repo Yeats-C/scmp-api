@@ -836,7 +836,6 @@ public class InboundServiceImpl implements InboundService {
                     purchaseManageService.addLog(operationLog);
                 }
             } catch (Exception e) {
-                log.error(Global.ERROR, e);
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传采购单失败失败");
             }

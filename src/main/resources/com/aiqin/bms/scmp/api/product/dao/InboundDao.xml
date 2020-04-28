@@ -675,7 +675,7 @@
     order by id desc limit 1
   </select>
   <select id="inboundCodeOrderLast" resultMap="BaseResultMap">
-    select inbound_oder_code
+    select <include refid="Base_Column_List"></include>
     from inbound
     where source_oder_code = #{sourceOderCode}
     order by id desc limit 1
