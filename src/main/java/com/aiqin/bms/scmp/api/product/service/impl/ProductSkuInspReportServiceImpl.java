@@ -278,6 +278,7 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
         AuthToken authToken=getUser();
         String personId= authToken.getPersonId();
        Integer num= productSkuInspReportDao.getPersonIdByskuCode(personId,skuCode);
+
         if (num<1){
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,"该采购组没有对应的skuCode");
         }
@@ -295,12 +296,18 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
         List<SaveProductSkuInspReportItemReqVo> saveProductSkuInspReportItemReqVos= Lists.newArrayList();
         for (MultipartFile multipartFile:
         multipartFileList ) {
+
+            String fileName=multipartFile.getOriginalFilename();
+            if (fileName.indexOf('/')>=0){
+                fileName=fileName.substring(fileName.indexOf('/')+1);
+
+            }
             SaveProductSkuInspReportItemReqVo saveProductSkuInspReportItemReqVo=new SaveProductSkuInspReportItemReqVo();
             saveProductSkuInspReportItemReqVo.setInspectionReportPath(fileInfoService.fileUpload(multipartFile, FilePathEnum.PRODUCT_FILE.getCode()));
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             //使用SimpleDateFormat的parse()方法生成Date
             try {
-                Date date = sf.parse(multipartFile.getOriginalFilename());
+                Date date = sf.parse(fileName);
                 saveProductSkuInspReportItemReqVo.setProductionDate(date);
             } catch (ParseException e) {
                 e.printStackTrace();
