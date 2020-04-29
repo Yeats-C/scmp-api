@@ -590,9 +590,20 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setNewDelivery(inbound.getSupplierCode());
             stockInfo.setNewDeliveryName(inbound.getSupplierName());
             stockInfo.setDocumentCode(inbound.getInboundOderCode());
-            stockInfo.setDocumentType(1);//0出库 1入库 2退供 3采购
+            stockInfo.setDocumentType(1);//0出库 1入库
             stockInfo.setSourceDocumentCode(inbound.getSourceOderCode());
-            stockInfo.setSourceDocumentType(Integer.parseInt(inbound.getInboundTypeCode().toString()));
+            // 1.采购 2.调拨 3.退货  4.移库
+            Integer sourceDocumentType;
+            if(inbound.getInboundTypeCode().intValue() == 1){
+                sourceDocumentType = 3;
+            }else if(inbound.getInboundTypeCode().intValue() == 2){
+                sourceDocumentType = 4;
+            }else if(inbound.getInboundTypeCode().intValue() == 3){
+                sourceDocumentType = 5;
+            }else {
+                sourceDocumentType = 6;
+            }
+            stockInfo.setSourceDocumentType(sourceDocumentType);
             stockInfo.setOperatorId(request.getOperatorId());
             stockInfo.setOperatorName(request.getOperatorName());
             if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
