@@ -1350,6 +1350,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if (response == null) {
             return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
         }
+
+        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
+            return HttpResponse.success("商品已出库完成,等待拣货中");
+        }
         // 操作时间 签收时间
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(request.getOderCode());
@@ -1357,6 +1361,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setOperatorTime(orderInfo.getReceivingTime());
         orderInfo.setOperator(request.getDeliveryPerson());
         orderInfo.setUpdateById(request.getPersonId());
+        orderInfo.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
@@ -1535,7 +1540,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Async
     public void updateAiqinOrder(OutboundCallBackRequest request){
-        LOGGER.info("调用审批流发起申请,request={}", request);
+        LOGGER.info("调用爱亲开始,request={}", JsonUtil.toJson(request));
         String url = orderUrl + "/purchase/sale/info";
         OrderIogisticsVo info = new OrderIogisticsVo();
         // 复制订单主信息
@@ -1547,6 +1552,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 复制批次信息
         List<OrderBatchStoreDetail> batchList = BeanCopyUtils.copyList(request.getBatchList(), OrderBatchStoreDetail.class);
         info.setOrderBatchStoreDetail(batchList);
+        LOGGER.info("调用爱亲开始,request={}", JsonUtil.toJson(info));
         HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){
