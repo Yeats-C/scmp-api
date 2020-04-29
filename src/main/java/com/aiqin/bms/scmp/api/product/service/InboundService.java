@@ -67,7 +67,8 @@ public interface InboundService {
     /**
      * 推送给wms
      */
-    void pushWms(String code, InboundServiceImpl inboundService);
+    //void pushWms(String code, InboundServiceImpl inboundService);
+    void pushWms(String code);
 
     void workFlowCallBack(InboundCallBackRequest request);
 
@@ -107,6 +108,6 @@ public interface InboundService {
 
     String repealOrder(String orderId, String createById, String createByName, String cancel);
 
-    void wms(String code);
+    //void wms(String code);
 
 }

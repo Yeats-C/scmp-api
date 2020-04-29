@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -48,4 +49,6 @@ public interface InboundProductDao {
     List<ReturnInboundProduct> selectTax(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode);
 
     List<InboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
+
+    List<PurchaseInboundDetailSource> wmsByInboundProduct(String inboundOderCode);
 }
