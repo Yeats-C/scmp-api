@@ -282,7 +282,7 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,"该采购组没有对应的skuCode");
         }
        List<MultipartFile> multipartFileList= Arrays.stream(multipartFiles).collect(Collectors.toList());
-        List<String> multipartFileListName=multipartFileList.stream().map(x->x.getName()).distinct().collect(Collectors.toList());
+        List<String> multipartFileListName=multipartFileList.stream().map(x->x.getOriginalFilename()).distinct().collect(Collectors.toList());
         if(multipartFileListName.size()!=multipartFileList.size()){
             return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR3);
         }
@@ -300,7 +300,7 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
             //使用SimpleDateFormat的parse()方法生成Date
             try {
-                Date date = sf.parse(multipartFile.getName());
+                Date date = sf.parse(multipartFile.getOriginalFilename());
                 saveProductSkuInspReportItemReqVo.setProductionDate(date);
             } catch (ParseException e) {
                 e.printStackTrace();
