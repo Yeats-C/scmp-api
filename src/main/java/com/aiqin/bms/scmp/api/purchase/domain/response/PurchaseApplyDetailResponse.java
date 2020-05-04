@@ -430,7 +430,13 @@ public class PurchaseApplyDetailResponse {
     @JsonProperty("product_name")
     private String productName;
 
+    @ApiModelProperty(value="赠品件数（零数）")
+    @JsonProperty("gift_single")
+    private Integer giftSingle;
 
+    @ApiModelProperty(value="赠品数量（整数）")
+    @JsonProperty("gift_whole")
+    private Integer giftWhole;
 
 }
 
