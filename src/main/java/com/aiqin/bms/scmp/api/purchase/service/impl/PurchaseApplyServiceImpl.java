@@ -223,12 +223,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
             Map<String, BigDecimal> productTax = new HashMap<>();
             String key;
-            for (PurchaseApplyDetailResponse product : detail) {
-                key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                if (productTax.get(key) == null) {
-                    productTax.put(key, productSkuPriceInfoDao.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
-                }
-            }
+//            for (PurchaseApplyDetailResponse product : detail) {
+//                key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+//                if (productTax.get(key) == null) {
+//                    productTax.put(key, productSkuPriceInfoDao.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
+//                }
+//            }
 
             Map<String, PurchaseApplyRespVo> purchaseApply = new HashMap<>();
             for (PurchaseApplyDetailResponse product : detail) {
@@ -250,11 +250,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
                 // 获取最高采购价(价格管理中供应商的含税价格)
-                if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
-                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                    BigDecimal priceTax = productTax.get(key);
-                    product.setPurchaseMax(priceTax == null ? big : priceTax);
-                }
+//                if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
+//                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+//                    BigDecimal priceTax = productTax.get(key);
+//                    product.setPurchaseMax(priceTax == null ? big : priceTax);
+//                }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                 key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
                 PurchaseApplyRespVo vo = purchaseApply.get(key);
