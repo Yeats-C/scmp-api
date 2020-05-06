@@ -141,7 +141,7 @@
     </if>
   </select>
     <select id="getPersonIdByskuCode" resultType="java.lang.Integer">
-        select count(id) from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR} procurement_section_code in
+        select count(id) from product_sku where sku_code=#{skuCode,jdbcType=VARCHAR} and procurement_section_code in
         (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
     </select>
 
