@@ -21,6 +21,10 @@ public class PurchaseImportResponse extends PurchaseApplyDetailResponse{
     @JsonProperty("return_count")
     private String returnCount;
 
+    @ApiModelProperty("赠品数量")
+    @JsonProperty("gift_count")
+    private String giftCount;
+
     @ApiModelProperty(value="实物返件数（整数）")
     @JsonProperty("return_whole")
     private Integer returnWhole;
