@@ -159,6 +159,11 @@
     DELETE FROM  product_sku_inspection_report
     where id = #{id,jdbcType=BIGINT}
   </delete>
+
+    <delete id="deleteByskuCodeAndproductionDate">
+    DELETE FROM  product_sku_inspection_report
+    where sku_code = #{skuCode,jdbcType=BIGINT} and production_date  = #{productionDate,jdbcType=TIMESTAMP}
+  </delete>
   <update id="updateInspection">
     update product_sku_inspection_report
     <set>

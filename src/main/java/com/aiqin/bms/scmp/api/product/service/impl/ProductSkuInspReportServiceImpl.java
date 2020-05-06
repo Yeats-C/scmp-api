@@ -313,6 +313,7 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
                 e.printStackTrace();
                 return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR4);
             }
+            productSkuInspReportDao.deleteByskuCodeAndproductionDate(skuCode,saveProductSkuInspReportItemReqVo.getProductionDate());
             saveProductSkuInspReportItemReqVos.add(saveProductSkuInspReportItemReqVo);
         }
         saveProductSkuInspReportReqVo.setItemList(saveProductSkuInspReportItemReqVos);

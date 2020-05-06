@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRe
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.InspectionReportRespVO;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,6 +49,8 @@ public interface ProductSkuInspReportDao {
     int deleteList(String skuCode);
 
     int deleteById(Long id);
+
+    int deleteByskuCodeAndproductionDate(@Param("skuCode") String skuCode, @Param("productionDate") Date productionDate);
 
     int insertDraftList(@Param("productSkuInspReportDrafts") List<ProductSkuInspReportDraft> productSkuInspReportDrafts);
 
