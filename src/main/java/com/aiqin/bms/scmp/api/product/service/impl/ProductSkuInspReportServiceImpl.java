@@ -298,8 +298,8 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
         multipartFileList ) {
 
             String fileName=multipartFile.getOriginalFilename();
-            if (fileName.indexOf('/')>=0){
-                fileName=fileName.substring(fileName.indexOf('/')+1);
+            if (fileName.lastIndexOf('/')>=0){
+                fileName=fileName.substring(fileName.lastIndexOf('/')+1);
 
             }
             SaveProductSkuInspReportItemReqVo saveProductSkuInspReportItemReqVo=new SaveProductSkuInspReportItemReqVo();
