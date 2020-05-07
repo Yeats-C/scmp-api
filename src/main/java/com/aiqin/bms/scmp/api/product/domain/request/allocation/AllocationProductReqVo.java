@@ -28,16 +28,16 @@ public class AllocationProductReqVo {
     @NotEmpty(message = "sku 名称不能为空")
     private String skuName;
 
-    @ApiModelProperty("品类")
+    @ApiModelProperty("品类(名称)")
     private String category;
 
-    @ApiModelProperty("品牌")
+    @ApiModelProperty("品牌(名称)")
     private String brand;
 
-    @ApiModelProperty("颜色")
+    @ApiModelProperty("颜色(名称)")
     private String color;
 
-    @ApiModelProperty("规格")
+    @ApiModelProperty("规格(名称)")
     private String specification;
 
     @ApiModelProperty("型号")

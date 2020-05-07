@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -72,6 +73,9 @@ public class Allocation extends CommonBean {
     @ApiModelProperty("审批流程id")
     private String formNo;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @ApiModelProperty("公司编码")
     private String companyCode;
 
@@ -105,6 +109,21 @@ public class Allocation extends CommonBean {
     @ApiModelProperty("物流费用")
     @NotEmpty(message = "物流费用不能为空")
     private Long logisticsOutlay;
+
+
+    @ApiModelProperty(value = "调拨移库损益模式（1，我方发起 2，wms方发起）")
+    private Integer patternType;
+
+    @ApiModelProperty(value = "调拨移库损益模式")
+    private String patternName;
+
+    @ApiModelProperty(value = "创建人编码")
+    @JsonProperty("create_by_id")
+    private String createById;
+
+    @ApiModelProperty(value = "创建人名称")
+    @JsonProperty("create_by_name")
+    private String createByName;
 
     /** 以下是dl回调需要用的字段*/
 

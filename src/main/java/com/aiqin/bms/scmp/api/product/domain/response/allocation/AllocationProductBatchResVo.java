@@ -47,6 +47,12 @@ public class AllocationProductBatchResVo {
     @ApiModelProperty("数量")
     private Long quantity;
 
+    @ApiModelProperty("出库数量")
+    private Long callOutQuantity;
+
+    @ApiModelProperty("入库数量")
+    private Long  callInQuantity;
+
     @ApiModelProperty("调出批次号")
     private String batchNumber;
 
@@ -64,5 +70,8 @@ public class AllocationProductBatchResVo {
 
     @ApiModelProperty("供应商名称")
     private String supplierName;
+
+    @ApiModelProperty("行号")
+    private Integer lineNum;
 
 }

@@ -325,6 +325,12 @@
       <if test="logisticsOutlay != null">
         logistics_outlay,
       </if>
+      <if test="patternType != null">
+        pattern_type,
+      </if>
+      <if test="patternName != null">
+        pattern_name,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -431,6 +437,12 @@
       </if>
       <if test="logisticsOutlay != null">
        #{logisticsOutlay,jdbcType=BIGINT},
+      </if>
+      <if test="patternType != null">
+        #{patternType,jdbcType=TINYINT},
+      </if>
+      <if test="patternName != null">
+        #{patternName,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
