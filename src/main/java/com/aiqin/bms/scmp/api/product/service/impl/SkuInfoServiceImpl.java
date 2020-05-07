@@ -1892,11 +1892,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSku.setSelectionEffectiveEndTime(auditorTime);
                 applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
                 //审批通过之后传输给wms
-                try {
-                    sendWms(applyCode, skuCode, productSkuInfo);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    sendWms(applyCode, skuCode, productSkuInfo);
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
 
             }
         }
