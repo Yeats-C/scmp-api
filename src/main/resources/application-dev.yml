@@ -55,8 +55,8 @@ oss:
     point: http://oss-cn-beijing.aliyuncs.com
   access:
     key:
-      id: LTAILR1FRNY70UY0
-      secret: OWTAtojGLNLbcmGGGsOWE7AC9UguvU
+      id: LTAI4GDPNjZqZWJTgQbBoB9V
+      secret: 6eoEgmUXyFDEQr9PCzCgpF4qQ4NtXj
   bucket:
     name: aq-flows-test
   dir: dev/

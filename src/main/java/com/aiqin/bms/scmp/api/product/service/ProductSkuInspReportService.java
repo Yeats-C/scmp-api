@@ -7,6 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -121,4 +123,5 @@ public interface ProductSkuInspReportService {
      */
     List<ProductSkuInspReportRespVo> getListBySkuCode(String skuCode);
 
+    HttpResponse<String> uploadFiles(MultipartFile[] multipartFiles, String skuCode);
 }

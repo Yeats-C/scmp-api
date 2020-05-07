@@ -332,7 +332,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     @Override
-    //@Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse purchaseOrder(PurchaseOrderRequest request) {
         if (request == null || request.getPurchaseOrder() == null) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);

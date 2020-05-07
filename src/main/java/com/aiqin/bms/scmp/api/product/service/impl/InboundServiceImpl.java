@@ -249,7 +249,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   //@Transactional(rollbackFor = GroundRuntimeException.class)
+    @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
             log.info("采购单入库参数：" + reqVo);

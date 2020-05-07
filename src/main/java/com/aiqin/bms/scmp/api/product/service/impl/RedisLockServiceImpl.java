@@ -26,9 +26,11 @@ public class RedisLockServiceImpl implements RedisLockService {
         // setIfAbsent()也就是redis的setnx,当key不存在时设置value
         if(redisTemplate.opsForValue().setIfAbsent(key, value)) {
             //加锁成功
+            LOGGER.info("redis 加锁成功：" + key);
             return true;
         }
         //当锁已存在，可以获取该锁的value，来判断是否过期
+        LOGGER.info("redis 锁已存在，来判断是否过期：" + key);
         String currentValue = redisTemplate.opsForValue().get(key);
         //如果锁过期
         if (!StringUtils.isEmpty(currentValue)

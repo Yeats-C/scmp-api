@@ -4,23 +4,14 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.response.PositionRespVo;
-import com.aiqin.bms.scmp.api.supplier.service.BankService;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
-import com.aiqin.ground.util.http.AbstractHttpClient;
 import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.ground.util.http.HttpMethod;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.protocol.HTTP;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import sun.rmi.runtime.Log;
-
-import java.util.List;
-
 
 /**
  * 描述: 人员职位查询

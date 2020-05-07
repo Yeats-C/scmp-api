@@ -9,7 +9,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.ApplyService;
-import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -34,7 +33,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/apply")
 @Api(description = "改供应商申请管理")
 @Slf4j
-public class ApplyController extends SupplierBaseController {
+public class ApplyController {
 
     @Autowired
     private ApplyService applyService;

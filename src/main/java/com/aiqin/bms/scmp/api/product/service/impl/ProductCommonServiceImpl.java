@@ -6,7 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogBean;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.ProductOperationLogService;
-import com.aiqin.bms.scmp.api.util.JsonMapper;
+import com.aiqin.ground.util.json.JsonUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +38,7 @@ public class ProductCommonServiceImpl implements ProductCommonService {
         operationLogBean.setHandleType(handleType);
         operationLogBean.setObjectType(objectType);
         if(josn!=null) {
-            String contentJson = JsonMapper.toJsonString(josn);
+            String contentJson = JsonUtil.toJson(josn);
             operationLogBean.setContent(contentJson);
         }
         operationLogBean.setHandleName(handleName);
@@ -57,7 +57,7 @@ public class ProductCommonServiceImpl implements ProductCommonService {
         operationLogBean.setHandleType(handleType);
         operationLogBean.setObjectType(objectType);
         if(josn!=null) {
-            String contentJson = JsonMapper.toJsonString(josn);
+            String contentJson = JsonUtil.toJson(josn);
             operationLogBean.setContent(contentJson);
         }
         operationLogBean.setHandleName(handleName);

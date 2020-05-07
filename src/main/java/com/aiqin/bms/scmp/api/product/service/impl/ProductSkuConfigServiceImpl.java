@@ -1488,7 +1488,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("联营扣点(%)不能为空");
         }else {
             try {
-              BigDecimal  i = NumberConvertUtils.stringParseBigDecimal(skuSupplierImport.getJointFranchiseRate());
+              BigDecimal  i = new BigDecimal(skuSupplierImport.getJointFranchiseRate());
               if (i.compareTo(BigDecimal.ZERO)==-1  || i.compareTo(new BigDecimal(100))== 1) {
                   errorList.add("联营扣点(%)应在0-100之间");
               }else {
@@ -1503,7 +1503,7 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             errorList.add("返点(%)不能为空");
         }else {
             try {
-                BigDecimal  i = NumberConvertUtils.stringParseBigDecimal(skuSupplierImport.getPoint());
+                BigDecimal  i = new BigDecimal(skuSupplierImport.getPoint());
                 if (i.compareTo(BigDecimal.ZERO)==-1  || i.compareTo(new BigDecimal(100))== 1) {
                     errorList.add("联营扣点(%)应在0-100之间");
                 }else {

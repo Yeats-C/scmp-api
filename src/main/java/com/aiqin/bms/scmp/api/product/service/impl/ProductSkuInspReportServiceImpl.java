@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.Save;
 import com.aiqin.bms.scmp.api.common.SaveList;
@@ -9,19 +11,30 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReportDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuInspReportReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.SaveProductSkuInspReportReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuInspReportRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportDraftMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInspReportMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuInspReportService;
+import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
+import com.aiqin.bms.scmp.api.supplier.service.FileInfoService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +44,18 @@ import java.util.stream.Collectors;
  * @date: 2019/3/13 0013 16:32
  */
 @Service
-public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportService {
+public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements ProductSkuInspReportService {
     @Autowired
     ProductSkuInspReportDao productSkuInspReportDao;
     @Autowired
     private ProductSkuInspReportDraftMapper draftMapper;
     @Autowired
     private ProductSkuInspReportMapper productSkuInspReportMapper;
+    @Autowired
+    private FileInfoService fileInfoService;
+
+    @Autowired
+    private  ProductSkuInspReportService productSkuInspReportService;
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveApplyList(List<ApplyProductSku> applyProductSkus) {
@@ -252,5 +270,54 @@ public class ProductSkuInspReportServiceImpl implements ProductSkuInspReportServ
     @Override
     public List<ProductSkuInspReportRespVo> getListBySkuCode(String skuCode) {
         return productSkuInspReportDao.getList(skuCode);
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+        public HttpResponse<String> uploadFiles(MultipartFile[] multipartFiles, String skuCode) {
+        AuthToken authToken=getUser();
+        String personId= authToken.getPersonId();
+       Integer num= productSkuInspReportDao.getPersonIdByskuCode(personId,skuCode);
+
+        if (num<1){
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,"该采购组没有对应的skuCode");
+        }
+       List<MultipartFile> multipartFileList= Arrays.stream(multipartFiles).collect(Collectors.toList());
+        List<String> multipartFileListName=multipartFileList.stream().map(x->x.getOriginalFilename()).distinct().collect(Collectors.toList());
+        if(multipartFileListName.size()!=multipartFileList.size()){
+            return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR3);
+        }
+
+        if (com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(multipartFileList)) {
+            return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR2);
+        }
+        SaveProductSkuInspReportReqVo saveProductSkuInspReportReqVo=new SaveProductSkuInspReportReqVo();
+        saveProductSkuInspReportReqVo.setSkuCode(skuCode);
+        List<SaveProductSkuInspReportItemReqVo> saveProductSkuInspReportItemReqVos= Lists.newArrayList();
+        for (MultipartFile multipartFile:
+        multipartFileList ) {
+
+            String fileName=multipartFile.getOriginalFilename();
+            if (fileName.lastIndexOf('/')>=0){
+                fileName=fileName.substring(fileName.lastIndexOf('/')+1);
+
+            }
+            SaveProductSkuInspReportItemReqVo saveProductSkuInspReportItemReqVo=new SaveProductSkuInspReportItemReqVo();
+            saveProductSkuInspReportItemReqVo.setInspectionReportPath(fileInfoService.fileUpload(multipartFile, FilePathEnum.PRODUCT_FILE.getCode()));
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+            //使用SimpleDateFormat的parse()方法生成Date
+            try {
+                Date date = sf.parse(fileName);
+                saveProductSkuInspReportItemReqVo.setProductionDate(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return HttpResponse.failure(ResultCode.FILE_UPLOAD_ERROR4);
+            }
+            productSkuInspReportDao.deleteByskuCodeAndproductionDate(skuCode,saveProductSkuInspReportItemReqVo.getProductionDate());
+            saveProductSkuInspReportItemReqVos.add(saveProductSkuInspReportItemReqVo);
+        }
+        saveProductSkuInspReportReqVo.setItemList(saveProductSkuInspReportItemReqVos);
+        productSkuInspReportService.saveProductSkuInspReports(saveProductSkuInspReportReqVo);
+        return HttpResponse.success();
     }
 }

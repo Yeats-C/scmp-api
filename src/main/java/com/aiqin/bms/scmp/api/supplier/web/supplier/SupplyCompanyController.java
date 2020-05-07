@@ -13,7 +13,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailR
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
-import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -39,7 +38,7 @@ import java.util.List;
 @RequestMapping("/supplier/company")
 @Api(description = "供应商管理")
 @Slf4j
-public class SupplyCompanyController extends SupplierBaseController {
+public class SupplyCompanyController {
     @Autowired
     private ApplySupplyComService applySupplyComService;
     @Autowired

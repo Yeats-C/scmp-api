@@ -152,6 +152,9 @@ mgs:
       - code: SCMP002009
         name: 促销SKU管理
         link: '/basicData/promoteSku'
+      - code: SCMP002010
+        name: 库房配置管理
+        link: 'basicData/warehouseConfig'
     - code: SCMP003
       name: 供应商管理
       link: ''
