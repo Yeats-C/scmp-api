@@ -423,85 +423,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateSubmit(Byte status, String formNo) {
-        // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
-        // 待出库状态时调用wms。 出库
-        // 获取调拨主数据
-        Allocation allocation1 = allocationMapper.selectByFormNO(formNo);
-        List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
-        List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
-        if(status == 2){
-            if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())){
-                // 调拨接收对象
-                AllocationWmsOutSource aWmsOutSource = new AllocationWmsOutSource();
-                List<AllocationWmsProductSource> aWmsOutProSource = new ArrayList<>();
-                List<BatchWmsInfo> aWmsOutProBatchSource = new ArrayList<>();
-                // 调拨主表数据
-                BeanUtils.copyProperties(aWmsOutSource,allocation1);
-                // 调拨商品数据
-                for (AllocationProductResVo aProductList : aProductLists) {
-                    AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
-                    BeanUtils.copyProperties(aWmsProductList,aProductList);
-                    aWmsProductList.setLineCode(aProductList.getLineNum().toString());
-                    aWmsProductList.setUnitName(aProductList.getUnit());
-                    aWmsProductList.setColorName(aProductList.getColor());
-                    aWmsProductList.setModelNumber(aProductList.getModel());
-                }
-                // 调拨商品批次数据
-                for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
-                    BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
-                    BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
-                    aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
-                    aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
-                    aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
-                    aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
-                }
-                aWmsOutSource.setAllocationWmsProductSources(aWmsOutProSource);
-                aWmsOutSource.setAllocationWmsProductBatchSources(aWmsOutProBatchSource);
-                String url = urlConfig.WMS_API_URL+"/allocation/source/outbound";
-                HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
-                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    return 0;
-                }
-            }
-            if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())) {
-                // 移库接收对象
-                MovementWmsReqVo movementWmsReqVo = new MovementWmsReqVo();
-                List<MovementWmsProductReqVo> movementWmsProductoLists = new ArrayList<>();
-                List<BatchWmsInfo> movementWmsProductBatchLists = new ArrayList<>();
-                // 移库主表数据
-                BeanUtils.copyProperties(movementWmsReqVo,allocation1);
-                movementWmsReqVo.setTransferOrderCode(allocation1.getAllocationCode());
-                movementWmsReqVo.setOutboundWarehouseCode(allocation1.getCallOutLogisticsCenterCode());
-                movementWmsReqVo.setOutboundWarehouseName(allocation1.getCallOutLogisticsCenterName());
-                movementWmsReqVo.setInboundWarehouseCode(allocation1.getCallInLogisticsCenterCode());
-                movementWmsReqVo.setInboundWarehouseName(allocation1.getCallInLogisticsCenterName());
-                movementWmsReqVo.setCreateBy(allocation1.getCreateById());
-                // 移库商品表数据
-                for (AllocationProductResVo aProductList : aProductLists) {
-                    MovementWmsProductReqVo movementWmsProductReqVo = new MovementWmsProductReqVo();
-                    BeanUtils.copyProperties(movementWmsProductReqVo,aProductList);
-                    movementWmsProductReqVo.setLineCode(aProductList.getLineNum().toString());
-                }
-                // 移库商品批次表数据
-                for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
-                    BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
-                    BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
-                    aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
-                    aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
-                    aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
-                    aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
-                }
-                movementWmsReqVo.setDetailList(movementWmsProductoLists);
-                movementWmsReqVo.setDetailBatchList(movementWmsProductBatchLists);
-                String url = urlConfig.WMS_API_URL+"/infoPushAndInquiry/source/transferInfoPush";
-                HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
-                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    return 0;
-                }
-            }
-        }
         Allocation allocation = new Allocation();
         Long id  = allocationMapper.findIdByFormNo(formNo);
         allocation.setId(id);
@@ -729,6 +650,85 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             supplierCommonService.getInstance(allocation.getAllocationCode()+"", AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content2,null, AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName(),vo.getApprovalUserName());
 
+            // 审核通过的情况下调用wms
+            // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
+            // 待出库状态时调用wms。 出库
+            // 获取调拨主数据
+            Allocation allocation1 = allocationMapper.selectByFormNO(vo1.getFormNo());
+            List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
+            List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
+            if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())){
+                    // 调拨接收对象
+                    AllocationWmsOutSource aWmsOutSource = new AllocationWmsOutSource();
+                    List<AllocationWmsProductSource> aWmsOutProSource = new ArrayList<>();
+                    List<BatchWmsInfo> aWmsOutProBatchSource = new ArrayList<>();
+                    // 调拨主表数据
+                    BeanUtils.copyProperties(aWmsOutSource,allocation1);
+                    // 调拨商品数据
+                    for (AllocationProductResVo aProductList : aProductLists) {
+                        AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
+                        BeanUtils.copyProperties(aWmsProductList,aProductList);
+                        aWmsProductList.setLineCode(aProductList.getLineNum().toString());
+                        aWmsProductList.setUnitName(aProductList.getUnit());
+                        aWmsProductList.setColorName(aProductList.getColor());
+                        aWmsProductList.setModelNumber(aProductList.getModel());
+                    }
+                    // 调拨商品批次数据
+                    for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
+                        BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
+                        BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
+                        aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
+                        aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
+                        aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
+                        aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+                    }
+                    aWmsOutSource.setAllocationWmsProductSources(aWmsOutProSource);
+                    aWmsOutSource.setAllocationWmsProductBatchSources(aWmsOutProBatchSource);
+                    String url = urlConfig.WMS_API_URL+"/allocation/source/outbound";
+                    HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                        return "调用wms失败";
+                    }
+                }
+
+                if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())) {
+                    // 移库接收对象
+                    MovementWmsReqVo movementWmsReqVo = new MovementWmsReqVo();
+                    List<MovementWmsProductReqVo> movementWmsProductoLists = new ArrayList<>();
+                    List<BatchWmsInfo> movementWmsProductBatchLists = new ArrayList<>();
+                    // 移库主表数据
+                    BeanUtils.copyProperties(movementWmsReqVo,allocation1);
+                    movementWmsReqVo.setTransferOrderCode(allocation1.getAllocationCode());
+                    movementWmsReqVo.setOutboundWarehouseCode(allocation1.getCallOutLogisticsCenterCode());
+                    movementWmsReqVo.setOutboundWarehouseName(allocation1.getCallOutLogisticsCenterName());
+                    movementWmsReqVo.setInboundWarehouseCode(allocation1.getCallInLogisticsCenterCode());
+                    movementWmsReqVo.setInboundWarehouseName(allocation1.getCallInLogisticsCenterName());
+                    movementWmsReqVo.setCreateBy(allocation1.getCreateById());
+                    // 移库商品表数据
+                    for (AllocationProductResVo aProductList : aProductLists) {
+                        MovementWmsProductReqVo movementWmsProductReqVo = new MovementWmsProductReqVo();
+                        BeanUtils.copyProperties(movementWmsProductReqVo,aProductList);
+                        movementWmsProductReqVo.setLineCode(aProductList.getLineNum().toString());
+                    }
+                    // 移库商品批次表数据
+                    for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
+                        BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
+                        BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
+                        aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
+                        aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
+                        aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
+                        aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+                    }
+                    movementWmsReqVo.setDetailList(movementWmsProductoLists);
+                    movementWmsReqVo.setDetailBatchList(movementWmsProductBatchLists);
+                    String url = urlConfig.WMS_API_URL+"/infoPushAndInquiry/source/transferInfoPush";
+                    HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                        return "调用wms失败";
+                    }
+            }
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
 
