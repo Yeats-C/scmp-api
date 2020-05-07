@@ -59,11 +59,11 @@ public class QueryAllocationResVo {
     @ApiModelProperty("入库数量")
     private Long  callInQuantity;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+   // @ApiModelProperty("采购组编码")
+   // private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+   // @ApiModelProperty("采购组名称")
+   // private String purchaseGroupName;
 
     @ApiModelProperty("含税调拨金额(含税库存成本)")
     private BigDecimal taxRefundAmount;

@@ -43,11 +43,11 @@ public class QueryMovementResVo {
     @ApiModelProperty("调入库房名称")
     private String callInWarehouseName;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+  //  @ApiModelProperty("采购组编码")
+  //  private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+  //  @ApiModelProperty("采购组名称")
+  //  private String purchaseGroupName;
 
     @ApiModelProperty("负责人")
     private String principal;

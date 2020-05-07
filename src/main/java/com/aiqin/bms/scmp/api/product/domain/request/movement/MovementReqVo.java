@@ -83,6 +83,9 @@ public class MovementReqVo {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("审批名称")
+    private String approvalName;
+
     @ApiModelProperty("sku列表")
     @Valid
     List<AllocationProductReqVo> list;
