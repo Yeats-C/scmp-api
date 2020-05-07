@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -13,8 +12,6 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleOutboundDetailedSource;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleSourcInfoSource;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
@@ -468,10 +465,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         orders.add(info);
         List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
         orderItems.addAll(orderItem);
-
-        // 调用销售单生成出库单信息
-        String outboundOderCode = this.insertOutbound(vo);
-
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -501,6 +494,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveData(orderItems, orders);
         //存日志
         saveLog(logs);
+        // 调用销售单生成出库单信息
+        this.insertOutbound(vo);
         return HttpResponse.success();
     }
 

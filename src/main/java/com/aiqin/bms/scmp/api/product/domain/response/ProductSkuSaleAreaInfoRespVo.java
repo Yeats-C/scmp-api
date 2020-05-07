@@ -8,8 +8,6 @@ import lombok.Data;
 @Data
 public class ProductSkuSaleAreaInfoRespVo {
 
-    @ApiModelProperty("销售区域名称")
-    private Long saleAreaName;
 
     @ApiModelProperty("主键")
     private Long id;
@@ -17,16 +15,7 @@ public class ProductSkuSaleAreaInfoRespVo {
     @ApiModelProperty("主表编码")
     private String mainCode;
 
-    @ApiModelProperty("sku编码")
-    private String skuCode;
-
-    @ApiModelProperty("1区域2门店")
-    private Integer type;
-
-    @ApiModelProperty("0禁止1开放")
-    private Integer status;
-
-    @ApiModelProperty("区域或门店名称")
+    @ApiModelProperty("销售区域名称")
     private String name;
 
     @ApiModelProperty("区域或门店编码")
@@ -38,6 +27,4 @@ public class ProductSkuSaleAreaInfoRespVo {
     @ApiModelProperty("公司名称")
     private String companyName;
 
-    @ApiModelProperty("省id")
-    private String provinceId;
 }

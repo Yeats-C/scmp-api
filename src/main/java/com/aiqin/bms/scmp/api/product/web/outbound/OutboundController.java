@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
@@ -26,7 +25,6 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -126,10 +124,5 @@ public class OutboundController {
         }
     }
 
-    @ApiOperation("根据销售单号修改wms回传状态和时间")
-    @PostMapping("/update/status")
-    public HttpResponse<Boolean> updateWmsSaleOutboundStutas(@RequestBody Outbound outbound){
-        return outboundService.updateWmsSaleOutboundStutas(outbound);
-    }
 
 }

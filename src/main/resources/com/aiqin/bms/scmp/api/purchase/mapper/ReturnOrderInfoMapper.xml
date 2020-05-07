@@ -582,7 +582,7 @@
                a.give_promotion givePromotion,
                a.product_line_num originalLineNum,
                a.product_status productStatus,
-               group_concat(b.batch_code) batchNumber
+               group_concat(b.batch_number) batchNumber
         from return_order_info_item a
                  left join order_info_item_product_batch b
                            on a.sku_code = b.sku_code

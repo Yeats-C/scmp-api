@@ -36,11 +36,14 @@ public class SkuSaleAreaImport extends BaseRowModel {
     private String skuName;
 
     @ApiModelProperty("供货渠道类别名称")
-    @ExcelProperty(index = 3 , value = "sku名称")
+    @ExcelProperty(index = 3 , value = "供货渠道类别名称")
     private String categoriesSupplyChannelsName;
 
+    @ApiModelProperty("供货渠道类别名称")
+    private Integer categoriesSupplyChannelsCode;
+
     @ApiModelProperty("直送供应商名称")
-    @ExcelProperty(index = 4 , value = "sku名称")
+    @ExcelProperty(index = 4 , value = "直送供应商名称")
     private String directDeliverySupplierName;
 
     @ApiModelProperty("创建人")

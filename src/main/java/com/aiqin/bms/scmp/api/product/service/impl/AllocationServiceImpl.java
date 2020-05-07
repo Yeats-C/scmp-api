@@ -177,13 +177,13 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
              List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
              stockChangeRequest.setStockVoRequests(list1);
              // 调用锁定库存数
-            /* HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+             HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
              if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
 
              }else{
                  log.error(httpResponse.getMessage());
                  throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
-             }*/
+             }
              //调用审批流
              workFlow(k,form);
              return  k;
@@ -429,6 +429,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusCode(status);
         allocation.setAllocationStatusName(AllocationEnum.getAllocationEnumNameByCode(status));
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
+
+
         return i;
     }
 

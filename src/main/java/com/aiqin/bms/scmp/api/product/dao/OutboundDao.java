@@ -7,9 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import org.apache.ibatis.annotations.Param;
 
-import java.util.Date;
 import java.util.List;
 
 
@@ -59,6 +57,4 @@ public interface OutboundDao {
     void updateByOrderCodes(List<String> list);
 
     Outbound selectBySourceCode(String sourceOderCode);
-
-    Integer updateWmsSaleOutboundStutas(Outbound outbound);
 }
