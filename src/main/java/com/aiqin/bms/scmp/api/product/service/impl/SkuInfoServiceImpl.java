@@ -3408,7 +3408,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("厂家指导价不能为空");
             } else {
                 try {
-                    productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseBigDecimal(importVo.getManufacturerGuidePrice()));
+                    productSkuDraft.setManufacturerGuidePrice(new BigDecimal(importVo.getManufacturerGuidePrice()));
                 } catch (NumberFormatException e) {
                     error.add("厂家指导价格式不正确");
                 }
@@ -3609,7 +3609,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 stockBox.setUnitCode(stock.getUnitCode());
                 boolean flag = true;
                 try {
-                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    BigDecimal bigDecimalLength = new BigDecimal(importVo.getStockBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
                     if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
                         //小数
@@ -3621,7 +3621,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     flag = false;
                 }
                 try {
-                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    BigDecimal bigDecimalWidth = new BigDecimal(importVo.getStockBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
                     if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
                         //小数
@@ -3633,7 +3633,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     flag = false;
                 }
                 try {
-                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    BigDecimal bigDecimalHeight = new BigDecimal(importVo.getStockBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
                     if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
                         //小数
@@ -3648,12 +3648,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     stockBox.setBoxVolume(stockBox.getBoxLength() * stockBox.getBoxWidth() * stockBox.getBoxHeight()/10000);
                 }
                 try {
-                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                    stockBox.setBoxGrossWeight(new BigDecimal(importVo.getStockBoxGrossWeight().trim()));
                 } catch (Exception e) {
                     error.add("库存毛重格式不正确");
                 }
                 try {
-                    stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight()));
+                    stockBox.setNetWeight(new BigDecimal(importVo.getStockNetWeight()));
                 } catch (Exception e) {
                     error.add("库存净重格式不正确");
                 }
@@ -3701,7 +3701,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     purchaseBox.setUnitCode(purchase.getUnitCode());
                     boolean flag = true;
                     try {
-                        BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                        BigDecimal bigDecimalLength = new BigDecimal(importVo.getStockBoxLength().trim());
                         Long longLength = bigDecimalLength.longValue();
                         if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
                             //小数
@@ -3713,7 +3713,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         flag = false;
                     }
                     try {
-                        BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                        BigDecimal bigDecimalWidth = new BigDecimal(importVo.getStockBoxWidth().trim());
                         Long longWidth = bigDecimalWidth.longValue();
                         if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
                             //小数
@@ -3725,7 +3725,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         flag = false;
                     }
                     try {
-                        BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                        BigDecimal bigDecimalHeight = new BigDecimal(importVo.getStockBoxHeight().trim());
                         Long longHeight = bigDecimalHeight.longValue();
                         if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
                             //小数
@@ -3740,12 +3740,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         purchaseBox.setBoxVolume(purchaseBox.getBoxLength() * purchaseBox.getBoxWidth() * purchaseBox.getBoxHeight()/10000);
                     }
                     try {
-                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                        purchaseBox.setBoxGrossWeight(new BigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
                     } catch (Exception e) {
                         error.add("采购毛重格式不正确");
                     }
                     try {
-                        purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight()));
+                        purchaseBox.setNetWeight(new BigDecimal(importVo.getPurchaseNetWeight()));
                     } catch (Exception e) {
                         error.add("采购净重格式不正确");
                     }
@@ -3930,7 +3930,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("进项税率不能为空");
             } else {
                 try {
-                    draft.setInputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getInputTaxRate()));
+                    draft.setInputTaxRate(new BigDecimal(importVo.getInputTaxRate()));
                 } catch (Exception e) {
                     error.add("进项税率格式不正确");
                 }
@@ -3940,7 +3940,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("销项税率不能为空");
             } else {
                 try {
-                    draft.setOutputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getOutputTaxRate()));
+                    draft.setOutputTaxRate(new BigDecimal(importVo.getOutputTaxRate()));
                 } catch (Exception e) {
                     error.add("销项税率格式不正确");
                 }
@@ -3950,7 +3950,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("积分系数不能为空");
             } else {
                 try {
-                    draft.setIntegralCoefficient(NumberConvertUtils.stringParseBigDecimal(importVo.getIntegralCoefficient()));
+                    draft.setIntegralCoefficient(new BigDecimal(importVo.getIntegralCoefficient()));
                 } catch (Exception e) {
                     error.add("积分系数格式不正确");
                 }
@@ -3960,7 +3960,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 error.add("物流费奖励比例不能为空");
             } else {
                 try {
-                    draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
+                    draft.setLogisticsFeeAwardRatio(new BigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
                 } catch (Exception e) {
                     error.add("物流费奖励比例格式不正确");
                 }
@@ -4007,7 +4007,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //联营扣点
             if (Objects.nonNull(importVo.getJointFranchiseRate())) {
                 try {
-                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseBigDecimal(importVo.getJointFranchiseRate().trim()));
+                    supplyUnitDraft.setJointFranchiseRate(new BigDecimal(importVo.getJointFranchiseRate().trim()));
                 } catch (Exception e) {
                     error.add("联营扣点格式不正确");
                 }
@@ -4015,7 +4015,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //返点
             if (Objects.nonNull(importVo.getPoint())) {
                 try {
-                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseBigDecimal(importVo.getPoint().trim()));
+                    supplyUnitDraft.setPoint(new BigDecimal(importVo.getPoint().trim()));
                 } catch (Exception e) {
                     error.add("返点格式不正确");
                 }
@@ -4088,7 +4088,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //联营扣点
             if (Objects.nonNull(importVo.getJointFranchiseRate())) {
                 try {
-                    supplyUnitDraft.setJointFranchiseRate(NumberConvertUtils.stringParseBigDecimal(importVo.getJointFranchiseRate().trim()));
+                    supplyUnitDraft.setJointFranchiseRate(new BigDecimal(importVo.getJointFranchiseRate().trim()));
                 } catch (Exception e) {
                     error.add("联营扣点格式不正确");
                 }
@@ -4096,7 +4096,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             //返点
             if (Objects.nonNull(importVo.getPoint())) {
                 try {
-                    supplyUnitDraft.setPoint(NumberConvertUtils.stringParseBigDecimal(importVo.getPoint().trim()));
+                    supplyUnitDraft.setPoint(new BigDecimal(importVo.getPoint().trim()));
                 } catch (Exception e) {
                     error.add("返点格式不正确");
                 }

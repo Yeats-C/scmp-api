@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.service.InventoryService;
 import com.aiqin.bms.scmp.api.product.service.Stocktaking.StocktakingService;
 import com.aiqin.bms.scmp.api.util.UUIDUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +57,7 @@ public class StocktakingServiceImpl implements StocktakingService  {
 				if(info !=null) {
 					if(info.getStocktakingDate() !=null && !info.getStocktakingDate().equals("")) {
 						//盘点ID、盘点编码
-						info.setStocktakingId(UUIDUtils.getUUID());
+						info.setStocktakingId(IdUtil.uuid());
 						info.setStocktakingCode(getStocktakingCode(info.getStocktakingDate()));
 						//保存
 						stocktakingDao.addStocktakingInfo(info);
@@ -78,7 +79,7 @@ public class StocktakingServiceImpl implements StocktakingService  {
 					for(StocktakingProductInfo productInfo : list) {
 						//盘点ID、盘点商品ID
 						productInfo.setStocktakingId(info.getStocktakingId());
-						productInfo.setStocktakingProductId(UUIDUtils.getUUID());
+						productInfo.setStocktakingProductId(IdUtil.uuid());
 						productInfo.setCreateBy(info.getCreateBy());
 					    //保存
 						stocktakingDao.addProductInfo(productInfo);

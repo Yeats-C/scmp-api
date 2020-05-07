@@ -1619,7 +1619,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 error.add("注册资金不能为空");
             }else {
                 try {
-                    reqVO.setRegisteredCapital(NumberConvertUtils.stringParseBigDecimal(supplierImport.getRegisteredCapital()));
+                    reqVO.setRegisteredCapital(new BigDecimal(supplierImport.getRegisteredCapital()));
                 } catch (NumberFormatException e) {
                     error.add("注册资金格式不正确");
                 }
@@ -1657,8 +1657,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String minOrderAmount = supplierImport.getMinOrderAmount();
                     String maxOrderAmount = supplierImport.getMaxOrderAmount();
-                    BigDecimal l = NumberConvertUtils.stringParseBigDecimal(minOrderAmount);
-                    BigDecimal l2 = NumberConvertUtils.stringParseBigDecimal(maxOrderAmount);
+                    BigDecimal l = new BigDecimal(minOrderAmount);
+                    BigDecimal l2 = new BigDecimal(maxOrderAmount);
                     if(l.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最小起订金额不能小于0");
                     }
@@ -2105,7 +2105,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //                error.add("注册资金不能为空");
             }else {
                 try {
-                    reqVO.setRegisteredCapital(NumberConvertUtils.stringParseBigDecimal(supplierImport.getRegisteredCapital()));
+                    reqVO.setRegisteredCapital(new BigDecimal(supplierImport.getRegisteredCapital()));
                 } catch (NumberFormatException e) {
                     error.add("注册资金格式不正确");
                 }
@@ -2143,8 +2143,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 try {
                     String minOrderAmount = supplierImport.getMinOrderAmount();
                     String maxOrderAmount = supplierImport.getMaxOrderAmount();
-                    BigDecimal l = NumberConvertUtils.stringParseBigDecimal(minOrderAmount);
-                    BigDecimal l2 = NumberConvertUtils.stringParseBigDecimal(maxOrderAmount);
+                    BigDecimal l = new BigDecimal(minOrderAmount);
+                    BigDecimal l2 = new BigDecimal(maxOrderAmount);
                     if(l.compareTo(BigDecimal.ZERO)==-1){
                         error.add("最小起订金额不能小于0");
                     }
