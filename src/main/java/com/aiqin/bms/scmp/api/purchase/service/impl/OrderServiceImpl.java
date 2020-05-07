@@ -561,14 +561,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(itemBatchLists != null){
             for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
                 BatchWmsInfo pBtachList = new BatchWmsInfo();
-                pBtachList.setLineCode(itemBatchList.getLineCode().intValue());
+                pBtachList.setLineCode(itemBatchList.getProductLineNum().intValue());
                 pBtachList.setSkuCode(itemBatchList.getSkuCode());
                 pBtachList.setSkuName(itemBatchList.getSkuName());
-                pBtachList.setBatchCode(itemBatchList.getBatchCode());
-                pBtachList.setProdcutDate(itemBatchList.getProductDate());
+                pBtachList.setBatchCode(itemBatchList.getBatchNumber());
+                pBtachList.setProdcutDate(itemBatchList.getProductTime().toString());
                 pBtachList.setBeOverdueData(itemBatchList.getBeOverdueData());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
-                pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
+                pBtachList.setActualTotalCount(itemBatchList.getActualDeliverNum());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -772,17 +772,17 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         return HttpResponse.success(true);
     }
-
+/*
     @Override
     public HttpResponse updateSaleOrder(WmsOrderInfo vo) {
-        /*
+        *//*
         耘链逻辑：接收信息后，根据状态。
         如果是“开始拣货”更新：出库单状态开始作业、出库开始时间；销售单状态开始拣货。
         如果是“扫描完成”更新：销售单状态扫描完成。
         如果是“已全部发货”更新：出库单状态完成，出库结束时间，如果有出库开始时间也更新；销售单状态已全部发货，发货时间
             WMS对接平台逻辑：根据WMS情况，可回传一次、两次或三次，
             分别在开始拣货时、扫描完成时和已全部发货时，并回传相应状态
-         */
+         *//*
         if(Global.WMS_SALE_STATUS_1.equals(vo.getOrderStatus())){
             WmsPrcking(vo);
         }else if(Global.WMS_SALE_STATUS_2.equals(vo.getOrderStatus())){
@@ -828,7 +828,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
         }
         return HttpResponse.success(true);
-    }
+    }*/
 
     private void WmsPrcking(WmsOrderInfo vo) {
         ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -376,4 +377,8 @@ public class ErpOrderInfo {
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;
+
+    @ApiModelProperty(value = "订单商品明细行")
+    @JsonProperty("item_batch_list")
+    private List<OrderInfoItemProductBatch> itemBatchList;
 }
