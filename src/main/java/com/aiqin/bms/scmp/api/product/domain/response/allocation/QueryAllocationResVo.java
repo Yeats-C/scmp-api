@@ -108,4 +108,11 @@ public class QueryAllocationResVo {
 
     @ApiModelProperty("审批流水编号")
     private String formNo;
+
+    @ApiModelProperty(value = "调拨差异类型（1.有 2.无）")
+    private Integer differenceType;
+
+    @ApiModelProperty(value = "调拨差异名称")
+    private String differenceName;
+
 }

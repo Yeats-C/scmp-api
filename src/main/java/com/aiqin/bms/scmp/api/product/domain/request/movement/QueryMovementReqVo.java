@@ -64,14 +64,14 @@ public class QueryMovementReqVo extends PageReq {
     private Byte allocationType;
 
     @ApiModelProperty(value = "移库差异（1.有 2.无）")
-    private Integer movementDifferenceType;
+    private Integer differenceType;
 
     @ApiModelProperty(value = "移库差异")
-    private String movementDifferenceName;
+    private String differenceName;
 
     @ApiModelProperty(value = "移库模式（1，我方发起 2，wms方发起）")
-    private Integer movementPatternType;
+    private Integer patternType;
 
     @ApiModelProperty(value = "移库模式")
-    private String movementPatternName;
+    private String patternName;
 }
