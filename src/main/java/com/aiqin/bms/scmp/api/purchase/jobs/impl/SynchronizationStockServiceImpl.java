@@ -81,11 +81,11 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                         amount = sourceStock.getReturnAmount();
                     }
                     if(ware.getWarehouseCode().equals("1099")){
-                        stock.setInventoryNum(100000L);
-                        stock.setAvailableNum(100000L);
+                        stock.setInventoryCount(100000L);
+                        stock.setAvailableCount(100000L);
                     }else {
-                        stock.setInventoryNum(num.longValue());
-                        stock.setAvailableNum(num.longValue());
+                        stock.setInventoryCount(num.longValue());
+                        stock.setAvailableCount(num.longValue());
                     }
                     if (num.longValue() == 0) {
                         stock.setTaxCost(big);
@@ -109,14 +109,14 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                     stock.setCompanyName("宁波熙耘科技有限公司");
                     stock.setWarehouseName(ware.getWarehouseName());
                     stock.setTransportCenterName(ware.getTransportCenterName());
-                    stock.setStockupNum(0);
-                    stock.setLockNum(0L);
-                    stock.setPurchaseWayNum(0L);
-                    stock.setAllocationWayNum(0L);
-                    stock.setTotalWayNum(0L);
+                    //stock.setStockupNum(0);
+                    stock.setLockCount(0L);
+                    stock.setPurchaseWayCount(0L);
+                    stock.setAllocationWayCount(0L);
+                    stock.setTotalWayCount(0L);
                     stock.setNewPurchasePrice(big);
-                    stock.setTaxPrice(big);
-                    stock.setUpdateBy("0");
+                    //stock.setTaxPrice(big);
+                    stock.setUpdateByName("0");
                     stockList.add(stock);
                 }
             }

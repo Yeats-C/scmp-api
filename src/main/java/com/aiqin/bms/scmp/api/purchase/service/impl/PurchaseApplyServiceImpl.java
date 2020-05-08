@@ -90,8 +90,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     @Resource
     private EncodingRuleDao encodingRuleDao;
     @Resource
-    private LogisticsCenterDao logisticsCenterDao;
-    @Resource
     private SupplyCompanyDao supplyCompanyDao;
     @Resource
     private ProductSkuConfigMapper productSkuConfigDao;
@@ -107,8 +105,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private ProductSkuDao productSkuDao;
     @Resource
     private StockDao stockDao;
-    @Resource
-    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
     @Resource
     private WarehouseDao warehouseDao;
     @Resource
@@ -298,58 +294,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         return purchases;
     }
 
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse purchaseApplyForm(PurchaseApplyProductRequest applyProductRequest){
-        List<PurchaseApplyProduct> applyProducts = applyProductRequest.getApplyProducts();
-        if(CollectionUtils.isEmptyCollection(applyProducts)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        // 判断此采购申请单的商品之前是否已生成
-        String purchaseApplyId;
-        String purchaseApplyCode;
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        if(StringUtils.isNotBlank(applyProductRequest.getPurchaseApplyId())){
-            purchaseApplyId = applyProductRequest.getPurchaseApplyId();
-            PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
-            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
-            purchaseApply.setUpdateByName(applyProductRequest.getUpdateByName());
-            purchaseApply.setUpdateById(applyProductRequest.getUpdateById());
-            purchaseApplyDao.update(purchaseApply);
-            purchaseApplyCode = purchaseApply.getPurchaseApplyCode();
-            purchaseApplyProductDao.delete(purchaseApplyId);
-            applyProductRequest.setCreateById(applyProductRequest.getUpdateById());
-            applyProductRequest.setCreateByName(applyProductRequest.getUpdateByName());
-        }else {
-            // 生成采购申请单id
-            purchaseApplyId = IdUtil.purchaseId();
-            // 生成采购申请单
-            PurchaseApply purchaseApply = new PurchaseApply();
-            purchaseApply.setPurchaseApplyId(purchaseApplyId);
-            // 获取采购申请单编码
-            purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
-            purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
-            purchaseApply.setApplyType(Global.PURCHASE_APPLY_TYPE_0);
-            purchaseApply.setApplyStatus(Global.PURCHASE_APPLY_STATUS_0);
-            purchaseApply.setPurchaseGroupCode(applyProducts.get(0).getPurchaseGroupCode());
-            purchaseApply.setPurchaseGroupName(applyProducts.get(0).getPurchaseGroupName());
-            purchaseApply.setCreateById(applyProductRequest.getCreateById());
-            purchaseApply.setCreateByName(applyProductRequest.getCreateByName());
-            purchaseApply.setCompanyCode(applyProductRequest.getCompanyCode());
-            purchaseApply.setCompanyName(applyProductRequest.getCompanyName());
-            purchaseApplyDao.insert(purchaseApply);
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
-        }
-        // 保存采购申请选中商品
-        for(PurchaseApplyProduct product:applyProducts){
-            product.setApplyProductId(IdUtil.purchaseId());
-            product.setPurchaseApplyId(purchaseApplyId);
-            product.setPurchaseApplyCode(purchaseApplyCode);
-            product.setApplyProductStatus(Global.USER_ON);
-        }
-        purchaseApplyProductDao.insertAll(applyProducts);
-        return HttpResponse.success();
-    }
 
     @Override
     public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode, Integer applyType) {
@@ -661,14 +605,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     request.getPurchaseApply().getDirectSupervisorCode(), request.getPurchaseApply().getPositionCode());
         }
 
-//        OperationLog log = new OperationLog();
-//        log.setOperationId(purchaseApplyId);
-//        log.setCreateById(request.getPurchaseApply().getCreateById());
-//        log.setCreateByName(request.getPurchaseApply().getCreateByName());
-//        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getCode());
-//        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_INSERT.getName());
-//        log.setRemark(request.getPurchaseApply().getRemark());
-//        operationLogDao.insert(log);
         return HttpResponse.success();
     }
 
@@ -878,67 +814,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         return HttpResponse.success();
     }
 
-    @Override
-    public HttpResponse applyProductBasic(String purchaseApplyId){
-        if(StringUtils.isBlank(purchaseApplyId)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        PurchaseApplyProductInfoResponse info = this.applyProductReckon(purchaseApplyId);
-        return HttpResponse.success(info);
-    }
 
-    private PurchaseApplyProductInfoResponse applyProductReckon(String purchaseApplyId){
-        // 计算商品（实物返，赠品）采购件数 、 单品总数 、含税总金额
-        List<PurchaseApplyDetailResponse> products = purchaseApplyProductDao.productListByDetail(purchaseApplyId);
-        PurchaseApplyProductInfoResponse info = new PurchaseApplyProductInfoResponse();
-        Integer productPieceSum = 0, matterPieceSum = 0, giftPieceSum = 0;
-        Integer productSingleSum= 0, matterSingleSum = 0, giftSingleSum = 0, singleSum = 0;
-        BigDecimal productTaxSum = big, matterTaxSum = big, giftTaxSum = big;
-        if(CollectionUtils.isNotEmptyCollection(products)) {
-            for (PurchaseApplyDetailResponse product : products) {
-                // 商品采购件数量
-                Integer purchaseWhole = product.getPurchaseWhole() == null ? 0 : product.getPurchaseWhole();
-                Integer purchaseSingle = product.getPurchaseSingle() == null ? 0 : product.getPurchaseSingle();
-                // 包装数量
-                Integer packNumber = product.getBaseProductContent() == null ? 0 : product.getBaseProductContent();
-                // 计算商品采购件数量
-                Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
-                singleSum += singleCount;
-                // 计算采购含税总价
-                BigDecimal productPurchaseAmount = product.getProductPurchaseAmount() == null ? big : product.getProductPurchaseAmount();
-                BigDecimal productPurchaseSum = productPurchaseAmount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP);
-                product.setProductPurchaseSum(productPurchaseSum);
-                if(product.getProductType() != null){
-                    if(product.getProductType().equals(Global.PRODUCT_TYPE_0)){
-                        productPieceSum += purchaseWhole;
-                        productSingleSum += singleCount;
-                        productTaxSum = productPurchaseSum.add(productTaxSum);
-                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_1)){
-                        giftSingleSum += purchaseWhole;
-                        giftSingleSum += singleCount;
-                        giftTaxSum = productPurchaseSum.add(giftTaxSum);
-                    }else if(product.getProductType().equals(Global.PRODUCT_TYPE_2)){
-                        matterPieceSum += purchaseWhole;
-                        matterSingleSum += singleCount;
-                        matterTaxSum = productPurchaseSum.add(matterTaxSum);
-                    }
-                }
-            }
-        }
-        info.setProductPieceSum(productPieceSum);
-        info.setProductSingleSum(productSingleSum);
-        info.setProductTaxSum(productTaxSum);
-        info.setMatterPieceSum(matterPieceSum);
-        info.setMatterSingleSum(matterSingleSum);
-        info.setMatterTaxSum(matterTaxSum);
-        info.setGiftPieceSum(giftPieceSum);
-        info.setGiftSingleSum(giftSingleSum);
-        info.setGiftTaxSum(giftTaxSum);
-        info.setPieceSum(productPieceSum + matterPieceSum + giftPieceSum);
-        info.setSingleSum(singleSum);
-        //info.setTaxSum(productTaxSum);
-        return info;
-    }
 
     @Override
     public HttpResponse applySelectionProduct(String purchaseApplyId){
@@ -1160,16 +1036,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             LOGGER.error("修改采购申请单是状态信息失败");
             return HttpResponse.failure(ResultCode.UPDATE_ERROR);
         }
-        // 添加撤销日志
-//        OperationLog log = new OperationLog();
-//        log.setOperationId(purchaseApplyId);
-//        log.setCreateById(currentAuthToken.getPersonId());
-//        log.setCreateByName(currentAuthToken.getPersonName());
-//        log.setOperationType(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode());
-//        log.setOperationContent(PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName());
-//        log.setRemark(apply.getRemark());
-//        int logCount = operationLogDao.insert(log);
-//        LOGGER.error("添加采购申请单撤销日志：" + logCount);
         return HttpResponse.success();
     }
 
@@ -1504,15 +1370,6 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         } catch (Exception e) {
             LOGGER.error("导出订货单PDF数据失败！", e);
         }
-        return HttpResponse.success();
-    }
-
-    @Override
-    public HttpResponse purchaseDelete(String purchaseOrderId){
-        if(StringUtils.isBlank(purchaseOrderId)){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        purchaseApplyDao.delete(purchaseOrderId);
         return HttpResponse.success();
     }
 }

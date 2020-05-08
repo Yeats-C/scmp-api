@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.aiqin.bms.scmp.api.product.dao.InboundBatchDao">
-  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="inbound_oder_code" jdbcType="VARCHAR" property="inboundOderCode" />
+    <result column="purchase_oder_code" jdbcType="VARCHAR" property="purchaseOderCode" />
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -25,79 +25,39 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, inbound_oder_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code,
+    id, purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code, 
     supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count,
-    location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name,
+    location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name, 
     update_by_name
   </sql>
-  <select id="selectInboundBatchInfoByInboundOderCode" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from inbound_batch where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="countInboundBatchInfoByInboundOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select count(1)
-    from inbound_batch where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
-  </select>
   <insert id="insertAll">
-    insert into inbound_batch (inbound_oder_code, batch_code, batch_info_code, sku_code, sku_name,
+    insert into purchase_batch (purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name,
       supplier_code, supplier_name, batch_remark, product_date, be_overdue_date, total_count,
       actual_total_count, location_code, line_code, create_time, update_time, create_by_id,
       update_by_id, create_by_name, update_by_name) values
     <foreach collection="list" index="index" item="item" separator=",">
-    (#{item.inboundOderCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
+     (#{item.purchaseOderCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
       #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
       #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=BIGINT},
       #{item.actualTotalCount,jdbcType=BIGINT}, #{item.locationCode,jdbcType=VARCHAR}, #{item.lineCode,jdbcType=INTEGER},
       now(), now(), #{item.createById,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
-      #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
-    </foreach>
-  </insert>
-  <insert id="insertList" parameterType="java.util.List">
-    insert into inbound_batch(inbound_oder_code, sku_code, sku_name, pre_qty, pra_qty,supplier_name,supplier_code,
-    create_by, create_time, update_by, update_time)
-    values
-    <foreach collection="list" index="index" item="item" separator=",">
-      (#{item.inboundOderCode,jdbcType=VARCHAR},
-      #{item.skuCode,jdbcType=VARCHAR},
-      #{item.skuName,jdbcType=VARCHAR},
-      #{item.preQty,jdbcType=BIGINT},
-      #{item.praQty,jdbcType=BIGINT},
-      #{item.supplierName,jdbcType=VARCHAR},
-      #{item.supplierCode,jdbcType=VARCHAR},
-      #{item.createBy,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP},
-      #{item.updateBy,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP}
+      #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
-  <select id="listBySourceCodes" resultMap="BaseResultMap">
-    select
-        CONCAT(i.source_oder_code,ib.sku_code) as inbound_oder_code , ib.supplier_code , ib.supplier_name
-    from
-    inbound_batch as ib
-    LEFT JOIN inbound as i on ib.inbound_oder_code = i.inbound_oder_code
-    where i.source_oder_code in
-    <foreach collection="list"  item="item" open="(" close=")" separator=",">
-      #{item}
-    </foreach>
-  </select>
-  <select id="listByOrderCode" resultMap="BaseResultMap">
-    select
-      <include refid="Base_Column_List"/>
-    from
-    inbound_batch
-    where inbound_oder_code in
-    <foreach collection="orderCodeList"  item="item" open="(" close=")" separator=",">
-      #{item}
-    </foreach>
-  </select>
   <update id="update">
-    update inbound_batch
+    update purchase_batch
     <set>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
       <if test="supplierCode != null">
         supplier_code = #{supplierCode,jdbcType=VARCHAR},
       </if>
@@ -122,7 +82,10 @@
       <if test="locationCode != null">
         location_code = #{locationCode,jdbcType=VARCHAR},
       </if>
-      update_time = now(),
+      <if test="lineCode != null">
+        line_code = #{lineCode,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
@@ -132,16 +95,11 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <select id="inboundBatchByInfoCode" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
-    from inbound_batch
-    where batch_info_code = #{batchInfoCode, jdbcType=VARCHAR}
-    and inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+  <select id="purchaseInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
-  </select>
-  <select id="selectInboundBatchList" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List" />
-    from inbound_batch
-    where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
   </select>
 </mapper>

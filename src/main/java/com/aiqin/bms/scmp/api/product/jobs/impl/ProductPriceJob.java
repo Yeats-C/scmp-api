@@ -60,7 +60,7 @@ public class ProductPriceJob {
         List<TaxCostLogStock> list = new ArrayList();
         for (Stock stock : stocks) {
             BigDecimal stockSumCost = stock.getTaxCost();
-            Long stockSumNum = stock.getInventoryNum();
+            Long stockSumNum = stock.getInventoryCount();
             BigDecimal stockTaxCost;
             if (stockSumNum == 0 || stockSumNum == null){
                 stockTaxCost = BigDecimal.valueOf(0);

@@ -1,21 +1,15 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.MerchantLockStockReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.merchant.QueryMerchantStockReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.merchant.MerchantLockStockRespVo;
-import com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
@@ -104,37 +98,6 @@ public class StockController {
         return HttpResponse.success(queryStockSkuRespVos);
     }
 
-    @PostMapping("/verify/returnSupply")
-    @ApiOperation(value = "验证退供商品信息,有错误则会返回list,否则list为空")
-    public HttpResponse<PurchaseOutBoundRespVO> verifyReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
-        return stockService.verifyReturnSupply(reqVO);
-    }
-
-    @PostMapping("/unLock/returnSupply")
-    @ApiOperation(value = "审核失败解锁库存")
-    public HttpResponse<Boolean> unLockReturnSupply(@RequestBody VerifyReturnSupplyReqVo reqVO) {
-        return HttpResponse.success(stockService.returnSupplyUnLockStock(reqVO));
-    }
-
-    @PostMapping("/unLock")
-    @ApiOperation(value = "库存解锁")
-    public HttpResponse unLockStock(@RequestBody UnLockStockReqVo reqVo) {
-        return stockService.unLockStock(reqVo);
-    }
-
-    @PostMapping("/reduceUnlock")
-    @ApiOperation(value = "减少并解锁库存")
-    public HttpResponse reduceUnlockStock(@RequestBody UpdateOutBoundReqVO reqVo){
-        return stockService.reduceUnlockStock(reqVo);
-    }
-
-//    @PostMapping("/search/merchant")
-//    @ApiOperation(value = "门店库存查询")
-//    public HttpResponse<List<QueryMerchantStockRepVo>> queryMerchantStock(@RequestBody QueryMerchantStockReqVo reqVo){
-//        List<QueryMerchantStockRepVo> queryMerchantStockRepVos = stockService.selectStockByCompanyCodeAndSkuList(reqVo);
-//        return HttpResponse.success(queryMerchantStockRepVos);
-//    }
-
     //因为目前对接中心没介入,所以直接接收采购单
     @ApiOperation(value = "采购单审批通过,接收采购单生成入库单")
     @PostMapping("/inbound/save")
@@ -142,84 +105,28 @@ public class StockController {
         return HttpResponse.success(stockService.save(reqVo));
     }
 
-//    @PostMapping("/lock/merchant")
-//    @ApiOperation(value = "门店库存锁定")
-//    public HttpResponse<List<MerchantLockStockRespVo>> lockMerchantStock(@RequestBody MerchantLockStockReqVo reqVo) {
-//        List<MerchantLockStockRespVo> queryMerchantStockRepVos = stockService.lockMerchantStock(reqVo);
-//        return HttpResponse.success(queryMerchantStockRepVos);
-//    }
-
-    //因为目前对接中心没介入,所以直接接收采购单 这里传之前锁定生成的出库单号
-    @ApiOperation(value = "退供供应商确认后,出库单")
-    @GetMapping("/outBound/save")
-    public HttpResponse<Boolean> save(@RequestParam String outBoundCode){
-        UpdateOutBoundReqVO updateOutBoundReqVO = new UpdateOutBoundReqVO();
-        updateOutBoundReqVO.setSourceOrderCode(outBoundCode);
-        return HttpResponse.success(stockService.reduceUnlockStock(updateOutBoundReqVO));
-    }
-
-    @PostMapping("/lock/flow")
-    @ApiOperation(value = "解锁库存并加流水")
-    public HttpResponse lockFlow(@RequestBody StockFlowRequest reqVo){
-        return HttpResponse.success(stockService.stockFlow(reqVo));
-    }
-
-    @PostMapping("change")
+    // 暂时保留
+    @PostMapping("change1")
     @ApiOperation(value = "库存修改")
     public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
         return stockService.changeStock(stockChangeRequest);
     }
 
+    @PostMapping("/change")
+    @ApiOperation(value = "库存修改")
+    public HttpResponse stockAndBatchChange(@RequestBody ChangeStockRequest request) {
+        return stockService.stockAndBatchChange(request);
+    }
+
+    @PostMapping("/change/stock/batch")
+    @ApiOperation(value = "批次库存修改")
+    public HttpResponse changeStockBatch(@RequestBody ChangeStockRequest request){
+        return stockService.changeStockBatch(request);
+    }
+
     @PostMapping("/logs")
     public HttpResponse logs(@RequestBody StockLogsRequest stockLogsRequest){
         return stockService.logs(stockLogsRequest);
-    }
-
-    @PostMapping("/search/batch/page")
-    @ApiOperation(value = "批次库存管理列表查询")
-    public HttpResponse<PageResData<StockBatchRespVO>> selectStockBatchInfoByPage(@RequestBody StockBatchRequest stockBatchRequest) {
-        return HttpResponse.success(stockService.selectStockBatchInfoByPage(stockBatchRequest));
-    }
-
-    @GetMapping("/search/batch/one/info")
-    @ApiOperation(value = "根据stockBatchId查询单个stockBatch信息")
-    public HttpResponse<List<StockBatchRespVO>> selectOneStockBatchInfoByStockBatchId(@RequestParam(value = "stock_batch_id") Long stockBatchId,
-                                                                                      @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                      @RequestParam(value = "page_size", required = false) Integer page_size) {
-        return HttpResponse.success(stockService.selectOneStockBatchInfoByStockBatchId(stockBatchId,page_no,page_size));
-    }
-
-    @GetMapping("/search/batch/sku/page")
-    @ApiOperation(value = "查询批次库存商品(分页)")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
-            @ApiImplicitParam(name = "transport_center_code", value = "物流中心", type = "String"),
-            @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
-            @ApiImplicitParam(name = "procurement_section_code", value = "采购组", type = "String"),
-            @ApiImplicitParam(name = "sku_code", value = "sku编码", type = "String"),
-            @ApiImplicitParam(name = "sku_name", value = "sku名称", type = "String"),
-            @ApiImplicitParam(name = "product_category_name", value = "sku品类名称", type = "String"),
-            @ApiImplicitParam(name = "product_brand_name", value = "sku品牌名称", type = "String"),
-            @ApiImplicitParam(name = "product_property_name", value = "商品属性名称", type = "String"),
-            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
-            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
-    })
-    public HttpResponse<List<QueryStockBatchSkuRespVo>> selectStockBatchSkuByPage(@RequestParam(value = "supplier_code", required = false) String supplierCode,
-                                                                                  @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
-                                                                                  @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
-                                                                                  @RequestParam(value = "procurement_section_code", required = false) String procurementSectionCode,
-                                                                                  @RequestParam(value = "sku_code", required = false) String skuCode,
-                                                                                  @RequestParam(value = "sku_name", required = false) String skuName,
-                                                                                  @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-                                                                                  @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-                                                                                  @RequestParam(value = "product_property_name", required = false) String productPropertyName,
-                                                                                  @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                                  @RequestParam(value = "page_size", required = false) Integer page_size) {
-        QueryStockBatchSkuReqVo reqVO = new QueryStockBatchSkuReqVo(supplierCode,transportCenterCode,warehouseCode,procurementSectionCode,skuCode,skuName,productCategoryName,productBrandName,productPropertyName);
-        reqVO.setPageNo(page_no);
-        reqVO.setPageSize(page_size);
-        PageInfo<QueryStockBatchSkuRespVo> queryStockBatchSkuRespVoPageInfo = stockService.selectStockBatchSkuPage(reqVO);
-        return HttpResponse.success(queryStockBatchSkuRespVoPageInfo);
     }
 
     @GetMapping("/search/stock/sku/page")
@@ -263,12 +170,6 @@ public class StockController {
         return  HttpResponse.success();
     }
 
-    @PostMapping("change/stock/batch")
-    @ApiOperation(value = "批次库存修改")
-    public HttpResponse changeStockBatch(@RequestBody StockChangeRequest stockChangeRequest){
-        return stockService.changeStockBatch(stockChangeRequest);
-    }
-
     @GetMapping("/search/stock/sku/import")
     @ApiOperation(value = "库房管理新增列表查询导入操作")
     @ApiImplicitParams({
@@ -305,12 +206,6 @@ public class StockController {
         return HttpResponse.success(stockService.importStockSkuList(reqVO));
     }
 
-    @PostMapping("/lock/merchant")
-    @ApiOperation(value = "门店库存锁定")
-    public HttpResponse lockErpStock(@RequestBody MerchantLockStockReqVo vo) {
-        return stockService.lockErpStock(vo);
-    }
-
     @GetMapping("/search/byCityAndProvince")
     @ApiOperation(value = "总库存管理列表")
     public HttpResponse<String> byCityCodeAndprovinceCode(@RequestParam("provinceCode") String provinceCode,
@@ -331,15 +226,6 @@ public class StockController {
     @ApiOperation("查看")
     public HttpResponse<List<ApplyUseTagRecord>> getTagRecordList(@RequestParam String skuCode) {
         log.info("ProductSkuPriceInfoController---view---入参：[{}]", skuCode);
-        try {
-//            List<String> applyUseTagRecordList=applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()).stream().map(x->x.getTagTypeName()).collect(Collectors.toList());
-            return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
-        } catch (BizException e) {
-            log.error(e.getMessageId().getMessage());
-            return HttpResponse.failure(e.getMessageId());
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
+        return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
     }
 }

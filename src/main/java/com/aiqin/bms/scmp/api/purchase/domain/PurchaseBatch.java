@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.pojo;
+package com.aiqin.bms.scmp.api.purchase.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -9,14 +9,14 @@ import java.util.Date;
 
 @ApiModel
 @Data
-public class InboundBatch {
-    @ApiModelProperty(value="")
+public class PurchaseBatch {
+
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="入库单号")
-    @JsonProperty("inbound_oder_code")
-    private String inboundOderCode;
+    @ApiModelProperty(value="采购单号")
+    @JsonProperty("purchase_oder_code")
+    private String purchaseOderCode;
 
     @ApiModelProperty(value="批次号/wms批次号")
     @JsonProperty("batch_code")

@@ -2,19 +2,16 @@ package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseInspectionReport;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.aiqin.mgs.control.component.service.AreaBasicService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -32,24 +29,6 @@ public class PurchaseManageController {
 
     @Resource
     private PurchaseManageService purchaseManageService;
-
-//    @PostMapping("/purchase/form")
-//    @ApiOperation("查询要生成的采购单")
-//    public HttpResponse selectPurchaseForm(@RequestBody List<String> applyIds) {
-//        return purchaseManageService.selectPurchaseForm(applyIds);
-//    }
-//
-//    @PostMapping("/purchase/apply/list")
-//    @ApiOperation("生成采购单-采购申请单商品列表")
-//    public HttpResponse purchaseApplyList(@RequestBody PurchaseFormRequest purchaseFormRequest) {
-//        return purchaseManageService.purchaseApplyList(purchaseFormRequest);
-//    }
-
-//    @PostMapping("/purchase/product/list")
-//    @ApiOperation("生成采购单-商品列表")
-//    public HttpResponse purchaseProductList(@RequestBody PurchaseFormRequest purchaseFormRequest) {
-//        return purchaseManageService.purchaseProductList(purchaseFormRequest);
-//    }
 
     @PostMapping("/purchase/order")
     @ApiOperation("保存采购单")
@@ -142,12 +121,6 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderProduct(request);
     }
 
-//    @GetMapping("/order/file")
-//    @ApiOperation("查询采购单文件-文件信息")
-//    public HttpResponse purchaseOrderFile(@RequestParam("purchase_order_id") String purchaseOrderId) {
-//        return purchaseManageService.purchaseOrderFile(purchaseOrderId);
-//    }
-
     @GetMapping("/order/log")
     @ApiOperation("查询采购单-操作日志")
     public HttpResponse<List<OperationLog>> purchaseOrderLog(@RequestParam("operation_id") String operationId) {
@@ -160,35 +133,17 @@ public class PurchaseManageController {
         return purchaseManageService.purchaseOrderAmount(purchaseOrderId);
     }
 
-//    @PostMapping("/order/stock")
-//    @ApiOperation("采购单-开始备货")
-//    public HttpResponse purchaseOrderStock(@RequestBody PurchaseStorageRequest purchaseStorage) {
-//        return purchaseManageService.purchaseOrderStock(purchaseStorage);
-//    }
-
     @PostMapping("/warehousing")
     @ApiOperation("入库")
     public HttpResponse getWarehousing(@RequestBody PurchaseStorageRequest purchaseStorageRequest) {
         return purchaseManageService.getWarehousing(purchaseStorageRequest);
     }
 
-//    @GetMapping("/sku/info")
-//    @ApiOperation("查询质检报告对应的sku")
-//    public HttpResponse reportSku(@RequestParam("purchase_order_id") String purchaseOrderId) {
-//        return purchaseManageService.reportSku(purchaseOrderId);
-//    }
-
     @GetMapping("/warehouse/receipt")
     @ApiOperation("查询采购单对应的入库单")
     public HttpResponse<List<Inbound>> receipt(@RequestParam("purchase_order_code") String purchaseOrderCode) {
         return purchaseManageService.receipt(purchaseOrderCode);
     }
-
-//    @PostMapping("/storage/confirm")
-//    @ApiOperation("仓储确认-质检报告、供应商评分 ")
-//    public HttpResponse storageConfirm(@RequestBody PurchaseStorageRequest storageRequest) {
-//        return purchaseManageService.storageConfirm(storageRequest);
-//    }
 
     @GetMapping("/warehouse/receipt/product")
     @ApiOperation("查询采购单对应的入库单的商品信息")
@@ -205,12 +160,6 @@ public class PurchaseManageController {
         return purchaseManageService.addLog(operationLog);
     }
 
-//    @GetMapping("/purchase/inspection/report")
-//    @ApiOperation("查询采购单对应的质检报告")
-//    public HttpResponse<PurchaseInspectionReport> inspectionReport(@RequestParam("purchase_order_id") String purchaseOrderId) {
-//        return purchaseManageService.inspectionReport(purchaseOrderId);
-//    }
-
     @GetMapping("/sku/supply")
     @ApiOperation("查询sku对应的供应商")
     public HttpResponse<PurchaseFormResponse> skuSupply(@RequestParam("sku_code") String skuCode,
@@ -220,30 +169,6 @@ public class PurchaseManageController {
                                                         @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
         return purchaseManageService.skuSupply(skuCode, transportCenterCode, warehouseCode, settlementMethodCode, purchaseGroupCode);
     }
-
-//    @GetMapping("/order/details/apply")
-//    @ApiOperation("查询采购单审批详情")
-//    public HttpResponse<PurchaseApplyDetailResponse> applyDetails(@RequestParam("purchase_order_code") String purchaseOrderCode) {
-//        return purchaseManageService.applyDetails(purchaseOrderCode);
-//    }
-//
-//    @GetMapping("/order/product/apply")
-//    @ApiOperation("查询采购单商品审批信息")
-//    public HttpResponse applyOrderProduct(@RequestParam("purchase_order_id") String purchaseOrderId,
-//                                          @RequestParam(value = "is_page", required = false) Integer isPage,
-//                                          @RequestParam(value = "page_no", required = false) Integer pageNo,
-//                                          @RequestParam(value = "page_size", required = false) Integer pageSize) {
-//        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest(purchaseOrderId, isPage);
-//        request.setPageSize(pageSize);
-//        request.setPageNo(pageNo);
-//        return purchaseManageService.applyOrderProduct(request);
-//    }
-
-//    @GetMapping("/order/amount/apply")
-//    @ApiOperation("查询采购单-审批采购数量金额")
-//    public HttpResponse<PurchaseApplyProductInfoResponse> applyOrderAmount(@RequestParam("purchase_order_id") String purchaseOrderId) {
-//        return purchaseManageService.applyOrderAmount(purchaseOrderId);
-//    }
 
     @GetMapping("/order/pre")
     @ApiOperation("查询采购的预采购单号")
@@ -258,5 +183,4 @@ public class PurchaseManageController {
     public HttpResponse purchaseOrderPre(@RequestParam(value = "purchase_order_code", required = false)String code) {
         return purchaseManageService.historyDate(code);
     }
-
 }

@@ -6,10 +6,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.StorageResultReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
@@ -22,123 +19,88 @@ import java.util.List;
 
 /**
  * @Classname: InboundService
- * 描述:
  * @Author: Kt.w
  * @Date: 2019/3/4
- * @Version 1.0
- * @Since 1.0
  */
 public interface InboundService {
 
     /**
      * 分页查询以及模糊搜索
-     * @param vo
-     * @return
      */
-  BasePage<QueryInboundResVo> getInboundList(QueryInboundReqVo vo);
+    BasePage<QueryInboundResVo> getInboundList(QueryInboundReqVo vo);
 
-  /**
-   * 查询入库信息
-   *
-   * @param boundRequest
-   * @return
-   */
-  List<InboundResponse> selectInBoundInfoByBoundSearch(BoundRequest boundRequest);
+    /**
+     * 查询入库信息
+     */
+    List<InboundResponse> selectInBoundInfoByBoundSearch(BoundRequest boundRequest);
 
     /**
      * 查看入库单详情
-     * @param id
-     * @return
      */
     InboundResVo view(Long id);
 
     /**
      * 新建入库单
-     * @param reqVo
-     * @return
      */
     String saveInbound(InboundReqSave reqVo);
 
-
     /**
      * 新建入库单
-     * @param reqVo
-     * @return
      */
     String saveInbound2(InboundReqSave reqVo);
 
     /**
      * 获取入库类型
-     * @return
      */
     List<EnumReqVo> getInboundType();
 
-
     /**
      * 获取出入库状态类型
-     * @return
      */
     List<EnumReqVo> getInboundOutboundStatus();
 
-  /**
-   * 生成退货的入库单
-   * @author zth
-   * @date 2019/3/1
-   * @param reqVo
-   * @return java.lang.Integer
-   */
-  String saveReturnGoodsToInbound(SupplyReturnOrderMainReqVO reqVo);
+    /**
+     * 生成退货的入库单
+     */
+    String saveReturnGoodsToInbound(SupplyReturnOrderMainReqVO reqVo);
 
+    /**
+     * 推送给wms
+     */
+    //void pushWms(String code, InboundServiceImpl inboundService);
+    void pushWms(String code);
 
-  /**
-   * 推送给wms
-   * @param code
-   * @return
-   */
-   void pushWms(String code, InboundServiceImpl inboundService);
-
-
-    void workFlowCallBack(InboundCallBackReqVo reqVo);
-
+    void workFlowCallBack(InboundCallBackRequest request);
 
     /**
      * 根据类型回传给来源单号状态
-     * @param id
      */
     void returnSource(Long id);
-  /**
-   * 回调采购接口
-   * @param storageResultItemReqVo
-   */
-   void returnPurchase(StorageResultReqVo storageResultItemReqVo);
 
+    /**
+     * 回调采购接口
+     */
+    //void returnPurchase(StorageResultReqVo storageResultItemReqVo);
 
     /**
      * 入库单回传调拨
-     * @param allocationCode
      */
     void inBoundReturn(String allocationCode);
 
     /**
      * 入库单回传退货
-     * @param storageResultItemReqVo
      */
     void returnOder(SupplyReturnOrderMainReqVOReturn storageResultItemReqVo);
 
-
     /**
      * 入库单回传给移库
-     * @param allocationCode
      */
     void inBoundReturnMovement(String allocationCode);
 
     HttpResponse selectInboundBatchInfoByInboundOderCode(InboundBatch inboundBatch);
+
     /**
      * 批量保存入库单
-     * @author NullPointException
-     * @date 2019/6/27
-     * @param list
-     * @return java.lang.Boolean
      */
     Boolean saveList(List<InboundReqSave> list);
 
@@ -146,6 +108,6 @@ public interface InboundService {
 
     String repealOrder(String orderId, String createById, String createByName, String cancel);
 
-    void wms(String code);
+    //void wms(String code);
 
 }

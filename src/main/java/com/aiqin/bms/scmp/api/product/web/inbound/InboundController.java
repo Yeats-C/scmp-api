@@ -2,11 +2,10 @@ package com.aiqin.bms.scmp.api.product.web.inbound;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
@@ -15,12 +14,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.QueryInboundResVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,11 +26,8 @@ import java.util.List;
 
 /**
  * 描述: 库房入库控制层
- *
  * @author Kt.w
  * @date 2019/1/4
- * @Version 1.0
- * @since 1.0
  */
 @Slf4j
 @RestController
@@ -43,22 +37,13 @@ public class InboundController {
 
     @Autowired
     private InboundService inboundService;
-    /**
-     * 查询入库单列表详情
-     * @return
-     */
+
     @ApiOperation("查询入库单列表详情")
     @PostMapping("/getInboundList")
     public HttpResponse<BasePage<QueryInboundResVo>> getInboundList(@RequestBody QueryInboundReqVo vo) {
         return HttpResponse.success(inboundService.getInboundList(vo));
     }
 
-    /**
-     * 查询入库信息
-     *
-     * @param boundRequest
-     * @return
-     */
     @ApiOperation("查询入库信息")
     @PostMapping("/info/by/search")
     public HttpResponse<InboundResponse> selectInBoundInfoByBoundSearch(@RequestBody BoundRequest boundRequest) {
@@ -69,7 +54,6 @@ public class InboundController {
     @PostMapping("/save")
     public HttpResponse<Integer>save(@RequestBody @Valid InboundReqSave reqVo){
        return HttpResponse.success(inboundService.saveInbound(reqVo));
-
     }
 
     @ApiOperation("通过id获取入库单")
@@ -102,16 +86,9 @@ public class InboundController {
 
     @ApiOperation("入库单回调接口")
     @PostMapping("/workFlowCallBack")
-    public HttpResponse<Integer>workFlowCallBack(@RequestBody @Valid InboundCallBackReqVo reqVo){
-        try {
-            reqVo.setInboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
-            inboundService.workFlowCallBack(reqVo);
-            return HttpResponse.success();
-        } catch (Exception e) {
-            log.error("入库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
-        }
+    public HttpResponse<Integer> workFlowCallBack(@RequestBody InboundCallBackRequest request) {
+        inboundService.workFlowCallBack(request);
+        return HttpResponse.success();
     }
 
     @ApiOperation("根据入库单号查询入库商品批次详情")
@@ -119,29 +96,7 @@ public class InboundController {
     public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
                                                                               @RequestParam(value = "page_size", required = false)Integer pageSize,
                                                                               @RequestParam(value = "page_no", required = false)Integer pageNo){
-        return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+        //return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+        return HttpResponse.success();
     }
-
-//    @ApiOperation("采购查询批次详情")
-//    @GetMapping("/getInfoByPurChase")
-//    public HttpResponse<InboundProduct> selectPurchaseInfoByPurchaseNum(@RequestParam(value = "source_oder_code")String sourceOderCode,
-//                                                                      @RequestParam(value = "purchase_num")Integer purchaseNum,
-//                                                                      @RequestParam(value = "page_size", required = false)Integer pageSize,
-//                                                                      @RequestParam(value = "page_no", required = false)Integer pageNo){
-//        return inboundService.selectPurchaseInfoByPurchaseNum(new Inbound(sourceOderCode, purchaseNum, pageSize, pageNo));
-//    }
-
-
-//    @ApiOperation("pushWms")
-//    @GetMapping("/pushWms")
-//    public HttpResponse pushWms(String code){
-//        try {
-//            inboundService.pushWms(code);
-//            return HttpResponse.success();
-//        } catch (Exception e) {
-//            log.error("入库单回调接口错误实体是:[{}]", code);
-//            log.error(Global.ERROR, e);
-//            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
-//        }
-//    }
 }

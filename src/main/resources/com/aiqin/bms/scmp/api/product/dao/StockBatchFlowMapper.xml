@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.StockBatchFlowDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stock_batch_code" jdbcType="VARCHAR" property="stockBatchCode" />
+    <result column="flow_batch_code" jdbcType="VARCHAR" property="flowBatchCode" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="operation_type" jdbcType="INTEGER" property="operationType" />
+    <result column="document_type" jdbcType="INTEGER" property="documentType" />
+    <result column="document_code" jdbcType="VARCHAR" property="documentCode" />
+    <result column="source_document_type" jdbcType="INTEGER" property="sourceDocumentType" />
+    <result column="source_document_code" jdbcType="VARCHAR" property="sourceDocumentCode" />
+    <result column="remark" jdbcType="VARCHAR" property="remark" />
+    <result column="before_inventory_count" jdbcType="BIGINT" property="beforeInventoryCount" />
+    <result column="after_inventory_count" jdbcType="BIGINT" property="afterInventoryCount" />
+    <result column="before_available_count" jdbcType="BIGINT" property="beforeAvailableCount" />
+    <result column="after_available_count" jdbcType="BIGINT" property="afterAvailableCount" />
+    <result column="before_lock_count" jdbcType="BIGINT" property="beforeLockCount" />
+    <result column="after_lock_count" jdbcType="BIGINT" property="afterLockCount" />
+    <result column="change_count" jdbcType="BIGINT" property="changeCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stock_batch_code, flow_batch_code, batch_code, sku_code, sku_name, operation_type,
+    document_type, document_code, source_document_type, source_document_code, remark, 
+    before_inventory_count, after_inventory_count, before_available_count, after_available_count, 
+    before_lock_count, after_lock_count, change_count, create_time, create_by_id, create_by_name, 
+    update_time, update_by_id, update_by_name
+  </sql>
+  <insert id="insert">
+    insert into stock_batch_flow (stock_batch_code, flow_batch_code,
+      batch_code, sku_code, sku_name, 
+      operation_type, document_type, document_code,
+      source_document_type, source_document_code, remark, 
+      before_inventory_count, after_inventory_count, 
+      before_available_count, after_available_count, 
+      before_lock_count, after_lock_count, change_count, 
+      create_time, create_by_id, create_by_name, 
+      update_time, update_by_id, update_by_name
+      )
+    values (#{stockBatchCode,jdbcType=VARCHAR}, #{flowBatchCode,jdbcType=VARCHAR},
+      #{batchCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{operationType,jdbcType=INTEGER}, #{documentType,jdbcType=INTEGER}, #{documentCode,jdbcType=VARCHAR},
+      #{sourceDocumentType,jdbcType=INTEGER}, #{sourceDocumentCode,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{beforeInventoryCount,jdbcType=BIGINT}, #{afterInventoryCount,jdbcType=BIGINT}, 
+      #{beforeAvailableCount,jdbcType=BIGINT}, #{afterAvailableCount,jdbcType=BIGINT}, 
+      #{beforeLockCount,jdbcType=BIGINT}, #{afterLockCount,jdbcType=BIGINT}, #{changeCount,jdbcType=BIGINT}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="update" >
+    update stock_batch_flow
+    <set>
+      <if test="stockBatchCode != null">
+        stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="flowBatchCode != null">
+        flow_batch_code = #{flowBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="operationType != null">
+        operation_type = #{operationType,jdbcType=INTEGER},
+      </if>
+      <if test="documentType != null">
+        document_type = #{documentType,jdbcType=INTEGER},
+      </if>
+      <if test="documentCode != null">
+        document_code = #{documentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="sourceDocumentType != null">
+        source_document_type = #{sourceDocumentType,jdbcType=INTEGER},
+      </if>
+      <if test="sourceDocumentCode != null">
+        source_document_code = #{sourceDocumentCode,jdbcType=VARCHAR},
+      </if>
+      <if test="remark != null">
+        remark = #{remark,jdbcType=VARCHAR},
+      </if>
+      <if test="beforeInventoryCount != null">
+        before_inventory_count = #{beforeInventoryCount,jdbcType=BIGINT},
+      </if>
+      <if test="afterInventoryCount != null">
+        after_inventory_count = #{afterInventoryCount,jdbcType=BIGINT},
+      </if>
+      <if test="beforeAvailableCount != null">
+        before_available_count = #{beforeAvailableCount,jdbcType=BIGINT},
+      </if>
+      <if test="afterAvailableCount != null">
+        after_available_count = #{afterAvailableCount,jdbcType=BIGINT},
+      </if>
+      <if test="beforeLockCount != null">
+        before_lock_count = #{beforeLockCount,jdbcType=BIGINT},
+      </if>
+      <if test="afterLockCount != null">
+        after_lock_count = #{afterLockCount,jdbcType=BIGINT},
+      </if>
+      <if test="changeCount != null">
+        change_count = #{changeCount,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        create_by_name = #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="stockBatchFlowList" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"></include>
+      from stock_batch_flow
+      where stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
+      order by create_time desc
+      LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="stockBatchFlowCount" resultType="java.lang.Integer">
+      select count(1)
+      from stock_batch_flow
+      where stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
+  </select>
+  <insert id="insertAll">
+    insert into stock_batch_flow (stock_batch_code, flow_batch_code, batch_code, sku_code, sku_name,
+      operation_type, document_type, document_code, source_document_type, source_document_code, remark,
+      before_inventory_count, after_inventory_count, before_available_count, after_available_count,
+      before_lock_count, after_lock_count, change_count, create_time, create_by_id, create_by_name,
+      update_time, update_by_id, update_by_name)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.stockBatchCode,jdbcType=VARCHAR}, #{item.flowBatchCode,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.operationType,jdbcType=INTEGER}, #{item.documentType,jdbcType=INTEGER}, #{item.documentCode,jdbcType=VARCHAR},
+      #{item.sourceDocumentType,jdbcType=INTEGER}, #{item.sourceDocumentCode,jdbcType=VARCHAR},
+      #{item.remark,jdbcType=VARCHAR}, #{item.beforeInventoryCount,jdbcType=BIGINT}, #{item.afterInventoryCount,jdbcType=BIGINT},
+      #{item.beforeAvailableCount,jdbcType=BIGINT}, #{item.afterAvailableCount,jdbcType=BIGINT},
+      #{item.beforeLockCount,jdbcType=BIGINT}, #{item.afterLockCount,jdbcType=BIGINT}, #{item.changeCount,jdbcType=BIGINT},
+      NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
+      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+</mapper>

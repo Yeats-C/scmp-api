@@ -13,84 +13,27 @@
         <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
-        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
-        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
-        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
+        <result column="inventory_count" jdbcType="BIGINT" property="inventoryCount"/>
+        <result column="available_count" jdbcType="BIGINT" property="availableCount"/>
+        <result column="lock_count" jdbcType="BIGINT" property="lockCount"/>
+        <result column="purchase_way_count" jdbcType="BIGINT" property="purchaseWayCount"/>
+        <result column="allocation_way_count" jdbcType="BIGINT" property="allocationWayCount"/>
+        <result column="total_way_count" jdbcType="BIGINT" property="totalWayCount"/>
         <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
         <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
         <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
-        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
-        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
-        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
-        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-        <result column="del_flag" jdbcType="VARCHAR" property="delFlag"/>
-        <result column="sale_num" jdbcType="BIGINT" property="saleNum"/>
-        <result column="sale_lock_num" jdbcType="BIGINT" property="saleLockNum"/>
-        <result column="sale_way_num" jdbcType="BIGINT" property="saleWayNum"/>
-        <result column="sale_purchase_way_num" jdbcType="BIGINT" property="salePurchaseWayNum"/>
-        <result column="gift_num" jdbcType="BIGINT" property="giftNum"/>
-        <result column="gift_lock_num" jdbcType="BIGINT" property="giftLockNum"/>
-        <result column="gift_way_num" jdbcType="BIGINT" property="giftWayNum"/>
-        <result column="gift_purchase_way_num" jdbcType="BIGINT" property="giftPurchaseWayNum"/>
-        <result column="special_sale_num" jdbcType="BIGINT" property="specialSaleNum"/>
-        <result column="special_sale_lock_num" jdbcType="BIGINT" property="specialSaleLockNum"/>
-        <result column="special_sale_way_num" jdbcType="BIGINT" property="specialSaleWayNum"/>
-        <result column="bad_num" jdbcType="BIGINT" property="badNum"/>
-        <result column="bad_lock_num" jdbcType="BIGINT" property="badLockNum"/>
-        <result column="bad_way_num" jdbcType="BIGINT" property="badWayNum"/>
-        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
-        <result column="stockup_num" jdbcType="BIGINT" property="stockupNum"/>
-        <result column="stockupfinish_time" jdbcType="VARCHAR" property="stockupfinishTime"/>
-    </resultMap>
-    <resultMap id="BaseBatchResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="stock_batch_code" jdbcType="VARCHAR" property="stockBatchCode"/>
-        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
-        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
-        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
-        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
-        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
-        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
-        <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
-        <result column="category_type_code" jdbcType="VARCHAR" property="categoryTypeCode"/>
-        <result column="category_type_name" jdbcType="VARCHAR" property="categoryTypeName"/>
-        <result column="spec" jdbcType="VARCHAR" property="spec"/>
-        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
-        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
-        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
         <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
         <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="pack" jdbcType="VARCHAR" property="pack"/>
-        <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
-        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
-        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
-        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
-        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
-        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
+        <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
+        <result column="use_status" jdbcType="INTEGER" property="useStatus"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
+        <result column="update_by_name" jdbcType="VARCHAR" property="createByName"/>
     </resultMap>
-
     <resultMap id="StockRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
@@ -152,66 +95,6 @@
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
         <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-
-    </resultMap>
-    <resultMap id="StockBatchRespMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="stock_batch_code" jdbcType="VARCHAR" property="stockBatchCode"/>
-        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
-        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
-        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
-        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
-        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
-        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
-        <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
-        <result column="category_type_code" jdbcType="VARCHAR" property="categoryTypeCode"/>
-        <result column="category_type_name" jdbcType="VARCHAR" property="categoryTypeName"/>
-        <result column="spec" jdbcType="VARCHAR" property="spec"/>
-        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
-        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
-        <result column="modelNumber" jdbcType="VARCHAR" property="modelNumber"/>
-        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
-        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="pack" jdbcType="VARCHAR" property="pack"/>
-        <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
-        <result column="product_brand_name" jdbcType="BIGINT" property="productBrandName"/>
-        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
-        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
-        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
-        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
-        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
-        <result column="flow_batch_code" jdbcType="VARCHAR" property="flowBatchCode"/>
-        <result column="order_code" jdbcType="VARCHAR" property="orderCode"/>
-        <result column="order_type" jdbcType="BIGINT" property="orderType"/>
-        <result column="order_source" jdbcType="VARCHAR" property="orderSource"/>
-        <result column="lock_status" jdbcType="BIGINT" property="lockStatus"/>
-        <result column="change_num" jdbcType="BIGINT" property="changeNum"/>
-        <result column="document_type" jdbcType="BIGINT" property="documentType"/>
-        <result column="document_num" jdbcType="VARCHAR" property="documentNum"/>
-        <result column="source_document_type" jdbcType="BIGINT" property="sourceDocumentType"/>
-        <result column="source_document_num" jdbcType="VARCHAR" property="sourceDocumentNum"/>
-        <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
-        <result column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
-        <result column="before_available_num" jdbcType="BIGINT" property="beforeAvailableNum"/>
-        <result column="after_available_num" jdbcType="BIGINT" property="afterAvailableNum"/>
-        <result column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
-        <result column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
-        <result column="operation_type" jdbcType="VARCHAR" property="operationType"/>
-        <result column="create_time" jdbcType="VARCHAR" property="createTime"/>
-        <result column="create_by_code" jdbcType="VARCHAR" property="createByCode"/>
-        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
-        <result column="update_time" jdbcType="VARCHAR" property="updateTime"/>
-        <result column="update_by_code" jdbcType="VARCHAR" property="updateByCode"/>
-        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
     </resultMap>
     <resultMap id="QueryStockSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo">
         <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
@@ -237,41 +120,6 @@
         <result column="Input_tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_price" jdbcType="DECIMAL" property="price"/>
         <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
-    </resultMap>
-    <resultMap id="QueryStockBatchSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo">
-        <result column="procurement_section_code" jdbcType="VARCHAR" property="procurementSectionCode"/>
-        <result column="procurement_section_name" jdbcType="VARCHAR" property="procurementSectionName"/>
-        <result column="bar_code" jdbcType="VARCHAR" property="barCode"/>
-        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="product_code" jdbcType="VARCHAR" property="productCode"/>
-        <result column="product_name" jdbcType="VARCHAR" property="productName"/>
-        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
-        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
-        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode"/>
-        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName"/>
-        <result column="goods_gifts" jdbcType="BIGINT" property="goodsGifts"/>
-        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
-        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
-        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
-        <result column="spec" jdbcType="VARCHAR" property="spec"/>
-        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
-        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="input_tax_rate" jdbcType="DECIMAL" property="inputTaxRate"/>
-        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
-        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice"/>
-        <result column="product_cost" jdbcType="DECIMAL" property="productCost"/>
-        <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
-        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
-        <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark"/>
-        <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode"/>
-        <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName"/>
-        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
-        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
     </resultMap>
     <resultMap id="QueryStockSkuListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         <result column="id" jdbcType="BIGINT" property="id"/>
@@ -321,79 +169,24 @@
         <id column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
         <id column="change_num" jdbcType="BIGINT" property="changeNum"/>
         <id column="operation_type" jdbcType="BIGINT" property="operationType"/>
-
     </resultMap>
-    <resultMap id="StockBatchProductSkuResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO">
-        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>
-        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName"/>
-        <result column="spec" jdbcType="VARCHAR" property="spec"/>
-        <result column="color_code" jdbcType="VARCHAR" property="colorCode"/>
-        <result column="color_name" jdbcType="VARCHAR" property="colorName"/>
-        <result column="model_number" jdbcType="VARCHAR" property="modelNumber"/>
-        <result column="unit_code" jdbcType="VARCHAR" property="unitCode"/>
-        <result column="unit_name" jdbcType="VARCHAR" property="unitName"/>
-        <result column="base_product_content" jdbcType="VARCHAR" property="baseProductContent"/>
-        <result column="pack" jdbcType="VARCHAR" property="pack"/>
-        <result column="config_status" jdbcType="BIGINT" property="configStatus"/>
-    </resultMap>
-
-
     <sql id="Stock_flow_Column">
         id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,before_inventory_num,after_inventory_num,
         before_available_num,after_available_num,before_lock_num,after_lock_num,before_purchase_way_num,after_purchase_way_num,
         before_allocation_way_num,after_allocation_way_num,before_total_way_num,after_total_way_num,change_num,operation_type
     </sql>
     <sql id="Base_Column_List">
-        id,stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
-        sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,new_delivery,new_delivery_name,
-        new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,tax_price,tax_rate,create_time,create_by,update_time,update_by,
-        sale_num,sale_lock_num,sale_way_num,sale_purchase_way_num,gift_num,gift_lock_num,gift_way_num,gift_purchase_way_num,special_sale_num,special_sale_lock_num,special_sale_way_num,
-        bad_num,bad_lock_num,bad_way_num,purchase_way_num,allocation_way_num,total_way_num
+        id, stock_code, company_code, company_name, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
+        warehouse_type, sku_code, sku_name, inventory_count, available_count, lock_count, purchase_way_count, allocation_way_count,
+        total_way_count, new_delivery, new_delivery_name, new_purchase_price, unit_code, unit_name, tax_rate,
+        purchase_way_count, allocation_way_count,total_way_count, use_status, tax_cost, create_time,
+        create_by_id, update_time, update_by_id, create_by_name, update_by_name
     </sql>
-    <sql id="Base_Batch_Column_List">
-        id,stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
-        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
-        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price,
-        tax_rate,create_time,create_by,update_time,update_by
-    </sql>
-
-    <sql id="Sum_Column_List">
-        id, sku_code, sku_name, sku_package_code, sku_package_name, warehouse_code, warehouse_name, transport_center_code, transport_center_name,
-        company_code, company_name, config_status, sum(authentic_num) as authentic_num, sum(available_num) as available_num, sum(lock_num) as lock_num, sum(spare_num) as spare_num,
-        sum(inventory_num) as inventory_num, sum(way_num) as way_num, sum(purchase_way_num) as purchase_way_num, tax_price, new_delivery, new_delivery_name, new_purchase_price,
-        product_category_id, product_category_name, spec_code, spec, unit_code, unit_name, brand_code, brand_name,
-        sum(allocate_product_way_num) as allocate_product_way_num,
-        sum(allocate_spare_way_num) as allocate_spare_way_num, sum(product_tax_price) as product_tax_price, sum(spare_tax_price) as spare_tax_price
-    </sql>
-    <sql id="Sum_GroupBy_List">
-        sku_code, sku_name, sku_package_code, sku_package_name,
-        config_status, tax_price, new_delivery, new_delivery_name, new_purchase_price,product_category_id, product_category_name,
-        spec_code, spec, unit_code, unit_name, brand_code, brand_name
-    </sql>
-
     <sql id="Query_Stock_Sku_List">
         a.sku_code,a.sku_name,c.product_category_code,c.product_category_name,c.product_brand_code,c.product_brand_name,c.spec,
         c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_cost as tax_price,
         c.product_code,c.product_name,a.available_num, 1 as zero_removal_coefficient
     </sql>
-
-    <sql id="Query_Stock_Batch_Sku_List">
-        sb.id,sb.stock_batch_code,sb.company_code,sb.company_name,sb.transport_center_code,sb.transport_center_name,
-        sb.warehouse_code,sb.warehouse_name,sb.warehouse_type,sb.sku_code,sb.sku_name,sb.batch_code,sb.production_date,
-        sb.batch_remark,sb.category_type_code,sb.category_type_name,pssi.spec,sb.color_code,sb.color_name,sb.model_number,pssi.unit_code,pssi.unit_name,
-        sb.pack,sb.config_status,ps.product_brand_name,sum(sb.inventory_num) as inventory_num,sum(sb.available_num) as available_num,
-        sum(sb.lock_num) as lock_num,sb.supplier_code,sb.supplier_name,sb.new_delivery,sb.new_delivery_name,sb.purchase_price
-    </sql>
-
-    <sql id="Query_Stock_Batch_Id">
-        sbf.id,sbf.stock_batch_code,sbf.flow_batch_code,sbf.batch_code,sbf.order_code,sbf.order_type,sbf.order_source,sbf.sku_code,sbf.sku_name,
-        sbf.lock_status,sbf.document_type,sbf.document_num,sbf.source_document_type,sbf.source_document_num,sbf.remark,sbf.before_inventory_num,
-        sbf.after_inventory_num,sbf.before_available_num,sbf.after_available_num,sbf.before_lock_num,sbf.after_lock_num,sbf.change_num,sbf.operation_type,
-        sbf.create_time,sbf.create_by_code,sbf.create_by_name,sbf.update_time,sbf.update_by_code,sbf.update_by_name
-    </sql>
-
     <select id="selectWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
@@ -612,94 +405,6 @@
         GROUP BY sf.lock_status,sf.sku_code,sf.document_num
         order by sf.update_time DESC
     </select>
-
-    <select id="selectOneStockInfoByStockIdInfoByPage" resultType="java.lang.Long">
-        select count(1) from (
-        select
-        st.sku_code
-        from stock as st
-
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code
-        AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        left join product_sku_box_packing as psbp on st.sku_code = psbp.product_sku_code
-        left join product_sku_stock_info as pssi on st.sku_code = pssi.product_sku_code
-        left join stock_flow as sf on st.sku_code = sf.sku_code
-
-        where st.id = #{stockId, jdbcType=VARCHAR}
-        ) as tmp
-    </select>
-    <select id="countStockSumInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockSumRequest"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
-        SELECT
-        st.sku_code
-        from stock as st
-        <if test="configStatus!=null">
-            LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
-        </if>
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        where
-        ps.procurement_section_code in
-        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
-            #{item.purchaseGroupCode,jdbcType=VARCHAR}
-        </foreach>
-        <if test="skuCode!=null and skuCode!=''">
-            AND st.sku_code = #{skuCode}
-        </if>
-        <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat('', #{skuName, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="configStatus!=null">
-            AND psc.config_status=#{configStatus}
-        </if>
-        <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code = #{propertyText}
-        </if>
-        <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code = #{brandText}
-        </if>
-        <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
-        </if>
-        <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
-        </if>
-        <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
-        </if>
-        <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
-        </if>
-        <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
-        </if>
-        <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code = #{transportCenterText}
-        </if>
-        <if test="companyCode!=null and companyCode!=''">
-            AND st.company_code=#{companyCode}
-        </if>
-        <if test="saleBeginNum!=null">
-            AND st.sale_num <![CDATA[>=]]> #{saleBeginNum}
-        </if>
-        <if test="saleFinishNum!=null">
-            AND st.sale_num <![CDATA[<=]]> #{saleFinishNum}
-        </if>
-        <if test="specialSaleBeginNum!=null">
-            AND st.special_sale_num <![CDATA[>=]]> #{specialSaleBeginNum}
-        </if>
-        <if test="specialSaleFinishNum!=null">
-            AND st.special_sale_num <![CDATA[<=]]> #{specialSaleFinishNum}
-        </if>
-        <if test="badBeginNum!=null">
-            AND st.bad_num <![CDATA[>=]]> #{badBeginNum}
-        </if>
-        <if test="badFinishNum!=null">
-            AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
-        </if>
-        group by st.warehouse_code,st.sku_code
-    </select>
-
     <select id="countWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="java.lang.Integer">
         select count(1) from (
@@ -804,91 +509,6 @@
         <include refid="Query_Stock_Sku_Where"/>
         order by sku_code asc
     </select>
-    <select id="selectStockByCompanyCodeAndSkuList"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.merchant.QueryMerchantStockRepVo">
-        SELECT
-        sku_code as skuCode,
-        sku_name as skuName,
-        warehouse_code as warehouseCode,
-        warehouse_name as warehouseName,
-        SUM( available_num ) as num
-        FROM
-        stock
-        <where>
-            <if test="companyCode != null and companyCode != '' ">
-                company_code = #{companyCode, jdbcType=VARCHAR}
-            </if>
-            <if test="skuList != null ">
-                and sku_code in
-                <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
-                    #{id, jdbcType=VARCHAR}
-                </foreach>
-            </if>
-        </where>
-        GROUP BY
-        sku_code,
-        sku_name,
-        warehouse_code,
-        warehouse_name
-    </select>
-
-
-    <update id="updateBatchStock" parameterType="java.util.List">
-        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
-            update stock
-            <set>
-                <!--加库存  商品库存增加 -->
-                <if test="item.stockStatusCode == 1">
-                    authentic_num = authentic_num + #{item.num,jdbcType=BIGINT},
-                    available_num = available_num + #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num + #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减少并锁库  可售库存减少,锁定库存增减 -->
-                <if test="item.stockStatusCode == 2">
-                    available_num = available_num - #{item.num,jdbcType=BIGINT},
-                    lock_num = lock_num + #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减库存并解锁  库存数量减少，可售库存数量不变 -->
-                <if test="item.stockStatusCode == 3">
-                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
-                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减少解锁库存 -->
-                <if test="item.stockStatusCode == 4">
-                    available_num = available_num + #{item.num,jdbcType=BIGINT},
-                    lock_num = lock_num - #{item.num,jdbcType=BIGINT},
-                </if>
-                <!--减库存 商品库存减少。不经锁定，直接减少库存 -->
-                <if test="item.stockStatusCode == 5">
-                    authentic_num = authentic_num - #{item.num,jdbcType=BIGINT},
-                    available_num = available_num - #{item.num,jdbcType=BIGINT},
-                    inventory_num = inventory_num - #{item.num,jdbcType=BIGINT},
-                </if>
-            </set>
-            <where>
-                <if test="item.companyCode != null and item.companyCode != ''">
-                    company_code = #{item.companyCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.supplyCode != null and item.supplyCode != ''">
-                    and new_delivery = #{item.supplyCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.transportCenterCode != null and item.transportCenterCode != ''">
-                    and transport_center_code = #{item.transportCenterCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.warehouseCode != null and item.warehouseCode != ''">
-                    and warehouse_code = #{item.warehouseCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.purchaseGroupCode != null and item.purchaseGroupCode != ''">
-                    and purchase_group_code = #{item.purchaseGroupCode, jdbcType=VARCHAR}
-                </if>
-                <if test="item.skuCode != null and item.skuCode != ''">
-                    and sku_code = #{item.skuCode, jdbcType=VARCHAR}
-                </if>
-            </where>
-        </foreach>
-    </update>
-
     <select id="selectTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
@@ -1046,83 +666,6 @@
         GROUP BY st.transport_center_code,st.sku_code
         ) AS countWarehouseStockInfoByPage
     </select>
-
-    <select id="countTransportStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
-        SELECT
-        st.sku_code,st.transport_center_code
-        FROM stock AS st
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
-        LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
-        LEFT JOIN product_sku_stock_info AS pssi ON st.sku_code=pssi.product_sku_code
-        WHERE
-        ps.procurement_section_code in
-        <foreach collection="groupList" open="(" close=")" item="item" separator=",">
-            #{item.purchaseGroupCode,jdbcType=VARCHAR}
-        </foreach>
-        <if test="skuCode!=null and skuCode!=''">
-            AND st.sku_code=#{skuCode}
-        </if>
-        <if test="skuName!=null and skuName!=''">
-            AND st.sku_name LIKE concat( #{skuName, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="configStatus!=null">
-            AND psc.config_status=#{configStatus}
-        </if>
-        <if test="propertyText !=null and propertyText!=''">
-            AND ps.product_property_code = #{propertyText}
-        </if>
-        <if test="brandText!=null and brandText!=''">
-            AND ps.product_brand_code = #{brandText}
-        </if>
-        <if test="productCategoryText!=null and productCategoryText!=''">
-            AND ps.product_category_code = #{productCategoryText}
-        </if>
-        <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
-        </if>
-        <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
-        </if>
-        <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
-        </if>
-        <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
-        </if>
-        <if test="transportCenterText!=null and transportCenterText!=''">
-            AND st.transport_center_code = #{transportCenterText}
-        </if>
-        <if test="companyCode!=null and companyCode!=''">
-            AND st.company_code=#{companyCode}
-        </if>
-        <if test="saleBeginNum!=null">
-            AND st.sale_num <![CDATA[>=]]> #{saleBeginNum}
-        </if>
-        <if test="saleFinishNum!=null">
-            AND st.sale_num <![CDATA[<=]]> #{saleFinishNum}
-        </if>
-        <if test="specialSaleBeginNum!=null">
-            AND st.special_sale_num <![CDATA[>=]]> #{specialSaleBeginNum}
-        </if>
-        <if test="specialSaleFinishNum!=null">
-            AND st.special_sale_num <![CDATA[<=]]> #{specialSaleFinishNum}
-        </if>
-        <if test="badBeginNum!=null">
-            AND st.bad_num <![CDATA[>=]]> #{badBeginNum}
-        </if>
-        <if test="badFinishNum!=null">
-            AND st.bad_num <![CDATA[<=]]> #{badFinishNum}
-        </if>
-        <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-            AND ps.procurement_section_code=#{procurementSectionCode}
-        </if>
-        <if test="procurementSectionName!=null and procurementSectionName!=''">
-            AND ps.procurement_section_name=#{procurementSectionName}
-        </if>
-        group by st.transport_center_code,st.sku_code
-    </select>
-
     <select id="selectStorehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
         SELECT
@@ -1424,18 +967,19 @@
         </set>
         where id=#{id}
     </update>
-    <select id="selectListByCodesAndSkuCode" resultMap="BaseResultMap">
-        select <include refid="Base_Column_List"></include> from stock
+    <select id="stockByWarehouseAndSku" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include>
+        from stock
         where transport_center_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.transportCenterCode}
         </foreach>
         and warehouse_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.warehouseCode}
         </foreach>
         and sku_code in
-        <foreach collection="stockVoRequests" item="item" open="(" close=")" index="index" separator=",">
+        <foreach collection="stockList" item="item" open="(" close=")" index="index" separator=",">
             #{item.skuCode}
         </foreach>
     </select>
@@ -1452,44 +996,44 @@
                 <if test="item.companyName!=null and item.companyName!=''">
                     company_name=#{item.companyName},
                 </if>
-                <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
+                <if test="item.transportCenterCode != null and item.transportCenterCode != ''">
                     transport_center_code=#{item.transportCenterCode},
                 </if>
-                <if test="item.transportCenterName!=null and item.transportCenterName!=''">
+                <if test="item.transportCenterName != null and item.transportCenterName != ''">
                     transport_center_name=#{item.transportCenterName},
                 </if>
-                <if test="item.warehouseCode!=null and item.warehouseCode!=''">
+                <if test="item.warehouseCode != null and item.warehouseCode != ''">
                     warehouse_code=#{item.warehouseCode},
                 </if>
-                <if test="item.warehouseName!=null and item.warehouseName!=''">
+                <if test="item.warehouseName != null and item.warehouseName != ''">
                     warehouse_name=#{item.warehouseName},
                 </if>
-                <if test="item.warehouseType!=null and item.warehouseType!=''">
+                <if test="item.warehouseType != null and item.warehouseType != ''">
                     warehouse_type=#{item.warehouseType},
                 </if>
-                <if test="item.skuCode!=null and item.skuCode!=''">
+                <if test="item.skuCode != null and item.skuCode != ''">
                     sku_code=#{item.skuCode},
                 </if>
-                <if test="item.skuName!=null and item.skuName!=''">
+                <if test="item.skuName != null and item.skuName != ''">
                     sku_name=#{item.skuName},
                 </if>
-                <if test="item.inventoryNum!=null">
-                    inventory_num=#{item.inventoryNum},
+                <if test="item.inventoryCount != null">
+                    inventory_count=#{item.inventoryCount},
                 </if>
-                <if test="item.availableNum!=null">
-                    available_num=#{item.availableNum},
+                <if test="item.availableCount != null">
+                    available_count=#{item.availableCount},
                 </if>
-                <if test="item.lockNum!=null">
-                    lock_num=#{item.lockNum},
+                <if test="item.lockCount!=null">
+                    lock_count=#{item.lockCount},
                 </if>
-                <if test="item.purchaseWayNum!=null">
-                    purchase_way_num=#{item.purchaseWayNum},
+                <if test="item.purchaseWayCount != null">
+                    purchase_way_count=#{item.purchaseWayCount},
                 </if>
-                <if test="item.allocationWayNum!=null">
-                    allocation_way_num=#{item.allocationWayNum},
+                <if test="item.allocationWayCount != null">
+                    allocation_way_count=#{item.allocationWayCount},
                 </if>
-                <if test="item.totalWayNum!=null">
-                    total_way_num=#{item.totalWayNum},
+                <if test="item.totalWayCount != null">
+                    total_way_count=#{item.totalWayCount},
                 </if>
                 <if test="item.newDelivery!=null and item.newDelivery!=''">
                     new_delivery=#{item.newDelivery},
@@ -1500,35 +1044,21 @@
                 <if test="item.newPurchasePrice!=null">
                     new_purchase_price=#{item.newPurchasePrice},
                 </if>
-                <if test="item.purchaseGroupCode!=null and item.purchaseGroupCode!=''">
-                    purchase_group_code=#{item.purchaseGroupCode},
+                <if test="item.unitCode != null and item.unitCode != ''">
+                    unit_code=#{item.unitCode},
                 </if>
-                <if test="item.purchaseGroupName!=null and item.purchaseGroupName!=''">
-                    purchase_group_name=#{item.purchaseGroupName},
-                </if>
-                <if test="item.stockUnitCode!=null and item.stockUnitCode!=''">
-                    stock_unit_code=#{item.stockUnitCode},
-                </if>
-                <if test="item.stockUnitName!=null and item.stockUnitName!=''">
-                    stock_unit_name=#{item.stockUnitName},
-                </if>
-                <if test="item.taxPrice!=null">
-                    tax_price=#{item.taxPrice},
+                <if test="item.unitName!=null and item.unitName!=''">
+                    unit_name=#{item.unitName},
                 </if>
                 <if test="item.taxRate!=null">
                     tax_rate=#{item.taxRate},
                 </if>
-                <if test="item.createTime!=null">
-                    create_time=#{item.createTime},
-                </if>
-                <if test="item.createBy!=null and item.createBy!=''">
-                    create_by=#{item.createBy},
-                </if>
-                <if test="item.updateTime!=null">
                     update_time=NOW(),
+                <if test="item.updateById!=null and item.updateById!=''">
+                    update_by_id = #{item.updateById},
                 </if>
-                <if test="item.updateBy!=null and item.updateBy!=''">
-                    update_by=#{item.updateBy},
+                <if test="item.updateByName != null and item.updateByName != ''">
+                    update_by_name = #{item.updateByName},
                 </if>
             </set>
             where id=#{item.id}
@@ -1548,34 +1078,6 @@
             </foreach>
         </if>
     </select>
-    <select id="selectByQueryList" resultMap="BaseResultMap">
-        select  a.id as id,
-        a.warehouse_type as warehouse_type,
-        a.warehouse_code as warehouse_code,
-        a.warehouse_name as warehouse_name,
-        a.transport_center_code as transport_center_code,
-        a.transport_center_name as transport_center_name,
-        a.sku_code as sku_code,
-        sum(a.available_num) as available_num
-        from stock a
-        left join product_sku_config b
-        on b.sku_code = a.sku_code and b.transport_center_code = a.transport_center_code
-        where a.transport_center_code in
-        <foreach collection="centerCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and a.warehouse_code in
-        <foreach collection="warehouseCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and a.sku_code in
-        <foreach collection="skuCodes" separator="," open="(" close=")" item="item">
-            #{item}
-        </foreach>
-        and b.config_status = 0
-        and a.company_code = #{companyCode,jdbcType=VARCHAR}
-        group by a.warehouse_code, a.sku_code, a.transport_center_code
-    </select>
     <select id="selectStockLogs" resultMap="StockFlowMap">
         select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
     </select>
@@ -1584,204 +1086,6 @@
     </select>
     <select id="selectListByWareHouseCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
-    </select>
-    <!-- 啊啊啊啊啊 -->
-    <select id="selectStockBatchDistinct" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        select  stock_batch_code,batch_code,inventory_num,available_num,lock_num
-        FROM stock_batch
-        where batch_code group by batch_code ORDER BY production_date ASC;
-    </select>
-    <insert id="insertStockBatch" parameterType="java.util.List">
-        INSERT INTO stock_batch(
-        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
-        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
-        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,purchase_price,tax_rate
-        )
-        VALUES
-        <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.stock_batch_code},#{item.company_code},#{item.company_name},#{item.transport_center_code},
-            #{item.transport_center_name},#{item.warehouse_code},#{item.warehouse_name},#{item.warehouse_type},
-            #{item.sku_code},#{item.sku_name},#{item.batch_code},#{item.production_date},#{item.batch_remark},
-            #{item.category_type_code},#{item.category_type_name},#{item.spec},#{item.color_code},#{item.color_name},
-            #{item.model_number},#{item.unit_code},#{item.unit_name},#{item.pack},#{item.config_status},
-            #{item.inventory_num},#{item.available_num},#{item.lock_num},#{item.supplier_code},
-            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price},#{item.tax_rate}
-            )
-        </foreach>
-    </insert>
-    <insert id="insertStockBatchFlow" parameterType="java.util.List">
-        INSERT INTO stock_batch_flow(
-        stock_batch_code,flow_batch_code,batch_code,order_code,order_type,order_source,sku_code,sku_name,
-        lock_status,document_type,document_num,source_document_type,source_document_num,operating_time,
-        operating_by,remark,before_inventory_num,after_inventory_num,before_available_num,after_available_num,
-        before_lock_num,after_lock_num,change_num,operation_type
-        )
-        VALUES
-        <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.stock_batch_code},#{item.flow_batch_code},#{item.batch_code},#{item.order_code},
-            #{item.order_type},#{item.order_source},#{item.sku_code},#{item.sku_name},#{item.lock_status},
-            #{item.document_type},#{item.document_num},#{item.source_document_type},#{item.source_document_num},
-            #{item.operating_time},#{item.operating_by},#{item.remark},#{item.before_inventory_num},
-            #{item.after_inventory_num},#{item.before_available_num},#{item.after_available_num},
-            #{item.before_lock_num},#{item.after_lock_num},#{item.change_num},#{item.operation_type}
-            )
-        </foreach>
-    </insert>
-    <select id="selectStockBatchInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
-        select
-        <include refid="Query_Stock_Batch_Sku_List"/>
-        from stock_batch as sb
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = sb.sku_code AND psc.transport_center_code = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON sb.sku_code = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code = psbp.product_sku_code
-        left join product_sku_stock_info as pssi on sb.sku_code = pssi.product_sku_code
-        where 1=1
-        <if test="companyCode!=null and companyCode!=''">
-            and sb.company_code = #{companyCode}
-        </if>
-        <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('',#{companyName}, '%' )
-        </if>
-        <if test="transportCenterText!=null and transportCenterText!=''">
-            and sb.transport_center_code = #{transportCenterText}
-        </if>
-        <if test="warehouseText!=null and warehouseText!=''">
-            and sb.warehouse_code = #{warehouseText, jdbcType=VARCHAR}
-        </if>
-        <if test="warehouseType!=null and warehouseType!=''">
-            and sb.warehouse_type = #{warehouseType, jdbcType=VARCHAR}
-        </if>
-        <if test="skuCode!=null and skuCode!=''">
-            and sb.sku_code=#{skuCode}
-        </if>
-        <if test="skuName!=null and skuName!=''">
-            and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="configStatus!=null">
-            and sb.config_status = #{configStatus}
-        </if>
-        <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code = #{propertyText}
-        </if>
-        <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code = #{brandText}
-        </if>
-        <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="inventoryBeginNum!=null">
-            and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
-        </if>
-        <if test="inventoryFinishNum!=null">
-            and sb.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
-        </if>
-        <if test="availableBeginNum!=null">
-            and sb.available_num <![CDATA[>=]]> #{availableBeginNum}
-        </if>
-        <if test="availableFinishNum!=null">
-            and sb.available_num <![CDATA[<=]]> #{availableFinishNum}
-        </if>
-        <if test="batchCode!=null and batchCode!=''">
-            and sb.batch_code=#{batchCode}
-        </if>
-        <if test="productionDate!=null and productionDate!=''">
-            and sb.production_date=#{productionDate}
-        </if>
-        <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-            and ps.procurement_section_code=#{procurementSectionCode}
-        </if>
-        <if test="procurementSectionName!=null and procurementSectionName!=''">
-            and ps.procurement_section_name=#{procurementSectionName}
-        </if>
-        group by sb.warehouse_code,sb.sku_code
-        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-    </select>
-    <select id="countStockBatchInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockBatchRequest"
-            resultType="java.lang.Integer">
-        select count(1) from (
-        select
-        sb.sku_code
-        from stock_batch as sb
-        LEFT JOIN product_sku_config AS psc ON psc.sku_code = sb.sku_code AND psc.transport_center_code = sb.transport_center_code
-        LEFT JOIN product_sku AS ps ON sb.sku_code = ps.sku_code
-        left join product_sku_box_packing as psbp on sb.sku_code = psbp.product_sku_code
-        where 1=1
-        <if test="companyCode!=null and companyCode!=''">
-            and sb.company_code = #{companyCode}
-        </if>
-        <if test="companyName!=null and companyName!=''">
-            and sb.company_name like concat('',#{companyName}, '%')
-        </if>
-        <if test="transportCenterText!=null and transportCenterText!=''">
-            and sb.transport_center_code = #{transportCenterText}
-        </if>
-        <if test="warehouseText!=null and warehouseText!=''">
-            and sb.warehouse_code = #{warehouseText, jdbcType=VARCHAR}
-        </if>
-        <if test="warehouseType!=null and warehouseType!=''">
-            and sb.warehouse_type = #{warehouseType, jdbcType=VARCHAR}
-        </if>
-        <if test="skuCode!=null and skuCode!=''">
-            and sb.sku_code=#{skuCode}
-        </if>
-        <if test="skuName!=null and skuName!=''">
-            and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="configStatus!=null">
-            and sb.config_status=#{configStatus}
-        </if>
-        <if test="propertyText !=null and propertyText!=''">
-            and ps.product_property_code = #{propertyText}
-        </if>
-        <if test="brandText!=null and brandText!=''">
-            and ps.product_brand_code = #{brandText}
-        </if>
-        <if test="productCategoryText!=null and productCategoryText!=''">
-            and ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
-        </if>
-        <if test="inventoryBeginNum!=null">
-            and sb.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
-        </if>
-        <if test="inventoryFinishNum!=null">
-            and sb.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
-        </if>
-        <if test="availableBeginNum!=null">
-            and sb.available_num <![CDATA[>=]]> #{availableBeginNum}
-        </if>
-        <if test="availableFinishNum!=null">
-            and sb.available_num <![CDATA[<=]]> #{availableFinishNum}
-        </if>
-        <if test="batchCode!=null and batchCode!=''">
-            and sb.batch_code=#{batchCode}
-        </if>
-        <if test="productionDate!=null and productionDate!=''">
-            and sb.production_date=#{productionDate}
-        </if>
-        <if test="procurementSectionCode!=null and procurementSectionCode!=''">
-            and ps.procurement_section_code=#{procurementSectionCode}
-        </if>
-        <if test="procurementSectionName!=null and procurementSectionName!=''">
-            and ps.procurement_section_name=#{procurementSectionName}
-        </if>
-        group by sb.warehouse_code,sb.sku_code
-        ) AS countStockBatchInfoByPage
-    </select>
-    <select id="selectOneStockBatchInfoByStockBatchId" parameterType="java.lang.Long"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO" resultMap="StockBatchRespMap">
-        select
-        <include refid="Query_Stock_Batch_Id"/>
-        from stock_batch sb
-        LEFT JOIN stock_batch_flow AS sbf ON sb.sku_code = sbf.sku_code
-        where sb.sku_code = #{stockBatchId, jdbcType=VARCHAR}
-    </select>
-    <select id="selectOneStockBatchInfoByStockBatchIdInfoByPage" resultType="java.lang.Long">
-        select count(1) from (
-        select
-        sb.sku_code
-        from stock_batch sb
-        LEFT JOIN stock_batch_flow AS sbf ON sb.sku_code = sbf.sku_code
-        where sb.id = #{stockBatchId, jdbcType=VARCHAR}) as tmp
     </select>
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
         select
@@ -1890,88 +1194,6 @@
             </if>
         </where>
     </sql>
-    <select id="selectStockBatchSkuInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo"
-            resultMap="QueryStockBatchSkuResultMap">
-        select
-        ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
-        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,sb.unit_name,psc.Input_tax_rate,
-        sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,
-        sb.batch_remark,psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
-        from stock_batch sb
-        left join stock s on sb.sku_code = s.sku_code
-        left join product_sku ps on sb.sku_code = ps.sku_code
-        left join product_sku_checkout psc on sb.sku_code = psc.sku_code
-        left join product_sku_stock_info pssi on sb.sku_code = pssi.product_sku_code
-        <where>
-            1 = 1
-            <if test="supplierCode != null and supplierCode != ''">
-                and sb.supplier_code  = #{supplierCode, jdbcType=VARCHAR}
-            </if>
-            <if test="transportCenterCode != null and transportCenterCode != ''">
-                and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseCode != null and warehouseCode != ''">
-                and sb.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
-            </if>
-            <if test="procurementSectionCode != null and procurementSectionCode != ''">
-                and ps.procurement_section_code = #{procurementSectionCode, jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode != null and skuCode != ''">
-                and sb.sku_code = #{skuCode, jdbcType=VARCHAR}
-            </if>
-            <if test="skuName != null and skuName != ''">
-                and sb.sku_name like concat('', #{skuName, jdbcType=VARCHAR}, '%')
-            </if>
-            <if test="productPropertyName != null and productPropertyName != ''">
-                and ps.product_property_name like concat('', #{productPropertyName, jdbcType=VARCHAR}, '%')
-            </if>
-            <if test="productCategoryName != null and productCategoryName != ''">
-                and ps.product_category_name like concat('', #{productCategoryName, jdbcType=VARCHAR}, '%')
-            </if>
-            <if test="productBrandName != null and productBrandName != ''">
-                and ps.product_brand_name like concat('', #{productBrandName, jdbcType=VARCHAR}, '%')
-            </if>
-            and sb.available_num > 0
-        </where>
-        order by sb.sku_code asc
-    </select>
-    <select id="selectSkuBatchCode"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockBatchSkuRespVo"
-            resultMap="QueryStockBatchSkuResultMap">
-        select
-        ps.procurement_section_code,ps.procurement_section_name,pssi.bar_code,sb.sku_code,sb.sku_name,ps.product_code,
-        ps.product_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
-        ps.goods_gifts,sb.color_code,sb.color_name,sb.model_number,sb.spec,sb.unit_code,sb.unit_name,psc.Input_tax_rate,
-        sb.transport_center_code,sb.transport_center_name,sb.warehouse_code,sb.warehouse_name,sb.purchase_price,s.tax_cost,sb.batch_code,sb.production_date,
-        sb.batch_remark,psc.settlement_method_code,psc.settlement_method_name,sb.supplier_code,sb.supplier_name,sb.available_num
-        from stock_batch sb
-        left join stock s on sb.sku_code = s.sku_code
-        left join product_sku ps on sb.sku_code = ps.sku_code
-        left join product_sku_checkout psc on sb.sku_code = psc.sku_code
-        left join product_sku_stock_info pssi on sb.sku_code = pssi.product_sku_code
-        <where>
-            1 = 1
-            <if test="transportCenterCode != null and transportCenterCode != ''">
-                and sb.transport_center_code  = #{transportCenterCode, jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseCode != null and warehouseCode != ''">
-                and sb.warehouse_code  = #{warehouseCode, jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode != null and skuCode != ''">
-                and sb.sku_code  = #{skuCode, jdbcType=VARCHAR}
-            </if>
-            <if test="batchCode != null and batchCode != ''">
-                and sb.batch_code  = #{batchCode, jdbcType=VARCHAR}
-            </if>
-            <if test="procurementSectionCode != null and procurementSectionCode != ''">
-                and ps.procurement_section_code  = #{procurementSectionCode, jdbcType=VARCHAR}
-            </if>
-            and sb.available_num > 0
-        </where>
-        order by sb.sku_code asc
-    </select>
     <select id="selectStockSkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuListReqVo"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo"
             resultMap="QueryStockSkuListResultMap">
@@ -2040,18 +1262,6 @@
             WHERE  st.id = #{item.id}
         </foreach>
     </update>
-
-    <select id="selectProductSku"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchProductSkuRespVO"
-            resultMap="StockBatchProductSkuResultMap">
-        select
-        ps.product_category_code,ps.product_category_name,pssi.spec,ps.color_code,ps.color_name,
-        ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,psc.config_status
-        from product_sku ps
-        left join product_sku_config as psc on ps.sku_code = psc.sku_code
-        left join product_sku_stock_info as pssi on ps.sku_code = pssi.product_sku_code
-        order by ps.sku_code asc
-    </select>
     <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         SELECT
         sb.batch_code as batchCode,
@@ -2066,247 +1276,6 @@
         <if test="skuCode!=null and skuCode!=''">
             and sb.sku_code=#{skuCode}
         </if>
-    </select>
-    <select id="selectListByCodesAndSkuCodeBatch" resultMap="BaseBatchResultMap">
-        select <include refid="Base_Batch_Column_List"></include> from stock_batch
-        where transport_center_code in
-        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
-            #{item.transportCenterCode}
-        </foreach>
-        and warehouse_code in
-        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
-            #{item.warehouseCode}
-        </foreach>
-        and sku_code in
-        <foreach collection="stockBatchVoRequest" item="item" open="(" close=")" index="index" separator=",">
-            #{item.skuCode}
-        </foreach>
-    </select>
-    <insert id="insertStockBatchFlows">
-        insert into stock_batch_flow
-        (
-        stock_batch_code,
-        flow_batch_code,
-        batch_code,
-        order_code,
-        order_type,
-        order_source,
-        sku_code,
-        sku_name,
-        lock_status,
-        document_type,
-        document_num,
-        source_document_type,
-        source_document_num,
-        remark,
-        before_inventory_num,
-        after_inventory_num,
-        before_available_num,
-        after_available_num,
-        before_lock_num,
-        after_lock_num,
-        change_num,
-        operation_type,
-        create_time,
-        create_by_code,
-        create_by_name,
-        update_time,
-        update_by_code,
-        update_by_name
-        )
-        values
-        <foreach collection="stockBatchFlows" item="item" index="index" separator=",">
-            (
-            #{item.stockBatchCode},
-            #{item.flowBatchCode},
-            #{item.batchCode},
-            #{item.orderCode},
-            #{item.orderType},
-            #{item.orderSource},
-            #{item.skuCode},
-            #{item.skuName},
-            #{item.lockStatus},
-            #{item.documentType},
-            #{item.documentNum},
-            #{item.sourceDocumentType},
-            #{item.sourceDocumentNum},
-            #{item.remark},
-            #{item.beforeInventoryNum},
-            #{item.afterInventoryNum},
-            #{item.beforeAvailableNum},
-            #{item.afterAvailableNum},
-            #{item.beforeLockNum},
-            #{item.afterLockNum},
-            #{item.changeNum},
-            #{item.operationType},
-            #{item.createTime},
-            #{item.createByCode},
-            #{item.createByName},
-            NOW(),
-            #{item.updateByCode},
-            #{item.updateByName}
-            )
-        </foreach>
-    </insert>
-    <update id="updateBatchStocks">
-        <foreach collection="stockBatches" item="item" separator=";">
-            update stock_batch
-            <set>
-                <if test="item.stockBatchCode!=null and item.stockBatchCode!=''">
-                    stock_batch_code = #{item.stockBatchCode},
-                </if>
-                <if test="item.companyCode!=null and item.companyCode!=''">
-                    company_code = #{item.companyCode},
-                </if>
-                <if test="item.companyName!=null and item.companyName!=''">
-                    company_name = #{item.companyName},
-                </if>
-                <if test="item.transportCenterCode!=null and item.transportCenterCode!=''">
-                    transport_center_code = #{item.transportCenterCode},
-                </if>
-                <if test="item.transportCenterName!=null and item.transportCenterName!=''">
-                    transport_center_name = #{item.transportCenterName},
-                </if>
-                <if test="item.warehouseCode!=null and item.warehouseCode!=''">
-                    warehouse_code = #{item.warehouseCode},
-                </if>
-                <if test="item.warehouseName!=null and item.warehouseName!=''">
-                    warehouse_name = #{item.warehouseName},
-                </if>
-                <if test="item.warehouseType!=null and item.warehouseType!=''">
-                    warehouse_type = #{item.warehouseType},
-                </if>
-                <if test="item.skuCode!=null and item.skuCode!=''">
-                    sku_code = #{item.skuCode},
-                </if>
-                <if test="item.skuName!=null and item.skuName!=''">
-                    sku_name = #{item.skuName},
-                </if>
-                <if test="item.batchCode!=null and item.batchCode!=''">
-                    batch_code = #{item.batchCode},
-                </if>
-                <if test="item.productionDate!=null and item.productionDate!=''">
-                    production_date = #{item.productionDate},
-                </if>
-                <if test="item.batchRemark!=null and item.batchRemark!=''">
-                    batch_remark = #{item.batchRemark},
-                </if>
-                <if test="item.categoryTypeCode!=null and item.categoryTypeCode!=''">
-                    category_type_code = #{item.categoryTypeCode},
-                </if>
-                <if test="item.categoryTypeName!=null and item.categoryTypeName!=''">
-                    category_type_name = #{item.categoryTypeName},
-                </if>
-                <if test="item.spec!=null and item.spec!=''">
-                    spec = #{item.spec},
-                </if>
-                <if test="item.colorCode!=null and item.colorCode!=''">
-                    color_code = #{item.colorCode},
-                </if>
-                <if test="item.colorName!=null and item.colorName!=''">
-                    color_name = #{item.colorName},
-                </if>
-                <if test="item.modelNumber!=null and item.modelNumber!=''">
-                    model_number = #{item.modelNumber},
-                </if>
-                <if test="item.unitCode!=null and item.unitCode!=''">
-                    unit_code = #{item.unitCode},
-                </if>
-                <if test="item.unitName!=null and item.unitName!=''">
-                    unit_name = #{item.unitName},
-                </if>
-                <if test="item.configStatus!=null and item.configStatus!=''">
-                    pack = #{item.configStatus},
-                </if>
-                <if test="item.unitName!=null and item.unitName!=''">
-                    config_status = #{item.unitName},
-                </if>
-                <if test="item.inventoryNum!=null">
-                    inventory_num = #{item.inventoryNum},
-                </if>
-                <if test="item.availableNum!=null">
-                    available_num = #{item.availableNum},
-                </if>
-                <if test="item.lockNum!=null">
-                    lock_num = #{item.lockNum},
-                </if>
-                <if test="item.supplierCode!=null and item.supplierCode!=''">
-                    supplier_code = #{item.supplierCode},
-                </if>
-                <if test="item.supplierName!=null and item.supplierName!=''">
-                    supplier_name = #{item.supplierName},
-                </if>
-                <if test="item.newDelivery!=null and item.newDelivery!=''">
-                    new_delivery = #{item.newDelivery},
-                </if>
-                <if test="item.newDeliveryName!=null and item.newDeliveryName!=''">
-                    new_delivery_name = #{item.newDeliveryName},
-                </if>
-                <if test="item.purchasePrice!=null">
-                    purchase_price = #{item.purchasePrice},
-                </if>
-                <if test="item.taxRate!=null">
-                    tax_rate = #{item.tax_Rate},
-                </if>
-                <if test="item.createTime!=null">
-                    create_time = #{item.createTime},
-                </if>
-                <if test="item.createBy!=null and item.createBy!=''">
-                    create_by = #{item.createBy},
-                </if>
-                <if test="item.updateTime!=null">
-                    update_time = #{item.updateTime},
-                </if>
-                <if test="item.updateBy!=null and item.updateBy!=''">
-                    update_by = #{item.updateBy},
-                </if>
-            </set>
-            where id=#{item.id}
-        </foreach>
-    </update>
-    <insert id="insertBatchStockAdd" parameterType="java.util.List">
-        INSERT INTO stock_batch(
-        stock_batch_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,warehouse_type,
-        sku_code,sku_name,batch_code,production_date,batch_remark,category_type_code,category_type_name,spec,color_code,color_name,model_number,
-        unit_code,unit_name,pack,config_status,inventory_num,available_num,lock_num,supplier_code,supplier_name,new_delivery,new_delivery_name,
-        purchase_price,tax_rate,create_time,create_by,update_time,update_by
-        )
-        VALUES
-        <foreach collection="stockBatches" item="item" index="index" separator=",">
-            (#{item.stock_batch_code},#{item.company_code},#{item.company_name},#{item.transport_center_code},
-            #{item.transport_center_name},#{item.warehouse_code},#{item.warehouse_name},#{item.warehouse_type},
-            #{item.sku_code},#{item.sku_name},#{item.batch_code},#{item.production_date},#{item.batch_remark},
-            #{item.category_type_code},#{item.category_type_name},#{item.spec},#{item.color_code},#{item.color_name},
-            #{item.model_number},#{item.unit_code},#{item.unit_name},#{item.pack},#{item.config_status},
-            #{item.inventory_num},#{item.available_num},#{item.lock_num},#{item.supplier_code},
-            #{item.supplier_name},#{item.new_delivery},#{item.new_delivery_name},#{item.purchase_price},#{item.tax_rate},
-            #{item.createTime},#{item.createBy},#{item.updateTime},#{item.updateBy}
-            )
-        </foreach>
-    </insert>
-    <select id="importStockSkuList" resultType="String">
-        SELECT
-        sb.sku_code
-        FROM stock_batch sb
-        group by sb.sku_code
-    </select>
-    <select id="selectSkuCodeByQueryBatchCode" parameterType="String" resultType="String">
-        SELECT
-        batch_code
-        FROM stock_batch
-        WHERE sku_code = #{skuCode}
-    </select>
-    <select id="selectSkuCodeByQueryAvailableNum" parameterType="String" resultType="Long">
-        SELECT
-        sum(available_num) as availableNum
-        FROM stock_batch
-        WHERE sku_code = #{skuCode}
-    </select>
-    <select id="selectSkuCodeByQueryProductionDateList" parameterType="String" resultType="String">
-        SELECT
-        date_format(production_date , '%Y-%m-%d %H:%i:%s') production_date
-        FROM stock_batch
-        WHERE sku_code = #{skuCode}
     </select>
     <select id="queryStockBatch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.QueryImportStockSkuListReqVo"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo" resultMap="QueryStockSkuListResultMap">
@@ -2513,13 +1482,10 @@
             </foreach>
         </if>
     </select>
-    <select id="selectWarehouseTypeBycode" resultType="com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest">
+    <select id="selectWarehouseType" resultType="java.lang.Integer">
         select warehouse_type_code as warehouseType
         FROM warehouse
-        where 1=1
-        <if test="warehouseCode!=null and warehouseCode!=''">
-            AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-        </if>
+        where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
     <select id="stockCountByOtherInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse">
         SELECT s.sku_code as skuCode,s.sku_name as skuName,s.transport_center_code as transportCenterCode,
@@ -2732,28 +1698,6 @@
         </if>
         limit 100
     </select>
-
-    <select id="byCityAndProvinceAndskuCode"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
-        SELECT s.transport_center_code transportCenterCode,
-        ps.sku_code skuCode,
-        ps.sku_name skuName,
-        s.available_num availableNum
-        FROM logistics_center_area l
-        inner  join  stock s on l.logistics_center_code=s.transport_center_code
-        inner  join  product_sku ps on s.sku_code=ps.sku_code
-        <where>
-            l.del_flag=0 and
-            l.province_code = #{provinceCode} and
-            s.warehouse_type=1 and
-            l.city_code=#{cityCode} and
-            ps.sku_code = #{skuCode}
-        </where>
-        order by s.logistics_center_code desc
-        limit 1
-    </select>
-
-
     <select id="byCityAndProvinceAndtransportCenterCode"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         SELECT s.transport_center_code transportCenterCode,
@@ -2773,7 +1717,6 @@
         order by s.logistics_center_code desc
         limit 1
     </select>
-
     <select id="findSpareWarehouse"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
         select
@@ -2786,5 +1729,25 @@
         where a.del_flag = 0
         and a.sku_code = #{skuCode}
         and a.transport_center_code= #{transportCenterCode}
+    </select>
+    <select id="stockInfoByBatchDetail" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchDetailResponse">
+        select
+          a.sku_code skuCode, a.sku_name skuName, b.product_category_code productCategoryCode,
+          b.product_category_name productCategoryName, b.product_brand_code productBrandCode,
+          b.product_brand_name productBrandName, b.color_name colorName, b.model_number modelNumber,
+          d.spec productSpec, d.unit_name unitName, CONCAT(d.base_product_content, '/', d.unit_name) boxGauge,
+          b.product_property_code productPropertyCode, b.product_property_name productPropertyName,
+          c.config_status configStatus, a.warehouse_code warehouseCode, a.warehouse_name warehouseName,
+          a.transport_center_code transportCenterCode, a.transport_center_name transportCenterName,
+          a.warehouse_type warehouseType, a.inventory_num inventoryCount, a.available_num availableCount,
+          a.lock_num lockCount, a.purchase_way_num purchaseWayCount, a.allocation_way_num allocationWayCount,
+          a.total_way_num totalWayCount, a.new_purchase_price newPurchaseAmount, a.new_delivery_name newSupplierName,
+          ifnull(a.tax_rate, 0) taxRate, ifnull(a.tax_cost, 0) taxCost
+        from stock a
+        inner join product_sku b on a.sku_code = b.sku_code
+        inner join product_sku_config c on a.sku_code = c.sku_code and c.transport_center_code = a.transport_center_code
+        inner join product_sku_purchase_info d on a.sku_code = d.product_sku_code
+        where a.sku_code = #{skuCode,jdbcType=VARCHAR}
+        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
 </mapper>

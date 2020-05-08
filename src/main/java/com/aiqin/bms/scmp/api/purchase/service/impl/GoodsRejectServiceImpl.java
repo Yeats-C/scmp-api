@@ -561,7 +561,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         return ILockStocksReqVO;
     }
 
-
     @Override
     public HttpResponse updateReject(String rejectApplyCode) {
         RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyCode);

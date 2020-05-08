@@ -1840,18 +1840,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                             stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
                             stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
                             stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
-                            stock.setLockNum(0L);
-                            stock.setInventoryNum(0L);
-                            stock.setAvailableNum(0L);
-                            stock.setPurchaseWayNum(0L);
-                            stock.setAllocationWayNum(0L);
-                            stock.setTotalWayNum(0L);
-                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
-                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
+                            stock.setLockCount(0L);
+                            stock.setInventoryCount(0L);
+                            stock.setAvailableCount(0L);
+                            stock.setPurchaseWayCount(0L);
+                            stock.setAllocationWayCount(0L);
+                            stock.setTotalWayCount(0L);
+//                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
+//                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
                             stock.setNewPurchasePrice(new BigDecimal(0));
                             stock.setTaxRate(new BigDecimal(0));
                             stock.setTaxCost(new BigDecimal(0));
-                            stock.setTaxPrice(new BigDecimal(0));
+//                            stock.setTaxPrice(new BigDecimal(0));
                             stockList.add(stock);
                         }
                     }
