@@ -117,7 +117,7 @@ public interface OutboundService {
      * @param reqVo
      * @return
      */
-    int  workFlowCallBack(OutboundCallBackReqVo reqVo);
+    void  workFlowCallBack(OutboundCallBackReqVo reqVo);
 
 
     /**

@@ -451,6 +451,84 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         return saveOutBoundInfo(convert);
     }
 
+//    /**
+//     * 入库单推送给wms
+//     * @param code
+//     * @return
+//     */
+//    @Override
+//    @Transactional(rollbackFor = Exception.class)
+//    public void pushWms(String code){
+//        log.error("异步推送给wms");
+//        String url = "";
+//        // 通过id查询 入库单主体
+//        OutboundWmsResVO outboundWmsReqVO = new OutboundWmsResVO();
+//
+//        Outbound outbound = outboundDao.selectByCode(code);
+//        BeanCopyUtils.copy(outbound,outboundWmsReqVO);
+//        List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
+//
+//        //去重
+//        Set<OutboundProductWmsResVO> OutboundProductWmsResVOSet = new HashSet<>(outboundProductWmsReqVOs);
+//        outboundProductWmsReqVOs.clear();
+//        outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
+//        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
+//            //退供出库需要请求wms
+//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+//            //RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
+//            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+//            if(authToken != null){
+//                outboundWmsReqVO.setCreateById(authToken.getPersonId());
+//                outboundWmsReqVO.setCreateByName(authToken.getPersonName());
+//            }else {
+//                outboundWmsReqVO.setCreateById("0");
+//                outboundWmsReqVO.setCreateByName("系统");
+//            }
+//            url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+//            log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
+//            HttpResponse orderDto = HttpClient.post(url).json(outboundWmsReqVO).timeout(10000).action().result(HttpResponse.class);
+//            if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
+//                ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
+//                if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){
+//                    //设置wms编号
+//                    outbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
+//                    //设置入库状态
+//                    outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+//                    outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+//                }else{
+//                    LOGGER.error("退供出库单传入wms失败:{}",responseWms.getReason());
+//                    throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",responseWms.getReason()));
+//                }
+//            }else{
+//                LOGGER.error("退供出库单传入wms失败:{}",orderDto.getMessage());
+//                throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",orderDto.getMessage()));
+//            }
+//        }else{
+//            //其他出库 移库 预计数量=实际数量
+//            //设置出库状态
+//            outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
+//            outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
+//        }
+//        // 更新数据库
+//        outboundDao.updateByPrimaryKeySelective(outbound);
+//        OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
+//        BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
+//        List<OutboundProductCallBackReqVo> list = new ArrayList<>();
+//        for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
+//            OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
+//            outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
+//            outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
+//            outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
+//            list.add(outboundProductCallBackReqVo);
+//        }
+//        outboundCallBackReqVo.setList(list);
+//        //保存日志
+//        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
+//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
+//            workFlowCallBack(outboundCallBackReqVo);
+//        }
+//    }
+
     /**
      * 入库单推送给wms
      * @param code
@@ -473,7 +551,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundProductWmsReqVOs.clear();
         outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
         outboundWmsReqVO.setList(outboundProductWmsReqVOs);
-            //退供出库需要请求wms
+        //退供出库需要请求wms
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
             //RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -516,9 +594,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundProductCallBackReqVo> list = new ArrayList<>();
         for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
             OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
-            outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
+            outboundProductCallBackReqVo.setLineCode(outboundProductWmsReqVO.getLinenum());
             outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
-            outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
+            //outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
             list.add(outboundProductCallBackReqVo);
         }
         outboundCallBackReqVo.setList(list);
@@ -536,26 +614,31 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
      */
     @Override
 //    @Async("myTaskAsyncPool")
-    public int workFlowCallBack(OutboundCallBackReqVo reqVo) {
-        log.info(" 出库单回传实体为 ：[{}]" + reqVo);
-        Outbound outbound = new Outbound();
+    public void workFlowCallBack(OutboundCallBackReqVo reqVo) {
+        log.info(" 出库单回调实体传入实体为 ：[{}]" + reqVo);
+        Outbound outbound;
         try{ // 根据入库单编号查询旧的入库单主体
-            if(!Objects.isNull(reqVo.getId()) && reqVo.getId() != null){
-                outbound = outboundDao.selectById(reqVo.getId());
-            }else{
-                outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
+         //   if(!Objects.isNull(reqVo.getId()) && reqVo.getId() != null){
+         //       outbound = outboundDao.selectById(reqVo.getId());
+         //   }else{
+         //       outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
+         //   }
+            outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
+            if(outbound == null){
+                log.info("WMS出库单回传，耘链未查询到此出库单，回传失败：" + reqVo);
+                throw  new GroundRuntimeException("WMS出库单回传，耘链未查询到此出库单，回传失败");
             }
             //保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
-            //设置状态
+            //设置已回传状态
             outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
             outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
             //设置出库时间
-            outbound.setOutboundTime(reqVo.getOutboundTime());
+            //outbound.setOutboundTime(reqVo.getBeginOutboundTime());
             //设置实际出库数量和出库主数量
-            outbound.setPraOutboundNum(reqVo.getPraMainUnitNum());
-            outbound.setPraMainUnitNum(reqVo.getPraMainUnitNum());
+            outbound.setPraOutboundNum(0L);
+            outbound.setPraMainUnitNum(0L);
             //设置实际含税总金额。税额。不含税总金额
             outbound.setPraTaxAmount(BigDecimal.ZERO);
             outbound.setPraTax(BigDecimal.ZERO);
@@ -572,8 +655,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             for (OutboundProductCallBackReqVo outboundProductCallBackReqVo : reqVo.getList()) {
                 ReturnOutboundProduct returnOutboundProduct;
                 // 查询旧的sku，以及销项，进项税率
-                if(!Objects.isNull(outboundProductCallBackReqVo.getLinenum()) && outboundProductCallBackReqVo.getLinenum() != null){
-                     returnOutboundProduct = outboundProductDao.selectByLinenum(outbound.getOutboundOderCode(),outboundProductCallBackReqVo.getSkuCode(),outboundProductCallBackReqVo.getLinenum());
+                if(!Objects.isNull(outboundProductCallBackReqVo.getLineCode()) && outboundProductCallBackReqVo.getLineCode() != null){
+                     returnOutboundProduct = outboundProductDao.selectByLinenum(outbound.getOutboundOderCode(),outboundProductCallBackReqVo.getSkuCode(),outboundProductCallBackReqVo.getLineCode());
                 }else{
                     List<ReturnOutboundProduct> list = outboundProductDao.selectBySkuCode(outbound.getOutboundOderCode(),outboundProductCallBackReqVo.getSkuCode());
                     returnOutboundProduct = list.get(0);
@@ -590,8 +673,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     returnOutboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
                 }
                 //设置实际数量，实际数量
-                outboundProduct.setPraOutboundNum(outboundProductCallBackReqVo.getPraOutboundMainNum()/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
-                outboundProduct.setPraOutboundMainNum(outboundProductCallBackReqVo.getPraOutboundMainNum());
+                Long actualTotalCount = outboundProductCallBackReqVo.getActualTotalCount();
+                outboundProduct.setPraOutboundNum(actualTotalCount/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
+                outboundProduct.setPraOutboundMainNum(actualTotalCount);
                 //设置实际含税单价，实际含税总价
 //                outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
 //                outboundProduct.setPraTaxAmount(outboundProduct.getPraOutboundMainNum()*outboundProduct.getPraTaxPurchaseAmount());
@@ -676,7 +760,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             // 回传类型
             returnSource(outbound.getId());
-            return k;
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException("修改库存失败");
