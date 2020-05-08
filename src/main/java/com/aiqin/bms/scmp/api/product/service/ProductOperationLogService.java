@@ -22,9 +22,4 @@ public interface ProductOperationLogService {
     int update(ProductOperationLog operationLog);
 
     Integer saveList(Collection<ProductOperationLog> users);
-
-
-    List<LogData> selectListByVO(OperationLogBean operationLogBean);
-
-
 }

@@ -11,11 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 public interface ProductBrandTypeDao {
-    List<ProductBrandType> selectAllBrand();
 
-    List<ProductBrandType> selectAllTopBrand();
-
-    ProductBrandType selectBrandInfoBy(String brandId);
     /**
      * 插入操作
      * @author zth

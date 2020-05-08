@@ -11,23 +11,7 @@ import java.util.Set;
 
 public interface ProductCategoryDao {
 
-    List<ProductCategoryResponse> selectFirstCategoryList();
-
-    List<ProductCategoryResponse> selecSecondCategoryList();
-
-    List<ProductCategoryResponse> selecThirdCategoryList();
-
-    List<ProductCategoryResponse> selecFouthCategoryList();
-
-    List<ProductCategoryResponse> selectSencondCategoryListByCategoryId(String categoryId);
-
-    List<ProductCategoryResponse> selectThirdCategoryListByCategoryId(String categoryId);
-
-    List<ProductCategoryResponse> selectFouthCategoryListByCategoryId(String categoryId);
-
     ProductCategoryResponse selectCategoryLevelByCategoryId(@Param("categoryId") String categoryId);
-
-    Integer countAllCategory(@Param(value = "categoryIdList") List<String> categoryIdList);
 
     List<ProductCategory> selectCategoryByParentId(@Param("parentId") String parentId, @Param("companyCode") String companyCode);
 

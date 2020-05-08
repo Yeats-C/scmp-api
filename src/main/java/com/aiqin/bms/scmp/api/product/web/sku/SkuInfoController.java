@@ -174,17 +174,6 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/apply/add")
-    @ApiOperation("新增sku申请")
-    public HttpResponse addSkuApply(@RequestBody SaveSkuApplyInfoReqVO saveSkuApplyInfoReqVO){
-        try {
-            return HttpResponse.successGenerics(skuInfoService.saveSkuApplyInfo(saveSkuApplyInfoReqVO, null, null));
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(MessageId.create(Project.PRODUCT_API, 400, e.getMessage()));
-        }
-    }
-
     @GetMapping("/apply/detail")
     @ApiOperation("商品申请详情")
     public HttpResponse<ProductApplyInfoRespVO<ProductSkuApplyVo2>> getApplyDetail(String applyCode){

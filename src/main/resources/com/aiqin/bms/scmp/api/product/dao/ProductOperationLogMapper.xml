@@ -137,26 +137,6 @@
       )
     </foreach>
   </insert>
-  <select id="getLogList" resultType="com.aiqin.bms.scmp.api.product.domain.response.LogData" parameterType="com.aiqin.bms.scmp.api.product.domain.request.OperationLogBean">
-    SELECT
-    object_id as objectId,handle_type as handleType,handle_name as  handleName,object_type as objectType,
-    content,create_time as createTime,create_by as createBy
-    FROM product_operation_log
-    WHERE  del_flag=0
-    <if test="id !=null">
-      AND id= #{id,jdbcType=BIGINT}
-    </if>
-    <if test="objectId !=null">
-      AND object_id =#{objectId,jdbcType=VARCHAR}
-    </if>
-    <if test="handleType !=null">
-      AND handle_type = #{handleType,jdbcType=TINYINT}
-    </if>
-    <if test="objectType!=null" >
-      AND object_type=#{objectType,jdbcType=TINYINT}
-    </if>
-    order by create_time desc
-  </select>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductOperationLog">
     update product_operation_log
     <set>

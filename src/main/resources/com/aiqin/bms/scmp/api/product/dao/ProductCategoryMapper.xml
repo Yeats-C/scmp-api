@@ -18,23 +18,6 @@
     <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
     <result column="del_flag" jdbcType="BIT" property="delFlag" />
   </resultMap>
-  <resultMap id="ProductCategoryMap" type="com.aiqin.bms.scmp.api.product.domain.ProductCategory">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
-    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-    <result column="category_status" jdbcType="TINYINT" property="categoryStatus" />
-    <result column="parent_id" jdbcType="VARCHAR" property="parentId" />
-    <result column="category_level" jdbcType="TINYINT" property="categoryLevel" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
-    <result column="picture_path" jdbcType="VARCHAR" property="picturePath" />
-    <result column="weight" jdbcType="INTEGER" property="weight" />
-    <result column="picture_name" jdbcType="VARCHAR" property="pictureName" />
-    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
-  </resultMap>
   <resultMap id="ProductCategoryListMap" type="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryRespVO">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
@@ -75,74 +58,12 @@
     update_time, create_by, update_by, product_category_code, picture_path, weight, picture_name,
     del_flag
   </sql>
-  <select id="selectFirstCategoryList" resultType="java.util.List"
-          resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List" />
-    from product_category
-    where category_level = 1 and category_status = 0;
-  </select>
-  <select id="selecSecondCategoryList" resultType="java.util.List"
-          resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List"/>
-    from product_category
-    where category_level = 2 and category_status = 0;
-  </select>
-  <select id="selecThirdCategoryList" resultType="java.util.List"
-          resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List"/>
-    from product_category
-    where category_level = 3 and category_status = 0;
-  </select>
-  <select id="selecFouthCategoryList" resultType="java.util.List"
-          resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List"/>
-    from product_category
-    where category_level = 4 and category_status = 0;
-  </select>
-  <select id="selectSencondCategoryListByCategoryId" parameterType="string"
-          resultType="java.util.List" resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List" />
-    from product_category
-    where category_level = 2 and category_status = 0 and parent_id = #{categoryId};
-  </select>
-  <select id="selectThirdCategoryListByCategoryId" parameterType="string"
-          resultType="java.util.List" resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List" />
-    from product_category
-    where category_level = 3 and category_status = 0 and parent_id = #{categoryId};
-  </select>
-  <select id="selectFouthCategoryListByCategoryId" parameterType="string"
-          resultType="java.util.List" resultMap="ProductCategoryResponse">
-    select
-    <include refid="Base_Column_List"/>
-    from product_category
-    where category_level = 4 and category_status = 0 and parent_id = #{categoryId};
-  </select>
   <select id="selectCategoryLevelByCategoryId" parameterType="string"
           resultMap="ProductCategoryResponse"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductCategoryResponse">
     select
     <include refid="Base_Column_List" />
     from product_category where category_id = #{categoryId, jdbcType=VARCHAR} limit 1
-  </select>
-  <select id="countAllCategory" resultType="java.lang.Integer">
-    select count(1) from product_category
-    <where>
-      <if test="categoryIdList != null">
-        category_id in (
-        <foreach collection="categoryIdList" item="item" index="" separator=",">
-          #{item,jdbcType=VARCHAR}
-        </foreach>
-        )
-      </if>
-      and category_level = 1
-    </where>
   </select>
     <select id="selectCategoryByParentId" resultMap="BaseResultMap">
         select

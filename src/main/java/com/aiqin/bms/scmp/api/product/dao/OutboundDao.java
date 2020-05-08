@@ -6,7 +6,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.QueryOutboundReqVo;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 
 import java.util.List;
 
