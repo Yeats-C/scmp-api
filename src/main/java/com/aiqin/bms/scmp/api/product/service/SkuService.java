@@ -12,13 +12,11 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOmsSkuListReq
 import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOrderReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.CheckPurchaseSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.QueryPurchaseSkuReqVO;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryMerchantSkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreProductListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.QueryStoreSkusReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.merchant.MerchantSkuItemRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductListItemResp;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.OmsProductSkuItemResp;
@@ -49,13 +47,6 @@ public interface SkuService {
      * @return
      */
     BasePage<PurchaseItemRespVo> getPurchaseSkuList(QueryPurchaseSkuReqVO queryPurchaseSkuReqVO);
-
-    /**
-     * 根据skucode集合查询sku信息
-     * @param queryMerchantSkuListReqVO
-     * @return
-     */
-    List<MerchantSkuItemRespVO> getMerchantSkuListByCodes(QueryMerchantSkuListReqVO queryMerchantSkuListReqVO);
 
     /**
      * 根据商品编码及其他查询sku列表及信息
@@ -92,8 +83,6 @@ public interface SkuService {
      */
     List<PurchaseItemRespVo> getCheckSkuList(CheckPurchaseSkuReqVO checkPurchaseSkuReqVO);
 
-    List<ProductSkuResponse> selectSkuInfoListCanUseBySkuCodeList(List<String> skuCodeList);
-
     /**
      * 根据sku编码集合获取sku信息
      * @param skuCodeList
@@ -114,8 +103,6 @@ public interface SkuService {
     List<QuerySkuListResp> getOmsSkus(QueryStoreSkusReqVO queryStoreSkusReqVO);
 
     BasePage<QueryOmsSkusPageResp> queryOmsSkuPage(QuerySkuListPageReq querySkuListPageReq);
-
-    ProductSkuResponse selectSkuInfoBySkuCode(String skuCode);
 
     /**
      * 根据skuCodes获取进出项税率

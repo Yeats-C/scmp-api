@@ -19,6 +19,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
 
         registry.addInterceptor(authenticationInterceptor()).addPathPatterns("/**")
                 .excludePathPatterns(
+                        "/chart/**",
                         "/favicon.ico",
                         "/static/**",
                         "/index.html",

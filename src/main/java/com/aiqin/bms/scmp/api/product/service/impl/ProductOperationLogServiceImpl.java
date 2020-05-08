@@ -82,16 +82,6 @@ public class ProductOperationLogServiceImpl implements ProductOperationLogServic
     }
 
     @Override
-    public List<LogData> selectListByVO(OperationLogBean operationLogBean) {
-        if (operationLogBean != null) {
-            return productOperationLogDao.getLogList(operationLogBean);
-        } else {
-            log.error("operationLogBean=>不能为空");
-            throw new GroundRuntimeException("operationLogBean 不能为空");
-        }
-    }
-
-    @Override
     public List<LogData> getLogType(OperationLogVo objectType) {
         try {
             PageHelper.startPage(objectType.getPageNo(), objectType.getPageSize());
