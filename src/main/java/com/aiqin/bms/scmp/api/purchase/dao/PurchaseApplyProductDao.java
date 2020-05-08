@@ -34,5 +34,5 @@ public interface PurchaseApplyProductDao {
 
     List<PurchaseApplyDetailResponse> productCodeByDetailSum(@Param("purchaseApplyCode") String purchaseApplyCode);
 
-
+    List<PurchaseApplyDetailResponse> productList(@Param("purchaseApplyCode") String purchaseApplyCode);
 }

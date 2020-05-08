@@ -19,7 +19,7 @@ public interface PurchaseApplyService {
 
     HttpResponse applyProductList(PurchaseApplyRequest purchaseApplyRequest);
 
-    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode);
+    HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode, Integer applyType);
 
     HttpResponse<List<PurchaseApplyTransportCenter>> transportCenterPurchase(String purchaseApplyCode, String warehouseCode);
 

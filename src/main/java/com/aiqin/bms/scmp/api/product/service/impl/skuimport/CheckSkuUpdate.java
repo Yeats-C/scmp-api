@@ -7,10 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.price.SkuPriceDraftReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.AddSkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.PurchaseSaleStockReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Manufacturer;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
@@ -18,18 +16,14 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.TagInfo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.NumberConvertUtils;
 import com.google.common.collect.Lists;
 import lombok.Data;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 
 @Data
 public class CheckSkuUpdate {
@@ -288,7 +282,7 @@ public class CheckSkuUpdate {
 //            error.add("厂家指导价不能为空");
         } else {
             try {
-                productSkuDraft.setManufacturerGuidePrice(NumberConvertUtils.stringParseBigDecimal(importVo.getManufacturerGuidePrice()));
+                productSkuDraft.setManufacturerGuidePrice(new BigDecimal(importVo.getManufacturerGuidePrice()));
             } catch (NumberFormatException e) {
                 error.add("厂家指导价格式不正确");
             }
@@ -500,7 +494,7 @@ public class CheckSkuUpdate {
             boolean flag = true;
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxLength())) {
-                    BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxLength().trim());
+                    BigDecimal bigDecimalLength = new BigDecimal(importVo.getStockBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
                     if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
                     } else {
@@ -517,7 +511,7 @@ public class CheckSkuUpdate {
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
-                    BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxWidth().trim());
+                    BigDecimal bigDecimalWidth = new BigDecimal(importVo.getStockBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
                     if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
                     } else {
@@ -535,7 +529,7 @@ public class CheckSkuUpdate {
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxHeight())) {
-                    BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxHeight().trim());
+                    BigDecimal bigDecimalHeight = new BigDecimal(importVo.getStockBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
                     if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
                     } else {
@@ -553,7 +547,7 @@ public class CheckSkuUpdate {
 
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxVolume())) {
-                    BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxVolume().trim());
+                    BigDecimal bigDecimalVolume = new BigDecimal(importVo.getStockBoxVolume().trim());
                     Long longVolume = bigDecimalVolume.longValue();
                     if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
                     } else {
@@ -571,7 +565,7 @@ public class CheckSkuUpdate {
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockBoxGrossWeight())) {
-                    stockBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockBoxGrossWeight().trim()));
+                    stockBox.setBoxGrossWeight(new BigDecimal(importVo.getStockBoxGrossWeight().trim()));
                 } else {
                     stockBox.setBoxGrossWeight(BigDecimal.ZERO);
                 }
@@ -580,7 +574,7 @@ public class CheckSkuUpdate {
             }
             try {
                 if (StringUtils.isNotBlank(importVo.getStockNetWeight())) {
-                    stockBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getStockNetWeight().trim()));
+                    stockBox.setNetWeight(new BigDecimal(importVo.getStockNetWeight().trim()));
                 }
             } catch (Exception e) {
                 error.add("库存净重格式不正确");
@@ -632,7 +626,7 @@ public class CheckSkuUpdate {
                 boolean flag = true;
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxLength())) {
-                        BigDecimal bigDecimalLength = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxLength().trim());
+                        BigDecimal bigDecimalLength = new BigDecimal(importVo.getPurchaseBoxLength().trim());
                         Long longLength = bigDecimalLength.longValue();
                         if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
                         } else {
@@ -649,7 +643,7 @@ public class CheckSkuUpdate {
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
-                        BigDecimal bigDecimalWidth = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxWidth().trim());
+                        BigDecimal bigDecimalWidth = new BigDecimal(importVo.getPurchaseBoxWidth().trim());
                         Long longWidth = bigDecimalWidth.longValue();
                         if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
                         } else {
@@ -666,7 +660,7 @@ public class CheckSkuUpdate {
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxHeight())) {
-                        BigDecimal bigDecimalHeight = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxHeight().trim());
+                        BigDecimal bigDecimalHeight = new BigDecimal(importVo.getPurchaseBoxHeight().trim());
                         Long longHeight = bigDecimalHeight.longValue();
                         if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
                         } else {
@@ -683,7 +677,7 @@ public class CheckSkuUpdate {
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
-                        BigDecimal bigDecimalVolume = NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxVolume().trim());
+                        BigDecimal bigDecimalVolume = new BigDecimal(importVo.getPurchaseBoxVolume().trim());
                         Long longVolume = bigDecimalVolume.longValue();
                         if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
                         } else {
@@ -701,7 +695,7 @@ public class CheckSkuUpdate {
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxGrossWeight())) {
-                        purchaseBox.setBoxGrossWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
+                        purchaseBox.setBoxGrossWeight(new BigDecimal(importVo.getPurchaseBoxGrossWeight().trim()));
                     } else {
                         purchaseBox.setBoxGrossWeight(BigDecimal.ZERO);
                     }
@@ -710,7 +704,7 @@ public class CheckSkuUpdate {
                 }
                 try {
                     if (StringUtils.isNotBlank(importVo.getPurchaseNetWeight())) {
-                        purchaseBox.setNetWeight(NumberConvertUtils.stringParseBigDecimal(importVo.getPurchaseNetWeight().trim()));
+                        purchaseBox.setNetWeight(new BigDecimal(importVo.getPurchaseNetWeight().trim()));
                     }
                 } catch (Exception e) {
                     error.add("采购净重格式不正确");
@@ -821,7 +815,7 @@ public class CheckSkuUpdate {
 //            error.add("进项税率不能为空");
         } else {
             try {
-                draft.setInputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getInputTaxRate()));
+                draft.setInputTaxRate(new BigDecimal(importVo.getInputTaxRate()));
             } catch (Exception e) {
                 error.add("进项税率格式不正确");
             }
@@ -831,7 +825,7 @@ public class CheckSkuUpdate {
 //            error.add("销项税率不能为空");
         } else {
             try {
-                draft.setOutputTaxRate(NumberConvertUtils.stringParseBigDecimal(importVo.getOutputTaxRate()));
+                draft.setOutputTaxRate(new BigDecimal(importVo.getOutputTaxRate()));
             } catch (Exception e) {
                 error.add("销项税率格式不正确");
             }
@@ -841,7 +835,7 @@ public class CheckSkuUpdate {
 //            error.add("积分系数不能为空");
         } else {
             try {
-                draft.setIntegralCoefficient(NumberConvertUtils.stringParseBigDecimal(importVo.getIntegralCoefficient()));
+                draft.setIntegralCoefficient(new BigDecimal(importVo.getIntegralCoefficient()));
             } catch (Exception e) {
                 error.add("积分系数格式不正确");
             }
@@ -851,7 +845,7 @@ public class CheckSkuUpdate {
 //            error.add("物流费奖励比例不能为空");
         } else {
             try {
-                draft.setLogisticsFeeAwardRatio(NumberConvertUtils.stringParseBigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
+                draft.setLogisticsFeeAwardRatio(new BigDecimal(importVo.getLogisticsFeeAwardRatio()).multiply(BigDecimal.valueOf(100)));
             } catch (Exception e) {
                 error.add("物流费奖励比例格式不正确");
             }

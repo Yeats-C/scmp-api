@@ -30,6 +30,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.SaleSourcInfoSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderChildernSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderPrimarySource;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
@@ -50,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.omg.PortableInterceptor.INACTIVE;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -249,7 +254,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   @Transactional(rollbackFor = GroundRuntimeException.class)
+    @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
             log.info("采购单入库参数：" + reqVo);
@@ -1100,7 +1105,52 @@ public class InboundServiceImpl implements InboundService {
         saveData(inboundList,productList,batchList);
         //存日志 todo
         //推送到wms
+        returnOrderWms(list);
         return Boolean.TRUE;
+    }
+
+    private HttpResponse returnOrderWms(List<InboundReqSave> lists) {
+        for (InboundReqSave list : lists) {
+            // 主表
+            ReturnOrderPrimarySource rops = new ReturnOrderPrimarySource();
+            BeanUtils.copyProperties(rops,list);
+            rops.setTransportNumber(list.getWmsDocumentCode());
+            rops.setReturnOrderCode(list.getSourceOderCode());
+
+            // 商品表
+            List<ReturnOrderChildernSource> rocsLists = new ArrayList();
+            List<InboundProductReqVo> lprVoLists = list.getList();
+            for (InboundProductReqVo lprVoList : lprVoLists) {
+                ReturnOrderChildernSource rocs = new ReturnOrderChildernSource();
+                BeanUtils.copyProperties(rocs,lprVoList);
+                rocs.setTotalCount(lprVoList.getPreTaxAmount().toString());
+                rocs.setLineCode(lprVoList.getLinenum().toString());
+                rocsLists.add(rocs);
+            }
+            // 商品批次表
+            List<BatchWmsInfo> bwiLists = new ArrayList();
+            List<InboundBatchReqVo> inboundBatchReqVos = list.getInboundBatchReqVos();
+            for (InboundBatchReqVo inboundBatchReqVo : inboundBatchReqVos) {
+                BatchWmsInfo bwi = new BatchWmsInfo();
+                BeanUtils.copyProperties(bwi,inboundBatchReqVo);
+                bwi.setBatchCode(inboundBatchReqVo.getInboundBatchCode());
+                bwi.setProdcutDate(inboundBatchReqVo.getManufactureTime().toString());
+                bwi.setTotalCount(inboundBatchReqVo.getPreQty());
+                bwi.setActualTotalCount(inboundBatchReqVo.getPraQty());
+                bwi.setLineCode(inboundBatchReqVo.getLinenum().intValue());
+                bwiLists.add(bwi);
+            }
+            rops.setChildrenSourceList(rocsLists);
+            rops.setBatchInfo(bwiLists);
+            String url = urlConfig.WMS_API_URL+"/infoPushAndInquiry/source/returnOrderInfoPush";
+            HttpClient httpClient = HttpClient.post(url).json(rops).timeout(200000);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                HttpResponse.failure(null, "退货入库调用wms失败,原因：" + orderDto.getMessage());
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
+        }
+        return HttpResponse.success();
     }
 
     @Override

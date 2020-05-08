@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierDetailRe
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierListRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplierService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierService;
-import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -29,7 +28,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/supplier")
 @Api(description = "供应商集团管理")
-public class SupplierController extends SupplierBaseController {
+public class SupplierController {
     @Autowired
     private SupplierService supplierService;
     @Autowired

@@ -19,7 +19,6 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.util.UUIDUtils;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -27,6 +26,8 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -177,14 +178,14 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
                 if (HandlingExceptionCode.ONE.equals(variablePriceReqVos.getStatus())) {
                     productOperationLog.setHandleType(HandleTypeCoce.ADD_TO_EXAMINE_VARIABLE_PRICE_LIST.getStatus());
                     productOperationLog.setObjectId(variablePrices.getVariablePriceSkuCode());
-                    String contentJson = JsonMapper.toJsonString(variablePrices);
+                    String contentJson = JsonUtil.toJson(variablePrices);
                     productOperationLog.setContent(contentJson);
                     productOperationLog.setObjectType(ObjectTypeCode.PRICE_MANAGEMENT.getStatus());
                 }
                 if (HandlingExceptionCode.ZERO.equals(variablePriceReqVos.getStatus())) {
                     productOperationLog.setHandleType(HandleTypeCoce.ADD_VARIABLE_PRICE_LIST.getStatus());
                     productOperationLog.setObjectId(variablePrices.getVariablePriceSkuCode());
-                    String contentJson = JsonMapper.toJsonString(variablePrices);
+                    String contentJson = JsonUtil.toJson(variablePrices);
                     productOperationLog.setContent(contentJson);
                     productOperationLog.setObjectType(ObjectTypeCode.PRICE_MANAGEMENT.getStatus());
                 }
@@ -210,7 +211,7 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
         variablePriceListReqVos.forEach(variablePriceListRe -> {
             VariablePriceSku variablePriceSku = new VariablePriceSku();
             BeanCopyUtils.copy(variablePriceListRe, variablePriceSku);
-            variablePriceSku.setVariablePriceSkuCode(UUIDUtils.getUUID());
+            variablePriceSku.setVariablePriceSkuCode(IdUtil.uuid());
             variablePriceSku.setPriceRevoke(HandlingExceptionCode.ZERO);
             variablePriceSku.setVariablePriceCode(code);
             variablePriceSku.setVariablePriceName(variablePriceName);
@@ -538,7 +539,7 @@ public class VariablePriceServiceImpl extends BaseServiceImpl implements Variabl
             //variablePriceName=促销活动&priceTypeCode=1&variablePriceCode=10001
             workFlowVO.setFormUrl(workFlowBaseUrl.variableUrl + "?variablePriceName=" + variablePriceName + "&priceTypeCode=" + priceTypeCode + "&variablePriceCode=" + variablePriceCode + "&" + workFlowBaseUrl.authority);
             workFlowVO.setHost(workFlowBaseUrl.supplierHost);
-            workFlowVO.setFormNo(UUIDUtils.getUUID());
+            workFlowVO.setFormNo(IdUtil.uuid());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.VARIABLE_PRICE.getNum());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.VARIABLE_PRICE);
             workFlowVO.setTitle("变价管理申请");

@@ -43,11 +43,11 @@ public class QueryMovementResVo {
     @ApiModelProperty("调入库房名称")
     private String callInWarehouseName;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+  //  @ApiModelProperty("采购组编码")
+  //  private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+  //  @ApiModelProperty("采购组名称")
+  //  private String purchaseGroupName;
 
     @ApiModelProperty("负责人")
     private String principal;
@@ -101,5 +101,17 @@ public class QueryMovementResVo {
 
     @ApiModelProperty("公司名称")
     private String companyName;
+
+    @ApiModelProperty(value = "移库差异（1.有 2.无）")
+    private Integer differenceType;
+
+    @ApiModelProperty(value = "移库差异")
+    private String differenceName;
+
+    @ApiModelProperty(value = "移库模式（1，我方发起 2，wms方发起）")
+    private Integer patternType;
+
+    @ApiModelProperty(value = "移库模式")
+    private String patternName;
 
 }

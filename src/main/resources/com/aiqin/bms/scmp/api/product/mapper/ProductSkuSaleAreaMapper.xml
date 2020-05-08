@@ -49,7 +49,7 @@
         a.create_time acreate_time,
         a.update_by aupdate_by,
         a.update_time aupdate_time,
-        count(c.id) skuCount,
+        (select count(id) from product_sku)  skuCount,
         (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
         ) skuProcurementCount
         from product_sku_sale_area_main a
@@ -63,7 +63,7 @@
 </select>
     <select id="officialSkuListCount" resultType="java.lang.Long">
     select a.id from product_sku_sale_area_main a
-        left join product_sku_sale_area c
+        left join product_sku_sale_area_info c
     on a.code = c.code
     where a.company_code = #{companyCode}
         <if test="code != null and code != ''">
@@ -73,10 +73,10 @@
             and a.name like concat('%',#{name},'%')
         </if>
         <if test="allowAreaName!= null and allowAreaName != ''">
-            and c.code like concat('%',#{allowAreaProvince},'%')  and c.type = 1
+            and c.name like concat('%',#{allowAreaName},'%')  and c.type = 1
         </if>
         <if test="allowStoreName != null and allowStoreName != ''">
-            and c.name like concat('%',#{allowAreaCity},'%')  and c.type = 2
+            and c.name like concat('%',#{allowStoreName},'%')  and c.type = 2
         </if>
     group by a.id
     order by a.create_time desc
@@ -215,7 +215,7 @@
     </trim>
   </insert>
     <insert id="insertBatch">
-          insert into product_sku_sale_area (id, code, sku_code,
+          insert into product_sku_sale_area ( code, sku_code,
       sku_name, be_disable, categories_supply_channels_code,
       categories_supply_channels_name, direct_delivery_supplier_code,
       direct_delivery_supplier_name, create_by, create_time,
@@ -223,13 +223,29 @@
       company_name)
     values
     <foreach collection="items" item="item" open="" close="" separator=",">
-    (#{item.id,jdbcType=BIGINT}, #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
-      #{item.skuName,jdbcType=VARCHAR}, #{item.beDisable,jdbcType=INTEGER}, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+        ( #{item.code,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR}, 1, #{item.categoriesSupplyChannelsCode,jdbcType=VARCHAR},
       #{item.categoriesSupplyChannelsName,jdbcType=VARCHAR}, #{item.directDeliverySupplierCode,jdbcType=VARCHAR},
-      #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, #{item.createTime,jdbcType=TIMESTAMP},
+      #{item.directDeliverySupplierName,jdbcType=VARCHAR}, #{item.createBy,jdbcType=VARCHAR}, now(),
       #{item.updateBy,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.companyCode,jdbcType=VARCHAR},
       #{item.companyName,jdbcType=VARCHAR})
     </foreach>
+    </insert>
+
+    <insert id="insertImports">
+        insert into product_sku_sale_area ( code, sku_code,
+        sku_name, be_disable, categories_supply_channels_code,
+        categories_supply_channels_name,
+        direct_delivery_supplier_name, create_by, create_time,
+        update_by, update_time, company_code,
+        company_name)
+        values
+      ( #{saleCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
+      #{skuName,jdbcType=VARCHAR}, 1, #{categoriesSupplyChannelsCode,jdbcType=VARCHAR},
+      #{categoriesSupplyChannelsName,jdbcType=VARCHAR},
+      #{directDeliverySupplierName,jdbcType=VARCHAR}, #{createBy,jdbcType=VARCHAR}, now(),
+      #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR},
+      #{companyName,jdbcType=VARCHAR})
     </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea">
     update product_sku_sale_area
@@ -318,6 +334,7 @@
         <result column="aupdate_by"  property="updateBy" />
         <result column="aupdate_time"  property="updateTime" />
         <result column="skuCount"  property="skuCount" />
+        <result column="skuProcurementCount"  property="skuProcurementCount" />
         <collection property="skuList" ofType="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo">
 
 
@@ -334,16 +351,14 @@
         a.create_time acreate_time,
         a.update_by aupdate_by,
         a.update_time aupdate_time,
+        (select count(id) from product_sku) skuCount,
         (select count(id) from product_sku where procurement_section_code in (select purchase_group_code from purchase_group_buyer where buyer_code =#{personId,jdbcType=VARCHAR})
-        ) skuCount
+        ) skuProcurementCount
         from product_sku_sale_area_main a
         left join product_sku_sale_area_info c   on a.code = c.main_code
         where  1=1
         <if test="code!=null and code!=''">
         and a.code=#{code}
-        </if>
-        <if test="id!=null and id!=''">
-            and   a.id=#{id}
         </if>
     </select>
 
@@ -428,7 +443,7 @@
         <result column="currency_level_name" jdbcType="VARCHAR" property="currencyLevelName" />
     </resultMap>
     <select id="getSkuList" resultMap="getSkuListMap">
- select
+       select distinct
         ps.*
         from product_sku_sale_area_main a
         left join product_sku_sale_area c   on a.code = c.code
@@ -438,14 +453,11 @@
     <if test="code!=null and code!=''">
     and a.code=#{code}
     </if>
-    <if test="id!=null and id!=''">
-      and   a.id=#{id}
-    </if>
 </where>
     </select>
 
     <select id="officialSkuListCount2" resultType="java.lang.Long">
-    select ps.id from product_sku ps
+    select  distinct c.id from product_sku ps
      left join product_sku_sale_area c on ps.sku_code = c.sku_code
        left join product_sku_sale_area_main a   on a.code = c.code
        <where>
@@ -505,8 +517,8 @@
     </resultMap>
     <select id="officialSkuList2" parameterType="java.util.List"
             resultMap="officialSkuList2Map">
-           select
-            ps.id
+           select distinct
+           ps.id
             ,ps.sku_code
            ,ps.sku_name
            ,ps.categories_supply_channels_code
@@ -514,16 +526,15 @@
            ,c.be_disable
            ,a.code
            ,a.name
-            form product_sku ps
-        left join product_sku_sale_area c on ps.sku_code = c.sku_code
-        left join product_sku_sale_area_info_main a   on a.code = c.code
+        from  product_sku_sale_area c
+        inner join product_sku ps on ps.sku_code = c.sku_code
+        inner join product_sku_sale_area_main a   on a.code = c.code
         <where>
-            ps.id  in
+            c.id  in
             <foreach collection="list" open="(" close=")" separator="," item="item">
                 #{item}
             </foreach>
         </where>
-
     </select>
 
 </mapper>

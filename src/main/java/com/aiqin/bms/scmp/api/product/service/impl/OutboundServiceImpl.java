@@ -259,12 +259,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
-            Thread.sleep(1000);
             //编码生成
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+            LOGGER.info("出库单号---------------------：" + outboundOderCode);
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
@@ -283,7 +283,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
 
             //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
+            int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+            LOGGER.info("变更出库单号--------------" + value);
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
@@ -485,8 +486,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
             log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
-            HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(outboundWmsReqVO)).timeout(10000);
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            HttpResponse orderDto = HttpClient.post(url).json(outboundWmsReqVO).timeout(10000).action().result(HttpResponse.class);
             if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
                 ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
                 if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){

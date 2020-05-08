@@ -24,8 +24,8 @@
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_code, product_line_num, original_line_num, sku_code, sku_name, num, actual_deliver_num, 
-    product_time, batch_remark, batch_number, lock_type, transport_center_name, transport_center_code, 
+    id, order_code, product_line_num, original_line_num, sku_code, sku_name, num, actual_deliver_num,
+    product_time, batch_remark, batch_number, lock_type, transport_center_name, transport_center_code,
     warehouse_name, warehouse_code, company_code, company_name,supplier_code,supplier_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
@@ -39,28 +39,28 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch">
-    insert into order_info_item_product_batch (id, order_code, product_line_num, 
-      original_line_num, sku_code, sku_name, 
-      num, actual_deliver_num, product_time, 
-      batch_remark, batch_number, lock_type, 
-      transport_center_name, transport_center_code, 
-      warehouse_name, warehouse_code, company_code, 
-      company_name)
-    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT}, 
-      #{originalLineNum,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
-      #{num,jdbcType=BIGINT}, #{actualDeliverNum,jdbcType=BIGINT}, #{productTime,jdbcType=TIMESTAMP}, 
-      #{batchRemark,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, #{lockType,jdbcType=INTEGER}, 
-      #{transportCenterName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, 
-      #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, 
-      #{companyName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch">
-    insert into order_info_item_product_batch ( order_code,   sku_code, sku_name,
+    insert into order_info_item_product_batch (id, order_code, product_line_num,
+      original_line_num, sku_code, sku_name,
       num, actual_deliver_num, product_time,
       batch_remark, batch_number, lock_type,
       transport_center_name, transport_center_code,
       warehouse_name, warehouse_code, company_code,
-      company_name,supplier_code,supplier_name)
+      company_name)
+    values (#{id,jdbcType=BIGINT}, #{orderCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT},
+      #{originalLineNum,jdbcType=BIGINT}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR},
+      #{num,jdbcType=BIGINT}, #{actualDeliverNum,jdbcType=BIGINT}, #{productTime,jdbcType=TIMESTAMP},
+      #{batchRemark,jdbcType=VARCHAR}, #{batchNumber,jdbcType=VARCHAR}, #{lockType,jdbcType=INTEGER},
+      #{transportCenterName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR},
+      #{warehouseName,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
+      #{companyName,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch">
+    insert into order_info_item_product_batch ( order_code,   sku_code, sku_name,
+    num, actual_deliver_num, product_time,
+    batch_remark, batch_number, lock_type,
+    transport_center_name, transport_center_code,
+    warehouse_name, warehouse_code, company_code,
+    company_name,supplier_code,supplier_name)
     values
      <foreach collection="list" item="item"  separator=",">
        (
@@ -200,16 +200,16 @@
     </trim>
   </insert>
   <insert id="insertBatch" parameterType="java.util.List">
-        insert into order_info_item_product_batch (id, order_code, product_line_num,
-      original_line_num, sku_code, sku_name,
-      num, actual_deliver_num, product_time,
-      batch_remark, batch_number, lock_type,
-      transport_center_name, transport_center_code,
-      warehouse_name, warehouse_code, company_code,
-      company_name)
+    insert into order_info_item_product_batch (id, order_code, product_line_num,
+    original_line_num, sku_code, sku_name,
+    num, actual_deliver_num, product_time,
+    batch_remark, batch_number, lock_type,
+    transport_center_name, transport_center_code,
+    warehouse_name, warehouse_code, company_code,
+    company_name)
     values
     <foreach collection="list" open="" close="" separator="," item="item">
-    (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
+      (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
       #{item.originalLineNum,jdbcType=BIGINT}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.num,jdbcType=BIGINT}, #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.productTime,jdbcType=TIMESTAMP},
       #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchNumber,jdbcType=VARCHAR}, #{item.lockType,jdbcType=INTEGER},
@@ -308,7 +308,7 @@
     )
   </select>
   <select id="selectList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO">
-    select
+     select
     order_code as orderCode, product_line_num as product_line_num, sku_code as skuCode, sku_name as skuName, num,
     actual_deliver_num as actualDeliverNum, product_time as productTime, batch_remark as batchRemark,
     batch_number as batchNumber, lock_type as lockType

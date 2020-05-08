@@ -212,7 +212,7 @@ where a.code in
        company_code, company_name
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, 
- #{beDisable,jdbcType=INTEGER}, #{createBy,jdbcType=VARCHAR},
+   0, #{createBy,jdbcType=VARCHAR},
       #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
       #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}
       )

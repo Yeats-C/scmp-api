@@ -24,7 +24,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.JsonMapper;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -33,6 +32,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
@@ -218,7 +218,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
             ProductOperationLog productOperationLog = new ProductOperationLog();
             productOperationLog.setHandleType(HandleTypeCoce.APPLY_ADD_PRODUCT.getStatus());
             productOperationLog.setObjectId(applyProduct.getProductCode());
-            String contentJson = JsonMapper.toJsonString(applyProduct);
+            String contentJson = JsonUtil.toJson(applyProduct);
             productOperationLog.setContent(contentJson);
             productOperationLog.setObjectType(ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus());
             productOperationLog.setHandleName(HandleTypeCoce.APPLY_ADD_PRODUCT.getName());
@@ -331,7 +331,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
                         applyProduct.setAuditorTime(new Date());
                         ProductOperationLog productOperationLog = new ProductOperationLog();
                         productOperationLog.setObjectId(applyProduct.getProductCode());
-                        productOperationLog.setContent(JsonMapper.toJsonString(applyProduct));
+                        productOperationLog.setContent(JsonUtil.toJson(applyProduct));
                         productOperationLog.setObjectType(ObjectTypeCode.APPLY_PRODUCT.getStatus());
                         productOperationLog.setHandleType(HandleTypeCoce.APPLY_UPDATE_PRODUCT_TO_EXAMINE.getStatus());
                         productOperationLog.setHandleName(HandleTypeCoce.APPLY_UPDATE_PRODUCT_TO_EXAMINE.getName());
@@ -358,7 +358,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
                         applyProduct.setAuditorTime(new Date());
                         ProductOperationLog productOperationLog = new ProductOperationLog();
                         productOperationLog.setObjectId(applyProduct.getProductCode());
-                        productOperationLog.setContent(JsonMapper.toJsonString(applyProduct));
+                        productOperationLog.setContent(JsonUtil.toJson(applyProduct));
                         productOperationLog.setObjectType(ObjectTypeCode.APPLY_PRODUCT.getStatus());
                         productOperationLog.setHandleType(HandleTypeCoce.APPLY_UPDATE_PRODUCT_TO_EXAMINE_FAIL.getStatus());
                         productOperationLog.setHandleName(HandleTypeCoce.APPLY_UPDATE_PRODUCT_TO_EXAMINE_FAIL.getName());
@@ -397,7 +397,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     public ProductOperationLog malloc(NewProduct newProduct) {
         ProductOperationLog productOperationLog = new ProductOperationLog();
         productOperationLog.setObjectId(newProduct.getProductCode());
-        productOperationLog.setContent(JsonMapper.toJsonString(newProduct));
+        productOperationLog.setContent(JsonUtil.toJson(newProduct));
         productOperationLog.setObjectType(ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus());
         productOperationLog.setHandleType(HandleTypeCoce.ADD_PRODUCT.getStatus());
         productOperationLog.setHandleName(HandleTypeCoce.ADD_PRODUCT.getName());

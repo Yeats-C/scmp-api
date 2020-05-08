@@ -47,6 +47,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
      * 审核回调接口
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
         try {
             WorkFlowCallbackVO vo = updateSupStatus(vo1);
@@ -88,6 +89,7 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
                 // 审批通过，创建采购单
+                LOGGER.info("开始调用审批成功，采购申请单："+ order.getPurchaseApplyCode());
                 purchaseApplyService.insertPurchaseOrder(order.getPurchaseApplyId());
                 // 添加审批通过操作日志
 //                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),

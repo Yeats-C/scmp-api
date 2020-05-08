@@ -334,4 +334,6 @@ public interface SkuInfoService{
     Boolean exportEditSku(HttpServletResponse resp, String applyCode);
 
     Integer reUpdateApply(String formNo);
+
+    Integer saveDraftSkuInfo2(AddSkuInfoReqVO addSkuInfoReqVO);
 }

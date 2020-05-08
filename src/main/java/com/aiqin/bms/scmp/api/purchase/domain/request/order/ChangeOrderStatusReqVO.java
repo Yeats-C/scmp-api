@@ -4,6 +4,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * Description:
  * 修改订单传入的vo
@@ -29,4 +31,7 @@ public class ChangeOrderStatusReqVO {
 
     @ApiModelProperty("备注")
     private String remark;
+
+    @ApiModelProperty("发货时间")
+    private Date deliveryTime;
 }

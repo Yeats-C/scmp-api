@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QueryApplySuppli
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.QuerySupplierComAcctRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComAcctMainRespVO;
 import com.aiqin.bms.scmp.api.supplier.service.ApplySupplyComAcctService;
-import com.aiqin.bms.scmp.api.supplier.web.SupplierBaseController;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -30,7 +29,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/supplier/company/account")
 @Api(description = "供应商账户管理")
-public class SupplyComAcctController extends SupplierBaseController {
+public class SupplyComAcctController {
     @Autowired
     private ApplySupplyComAcctService applySupplyComAcctService;
 

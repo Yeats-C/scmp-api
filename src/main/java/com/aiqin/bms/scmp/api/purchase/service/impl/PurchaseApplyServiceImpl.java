@@ -74,11 +74,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     private static final BigDecimal big = BigDecimal.valueOf(0);
 
     private static final String[] importRejectApplyHeaders_1 = new String[]{
-            "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量", "含税单价",
+            "SKU编号", "SKU名称", "供应商", "库房", "商品数量", "实物返数量", "赠品数量", "含税单价",
     };
 
     private static final String[] importRejectApplyHeaders_0 = new String[]{
-            "SKU编号", "SKU名称", "供应商", "库房", "采购数量", "实物返数量",
+            "SKU编号", "SKU名称", "供应商", "库房", "商品数量", "实物返数量", "赠品数量",
     };
 
     @Resource
@@ -219,12 +219,12 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
 
             Map<String, BigDecimal> productTax = new HashMap<>();
             String key;
-            for (PurchaseApplyDetailResponse product : detail) {
-                key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                if (productTax.get(key) == null) {
-                    productTax.put(key, productSkuPriceInfoDao.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
-                }
-            }
+//            for (PurchaseApplyDetailResponse product : detail) {
+//                key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+//                if (productTax.get(key) == null) {
+//                    productTax.put(key, productSkuPriceInfoDao.selectPriceTax(product.getSkuCode(), product.getSupplierCode()));
+//                }
+//            }
 
             Map<String, PurchaseApplyRespVo> purchaseApply = new HashMap<>();
             for (PurchaseApplyDetailResponse product : detail) {
@@ -246,11 +246,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                     product.setCategoryName(categoryNames.get(product.getCategoryId()));
                 }
                 // 获取最高采购价(价格管理中供应商的含税价格)
-                if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
-                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
-                    BigDecimal priceTax = productTax.get(key);
-                    product.setPurchaseMax(priceTax == null ? big : priceTax);
-                }
+//                if (StringUtils.isNotBlank(product.getSkuCode()) && StringUtils.isNotBlank(product.getSupplierCode())) {
+//                    key = String.format("%s,%s", product.getSkuCode(), product.getSupplierCode());
+//                    BigDecimal priceTax = productTax.get(key);
+//                    product.setPurchaseMax(priceTax == null ? big : priceTax);
+//                }
                 // 报表取数据(预测采购件数， 预测到货时间， 近90天销量 )
                 key = String.format("%s,%s,%s", product.getSkuCode(), product.getSupplierCode(), product.getTransportCenterCode());
                 PurchaseApplyRespVo vo = purchaseApply.get(key);
@@ -294,17 +294,23 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         return purchases;
     }
 
+
     @Override
-    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode) {
+    public HttpResponse<List<PurchaseApplyDetailResponse>> searchApplyProduct(String purchaseApplyCode, String warehouseCode, Integer applyType) {
         if (StringUtils.isBlank(purchaseApplyCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 如果库房为空，则为合计
         List<PurchaseApplyDetailResponse> products;
-        if(StringUtils.isBlank(warehouseCode)){
-            products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+        // 判断是否需要分仓统计，编辑也不需要 applyType = 1 为编辑所用
+        if(applyType != null && applyType == 1){
+            products = purchaseApplyProductDao.productList(purchaseApplyCode);
         }else {
-           products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
+            if(StringUtils.isBlank(warehouseCode)){
+                products = purchaseApplyProductDao.productCodeByDetailSum(purchaseApplyCode);
+            }else {
+                products = purchaseApplyProductDao.productCodeByDetail(purchaseApplyCode, warehouseCode);
+            }
         }
         if(CollectionUtils.isNotEmptyCollection(products)){
             for(PurchaseApplyDetailResponse product:products){
@@ -734,7 +740,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
         }
         // 采购申请单id
-        String newApplyId = IdUtil.purchaseId();;
+        String newApplyId = IdUtil.purchaseId();
         // 获取采购申请单号
         EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
         String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
@@ -930,11 +936,19 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                             applyProduct.setReturnWhole(0);
                             applyProduct.setReturnSingle(0);
                         }
+                        if (StringUtils.isNotBlank(record[6]) && baseProductContent != 0) {
+                            Integer count = Double.valueOf(record[6]).intValue();
+                            applyProduct.setGiftWhole(count / baseProductContent);
+                            applyProduct.setGiftSingle(count % baseProductContent);
+                        } else {
+                            applyProduct.setGiftWhole(0);
+                            applyProduct.setGiftSingle(0);
+                        }
                         BeanUtils.copyProperties(applyProduct, response);
                         BigDecimal purchaseAmount;
                         if(purchaseSource.equals(1)){
-                            if (StringUtils.isNotBlank((record[6]))) {
-                                purchaseAmount = new BigDecimal(record[6]);
+                            if (StringUtils.isNotBlank((record[7]))) {
+                                purchaseAmount = new BigDecimal(record[7]);
                             }else {
                                 purchaseAmount = applyProduct.getProductPurchaseAmount();
                             }
@@ -969,9 +983,10 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         response.setWarehouseName(record[3]);
         response.setPurchaseCount(record[4]);
         response.setReturnCount(record[5]);
+        response.setGiftCount(record[6]);
         if(purchaseSource.equals(1)){
-            if(StringUtils.isNotBlank(record[6])){
-                response.setProductPurchaseAmount(new BigDecimal(record[6]));
+            if(StringUtils.isNotBlank(record[7])){
+                response.setProductPurchaseAmount(new BigDecimal(record[7]));
             }
         }
         response.setErrorInfo("第" + (i + 1) + "行  " + errorReason);

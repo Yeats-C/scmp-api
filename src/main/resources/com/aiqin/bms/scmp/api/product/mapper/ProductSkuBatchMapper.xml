@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper">
+    <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuBatchRespVo">
+        <!--
+          This element was generated on Wed Apr 15 17:11:06 CST 2020.
+        -->
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+        <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+        <result column="use_status" jdbcType="BIT" property="useStatus" />
+        <result column="product_brand_code" jdbcType="VARCHAR" property="productBrandCode" />
+        <result column="product_brand_name" jdbcType="VARCHAR" property="productBrandName" />
+        <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
+        <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
+        <result column="product_property_code" jdbcType="VARCHAR" property="productPropertyCode" />
+        <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="procurement_section_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+        <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="warehouse_type" jdbcType="INTEGER" property="warehouseType" />
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    </resultMap>
+    <update id="banById">
+        update product_sku_batch set use_status = 1
+        where id= #{id,jdbcType=BIGINT}
+    </update>
+
+
+    <select id="getList" resultMap="BaseResultMap"> select
+	b.id,
+	b.sku_code,
+	b.sku_name,
+	b.use_status,
+	b.transport_center_code,
+	b.transport_center_name,
+	b.warehouse_code,
+	b.warehouse_name,
+	b.warehouse_type,
+	b.create_by_id,
+	b.create_by_name,
+	b.create_time,
+	b.update_by_name,
+	b.update_time,
+	b.update_by_id,
+	ps.product_brand_code,
+	ps.product_brand_name,
+	ps.product_category_code,
+	ps.product_category_name,
+	ps.product_property_code,
+	ps.procurement_section_code,
+	ps.procurement_section_name,
+	ps.product_property_name
+      FROM
+	  product_sku_batch b
+	  left join product_sku ps on ps.sku_code=b.sku_code
+       WHERE b.use_status=0
+        <if test="skuCode != null ">
+           and  b.sku_code = #{skuCode,jdbcType=VARCHAR}
+        </if>
+        <if test="skuName != null ">
+         and   b.sku_name LIKE CONCAT('%',#{skuName},'%')
+        </if>
+        <if test="transportCenterCode != null">
+           and b.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+        </if>
+        <if test="warehouseCode != null">
+           and b.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+        </if>
+
+        <if test="productPropertyCode != null">
+          and  ps.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productCategoryCode != null">
+          and   ps.product_category_code = #{productCategoryCode,jdbcType=VARCHAR}
+        </if>
+        <if test="productBrandCode != null">
+            and  ps.product_brand_code = #{productBrandCode,jdbcType=TIMESTAMP}
+        </if>
+        <if test="purchaseGroupCode != null">
+           and ps.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+        </if>
+    </select>
+
+
+    <insert id="inserts"  >
+        insert into product_sku_batch (sku_code, sku_name,
+        use_status, transport_center_code, transport_center_name,
+        warehouse_code, warehouse_name, warehouse_type,
+        create_by_id, create_by_name, create_time,
+        update_by_name, update_time, update_by_id
+        )
+        values
+        <foreach collection="list" item="item" close="" open="" separator=",">
+            #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+            #{item.useStatus,jdbcType=BIT}, #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
+            #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=BIT},
+            #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, now(),
+            #{item.updateByName,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=TIMESTAMP}, #{item.updateById,jdbcType=VARCHAR}
+            ) </foreach>
+
+    </insert>
+
+</mapper>

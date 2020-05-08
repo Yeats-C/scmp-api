@@ -33,9 +33,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDe
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -67,7 +64,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import springfox.documentation.spring.web.json.Json;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -1354,6 +1350,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if (response == null) {
             return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
         }
+
+        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
+            return HttpResponse.success("商品已出库完成,等待拣货中");
+        }
         // 操作时间 签收时间
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(request.getOderCode());
@@ -1361,6 +1361,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setOperatorTime(orderInfo.getReceivingTime());
         orderInfo.setOperator(request.getDeliveryPerson());
         orderInfo.setUpdateById(request.getPersonId());
+        orderInfo.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
@@ -1539,7 +1540,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Async
     public void updateAiqinOrder(OutboundCallBackRequest request){
-        LOGGER.info("调用审批流发起申请,request={}", request);
+        LOGGER.info("调用爱亲开始,request={}", JsonUtil.toJson(request));
         String url = orderUrl + "/purchase/sale/info";
         OrderIogisticsVo info = new OrderIogisticsVo();
         // 复制订单主信息
@@ -1551,6 +1552,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 复制批次信息
         List<OrderBatchStoreDetail> batchList = BeanCopyUtils.copyList(request.getBatchList(), OrderBatchStoreDetail.class);
         info.setOrderBatchStoreDetail(batchList);
+        LOGGER.info("调用爱亲开始,request={}", JsonUtil.toJson(info));
         HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){

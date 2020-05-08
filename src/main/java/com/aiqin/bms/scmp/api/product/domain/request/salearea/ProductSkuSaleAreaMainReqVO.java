@@ -35,7 +35,7 @@ public class ProductSkuSaleAreaMainReqVO {
     private String officialCode;
 
     @ApiModelProperty("是否禁用(1禁用0启用)")
-    private Integer beDisable=0;
+    private Integer beDisable;
 
     @ApiModelProperty("创建人")
     private String createBy;

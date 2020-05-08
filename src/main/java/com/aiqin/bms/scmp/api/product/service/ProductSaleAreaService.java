@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
@@ -14,7 +15,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Set;
 
@@ -287,4 +290,10 @@ public interface ProductSaleAreaService {
 
 
     BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
+
+    List<SkuSaleAreaImport>  importData(MultipartFile file);
+
+    HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode);
+
+    Boolean importDataConfirm(  List<SkuSaleAreaImport> list);
 }

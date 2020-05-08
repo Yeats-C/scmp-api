@@ -13,7 +13,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyCont
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyContractPurchaseGroupReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.applycontract.vo.ApplyContractReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
-import com.aiqin.bms.scmp.api.util.NumberConvertUtils;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
 
@@ -223,7 +222,7 @@ public class CheckContract {
         //合同费用
         if (StringUtils.isNotBlank(contractImportNew.getContractCost())) {
             try {
-                reqVo.setContractCost(NumberConvertUtils.stringParseBigDecimal(contractImportNew.getContractCost().trim()));
+                reqVo.setContractCost(new BigDecimal(contractImportNew.getContractCost().trim()));
             } catch (NumberFormatException e) {
                 error.add("合同费用格式不正确");
             }
@@ -231,7 +230,7 @@ public class CheckContract {
         //平均毛利率
         if (StringUtils.isNotBlank(contractImportNew.getAverageGrossMargin())) {
             try {
-                reqVo.setAverageGrossMargin(NumberConvertUtils.stringParseBigDecimal(contractImportNew.getAverageGrossMargin().trim()));
+                reqVo.setAverageGrossMargin(new BigDecimal(contractImportNew.getAverageGrossMargin().trim()));
             } catch (NumberFormatException e) {
                 error.add("平均毛利率格式不正确");
             }

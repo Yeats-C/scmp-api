@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.id.IdUtil;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -67,7 +68,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
             for(QueryProductSkuPriceInfoRespVO sku:list){
                 categoryId = sku.getProductCategoryCode();
                 if (StringUtils.isNotBlank(categoryId)) {
-                    sku.setProductCategoryName(dataManageService.selectCategoryName(categoryId));
+//                  sku.setProductCategoryName(dataManageService.selectCategoryName(categoryId));
                     //通过skucode获取销售区域信息
                     List<ProductSkuSaleAreaInfoRespVo> productSkuSaleAreaInfoList = productSkuSaleAreaInfoMapper.selectBySkuCode(sku.getSkuCode());
                     sku.setSaleAreaInfos(productSkuSaleAreaInfoList);
@@ -90,7 +91,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         }
         List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(reqVOList, ProductSkuPriceInfoDraft.class);
         for (ProductSkuPriceInfoDraft o : drafts) {
-            o.setCode("pp"+UUIDUtils.getUUID());
+            o.setCode("pp"+ IdUtil.uuid());
             o.setBeContainArea(0);
         }
         int i = productSkuPriceInfoDraftMapper.insertBatch(drafts);
@@ -108,7 +109,7 @@ public class ProductSkuPriceInfoServiceImpl extends BaseServiceImpl implements P
         if(CollectionUtils.isNotEmptyCollection(applyProductSkuPriceInfos)){
             List<ProductSkuPriceInfoDraft> drafts = BeanCopyUtils.copyList(applyProductSkuPriceInfos, ProductSkuPriceInfoDraft.class);
             for (ProductSkuPriceInfoDraft o : drafts) {
-                o.setCode("pp"+UUIDUtils.getUUID());
+                o.setCode("pp"+IdUtil.uuid());
                 o.setBeContainArea(0);
                 o.setId(null);
             }
