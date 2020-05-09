@@ -36,8 +36,8 @@
   <sql id="Base_Column_List">
     id, order_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, type, inventory_unit, inventory, tax, tax_price, quantity, tax_amount, 
-    del_flag, create_time, create_by, update_time, update_by, picture_url, batch_number, 
-    batch_remark, product_date, line_num,supplier_name,supplier_code
+    del_flag, create_time, create_by, update_time, update_by, picture_url, batch_number,
+    batch_number_remark batch_remark, product_date, line_num,supplier_name,supplier_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 

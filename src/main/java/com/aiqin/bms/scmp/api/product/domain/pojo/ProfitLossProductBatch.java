@@ -74,7 +74,7 @@ public class ProfitLossProductBatch extends CommonBean {
     private String batchNumber;
 
     @ApiModelProperty("批次备注")
-    private String batchNumberRemark;
+    private String batchRemark;
 
     @ApiModelProperty("生产日期")
     private String productDate;
