@@ -27,7 +27,7 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
     <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
     <result column="line_num" jdbcType="BIGINT" property="lineNum" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
@@ -37,7 +37,7 @@
     id, order_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, type, inventory_unit, inventory, tax, tax_price, quantity, tax_amount, 
     del_flag, create_time, create_by, update_time, update_by, picture_url, batch_number, 
-    batch_number_remark, product_date, line_num,supplier_name,supplier_code
+    batch_remark, product_date, line_num,supplier_name,supplier_code
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
