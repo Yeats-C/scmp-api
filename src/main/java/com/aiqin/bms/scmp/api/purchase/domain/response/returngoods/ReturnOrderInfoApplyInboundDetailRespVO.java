@@ -67,11 +67,9 @@ public class ReturnOrderInfoApplyInboundDetailRespVO {
     private Integer productStatus;
 
     @ApiModelProperty("批次备注")
-    @JsonProperty(value = "batch_remark")
     private String batchRemark;
 
     @ApiModelProperty("生产日期")
-    @JsonProperty(value = "product_date")
     private Date productDate;
 
 }
