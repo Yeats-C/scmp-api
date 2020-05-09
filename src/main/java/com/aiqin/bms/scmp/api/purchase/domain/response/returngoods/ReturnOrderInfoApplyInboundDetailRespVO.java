@@ -1,8 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * Description:
@@ -62,4 +65,13 @@ public class ReturnOrderInfoApplyInboundDetailRespVO {
 
     @ApiModelProperty("商品状态1新品2残品")
     private Integer productStatus;
+
+    @ApiModelProperty("批次备注")
+    @JsonProperty(value = "batch_remark")
+    private String batchRemark;
+
+    @ApiModelProperty("生产日期")
+    @JsonProperty(value = "product_date")
+    private Date productDate;
+
 }
