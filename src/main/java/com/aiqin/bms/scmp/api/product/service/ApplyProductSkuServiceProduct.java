@@ -15,7 +15,6 @@ import java.util.List;
  */
 public interface ApplyProductSkuServiceProduct extends BaseService {
 
-    String productSkuFlow(List<ApplyProductSku> applyProductSkus, WorkFlowCallbackVO vo);
     /**
      * 通过sku编码集合和申请状态查询sku列表信息
      * @author zth

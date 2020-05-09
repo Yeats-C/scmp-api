@@ -1,12 +1,9 @@
 package com.aiqin.bms.scmp.api.product.domain.response.salearea;
 
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
-import com.github.pagehelper.Page;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
