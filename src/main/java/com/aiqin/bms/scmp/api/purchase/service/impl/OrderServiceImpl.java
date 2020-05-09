@@ -461,10 +461,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
+        List<OrderInfoItemProductBatch> orderBtachs = Lists.newCopyOnWriteArrayList();
         OrderInfo info = BeanCopyUtils.copy(vo, OrderInfo.class);
         orders.add(info);
         List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(vo.getProductList(), OrderInfoItem.class);
         orderItems.addAll(orderItem);
+        List<OrderInfoItemProductBatch> infoBtach = BeanCopyUtils.copyList(vo.getItemBatchList(), OrderInfoItemProductBatch.class);
+        orderBtachs.addAll(infoBtach);
+        // 调用销售单生成出库单信息
+        String insertOutbound = this.insertOutbound(vo);
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -480,7 +485,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(request);
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(request,insertOutbound);
                 String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -491,19 +496,37 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             logs.add(log);
         }
         // 保存订单和订单商品信息
-        saveData(orderItems, orders);
+        //saveData(orderItems, orders);
+        saveDatas(orderItems, orders, orderBtachs);
         //存日志
         saveLog(logs);
-        // 调用销售单生成出库单信息
-        this.insertOutbound(vo);
         return HttpResponse.success();
     }
 
+    private void saveDatas(List<OrderInfoItem> infoItems, List<OrderInfo> info, List<OrderInfoItemProductBatch> orderBtachs) {
+        int insert = orderInfoMapper.insertBatch(info);
+        if (insert != info.size()) {
+            log.error("订单主表插入影响条数：[{}]", insert);
+            throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
+        }
+        int i = orderInfoItemMapper.insertBatch(infoItems);
+        if(i!=infoItems.size()){
+            log.error("订单附表插入影响条数：[{}]", insert);
+            throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
+        }
+        int i1 = orderInfoItemProductBatchMapper.insertBatch(orderBtachs);
+        if(i!=infoItems.size()){
+            log.error("订单批次附表插入影响条数：[{}]", insert);
+            throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
+        }
+    }
+
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(ErpOrderInfo request) {
+    private SaleSourcInfoSource insertWms(ErpOrderInfo request,String insertOutbound) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
         ssis.setOrderCode(request.getOrderStoreCode());
+        ssis.setOutboundOderCode(insertOutbound);
         ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setFromType("销售单");
