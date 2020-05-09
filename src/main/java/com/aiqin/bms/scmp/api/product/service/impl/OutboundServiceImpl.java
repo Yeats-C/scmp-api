@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
@@ -629,7 +630,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 throw  new GroundRuntimeException("WMS出库单回传，耘链未查询到此出库单，回传失败");
             }
             //保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
+          //  productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
 
             //设置已回传状态
             outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
@@ -645,10 +646,19 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setPraAmount(BigDecimal.ZERO);
             // 设置解锁并且减少库存
 
-            // 减在途数并且增加库存 实体
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            stockChangeRequest.setOrderCode(outbound.getOutboundOderCode());
-            stockChangeRequest.setOperationType(2);
+            // 减在途数并且增加库存 实体（变更库存与批次库存）
+            ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+            // 采购与调拨减库存并加在途 - 入库类型编码 1.采购 2.调拨 3.退货 4.移库
+            if(Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.RETURN_SUPPLY.getCode()) ||
+                    Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.ALLOCATE.getCode())){
+                changeStockRequest.setOperationType(8);
+            }else if(Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.ORDER.getCode()) ||
+                    Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.MOVEMENT.getCode())){
+                // 退货、移库 - 加库存批次库存
+                changeStockRequest.setOperationType(6);
+            }
+           // changeStockRequest.set(outbound.getOutboundOderCode());
+            changeStockRequest.setOperationType(2);
 
             List<StockVoRequest> stockVoRequestList = new ArrayList<>();
 
@@ -716,7 +726,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //                stockVoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
                 stockVoRequestList.add(stockVoRequest);
             }
-            stockChangeRequest.setStockVoRequests(stockVoRequestList);
+            //todo 传参要改动
+     //       changeStockRequest.setStockVoRequests(stockVoRequestList);
 
 //            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
 //            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getOutboundBatchCallBackReqVos()){
@@ -744,10 +755,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //                stockBatchVoRequestList.add(stockBatchVoRequest);
 //            }
 //            stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
-            // 解锁并且减库存
-           HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+            // 解锁并且减库存   // todo  传参有改动
+           HttpResponse httpResponse= stockService.stockAndBatchChange(changeStockRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-               log.info("减并解锁库存成功，库存详情为:{}", stockChangeRequest);
+               log.info("减并解锁库存成功，库存详情为:{}", changeStockRequest);
            }else{
                log.error(httpResponse.getMessage());
                throw  new GroundRuntimeException("库存操作失败");

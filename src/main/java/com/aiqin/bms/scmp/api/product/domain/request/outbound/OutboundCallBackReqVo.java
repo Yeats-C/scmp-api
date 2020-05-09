@@ -57,7 +57,7 @@ public class OutboundCallBackReqVo extends BaseDateRequest {
   //  @JsonProperty(value = "source_oder_code")
   //  private String sourceOderCode;
 
-    @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货  4.移库 5.销售 6.损益")
+    @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货  4.移库")
     @JsonProperty(value = "outbound_type_code")
     private Integer outboundTypeCode;
 
