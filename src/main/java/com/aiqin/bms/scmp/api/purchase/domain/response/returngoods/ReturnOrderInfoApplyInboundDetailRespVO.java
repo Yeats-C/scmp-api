@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -70,6 +71,7 @@ public class ReturnOrderInfoApplyInboundDetailRespVO {
     private String batchRemark;
 
     @ApiModelProperty("生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date productDate;
 
 }

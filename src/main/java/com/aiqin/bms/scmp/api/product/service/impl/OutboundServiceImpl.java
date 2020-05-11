@@ -20,12 +20,16 @@ import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
+import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
@@ -95,6 +99,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private InboundService inboundService;
     @Autowired
     private AllocationMapper allocationMapper;
+    @Autowired
+    private AllocationProductMapper allocationProductMapper;
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
@@ -646,22 +652,23 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setPraAmount(BigDecimal.ZERO);
             // 设置解锁并且减少库存
 
-            // 减在途数并且增加库存 实体（变更库存与批次库存）
+            // 加在途数并且减少库存 实体（变更库存与批次库存）
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            // 采购与调拨减库存并加在途 - 入库类型编码 1.采购 2.调拨 3.退货 4.移库
-            if(Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.RETURN_SUPPLY.getCode()) ||
-                    Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.ALLOCATE.getCode())){
-                changeStockRequest.setOperationType(8);
-            }else if(Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.ORDER.getCode()) ||
-                    Objects.equals(outbound.getOutboundTypeCode(), InboundTypeEnum.MOVEMENT.getCode())){
-                // 退货、移库 - 加库存批次库存
-                changeStockRequest.setOperationType(6);
+            // 采购与调拨减库存并加在途 - 出库类型编码 1.退供 2.调拨 3.订单 4.移库
+            if(Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode()) ||
+                    Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ALLOCATE.getCode()) ||
+                    Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.MOVEMENT.getCode())){
+                changeStockRequest.setOperationType(2);
+            }else if(Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+                // 退供出库 - 库存减少，锁定库存减少，可用库存不变
+                changeStockRequest.setOperationType(2);
             }
            // changeStockRequest.set(outbound.getOutboundOderCode());
-            changeStockRequest.setOperationType(2);
+           // changeStockRequest.setOperationType(2);
+           // List<StockVoRequest> stockVoRequestList = new ArrayList<>();
 
-            List<StockVoRequest> stockVoRequestList = new ArrayList<>();
-
+            // 更新出库商品信息
+            List<StockInfoRequest> stockInfoRequestList = new ArrayList<>();
             for (OutboundProductCallBackReqVo outboundProductCallBackReqVo : reqVo.getList()) {
                 ReturnOutboundProduct returnOutboundProduct;
                 // 查询旧的sku，以及销项，进项税率
@@ -674,7 +681,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 OutboundProduct outboundProduct = new OutboundProduct();
                 //copy 实体
                 BeanCopyUtils.copy(returnOutboundProduct,outboundProduct);
-
                 if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode())){
                     //如果是订单则使用销项税率
                     returnOutboundProduct.setTax(returnOutboundProduct.getOutputTaxRate());
@@ -687,75 +693,85 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundProduct.setPraOutboundNum(actualTotalCount/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
                 outboundProduct.setPraOutboundMainNum(actualTotalCount);
                 //设置实际含税单价，实际含税总价
-//                outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
-//                outboundProduct.setPraTaxAmount(outboundProduct.getPraOutboundMainNum()*outboundProduct.getPraTaxPurchaseAmount());
+                outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
+                outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP));
 
                 // 修改单条 sku
-                outboundProductDao.updateByPrimaryKeySelective(outboundProduct);
+                Integer count = outboundProductDao.updateByPrimaryKeySelective(outboundProduct);
+                log.info("更新出库单商品信息" + outboundProduct, count);
 
                 //累加总的出库数量，出库主数量
                 outbound.setPraOutboundNum(outbound.getPraOutboundNum());
                 outbound.setPraMainUnitNum(outbound.getPraMainUnitNum());
                 //累加总的含税总金额  税额 不含税总金额
-//                outbound.setPraTaxAmount(outbound.getPraTaxAmount()+outboundProduct.getPraTaxAmount());
+                outbound.setPraTaxAmount(outbound.getPraTaxAmount().add(outboundProduct.getPraTaxAmount()));
                 //不含税总金额
-//                outbound.setPraAmount(outbound.getPraAmount()+ Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(),returnOutboundProduct.getTax())*outboundProduct.getPraOutboundMainNum());
+                outbound.setPraAmount(outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(),returnOutboundProduct.getTax()).multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()))));
                 //  设置修改减少库存sku实体
-                StockVoRequest stockVoRequest = new StockVoRequest();
+                //StockVoRequest stockVoRequest = new StockVoRequest();
+                StockInfoRequest stockInfoRequest = new StockInfoRequest();
                 //设置公司编码名称
-                stockVoRequest.setCompanyCode(outbound.getCompanyCode());
-                stockVoRequest.setCompanyName(outbound.getCompanyName());
+                stockInfoRequest.setCompanyCode(outbound.getCompanyCode());
+                stockInfoRequest.setCompanyName(outbound.getCompanyName());
                 //设置物流中心编码名称
-                stockVoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
-                stockVoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
+                stockInfoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
+                stockInfoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
                 //设置库房编码名称
-                stockVoRequest.setWarehouseCode(outbound.getWarehouseCode());
-                stockVoRequest.setWarehouseName(outbound.getWarehouseName());
+                stockInfoRequest.setWarehouseCode(outbound.getWarehouseCode());
+                stockInfoRequest.setWarehouseName(outbound.getWarehouseName());
                 //设置sku编码名称
-                stockVoRequest.setSkuCode(outboundProduct.getSkuCode());
-                stockVoRequest.setSkuName(outboundProduct.getSkuName());
+                stockInfoRequest.setSkuCode(outboundProduct.getSkuCode());
+                stockInfoRequest.setSkuName(outboundProduct.getSkuName());
                 //设置更改数量
-                stockVoRequest.setChangeNum(outboundProduct.getPraOutboundNum());
+                stockInfoRequest.setChangeCount(outboundProduct.getPraOutboundNum());
+                stockInfoRequest.setTaxRate(outboundProduct.getTax());
+                stockInfoRequest.setNewDelivery(outbound.getSupplierCode());
+                stockInfoRequest.setNewDeliveryName(outbound.getSupplierName());
+                stockInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
+                stockInfoRequest.setDocumentType(0);//0出库 1入库 2退供 3采购
+                stockInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
+                stockInfoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
+                stockInfoRequest.setOperatorId(reqVo.getOperatorId());
+                stockInfoRequest.setOperatorName(reqVo.getOperatorName());
+                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())){
+                    AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(outbound.getSourceOderCode(), outboundProduct.getSkuCode(), outboundProduct.getLinenum().intValue());
+                    stockInfoRequest.setPreWayCount(allocationProductResVo.getQuantity());
+                }
 
-                stockVoRequest.setDocumentNum(outbound.getOutboundOderCode());
-                stockVoRequest.setDocumentType(0);//0出库 1入库 2退供 3采购
-                stockVoRequest.setSourceDocumentNum(outbound.getSourceOderCode());
-                stockVoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
-                stockVoRequest.setOperator(outbound.getUpdateBy());
-                stockVoRequest.setTaxRate(outboundProduct.getTax());
-//                stockVoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
-                stockVoRequestList.add(stockVoRequest);
+                stockInfoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
+                stockInfoRequestList.add(stockInfoRequest);
             }
-            //todo 传参要改动
-     //       changeStockRequest.setStockVoRequests(stockVoRequestList);
+            changeStockRequest.setStockList(stockInfoRequestList);
 
-//            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
-//            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getOutboundBatchCallBackReqVos()){
-//                // 查询旧的sku，以及销项，进项税率
-//                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLinenum());
-//                OutboundBatch outboundBatch = new OutboundBatch();
-//                //copy 实体
-//                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
-//
-//                //设置实际数量
-//                outboundBatch.setPraQty(outboundBatchCallBackReqVo.getPraQty());
-//
-//                // 修改单条 批次
-//                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
-//
-//                //TODO 设置修改减少库存sku批次实体
-//                //  设置修改减少库存sku实体
-//                StockBatchVoRequest stockBatchVoRequest = new StockBatchVoRequest();
-//                //设置sku编码名称 批次号
-//                stockBatchVoRequest.setSkuCode(outboundBatch.getSkuCode());
-//                stockBatchVoRequest.setSkuName(outboundBatch.getSkuName());
-//                stockBatchVoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
-//                //设置更改数量
-//                stockBatchVoRequest.setChangeNum(outboundBatch.getPraQty());
-//                stockBatchVoRequestList.add(stockBatchVoRequest);
-//            }
-//            stockChangeRequest.setStockBatchVoRequest(stockBatchVoRequestList);
-            // 解锁并且减库存   // todo  传参有改动
+            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
+            // 更新出库批次商品信息
+            List<StockBatchInfoRequest> stockBatchVoRequestList = new ArrayList<>();
+            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getBatchList()){
+                // 查询旧的sku，以及销项，进项税率
+                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLineCode());
+                OutboundBatch outboundBatch = new OutboundBatch();
+                //copy 实体
+                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
+
+                //设置实际数量
+                outboundBatch.setPraQty(outboundBatchCallBackReqVo.getActualTotalCount());
+
+                // 修改单条 批次
+                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+
+                //TODO 设置修改减少库存sku批次实体
+                //  设置修改减少库存sku实体
+                StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
+                //设置sku编码名称 批次号
+                stockBatchInfoRequest.setSkuCode(outboundBatch.getSkuCode());
+                stockBatchInfoRequest.setSkuName(outboundBatch.getSkuName());
+                stockBatchInfoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
+                //设置更改数量
+                stockBatchInfoRequest.setChangeCount(outboundBatch.getPraQty());
+                stockBatchVoRequestList.add(stockBatchInfoRequest);
+          }
+            changeStockRequest.setStockBatchList(stockBatchVoRequestList);
+            // 解锁并且减库存
            HttpResponse httpResponse= stockService.stockAndBatchChange(changeStockRequest);
            if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
                log.info("减并解锁库存成功，库存详情为:{}", changeStockRequest);
@@ -785,8 +801,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = Exception.class)
     @Async("myTaskAsyncPool")
     public void returnSource(Long id){
+        // 查询入库信息
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
+        List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
