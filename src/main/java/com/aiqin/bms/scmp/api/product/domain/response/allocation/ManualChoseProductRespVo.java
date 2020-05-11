@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author ch
@@ -91,6 +92,10 @@ public class ManualChoseProductRespVo {
     @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
     @JsonProperty("batch_manage")
     private Integer batchManage;
+
+    @ApiModelProperty("批次列表")
+    @JsonProperty("sku_batch")
+    private List<SkuBatchRespVO> skuBatchRespVOS;
 
 
 

@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuPicturesDao;
+import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
 import com.aiqin.bms.scmp.api.product.domain.converter.AllocationResVo2OutboundReqVoConverter;
@@ -106,6 +107,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private OutboundService outboundService;
     @Autowired
     private WarehouseService warehouseService;
+    @Autowired
+    private StockBatchDao stockBatchDao;
     @Autowired
     private UrlConfig urlConfig;
 
@@ -1032,7 +1035,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m) {
         List<ManualChoseProductRespVo> mLists = allocationMapper.getManualChoseProduct(m);
         Long mCount = allocationMapper.getManualChoseProductCount(m);
-
+        // 查询商品的批次信息
+        for (ManualChoseProductRespVo mBtachLists : mLists) {
+            List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), m.getTransportCenterCode(), m.getWarehouseCode());
+            mBtachLists.setSkuBatchRespVOS(skuBatchRespVOS);
+        }
         BasePage basePage = new BasePage();
         basePage.setDataList(mLists);
         basePage.setTotalCount(mCount);

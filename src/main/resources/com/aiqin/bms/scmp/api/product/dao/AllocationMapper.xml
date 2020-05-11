@@ -1224,7 +1224,7 @@
   </select>
 
   <select id="selectNumberByBatchAndSkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
-    select id, ifnull(available_count,0) as availableNum
+    select id, ifnull(available_num,0) as availableNum
     from stock_batch
     where sku_code=#{skuCode} and batch_code=#{batchCode}
   </select>
@@ -1250,9 +1250,6 @@
       </if>
       <if test="warehouseCode != null and warehouseCode != ''">
         and s.warehouse_code = #{warehouseCode}
-      </if>
-      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
-        and purchase_group_code = #{purchaseGroupCode}
       </if>
       <if test="skuCode != null and skuCode != ''">
         and ps.sku_code = #{skuCode}

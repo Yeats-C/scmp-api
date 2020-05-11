@@ -189,7 +189,6 @@ public class AllocationController {
     })
     public HttpResponse<BasePage<ManualChoseProductRespVo>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
                                                                                   @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
-                                                                                  @RequestParam(value = "purchase_group_code",required = false) String purchaseGroupCode,
                                                                                   @RequestParam(value = "sku_code",required = false) String skuCode,
                                                                                   @RequestParam(value = "sku_name",required = false) String skuName,
                                                                                   @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
@@ -200,7 +199,8 @@ public class AllocationController {
                                                                                   @RequestParam(value = "page_no",required = false) Integer pageNo,
                                                                                   @RequestParam(value = "page_size",required = false) Integer pageSize){
         ManualChoseProductReq m = new ManualChoseProductReq();
-        m.setPurchaseGroupCode(purchaseGroupCode);
+        m.setTransportCenterCode(transportCenterCode);
+        m.setWarehouseCode(warehouseCode);
         m.setSkuCode(skuCode);
         m.setSkuName(skuName);
         m.setProductBrandCode(productBrandCode);
