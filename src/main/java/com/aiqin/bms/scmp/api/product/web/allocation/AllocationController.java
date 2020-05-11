@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImport
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
@@ -186,18 +187,18 @@ public class AllocationController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "String"),
             @ApiImplicitParam(name = "page_size", value = "当前条数", type = "String"),
     })
-    public HttpResponse<BasePage<ManualChoseProductReq>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
-                                                                               @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
-                                                                               @RequestParam(value = "purchase_group_code",required = false) String purchaseGroupCode,
-                                                                               @RequestParam(value = "sku_code",required = false) String skuCode,
-                                                                               @RequestParam(value = "sku_name",required = false) String skuName,
-                                                                               @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
-                                                                               @RequestParam(value = "product_category_code",required = false) String productCategoryCode,
-                                                                               @RequestParam(value = "product_property_code",required = false) String productPropertyCode,
-                                                                               @RequestParam(value = "spu_code",required = false) String spuCode,
-                                                                               @RequestParam(value = "spu_name",required = false) String spuName,
-                                                                               @RequestParam(value = "page_no",required = false) Integer pageNo,
-                                                                               @RequestParam(value = "page_size",required = false) Integer pageSize){
+    public HttpResponse<BasePage<ManualChoseProductRespVo>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
+                                                                                  @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
+                                                                                  @RequestParam(value = "purchase_group_code",required = false) String purchaseGroupCode,
+                                                                                  @RequestParam(value = "sku_code",required = false) String skuCode,
+                                                                                  @RequestParam(value = "sku_name",required = false) String skuName,
+                                                                                  @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
+                                                                                  @RequestParam(value = "product_category_code",required = false) String productCategoryCode,
+                                                                                  @RequestParam(value = "product_property_code",required = false) String productPropertyCode,
+                                                                                  @RequestParam(value = "spu_code",required = false) String spuCode,
+                                                                                  @RequestParam(value = "spu_name",required = false) String spuName,
+                                                                                  @RequestParam(value = "page_no",required = false) Integer pageNo,
+                                                                                  @RequestParam(value = "page_size",required = false) Integer pageSize){
         ManualChoseProductReq m = new ManualChoseProductReq();
         m.setPurchaseGroupCode(purchaseGroupCode);
         m.setSkuCode(skuCode);

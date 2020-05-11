@@ -1029,8 +1029,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
     @Override
-    public BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m) {
-        List<ManualChoseProductReq> mLists = allocationMapper.getManualChoseProduct(m);
+    public BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m) {
+        List<ManualChoseProductRespVo> mLists = allocationMapper.getManualChoseProduct(m);
         Long mCount = allocationMapper.getManualChoseProductCount(m);
 
         BasePage basePage = new BasePage();

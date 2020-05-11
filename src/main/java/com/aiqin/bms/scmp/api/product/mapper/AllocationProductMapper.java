@@ -32,5 +32,6 @@ public interface AllocationProductMapper {
 
     int updateByPrimaryKey(AllocationProduct record);
 
+    AllocationProductResVo selectQuantityBySkuCodeAndSource(String sourceOderCode, String skuCode, int i);
 }
 

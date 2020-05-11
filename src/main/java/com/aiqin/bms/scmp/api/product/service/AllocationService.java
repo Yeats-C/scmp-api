@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImport
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
@@ -145,7 +146,7 @@ public interface AllocationService extends BaseService {
      * @param m
      * @return
      */
-    BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+    BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 
     int updateWmsStatus(Byte status, String allocationCode);
 }
