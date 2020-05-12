@@ -32,6 +32,9 @@ public class QueryOrderInfoItemBatchRespVO {
     @ApiModelProperty("数量")
     private Long num;
 
+    @ApiModelProperty("退货数量")
+    private Long returnNum;
+
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;
 

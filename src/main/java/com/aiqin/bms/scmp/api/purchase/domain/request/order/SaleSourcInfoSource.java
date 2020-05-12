@@ -19,6 +19,10 @@ public class SaleSourcInfoSource implements Serializable {
     @JsonProperty("order_code")
     private String orderCode;
 
+    @ApiModelProperty(value="出库单号")
+    @JsonProperty("outbound_oder_code")
+    private String outboundOderCode;
+
     @ApiModelProperty(value="订单类型 EBUS:线上订单 OFFLINE:线下订单 SPECIAL:特殊订单 EBUS：线上订单 OFFLINE：线下订单 SPECIAL：特殊订单 EBUS：线上订单 OFFLINE：线下订单 SPECIAL：特殊订单")
     @JsonProperty("bity")
     private String bity;

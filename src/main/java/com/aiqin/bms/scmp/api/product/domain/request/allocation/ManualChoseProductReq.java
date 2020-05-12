@@ -24,10 +24,6 @@ public class ManualChoseProductReq extends PagesRequest {
     @JsonProperty("warehouse_code")
     private String warehouseCode;
 
-    @ApiModelProperty("采购组编码")
-    @JsonProperty("purchase_group_code")
-    private String purchaseGroupCode;
-
     @ApiModelProperty("sku编号")
     @JsonProperty("sku_code")
     private String skuCode;

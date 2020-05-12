@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -25,4 +26,6 @@ public interface StockBatchDao {
     Integer updateBatchAll(@Param("list") List<StockBatch> stockList);
 
     Integer insertAll(@Param("list") List<StockBatch> stockList);
+
+    List<SkuBatchRespVO>  selectStockBatch(@Param("skuCode") String skuCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode);
 }

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -31,14 +32,29 @@ public class OutboundProductCallBackReqVo {
 //    @ApiModelProperty("行号")
 //    private Long linenum;
 
-    @ApiModelProperty("出库单号")
-    private String outboundOderCode;
-
     @ApiModelProperty("sku编号")
+    @JsonProperty(value = "sku_code")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
+    @JsonProperty(value = "sku_name")
     private String skuName;
+
+    @ApiModelProperty("实际最小单位数量")
+    @JsonProperty(value = "actual_total_count")
+    private Long actualTotalCount;
+
+    @ApiModelProperty("行号")
+    @JsonProperty(value = "line_code")
+    private Long lineCode;
+
+    @ApiModelProperty(value="备注")
+    @JsonProperty(value = "remark")
+    private String remark;
+
+
+  /*  @ApiModelProperty("出库单号")
+    private String outboundOderCode;
 
     @ApiModelProperty("预计出库数量")
     private Long preOutboundNum;
@@ -65,7 +81,6 @@ public class OutboundProductCallBackReqVo {
     @ApiModelProperty("实际含税总价")
     @NotNull(message = "实际含税总价")
     private BigDecimal praTaxAmount;
+*/
 
-    @ApiModelProperty("行号")
-    private Long linenum;
 }

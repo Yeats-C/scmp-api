@@ -267,6 +267,7 @@ transport_number
           <result column="dsku_name" jdbcType="VARCHAR" property="skuName" />
           <result column="dnum" jdbcType="BIGINT" property="num" />
           <result column="dactualDeliverNum" jdbcType="BIGINT" property="actualDeliverNum" />
+          <result column="dreturnNum" jdbcType="BIGINT" property="returnNum" />
           <result column="dproduct_time" jdbcType="TIMESTAMP" property="productTime" />
           <result column="dbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
           <result column="dbatch_number" jdbcType="VARCHAR" property="batchNumber" />
@@ -372,6 +373,7 @@ transport_number
              d.sku_name dsku_name,
              d.num dnum,
              d.actual_deliver_num dactualDeliverNum,
+             d.return_num dreturnNum,
              d.product_time dproduct_time,
              d.batch_remark dbatch_remark,
              d.batch_number dbatch_number,

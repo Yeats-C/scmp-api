@@ -34,6 +34,12 @@ public class AllocationImportSkuReqVo {
     @ApiModelProperty("公司编码")
     private String companyCode;
 
+    public AllocationImportSkuReqVo(MultipartFile file, String transportCenterCode, String warehouseCode) {
+        this.file = file;
+        this.transportCenterCode = transportCenterCode;
+        this.warehouseCode = warehouseCode;
+    }
+
     public AllocationImportSkuReqVo(MultipartFile file, String supplyCode, String transportCenterCode, String warehouseCode, String purchaseGroupCode, String companyCode) {
         this.file = file;
         this.supplyCode = supplyCode;

@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationR
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.scrap.QueryScrapReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
@@ -121,7 +122,7 @@ public interface AllocationMapper {
 
     StockBatch selectNumberByBatchAndSkuCode(@Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
 
-    List<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+    List<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 
     Long getManualChoseProductCount(ManualChoseProductReq m);
 }

@@ -2,11 +2,8 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.ProductLabelDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
@@ -23,17 +20,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.oms.SearchOrderReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.CheckPurchaseSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.purchase.QueryPurchaseSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.store.*;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuLabelInfo;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
-import com.aiqin.bms.scmp.api.product.domain.response.sku.merchant.MerchantSkuItemRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ocenter.QueryCenterSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.oms.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.PurchaseItemRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.purchase.SupervisoryWarehouseSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuCheckoutMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuInfoDao;
 import com.aiqin.bms.scmp.api.product.service.ProductCategoryService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterApiResVo;
@@ -71,14 +63,6 @@ public class SkuServiceImpl extends BaseServiceImpl implements SkuService {
     @Autowired
     private ProductCategoryService productCategoryService;
     @Autowired
-    private ProductLabelDao productLabelDao;
-    @Autowired
-    private UrlConfig urlConfig;
-    @Autowired
-    private ProductSkuInfoDao productSkuInfoDao;
-    @Autowired
-    private ProductSkuCheckoutMapper productSkuCheckoutMapper;
-    @Autowired
     private ProductSkuCheckoutDao productSkuCheckoutDao;
 
 
@@ -100,25 +84,6 @@ public class SkuServiceImpl extends BaseServiceImpl implements SkuService {
             List<PurchaseItemRespVo> productSkuInfos = productSkuDao.getPurchaseSkuList(queryPurchaseSkuReqVO);
             return PageUtil.getPageList(queryPurchaseSkuReqVO.getPageNo(), productSkuInfos);
         } catch (GroundRuntimeException e) {
-            throw new BizException(e.getMessage());
-        }
-    }
-
-    @Override
-    public List<MerchantSkuItemRespVO> getMerchantSkuListByCodes(QueryMerchantSkuListReqVO queryMerchantSkuListReqVO) {
-        try {
-            List<MerchantSkuItemRespVO> merchantSkuItemRespVOS = productSkuDao.getMerchantSkuListByCodes(queryMerchantSkuListReqVO);
-            List<ProductCategory> productCategoryList;
-            if (null != merchantSkuItemRespVOS && merchantSkuItemRespVOS.size() > 0) {
-                for (int i = 0; i < merchantSkuItemRespVOS.size(); i++) {
-                    productCategoryList = productCategoryService.getParentCategoryList(merchantSkuItemRespVOS.get(i).getCategoryCode());
-                    merchantSkuItemRespVOS.get(i).setProductCategories(productCategoryList);
-                    List<ProductSkuLabelInfo> productSkuLabelInfos = productLabelDao.getLabelListBySkuCode(merchantSkuItemRespVOS.get(i).getSkuCode());
-                    merchantSkuItemRespVOS.get(i).setProductLabelList(productSkuLabelInfos);
-                }
-            }
-            return merchantSkuItemRespVOS;
-        } catch (Exception e) {
             throw new BizException(e.getMessage());
         }
     }
@@ -273,30 +238,6 @@ public class SkuServiceImpl extends BaseServiceImpl implements SkuService {
     }
 
     @Override
-    public List<ProductSkuResponse> selectSkuInfoListCanUseBySkuCodeList(List<String> skuCodeList) {
-        List<ProductSkuResponse> productSkuInfoList = new ArrayList<>();
-        try {
-            LOGGER.info("查询有效的sku信息");
-            productSkuInfoList = productSkuInfoDao.selectSkuInfoListCanUseBySkuCodeList(skuCodeList);
-            if (CollectionUtils.isNotEmpty(productSkuInfoList)) {
-                for (ProductSkuResponse productSkuResponse : productSkuInfoList) {
-                    int skuStatus = productSkuResponse.getSkuStatus();
-                    int delFlag = productSkuResponse.getDelFlag();
-                    int onSale = productSkuResponse.getOnSale();
-                    if (skuStatus != 1 && delFlag != 1 && onSale != 0) {
-                        productSkuResponse.setUseStatus(Global.SKU_CAN_USE);
-                    } else {
-                        productSkuResponse.setUseStatus(Global.SKU_NOT_CAN_USE);
-                    }
-                }
-            }
-            return productSkuInfoList;
-        } catch (Exception e) {
-            throw new GroundRuntimeException(e.getMessage());
-        }
-    }
-
-    @Override
     public List<PurchaseItemRespVo> getSalesSkuList(List<String> skuCodeList) {
         try {
             List<PurchaseItemRespVo> purchaseItemRespVos=productSkuDao.getSalesSkuList(skuCodeList);
@@ -434,16 +375,6 @@ public class SkuServiceImpl extends BaseServiceImpl implements SkuService {
             List<QueryOmsSkusPageResp> queryOmsSkusPageResps = productSkuDao.queryOmsSkuPage(querySkuListPageReq);
             return PageUtil.getPageList(querySkuListPageReq.getPageNo(),queryOmsSkusPageResps);
         } catch (BizException e){
-            throw new BizException(e.getMessage());
-        }
-    }
-
-    @Override
-    public ProductSkuResponse selectSkuInfoBySkuCode(String skuCode) {
-        try {
-            ProductSkuResponse productSkuResponse = productSkuInfoDao.selectSkuInfoBySkuCode(skuCode);
-            return productSkuResponse;
-        } catch (BizException e) {
             throw new BizException(e.getMessage());
         }
     }

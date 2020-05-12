@@ -429,4 +429,12 @@
       NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
+  <select id="selectStockBatch" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
+    select
+    sku_code as skuCode, sku_name as skuName, batch_code as warehouseBatchNumber, transport_center_code as transportCenterCode,
+    transport_center_name as transportCenterName, warehouse_code as warehouseCode, warehouse_name as warehouseName,
+    batch_remark as batchRemark, available_num as availableNum, production_date as productTime
+    from stock_batch
+    where sku_code=#{skuCode} and transport_center_code=#{transportCenterCode} and warehouse_code=#{warehouseCode}
+  </select>
 </mapper>
