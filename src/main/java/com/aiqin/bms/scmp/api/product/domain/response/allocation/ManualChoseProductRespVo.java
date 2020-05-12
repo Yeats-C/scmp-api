@@ -17,6 +17,14 @@ import java.util.List;
 @ApiModel("调拨单选择商品resp")
 public class ManualChoseProductRespVo {
 
+    @ApiModelProperty("仓库编码")
+    @JsonProperty(value = "transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty("库房编码")
+    @JsonProperty(value = "warehouse_code")
+    private String warehouseCode;
+
     @ApiModelProperty("sku号")
     @JsonProperty(value = "sku_code")
     private String skuCode;

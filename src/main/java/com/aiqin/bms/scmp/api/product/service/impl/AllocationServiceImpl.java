@@ -1037,7 +1037,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         Long mCount = allocationMapper.getManualChoseProductCount(m);
         // 查询商品的批次信息
         for (ManualChoseProductRespVo mBtachLists : mLists) {
-            List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), m.getTransportCenterCode(), m.getWarehouseCode());
+            List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), mBtachLists.getTransportCenterCode(), mBtachLists.getWarehouseCode());
             mBtachLists.setSkuBatchRespVOS(skuBatchRespVOS);
         }
         BasePage basePage = new BasePage();

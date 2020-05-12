@@ -1230,6 +1230,7 @@
   </select>
 
   <sql id="Allocation_Chose_Product_List">
+    s.transport_center_code as transportCenterCode, s.warehouse_code as warehouseCode,
     ps.sku_code as skuCode, ps.sku_name as skuName,
     ps.product_category_code as productCategoryCode, ps.product_category_name as productCategoryName,
     ps.product_brand_code as productBrandCode, ps.product_brand_name as productBrandName,
