@@ -53,6 +53,17 @@
     tax_rate, product_cost, create_by_id, create_by_name, update_by_id, update_by_name,
     create_time, update_time
   </sql>
+  <select id="rejectApplyRecordDetailList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from reject_apply_record_detail
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="rejectApplyRecordDetailCount" resultType="java.lang.Integer">
+    select <include refid="Base_Column_List"></include>
+    from reject_apply_record_detail
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+  </select>
   <resultMap id="ResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse">
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
@@ -391,7 +402,7 @@
     apply_record_status =  #{applyRecordStatus,jdbcType=VARCHAR}
     and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
-  <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
+  <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
     <result column="apply_type" jdbcType="INTEGER" property="applyType" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />

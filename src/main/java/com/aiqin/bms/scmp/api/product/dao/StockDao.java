@@ -17,7 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsV
 import com.aiqin.bms.scmp.api.product.domain.response.stock.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseStockResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
@@ -8,6 +9,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -144,6 +147,30 @@ public class GoodsRejectController {
         return goodsRejectService.rejectStockProduct(rejectQueryRequest);
     }
 
+    @GetMapping("/apply/info")
+    @ApiOperation(value = "退供申请单查询(退供信息、分仓信息)")
+    public HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+                                                                           @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        LOGGER.info("退供申请单查询(退供信息、分仓信息):{}", rejectApplyRecordCode);
+        return goodsRejectService.selectRejectApply(rejectApplyRecordCode, warehouseCode);
+    }
+
+    @GetMapping("/apply/product")
+    @ApiOperation(value = "退供申请单商品查询")
+    public HttpResponse<PageResData<RejectApplyRecordDetail>>  selectRejectApplyProduct(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode){
+        LOGGER.info("退供申请单商品查询:{}", rejectApplyRecordCode);
+        return goodsRejectService.selectRejectApplyProduct(rejectApplyRecordCode);
+    }
+
+    @GetMapping("/apply/batch")
+    @ApiOperation(value = "退供申请单批次查询")
+    public HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode) {
+        LOGGER.info("退供申请单批次查询:{}", rejectApplyRecordCode);
+        return goodsRejectService.selectRejectApplyBatch(rejectApplyRecordCode);
+    }
+
+
+
     @PostMapping("/apply")
     @ApiOperation(value = "退供申请单增加")
     public HttpResponse<RejectApplyRequest> rejectApply(@RequestBody RejectApplyHandleRequest rejectApplyQueryRequest) {
@@ -166,13 +193,6 @@ public class GoodsRejectController {
         rejectApplyQueryRequest.setRejectApplyRecordCode(reject_apply_record_code);
         LOGGER.info("退供申请单修改请求:{}", rejectApplyQueryRequest.toString());
         return goodsRejectService.updateRejectApply(rejectApplyQueryRequest);
-    }
-
-    @GetMapping("/apply/{reject_apply_record_code}")
-    @ApiOperation(value = "退供申请单查询")
-    public HttpResponse<RejectApplyHandleResponse> selectRejectApply(@PathVariable String reject_apply_record_code) {
-        LOGGER.info("退供申请单查询请求:{}", reject_apply_record_code);
-        return goodsRejectService.selectRejectApply(reject_apply_record_code);
     }
 
     @PostMapping("/apply/import")

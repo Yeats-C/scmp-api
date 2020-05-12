@@ -2,14 +2,13 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,6 +18,12 @@ public interface GoodsRejectService {
     HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
     HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
+
+    HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(String rejectApplyRecordCode, String warehouseCode);
+
+    HttpResponse<PageResData<RejectApplyRecordDetail>>  selectRejectApplyProduct(String rejectApplyRecordCode);
+
+    HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(String rejectApplyRecordCode);
 
     HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
@@ -35,8 +40,6 @@ public interface GoodsRejectService {
     HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
 
     HttpResponse updateRejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
-
-    HttpResponse<RejectApplyHandleResponse> selectRejectApply(String rejectApplyQueryRequest);
 
     HttpResponse rejectTransport(RejectRecord request);
 

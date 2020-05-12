@@ -1087,7 +1087,7 @@
     <select id="selectListByWareHouseCode" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include> from stock where warehouse_code=#{warehouseCode}
     </select>
-    <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
+    <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
         select
         s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
         psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
@@ -1125,7 +1125,7 @@
             </if>
         </where>
     </select>
-    <select id="rejectProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
+    <select id="rejectProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
         select
         s.sku_code skuCode, s.sku_name skuName, su.supply_unit_code supplierCode, su.supply_unit_name supplierName,
         s.transport_center_code transportCenterCode,s.transport_center_name transportCenterName, s.warehouse_code warehouseCode,

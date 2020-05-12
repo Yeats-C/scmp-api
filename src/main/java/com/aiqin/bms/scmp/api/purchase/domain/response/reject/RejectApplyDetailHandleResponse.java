@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.response;
+package com.aiqin.bms.scmp.api.purchase.domain.response.reject;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;

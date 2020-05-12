@@ -20,6 +20,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -32,6 +34,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -104,6 +107,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private DataManageService dataManageService;
     @Resource
     private StockBatchDao stockBatchDao;
+    @Resource
+    private RejectApplyRecordTransportCenterDao rejectApplyRecordTransportCenterDao;
+    @Resource
+    private RejectApplyBatchDao rejectApplyBatchDao;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -116,6 +123,56 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         Integer count = rejectApplyRecordDao.listCount(rejectApplyQueryRequest);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
+
+    @Override
+    public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest) {
+        List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
+        Map<String, List<StockBatch>> purchaseApply = new HashMap<>();
+        for (RejectApplyDetailHandleResponse response : list) {
+            // 赋值四级品类名称
+            response.setCategoryName(selectCategoryName(response.getCategoryId()));
+            // 查询对应的批次信息
+            String key = String.format("%s,%s,%s", response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode());
+            if(purchaseApply.get(key) == null){
+                purchaseApply.put(key, stockBatchDao.stockBatchByReject(response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode()));
+            }
+            response.setBatchCodeList(purchaseApply.get(key));
+        }
+        Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    @Override
+    public HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(String rejectApplyRecordCode, String warehouseCode) {
+        RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyRecordCode);
+        if (rejectApplyRecord == null) {
+            LOGGER.error("未查询到退供申请单信息:{}", rejectApplyRecordCode);
+            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_APPLY_RECORD);
+        }
+        RejectApplyAndTransportResponse response = BeanCopyUtils.copy(rejectApplyRecord, RejectApplyAndTransportResponse.class);
+        // 查询退供单的分仓信息
+        RejectApplyRecordTransportCenter center = new RejectApplyRecordTransportCenter();
+        center.setRejectApplyRecordCode(rejectApplyRecordCode);
+        center.setWarehouseCode(warehouseCode);
+        List<RejectApplyRecordTransportCenter> recordCenterList = rejectApplyRecordTransportCenterDao.rejectApplyTransportCenterInfo(center);
+        response.setRejectTransportList(recordCenterList);
+        return HttpResponse.successGenerics(response);
+    }
+
+    @Override
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(String rejectApplyRecordCode) {
+        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailList(rejectApplyRecordCode);
+        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordDetailCount(rejectApplyRecordCode);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    @Override
+    public HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(String rejectApplyRecordCode) {
+        List<RejectApplyBatch> list = rejectApplyBatchDao.rejectApplyRecordBatchList(rejectApplyRecordCode);
+        Integer count = rejectApplyBatchDao.rejectApplyRecordBatchCount(rejectApplyRecordCode);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
 
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest) {
@@ -212,20 +269,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             throw new GroundRuntimeException("修改退供申请单异常:{%s}");
         }
         return HttpResponse.success();
-    }
-
-    @Override
-    public HttpResponse<RejectApplyHandleResponse> selectRejectApply(String rejectApplyCode) {
-        RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyCode);
-        if (rejectApplyRecord == null) {
-            LOGGER.error("未查询到退供申请单信息:{}", rejectApplyCode);
-            return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_APPLY_RECORD);
-        }
-        RejectApplyHandleResponse response = new RejectApplyHandleResponse();
-        BeanUtils.copyProperties(rejectApplyRecord, response);
-        List<RejectApplyDetailHandleResponse> list = rejectApplyRecordDetailDao.selectHandleByRejectCode(rejectApplyCode);
-        response.setDetailList(list);
-        return HttpResponse.successGenerics(response);
     }
 
     @Override
@@ -728,23 +771,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         }
     }
 
-    @Override
-    public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest) {
-        List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
-        Map<String, List<StockBatch>> purchaseApply = new HashMap<>();
-        for (RejectApplyDetailHandleResponse response : list) {
-            // 赋值四级品类名称
-            response.setCategoryName(selectCategoryName(response.getCategoryId()));
-            // 查询对应的批次信息
-            String key = String.format("%s,%s,%s", response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode());
-            if(purchaseApply.get(key) == null){
-                purchaseApply.put(key, stockBatchDao.stockBatchByReject(response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode()));
-            }
-            response.setBatchCodeList(purchaseApply.get(key));
-        }
-        Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
-        return HttpResponse.successGenerics(new PageResData<>(count, list));
-    }
 
     /**
      * 根据品类code 查询所有的名称(包含父级)

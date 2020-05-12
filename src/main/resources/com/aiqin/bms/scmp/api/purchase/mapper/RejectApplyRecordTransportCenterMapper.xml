@@ -23,7 +23,7 @@
     warehouse_code, warehouse_name, pre_deliver_time, valid_time, total_count, product_tax_amount, 
     return_tax_amount, gift_tax_amount, create_time, update_time
   </sql>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordTransportCenter">
+  <insert id="insert">
     insert into reject_apply_record_transport_center (id, reject_apply_record_code, reject_apply_record_name, 
       transport_center_code, transport_center_name, 
       warehouse_code, warehouse_name, pre_deliver_time, 
@@ -37,7 +37,7 @@
       #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordTransportCenter">
+  <update id="updateByPrimaryKeySelective">
     update reject_apply_record_transport_center
     <set>
       <if test="rejectApplyRecordCode != null">
@@ -80,4 +80,16 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="rejectApplyTransportCenterInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from reject_apply_record_transport_center
+    <where>
+      <if test="rejectApplyRecordCode != null">
+        and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
 </mapper>

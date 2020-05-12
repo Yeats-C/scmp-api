@@ -19,7 +19,7 @@ public interface RejectApplyRecordDao {
 
     Integer listCount(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    RejectApplyRecord selectByRejectCode(@Param("rejectApplyCode") String rejectApplyCode);
+    RejectApplyRecord selectByRejectCode(@Param("rejectApplyRecordCode") String rejectApplyRecordCode);
 
     Integer updateByRejectCode(RejectApplyRecord rejectApplyRequest);
 

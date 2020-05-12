@@ -114,7 +114,7 @@
          <include refid="Base_Column_List"></include>
         from reject_apply_record
         where
-        status = 0 and reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
+        use_status = 0 and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
     </select>
     <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
     insert into reject_apply_record ( reject_apply_record_code, apply_type,
