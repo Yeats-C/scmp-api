@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectRecordBatchDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
+    <result column="line_code" jdbcType="INTEGER" property="lineCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, reject_record_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code, 
+    supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count, 
+    location_code, line_code, create_time, update_time
+  </sql>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
+    insert into reject_record_batch (id, reject_record_code, batch_code, 
+      batch_info_code, sku_code, sku_name, 
+      supplier_code, supplier_name, batch_remark, 
+      product_date, be_overdue_date, total_count, 
+      actual_total_count, location_code, line_code, 
+      create_time, update_time)
+    values (#{id,jdbcType=BIGINT}, #{rejectRecordCode,jdbcType=VARCHAR}, #{batchCode,jdbcType=VARCHAR}, 
+      #{batchInfoCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
+      #{productDate,jdbcType=VARCHAR}, #{beOverdueDate,jdbcType=VARCHAR}, #{totalCount,jdbcType=BIGINT}, 
+      #{actualTotalCount,jdbcType=BIGINT}, #{locationCode,jdbcType=VARCHAR}, #{lineCode,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
+    update reject_record_batch
+    <set>
+      <if test="rejectRecordCode != null">
+        reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="actualTotalCount != null">
+        actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="locationCode != null">
+        location_code = #{locationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="lineCode != null">
+        line_code = #{lineCode,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

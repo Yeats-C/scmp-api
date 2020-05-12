@@ -2,77 +2,76 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao">
     <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId"/>
-        <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode"/>
-        <result column="approval_code" jdbcType="VARCHAR" property="approvalCode"/>
-        <result column="duty_person" jdbcType="VARCHAR" property="dutyPerson"/>
-        <result column="contacts_person" jdbcType="VARCHAR" property="contactsPerson"/>
-        <result column="contacts_person_phone" jdbcType="VARCHAR" property="contactsPersonPhone"/>
-        <result column="province_id" jdbcType="VARCHAR" property="provinceId"/>
-        <result column="province_name" jdbcType="VARCHAR" property="provinceName"/>
-        <result column="city_id" jdbcType="VARCHAR" property="cityId"/>
-        <result column="city_name" jdbcType="VARCHAR" property="cityName"/>
-        <result column="district_id" jdbcType="VARCHAR" property="districtId"/>
-        <result column="district_name" jdbcType="VARCHAR" property="districtName"/>
-        <result column="address" jdbcType="VARCHAR" property="address"/>
-        <result column="expect_time" jdbcType="TIMESTAMP" property="expectTime"/>
-        <result column="valid_day" jdbcType="TIMESTAMP" property="validDay"/>
-        <result column="dictionary_id" jdbcType="VARCHAR" property="dictionaryId"/>
-        <result column="dictionary_name" jdbcType="VARCHAR" property="dictionaryName"/>
-        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode"/>
-        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName"/>
-        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
-        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
-        <result column="reject_status" jdbcType="BIT" property="rejectStatus"/>
-        <result column="remark" jdbcType="VARCHAR" property="remark"/>
-        <result column="transport_remark" jdbcType="VARCHAR" property="transportRemark"/>
-        <result column="transport_url" jdbcType="VARCHAR" property="transportUrl"/>
-        <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime"/>
-        <result column="product_count" jdbcType="INTEGER" property="productCount"/>
-        <result column="product_amount" jdbcType="DECIMAL" property="productAmount"/>
-        <result column="single_count" jdbcType="INTEGER" property="singleCount"/>
-        <result column="gift_count" jdbcType="INTEGER" property="giftCount"/>
-        <result column="gift_amount" jdbcType="DECIMAL" property="giftAmount"/>
-        <result column="return_count" jdbcType="INTEGER" property="returnCount"/>
-        <result column="return_amount" jdbcType="DECIMAL" property="returnAmount"/>
-        <result column="untaxed_amount" jdbcType="DECIMAL" property="untaxedAmount"/>
-        <result column="actual_product_count" jdbcType="INTEGER" property="actualProductCount"/>
-        <result column="actual_product_amount" jdbcType="DECIMAL" property="actualProductAmount"/>
-        <result column="actual_single_count" jdbcType="INTEGER" property="actualSingleCount"/>
-        <result column="actual_gift_count" jdbcType="INTEGER" property="actualGiftCount"/>
-        <result column="actual_gift_amount" jdbcType="DECIMAL" property="actualGiftAmount"/>
-        <result column="actual_return_count" jdbcType="INTEGER" property="actualReturnCount"/>
-        <result column="actual_return_amount" jdbcType="DECIMAL" property="actualReturnAmount"/>
-        <result column="create_by_id" jdbcType="VARCHAR" property="createById"/>
-        <result column="create_by_name" jdbcType="VARCHAR" property="createByName"/>
-        <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
-        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="delivery_time" jdbcType="TIMESTAMP" property="deliveryTime"/>
-        <result column="finish_time" jdbcType="TIMESTAMP" property="finishTime"/>
-        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
-        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
-        <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+        <id column="id" jdbcType="BIGINT" property="id" />
+        <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode" />
+        <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId" />
+        <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode" />
+        <result column="reject_record_name" jdbcType="VARCHAR" property="rejectRecordName" />
         <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
         <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+        <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+        <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+        <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
+        <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
+        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
+        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+        <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
+        <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
+        <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+        <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+        <result column="actual_product_tax_amount" jdbcType="DECIMAL" property="actualProductTaxAmount" />
+        <result column="actual_return_tax_amount" jdbcType="DECIMAL" property="actualReturnTaxAmount" />
+        <result column="actual_gift_tax_amount" jdbcType="DECIMAL" property="actualGiftTaxAmount" />
+        <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+        <result column="pre_deliver_time" jdbcType="TIMESTAMP" property="preDeliverTime" />
+        <result column="charge_person" jdbcType="VARCHAR" property="chargePerson" />
+        <result column="account_code" jdbcType="VARCHAR" property="accountCode" />
+        <result column="account_name" jdbcType="VARCHAR" property="accountName" />
+        <result column="contract_code" jdbcType="VARCHAR" property="contractCode" />
+        <result column="contract_name" jdbcType="VARCHAR" property="contractName" />
+        <result column="supplier_person" jdbcType="VARCHAR" property="supplierPerson" />
+        <result column="supplier_mobile" jdbcType="VARCHAR" property="supplierMobile" />
+        <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
+        <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+        <result column="city_id" jdbcType="VARCHAR" property="cityId" />
+        <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+        <result column="district_id" jdbcType="VARCHAR" property="districtId" />
+        <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+        <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
         <result column="score_code" jdbcType="VARCHAR" property="scoreCode" />
+        <result column="confirm_time" jdbcType="TIMESTAMP" property="confirmTime" />
+        <result column="out_stock_time" jdbcType="TIMESTAMP" property="outStockTime" />
+        <result column="source_type" jdbcType="BIT" property="sourceType" />
+        <result column="source_code" jdbcType="VARCHAR" property="sourceCode" />
+        <result column="remark" jdbcType="VARCHAR" property="remark" />
+        <result column="approval_code" jdbcType="VARCHAR" property="approvalCode" />
+        <result column="reject_status" jdbcType="BIT" property="rejectStatus" />
+        <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+        <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+        <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+        <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="synchr_status" jdbcType="BIT" property="synchrStatus" />
     </resultMap>
     <sql id="Base_Column_List">
-    id, reject_record_id, reject_record_code, duty_person, contacts_person, contacts_person_phone,
-    province_id, province_name, city_id, city_name, district_id, district_name, address,
-    expect_time, valid_day, dictionary_id, dictionary_name, supplier_code, supplier_name,
-    purchase_group_code, purchase_group_name, reject_status, remark, transport_remark, transport_url,
-    out_stock_time, product_count, product_amount, single_count, gift_count,gift_amount, return_count,
-    return_amount, actual_product_count, actual_product_amount, actual_single_count, actual_gift_count,actual_gift_amount, actual_return_count,
-    actual_return_amount,create_by_id, create_by_name, update_by_id, update_by_name, create_time,
-    update_time,transport_center_code, transport_center_name, warehouse_code, warehouse_name,settlement_method_code,settlement_method_name,
-    company_name,company_code,untaxed_amount,score_code,approval_code,delivery_time,finish_time
-  </sql>
+       id, reject_apply_record_code, reject_record_id, reject_record_code, reject_record_name,
+       company_code, company_name, supplier_code, supplier_name, settlement_method_code,
+       settlement_method_name, purchase_group_code, purchase_group_name, transport_center_code,
+       transport_center_name, warehouse_code, warehouse_name, total_count, product_tax_amount,
+       return_tax_amount, gift_tax_amount, actual_total_count, actual_product_tax_amount,
+       actual_return_tax_amount, actual_gift_tax_amount, valid_time, pre_deliver_time, charge_person,
+       account_code, account_name, contract_code, contract_name, supplier_person, supplier_mobile,
+       province_id, province_name, city_id, city_name, district_id, district_name, detail_address,
+       score_code, confirm_time, out_stock_time, source_type, source_code, remark, approval_code,
+       reject_status, create_by_id, create_by_name, update_by_id, update_by_name, create_time,
+       update_time, synchr_status
+    </sql>
     <sql id="LIST_QUERY">
         <where>
             purchase_group_code in
