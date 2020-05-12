@@ -19,10 +19,16 @@
         <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
         <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
         <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+        <result column="product_count" jdbcType="BIGINT" property="productCount" />
+        <result column="return_count" jdbcType="BIGINT" property="returnCount" />
+        <result column="gift_count" jdbcType="BIGINT" property="giftCount" />
         <result column="total_count" jdbcType="BIGINT" property="totalCount" />
         <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
         <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
         <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+        <result column="actual_product_count" jdbcType="BIGINT" property="actualProductCount" />
+        <result column="actual_return_count" jdbcType="BIGINT" property="actualReturnCount" />
+        <result column="actual_gift_count" jdbcType="BIGINT" property="actualGiftCount" />
         <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
         <result column="actual_product_tax_amount" jdbcType="DECIMAL" property="actualProductTaxAmount" />
         <result column="actual_return_tax_amount" jdbcType="DECIMAL" property="actualReturnTaxAmount" />
@@ -63,14 +69,15 @@
        id, reject_apply_record_code, reject_record_id, reject_record_code, reject_record_name,
        company_code, company_name, supplier_code, supplier_name, settlement_method_code,
        settlement_method_name, purchase_group_code, purchase_group_name, transport_center_code,
-       transport_center_name, warehouse_code, warehouse_name, total_count, product_tax_amount,
-       return_tax_amount, gift_tax_amount, actual_total_count, actual_product_tax_amount,
-       actual_return_tax_amount, actual_gift_tax_amount, valid_time, pre_deliver_time, charge_person,
-       account_code, account_name, contract_code, contract_name, supplier_person, supplier_mobile,
-       province_id, province_name, city_id, city_name, district_id, district_name, detail_address,
-       score_code, confirm_time, out_stock_time, source_type, source_code, remark, approval_code,
-       reject_status, create_by_id, create_by_name, update_by_id, update_by_name, create_time,
-       update_time, synchr_status
+       transport_center_name, warehouse_code, warehouse_name, product_count, return_count,
+       gift_count, total_count, product_tax_amount, return_tax_amount, gift_tax_amount,
+       actual_product_count, actual_return_count, actual_gift_count, actual_total_count,
+       actual_product_tax_amount, actual_return_tax_amount, actual_gift_tax_amount, valid_time,
+       pre_deliver_time, charge_person, account_code, account_name, contract_code, contract_name,
+       supplier_person, supplier_mobile, province_id, province_name, city_id, city_name,
+       district_id, district_name, detail_address, score_code, confirm_time, out_stock_time,
+       source_type, source_code, remark, approval_code, reject_status, create_by_id, create_by_name,
+       update_by_id, update_by_name, create_time, update_time, synchr_status
     </sql>
     <sql id="LIST_QUERY">
         <where>

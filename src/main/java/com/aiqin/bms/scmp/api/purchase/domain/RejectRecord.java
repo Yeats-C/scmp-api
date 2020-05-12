@@ -79,6 +79,18 @@ public class RejectRecord {
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
+    @ApiModelProperty(value="商品数量")
+    @JsonProperty("product_count")
+    private Long productCount;
+
+    @ApiModelProperty(value="实物返数量")
+    @JsonProperty("return_count")
+    private Long returnCount;
+
+    @ApiModelProperty(value="赠品数量")
+    @JsonProperty("gift_count")
+    private Long giftCount;
+
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
     private Long totalCount;
@@ -94,6 +106,18 @@ public class RejectRecord {
     @ApiModelProperty(value="赠品含税金额")
     @JsonProperty("gift_tax_amount")
     private BigDecimal giftTaxAmount;
+
+    @ApiModelProperty(value="实际商品数量")
+    @JsonProperty("actual_product_count")
+    private Long actualProductCount;
+
+    @ApiModelProperty(value="实际实物返数量")
+    @JsonProperty("actual_return_count")
+    private Long actualReturnCount;
+
+    @ApiModelProperty(value="实际赠品数量")
+    @JsonProperty("actual_gift_count")
+    private Long actualGiftCount;
 
     @ApiModelProperty(value="实际最小单位数量")
     @JsonProperty("actual_total_count")

@@ -54,6 +54,18 @@ public class RejectApplyRecord {
     @JsonProperty("company_name")
     private String companyName;
 
+    @ApiModelProperty(value="商品数量")
+    @JsonProperty("product_count")
+    private Long productCount;
+
+    @ApiModelProperty(value="实物返数量")
+    @JsonProperty("return_count")
+    private Long returnCount;
+
+    @ApiModelProperty(value="赠品数量")
+    @JsonProperty("gift_count")
+    private Long giftCount;
+
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
     private Long totalCount;
