@@ -6,7 +6,9 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -39,7 +42,6 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -100,6 +102,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private ApplyRejectRecordDetailDao applyRejectRecordDetailDao;
     @Resource
     private DataManageService dataManageService;
+    @Resource
+    private StockBatchDao stockBatchDao;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -727,8 +731,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Override
     public HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest) {
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
+        Map<String, List<StockBatch>> purchaseApply = new HashMap<>();
         for (RejectApplyDetailHandleResponse response : list) {
+            // 赋值四级品类名称
             response.setCategoryName(selectCategoryName(response.getCategoryId()));
+            // 查询对应的批次信息
+            String key = String.format("%s,%s,%s", response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode());
+            if(purchaseApply.get(key) == null){
+                purchaseApply.put(key, stockBatchDao.stockBatchByReject(response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode()));
+            }
+            response.setBatchCodeList(purchaseApply.get(key));
         }
         Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
         return HttpResponse.successGenerics(new PageResData<>(count, list));

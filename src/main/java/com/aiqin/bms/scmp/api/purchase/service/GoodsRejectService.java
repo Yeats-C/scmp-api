@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;

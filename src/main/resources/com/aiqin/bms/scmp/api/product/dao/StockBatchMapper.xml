@@ -437,4 +437,11 @@
     from stock_batch
     where sku_code=#{skuCode} and transport_center_code=#{transportCenterCode} and warehouse_code=#{warehouseCode}
   </select>
+  <select id="stockBatchByReject" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+  </select>
 </mapper>
