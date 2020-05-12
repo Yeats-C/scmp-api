@@ -1,9 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -59,24 +61,36 @@ public class GoodsRejectController {
     @GetMapping("/apply/list")
     @ApiOperation(value = "退供申请单列表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "create_begin_time", value = "创建开始时间", type = "String"),
+            @ApiImplicitParam(name = "create_finish_time", value = "创建结束时间", type = "String"),
+            @ApiImplicitParam(name = "update_begin_time", value = "修改开始时间", type = "String"),
+            @ApiImplicitParam(name = "update_finish_time", value = "修改结束时间", type = "String"),
+            @ApiImplicitParam(name = "purchase_group_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "reject_apply_record_code", value = "退货申请单号", type = "String"),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
             @ApiImplicitParam(name = "apply_type", value = "申请单类型: 0 手动 1自动", type = "Integer"),
-            @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
-            @ApiImplicitParam(name = "apply_record_status", value = "退供申请单状态: 0  已完成 1 待提交", type = "Integer"),
-            @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
-            @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
+            @ApiImplicitParam(name = "apply_record_status", value = "退供申请单状态: " +
+                    "0.待提交 1.待审核 2.审核中 3.审核通过 4.审核不通过 5.撤销", type = "Integer"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
-                                                                               @RequestParam(value = "apply_type", required = false) Integer applyType,
-                                                                               @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
-                                                                               @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                               @RequestParam(value = "page_size", required = false) Integer page_size,
-                                                                               @RequestParam(value = "begin_time", required = false) String beginTime,
-                                                                               @RequestParam(value = "finish_time", required = false) String finishTime,
-                                                                               @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode) {
-        RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(rejectApplyRecordCode, applyType, purchaseGroupCode, applyRecordStatus, beginTime, finishTime);
+    public HttpResponse<PageResData<RejectApplyRecord>>
+    rejectApplyList(@RequestParam(value = "create_begin_time", required = false) String createBeginTime,
+                    @RequestParam(value = "create_finish_time", required = false) String createFinishTime,
+                    @RequestParam(value = "update_begin_time", required = false) String updateBeginTime,
+                    @RequestParam(value = "update_finish_time", required = false) String updateFinishTime,
+                    @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                    @RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode,
+                    @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                    @RequestParam(value = "supplier_name", required = false) String supplierName,
+                    @RequestParam(value = "apply_type", required = false) Integer applyType,
+                    @RequestParam(value = "apply_record_status", required = false) Integer applyRecordStatus,
+                    @RequestParam(value = "page_no", required = false) Integer page_no,
+                    @RequestParam(value = "page_size", required = false) Integer page_size) {
+        RejectApplyQueryRequest rejectApplyQueryRequest = new RejectApplyQueryRequest(createBeginTime, createFinishTime,
+                updateBeginTime, updateFinishTime, purchaseGroupCode, rejectApplyRecordCode, supplierCode, supplierName,
+                applyType, applyRecordStatus);
         rejectApplyQueryRequest.setPageNo(page_no);
         rejectApplyQueryRequest.setPageSize(page_size);
         LOGGER.info("退供申请单列表请求:{}", rejectApplyQueryRequest.toString());

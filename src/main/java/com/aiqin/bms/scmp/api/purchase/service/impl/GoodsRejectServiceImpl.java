@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -52,39 +53,13 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Service
 @SuppressWarnings("unchecked")
 public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsRejectService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
-    private static final BigDecimal big = BigDecimal.valueOf(0);
+    private static final BigDecimal big = BigDecimal.ZERO;
 
     private static final String[] importRejectApplyHeaders = new String[]{
             "SKU编号", "SKU名称", "供应商名称", "仓库名称", "库房名称", "商品批次号", "退供类型", "退供数量", "含税单价",
@@ -127,21 +102,13 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private DataManageService dataManageService;
 
     @Override
-    public HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
+    public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
         if (CollectionUtils.isEmpty(groupVoList)) {
             return HttpResponse.successGenerics(new PageResData<>());
         }
         rejectApplyQueryRequest.setGroupList(groupVoList);
-        List<RejectApplyQueryResponse> list = rejectApplyRecordDao.list(rejectApplyQueryRequest);
-        for (RejectApplyQueryResponse rejectApplyQueryResponse : list) {
-            rejectApplyQueryResponse.setUpdateStatus(Global.USER_ON);
-            //查询是否有提交过的商品
-            Integer statusCount = rejectApplyRecordDetailDao.countByRejectId(rejectApplyQueryResponse.getRejectApplyRecordCode(), Global.USER_ON);
-            if (statusCount > 0) {
-                rejectApplyQueryResponse.setUpdateStatus(Global.USER_OFF);
-            }
-        }
+        List<RejectApplyRecord> list = rejectApplyRecordDao.list(rejectApplyQueryRequest);
         Integer count = rejectApplyRecordDao.listCount(rejectApplyQueryRequest);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
