@@ -21,7 +21,7 @@
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
     <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
     <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-    <result column="product_type" jdbcType="BIT" property="productType" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
     <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
     <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
@@ -195,10 +195,10 @@
       (
       #{item.rejectApplyRecordDetailId,jdbcType=VARCHAR},
       #{item.rejectApplyRecordCode,jdbcType=VARCHAR},
-      #{item.applyType,jdbcType=BIT},
+      #{item.applyType,jdbcType=INTEGER},
       #{item.purchaseGroupCode,jdbcType=VARCHAR},
       #{item.purchaseGroupName,jdbcType=VARCHAR},
-      #{item.applyRecordStatus,jdbcType=BIT},
+      #{item.applyRecordStatus,jdbcType=INTEGER},
       #{item.barcode,jdbcType=VARCHAR},
       #{item.skuCode,jdbcType=VARCHAR},
       #{item.skuName,jdbcType=VARCHAR},
@@ -208,7 +208,7 @@
       #{item.categoryName,jdbcType=VARCHAR},
       #{item.brandId,jdbcType=VARCHAR},
       #{item.brandName,jdbcType=VARCHAR},
-      #{item.productType,jdbcType=BIT},
+      #{item.productType,jdbcType=INTEGER},
       #{item.productSpec,jdbcType=VARCHAR},
       #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR},
@@ -248,7 +248,7 @@
         reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
       </if>
       <if test="applyType != null">
-        apply_type = #{applyType,jdbcType=BIT},
+        apply_type = #{applyType,jdbcType=INTEGER},
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
@@ -257,7 +257,7 @@
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
       </if>
       <if test="applyRecordStatus != null">
-        apply_record_status = #{applyRecordStatus,jdbcType=BIT},
+        apply_record_status = #{applyRecordStatus,jdbcType=INTEGER},
       </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -281,7 +281,7 @@
         brand_name = #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
-        product_type = #{productType,jdbcType=BIT},
+        product_type = #{productType,jdbcType=INTEGER},
       </if>
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
@@ -392,10 +392,10 @@
     and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
   <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse">
-    <result column="apply_type" jdbcType="BIT" property="applyType" />
+    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
     <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
     <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
-    <result column="apply_record_status" jdbcType="BIT" property="applyRecordStatus" />
+    <result column="apply_record_status" jdbcType="INTEGER" property="applyRecordStatus" />
     <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
@@ -404,7 +404,7 @@
     <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
-    <result column="product_type" jdbcType="BIT" property="productType" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />

@@ -189,7 +189,7 @@ public class RejectRecord {
 
     @ApiModelProperty(value="来源类型 0.退供申请 1.退货单")
     @JsonProperty("source_type")
-    private Boolean sourceType;
+    private Integer sourceType;
 
     @ApiModelProperty(value="来源单号")
     @JsonProperty("source_code")
@@ -205,7 +205,7 @@ public class RejectRecord {
 
     @ApiModelProperty(value="退供单状态: 0 查看 1 确认  2 撤销 3 重发  ")
     @JsonProperty("reject_status")
-    private Boolean rejectStatus;
+    private Integer rejectStatus;
 
     @ApiModelProperty(value="创建人编码")
     @JsonProperty("create_by_id")
@@ -233,5 +233,5 @@ public class RejectRecord {
 
     @ApiModelProperty(value="0:未同步,1已同步")
     @JsonProperty("synchr_status")
-    private Boolean synchrStatus;
+    private Integer synchrStatus;
 }

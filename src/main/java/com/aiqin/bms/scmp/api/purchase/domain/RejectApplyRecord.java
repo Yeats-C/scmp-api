@@ -156,15 +156,15 @@ public class RejectApplyRecord {
 
     @ApiModelProperty(value="退供申请单状态: 0  待提交 1 待审核 2.审核中 3.审核通过 4.审核不通过 5. 撤销")
     @JsonProperty("apply_record_status")
-    private Boolean applyRecordStatus;
+    private Integer applyRecordStatus;
 
     @ApiModelProperty(value="申请单类型: 0 手动 1自动")
     @JsonProperty("apply_type")
-    private Boolean applyType;
+    private Integer applyType;
 
     @ApiModelProperty(value="是否删除 0.否 1.是")
     @JsonProperty("use_status")
-    private Boolean useStatus;
+    private Integer useStatus;
 
     @ApiModelProperty(value="创建人编码")
     @JsonProperty("create_by_id")
