@@ -1236,10 +1236,10 @@
     ps.product_brand_code as productBrandCode, ps.product_brand_name as productBrandName,
     goods_gifts as goodsGifts, spec, model_number as modelNumber,
     color_code as colorCode, color_name as colorName,
-    unit_code as unitCode, unit_name as unitName,
+    ps.unit_code as unitCode, ps.unit_name as unitName,
     product_property_code as productPropertyCode,
     product_property_name as productPropertyName,
-    ifnull(available_num,0) as availableNum,
+    ifnull(available_count,0) as availableNum,
     ifnull(tax_rate,0) as taxRate, ifnull(tax_cost,0) as taxCost
   </sql>
 

@@ -64,6 +64,9 @@ public class ProfitLossDetailRequest {
 
     @ApiModelProperty("供应商code")
     private String supplyCode;
+
+    @ApiModelProperty("批次号")
+    private String batchCode;
     /**                        */
     @ApiModelProperty("sku名称")
     private String skuName;

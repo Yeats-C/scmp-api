@@ -83,7 +83,7 @@ public class AllocationProductReqVo {
 
     @ApiModelProperty("数量")
     @NotNull(message = "数量不能为空")
-    @JsonProperty("available_num")
+    @JsonProperty("quantity")
     private Long quantity;
 
     @ApiModelProperty("含税总成本")

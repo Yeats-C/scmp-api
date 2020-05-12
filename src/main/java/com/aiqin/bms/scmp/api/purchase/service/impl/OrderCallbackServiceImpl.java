@@ -1257,6 +1257,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     profitLossProductBatch.setSkuCode(profitLossDetailRequest.getSkuCode());
                     profitLossProductBatch.setSkuName(productSkuResponse.getProductName());
                     profitLossProductBatch.setSupplierCode(profitLossDetailRequest.getSupplyCode());
+                    profitLossProductBatch.setBatchNumber(profitLossDetailRequest.getBatchCode());
                     supplyCompany = supplyCompanyMap.get(profitLossDetailRequest.getSupplyCode());
                     if (supplyCompany == null) {
                         throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", profitLossDetailRequest.getSupplyCode()));
