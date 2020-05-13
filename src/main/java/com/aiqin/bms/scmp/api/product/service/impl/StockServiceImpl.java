@@ -939,8 +939,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         List<StockBatch> stockBatches = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
         Map<String, StockBatch> stockBatchMap = new HashMap<>();
         stockBatches.forEach(s -> {
-            stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
-                    s.getBatchCode() + "_" + s.getSupplierCode() + "_" + s.getTaxCost(), s);
+            if(StringUtils.isNotBlank(s.getBatchInfoCode())){
+                stockBatchMap.put(s.getBatchInfoCode(), s);
+            }else {
+                stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
+                        s.getBatchCode() + "_" + s.getSupplierCode() + "_"
+                        + s.getTaxCost().stripTrailingZeros().toPlainString(), s);
+            }
         });
 
         StockBatch stockBatch;
@@ -952,11 +957,14 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         List<StockBatchFlow> flows = new ArrayList<>();
         for (StockBatchInfoRequest stockBatchInfo: request.getStockBatchList()) {
 
+            String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
+            String key = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+                        stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
-            if (!redisLockService.lock(stockBatchInfo.getBatchCode(), String.valueOf(time))) {
-                LOGGER.info("redis给sku加锁失败：" + stockBatchInfo.getBatchCode());
-                throw new BizException("redis给sku加锁失败：" + stockBatchInfo.getBatchCode());
+            if (!redisLockService.lock(key, String.valueOf(time))) {
+                LOGGER.info("爱亲- redis给sku加锁失败：" + key);
+                throw new BizException("爱亲- redis给sku加锁失败：" + key);
             }
             // 添加批次库存流水
             StockBatchFlow stockBatchFlow = new StockBatchFlow();
@@ -1021,7 +1029,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
                 //设置库存流水修改后的值
                 String batchInfoCode = stockBatch.getSkuCode() + "_" + stockBatch.getWarehouseCode() + "_" +
-                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" + stockBatch.getTaxCost();
+                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" +
+                        stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
                 stockBatch.setBatchInfoCode(batchInfoCode);
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
@@ -1032,7 +1041,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
 
             // 给批次解锁 - redis
-            redisLockService.unlock(stockBatchInfo.getBatchCode(), String.valueOf(time));
+            redisLockService.unlock(key, String.valueOf(time));
         }
         if (flage) {
             return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
