@@ -406,7 +406,7 @@
           update_by_name = #{item.updateByName,jdbcType=VARCHAR},
         </if>
       </set>
-      where id = #{id,jdbcType=BIGINT}
+      where id = #{item.id,jdbcType=BIGINT}
     </foreach>
   </update>
   <insert id="insertAll">
