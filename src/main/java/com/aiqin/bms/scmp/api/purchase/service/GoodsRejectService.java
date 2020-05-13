@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;

@@ -1089,22 +1089,23 @@
     </select>
     <select id="rejectProductInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
         select
-        s.tax_cost as productCost, su.supply_unit_code as supplierCode, su.supply_unit_name as supplierName,
-        psi.unit_code as unitCode,psi.unit_name as unitName,s.available_num as stockCount,psc.Input_tax_rate as taxRate,
-        ps.color_code as colorCode,ps.color_name as colorName,ps.model_number as modelNumber,psi.spec as productSpec,
-        ps.product_brand_code as brandId,ps.product_brand_name as brandName,ps.goods_gifts as productType,
-        ps.bar_code as barcode,ps.product_category_code as categoryId,ps.product_category_name as categoryName,
-        s.transport_center_code as transportCenterCode,s.transport_center_name as transportCenterName,
-        s.warehouse_code as warehouseCode,s.warehouse_name as warehouseName,s.sku_code as skuCode,s.sku_name as skuName,
-        ps.procurement_section_code as purchaseGroupCode, ps.procurement_section_name as purchaseGroupName,
-        psc.settlement_method_code as settlementMethodCode,psc.settlement_method_name as settlementMethodName,
-        su.factory_sku_code as factorySkuCode
+        s.sku_code skuCode, s.sku_name skuName, su.supply_unit_code supplierCode, su.supply_unit_name supplierName,
+        s.transport_center_code transportCenterCode,s.transport_center_name transportCenterName, s.warehouse_code warehouseCode,
+        s.warehouse_name warehouseName, psi.unit_code unitCode, psi.unit_name unitName, s.available_count availableCount,
+        s.tax_cost productCost, s.new_purchase_price newPurchasePrice, ifnull(su.tax_included_price, 0) purchaseMax,
+        ps.product_brand_code brandId, ps.product_brand_name brandName, ps.product_category_code categoryId,
+        ps.product_category_name categoryName, psi.spec productSpec, ps.color_code colorCode, ps.color_name colorName,
+        ps.model_number modelNumber, ps.goods_gifts productType, ps.product_sort_code productSortCode,
+        ps.product_sort_name productSortName, psc.Input_tax_rate taxRate, ps.bar_code barcode, s.inventory_count stockCount,
+        ps.procurement_section_code purchaseGroupCode, ps.procurement_section_name purchaseGroupName,
+        psc.settlement_method_code settlementMethodCode, psc.settlement_method_name settlementMethodName,
+        su.factory_sku_code factorySkuCode, ps.product_code spuCode, ps.product_name spuName
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
         inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         <where>
-            ps.del_flag = 0
+            ps.del_flag = 0 and s.available_count > 0
             <if test="transportCenterCode != null">
                 and s.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
             </if>

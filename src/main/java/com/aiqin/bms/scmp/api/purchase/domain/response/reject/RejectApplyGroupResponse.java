@@ -1,6 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.reject;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordTransportCenter;
@@ -29,5 +29,5 @@ public class RejectApplyGroupResponse extends RejectApplyRecord {
 
     @ApiModelProperty(value = "批次信息")
     @JsonProperty("batch_list")
-    private List<StockBatch> batchList;
+    private List<RejectApplyBatch> batchList;
 }

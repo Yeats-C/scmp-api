@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
@@ -178,7 +179,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if(CollectionUtils.isEmpty(request)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-
         // 根据商品信息根据采购组、供应商、结算方式进行分组
         List<RejectApplyDetailRequest> details = request.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                 new TreeSet<>(Comparator.comparing(o -> o.getSupplierCode() + ";" + o.getPurchaseGroupCode() + ";" + o.getSettlementMethodCode()))), ArrayList::new));
@@ -226,8 +226,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 transportCenter.setTransportCenterName(center.getTransportCenterName());
                 transportCenter.setWarehouseCode(center.getWarehouseCode());
                 transportCenter.setWarehouseName(center.getWarehouseName());
-                Long totalCount = 0L;
-                BigDecimal productAmount = big, returnAmount = big, giftAmount = big;
+                Long totalCount = 0L, productTotalCount = 0L;
+                BigDecimal productAmount = big, returnAmount = big, giftAmount = big, productTotalAmount = big;
                 for(RejectApplyDetailRequest product:productList){
                     // 计算商品数量
                     if(center.getWarehouseCode().equals(product.getWarehouseCode())){
@@ -248,9 +248,13 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     if(rejectProduct.get(productKey) == null){
                         rejectApplyRecordDetail = BeanCopyUtils.copy(product, RejectApplyRecordDetail.class);
                         rejectProduct.put(productKey, rejectApplyRecordDetail);
-                        //rejectApplyRecordDetail.setLineCode(1);
-
+                    }else {
+                        productTotalCount = rejectProduct.get(productKey).getTotalCount() + product.getTotalCount();
+                        productTotalAmount = rejectProduct.get(productKey).getProductTotalAmount().add(product.getProductTotalAmount());
                     }
+                    rejectProduct.get(productKey).setTotalCount(productTotalCount);
+                    rejectProduct.get(productKey).setProductTotalAmount(productTotalAmount);
+                    rejectProductList.add(rejectProduct.get(productKey));
 
                     // 批次信息组合
                     String batchKey = String.format("%s,%s,%s,%s,%s", product.getSkuCode(), product.getWarehouseCode(),
@@ -278,6 +282,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
         }
         response.setCenterList(transportList);
+        response.setBatchList(rejectBatchList);
         response.setDetailList(rejectProductList);
         LOGGER.info("分组后的商品信息：" + response.toString());
 
@@ -430,7 +435,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     list.add(response);
                     continue;
                 }
-                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(supplier.getSupplyCode(),productTypeList.indexOf(record[6]),purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
+                rejectApplyDetailHandleResponse = stockDao.rejectProductInfo(supplier.getSupplyCode(),productTypeList.indexOf(record[6]),
+                        purchaseGroupCode, logisticsCenter.getLogisticsCenterCode(), warehouse.getWarehouseCode(), record[0]);
                 if (rejectApplyDetailHandleResponse != null) {
                     BeanUtils.copyProperties(rejectApplyDetailHandleResponse, response);
                     Integer rejectCount = new Double(record[7]).intValue();
@@ -443,6 +449,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     if (rejectApplyDetailHandleResponse.getStockCount() < rejectCount) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
+                    List<StockBatch> batchList = stockBatchDao.stockBatchByReject(response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode());
+                    response.setBatchList(batchList);
                 } else {
                     response.setErrorInfo(String.format("第%d行,未查询到对应的商品",i));
                 }

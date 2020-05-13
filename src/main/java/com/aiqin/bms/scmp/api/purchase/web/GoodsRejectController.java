@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
@@ -238,25 +239,41 @@ public class GoodsRejectController {
     @GetMapping("/record/list")
     @ApiOperation(value = "查询退供单列表")
     @ApiImplicitParams({
+            @ApiImplicitParam(name = "create_begin_time", value = "创建开始时间", type = "String"),
+            @ApiImplicitParam(name = "create_finish_time", value = "创建结束时间", type = "String"),
+            @ApiImplicitParam(name = "update_begin_time", value = "修改开始时间", type = "String"),
+            @ApiImplicitParam(name = "update_finish_time", value = "修改结束时间", type = "String"),
+            @ApiImplicitParam(name = "purchase_group_code", value = "采购组编码", type = "String"),
             @ApiImplicitParam(name = "reject_record_code", value = "退供单号", type = "String"),
-            @ApiImplicitParam(name = "supplier_code", value = "供应商code", type = "String"),
+            @ApiImplicitParam(name = "supplier_code", value = "供应商编码", type = "String"),
+            @ApiImplicitParam(name = "supplier_name", value = "供应商名称", type = "String"),
             @ApiImplicitParam(name = "transport_center_code", value = "仓库", type = "String"),
             @ApiImplicitParam(name = "warehouse_code", value = "库房", type = "String"),
-            @ApiImplicitParam(name = "purchase_group_code", value = "采购组 code", type = "String"),
-            @ApiImplicitParam(name = "reject_status", value = "退供单状态: 0 待审核 1 审核中  2 待供应商确认 3 待出库  4 出库开始 5 已出库 6 已发运 7 完成 8 取消 9 审核不通过", type = "Integer"),
-            @ApiImplicitParam(name = "begin_time", value = "开始时间", type = "String"),
-            @ApiImplicitParam(name = "finish_time", value = "结束时间", type = "String"),
+            @ApiImplicitParam(name = "reject_status", value = "退供单状态:0 查看 1 确认  2 撤销 3 重发 ", type = "Integer"),
+            @ApiImplicitParam(name = "source_type", value = "来源类型 0.退供申请 1.退货单", type = "Integer"),
+            @ApiImplicitParam(name = "source_code", value = "来源单号", type = "String"),
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse<PageResData<RejectRecord>> rejectList(@RequestParam(value = "page_no", required = false) Integer page_no, @RequestParam(value = "page_size", required = false) Integer page_size,
-                                                              @RequestParam(value = "begin_time", required = false) String beginTime, @RequestParam(value = "purchase_group_code", required = false) String purchase_group_code,
-                                                              @RequestParam(value = "reject_record_code", required = false) String reject_record_code, @RequestParam(value = "reject_status", required = false) Integer reject_status,
-                                                              @RequestParam(value = "transport_center_code", required = false) String transport_center_code, @RequestParam(value = "supplier_code", required = false) String supplier_code,
-                                                              @RequestParam(value = "warehouse_code", required = false) String warehouse_code, @RequestParam(value = "finish_time", required = false) String finishTime) {
-        RejectQueryRequest rejectQueryRequest = new RejectQueryRequest(beginTime, finishTime, reject_record_code, purchase_group_code, supplier_code, transport_center_code, warehouse_code, reject_status);
-        rejectQueryRequest.setPageNo(page_no);
-        rejectQueryRequest.setPageSize(page_size);
+    public HttpResponse<PageResData<RejectRecord>> rejectList(@RequestParam(value = "create_begin_time", required = false) String createBeginTime,
+                                                              @RequestParam(value = "create_finish_time", required = false) String createFinishTime,
+                                                              @RequestParam(value = "update_begin_time", required = false) String updateBeginTime,
+                                                              @RequestParam(value = "update_finish_time", required = false) String updateFinishTime,
+                                                              @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                                                              @RequestParam(value = "reject_record_code", required = false) String rejectRecordCode,
+                                                              @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                              @RequestParam(value = "supplier_name", required = false) String supplierName,
+                                                              @RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                              @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                              @RequestParam(value = "reject_status", required = false) Integer rejectStatus,
+                                                              @RequestParam(value = "source_type", required = false) Integer sourceType,
+                                                              @RequestParam(value = "source_code", required = false) String sourceCode,
+                                                              @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                              @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        RejectQueryRequest rejectQueryRequest = new RejectQueryRequest(createBeginTime, createFinishTime, updateBeginTime, updateFinishTime, purchaseGroupCode,
+                rejectRecordCode, supplierCode, supplierName, transportCenterCode, warehouseCode, rejectStatus, sourceType, sourceCode);
+        rejectQueryRequest.setPageNo(pageNo);
+        rejectQueryRequest.setPageSize(pageSize);
         LOGGER.info("查询退供单列表请求,rejectRecord:{}", rejectQueryRequest.toString());
         return goodsRejectService.rejectList(rejectQueryRequest);
     }

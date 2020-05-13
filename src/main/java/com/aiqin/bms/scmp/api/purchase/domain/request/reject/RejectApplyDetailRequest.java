@@ -176,4 +176,25 @@ public class RejectApplyDetailRequest {
     @JsonProperty("purchase_price")
     private BigDecimal purchasePrice;
 
+    @ApiModelProperty(value="批次编号")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
+    @ApiModelProperty(value="批次备注")
+    @JsonProperty("batch_remark")
+    private String batchRemark;
+
+    @ApiModelProperty(value="生产日期")
+    @JsonProperty("product_date")
+    private String productDate;
+
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
+
+    @ApiModelProperty(value="库位号")
+    @JsonProperty("location_code")
+    private String locationCode;
+
+
 }
