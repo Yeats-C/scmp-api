@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -59,5 +60,17 @@ public class SkuBatchRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @JsonProperty("production_date")
     private Date productTime;
+
+    @ApiModelProperty("供应商code")
+    @JsonProperty(value = "supplier_code")
+    private String supplierCode;
+
+    @ApiModelProperty("税率")
+    @JsonProperty("tax_rate")
+    private BigDecimal taxRate;
+
+    @ApiModelProperty("成本")
+    @JsonProperty("tax_cost")
+    private BigDecimal taxCost;
 
 }

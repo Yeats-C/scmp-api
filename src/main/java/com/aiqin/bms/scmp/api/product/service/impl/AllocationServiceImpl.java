@@ -610,7 +610,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
                 // 变化数/税率/成本
                 stockBatchInfoRequest.setChangeCount(allocationProductBatch.getQuantity());
-                stockBatchInfoRequest.setTaxRate(allocationProductBatch.getTax());
+                stockBatchInfoRequest.setTaxRate(allocationProductBatch.getTax().setScale(4, BigDecimal.ROUND_HALF_UP));
                 stockBatchInfoRequest.setTaxCost(allocationProductBatch.getTaxPrice());
                 //设置类型
                 stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());

@@ -1240,7 +1240,7 @@
     product_property_code as productPropertyCode,
     product_property_name as productPropertyName,
     ifnull(available_count,0) as availableNum,
-    ifnull(tax_rate,0) as taxRate, ifnull(tax_cost,0) as taxCost
+    ifnull(tax_rate,0.00) as taxRate, ifnull(tax_cost,0.0000) as taxCost
   </sql>
 
   <sql id="Allocation_Chose_Product_Where">

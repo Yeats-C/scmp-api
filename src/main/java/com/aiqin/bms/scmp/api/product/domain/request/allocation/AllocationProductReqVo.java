@@ -114,4 +114,8 @@ public class AllocationProductReqVo {
     @ApiModelProperty("生产日期")
     @JsonProperty("product_date")
     private String productDate;
+
+    @ApiModelProperty("供应商code")
+    @JsonProperty(value = "supplier_code")
+    private String supplierCode;
 }
