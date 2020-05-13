@@ -958,13 +958,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         for (StockBatchInfoRequest stockBatchInfo: request.getStockBatchList()) {
 
             String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
-            String key = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+            String redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
                         stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
-            if (!redisLockService.lock(key, String.valueOf(time))) {
-                LOGGER.info("爱亲- redis给sku加锁失败：" + key);
-                throw new BizException("爱亲- redis给sku加锁失败：" + key);
+            if (!redisLockService.lock(redisKey, String.valueOf(time))) {
+                LOGGER.info("爱亲- redis给sku加锁失败：" + redisKey);
+                throw new BizException("爱亲- redis给sku加锁失败：" + redisKey);
             }
             // 添加批次库存流水
             StockBatchFlow stockBatchFlow = new StockBatchFlow();
@@ -1041,7 +1041,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
 
             // 给批次解锁 - redis
-            redisLockService.unlock(key, String.valueOf(time));
+            redisLockService.unlock(redisKey, String.valueOf(time));
         }
         if (flage) {
             return HttpResponse.failure(ResultCode.STOCK_CHANGE_ERROR);
