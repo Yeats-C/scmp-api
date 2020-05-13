@@ -14,6 +14,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
@@ -1289,11 +1291,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //正值减库存
             if (groupByList.get(0) != null) {
                 //操作类型 直接减库存 4
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(4);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+               // StockChangeRequest stockChangeRequest = new StockChangeRequest();
+               // stockChangeRequest.setOperationType(4);
+               // List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+               // stockChangeRequest.setStockVoRequests(list);
+               // HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(4);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:减库存异常");
                     throw new GroundRuntimeException("dl回调:减库存异常");
@@ -1301,11 +1308,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             if (groupByList.get(1) != null) {
                 //操作类型 直接加库存 10
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(10);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+              //  StockChangeRequest stockChangeRequest = new StockChangeRequest();
+              //  stockChangeRequest.setOperationType(10);
+              //  List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
+              //  stockChangeRequest.setStockVoRequests(list);
+              //  HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(6);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:加库存异常");
                     throw new GroundRuntimeException("dl回调:加库存异常");
@@ -1319,6 +1331,30 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
     }
 
+    private List<StockInfoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfoRequest;
+        for (ProfitLossDetailRequest itemReqVo : profitLossProductList) {
+            stockInfoRequest = new StockInfoRequest();
+            stockInfoRequest.setCompanyCode(COMPANY_CODE);
+            stockInfoRequest.setCompanyName(COMPANY_NAME);
+            stockInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+            stockInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+            stockInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+            stockInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
+            stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockInfoRequest.setDocumentType(11);
+            stockInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
+            stockInfoRequest.setSourceDocumentType(11);
+            stockInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockInfoRequest.setOperatorName(itemReqVo.getCreateByName());
+            list.add(stockInfoRequest);
+        }
+        return list;
+    }
+/*
     private List<StockVoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVoRequest;
@@ -1341,7 +1377,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             list.add(stockVoRequest);
         }
         return list;
-    }
+    }*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
