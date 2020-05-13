@@ -200,7 +200,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                  throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
              }
              //调用审批流
-             workFlow(k,form);
+             workFlow(k,form,vo.getPositionCode());
              return  k;
          }else {
              log.error("调拨单sku保存失败");
@@ -368,7 +368,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
 
 //    @Async("myTaskAsyncPool")
-    public void workFlow(Long id,String formNo) {
+    public void workFlow(Long id,String formNo,String positionCode) {
         Allocation allocation1 = allocationMapper.selectByPrimaryKey(id);
         log.info("AllocationServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
         try {
@@ -394,6 +394,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             jsonObject.addProperty("auditPersonId",allocation1.getDirectSupervisorCode());
             workFlowVO.setVariables(jsonObject.toString());
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl+ allocationTypeEnum.getWorkFlow().getNum());
+            workFlowVO.setPositionCode(positionCode);
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, allocationTypeEnum.getWorkFlow());
             if(workFlowRespVO.getSuccess()){
                  // 更新调拨单审核状态
