@@ -15,6 +15,7 @@
     <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="total_count" jdbcType="BIGINT" property="totalCount" />
     <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+    <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
     <result column="line_code" jdbcType="INTEGER" property="lineCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
@@ -22,7 +23,7 @@
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_apply_record_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code, 
-    supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count, 
+    supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count, purchase_price,
     location_code, line_code, create_time, update_time
   </sql>
   <insert id="insert">
@@ -30,14 +31,14 @@
       batch_info_code, sku_code, sku_name, 
       supplier_code, supplier_name, batch_remark, 
       product_date, be_overdue_date, total_count, 
-      actual_total_count, location_code, line_code, 
+      actual_total_count, purchase_price, location_code, line_code,
       create_time, update_time)
     values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{batchCode,jdbcType=VARCHAR}, 
       #{batchInfoCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
       #{productDate,jdbcType=VARCHAR}, #{beOverdueDate,jdbcType=VARCHAR}, #{totalCount,jdbcType=BIGINT}, 
-      #{actualTotalCount,jdbcType=BIGINT}, #{locationCode,jdbcType=VARCHAR}, #{lineCode,jdbcType=INTEGER}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      #{actualTotalCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, #{locationCode,jdbcType=VARCHAR},
+      #{lineCode,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyBatch">
     update reject_apply_batch
@@ -77,6 +78,9 @@
       </if>
       <if test="actualTotalCount != null">
         actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="purchasePrice != null">
+        purchase_price = #{purchasePrice,jdbcType=DECIMAL},
       </if>
       <if test="locationCode != null">
         location_code = #{locationCode,jdbcType=VARCHAR},

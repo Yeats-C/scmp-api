@@ -1,27 +1,20 @@
-package com.aiqin.bms.scmp.api.purchase.domain.response.reject;
+package com.aiqin.bms.scmp.api.purchase.domain.request.reject;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.List;
 
-@ApiModel("接受从库存查询出来的数据")
+/**
+ * @author: zhao shuai
+ * @create: 2020-05-13
+ **/
 @Data
-public class RejectApplyDetailHandleResponse {
-
-    @ApiModelProperty(value = "业务id")
-    @JsonProperty("reject_apply_record_detail_id")
-    private String rejectApplyRecordDetailId;
-
-    @ApiModelProperty(value = "退货申请单号")
-    @JsonProperty("reject_apply_record_code")
-    private String rejectApplyRecordCode;
+@ApiModel("退供申请单查询请求类")
+public class RejectApplyDetailRequest {
 
     @ApiModelProperty(value = "sku编码")
     @JsonProperty("sku_code")
@@ -163,73 +156,24 @@ public class RejectApplyDetailHandleResponse {
     @JsonProperty("spu_name")
     private String spuName;
 
-    @ApiModelProperty(value = "批次号列表")
-    @JsonProperty("batch_list")
-    private List<StockBatch> batchList;
+    @ApiModelProperty(value = "最小单位数量")
+    @JsonProperty("total_count")
+    private Long totalCount;
 
+    @ApiModelProperty(value = "含税单价")
+    @JsonProperty("product_amount")
+    private BigDecimal productAmount;
 
-//    @ApiModelProperty(value = "申请单类型: 0 手动 1自动")
-//    @JsonProperty("apply_type")
-//    private Integer applyType;
-//
-//    @ApiModelProperty(value = "退供申请单状态: 0  已完成 1 待提交")
-//    @JsonProperty("apply_record_status")
-//    private Integer applyRecordStatus;
-//
-//    @ApiModelProperty(value = "数量")
-//    @JsonProperty("product_count")
-//    private Integer productCount;
-//
-//    @ApiModelProperty(value = "单品数量")
-//    @JsonProperty("single_count")
-//    private Integer singleCount;
-//
-//    @ApiModelProperty(value = "含税单价")
-//    @JsonProperty("product_amount")
-//    private BigDecimal productAmount;
-//
-//    @ApiModelProperty(value = "含税总价")
-//    @JsonProperty("product_total_amount")
-//    private BigDecimal productTotalAmount;
-//
-//    @ApiModelProperty(value = "商品批次号")
-//    @JsonProperty("batch_code")
-//    private String batchNo;
-//
-//    @ApiModelProperty(value = "批次备注")
-//    @JsonProperty("batch_remark")
-//    private String batchRemark;
-//
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "批次创建时间")
-//    @JsonProperty("production_date")
-//    private Date batchCreateTime;
-//
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_by_id")
-//    private String createById;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_by_name")
-//    private String createByName;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_by_id")
-//    private String updateById;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_by_name")
-//    private String updateByName;
-//
-//    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_time")
-//    private Date createTime;
-//
-//    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_time")
-//    private Date updateTime;
+    @ApiModelProperty(value = "含税总价")
+    @JsonProperty("product_total_amount")
+    private BigDecimal productTotalAmount;
+
+    @ApiModelProperty(value = "批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty(value = "批次含税采购价")
+    @JsonProperty("purchase_price")
+    private BigDecimal purchasePrice;
 
 }

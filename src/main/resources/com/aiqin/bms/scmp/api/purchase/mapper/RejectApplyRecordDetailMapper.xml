@@ -35,6 +35,7 @@
     <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
     <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="line_code" jdbcType="INTEGER" property="lineCode" />
     <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
@@ -51,7 +52,7 @@
     barcode, product_spec, color_code, color_name, model_number, unit_code, unit_name,
     factory_sku_code, product_count, total_count, product_amount, product_total_amount,
     tax_rate, product_cost, create_by_id, create_by_name, update_by_id, update_by_name,
-    create_time, update_time
+    create_time, update_time, line_code
   </sql>
   <select id="rejectApplyRecordDetailList" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>

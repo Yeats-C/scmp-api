@@ -143,6 +143,10 @@ public class RejectApplyRecordDetail {
     @JsonProperty("tax_rate")
     private BigDecimal taxRate;
 
+    @ApiModelProperty(value="行号")
+    @JsonProperty("line_code")
+    private Integer lineCode;
+
     @ApiModelProperty(value="库存含税成本")
     @JsonProperty("product_cost")
     private BigDecimal productCost;

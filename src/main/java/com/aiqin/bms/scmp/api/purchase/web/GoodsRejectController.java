@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -169,7 +170,11 @@ public class GoodsRejectController {
         return goodsRejectService.selectRejectApplyBatch(rejectApplyRecordCode);
     }
 
-
+    @PostMapping("/product/group")
+    @ApiOperation(value = "根据商品对退供申请单按供应商、结算方式、采购组进行生成对应信息")
+    public HttpResponse productGroup(@RequestBody List<RejectApplyDetailRequest> request) {
+        return goodsRejectService.productGroup(request);
+    }
 
     @PostMapping("/apply")
     @ApiOperation(value = "退供申请单增加")
@@ -285,8 +290,9 @@ public class GoodsRejectController {
                                        @RequestParam(value = "address", required = false) String address, @RequestParam(value = "contacts_person_phone", required = false) String contacts_person_phone,
                                        @RequestParam(value = "contacts_person", required = false) String contacts_person,@RequestParam(value = "create_by_company_code", required = false) String create_by_company_code) {
         LOGGER.info("供应商确认请求,reject_record_id:{}", reject_record_id);
-        RejectRecord rejectRecord = new RejectRecord(reject_record_id, contacts_person, contacts_person_phone, province_id, province_name, city_id, city_name, district_id, district_name, address);
-        return goodsRejectService.rejectSupplier(rejectRecord,create_by_company_code);
+        //RejectRecord rejectRecord = new RejectRecord(reject_record_id, contacts_person, contacts_person_phone, province_id, province_name, city_id, city_name, district_id, district_name, address);
+        //return goodsRejectService.rejectSupplier(rejectRecord,create_by_company_code);
+        return HttpResponse.success();
     }
 
     @PutMapping("/record/transport/{reject_record_id}")

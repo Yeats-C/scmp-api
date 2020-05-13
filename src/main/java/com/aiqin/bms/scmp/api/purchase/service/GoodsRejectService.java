@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -24,6 +25,8 @@ public interface GoodsRejectService {
     HttpResponse<PageResData<RejectApplyRecordDetail>>  selectRejectApplyProduct(String rejectApplyRecordCode);
 
     HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(String rejectApplyRecordCode);
+
+    HttpResponse productGroup(List<RejectApplyDetailRequest> request);
 
     HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
