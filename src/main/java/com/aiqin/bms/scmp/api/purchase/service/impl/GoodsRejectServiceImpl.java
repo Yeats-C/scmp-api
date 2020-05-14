@@ -183,13 +183,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             return HttpResponse.failure(ResultCode.REJECT_APPLY_PRODUCT_NULL);
         }
 
-        RejectApplyGroupResponse response = new RejectApplyGroupResponse();
+        List<RejectApplyGroupResponse> list = Lists.newArrayList();
+        RejectApplyGroupResponse response;
         List<RejectApplyDetailRequest> productList;
-        List<RejectApplyRecordTransportCenter> transportList = Lists.newArrayList();
+        List<RejectApplyRecordTransportCenter> transportList;
         RejectApplyRecordTransportCenter transportCenter;
-        Map<String, RejectApplyRecordDetail> rejectProduct = new HashMap<>();
-        List<RejectApplyRecordDetail> rejectProductList = Lists.newArrayList();
+        List<RejectApplyRecordDetail> rejectProductList;
         RejectApplyRecordDetail rejectApplyRecordDetail;
+        Map<String, RejectApplyRecordDetail> rejectProduct;
 
         for(RejectApplyDetailRequest detail:details){
             response = BeanCopyUtils.copy(detail, RejectApplyGroupResponse.class);
@@ -210,6 +211,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     new TreeSet<>(Comparator.comparing(o -> o.getWarehouseCode()))), ArrayList::new));
             // 计算采购申请单的总和
             BigDecimal productCenterAmount = big, returnCenterAmount = big, giftCenterAmount = big;
+            Long totalCountSum = 0L, productCountSum = 0L, giftCountSum = 0L, returnCountSum = 0L;
+            transportList = Lists.newArrayList();
             for(RejectApplyDetailRequest center:centers){
                 // 便利商品
                 transportCenter = new RejectApplyRecordTransportCenter();
@@ -217,22 +220,27 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 transportCenter.setTransportCenterName(center.getTransportCenterName());
                 transportCenter.setWarehouseCode(center.getWarehouseCode());
                 transportCenter.setWarehouseName(center.getWarehouseName());
-                Long totalCount = 0L;
+                Long totalCount = 0L, productCount = 0L, giftCount = 0L, returnCount = 0L;
                 BigDecimal productAmount = big, returnAmount = big, giftAmount = big;
+                rejectProductList = Lists.newArrayList();
                 for(RejectApplyDetailRequest product:productList){
                     // 计算商品数量
                     if(center.getWarehouseCode().equals(product.getWarehouseCode())){
                         // 计算每个仓库的商品、实物返、赠品、最小单位数量总和  0商品 1赠品 2实物返回
                         if(product.getProductType().equals(0)){
                             productAmount = productAmount.add(product.getProductTotalAmount());
+                            productCount += product.getTotalCount();
                         }else if(product.getProductType().equals(1)){
                             giftAmount = giftAmount.add(product.getProductTotalAmount());
+                            giftCount += product.getTotalCount();
                         }else {
                             returnAmount = returnAmount.add(product.getProductTotalAmount());
+                            returnCount += product.getTotalCount();
                         }
                         totalCount += product.getTotalCount();
                     }
                     // 组合商品 批次信息
+                    rejectProduct = new HashMap<>();
                     String amount = product.getProductAmount().stripTrailingZeros().toPlainString();
                     String productKey = String.format("%s,%s,%s,%s,%s", product.getSkuCode(), product.getWarehouseCode(),
                             product.getProductType(), amount, product.getBatchCode());
@@ -249,20 +257,32 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 productCenterAmount = productCenterAmount.add(productAmount);
                 returnCenterAmount = returnCenterAmount.add(returnAmount);
                 giftCenterAmount = giftCenterAmount.add(giftAmount);
+                totalCountSum += totalCount;
+                productCountSum += productCount;
+                giftCountSum += giftCount;
+                returnCountSum += returnCount;
+
                 transportList.add(transportCenter);
+                response.setDetailList(rejectProductList);
             }
             // 审批名称
             String name = detail.getSupplierName() + productList.get(0).getBrandName()
                     + "商品金额" + productCenterAmount + "实物返金额" + returnCenterAmount
                     + "赠品金额" + giftCenterAmount;
             response.setRejectApplyRecordName(name);
-
+            response.setTotalCount(totalCountSum);
+            response.setProductCount(productCountSum);
+            response.setGiftCount(giftCountSum);
+            response.setReturnCount(returnCountSum);
+            response.setProductTaxAmount(productCenterAmount);
+            response.setGiftTaxAmount(giftCenterAmount);
+            response.setReturnTaxAmount(returnCenterAmount);
+            response.setCenterList(transportList);
+            list.add(response);
         }
-        response.setCenterList(transportList);
-        response.setDetailList(rejectProductList);
-        LOGGER.info("分组后的商品信息：" + response.toString());
+        LOGGER.info("分组后的商品信息：" + list.toString());
 
-        return HttpResponse.success(response);
+        return HttpResponse.success(list);
     }
 
     @Override
