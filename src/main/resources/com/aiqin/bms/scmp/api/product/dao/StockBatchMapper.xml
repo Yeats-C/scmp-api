@@ -433,9 +433,16 @@
     select
     sku_code as skuCode, sku_name as skuName, batch_code as warehouseBatchNumber, transport_center_code as transportCenterCode,
     transport_center_name as transportCenterName, warehouse_code as warehouseCode, warehouse_name as warehouseName,
-    batch_remark as batchRemark, available_num as availableNum, production_date as productTime
+    batch_remark as batchRemark, available_count as availableNum, product_date as productTime, supplier_code as supplierCode,
+    tax_cost as taxCost, tax_rate as taxRate
     from stock_batch
-    where sku_code=#{skuCode} and transport_center_code=#{transportCenterCode} and warehouse_code=#{warehouseCode}
+    where sku_code=#{skuCode}
+    <if test="transportCenterCode != null">
+      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
   </select>
   <select id="stockBatchByReject" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>

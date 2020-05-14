@@ -939,9 +939,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         List<StockBatch> stockBatches = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
         Map<String, StockBatch> stockBatchMap = new HashMap<>();
         stockBatches.forEach(s -> {
-            stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
-                    s.getBatchCode() + "_" + s.getSupplierCode() + "_" +
-                    s.getTaxCost().stripTrailingZeros().toPlainString(), s);
+            if(StringUtils.isNotBlank(s.getBatchInfoCode())){
+                stockBatchMap.put(s.getBatchInfoCode(), s);
+            }else {
+                stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
+                        s.getBatchCode() + "_" + s.getSupplierCode() + "_"
+                        + s.getTaxCost().stripTrailingZeros().toPlainString(), s);
+            }
         });
 
         StockBatch stockBatch;
@@ -956,7 +960,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
             String redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
                         stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
-
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
             if (!redisLockService.lock(redisKey, String.valueOf(time))) {

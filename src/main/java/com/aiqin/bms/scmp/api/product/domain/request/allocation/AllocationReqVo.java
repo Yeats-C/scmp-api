@@ -132,6 +132,14 @@ public class AllocationReqVo {
     @JsonProperty("logistics_outlay")
     private Long logisticsOutlay;
 
+    @ApiModelProperty("职位编码")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
     @ApiModelProperty("sku列表")
     @Valid
     @JsonProperty("list")

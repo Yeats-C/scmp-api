@@ -102,6 +102,14 @@ public class MovementReqVo {
     @JsonProperty("approval_name")
     private String approvalName;
 
+    @ApiModelProperty("职位编码")
+    @JsonProperty("position_code")
+    private String positionCode;
+
+    @ApiModelProperty("职位名称")
+    @JsonProperty("position_name")
+    private String positionName;
+
     @ApiModelProperty("sku列表")
     @Valid
     @JsonProperty("list")

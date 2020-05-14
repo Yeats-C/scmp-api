@@ -14,6 +14,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
@@ -1253,10 +1256,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     }
                     //增加批次供应商的信息
                     profitLossProductBatch = new ProfitLossProductBatch();
+                    profitLossProductBatch.setLogisticsCenterCode(profitLossDetailRequest.getLogisticsCenterCode());
+                    profitLossProductBatch.setLogisticsCenterName(profitLossDetailRequest.getLogisticsCenterName());
+                    profitLossProductBatch.setWarehouseCode(profitLossDetailRequest.getWarehouseCode());
+                    profitLossProductBatch.setWarehouseName(profitLossDetailRequest.getWarehouseName());
                     profitLossProductBatch.setQuantity(profitLossDetailRequest.getQuantity());
                     profitLossProductBatch.setSkuCode(profitLossDetailRequest.getSkuCode());
                     profitLossProductBatch.setSkuName(productSkuResponse.getProductName());
                     profitLossProductBatch.setSupplierCode(profitLossDetailRequest.getSupplyCode());
+                    profitLossProductBatch.setBatchNumber(profitLossDetailRequest.getBatchCode());
+                    profitLossProductBatch.setCreateByName(profitLossDetailRequest.getCreateByName());
                     supplyCompany = supplyCompanyMap.get(profitLossDetailRequest.getSupplyCode());
                     if (supplyCompany == null) {
                         throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", profitLossDetailRequest.getSupplyCode()));
@@ -1285,14 +1294,28 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     return 0;
                 }
             }));
+            Map<Integer, List<ProfitLossProductBatch>> groupByBatchList = batchList.stream().collect(Collectors.groupingBy(baseOrder -> {
+                if (baseOrder.getQuantity() > 0) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }));
             //正值减库存
             if (groupByList.get(0) != null) {
                 //操作类型 直接减库存 4
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(4);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+               // StockChangeRequest stockChangeRequest = new StockChangeRequest();
+               // stockChangeRequest.setOperationType(4);
+               // List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+               // stockChangeRequest.setStockVoRequests(list);
+               // HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(4);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+                List<StockBatchInfoRequest> listBatch = handleProfitLossBatchStockData(groupByBatchList.get(0), request.getOrderCode());
+                changeStockRequest.setStockBatchList(listBatch);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:减库存异常");
                     throw new GroundRuntimeException("dl回调:减库存异常");
@@ -1300,11 +1323,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             if (groupByList.get(1) != null) {
                 //操作类型 直接加库存 10
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(10);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+              //  StockChangeRequest stockChangeRequest = new StockChangeRequest();
+              //  stockChangeRequest.setOperationType(10);
+              //  List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
+              //  stockChangeRequest.setStockVoRequests(list);
+              //  HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(6);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+                List<StockBatchInfoRequest> listBatch = handleProfitLossBatchStockData(groupByBatchList.get(0), request.getOrderCode());
+                changeStockRequest.setStockBatchList(listBatch);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:加库存异常");
                     throw new GroundRuntimeException("dl回调:加库存异常");
@@ -1318,6 +1348,54 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
     }
 
+    private List<StockBatchInfoRequest> handleProfitLossBatchStockData(List<ProfitLossProductBatch> profitLossProductBatches, String sourceOrderCode) {
+        List<StockBatchInfoRequest> list = Lists.newArrayList();
+        StockBatchInfoRequest stockBatchInfoRequest;
+        for (ProfitLossProductBatch itemReqVo : profitLossProductBatches) {
+            stockBatchInfoRequest = new StockBatchInfoRequest();
+            stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
+            stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
+            stockBatchInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+            stockBatchInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+            stockBatchInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+            stockBatchInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockBatchInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
+            stockBatchInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockBatchInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockBatchInfoRequest.setDocumentType(11);
+            stockBatchInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
+            stockBatchInfoRequest.setSourceDocumentType(11);
+            stockBatchInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockBatchInfoRequest.setOperatorName(itemReqVo.getCreateByName());
+            list.add(stockBatchInfoRequest);
+        }
+        return list;
+    }
+
+    private List<StockInfoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfoRequest;
+        for (ProfitLossDetailRequest itemReqVo : profitLossProductList) {
+            stockInfoRequest = new StockInfoRequest();
+            stockInfoRequest.setCompanyCode(COMPANY_CODE);
+            stockInfoRequest.setCompanyName(COMPANY_NAME);
+            stockInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+            stockInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+            stockInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+            stockInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
+            stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockInfoRequest.setDocumentType(11);
+            stockInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
+            stockInfoRequest.setSourceDocumentType(11);
+            stockInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockInfoRequest.setOperatorName(itemReqVo.getCreateByName());
+            list.add(stockInfoRequest);
+        }
+        return list;
+    }
+/*
     private List<StockVoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVoRequest;
@@ -1340,7 +1418,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             list.add(stockVoRequest);
         }
         return list;
-    }
+    }*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
