@@ -13,7 +13,7 @@ public interface RejectApplyRecordDao {
 
     Integer insertSelective(RejectApplyRecord record);
 
-    Integer updateByPrimaryKeySelective(RejectApplyRecord record);
+    Integer update(RejectApplyRecord record);
 
     List<RejectApplyRecord> list(RejectApplyQueryRequest rejectApplyQueryRequest);
 

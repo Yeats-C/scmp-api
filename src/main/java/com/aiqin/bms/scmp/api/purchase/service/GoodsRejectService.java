@@ -4,13 +4,11 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
-import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyGroupResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,15 +23,15 @@ public interface GoodsRejectService {
 
     HttpResponse<PageResData<RejectApplyRecordDetail>>  selectRejectApplyProduct(String rejectApplyRecordCode);
 
-    HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(String rejectApplyRecordCode);
+    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(String rejectApplyRecordCode);
 
-    HttpResponse productGroup(List<RejectApplyDetailRequest> request);
+    HttpResponse<RejectApplyGroupResponse> productGroup(List<RejectApplyDetailRequest> request);
+
+    HttpResponse<RejectApplyDetailHandleResponse> applyProductEdit(String rejectApplyRecordCode);
 
     HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
-    HttpResponse addReject(RejectRequest request);
-
-    HttpResponse updateReject(String rejectApplyQueryRequest);
+    HttpResponse addApplyReject(RejectApplyGroupRequest request);
 
     HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest);
 

@@ -134,117 +134,6 @@
       #{createByName,jdbcType=VARCHAR}, now()
       )
   </insert>
-    <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord">
-        insert into reject_apply_record
-        <trim prefix="(" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                id,
-            </if>
-            <if test="rejectApplyRecordCode != null">
-                reject_apply_record_code,
-            </if>
-            <if test="applyType != null">
-                apply_type,
-            </if>
-            <if test="purchaseGroupCode != null">
-                purchase_group_code,
-            </if>
-            <if test="purchaseGroupName != null">
-                purchase_group_name,
-            </if>
-            <if test="applyRecordStatus != null">
-                apply_record_status,
-            </if>
-            <if test="sumSku != null">
-                sum_sku,
-            </if>
-            <if test="sumCount != null">
-                sum_count,
-            </if>
-            <if test="sumAmount != null">
-                sum_amount,
-            </if>
-            <if test="createById != null">
-                create_by_id,
-            </if>
-            <if test="createByName != null">
-                create_by_name,
-            </if>
-            <if test="updateById != null">
-                update_by_id,
-            </if>
-            <if test="updateByName != null">
-                update_by_name,
-            </if>
-            <if test="createTime != null">
-                create_time,
-            </if>
-            <if test="updateTime != null">
-                update_time,
-            </if>
-        </trim>
-        <trim prefix="values (" suffix=")" suffixOverrides=",">
-            <if test="id != null">
-                #{id,jdbcType=BIGINT},
-            </if>
-            <if test="rejectApplyRecordCode != null">
-                #{rejectApplyRecordCode,jdbcType=VARCHAR},
-            </if>
-            <if test="applyType != null">
-                #{applyType,jdbcType=INTEGER},
-            </if>
-            <if test="purchaseGroupCode != null">
-                #{purchaseGroupCode,jdbcType=VARCHAR},
-            </if>
-            <if test="purchaseGroupName != null">
-                #{purchaseGroupName,jdbcType=VARCHAR},
-            </if>
-            <if test="applyRecordStatus != null">
-                #{applyRecordStatus,jdbcType=INTEGER},
-            </if>
-            <if test="sumSku != null">
-                #{sumSku,jdbcType=INTEGER},
-            </if>
-            <if test="sumCount != null">
-                #{sumCount,jdbcType=INTEGER},
-            </if>
-            <if test="sumAmount != null">
-                #{sumAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="createById != null">
-                #{createById,jdbcType=VARCHAR},
-            </if>
-            <if test="createByName != null">
-                #{createByName,jdbcType=VARCHAR},
-            </if>
-            <if test="updateById != null">
-                #{updateById,jdbcType=VARCHAR},
-            </if>
-            <if test="updateByName != null">
-                #{updateByName,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-        </trim>
-    </insert>
-    <update id="updateByRejectCode" >
-        update reject_apply_record
-        <set>
-                sum_sku = #{sumSku,jdbcType=INTEGER},
-                sum_count = #{sumCount,jdbcType=INTEGER},
-                sum_amount = #{sumAmount,jdbcType=DECIMAL},
-                sum_return_amount = #{sumReturnAmount,jdbcType=DECIMAL},
-                sum_gift_amount = #{sumGiftAmount,jdbcType=DECIMAL},
-                update_by_id = #{updateById,jdbcType=VARCHAR},
-                update_by_name = #{updateByName,jdbcType=VARCHAR},
-                update_time = now()
-        </set>
-        where  reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
-    </update>
     <update id="updateStatus">
          update reject_apply_record
          set
@@ -257,4 +146,137 @@
          status = 1
          where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
     </update>
+  <update id="update">
+      update reject_apply_record
+      <set>
+          <if test="rejectApplyRecordName != null">
+              reject_apply_record_name = #{rejectApplyRecordName,jdbcType=VARCHAR},
+          </if>
+          <if test="purchaseGroupCode != null">
+              purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+          </if>
+          <if test="purchaseGroupName != null">
+              purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierCode != null">
+              supplier_code = #{supplierCode,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierName != null">
+              supplier_name = #{supplierName,jdbcType=VARCHAR},
+          </if>
+          <if test="settlementMethodCode != null">
+              settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+          </if>
+          <if test="settlementMethodName != null">
+              settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+          </if>
+          <if test="companyCode != null">
+              company_code = #{companyCode,jdbcType=VARCHAR},
+          </if>
+          <if test="companyName != null">
+              company_name = #{companyName,jdbcType=VARCHAR},
+          </if>
+          <if test="productCount != null">
+              product_count = #{productCount,jdbcType=BIGINT},
+          </if>
+          <if test="returnCount != null">
+              return_count = #{returnCount,jdbcType=BIGINT},
+          </if>
+          <if test="giftCount != null">
+              gift_count = #{giftCount,jdbcType=BIGINT},
+          </if>
+          <if test="totalCount != null">
+              total_count = #{totalCount,jdbcType=BIGINT},
+          </if>
+          <if test="productTaxAmount != null">
+              product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="giftTaxAmount != null">
+              gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="returnTaxAmount != null">
+              return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="brandId != null">
+              brand_id = #{brandId,jdbcType=VARCHAR},
+          </if>
+          <if test="brandName != null">
+              brand_name = #{brandName,jdbcType=VARCHAR},
+          </if>
+          <if test="positionCode != null">
+              position_code = #{positionCode,jdbcType=VARCHAR},
+          </if>
+          <if test="positionName != null">
+              position_name = #{positionName,jdbcType=VARCHAR},
+          </if>
+          <if test="directSupervisorCode != null">
+              direct_supervisor_code = #{directSupervisorCode,jdbcType=VARCHAR},
+          </if>
+          <if test="directSupervisorName != null">
+              direct_supervisor_name = #{directSupervisorName,jdbcType=VARCHAR},
+          </if>
+          <if test="accountCode != null">
+              account_code = #{accountCode,jdbcType=VARCHAR},
+          </if>
+          <if test="accountName != null">
+              account_name = #{accountName,jdbcType=VARCHAR},
+          </if>
+          <if test="contractCode != null">
+              contract_code = #{contractCode,jdbcType=VARCHAR},
+          </if>
+          <if test="contractName != null">
+              contract_name = #{contractName,jdbcType=VARCHAR},
+          </if>
+          <if test="chargePerson != null">
+              charge_person = #{chargePerson,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierPerson != null">
+              supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierMobile != null">
+              supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+          </if>
+          <if test="provinceId != null">
+              province_id = #{provinceId,jdbcType=VARCHAR},
+          </if>
+          <if test="provinceName != null">
+              province_name = #{provinceName,jdbcType=VARCHAR},
+          </if>
+          <if test="cityId != null">
+              city_id = #{cityId,jdbcType=VARCHAR},
+          </if>
+          <if test="cityName != null">
+              city_name = #{cityName,jdbcType=VARCHAR},
+          </if>
+          <if test="districtId != null">
+              district_id = #{districtId,jdbcType=VARCHAR},
+          </if>
+          <if test="districtName != null">
+              district_name = #{districtName,jdbcType=VARCHAR},
+          </if>
+          <if test="detailAddress != null">
+              detail_address = #{detailAddress,jdbcType=VARCHAR},
+          </if>
+          <if test="remark != null">
+              remark = #{remark,jdbcType=VARCHAR},
+          </if>
+          <if test="applyRecordStatus != null">
+              apply_record_status = #{applyRecordStatus,jdbcType=BIT},
+          </if>
+          <if test="applyType != null">
+              apply_type = #{applyType,jdbcType=BIT},
+          </if>
+          <if test="useStatus != null">
+              use_status = #{useStatus,jdbcType=BIT},
+          </if>
+          <if test="updateById != null">
+              update_by_id = #{updateById,jdbcType=VARCHAR},
+          </if>
+          <if test="updateByName != null">
+              update_by_name = #{updateByName,jdbcType=VARCHAR},
+          </if>
+              update_time = now()
+      </set>
+      where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+  </update>
 </mapper>

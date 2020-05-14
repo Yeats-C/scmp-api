@@ -19,7 +19,13 @@ public interface RejectApplyRecordDetailDao {
 
     Integer rejectApplyRecordDetailCount(String rejectApplyRecordCode);
 
-    int insertAll(@Param("list") List<RejectApplyDetailHandleRequest> list);
+    List<RejectApplyRecordDetail> rejectApplyRecordBatchList(String rejectApplyRecordCode);
+
+    Integer rejectApplyRecordBatchCount(String rejectApplyRecordCode);
+
+    List<RejectApplyDetailHandleResponse> rejectApplyRecordDetailByEdit(String rejectApplyRecordCode);
+
+    int insertAll(@Param("list") List<RejectApplyRecordDetail> list);
 
     int updateByPrimaryKey(RejectApplyRecordDetail record);
 
