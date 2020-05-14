@@ -1746,14 +1746,14 @@
           b.product_property_code productPropertyCode, b.product_property_name productPropertyName,
           c.config_status configStatus, a.warehouse_code warehouseCode, a.warehouse_name warehouseName,
           a.transport_center_code transportCenterCode, a.transport_center_name transportCenterName,
-          a.warehouse_type warehouseType, a.inventory_num inventoryCount, a.available_num availableCount,
-          a.lock_num lockCount, a.purchase_way_num purchaseWayCount, a.allocation_way_num allocationWayCount,
-          a.total_way_num totalWayCount, a.new_purchase_price newPurchaseAmount, a.new_delivery_name newSupplierName,
+          a.warehouse_type warehouseType, a.inventory_count inventoryCount, a.available_count availableCount,
+          a.lock_count lockCount, a.purchase_way_count purchaseWayCount, a.allocation_way_count allocationWayCount,
+          a.total_way_count totalWayCount, a.new_purchase_price newPurchaseAmount, a.new_delivery_name newSupplierName,
           ifnull(a.tax_rate, 0) taxRate, ifnull(a.tax_cost, 0) taxCost
         from stock a
         inner join product_sku b on a.sku_code = b.sku_code
         inner join product_sku_config c on a.sku_code = c.sku_code and c.transport_center_code = a.transport_center_code
-        inner join product_sku_purchase_info d on a.sku_code = d.product_sku_code
+        inner join product_sku_stock_info d on a.sku_code = d.product_sku_code
         where a.sku_code = #{skuCode,jdbcType=VARCHAR}
         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
