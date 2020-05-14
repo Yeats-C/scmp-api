@@ -40,7 +40,7 @@ public class StockBatchServiceImpl implements StockBatchService {
     private StockBatchFlowDao stockBatchFlowDao;
 
     @Override
-    public HttpResponse stockBatchList(QueryStockBatchSkuReqVo request){
+    public HttpResponse<PageResData<StockBatchResponse>> stockBatchList(QueryStockBatchSkuReqVo request){
         LOGGER.info("批次库存查询参数：" + request);
         PageResData pageResData = new PageResData();
         List<StockBatchResponse> list = stockBatchDao.stockBatchList(request);
@@ -51,7 +51,7 @@ public class StockBatchServiceImpl implements StockBatchService {
     }
 
     @Override
-    public HttpResponse stockBatchDetail(String stockBatchCode){
+    public HttpResponse<StockBatchDetailResponse> stockBatchDetail(String stockBatchCode){
         LOGGER.info("批次库存详情参数：" + stockBatchCode);
         if(StringUtils.isBlank(stockBatchCode)){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -73,7 +73,7 @@ public class StockBatchServiceImpl implements StockBatchService {
     }
 
     @Override
-    public HttpResponse stockBatchFlow(QueryStockBatchSkuReqVo request){
+    public HttpResponse<PageResData<StockBatchFlow>> stockBatchFlow(QueryStockBatchSkuReqVo request){
         LOGGER.info("批次库存流水参数：" + request);
         if(request == null || StringUtils.isBlank(request.getStockBatchCode())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
