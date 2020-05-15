@@ -7,9 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChan
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
