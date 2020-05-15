@@ -410,4 +410,10 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+  <select id="selectByRejectCode" resultType="java.lang.String">
+      select reject_record_code
+      from reject_record
+      where reject_record_code like concat(#{code,jdbcType=VARCHAR},'%')
+      order by id desc limit 1
+  </select>
 </mapper>

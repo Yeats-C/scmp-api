@@ -31,6 +31,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGro
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
@@ -558,7 +559,49 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if(rejectApplyRecord == null){
             return HttpResponse.failure(ResultCode.REJECT_APPLY_NULL);
         }
+
+        // 查询退供申请单的分仓信息
+        RejectApplyRecordTransportCenter applyCenter = new RejectApplyRecordTransportCenter();
+        applyCenter.setRejectApplyRecordCode(rejectApplyRecordCode);
+        List<RejectApplyRecordTransportCenter> applyCenters = rejectApplyRecordTransportCenterDao.rejectApplyTransportCenterInfo(applyCenter);
+        LOGGER.info("退供申请单分仓信息：" + applyCenters.toString());
+        if(CollectionUtils.isEmpty(applyCenters)) {
+            return HttpResponse.failure(ResultCode.REJECT_APPLY_CENTER_NULL);
+        }
+        List<RejectRecord> rejectRecordList = Lists.newArrayList();
         RejectRecord rejectRecord = BeanCopyUtils.copy(rejectApplyRecord, RejectRecord.class);
+        rejectRecord.setRejectRecordName(rejectApplyRecord.getRejectApplyRecordName());
+        rejectRecord.setSourceType(0);
+        rejectRecord.setSourceCode(rejectApplyRecord.getRejectApplyRecordCode());
+        rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
+        rejectRecord.setApprovalCode(rejectApplyRecord.getRejectApplyRecordCode());
+
+        // 查询退供单规则单号
+        String code = DateUtils.currentDate().replaceAll("-","");
+        String recordCode = rejectRecordDao.rejectRecordByCode(code);
+        String rejectRecordCode;
+        if(StringUtils.isBlank(recordCode)){
+            rejectRecordCode = code + "0001";
+        }else {
+            Long lastCode = Long.valueOf(recordCode) + 1;
+            rejectRecordCode = lastCode.toString();
+        }
+        for(RejectApplyRecordTransportCenter center:applyCenters){
+            rejectRecord.setRejectRecordId(IdUtil.rejectRecordId());
+            rejectRecord.setRejectRecordCode(rejectRecordCode);
+            rejectRecord.setValidTime(center.getValidTime());
+            rejectRecord.setPreDeliverTime(center.getPreDeliverTime());
+            rejectRecord.setTransportCenterCode(center.getTransportCenterCode());
+            rejectRecord.setTransportCenterName(center.getTransportCenterName());
+            rejectRecord.setWarehouseCode(center.getWarehouseCode());
+            rejectRecord.setWarehouseName(center.getWarehouseName());
+        }
+
+
+
+
+
+
         return HttpResponse.success();
     }
 

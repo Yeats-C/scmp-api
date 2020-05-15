@@ -25,4 +25,6 @@ public interface RejectRecordDao {
     void updateByOrderCodes(List<String> orderCodes);
 
     List<RejectRecord> listForSap(SapOrderRequest sapOrderRequest);
+
+    String rejectRecordByCode(String code);
 }

@@ -205,6 +205,7 @@ public interface ResultCode {
     MessageId REJECT_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 1006, "退供申请单的商品信息为空");
     MessageId REJECT_APPLY_NULL = MessageId.create(Project.SCMP_API, 1007, "退供申请单的信息为空");
     MessageId REJECT_RECORD_NULL = MessageId.create(Project.SCMP_API, 1008, "退供单信息为空");
+    MessageId REJECT_APPLY_CENTER_NULL = MessageId.create(Project.SCMP_API, 1007, "退供申请单的分仓信息为空");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
