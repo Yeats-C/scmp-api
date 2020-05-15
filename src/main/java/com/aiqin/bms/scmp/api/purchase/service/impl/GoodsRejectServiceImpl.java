@@ -79,8 +79,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Resource
     private EncodingRuleDao encodingRuleDao;
     @Resource
-    private OutboundService outboundService;
-    @Resource
     private PurchaseGroupService purchaseGroupService;
     @Resource
     private FileRecordDao fileRecordDao;
@@ -102,6 +100,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private StockBatchDao stockBatchDao;
     @Resource
     private RejectApplyRecordTransportCenterDao rejectApplyRecordTransportCenterDao;
+    @Resource
+    private RejectRecordBatchDao rejectRecordBatchDao;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -476,6 +476,21 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         response.setFileList(fileList);
         return HttpResponse.successGenerics(response);
     }
+
+    @Override
+    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(String rejectRecordCode){
+        List<RejectRecordDetail> list = rejectRecordDetailDao.list(rejectRecordCode);
+        Integer count = rejectRecordDetailDao.listCount(rejectRecordCode);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    @Override
+    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(String rejectRecordCode){
+        List<RejectRecordBatch> list = rejectRecordBatchDao.list(rejectRecordCode);
+        Integer count = rejectRecordBatchDao.listCount(rejectRecordCode);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
 
     /**
      * 出库完成,更新退供单 出库时间 退供单状态

@@ -92,4 +92,15 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from reject_record_batch
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from reject_record_batch
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

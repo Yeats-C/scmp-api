@@ -45,16 +45,6 @@
     product_cost, line_code, create_by_id, create_by_name, update_by_id, update_by_name,
     create_time, update_time
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from reject_record_detail
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from reject_record_detail
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
   <insert id="insertAll"  >
     insert into reject_record_detail ( reject_record_detail_id,reject_record_id, reject_record_code,
       barcode,sku_code, sku_name, product_id,single_count,
@@ -106,175 +96,6 @@
       now(),now(), #{item.linnum,jdbcType=INTEGER}
       )
     </foreach>
-  </insert>
-  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
-    insert into reject_record_detail
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="rejectRecordId != null">
-        reject_record_id,
-      </if>
-      <if test="rejectRecordCode != null">
-        reject_record_code,
-      </if>
-      <if test="skuCode != null">
-        sku_code,
-      </if>
-      <if test="skuName != null">
-        sku_name,
-      </if>
-      <if test="productId != null">
-        product_id,
-      </if>
-      <if test="categoryId != null">
-        category_id,
-      </if>
-      <if test="categoryName != null">
-        category_name,
-      </if>
-      <if test="brandId != null">
-        brand_id,
-      </if>
-      <if test="brandName != null">
-        brand_name,
-      </if>
-      <if test="productType != null">
-        product_type,
-      </if>
-      <if test="productSpec != null">
-        product_spec,
-      </if>
-      <if test="unitCode != null">
-        unit_code,
-      </if>
-      <if test="taxRate != null">
-        tax_rate,
-      </if>
-      <if test="productAmount != null">
-        product_amount,
-      </if>
-      <if test="productTotalAmount != null">
-        product_total_amount,
-      </if>
-      <if test="actualCount != null">
-        actual_count,
-      </if>
-      <if test="actualAmount != null">
-        actual_amount,
-      </if>
-      <if test="batchNo != null">
-        batch_no,
-      </if>
-      <if test="batchRemark != null">
-        batch_remark,
-      </if>
-      <if test="batchCreateTime != null">
-        batch_create_time,
-      </if>
-      <if test="createById != null">
-        create_by_id,
-      </if>
-      <if test="createByName != null">
-        create_by_name,
-      </if>
-      <if test="updateById != null">
-        update_by_id,
-      </if>
-      <if test="updateByName != null">
-        update_by_name,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="rejectRecordId != null">
-        #{rejectRecordId,jdbcType=VARCHAR},
-      </if>
-      <if test="rejectRecordCode != null">
-        #{rejectRecordCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuCode != null">
-        #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuName != null">
-        #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="productId != null">
-        #{productId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryId != null">
-        #{categoryId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryName != null">
-        #{categoryName,jdbcType=VARCHAR},
-      </if>
-      <if test="brandId != null">
-        #{brandId,jdbcType=VARCHAR},
-      </if>
-      <if test="brandName != null">
-        #{brandName,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        #{productType,jdbcType=INTEGER},
-      </if>
-      <if test="productSpec != null">
-        #{productSpec,jdbcType=VARCHAR},
-      </if>
-      <if test="unitCode != null">
-        #{unitCode,jdbcType=VARCHAR},
-      </if>
-      <if test="taxRate != null">
-        #{taxRate,jdbcType=DECIMAL},
-      </if>
-      <if test="productAmount != null">
-        #{productAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="productTotalAmount != null">
-        #{productTotalAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="actualCount != null">
-        #{actualCount,jdbcType=INTEGER},
-      </if>
-      <if test="actualAmount != null">
-        #{actualAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="batchNo != null">
-        #{batchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="batchRemark != null">
-        #{batchRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="batchCreateTime != null">
-        #{batchCreateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createById != null">
-        #{createById,jdbcType=VARCHAR},
-      </if>
-      <if test="createByName != null">
-        #{createByName,jdbcType=VARCHAR},
-      </if>
-      <if test="updateById != null">
-        #{updateById,jdbcType=VARCHAR},
-      </if>
-      <if test="updateByName != null">
-        #{updateByName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
     update reject_record_detail
@@ -360,44 +181,17 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
-    update reject_record_detail
-    set reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
-      reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
-      sku_code = #{skuCode,jdbcType=VARCHAR},
-      sku_name = #{skuName,jdbcType=VARCHAR},
-      product_id = #{productId,jdbcType=VARCHAR},
-      category_id = #{categoryId,jdbcType=VARCHAR},
-      category_name = #{categoryName,jdbcType=VARCHAR},
-      brand_id = #{brandId,jdbcType=VARCHAR},
-      brand_name = #{brandName,jdbcType=VARCHAR},
-      product_type = #{productType,jdbcType=INTEGER},
-      product_spec = #{productSpec,jdbcType=VARCHAR},
-      unit_code = #{unitCode,jdbcType=VARCHAR},
-      tax_rate = #{taxRate,jdbcType=DECIMAL},
-      product_amount = #{productAmount,jdbcType=DECIMAL},
-      product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
-      actual_count = #{actualCount,jdbcType=INTEGER},
-      actual_amount = #{actualAmount,jdbcType=DECIMAL},
-      batch_no = #{batchNo,jdbcType=VARCHAR},
-      batch_remark = #{batchRemark,jdbcType=VARCHAR},
-      batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
-      create_by_id = #{createById,jdbcType=VARCHAR},
-      create_by_name = #{createByName,jdbcType=VARCHAR},
-      update_by_id = #{updateById,jdbcType=VARCHAR},
-      update_by_name = #{updateByName,jdbcType=VARCHAR},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByDetailId" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest">
-    UPDATE reject_record_detail
-    SET
-      actual_count = #{actualCount,jdbcType=INTEGER},
-      actual_amount = #{actualAmount,jdbcType=DECIMAL},
-      update_time = now()
-    WHERE  id = #{id,jdbcType=VARCHAR}
-  </update>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from reject_record_detail
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from reject_record_detail
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+  </select>
   <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
     SELECT
       sum(product_count) as productCount ,
@@ -422,7 +216,6 @@
     FROM reject_record_detail
     WHERE      reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
     GROUP BY sku_code,product_type
-
   </select>
   <select id="selectByRejectId" resultMap="BaseResultMap">
     select

@@ -1,9 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
@@ -237,12 +235,28 @@ public class GoodsRejectController {
         return goodsRejectService.rejectList(rejectQueryRequest);
     }
 
-    @GetMapping("/record/detail")
+    @GetMapping("/record/info")
     @ApiOperation(value = "查询退供单详情")
     @ApiImplicitParam(name = "reject_record_code", value = "退供单code", type = "String")
     public HttpResponse<RejectResponse> rejectInfo(@RequestParam("reject_record_code") String rejectRecordCode) {
         LOGGER.info("查询退供单详情请求,reject_record_code:{}", rejectRecordCode);
         return goodsRejectService.rejectInfo(rejectRecordCode);
+    }
+
+    @GetMapping("/record/product")
+    @ApiOperation(value = "查询退供单商品")
+    @ApiImplicitParam(name = "reject_record_code", value = "退供单code", type = "String")
+    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(@RequestParam("reject_record_code") String rejectRecordCode) {
+        LOGGER.info("查询退供单详情请求,reject_record_code:{}", rejectRecordCode);
+        return goodsRejectService.rejectProductInfo(rejectRecordCode);
+    }
+
+    @GetMapping("/record/batch")
+    @ApiOperation(value = "查询退供单批次")
+    @ApiImplicitParam(name = "reject_record_code", value = "退供单code", type = "String")
+    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(@RequestParam("reject_record_code") String rejectRecordCode) {
+        LOGGER.info("查询退供单详情请求,reject_record_code:{}", rejectRecordCode);
+        return goodsRejectService.rejectBatchInfo(rejectRecordCode);
     }
 
 }

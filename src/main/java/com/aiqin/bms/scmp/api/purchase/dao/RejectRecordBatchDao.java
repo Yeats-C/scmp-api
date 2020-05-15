@@ -2,9 +2,15 @@ package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
 
+import java.util.List;
+
 public interface RejectRecordBatchDao {
 
-    int insert(RejectRecordBatch record);
+    Integer insert(RejectRecordBatch record);
 
-    int update(RejectRecordBatch record);
+    Integer update(RejectRecordBatch record);
+
+    List<RejectRecordBatch> list(String rejectRecordCode);
+
+    Integer listCount(String rejectRecordCode);
 }
