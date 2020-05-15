@@ -5,15 +5,8 @@ import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
-import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectApplyRecordDao;
-import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
-import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -22,6 +15,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,35 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Objects;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
 public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
@@ -67,15 +34,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Resource
-    private RejectRecordDao rejectRecordDao;
-    @Resource
-    private StockService stockService;
-    @Resource
     private GoodsRejectServiceImpl goodsRejectService;
-    @Resource
-    private RejectRecordDetailDao rejectRecordDetailDao;
-    @Resource
-    private ApplyRejectRecordDao applyRejectRecordDao;
     @Resource
     private RejectApplyRecordDao rejectApplyRecordDao;
 
@@ -116,11 +75,17 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
                 LOGGER.info("审批撤销影响条数:{}", count);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
                 // 调用生成退供单
-                // TODO
+                HttpResponse response = goodsRejectService.generateRejectRecord(vo.getFormNo());
                 //审批通过
-                rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_YES);
-                Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
-                LOGGER.info("审批通过影响条数:{}", count);
+                if(response.getCode().equals("0")){
+                    rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_YES);
+                    Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
+                    LOGGER.info("审批通过影响条数:{}", count);
+                    return WorkFlowReturn.SUCCESS;
+                }else {
+                    LOGGER.info("退供单未生成，所以申请单审批未通过:{}", response.getMessage());
+                    return WorkFlowReturn.FALSE;
+                }
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {

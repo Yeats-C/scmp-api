@@ -45,15 +45,17 @@ public interface GoodsRejectService {
 
     HttpResponse operationRejectRecord(RejectRecord rejectRecord);
 
+    /** 审批回调，生成退供单，出库单，调用wms，sap*/
+    HttpResponse generateRejectRecord(String rejectApplyRecordCode);
+
+    String selectCategoryName(String categoryCode);
 
 
-    void finishStock(RejectStockRequest request);
+
 
     HttpResponse rejectCancel(String reject_record_id);
 
     ILockStocksReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord);
-
-    String selectCategoryName(String categoryCode);
 
 
 }
