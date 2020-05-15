@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel("订单商品信息")
 @Data
@@ -58,7 +60,7 @@ public class ReturnOrderInfoItem {
     private Integer givePromotion;
 
     @ApiModelProperty("批次号")
-    private String batchNumber;
+    private String batchCode;
 
     @ApiModelProperty("分销单价")
     private BigDecimal price;
@@ -124,4 +126,11 @@ public class ReturnOrderInfoItem {
 
     @ApiModelProperty("税率")
     private BigDecimal tax;
+
+    @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date productDate;
+
+    @ApiModelProperty(value = "批次编码")
+    private String batchInfoCode;
 }

@@ -229,7 +229,7 @@
         <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
         <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
         <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
-        <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+        <result column="bbatch_code" jdbcType="VARCHAR" property="batchCode" />
         <result column="bprice" jdbcType="BIGINT" property="price" />
         <result column="bnum" jdbcType="BIGINT" property="num" />
         <result column="bamount" jdbcType="BIGINT" property="amount" />
@@ -337,7 +337,7 @@
                b.unit_name bunit_name,
                b.zero_disassembly_coefficient bzero_disassembly_coefficient,
                b.give_promotion bgive_promotion,
-               b.batch_number bbatch_number,
+               b.batch_code bbatch_code,
                b.price bprice,
                b.num bnum,
                b.amount bamount,
@@ -477,7 +477,7 @@
       <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
       <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
       <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
-      <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="bbatch_code" jdbcType="VARCHAR" property="batchCode" />
       <result column="bprice" jdbcType="BIGINT" property="price" />
       <result column="bnum" jdbcType="BIGINT" property="num" />
       <result column="bamount" jdbcType="BIGINT" property="amount" />
@@ -582,7 +582,7 @@
                a.give_promotion givePromotion,
                a.product_line_num originalLineNum,
                a.product_status productStatus,
-               group_concat(b.batch_number) batchNumber
+               group_concat(b.batch_number) batchCode
         from return_order_info_item a
                  left join order_info_item_product_batch b
                            on a.sku_code = b.sku_code
@@ -661,7 +661,7 @@
       <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
       <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
       <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
-      <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="bbatch_code" jdbcType="VARCHAR" property="batchCode" />
       <result column="bprice" jdbcType="BIGINT" property="price" />
       <result column="bnum" jdbcType="BIGINT" property="num" />
       <result column="bamount" jdbcType="BIGINT" property="amount" />
@@ -688,7 +688,7 @@
       <result column="cunit_name" jdbcType="VARCHAR" property="unitName" />
       <result column="czero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
       <result column="cgive_promotion" jdbcType="INTEGER" property="givePromotion" />
-      <result column="cbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+      <result column="cbatch_code" jdbcType="VARCHAR" property="batchCode" />
       <result column="cnum" jdbcType="BIGINT" property="num" />
       <result column="cproduct_line_num" jdbcType="BIGINT" property="productLineNum" />
       <result column="coriginal_line_num" jdbcType="INTEGER" property="originalLineNum" />
@@ -774,7 +774,7 @@
                c.unit_name cunit_name,
                c.num cnum,
                c.product_status cproduct_status,
-               c.batch_number cbatch_number,
+               c.batch_code cbatch_code,
                c.warehouse_name cwarehouse_name
         from return_order_info a left join return_order_info_item b on a.return_order_code = b.return_order_code left join return_order_info_inspection_item c on c.return_order_code = a.return_order_code
         where a.return_order_code = #{code}
@@ -871,7 +871,7 @@
             <result column="bunit_name" jdbcType="VARCHAR" property="unitName" />
             <result column="bzero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
             <result column="bgive_promotion" jdbcType="INTEGER" property="givePromotion" />
-            <result column="bbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+            <result column="bbatch_code" jdbcType="VARCHAR" property="batchCode" />
             <result column="bprice" jdbcType="BIGINT" property="price" />
             <result column="bnum" jdbcType="BIGINT" property="num" />
             <result column="bamount" jdbcType="BIGINT" property="amount" />
@@ -981,7 +981,7 @@
                    b.unit_name bunit_name,
                    b.zero_disassembly_coefficient bzero_disassembly_coefficient,
                    b.give_promotion bgive_promotion,
-                   b.batch_number bbatch_number,
+                   b.batch_code bbatch_code,
                    b.price bprice,
                    b.num bnum,
                    b.amount bamount,

@@ -18,7 +18,7 @@
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
     <result column="zero_disassembly_coefficient" jdbcType="INTEGER" property="zeroDisassemblyCoefficient" />
     <result column="give_promotion" jdbcType="INTEGER" property="givePromotion" />
-    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="price" jdbcType="DECIMAL" property="price" />
     <result column="num" jdbcType="BIGINT" property="num" />
     <result column="amount" jdbcType="DECIMAL" property="amount" />
@@ -40,7 +40,7 @@
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
     color_code, model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
-    give_promotion, batch_number, price, num, amount, activity_code, product_line_num,
+    give_promotion, batch_code, price, num, amount, activity_code, product_line_num,
     promotion_line_num, product_status, actual_inbound_num, company_name, company_code,
     channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
     actual_amount, actual_price,tax
@@ -68,24 +68,25 @@
       spec_code, color_name, color_code,
       model, model_code, base_product_content,
       unit_code, unit_name, zero_disassembly_coefficient,
-      give_promotion, batch_number, price,
+      give_promotion, batch_code, price,
       num, amount, activity_code,
       product_line_num, promotion_line_num, product_status,
       actual_inbound_num, company_name, company_code,
       channel_unit_price, total_channel_price, actual_channel_unit_price,
-      actual_total_channel_price, actual_amount, actual_price
+      actual_total_channel_price, actual_amount, actual_price,batch_info_code,product_date
       )
     values (#{id,jdbcType=BIGINT}, #{returnOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR},
       #{skuName,jdbcType=VARCHAR}, #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR},
       #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR},
       #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER},
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
-      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
+      #{givePromotion,jdbcType=INTEGER}, #{batchCode,jdbcType=VARCHAR}, #{price,jdbcType=DECIMAL},
       #{num,jdbcType=BIGINT}, #{amount,jdbcType=DECIMAL}, #{activityCode,jdbcType=VARCHAR},
       #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, #{productStatus,jdbcType=INTEGER},
       #{actualInboundNum,jdbcType=INTEGER}, #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{channelUnitPrice,jdbcType=DECIMAL}, #{totalChannelPrice,jdbcType=DECIMAL}, #{actualChannelUnitPrice,jdbcType=DECIMAL},
-      #{actualTotalChannelPrice,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, #{actualPrice,jdbcType=DECIMAL}
+      #{actualTotalChannelPrice,jdbcType=DECIMAL}, #{actualAmount,jdbcType=DECIMAL}, #{actualPrice,jdbcType=DECIMAL},
+       #{batchInfoCode,jdbcType=VARCHAR}, #{productDate,jdbcType=TIMESTAMP}
       )
   </insert>
   <insert id="insertList" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem">
@@ -94,7 +95,7 @@
       spec_code, color_name, color_code,
       model, model_code, base_product_content,
       unit_code, unit_name, zero_disassembly_coefficient,
-      give_promotion, batch_number, price,
+      give_promotion, batch_code, price,
       num, amount, activity_code,
       product_line_num, promotion_line_num, product_status,
       actual_inbound_num, company_name, company_code,  channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
@@ -191,8 +192,8 @@
           <if test="givePromotion != null">
               give_promotion,
           </if>
-          <if test="batchNumber != null">
-              batch_number,
+          <if test="batchCode != null">
+              batch_code,
           </if>
           <if test="price != null">
               price,
@@ -351,7 +352,7 @@
       spec_code, color_name, color_code,
       model, model_code, base_product_content,
       unit_code, unit_name, zero_disassembly_coefficient,
-      give_promotion, batch_number, price,
+      give_promotion, batch_code, price,
       num, amount, activity_code,
       product_line_num, promotion_line_num, product_status,
       actual_inbound_num, company_name, company_code,
@@ -365,7 +366,7 @@
       #{item.specCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.colorCode,jdbcType=VARCHAR},
       #{item.model,jdbcType=VARCHAR}, #{item.modelCode,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
       #{item.unitCode,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR}, #{item.zeroDisassemblyCoefficient,jdbcType=INTEGER},
-      #{item.givePromotion,jdbcType=INTEGER}, #{item.batchNumber,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL},
+      #{item.givePromotion,jdbcType=INTEGER}, #{item.batchCode,jdbcType=VARCHAR}, #{item.price,jdbcType=DECIMAL},
       #{item.num,jdbcType=BIGINT}, #{item.amount,jdbcType=DECIMAL}, #{item.activityCode,jdbcType=VARCHAR},
       #{item.productLineNum,jdbcType=BIGINT}, #{item.promotionLineNum,jdbcType=BIGINT}, #{item.productStatus,jdbcType=INTEGER},
       #{item.actualInboundNum,jdbcType=INTEGER}, #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
@@ -422,8 +423,8 @@
             <if test="givePromotion != null">
                 give_promotion = #{givePromotion,jdbcType=INTEGER},
             </if>
-            <if test="batchNumber != null">
-                batch_number = #{batchNumber,jdbcType=VARCHAR},
+            <if test="batchCode != null">
+                batch_code = #{batchNumber,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
                 price = #{price,jdbcType=DECIMAL},
@@ -524,8 +525,8 @@
             <if test="givePromotion != null">
                 give_promotion = #{givePromotion,jdbcType=INTEGER},
             </if>
-            <if test="batchNumber != null">
-                batch_number = #{batchNumber,jdbcType=VARCHAR},
+            <if test="batchCode != null">
+                batch_code = #{batchNumber,jdbcType=VARCHAR},
             </if>
             <if test="price != null">
                 price = #{price,jdbcType=DECIMAL},
@@ -595,7 +596,7 @@
       unit_name = #{unitName,jdbcType=VARCHAR},
       zero_disassembly_coefficient = #{zeroDisassemblyCoefficient,jdbcType=INTEGER},
       give_promotion = #{givePromotion,jdbcType=INTEGER},
-      batch_number = #{batchNumber,jdbcType=VARCHAR},
+      batch_code = #{batchCode,jdbcType=VARCHAR},
       price = #{price,jdbcType=DECIMAL},
       num = #{num,jdbcType=BIGINT},
       amount = #{amount,jdbcType=DECIMAL},
