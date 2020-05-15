@@ -23,6 +23,10 @@ public class RejectApplyGroupRequest extends RejectApplyRecord {
     @JsonProperty("submit_type")
     private Integer submitType;
 
+    @ApiModelProperty(value = "选择类型 0.新增 1.编辑")
+    @JsonProperty("choice_type")
+    private Integer choiceType;
+
     @ApiModelProperty(value = "仓库信息")
     @JsonProperty("center_list")
     private List<RejectApplyRecordTransportCenter> centerList;

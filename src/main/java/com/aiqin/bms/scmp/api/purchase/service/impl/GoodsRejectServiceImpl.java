@@ -381,10 +381,15 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         }
         try {
             // 获取退供申请单编码
+            String rejectApplyCode;
             EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
+            if(request.getChoiceType() == 0){
+                rejectApplyCode = "TS" + encodingRule.getNumberingValue();
+            }else {
+                rejectApplyCode = request.getRejectApplyRecordCode();
+            }
             RejectApplyRecord rejectApplyRecord = BeanCopyUtils.copy(request, RejectApplyRecord.class);
-            String rejectCode = "TS" + encodingRule.getNumberingValue();
-            rejectApplyRecord.setRejectApplyRecordCode(rejectCode);
+            rejectApplyRecord.setRejectApplyRecordCode(rejectApplyCode);
             if(request.getSubmitType() == 0){
                 rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_NO_SUBMIT);
             }else {
@@ -392,17 +397,36 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             }
 
             for(RejectApplyRecordTransportCenter center:request.getCenterList()){
-                center.setRejectApplyRecordCode(rejectCode);
+                center.setRejectApplyRecordCode(rejectApplyCode);
             }
 
             for(RejectApplyRecordDetail detail:request.getDetailList()){
                 detail.setRejectApplyRecordDetailId(IdUtil.uuid());
-                detail.setRejectApplyRecordCode(rejectCode);
+                detail.setRejectApplyRecordCode(rejectApplyCode);
             }
 
-            // 保存退供申请单信息
-            Integer rejectCount = rejectApplyRecordDao.insert(rejectApplyRecord);
-            LOGGER.info("保存退供申请单条数:{}", rejectCount);
+            // 新增
+            if(request.getChoiceType() == 0){
+                // 保存退供申请单信息
+                Integer rejectCount = rejectApplyRecordDao.insert(rejectApplyRecord);
+                LOGGER.info("保存退供申请单条数:{}", rejectCount);
+
+                //更新编码
+                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            }else {
+                Integer rejectCount = rejectApplyRecordDao.update(rejectApplyRecord);
+                LOGGER.info("修改退供申请单条数:{}", rejectCount);
+
+                // 删除商品信息
+                Integer detailCount = rejectApplyRecordDetailDao.delete(rejectApplyCode);
+                LOGGER.info("修改退供申请单删除商品批次条数:{}", detailCount);
+                // 删除分仓信息
+                Integer centerCount = rejectApplyRecordTransportCenterDao.delete(rejectApplyCode);
+                LOGGER.info("修改退供申请单删除分仓信息条数:{}", centerCount);
+                // 删除文件信息
+                Integer fileCount = fileRecordDao.delete(rejectApplyCode);
+                LOGGER.info("修改退供申请单删除文件条数:{}", fileCount);
+            }
 
             // 保存退供申请单商品信息
             Integer productCount = rejectApplyRecordDetailDao.insertAll(request.getDetailList());
@@ -412,16 +436,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             Integer centerCount = rejectApplyRecordTransportCenterDao.insertAll(request.getCenterList());
             LOGGER.info("保存退供申请单分仓信息条数:{}", centerCount);
 
-            //更新编码
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             //保存上传的文件
             if (CollectionUtils.isNotEmpty(request.getFileList())) {
-                Integer fileCount = fileRecordDao.insertAll(rejectCode, request.getFileList());
+                Integer fileCount = fileRecordDao.insertAll(rejectApplyCode, request.getFileList());
                 LOGGER.info("上传文件条数:{}", fileCount);
             }
             //提交退供审批
             if(request.getSubmitType() == 1){
-                goodsRejectApprovalService.workFlow(rejectCode, request.getCreateByName(),
+                goodsRejectApprovalService.workFlow(rejectApplyCode, request.getCreateByName(),
                         request.getDirectSupervisorCode(), request.getPositionCode());
             }
         } catch (GroundRuntimeException e) {
@@ -521,30 +543,38 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
         // 退供单状态: 0 待确认 1.待出库 2.出库开始 3.已完成 4.已撤销 5.重发
         Integer status = rejectRecord.getRejectStatus();
+        OperationLog log = new OperationLog();
+        log.setOperationId(rejectRecordCode);
+        log.setCreateById(personId);
+        log.setCreateByName(personName);
+        log.setOperationType(status);
+        log.setRemark("手动");
         switch (status) {
             case 0:
                 // 退供单供应商确认
+                log.setOperationContent("供应商确认");
                 record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
                 break;
             case 4:
                 // 退供单撤销
+                log.setOperationContent("退供单撤销：" + rejectRecordCode);
                 record.setRejectStatus(RejectRecordStatus.REJECT_REVOKE);
-//                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
-//                        PurchaseOrderLogEnum.DELIVER_GOODS.getName(), type);
                 break;
             case 5:
                 // 退供单重发
 
                 // 重发成功，变为待出库
-                //record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
+                log.setOperationContent("退供单重发：" + rejectRecordCode);
+                record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
                 break;
         }
         Integer count = rejectRecordDao.update(record);
         LOGGER.info("操作退供单状态条数：" + count);
+        // 添加日志
+        Integer logCount = operationLogDao.insert(log);
+        LOGGER.info("退供单日志添加条数：" + logCount);
         return HttpResponse.success();
     }
-
-
 
     /**
      * 出库完成,更新退供单 出库时间 退供单状态

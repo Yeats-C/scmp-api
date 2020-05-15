@@ -91,4 +91,8 @@
       </if>
     </where>
   </select>
+  <delete id="delete">
+    delete from reject_apply_record_transport_center
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+  </delete>
 </mapper>

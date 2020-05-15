@@ -135,32 +135,6 @@
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
   </resultMap>
-  <select id="listForRejectRecord" parameterType="com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest" resultMap="ResultMap">
-    select
-      settlement_method_code,
-      settlement_method_name,
-      supplier_code,
-      supplier_name,
-      warehouse_code,
-      warehouse_name,
-      transport_center_code,
-      transport_center_name,
-      purchase_group_code ,
-      purchase_group_name ,
-      sku_code,
-      sum(product_count) as sum_count,
-      sum(product_count) as single_count,
-      sum(product_amount*product_count) as sum_amount,
-      sum(product_amount*product_count) as single_amount
-    from reject_apply_record_detail
-    where
-      apply_record_status = '0'
-     and reject_apply_record_code in
-      <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-        #{item}
-      </foreach>
-    GROUP BY settlement_method_code,settlement_method_name,supplier_code,warehouse_code,transport_center_code,purchase_group_code,sku_code
-  </select>
   <select id="selectByRejectCode"   resultMap="BaseResultMap">
     select
     reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
@@ -173,73 +147,6 @@
     where
     reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
-  <select id="listByCondition"   resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from reject_apply_record_detail
-    where
-        apply_record_status =  0
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and reject_apply_record_code in
-    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-      #{item}
-    </foreach>
-  </select>
-  <select id="listByConditionPage"   resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from reject_apply_record_detail
-    where
-        apply_record_status =  0
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and reject_apply_record_code in
-    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-      #{item}
-    </foreach>
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="applyListByCondition"   resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyListResponse">
-    select
-      reject_apply_record_code as rejectApplyRecordCode,apply_type as applyType,sum(product_count) as  singleCount
-    from reject_apply_record_detail
-    where
-        apply_record_status =  0
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and reject_apply_record_code in
-    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-      #{item}
-    </foreach>
-    group by reject_apply_record_code
-  </select>
-  <select id="listByConditionPageCount"   resultType="java.lang.Integer">
-    select
-     count(1)
-    from reject_apply_record_detail
-    where
-        apply_record_status =  0
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and reject_apply_record_code in
-    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-      #{item}
-    </foreach>
-  </select>
-
   <insert id="insertAll">
     insert into reject_apply_record_detail (reject_apply_record_detail_id, reject_apply_record_code,
     purchase_group_code, purchase_group_name, transport_center_code, transport_center_name, warehouse_code,
@@ -269,7 +176,7 @@
       #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, now(), now())
     </foreach>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
+  <update id="update">
     update reject_apply_record_detail
     <set>
       <if test="rejectApplyRecordCode != null">
@@ -386,135 +293,18 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByDetailIds" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail">
-    update reject_apply_record_detail
-    set
-      apply_record_status =  1,
-      update_time = now()
-    where
-      reject_apply_record_detail_id in
-    <foreach collection="list" separator="," open="(" close=")" item="item">
-      #{item,jdbcType=VARCHAR}
-    </foreach>
-  </update>
   <update id="deleteAll" parameterType="java.lang.String">
     delete from reject_apply_record_detail
     where     reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </update>
-  <select id="selectSupplyCompany" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
-    select
-        province_id as provinceId, province_name as provinceName, city_id as cityId, city_name as cityName,
-        district_id as districtId, district_name as districtName, address
-    from
-      supply_company
-    where
-      supply_code = #{supplyCode,jdbcType=VARCHAR}
-  </select>
-  <select id="countByRejectId" resultType="java.lang.Integer">
-    select
-      count(1)
-    from
-    reject_apply_record_detail
-    where
-    apply_record_status =  #{applyRecordStatus,jdbcType=VARCHAR}
-    and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
-  </select>
-  <resultMap id="BaseMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse">
-    <result column="apply_type" jdbcType="INTEGER" property="applyType" />
-    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
-    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
-    <result column="apply_record_status" jdbcType="INTEGER" property="applyRecordStatus" />
-    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
-    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="product_id" jdbcType="VARCHAR" property="productId" />
-    <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
-    <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
-    <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
-    <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
-    <result column="product_type" jdbcType="INTEGER" property="productType" />
-    <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
-    <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
-    <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
-    <result column="stock_count" jdbcType="INTEGER" property="stockCount" />
-    <result column="product_count" jdbcType="INTEGER" property="productCount" />
-    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
-    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
-    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
-    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
-    <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
-    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
-    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
-    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
-    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
-    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
-    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
-    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
-    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
-    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
-    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
-    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
-    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
-  </resultMap>
-  <select id="selectHandleByRejectCode" resultMap="BaseMap">
-    select
-    <include refid="Base_Column_List" />
-    from
-    reject_apply_record_detail
-    where
-    reject_apply_record_code = #{rejectApplyCode,jdbcType=VARCHAR}
-  </select>
   <update id="updateStatus">
          update reject_apply_record_detail
          set
          apply_record_status = 1
          where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
   </update>
-  <select id="selectReturnAmount" resultType="java.math.BigDecimal">
-    select
-      ifnull(sum(product_amount*product_count),0)
-    from
-      reject_apply_record_detail
-    where
-      apply_record_status = 0
-    and product_type = #{productType,jdbcType=INTEGER}
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and reject_apply_record_code in
-    <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-      #{item}
-    </foreach>
-  </select>
-  <select id="selectSkuCount" resultType="java.lang.Integer">
-    select
-      count(r.sku_code)
-    from (
-      select
-      distinct sku_code
-      from
-      reject_apply_record_detail
-      where
-      apply_record_status = 0
-      and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      and reject_apply_record_code in
-      <foreach collection="rejectApplyRecordCodes" separator="," open="(" close=")" item="item">
-        #{item}
-      </foreach>
-    ) r
-  </select>
+  <delete id="delete">
+    delete from reject_apply_record_transport_center
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+  </delete>
 </mapper>

@@ -15,4 +15,6 @@ public interface RejectApplyRecordTransportCenterDao {
 
     Integer insertAll(@Param("list") List<RejectApplyRecordTransportCenter> list);
 
+    Integer delete(String rejectApplyRecordCode);
+
 }
