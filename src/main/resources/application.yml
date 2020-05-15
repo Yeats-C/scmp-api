@@ -315,6 +315,10 @@ mgs:
         methods:
         - code: SCMP004008001
           name: 编辑
+        - code: SCMP004008002
+          name: 导入
+        - code: SCMP004008003
+          name: 查看
       - code: SCMP004011
         name: 商品文件管理
         link: '/product/productFiles'
@@ -323,6 +327,8 @@ mgs:
           name: 编辑
         - code: SCMP004011002
           name: 导入
+        - code: SCMP004011003
+          name: 查看
       - code: SCMP004012
         name: 商品制造商管理
         link: '/product/manufacturer'
