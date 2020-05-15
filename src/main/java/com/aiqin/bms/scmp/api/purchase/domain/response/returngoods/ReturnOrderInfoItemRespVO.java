@@ -48,7 +48,7 @@ public class ReturnOrderInfoItemRespVO {
     private Integer givePromotion;
 
     @ApiModelProperty("批次号")
-    private String batchNumber;
+    private String batchCode;
 
     @ApiModelProperty("单价")
     private Long price;

@@ -192,6 +192,9 @@ public class InspectionDetailRespVO {
     @ApiModelProperty("实际退货数量")
     private Long actualProductNum;
 
+    @ApiModelProperty("体积")
+    private Long volume;
+
     @ApiModelProperty("实际体积")
     private Long actualVolume;
 

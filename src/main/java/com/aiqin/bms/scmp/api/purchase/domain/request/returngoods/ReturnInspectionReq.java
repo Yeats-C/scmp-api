@@ -52,7 +52,7 @@ public class ReturnInspectionReq {
     private Integer zeroDisassemblyCoefficient;
 
     @ApiModelProperty("批次号")
-    private String batchNumber;
+    private String batchCode;
 
     @ApiModelProperty("数量")
     private Long num;
@@ -81,5 +81,8 @@ public class ReturnInspectionReq {
     @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date productDate;
+
+    @ApiModelProperty(value = "批次编码")
+    private String batchInfoCode;
 
 }

@@ -57,7 +57,7 @@
       spec_code, color_name, color_code, 
       model, model_code, base_product_content, 
       unit_code, unit_name, zero_disassembly_coefficient, 
-      give_promotion, batch_number, num, 
+      give_promotion, batch_code, num,
       activity_code, product_line_num, promotion_line_num, 
       original_line_num, product_status, actual_inbound_num, 
       company_name, company_code, transport_center_name, 
@@ -68,7 +68,7 @@
       #{specCode,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, #{colorCode,jdbcType=VARCHAR}, 
       #{model,jdbcType=VARCHAR}, #{modelCode,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER}, 
       #{unitCode,jdbcType=VARCHAR}, #{unitName,jdbcType=VARCHAR}, #{zeroDisassemblyCoefficient,jdbcType=INTEGER}, 
-      #{givePromotion,jdbcType=INTEGER}, #{batchNumber,jdbcType=VARCHAR}, #{num,jdbcType=BIGINT}, 
+      #{givePromotion,jdbcType=INTEGER}, #{batchCode,jdbcType=VARCHAR}, #{num,jdbcType=BIGINT},
       #{activityCode,jdbcType=VARCHAR}, #{productLineNum,jdbcType=BIGINT}, #{promotionLineNum,jdbcType=BIGINT}, 
       #{originalLineNum,jdbcType=INTEGER}, #{productStatus,jdbcType=INTEGER}, #{actualInboundNum,jdbcType=INTEGER}, 
       #{companyName,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
@@ -278,7 +278,7 @@
       activity_code, product_line_num, promotion_line_num,
       original_line_num, product_status, actual_inbound_num,
       company_name, company_code, transport_center_name,
-      transport_center_code, warehouse_name, warehouse_code,product_date
+      transport_center_code, warehouse_name, warehouse_code,product_date,batch_info_code
       )
     values
     <foreach collection="list" item="item" separator="," close="" open="" >
@@ -291,7 +291,7 @@
       #{item.activityCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT}, #{item.promotionLineNum,jdbcType=BIGINT},
       #{item.originalLineNum,jdbcType=INTEGER}, #{item.productStatus,jdbcType=INTEGER}, #{item.actualInboundNum,jdbcType=INTEGER},
       #{item.companyName,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
-      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.productDate}
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.productDate}, #{item.batchInfoCode,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>
