@@ -207,6 +207,7 @@ public interface ResultCode {
     MessageId SELECT_ROLE_ERROR = MessageId.create(Project.SCMP_API, 1008, "查询角色异常");
     MessageId CONTROL_ERROR = MessageId.create(Project.SCMP_API, 1009, "调用主控系统异常");
     MessageId REJECT_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 1010, "退供申请单的商品信息为空");
+    MessageId REJECT_RECORD_NULL = MessageId.create(Project.SCMP_API, 1011, "退供单信息为空");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");

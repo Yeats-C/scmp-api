@@ -105,12 +105,12 @@ public class DingApprovalController {
         }
     }
 
-    @GetMapping("/record/approval/{approval_code}")
-    @ApiOperation(value = "通过审批关联查询退供单详情")
-    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
-    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
-        return goodsRejectService.applyRejectInfo(approval_code);
-    }
+//    @GetMapping("/record/approval/{approval_code}")
+//    @ApiOperation(value = "通过审批关联查询退供单详情")
+//    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
+//    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
+//        return goodsRejectService.applyRejectInfo(approval_code);
+//    }
 
     @GetMapping("/purchase/details/apply")
     @ApiOperation("查询采购申请单-采购通用信息")

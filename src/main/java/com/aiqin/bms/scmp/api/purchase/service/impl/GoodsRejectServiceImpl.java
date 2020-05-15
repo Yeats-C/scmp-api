@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
@@ -31,6 +32,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -491,6 +493,58 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse operationRejectRecord(RejectRecord rejectRecord){
+        if(rejectRecord == null || StringUtils.isBlank(rejectRecord.getRejectRecordCode()) ||
+                StringUtils.isBlank(rejectRecord.getSynchrStatus().toString())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+
+        String rejectRecordCode = rejectRecord.getRejectRecordCode();
+        // 查询当前的采购单信息
+        RejectRecord record = rejectRecordDao.selectByRejectCode(rejectRecordCode);
+        if (null == record) {
+            LOGGER.info("退供单的信息为空");
+            return HttpResponse.failure(ResultCode.REJECT_RECORD_NULL);
+        }
+        String personId = currentAuthToken.getPersonId();
+        String personName = currentAuthToken.getPersonName();
+        record.setUpdateById(personId);
+        record.setUpdateByName(personName);
+
+        // 退供单状态: 0 待确认 1.待出库 2.出库开始 3.已完成 4.已撤销 5.重发
+        Integer status = rejectRecord.getRejectStatus();
+        switch (status) {
+            case 0:
+                // 退供单供应商确认
+                record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
+                break;
+            case 4:
+                // 退供单撤销
+                record.setRejectStatus(RejectRecordStatus.REJECT_REVOKE);
+//                log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.DELIVER_GOODS.getCode(),
+//                        PurchaseOrderLogEnum.DELIVER_GOODS.getName(), type);
+                break;
+            case 5:
+                // 退供单重发
+
+                // 重发成功，变为待出库
+                //record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
+                break;
+        }
+        Integer count = rejectRecordDao.update(record);
+        LOGGER.info("操作退供单状态条数：" + count);
+        return HttpResponse.success();
+    }
+
+
 
     /**
      * 出库完成,更新退供单 出库时间 退供单状态
@@ -575,14 +629,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
                 throw new GroundRuntimeException("解锁库存异常");
             }
-            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
-                WorkFlowVO w = new WorkFlowVO();
-                w.setFormNo(record.getRejectRecordCode());
-                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-                if (!workFlowRespVO.getSuccess()) {
-                    throw new GroundRuntimeException("审批流撤销失败!");
-                }
-            }
+//            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
+//                WorkFlowVO w = new WorkFlowVO();
+//                w.setFormNo(record.getRejectRecordCode());
+//                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
+//                if (!workFlowRespVO.getSuccess()) {
+//                    throw new GroundRuntimeException("审批流撤销失败!");
+//                }
+//            }
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("取消-更改退供申请异常:{}", e);

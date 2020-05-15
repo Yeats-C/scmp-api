@@ -43,6 +43,8 @@ public interface GoodsRejectService {
 
     HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(String rejectRecordCode);
 
+    HttpResponse operationRejectRecord(RejectRecord rejectRecord);
+
 
 
     void finishStock(RejectStockRequest request);

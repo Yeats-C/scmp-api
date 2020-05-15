@@ -259,4 +259,18 @@ public class GoodsRejectController {
         return goodsRejectService.rejectBatchInfo(rejectRecordCode);
     }
 
+    @GetMapping("/record/operation")
+    @ApiOperation("对退供单的操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "reject_status", value = "退供单状态: 0.待确认 1.待出库 2.出库开始 3.已完成 4.已撤销 5.重发", type = "Integer"),
+            @ApiImplicitParam(name = "reject_record_code", value = "退供单号", type = "String"),})
+    public HttpResponse operationRejectRecord(@RequestParam("reject_status") Integer rejectStatus,
+                                            @RequestParam("reject_record_code") String rejectRecordCode) {
+        RejectRecord rejectRecord = new RejectRecord();
+        rejectRecord.setRejectRecordCode(rejectRecordCode);
+        rejectRecord.setRejectStatus(rejectStatus);
+        LOGGER.info("退供单的操作请求,RejectRecord:{}", rejectRecord.toString());
+        return goodsRejectService.operationRejectRecord(rejectRecord);
+    }
+
 }

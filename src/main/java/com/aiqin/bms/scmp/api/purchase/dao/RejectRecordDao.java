@@ -8,11 +8,9 @@ import java.util.List;
 
 public interface RejectRecordDao {
 
-    int insert(RejectRecord record);
+    Integer insert(RejectRecord record);
 
-    //int updateByPrimaryKeySelective(RejectRecord record);
-
-    int updateByPrimaryKey(RejectRecord record);
+    Integer update(RejectRecord record);
 
     List<RejectRecord> list(RejectQueryRequest rejectApplyQueryRequest);
 
