@@ -55,7 +55,7 @@ public class ReturnOrderInfoInspectionItemRespVO {
     private Integer givePromotion;
 
     @ApiModelProperty("批次号")
-    private String batchNumber;
+    private String batchCode;
 
     @ApiModelProperty("数量")
     private Long num;

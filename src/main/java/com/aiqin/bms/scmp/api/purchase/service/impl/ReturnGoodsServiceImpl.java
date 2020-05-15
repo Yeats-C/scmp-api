@@ -415,7 +415,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
               returnOrderInfoInspectionItem.setSkuCode(returnBatchDetailDLReq.getSkuCode());
               returnOrderInfoInspectionItem.setSkuName(returnBatchDetailDLReq.getSkuName());
               returnOrderInfoInspectionItem.setProductLineNum(returnBatchDetailDLReq.getLineCode());
-              returnOrderInfoInspectionItem.setBatchNumber(String.valueOf(returnBatchDetailDLReq.getBatchNum()));
+              returnOrderInfoInspectionItem.setBatchCode(String.valueOf(returnBatchDetailDLReq.getBatchNum()));
               returnOrderInfoInspectionItemMapper.insert(returnOrderInfoInspectionItem);
           }
 
