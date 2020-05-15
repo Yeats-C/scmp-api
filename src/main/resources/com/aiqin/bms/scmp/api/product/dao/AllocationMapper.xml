@@ -1224,7 +1224,7 @@
   </select>
 
   <select id="selectNumberByBatchAndSkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
-    select id, ifnull(available_count,0) as availableNum
+    select id, ifnull(available_count,0) as availableCount, supplier_code as supplierCode, tax_cost as taxCost,tax_rate as taxRate
     from stock_batch
     where sku_code=#{skuCode} and batch_code=#{batchCode}
   </select>
