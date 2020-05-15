@@ -62,10 +62,10 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCityName(reqVo.getCityName());
                 outbound.setCountyCode(reqVo.getDistrictId());
                 outbound.setCountyName(reqVo.getDistrictName());
-                outbound.setConsignee(reqVo.getContactsPerson());
-                outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
-                outbound.setConsigneeRate(supplyCompany.getZipCode());
-                outbound.setDetailedAddress(reqVo.getAddress());
+//                outbound.setConsignee(reqVo.getContactsPerson());
+//                outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
+//                outbound.setConsigneeRate(supplyCompany.getZipCode());
+//                outbound.setDetailedAddress(reqVo.getAddress());
                 //公司
                 outbound.setCompanyCode(reqVo.getCompanyCode());
                 outbound.setCompanyName(reqVo.getCompanyName());
@@ -89,13 +89,13 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 //出库时间
 //                order.setOutboundTime(reqVo.getOutboundTime());
                 //预计出库数量
-                outbound.setPreOutboundNum(Long.parseLong(reqVo.getSingleCount().toString()));
-                //预计主出库数量
-                outbound.setPreMainUnitNum(Long.parseLong(reqVo.getSingleCount().toString()));
-                //预计含税总金额
-                outbound.setPreTaxAmount(reqVo.getGiftAmount().add(reqVo.getReturnAmount()).add(reqVo.getProductAmount()));
-                //预计无税总金额
-                outbound.setPreAmount(reqVo.getUntaxedAmount());
+//                outbound.setPreOutboundNum(Long.parseLong(reqVo.getSingleCount().toString()));
+//                //预计主出库数量
+//                outbound.setPreMainUnitNum(Long.parseLong(reqVo.getSingleCount().toString()));
+//                //预计含税总金额
+//                outbound.setPreTaxAmount(reqVo.getGiftAmount().add(reqVo.getReturnAmount()).add(reqVo.getProductAmount()));
+//                //预计无税总金额
+//                outbound.setPreAmount(reqVo.getUntaxedAmount());
                 //预计税额
 //                outbound.setPreTax(reqVo.getSumAmount()-reqVo.getSumAmount());
                 outbound.setCreateBy(reqVo.getCreateByName());
@@ -142,7 +142,7 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setPreOutboundMainNum(item.getProductCount());
                     outboundProduct.setCreateTime(new Date());
                     outboundProduct.setUpdateTime(new Date());
-                    outboundProduct.setLinenum(item.getLinnum().longValue());
+                    outboundProduct.setLinenum(item.getLineCode().longValue());
                     //计算不含税单价
                     BigDecimal aLong = map.get(item.getSkuCode());
                     BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(item.getProductAmount(), aLong);
@@ -157,9 +157,9 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     //sku
                     outboundBatch.setSkuCode(item.getSkuCode());
                     outboundBatch.setSkuName(item.getSkuName());
-                    outboundBatch.setOutboundBatchCode(item.getBatchNo());
-                    outboundBatch.setManufactureTime(item.getBatchCreateTime());
-                    outboundBatch.setBatchRemark(item.getBatchRemark());
+//                    outboundBatch.setOutboundBatchCode(item.getBatchNo());
+//                    outboundBatch.setManufactureTime(item.getBatchCreateTime());
+//                    outboundBatch.setBatchRemark(item.getBatchRemark());
                     outboundBatch.setPraQty(item.getProductCount());
                     outboundBatch.setCreateBy(outbound.getCreateBy());
                     outboundBatch.setUpdateBy(outbound.getUpdateBy());

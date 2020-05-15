@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectApplyRecordTransportCenterDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordTransportCenter">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="reject_apply_record_code" jdbcType="VARCHAR" property="rejectApplyRecordCode" />
+    <result column="reject_apply_record_name" jdbcType="VARCHAR" property="rejectApplyRecordName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="pre_deliver_time" jdbcType="TIMESTAMP" property="preDeliverTime" />
+    <result column="valid_time" jdbcType="TIMESTAMP" property="validTime" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="product_tax_amount" jdbcType="DECIMAL" property="productTaxAmount" />
+    <result column="return_tax_amount" jdbcType="DECIMAL" property="returnTaxAmount" />
+    <result column="gift_tax_amount" jdbcType="DECIMAL" property="giftTaxAmount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, reject_apply_record_code, reject_apply_record_name, transport_center_code, transport_center_name, 
+    warehouse_code, warehouse_name, pre_deliver_time, valid_time, total_count, product_tax_amount, 
+    return_tax_amount, gift_tax_amount, create_time, update_time
+  </sql>
+  <insert id="insert">
+    insert into reject_apply_record_transport_center (id, reject_apply_record_code, reject_apply_record_name, 
+      transport_center_code, transport_center_name, 
+      warehouse_code, warehouse_name, pre_deliver_time, 
+      valid_time, total_count, product_tax_amount, 
+      return_tax_amount, gift_tax_amount, create_time, 
+      update_time)
+    values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{rejectApplyRecordName,jdbcType=VARCHAR}, 
+      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{preDeliverTime,jdbcType=TIMESTAMP}, 
+      #{validTime,jdbcType=TIMESTAMP}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL}, 
+      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{updateTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPrimaryKeySelective">
+    update reject_apply_record_transport_center
+    <set>
+      <if test="rejectApplyRecordCode != null">
+        reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
+      </if>
+      <if test="rejectApplyRecordName != null">
+        reject_apply_record_name = #{rejectApplyRecordName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="preDeliverTime != null">
+        pre_deliver_time = #{preDeliverTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="validTime != null">
+        valid_time = #{validTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="productTaxAmount != null">
+        product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="returnTaxAmount != null">
+        return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="giftTaxAmount != null">
+        gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+      </if>
+        update_time = now(),
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="rejectApplyTransportCenterInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from reject_apply_record_transport_center
+    <where>
+      <if test="rejectApplyRecordCode != null">
+        and reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null">
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+</mapper>

@@ -28,4 +28,7 @@ public interface StockBatchDao {
     Integer insertAll(@Param("list") List<StockBatch> stockList);
 
     List<SkuBatchRespVO>  selectStockBatch(@Param("skuCode") String skuCode, @Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode") String warehouseCode);
+
+    List<StockBatch> stockBatchByReject(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode,
+                                        @Param("supplierCode") String supplierCode);
 }

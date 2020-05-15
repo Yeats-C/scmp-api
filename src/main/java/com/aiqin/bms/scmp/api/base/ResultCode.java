@@ -199,13 +199,14 @@ public interface ResultCode {
     MessageId IMPORT_REJECT_APPLY_ERROR = MessageId.create(Project.SCMP_API, 1000, "导入退供申请单异常");
     MessageId NOT_HAVE_REJECT_APPLY_RECORD = MessageId.create(Project.SCMP_API, 1001, "未查询到对应的退供申请单记录");
     MessageId NOT_HAVE_REJECT_RECORD = MessageId.create(Project.SCMP_API, 1002, "未查询到对应的退供单记录");
-    MessageId REJECT_RECORD_ERROR = MessageId.create(Project.PRODUCT_API, 1003, "申请退供单审批数据保存异常");
-    MessageId JURISDICTION_ERROR = MessageId.create(Project.PRODUCT_API, 1004, "所查询的记录没有权限");
-    MessageId PURCHASE_ERROR = MessageId.create(Project.PRODUCT_API, 1005, "申请采购单审批数据保存异常");
-    MessageId NO_HAVE_PRODUCT = MessageId.create(Project.PURCHASE_API, 1006, "未查询到文件夹编码对应的商品");
-    MessageId NO_HAVE_ACCOUNT = MessageId.create(Project.PURCHASE_API, 1007, "未查询到账号信息");
-    MessageId SELECT_ROLE_ERROR = MessageId.create(Project.PURCHASE_API, 1008, "查询角色异常");
-    MessageId CONTROL_ERROR = MessageId.create(Project.PURCHASE_API, 1009, "调用主控系统异常");
+    MessageId REJECT_RECORD_ERROR = MessageId.create(Project.SCMP_API, 1003, "申请退供单审批数据保存异常");
+    MessageId JURISDICTION_ERROR = MessageId.create(Project.SCMP_API, 1004, "所查询的记录没有权限");
+    MessageId PURCHASE_ERROR = MessageId.create(Project.SCMP_API, 1005, "申请采购单审批数据保存异常");
+    MessageId NO_HAVE_PRODUCT = MessageId.create(Project.SCMP_API, 1006, "未查询到文件夹编码对应的商品");
+    MessageId NO_HAVE_ACCOUNT = MessageId.create(Project.SCMP_API, 1007, "未查询到账号信息");
+    MessageId SELECT_ROLE_ERROR = MessageId.create(Project.SCMP_API, 1008, "查询角色异常");
+    MessageId CONTROL_ERROR = MessageId.create(Project.SCMP_API, 1009, "调用主控系统异常");
+    MessageId REJECT_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 1010, "退供申请单的商品信息为空");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
@@ -236,18 +237,12 @@ public interface ResultCode {
     MessageId INBOUND_INFO_NULL = MessageId.create(Project.SCMP_API, 76, "入库单的信息为空");
 
     // 采购
-    MessageId NOT_PURCHASE_GROUP_DATA = MessageId.create(Project.SCMP_API, 201, "此采购组该人员无相关数据");
-    MessageId IMPORT_PURCHASE_APPLY_ERROR = MessageId.create(Project.SCMP_API, 202, "导入采购申请单异常");
-    MessageId PURCHASE_ORDER_CHECK = MessageId.create(Project.SCMP_API, 203, "该采购单未审核通过， 不能开始备货");
-    MessageId PURCHASE_PRODUCT_NOT_SUBMIT = MessageId.create(Project.SCMP_API, 204, "此采购单所有商品都未提交， 不能完成");
-    MessageId STORAGE_NOT_CONFIRM = MessageId.create(Project.SCMP_API, 205, "采购仓储状态非确认中状态， 不能确认");
     MessageId DL_CANCEL = MessageId.create(Project.SCMP_API, 206, "向dl发送撤销订单请求失败");
     MessageId PURCHASE_APPLY_INFO_NULL = MessageId.create(Project.SCMP_API, 207, "采购申请单的通用信息为空");
     MessageId PURCHASE_APPLY_TRANSPORT_NULL = MessageId.create(Project.SCMP_API, 208, "采购申请单的分仓信息为空");
     MessageId PURCHASE_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 209, "采购申请单的商品信息为空");
     MessageId PURCHASE_ORDER_STATUS_FAIL = MessageId.create(Project.SCMP_API, 210, "变更采购单状态失败");
     MessageId PURCHASE_ORDER_NULL = MessageId.create(Project.SCMP_API, 211, "采购单信息为空");
-    MessageId PURCHASE_ORDER_INBOUND_STATUS = MessageId.create(Project.SCMP_API, 212, "采购单非入库中状态，不可再次入库");
 
     //审批中
     MessageId UN_SUBMIT_APPROVAL = MessageId.create(Project.SCMP_API, 201, "审批中的数据不允许修改");

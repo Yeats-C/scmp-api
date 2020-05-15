@@ -299,7 +299,8 @@
       a.be_overdue_date beOverdueDate, a.batch_code batchCode, a.batch_info_code batchInfoCode,
       a.supplier_code supplierCode, b.supply_name supplierName, a.tax_cost taxCost,
       a.create_time createTime, a.update_time updateTime, a.create_by_name createByName,
-      a.update_by_name updateByName, a.sku_code skuCode, a.warehouse_code warehouseCode
+      a.update_by_name updateByName, a.sku_code skuCode, a.warehouse_code warehouseCode,
+      a.purchase_price purchasePrice
     from stock_batch a
     inner join supply_company b on b.supply_code = a.supplier_code
     where a.stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
@@ -443,5 +444,12 @@
     <if test="warehouseCode != null">
       and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </if>
+  </select>
+  <select id="stockBatchByReject" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </select>
 </mapper>

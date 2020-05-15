@@ -944,11 +944,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 purchaseDetail.setSkuName(recordDetail.getSkuName());
                 purchaseDetail.setSkuDesc(StringConvertUtil.productDesc(recordDetail.getColorName(), recordDetail.getProductSpec(), recordDetail.getModelNumber()));
                 purchaseDetail.setPrice(recordDetail.getProductAmount().toString());
-                purchaseDetail.setSingleCount(recordDetail.getSingleCount());
+                //purchaseDetail.setSingleCount(recordDetail.getSingleCount());
                 purchaseDetail.setProductType(recordDetail.getProductType());
                 purchaseDetail.setUnit(recordDetail.getUnitName());
                 purchaseDetail.setInputRate(recordDetail.getTaxRate());
-                purchaseDetail.setStorageCount(recordDetail.getSingleCount());
+                //purchaseDetail.setStorageCount(recordDetail.getSingleCount());
                 purchaseDetail.setUniteCount("1");
                 purchaseDetail.setCategoryCode(recordDetail.getCategoryId());
                 purchaseDetail.setCategoryName(recordDetail.getCategoryName());
@@ -985,12 +985,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 purchase.setTransportName(rejectRecord.getTransportCenterName());
                 purchase.setWarehouseCode(rejectRecord.getWarehouseCode());
                 purchase.setWarehouseName(rejectRecord.getWarehouseName());
-                purchase.setSkuCount(rejectRecord.getSingleCount());
-                //总金额,三者实际金额加一起
-                BigDecimal actualGiftAmount = rejectRecord.getActualGiftAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualGiftAmount();
-                BigDecimal actualProductAmount = rejectRecord.getActualProductAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualProductAmount();
-                BigDecimal actualReturnAmount = rejectRecord.getActualReturnAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualReturnAmount();
-                purchase.setAmount(String.valueOf(actualGiftAmount.add(actualProductAmount).add(actualReturnAmount)));
+//                purchase.setSkuCount(rejectRecord.getSingleCount());
+//                //总金额,三者实际金额加一起
+//                BigDecimal actualGiftAmount = rejectRecord.getActualGiftAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualGiftAmount();
+//                BigDecimal actualProductAmount = rejectRecord.getActualProductAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualProductAmount();
+//                BigDecimal actualReturnAmount = rejectRecord.getActualReturnAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualReturnAmount();
+                //purchase.setAmount(String.valueOf(actualGiftAmount.add(actualProductAmount).add(actualReturnAmount)));
                 purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
                 purchase.setGroupName(rejectRecord.getPurchaseGroupName());
                 purchase.setCompanyCode(rejectRecord.getCompanyCode());

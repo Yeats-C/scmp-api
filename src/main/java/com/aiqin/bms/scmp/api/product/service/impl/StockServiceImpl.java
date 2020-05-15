@@ -1021,16 +1021,10 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     break;
                 }
 
-//                ProductSkuInfo productSkuInfo = productSkuDao.getSkuInfo(stockBatch.getSkuCode());
-//                if (productSkuInfo == null) {
-//                    flage = true;
-//                    break;
-//                }
-
                 //设置库存流水修改后的值
+                String cost = stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
                 String batchInfoCode = stockBatch.getSkuCode() + "_" + stockBatch.getWarehouseCode() + "_" +
-                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" +
-                        stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
+                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" + cost;
                 stockBatch.setBatchInfoCode(batchInfoCode);
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());

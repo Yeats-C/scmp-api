@@ -2,46 +2,32 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 public interface GoodsRejectService {
-    HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
+    HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
     HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
+
+    HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(String rejectApplyRecordCode, String warehouseCode);
+
+    HttpResponse<PageResData<RejectApplyRecordDetail>>  selectRejectApplyProduct(String rejectApplyRecordCode);
+
+    HttpResponse<PageResData<RejectApplyBatch>> selectRejectApplyBatch(String rejectApplyRecordCode);
+
+    HttpResponse productGroup(List<RejectApplyDetailRequest> request);
 
     HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
 
@@ -58,8 +44,6 @@ public interface GoodsRejectService {
     HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
 
     HttpResponse updateRejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
-
-    HttpResponse<RejectApplyHandleResponse> selectRejectApply(String rejectApplyQueryRequest);
 
     HttpResponse rejectTransport(RejectRecord request);
 

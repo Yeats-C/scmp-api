@@ -1,6 +1,10 @@
 package com.aiqin.bms.scmp.api.product.web;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchDetailResponse;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse;
 import com.aiqin.bms.scmp.api.product.service.StockBatchService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -51,27 +55,27 @@ public class StockBatchController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
             @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse stockBatchList(@RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
-                                       @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
-                                       @RequestParam(value = "sku_code", required = false) String skuCode,
-                                       @RequestParam(value = "sku_name", required = false) String skuName,
-                                       @RequestParam(value = "config_status", required = false) Integer configStatus,
-                                       @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
-                                       @RequestParam(value = "product_property_name", required = false) String productPropertyName,
-                                       @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
-                                       @RequestParam(value = "product_category_name", required = false) String productCategoryName,
-                                       @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
-                                       @RequestParam(value = "product_brand_name", required = false) String productBrandName,
-                                       @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
-                                       @RequestParam(value = "batch_code", required = false) String batchCode,
-                                       @RequestParam(value = "begin_inventory_count", required = false) Long beginInventoryCount,
-                                       @RequestParam(value = "finish_inventory_count", required = false) Long finishInventoryCount,
-                                       @RequestParam(value = "begin_available_count", required = false) Long beginAvailableCount,
-                                       @RequestParam(value = "finish_available_count", required = false) Long finishAvailableCount,
-                                       @RequestParam(value = "product_date", required = false) String productDate,
-                                       @RequestParam(value = "supplier_code", required = false) String supplierCode,
-                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
-                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
+    public HttpResponse<PageResData<StockBatchResponse>> stockBatchList(@RequestParam(value = "transport_center_code", required = false) String transportCenterCode,
+                                                                        @RequestParam(value = "warehouse_code", required = false) String warehouseCode,
+                                                                        @RequestParam(value = "sku_code", required = false) String skuCode,
+                                                                        @RequestParam(value = "sku_name", required = false) String skuName,
+                                                                        @RequestParam(value = "config_status", required = false) Integer configStatus,
+                                                                        @RequestParam(value = "product_property_code", required = false) String productPropertyCode,
+                                                                        @RequestParam(value = "product_property_name", required = false) String productPropertyName,
+                                                                        @RequestParam(value = "product_category_code", required = false) String productCategoryCode,
+                                                                        @RequestParam(value = "product_category_name", required = false) String productCategoryName,
+                                                                        @RequestParam(value = "product_brand_code", required = false) String productBrandCode,
+                                                                        @RequestParam(value = "product_brand_name", required = false) String productBrandName,
+                                                                        @RequestParam(value = "purchase_group_code", required = false) String purchaseGroupCode,
+                                                                        @RequestParam(value = "batch_code", required = false) String batchCode,
+                                                                        @RequestParam(value = "begin_inventory_count", required = false) Long beginInventoryCount,
+                                                                        @RequestParam(value = "finish_inventory_count", required = false) Long finishInventoryCount,
+                                                                        @RequestParam(value = "begin_available_count", required = false) Long beginAvailableCount,
+                                                                        @RequestParam(value = "finish_available_count", required = false) Long finishAvailableCount,
+                                                                        @RequestParam(value = "product_date", required = false) String productDate,
+                                                                        @RequestParam(value = "supplier_code", required = false) String supplierCode,
+                                                                        @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                        @RequestParam(value = "page_size", required = false) Integer pageSize) {
         QueryStockBatchSkuReqVo request = new QueryStockBatchSkuReqVo(transportCenterCode, warehouseCode, skuCode, skuName,
                 configStatus, productPropertyCode, productPropertyName, productCategoryCode, productCategoryName, productBrandCode ,
                 productBrandName, purchaseGroupCode, batchCode, beginInventoryCount, finishInventoryCount, beginAvailableCount,
@@ -83,8 +87,8 @@ public class StockBatchController {
 
     @GetMapping("/detail")
     @ApiOperation(value = "批次库存管理详情")
-    public HttpResponse stockBatchDetail(@RequestParam("stock_batch_code") String stockBatchCode){
-        return  stockBatchService.stockBatchDetail(stockBatchCode);
+    public HttpResponse<StockBatchDetailResponse> stockBatchDetail(@RequestParam("stock_batch_code") String stockBatchCode){
+        return stockBatchService.stockBatchDetail(stockBatchCode);
     }
 
     @GetMapping("/flow")
@@ -93,14 +97,14 @@ public class StockBatchController {
                          @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
                          @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer"),
     })
-    public HttpResponse stockBatchFlow(@RequestParam("stock_batch_code") String stockBatchCode,
-                                       @RequestParam("page_no") Integer pageNo,
-                                       @RequestParam("page_size") Integer pageSize){
+    public HttpResponse<PageResData<StockBatchFlow>> stockBatchFlow(@RequestParam("stock_batch_code") String stockBatchCode,
+                                                                    @RequestParam("page_no") Integer pageNo,
+                                                                    @RequestParam("page_size") Integer pageSize){
         QueryStockBatchSkuReqVo request = new QueryStockBatchSkuReqVo();
         request.setStockBatchCode(stockBatchCode);
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
-        return  stockBatchService.stockBatchFlow(request);
+        return stockBatchService.stockBatchFlow(request);
     }
 
 }

@@ -3,49 +3,47 @@
 <mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao">
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
     <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId" />
     <result column="reject_record_detail_id" jdbcType="VARCHAR" property="rejectRecordDetailId" />
+    <result column="reject_record_id" jdbcType="VARCHAR" property="rejectRecordId" />
     <result column="reject_record_code" jdbcType="VARCHAR" property="rejectRecordCode" />
-    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="product_id" jdbcType="VARCHAR" property="productId" />
     <result column="category_id" jdbcType="VARCHAR" property="categoryId" />
     <result column="category_name" jdbcType="VARCHAR" property="categoryName" />
     <result column="brand_id" jdbcType="VARCHAR" property="brandId" />
     <result column="brand_name" jdbcType="VARCHAR" property="brandName" />
-    <result column="product_type" jdbcType="BIT" property="productType" />
-    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="product_count" jdbcType="BIT" property="productCount" />
+    <result column="product_type" jdbcType="INTEGER" property="productType" />
     <result column="product_spec" jdbcType="VARCHAR" property="productSpec" />
+    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
+    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
+    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="unit_code" jdbcType="VARCHAR" property="unitCode" />
     <result column="unit_name" jdbcType="VARCHAR" property="unitName" />
+    <result column="product_count" jdbcType="BIGINT" property="productCount" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="barcode" jdbcType="VARCHAR" property="barcode" />
     <result column="product_amount" jdbcType="DECIMAL" property="productAmount" />
     <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
-    <result column="actual_count" jdbcType="INTEGER" property="actualCount" />
-    <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
-    <result column="batch_no" jdbcType="VARCHAR" property="batchNo" />
-    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="batch_create_time" jdbcType="TIMESTAMP" property="batchCreateTime" />
+    <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+    <result column="actual_product_total_amount" jdbcType="DECIMAL" property="actualProductTotalAmount" />
+    <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
+    <result column="line_code" jdbcType="INTEGER" property="lineCode" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
-    <result column="color_code" jdbcType="VARCHAR" property="colorCode" />
-    <result column="color_name" jdbcType="VARCHAR" property="colorName" />
-    <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
-    <result column="factory_sku_code" jdbcType="VARCHAR" property="factorySkuCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="linnum" jdbcType="INTEGER" property="linnum" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, reject_record_id,reject_record_detail_id, reject_record_code,barcode, sku_code, sku_name, product_id, category_id,
-    category_name, brand_id, brand_name, product_count,product_type, product_spec, unit_code, unit_name, tax_rate,
-    product_amount, product_total_amount, actual_count, actual_amount, batch_no, batch_remark, 
-    batch_create_time, create_by_id, create_by_name, update_by_id, update_by_name, create_time, 
-    update_time,color_code,color_name,model_number,single_count,factory_sku_code, linnum
+    id, reject_record_detail_id, reject_record_id, reject_record_code, sku_code, sku_name,
+    category_id, category_name, brand_id, brand_name, product_type, product_spec, color_code,
+    color_name, model_number, unit_code, unit_name, product_count, total_count, factory_sku_code,
+    tax_rate, barcode, product_amount, product_total_amount, actual_total_count, actual_product_total_amount,
+    product_cost, line_code, create_by_id, create_by_name, update_by_id, update_by_name,
+    create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -84,8 +82,8 @@
       #{item.categoryName,jdbcType=VARCHAR},
       #{item.brandId,jdbcType=VARCHAR},
       #{item.brandName,jdbcType=VARCHAR},
-      #{item.productType,jdbcType=BIT},
-      #{item.productCount,jdbcType=BIT},
+      #{item.productType,jdbcType=INTEGER},
+      #{item.productCount,jdbcType=INTEGER},
       #{item.productSpec,jdbcType=VARCHAR},
       #{item.unitCode,jdbcType=VARCHAR},
       #{item.unitName,jdbcType=VARCHAR},
@@ -226,7 +224,7 @@
         #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
-        #{productType,jdbcType=BIT},
+        #{productType,jdbcType=INTEGER},
       </if>
       <if test="productSpec != null">
         #{productSpec,jdbcType=VARCHAR},
@@ -309,7 +307,7 @@
         brand_name = #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
-        product_type = #{productType,jdbcType=BIT},
+        product_type = #{productType,jdbcType=INTEGER},
       </if>
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
@@ -373,7 +371,7 @@
       category_name = #{categoryName,jdbcType=VARCHAR},
       brand_id = #{brandId,jdbcType=VARCHAR},
       brand_name = #{brandName,jdbcType=VARCHAR},
-      product_type = #{productType,jdbcType=BIT},
+      product_type = #{productType,jdbcType=INTEGER},
       product_spec = #{productSpec,jdbcType=VARCHAR},
       unit_code = #{unitCode,jdbcType=VARCHAR},
       tax_rate = #{taxRate,jdbcType=DECIMAL},

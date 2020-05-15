@@ -1,7 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyQueryResponse;
 import org.apache.ibatis.annotations.Param;
 
@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface RejectApplyRecordDao {
 
-    int insert(RejectApplyRecord record);
+    Integer insert(RejectApplyRecord record);
 
-    int insertSelective(RejectApplyRecord record);
+    Integer insertSelective(RejectApplyRecord record);
 
-    int updateByPrimaryKeySelective(RejectApplyRecord record);
+    Integer updateByPrimaryKeySelective(RejectApplyRecord record);
 
-    List<RejectApplyQueryResponse> list(RejectApplyQueryRequest rejectApplyQueryRequest);
+    List<RejectApplyRecord> list(RejectApplyQueryRequest rejectApplyQueryRequest);
 
     Integer listCount(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    RejectApplyRecord selectByRejectCode(@Param("rejectApplyCode") String rejectApplyCode);
+    RejectApplyRecord selectByRejectCode(@Param("rejectApplyRecordCode") String rejectApplyRecordCode);
 
     Integer updateByRejectCode(RejectApplyRecord rejectApplyRequest);
 
