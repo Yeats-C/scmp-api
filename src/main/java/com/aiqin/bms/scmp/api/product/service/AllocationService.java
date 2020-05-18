@@ -136,10 +136,10 @@ public interface AllocationService extends BaseService {
     /**
      *  根据批次号和sku编码查询对应库存数量
      * @param skuCode
-     * @param batchCode
+     * @param batchInfoCode
      * @return
      */
-    StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode);
+    StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchInfoCode);
 
     /**
      *
