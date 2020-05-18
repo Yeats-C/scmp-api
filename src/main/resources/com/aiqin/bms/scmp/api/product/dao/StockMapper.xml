@@ -114,9 +114,9 @@
         <result column="product_sort_code" jdbcType="VARCHAR" property="skuSortCode"/>
         <result column="product_sort_name" jdbcType="VARCHAR" property="skuSortName"/>
         <result column="goods_gifts" jdbcType="BIGINT" property="skuTypeCode"/>
-        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
-        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="available_num" jdbcType="BIGINT" property="stock"/>
+        <result column="unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+        <result column="unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
+        <result column="available_count" jdbcType="BIGINT" property="stock"/>
         <result column="Input_tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_price" jdbcType="DECIMAL" property="price"/>
         <result column="zero_removal_coefficient" jdbcType="BIGINT" property="zeroRemovalCoefficient"/>
@@ -184,8 +184,8 @@
     </sql>
     <sql id="Query_Stock_Sku_List">
         a.sku_code,a.sku_name,c.product_category_code,c.product_category_name,c.product_brand_code,c.product_brand_name,c.spec,
-        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.stock_unit_code,a.stock_unit_name,b.Input_tax_rate,a.tax_cost as tax_price,
-        c.product_code,c.product_name,a.available_num, 1 as zero_removal_coefficient
+        c.color_code,c.color_name,c.model_number, c.unit_code,c.unit_name,c.goods_gifts,c.product_sort_code,c.product_sort_name,a.unit_code,a.unit_name,b.Input_tax_rate,a.tax_cost as tax_price,
+        c.product_code,c.product_name,a.available_count, 1 as zero_removal_coefficient
     </sql>
     <select id="selectWarehouseStockInfoByPage" parameterType="com.aiqin.bms.scmp.api.product.domain.request.StockRequest"
             resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO" resultMap="StockRespMap">
@@ -491,7 +491,7 @@
             <if test="productBrandName != null and productBrandName != ''">
                 and c.product_brand_name like concat(#{productBrandName, jdbcType=VARCHAR}, '%')
             </if>
-            and a.available_num > 0
+            and a.available_count > 0
             <if test="skuList != null">
                 and a.sku_code in
                 <foreach collection="skuList" item="id" index="index" open="(" close=")" separator=",">
@@ -1472,8 +1472,8 @@
         a.warehouse_code        as warehouseCode,
         a.warehouse_name        as warehouseName,
         a.batch_remark          as batchRemark,
-        a.production_date       as productTime,
-        a.available_num         as availableNum
+        a.product_date          as productTime,
+        a.available_count       as availableNum
         from stock_batch a
         where 1=1
         <if test="transportCenterCode!=null and transportCenterCode!=''">
