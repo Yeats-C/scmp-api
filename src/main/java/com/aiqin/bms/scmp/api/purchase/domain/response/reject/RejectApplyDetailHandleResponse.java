@@ -163,6 +163,14 @@ public class RejectApplyDetailHandleResponse {
     @JsonProperty("spu_name")
     private String spuName;
 
+    @ApiModelProperty(value = "批次编码")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty(value="批次采购价")
+    @JsonProperty("purchase_price")
+    private BigDecimal purchasePrice;
+
     @ApiModelProperty(value = "批次号列表")
     @JsonProperty("batch_list")
     private List<StockBatch> batchList;

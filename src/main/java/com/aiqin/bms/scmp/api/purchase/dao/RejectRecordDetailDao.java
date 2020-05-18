@@ -8,17 +8,16 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface RejectRecordDetailDao {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(RejectRecordDetail record);
+    List<RejectRecordDetail> list(String rejectRecordCode);
 
-    int insertSelective(RejectRecordDetail record);
+    Integer listCount(String rejectRecordCode);
+
+    Integer insert(RejectRecordDetail record);
 
     RejectRecordDetail selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(RejectRecordDetail record);
-
-    int updateByPrimaryKey(RejectRecordDetail record);
+    Integer update(RejectRecordDetail record);
 
     Integer insertAll(@Param("list") List<RejectRecordDetail> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
 

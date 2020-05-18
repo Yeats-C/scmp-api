@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -89,7 +88,7 @@ public class RejectApplyRecordDetail {
 
     @ApiModelProperty(value="商品类型 0商品  1赠品 2实物返回")
     @JsonProperty("product_type")
-    private Integer productType;
+    private Boolean productType;
 
     @ApiModelProperty(value="条形码")
     @JsonProperty("barcode")
@@ -147,6 +146,34 @@ public class RejectApplyRecordDetail {
     @JsonProperty("line_code")
     private Integer lineCode;
 
+    @ApiModelProperty(value="批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty(value="批次备注")
+    @JsonProperty("batch_remark")
+    private String batchRemark;
+
+    @ApiModelProperty(value="批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
+    @ApiModelProperty(value="生产日期")
+    @JsonProperty("product_date")
+    private Date productDate;
+
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_date")
+    private Date beOverdueDate;
+
+    @ApiModelProperty(value="批次采购价")
+    @JsonProperty("batch_purchase_price")
+    private BigDecimal batchPurchasePrice;
+
+    @ApiModelProperty(value="库位号")
+    @JsonProperty("location_code")
+    private String locationCode;
+
     @ApiModelProperty(value="库存含税成本")
     @JsonProperty("product_cost")
     private BigDecimal productCost;
@@ -170,9 +197,5 @@ public class RejectApplyRecordDetail {
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;
-
-    @ApiModelProperty(value="修改时间")
-    @JsonProperty("update_time")
-    private Date updateTime;
 
 }

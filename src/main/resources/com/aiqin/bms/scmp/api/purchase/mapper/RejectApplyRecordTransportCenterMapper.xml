@@ -23,19 +23,18 @@
     warehouse_code, warehouse_name, pre_deliver_time, valid_time, total_count, product_tax_amount, 
     return_tax_amount, gift_tax_amount, create_time, update_time
   </sql>
-  <insert id="insert">
-    insert into reject_apply_record_transport_center (id, reject_apply_record_code, reject_apply_record_name, 
-      transport_center_code, transport_center_name, 
-      warehouse_code, warehouse_name, pre_deliver_time, 
-      valid_time, total_count, product_tax_amount, 
-      return_tax_amount, gift_tax_amount, create_time, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{rejectApplyRecordCode,jdbcType=VARCHAR}, #{rejectApplyRecordName,jdbcType=VARCHAR}, 
-      #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
-      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{preDeliverTime,jdbcType=TIMESTAMP}, 
-      #{validTime,jdbcType=TIMESTAMP}, #{totalCount,jdbcType=BIGINT}, #{productTaxAmount,jdbcType=DECIMAL}, 
-      #{returnTaxAmount,jdbcType=DECIMAL}, #{giftTaxAmount,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+  <insert id="insertAll">
+    insert into reject_apply_record_transport_center (reject_apply_record_code, reject_apply_record_name,
+      transport_center_code, transport_center_name, warehouse_code, warehouse_name, pre_deliver_time,
+      valid_time, total_count, product_tax_amount, return_tax_amount, gift_tax_amount, create_time,
+      update_time) values
+    <foreach collection="list" separator="," item="item">
+    (#{item.rejectApplyRecordCode,jdbcType=VARCHAR}, #{item.rejectApplyRecordName,jdbcType=VARCHAR},
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
+      #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.preDeliverTime,jdbcType=TIMESTAMP},
+      #{item.validTime,jdbcType=TIMESTAMP}, #{item.totalCount,jdbcType=BIGINT}, #{item.productTaxAmount,jdbcType=DECIMAL},
+      #{item.returnTaxAmount,jdbcType=DECIMAL}, #{item.giftTaxAmount,jdbcType=DECIMAL}, now(), now())
+    </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective">
     update reject_apply_record_transport_center
@@ -92,4 +91,8 @@
       </if>
     </where>
   </select>
+  <delete id="delete">
+    delete from reject_apply_record_transport_center
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+  </delete>
 </mapper>

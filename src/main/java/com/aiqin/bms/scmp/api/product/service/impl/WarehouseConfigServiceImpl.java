@@ -8,21 +8,16 @@ import com.aiqin.bms.scmp.api.product.dao.WarehouseConfigDao;
 import com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq;
 import com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp;
 import com.aiqin.bms.scmp.api.product.service.WarehouseConfigService;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectResponse;
 import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
 /**

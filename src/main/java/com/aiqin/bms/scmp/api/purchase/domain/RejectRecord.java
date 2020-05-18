@@ -227,7 +227,7 @@ public class RejectRecord {
     @JsonProperty("approval_code")
     private String approvalCode;
 
-    @ApiModelProperty(value="退供单状态: 0 查看 1 确认  2 撤销 3 重发  ")
+    @ApiModelProperty(value="退供单状态: 0.待确认 1.待出库 2.出库开始 3.已完成 4.已撤销 ")
     @JsonProperty("reject_status")
     private Integer rejectStatus;
 

@@ -25,6 +25,7 @@
     <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice" />
     <result column="tax_cost" jdbcType="DECIMAL" property="taxCost" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
@@ -37,7 +38,7 @@
     warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name, 
     batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
     available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time, create_by_id, 
-    create_by_name, update_time, update_by_id, update_by_name
+    create_by_name, update_time, update_by_id, update_by_name, location_code
   </sql>
   <insert id="insert">
     insert into stock_batch (stock_batch_code, company_code,

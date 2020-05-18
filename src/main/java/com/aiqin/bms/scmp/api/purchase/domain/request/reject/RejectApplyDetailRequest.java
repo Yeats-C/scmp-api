@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.reject;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -195,6 +194,5 @@ public class RejectApplyDetailRequest {
     @ApiModelProperty(value="库位号")
     @JsonProperty("location_code")
     private String locationCode;
-
 
 }

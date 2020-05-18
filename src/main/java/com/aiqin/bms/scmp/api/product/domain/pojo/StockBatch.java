@@ -104,6 +104,10 @@ public class StockBatch {
     @JsonProperty("tax_rate")
     private BigDecimal taxRate;
 
+    @ApiModelProperty(value="库位号")
+    @JsonProperty("location_code")
+    private String locationCode;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

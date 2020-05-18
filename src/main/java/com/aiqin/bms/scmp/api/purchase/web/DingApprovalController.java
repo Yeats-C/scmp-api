@@ -7,9 +7,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChan
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -106,12 +105,12 @@ public class DingApprovalController {
         }
     }
 
-    @GetMapping("/record/approval/{approval_code}")
-    @ApiOperation(value = "通过审批关联查询退供单详情")
-    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
-    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
-        return goodsRejectService.applyRejectInfo(approval_code);
-    }
+//    @GetMapping("/record/approval/{approval_code}")
+//    @ApiOperation(value = "通过审批关联查询退供单详情")
+//    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
+//    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
+//        return goodsRejectService.applyRejectInfo(approval_code);
+//    }
 
     @GetMapping("/purchase/details/apply")
     @ApiOperation("查询采购申请单-采购通用信息")

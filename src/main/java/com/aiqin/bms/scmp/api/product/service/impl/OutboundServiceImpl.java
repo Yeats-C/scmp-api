@@ -947,7 +947,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Async("myTaskAsyncPool")
     public void returnStorageResult(RejectStockRequest reqVO) {
         try {
-            goodsRejectService.finishStock(reqVO);
+            //goodsRejectService.finishStock(reqVO);
         } catch (GroundRuntimeException e) {
             log.error(Global.ERROR, e);
             log.error("出库单回传退供失败：[{}]",e);
