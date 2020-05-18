@@ -485,7 +485,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(request,insertOutbound);
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
                 String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -522,15 +522,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(ErpOrderInfo request,String insertOutbound) {
+    private SaleSourcInfoSource insertWms(OrderInfoReqVO request,String insertOutbound) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
-        ssis.setOrderCode(request.getOrderStoreCode());
+        ssis.setOrderCode(request.getOrderCode());
         ssis.setOutboundOderCode(insertOutbound);
         ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setFromType("销售单");
-        ssis.setFromCode(request.getSourceCode());
+        ssis.setFromCode(request.getOrderCode());
         ssis.setPlatformCode("99");
         ssis.setPlatformName("独立网店");
         ssis.setIsUrgency("0");
@@ -550,28 +550,28 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }else {
             ssis.setAreaName(request.getDistrictName());
         }
-        ssis.setAddress(request.getReceiveAddress());
-        ssis.setMobile(request.getReceiveMobile());
-        ssis.setTel(request.getReceiveMobile());
-        ssis.setOrderPrice(request.getTotalProductAmount().doubleValue());
+        ssis.setAddress(request.getDetailAddress());
+        ssis.setMobile(request.getConsigneePhone());
+        ssis.setTel(request.getConsigneePhone());
+        ssis.setOrderPrice(request.getProductTotalAmount().doubleValue());
         ssis.setAmountReceivable(0.0);
         ssis.setIsinvoice(true);
         ssis.setInvoiceName(request.getInvoiceTitle());
-        ssis.setGoodsOwner(request.getReceivePerson()); // 货主 取收货人 要确认
+        ssis.setGoodsOwner(request.getConsignee()); // 货主 取收货人 要确认
         ssis.setRemark(request.getRemake());
 
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
-        List<ErpOrderItem> itemList = request.getItemList();
+        List<OrderInfoItemReqVO> itemList = request.getProductList();
        if(itemList != null){
-           for (ErpOrderItem list : itemList) {
+           for (OrderInfoItemReqVO list : itemList) {
                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
                sods.setSku(list.getSkuCode());
-               sods.setQty(list.getProductCount().intValue());
-               sods.setPrice(list.getPreferentialAmount().doubleValue());
-               sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
-               sods.setGwf1(list.getOrderStoreCode());
-               sods.setGwf2(list.getLineCode().toString());
+               sods.setQty(list.getNum().intValue());
+               sods.setPrice(list.getPrice().doubleValue());
+               sods.setActualAmount(list.getPreferentialAllocation().doubleValue());
+               sods.setGwf1(list.getOrderCode());
+               sods.setGwf2(list.getProductLineNum().toString());
                sods.setGwf3(list.getColorName());
                sods.setGwf4(list.getModelCode());
                sods.setGwf5(list.getUnitName());

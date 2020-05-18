@@ -374,11 +374,13 @@ public class ErpOrderInfo {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty("业务形式(熙云:批发业务  爱亲母婴:门店业务,批发业务,天猫业务,优选业务  爱亲科技:门店业务,批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    private String businessForm;
+
+    @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
+    private String platformType;
+
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;
-
-    @ApiModelProperty(value = "订单商品明细行")
-    @JsonProperty("item_batch_list")
-    private List<OrderInfoItemProductBatch> itemBatchList;
 }
