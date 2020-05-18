@@ -196,4 +196,17 @@ public class ErpOrderItem {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty(value = "批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
+    @ApiModelProperty(value = "批次号时间")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+    @JsonProperty("batch_date")
+    private Date batchDate;
+
+    @ApiModelProperty(value = "批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
 }

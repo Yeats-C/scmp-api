@@ -58,6 +58,11 @@ public class OrderInfoItemProductBatch {
     @JsonProperty("batch_number")
     private String batchNumber;
 
+
+    @ApiModelProperty("批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty("锁定类型")
     @JsonProperty("lock_type")
     private Integer lockType;
