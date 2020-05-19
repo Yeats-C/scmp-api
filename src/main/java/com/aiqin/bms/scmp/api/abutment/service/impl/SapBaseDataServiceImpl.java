@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpOrderEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.ScmpStorageChangeEnum;
 import com.aiqin.bms.scmp.api.abutment.domain.conts.StringConvertUtil;
 import com.aiqin.bms.scmp.api.abutment.domain.request.*;
+import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.*;
 import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
@@ -28,6 +29,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
 import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplyCompanyAccountMapper;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -48,32 +50,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Service
 public class SapBaseDataServiceImpl implements SapBaseDataService {
 
@@ -120,11 +96,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     @Resource
     private PurchaseOrderProductDao purchaseOrderProductDao;
     @Resource
-    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
+    private PurchaseBatchDao purchaseBatchDao;
     @Resource
     private RejectRecordDao rejectRecordDao;
     @Resource
     private RejectRecordDetailDao rejectRecordDetailDao;
+    @Resource
+    private RejectRecordBatchDao rejectRecordBatchDao;
     @Resource
     private StockDao stockDao;
     @Resource
@@ -557,8 +535,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //退货和采购才有金额
                 inbounds = inboundMap.get(batch.getInboundOderCode());
                 if ((null != inbounds) && (inbounds.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || inbounds.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))) {
-                    storageDetail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().intValue());
-                    storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
+                   // storageDetail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().intValue());
+                    //storageDetail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().intValue());
                     // 查询商品类型
                     PurchaseOrderProduct orderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(batch.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLinenum().intValue());
                     if(orderProduct != null && orderProduct.getProductType() != null){
@@ -685,8 +663,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //销售和退供才有金额
                 outbounds = outboundMap.get(outboundProduct.getOutboundOderCode());
                 if ((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))) {
-                    storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
-                    storageDetail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().intValue());
+                    //storageDetail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().intValue());
+                    //storageDetail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().intValue());
                     // 查询商品类型 TODO
 
                 }
@@ -768,152 +746,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
     }
 
-    /**
-     * 采购/退供数据同步
-     */
-    public void purchaseSynchronization(SapOrderRequest sapOrderRequest) {
-        List<Purchase> purchases = Lists.newArrayList();
-        purchaseOrder(sapOrderRequest, purchases);
-        sapPurchaseAbutment(purchases, 1);
-        purchases.clear();
-        rejectOrder(sapOrderRequest, purchases);
-        sapPurchaseAbutment(purchases, 2);
-
-    }
-
-    /**
-     * 采购/退供单据对接
-     *
-     * @param orderList
-     * @param type
-     */
-    private void sapPurchaseAbutment(List<Purchase> orderList, Integer type) {
-        LOGGER.info("调用退供单据对接单据参数:{} ", JsonUtil.toJson(orderList));
-        LOGGER.info("type:{}", type);
-        int total = (int) Math.ceil(orderList.size() / (SAP_API_COUNT * 1.0));
-        int endIndex;
-        List<Purchase> subLists;
-        List<String> orderCodes;
-        for (int i = 0; i < total; i++) {
-            endIndex = SAP_API_COUNT * (i + 1);
-            if (SAP_API_COUNT * (i + 1) >= orderList.size()) {
-                endIndex = orderList.size();
-            }
-            subLists = orderList.subList(SAP_API_COUNT * i, endIndex);
-            orderCodes = subLists.stream().map(Purchase::getOrderId).collect(Collectors.toList());
-            HttpClient client = HttpClient.post(PURCHASE_URL).json(subLists).timeout(10000);
-            HttpResponse httpResponse = client.action().result(HttpResponse.class);
-            if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用结算sap销售单据成功:{}", httpResponse.getMessage());
-                //1 采购 2 退供 更新同步状态
-                if (type.equals(1)) {
-                    purchaseOrderDao.updateByOrderCodes(orderCodes);
-                } else if (type.equals(2)) {
-                    rejectRecordDao.updateByOrderCodes(orderCodes);
-                }
-            } else {
-                LOGGER.error("调用结算sap销售单据异常:{}", httpResponse.getMessage());
-                throw new GroundRuntimeException(String.format("调用结算sap销售单据异常:%s", httpResponse.getMessage()));
-            }
-        }
-    }
-
-
-    /**
-     * 采购订单
-     */
-    private void purchaseOrder(SapOrderRequest sapOrderRequest, List<Purchase> purchases) {
-        List<PurchaseOrder> purchaseList = purchaseOrderDao.listForSap(sapOrderRequest);
-        if (CollectionUtils.isNotEmpty(purchaseList)) {
-            List<String> purchaseIds = purchaseList.stream().map(PurchaseOrder::getPurchaseOrderId).collect(Collectors.toList());
-            sapOrderRequest.setOrderCodeList(purchaseIds);
-            List<PurchaseOrderDetails> orderDetailsList = purchaseOrderDetailsDao.listByCodes(purchaseIds);
-            Map<String, PurchaseOrderDetails> orderDetailsMap = orderDetailsList.stream().collect(Collectors.toMap(PurchaseOrderDetails::getPurchaseOrderId, Function.identity()));
-            List<PurchaseOrderProduct> purchaseOrderProductList = purchaseOrderProductDao.listForSap(sapOrderRequest);
-            List<String> skuCodes = purchaseOrderProductList.stream().map(PurchaseOrderProduct::getSkuCode).collect(Collectors.toList());
-            //查询商品的厂商指导价和属性
-            Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
-            PurchaseDetail purchaseDetail;
-            ProductSkuInfo productSkuInfo;
-            PurchaseOrderDetails purchaseOrderDetails;
-            Map<String, List<PurchaseDetail>> purchaseProductMap = Maps.newHashMap();
-            List<PurchaseDetail> purchaseDetailList;
-            for (PurchaseOrderProduct purchaseOrderProduct : purchaseOrderProductList) {
-                purchaseDetail = new PurchaseDetail();
-                purchaseDetail.setOrderId(purchaseOrderProduct.getPurchaseOrderId());
-                purchaseDetail.setSkuCode(purchaseOrderProduct.getSkuCode());
-                purchaseDetail.setSkuName(purchaseOrderProduct.getSkuName());
-                purchaseDetail.setSkuDesc(StringConvertUtil.productDesc(purchaseOrderProduct.getColorName(), purchaseOrderProduct.getProductSpec(), purchaseOrderProduct.getModelNumber()));
-                purchaseDetail.setPrice(purchaseOrderProduct.getProductAmount().toString());
-                purchaseDetail.setSingleCount(purchaseOrderProduct.getSingleCount());
-                purchaseDetail.setProductType(purchaseOrderProduct.getProductType());
-                purchaseDetail.setUnit(purchaseOrderProduct.getBoxGauge());
-                purchaseDetail.setInputRate(purchaseOrderProduct.getTaxRate());
-                purchaseDetail.setStorageCount(purchaseOrderProduct.getSingleCount());
-                purchaseDetail.setUniteCount("1");
-                purchaseDetail.setCategoryCode(purchaseOrderProduct.getCategoryId());
-                purchaseDetail.setCategoryName(purchaseOrderProduct.getCategoryName());
-                purchaseDetail.setBrandCode(purchaseOrderProduct.getBrandId());
-                purchaseDetail.setBrandName(purchaseOrderProduct.getBrandName());
-                //厂商指导价
-                productSkuInfo = productSkuInfoMap.get(purchaseOrderProduct.getSkuCode());
-                if (productSkuInfo != null) {
-                    purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
-                    purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
-                } else {
-                    throw new GroundRuntimeException(String.format("商品sku:%s,未查询到信息", purchaseOrderProduct.getSkuCode()));
-                }
-                if (purchaseProductMap.containsKey(purchaseOrderProduct.getPurchaseOrderId())) {
-                    purchaseDetailList = purchaseProductMap.get(purchaseOrderProduct.getPurchaseOrderId());
-                    purchaseDetailList.add(purchaseDetail);
-                    purchaseProductMap.put(purchaseOrderProduct.getPurchaseOrderId(), purchaseDetailList);
-                } else {
-                    purchaseDetailList = Lists.newArrayList();
-                    purchaseDetailList.add(purchaseDetail);
-                    purchaseProductMap.put(purchaseOrderProduct.getPurchaseOrderId(), purchaseDetailList);
-                }
-            }
-            Purchase purchase;
-            for (PurchaseOrder purchaseOrder : purchaseList) {
-                purchase = new Purchase();
-                purchase.setOrderId(purchaseOrder.getPurchaseOrderId());
-                purchase.setOrderCode(purchaseOrder.getPurchaseOrderCode());
-                purchase.setSupplierCode(purchaseOrder.getSupplierCode());
-                purchase.setSupplierName(purchaseOrder.getSupplierName());
-                purchase.setOrderType(Integer.valueOf(ScmpOrderEnum.PURCHASE.getCode()));
-                purchase.setOrderTypeDesc(ScmpOrderEnum.PURCHASE.getDesc());
-                purchase.setTransportCode(purchaseOrder.getTransportCenterCode());
-                purchase.setTransportName(purchaseOrder.getTransportCenterName());
-                purchase.setWarehouseCode(purchaseOrder.getWarehouseCode());
-                purchase.setWarehouseName(purchaseOrder.getWarehouseName());
-                purchase.setSkuCount(purchaseOrder.getSingleCount());
-                purchase.setAmount(purchaseOrder.getProductTotalAmount().toString());
-                purchase.setGroupCode(purchaseOrder.getPurchaseGroupCode());
-                purchase.setGroupName(purchaseOrder.getPurchaseGroupName());
-                purchase.setCompanyCode(purchaseOrder.getCompanyCode());
-                purchase.setCompanyName(purchaseOrder.getCompanyName());
-                purchase.setSettlementType(purchaseOrder.getSettlementMethodCode());
-                purchase.setSettlementTypeDesc(purchaseOrder.getSettlementMethodName());
-                purchase.setCreateTime(purchaseOrder.getCreateTime());
-                purchase.setCreateById(purchaseOrder.getUpdateById());
-                purchase.setCreateByName(purchaseOrder.getUpdateByName());
-                //合同编码 等信息查询详情表
-                purchaseOrderDetails = orderDetailsMap.get(purchaseOrder.getPurchaseOrderId());
-                if (purchaseOrderDetails == null) {
-                    throw new GroundRuntimeException(String.format("未查询到采购详情数据id:%s", purchaseOrder.getPurchaseOrderId()));
-                }
-                purchase.setContractNo(purchaseOrderDetails.getContractCode());
-                purchase.setAccountName(purchaseOrderDetails.getAccountName());
-                //固定传转账
-                purchase.setPayType("1");
-                purchase.setPayTypeDesc("转账");
-                purchase.setPayDate(purchaseOrderDetails.getPayableTime() == null ? 0 : purchaseOrderDetails.getPayableTime());
-                purchase.setDetails(purchaseProductMap.get(purchaseOrder.getPurchaseOrderId()));
-                purchases.add(purchase);
-            }
-        }
-    }
-
     private Map<String, ProductSkuInfo> productInfoBySkuCode(List<String> skuCodes) {
         List<ProductSkuInfo> productSkuList = productSkuDao.getSkuInfoByCodeList(skuCodes);
         if (CollectionUtils.isEmpty(productSkuList)) {
@@ -922,92 +754,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         return productSkuList.stream().collect(Collectors.toMap(ProductSkuInfo::getSkuCode, Function.identity()));
     }
 
-    /**
-     * 退供订单
-     */
-    private void rejectOrder(SapOrderRequest sapOrderRequest, List<Purchase> purchases) {
-        List<RejectRecord> rejectRecordList = rejectRecordDao.listForSap(sapOrderRequest);
-        if (CollectionUtils.isNotEmpty(rejectRecordList)) {
-            List<String> rejectIds = rejectRecordList.stream().map(RejectRecord::getRejectRecordId).collect(Collectors.toList());
-            List<RejectRecordDetail> rejectRecordDetailList = rejectRecordDetailDao.listByRejectIds(rejectIds);
-            List<String> skuCodes = rejectRecordDetailList.stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
-            //查询商品的厂商指导价和属性
-            Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
-            Map<String, List<PurchaseDetail>> detailMap = Maps.newHashMap();
-            PurchaseDetail purchaseDetail;
-            ProductSkuInfo productSkuInfo;
-            List<PurchaseDetail> purchaseDetailList;
-            for (RejectRecordDetail recordDetail : rejectRecordDetailList) {
-                purchaseDetail = new PurchaseDetail();
-                purchaseDetail.setOrderId(recordDetail.getRejectRecordId());
-                purchaseDetail.setSkuCode(recordDetail.getSkuCode());
-                purchaseDetail.setSkuName(recordDetail.getSkuName());
-                purchaseDetail.setSkuDesc(StringConvertUtil.productDesc(recordDetail.getColorName(), recordDetail.getProductSpec(), recordDetail.getModelNumber()));
-                purchaseDetail.setPrice(recordDetail.getProductAmount().toString());
-                //purchaseDetail.setSingleCount(recordDetail.getSingleCount());
-                purchaseDetail.setProductType(recordDetail.getProductType());
-                purchaseDetail.setUnit(recordDetail.getUnitName());
-                purchaseDetail.setInputRate(recordDetail.getTaxRate());
-                //purchaseDetail.setStorageCount(recordDetail.getSingleCount());
-                purchaseDetail.setUniteCount("1");
-                purchaseDetail.setCategoryCode(recordDetail.getCategoryId());
-                purchaseDetail.setCategoryName(recordDetail.getCategoryName());
-                purchaseDetail.setBrandCode(recordDetail.getBrandId());
-                purchaseDetail.setBrandName(recordDetail.getBrandName());
-                //厂商指导价
-                productSkuInfo = productSkuInfoMap.get(recordDetail.getSkuCode());
-                if (productSkuInfo != null) {
-                    purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
-                    purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
-                } else {
-                    throw new GroundRuntimeException(String.format("商品sku:%s,未查询到信息", recordDetail.getSkuCode()));
-                }
-                if (detailMap.containsKey(recordDetail.getRejectRecordId())) {
-                    purchaseDetailList = detailMap.get(recordDetail.getRejectRecordId());
-                    purchaseDetailList.add(purchaseDetail);
-                    detailMap.put(recordDetail.getRejectRecordId(), purchaseDetailList);
-                } else {
-                    purchaseDetailList = Lists.newArrayList();
-                    purchaseDetailList.add(purchaseDetail);
-                    detailMap.put(recordDetail.getRejectRecordId(), purchaseDetailList);
-                }
-            }
-            Purchase purchase;
-            for (RejectRecord rejectRecord : rejectRecordList) {
-                purchase = new Purchase();
-                purchase.setOrderId(rejectRecord.getRejectRecordId());
-                purchase.setOrderCode(rejectRecord.getRejectRecordCode());
-                purchase.setSupplierCode(rejectRecord.getSupplierCode());
-                purchase.setSupplierName(rejectRecord.getSupplierName());
-                purchase.setOrderType(Integer.valueOf(ScmpOrderEnum.PURCHASE.getCode()));
-                purchase.setOrderTypeDesc(ScmpOrderEnum.PURCHASE.getDesc());
-                purchase.setTransportCode(rejectRecord.getTransportCenterCode());
-                purchase.setTransportName(rejectRecord.getTransportCenterName());
-                purchase.setWarehouseCode(rejectRecord.getWarehouseCode());
-                purchase.setWarehouseName(rejectRecord.getWarehouseName());
-//                purchase.setSkuCount(rejectRecord.getSingleCount());
-//                //总金额,三者实际金额加一起
-//                BigDecimal actualGiftAmount = rejectRecord.getActualGiftAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualGiftAmount();
-//                BigDecimal actualProductAmount = rejectRecord.getActualProductAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualProductAmount();
-//                BigDecimal actualReturnAmount = rejectRecord.getActualReturnAmount() == null ? BigDecimal.valueOf(0) : rejectRecord.getActualReturnAmount();
-                //purchase.setAmount(String.valueOf(actualGiftAmount.add(actualProductAmount).add(actualReturnAmount)));
-                purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
-                purchase.setGroupName(rejectRecord.getPurchaseGroupName());
-                purchase.setCompanyCode(rejectRecord.getCompanyCode());
-                purchase.setCompanyName(rejectRecord.getCompanyName());
-                purchase.setSettlementType(rejectRecord.getSettlementMethodCode());
-                purchase.setSettlementTypeDesc(rejectRecord.getSettlementMethodName());
-                purchase.setCreateTime(rejectRecord.getCreateTime());
-                purchase.setCreateById(rejectRecord.getUpdateById());
-                purchase.setCreateByName(rejectRecord.getUpdateByName());
-                purchase.setPayType("1");
-                purchase.setPayTypeDesc("转账");
-                purchase.setDetails(detailMap.get(rejectRecord.getRejectRecordId()));
-                purchases.add(purchase);
-            }
 
-        }
-    }
 
     private Long amountHandler(Long amount) {
         if (amount == null){
@@ -1272,5 +1019,424 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             }
 
         }
+    }
+
+    /**
+      * 采购/退供调用sap
+     */
+    public void purchaseAndReject(String orderCode, Integer dataType) {
+        // 数据类型 dataType 0.采购 1.退供
+        ScmpImportPurchase sap = new ScmpImportPurchase();
+        if(dataType == 0){
+            Purchase purchase = purchaseOrder(orderCode);
+            sap.setPurchase(purchase);
+            // 查询最后的入库单信息
+            Inbound inbound = inboundDao.inboundCodeOrderLast(purchase.getOrderCode());
+            sap.setStorage(this.inboundInfo(inbound));
+        }else {
+            sap.setPurchase(rejectOrder(orderCode));
+            // 查询出库单
+            Outbound outbound = outboundDao.selectBySourceCode(orderCode, String.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode()));
+            sap.setStorage(this.outboundInfo(outbound));
+        }
+        // 调用sap 接口
+        HttpClient client = HttpClient.post(PURCHASE_URL).json(sap).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            if(dataType == 0){
+                LOGGER.info("调用结算sap采购单据成功:{}", httpResponse.getMessage());
+                PurchaseOrder order = new PurchaseOrder();
+                order.setPurchaseOrderId(orderCode);
+                order.setSynchrStatus(1);
+                purchaseOrderDao.update(order);
+            }else {
+                LOGGER.info("调用结算sap退供单据成功:{}", httpResponse.getMessage());
+                RejectRecord rejectRecord = new RejectRecord();
+                rejectRecord.setRejectRecordCode(orderCode);
+                rejectRecord.setSynchrStatus(1);
+                rejectRecordDao.update(rejectRecord);
+            }
+        } else {
+            String str = "";
+            if(dataType == 0){
+                str = "采购";
+            }else {
+                str = "退供";
+            }
+            LOGGER.error("调用结算sap" +str + "单据异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用结算sap" +str + "单据异常:%s", httpResponse.getMessage()));
+        }
+    }
+
+    /**
+     * 采购订单
+     */
+    private Purchase purchaseOrder(String purchaseCode) {
+        // 查询采购单信息
+        PurchaseOrder purchaseOrderInfo = purchaseOrderDao.purchaseOrder(purchaseCode);
+        LOGGER.info("对接sap，采购单信息，{}", JsonUtil.toJson(purchaseOrderInfo));
+        // 查询采购商品信息
+        List<PurchaseOrderProduct> purchaseOrderProducts = purchaseOrderProductDao.orderProductInfo(purchaseCode);
+        LOGGER.info("对接sap，采购单商品信息，{}", JsonUtil.toJson(purchaseOrderProducts));
+        // 赋值sap 采购单信息
+        PurchaseDetail purchaseDetail;
+        List<PurchaseDetail> purchaseDetailList = Lists.newArrayList();
+        ProductSkuInfo productSkuInfo;
+        List<String> skuCodes = purchaseOrderProducts.stream().map(PurchaseOrderProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+        // 查询sku的批次信息
+        Map<String, List<PurchaseBatch>> purchaseBatchMap = new HashMap<>();
+        for(PurchaseOrderProduct product : purchaseOrderProducts) {
+            String key = String.format("%s,%s,%s", product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum());
+            if (purchaseBatchMap.get(key) == null) {
+                purchaseBatchMap.put(key, purchaseBatchDao.purchaseBtachList(product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum()));
+            }
+        }
+        if(purchaseBatchMap != null){
+            LOGGER.info("对接sap，采购单商品批次信息，{}", JsonUtil.toJson(productSkuInfoMap));
+        }
+        Purchase purchase = BeanCopyUtils.copy(purchaseOrderInfo, Purchase.class);
+        purchase.setContractNo(purchaseOrderInfo.getContractCode());
+        purchase.setGroupCode(purchaseOrderInfo.getPurchaseGroupCode());
+        purchase.setGroupName(purchaseOrderInfo.getPurchaseGroupName());
+        purchase.setOrderCode(purchaseOrderInfo.getPurchaseOrderCode());
+        purchase.setOrderId(purchaseOrderInfo.getPurchaseOrderId());
+        purchase.setOrderType("0");
+        purchase.setOrderTypeDesc("采购");
+        purchase.setPayDate(purchaseOrderInfo.getPaymentTime());
+        // 0.预付款 1.货到付款 2.月结 3.实销实结
+        if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 0){
+            purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
+            purchase.setPayTypeDesc("预付款");
+        }else if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 1){
+            purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
+            purchase.setPayTypeDesc("货到付款");
+        }else if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 2){
+            purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
+            purchase.setPayTypeDesc("月结");
+        }else if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 3){
+            purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
+            purchase.setPayTypeDesc("实销实结");
+        }
+        purchase.setSettlementType(purchaseOrderInfo.getSettlementMethodCode());
+        purchase.setSettlementTypeDesc(purchaseOrderInfo.getSettlementMethodName());
+        purchase.setSkuCount(purchaseOrderInfo.getSingleCount());
+        purchase.setCreateTime(Calendar.getInstance().getTime());
+        purchase.setTransportCode(purchaseOrderInfo.getTransportCenterCode());
+        purchase.setTransportName(purchaseOrderInfo.getTransportCenterName());
+        purchase.setCreateById(purchaseOrderInfo.getUpdateById());
+        purchase.setCreateByName(purchaseOrderInfo.getUpdateByName());
+        // 赋值sap 详情
+        for(PurchaseOrderProduct product : purchaseOrderProducts){
+            purchaseDetail = BeanCopyUtils.copy(product, PurchaseDetail.class);
+            purchaseDetail.setBrandCode(product.getBrandId());
+            purchaseDetail.setCategoryCode(product.getCategoryId());
+            //厂商指导价
+            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
+            if (productSkuInfo != null) {
+                purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+                purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
+            } else {
+                purchaseDetail.setGuidePrice("0");
+            }
+            purchaseDetail.setInputRate(product.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
+            purchaseDetail.setPrice(product.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            String desc = product.getProductSpec() + "/" + product.getColorName() + "/" + product.getModelNumber();
+            purchaseDetail.setSkuDesc(desc);
+            purchaseDetail.setStorageCount(product.getStockCount());
+            purchaseDetail.setSingleCount(product.getSingleCount().intValue());
+            if(product.getProductType() == 0){
+                purchaseDetail.setProductType(0);
+            }else if(product.getProductType() == 1){
+                purchaseDetail.setProductType(5);
+            }else if(product.getProductType() == 2){
+                purchaseDetail.setProductType(10);
+            }
+
+            String[] str = product.getBoxGauge().split("/");
+            if(str != null){
+                purchaseDetail.setUnit(str[1]);
+                purchaseDetail.setUniteCount(str[0]);
+            }
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum());
+            List<PurchaseBatch> batchList = purchaseBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<ScmpPurchaseBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpPurchaseBatch.class);
+                purchaseDetail.setBatchList(infoBatch);
+            }
+            purchaseDetailList.add(purchaseDetail);
+        }
+        purchase.setDetails(purchaseDetailList);
+        LOGGER.info("对接sap，转换采购参数：{}", JsonUtil.toJson(purchase));
+        return purchase;
+    }
+
+    /**  sap 入库单的信息转换*/
+    private Storage inboundInfo(Inbound inbound){
+        LOGGER.info("对接sap，入库单信息：{}", JsonUtil.toJson(inbound));
+        // 赋值sap 的入库单信息
+        Storage storage = new Storage();
+        List<StorageDetail> storageDetailList = Lists.newArrayList();
+        StorageDetail storageDetail;
+        ProductSkuInfo productSkuInfo;
+
+        storage.setAmount(inbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
+        storage.setOptTime(inbound.getInboundTime());
+        storage.setOrderCode(inbound.getInboundOderCode());
+        storage.setOrderCount(inbound.getPraMainUnitNum().intValue());
+        InnerValue innerValue = StringConvertUtil.inboundTypeConvert(inbound.getInboundTypeCode());
+        storage.setOrderId(String.format("%s-%s", inbound.getInboundOderCode(), innerValue.getValue()));
+        if ((null != inbound) && (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
+            storage.setInOutFlag(0);
+            storage.setSourceOrderCode(inbound.getSourceOderCode());
+            storage.setSourceOrderType("0");
+            storage.setSourceOrderTypeName("采购");
+            storage.setTransportCode1(inbound.getLogisticsCenterCode());
+            storage.setTransportName1(inbound.getLogisticsCenterName());
+            storage.setStorageCode1(inbound.getWarehouseCode());
+            storage.setStorageName1(inbound.getWarehouseName());
+            storage.setSubOrderType("0");
+            storage.setSubOrderTypeName("采购入库");
+        }
+        storage.setSupplierCode(inbound.getSupplierCode());
+        storage.setSupplierName(inbound.getSupplierName());
+        storage.setCreateTime(Calendar.getInstance().getTime());
+        storage.setCreateByName(inbound.getUpdateBy());
+        // 查询入库单的商品信息
+        List<InboundProduct> inboundProducts = inboundProductDao.inboundList(inbound.getInboundOderCode());
+        LOGGER.info("对接sap，入库单商品信息，{}", JsonUtil.toJson(inboundProducts));
+        List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+
+        // 查询sku的批次信息
+        Map<String, List<InboundBatch>> inboundBatchMap = new HashMap<>();
+        for(InboundProduct product : inboundProducts) {
+            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
+            if (inboundBatchMap.get(key) == null) {
+                inboundBatchMap.put(key, inboundBatchDao.inboundListBySku(product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum()));
+            }
+        }
+        if(inboundBatchMap != null){
+            LOGGER.info("对接sap，入库单商品批次信息，{}", JsonUtil.toJson(inboundBatchMap));
+        }
+        for(InboundProduct product : inboundProducts){
+            storageDetail = new StorageDetail();
+            storageDetail.setExpectCount(product.getPreInboundNum().intValue());
+            storageDetail.setExpectMinUnitCount(product.getPreInboundMainNum().intValue());
+            storageDetail.setExpectTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            //厂商指导价
+            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
+            if (productSkuInfo != null) {
+                storageDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+            } else {
+                storageDetail.setGuidePrice("0");
+            }
+            storageDetail.setMinUnitCount(product.getPraInboundMainNum().intValue());
+            storageDetail.setSingleCount(product.getPraInboundNum().intValue());
+            storageDetail.setSkuCode(product.getSkuCode());
+            storageDetail.setSkuName(product.getSkuName());
+            storageDetail.setSupplierCode(inbound.getSupplierCode());
+            storageDetail.setSupplierName(inbound.getSupplierName());
+            String desc = product.getNorms() + "/" + product.getColorName() + "/" + product.getModel();
+            storageDetail.setSkuDesc(desc);
+            storageDetail.setTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            storageDetail.setTaxRate(product.getTax().multiply(BigDecimal.valueOf(100)).intValue());
+            storageDetail.setUnit(product.getUnitName());
+            storageDetail.setUnitCount(Integer.valueOf(product.getInboundBaseContent()));
+
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
+            List<InboundBatch> batchList = inboundBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<ScmpStorageBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpStorageBatch.class);
+                storageDetail.setBatchList(infoBatch);
+            }
+            storageDetailList.add(storageDetail);
+        }
+        storage.setDetails(storageDetailList);
+        LOGGER.info("对接sap，转换入库单参数：{}", JsonUtil.toJson(storage));
+        return storage;
+    }
+
+    /** 退供订单*/
+    private Purchase rejectOrder(String orderCode) {
+        // 查询退供单信息
+        RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(orderCode);
+        LOGGER.info("对接sap，退供单信息，{}", JsonUtil.toJson(rejectRecord));
+        // 查询退供单商品信息
+        List<RejectRecordDetail> rejectRecordDetails = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
+        LOGGER.info("对接sap，退供单商品信息，{}", JsonUtil.toJson(rejectRecordDetails));
+        // 赋值sap 退供单信息
+        PurchaseDetail purchaseDetail;
+        List<PurchaseDetail> purchaseDetailList = Lists.newArrayList();
+        ProductSkuInfo productSkuInfo;
+        List<String> skuCodes = rejectRecordDetails.stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+        // 查询退供单sku的批次信息
+        Map<String, List<RejectRecordBatch>> rejectBatchMap = new HashMap<>();
+        for(RejectRecordDetail detail : rejectRecordDetails) {
+            String key = String.format("%s,%s,%s", detail.getSkuCode(), orderCode, detail.getLineCode());
+            if (rejectBatchMap.get(key) == null) {
+                rejectBatchMap.put(key, rejectRecordBatchDao.rejectBatchList(detail.getSkuCode(), orderCode, detail.getLineCode()));
+            }
+        }
+        if(rejectBatchMap != null){
+            LOGGER.info("对接sap，采购单商品批次信息，{}", JsonUtil.toJson(productSkuInfoMap));
+        }
+        // 查询库存数量
+        Map<String, Integer> rejectStockMap = new HashMap<>();
+        for(RejectRecordDetail detail : rejectRecordDetails) {
+            String key = String.format("%s,%s", detail.getSkuCode(), rejectRecord.getWarehouseCode());
+            if (rejectStockMap.get(key) == null) {
+                rejectStockMap.put(key, stockDao.stockCountByReject(detail.getSkuCode(), rejectRecord.getWarehouseCode()));
+            }
+        }
+
+        Purchase purchase = BeanCopyUtils.copy(rejectRecord, Purchase.class);
+        purchase.setContractNo(rejectRecord.getContractCode());
+        purchase.setGroupCode(rejectRecord.getPurchaseGroupCode());
+        purchase.setGroupName(rejectRecord.getPurchaseGroupName());
+        purchase.setOrderCode(rejectRecord.getRejectRecordCode());
+        purchase.setOrderId(rejectRecord.getRejectRecordId());
+        purchase.setOrderType("5");
+        purchase.setOrderTypeDesc("退供");
+        purchase.setSettlementType(rejectRecord.getSettlementMethodCode());
+        purchase.setSettlementTypeDesc(rejectRecord.getSettlementMethodName());
+        purchase.setSkuCount(rejectRecord.getTotalCount().intValue());
+        purchase.setCreateTime(Calendar.getInstance().getTime());
+        purchase.setTransportCode(rejectRecord.getTransportCenterCode());
+        purchase.setTransportName(rejectRecord.getTransportCenterName());
+        purchase.setCreateById(rejectRecord.getUpdateById());
+        purchase.setCreateByName(rejectRecord.getUpdateByName());
+        // 赋值退供sap 详情
+        for(RejectRecordDetail detail : rejectRecordDetails) {
+            purchaseDetail = BeanCopyUtils.copy(detail, PurchaseDetail.class);
+            purchaseDetail.setBrandCode(detail.getBrandId());
+            purchaseDetail.setCategoryCode(detail.getCategoryId());
+            //厂商指导价
+            productSkuInfo = productSkuInfoMap.get(detail.getSkuCode());
+            if (productSkuInfo != null) {
+                purchaseDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+                purchaseDetail.setProductProperty(productSkuInfo.getProductPropertyName());
+            } else {
+                purchaseDetail.setGuidePrice("0");
+            }
+            purchaseDetail.setInputRate(detail.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
+            purchaseDetail.setPrice(detail.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            String desc = detail.getProductSpec() + "/" + detail.getColorName() + "/" + detail.getModelNumber();
+            purchaseDetail.setSkuDesc(desc);
+            purchaseDetail.setSingleCount(detail.getTotalCount().intValue());
+            // 查询库存数量
+            String stockKey = String.format("%s,%s", detail.getSkuCode(), rejectRecord.getWarehouseCode());
+            purchaseDetail.setStorageCount(rejectStockMap.get(stockKey));
+            if(detail.getProductType().equals(0)){
+                purchaseDetail.setProductType(0);
+            }else if(detail.getProductType().equals(1)){
+                purchaseDetail.setProductType(5);
+            }else if(detail.getProductType().equals(2)){
+                purchaseDetail.setProductType(10);
+            }
+            purchaseDetail.setUnit(detail.getUnitName());
+            purchaseDetail.setUniteCount(String.valueOf(detail.getTotalCount()/detail.getProductCount()));
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", detail.getSkuCode(), orderCode, detail.getLineCode());
+            List<RejectRecordBatch> batchList = rejectBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<ScmpPurchaseBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpPurchaseBatch.class);
+                purchaseDetail.setBatchList(infoBatch);
+            }
+            purchaseDetailList.add(purchaseDetail);
+        }
+        purchase.setDetails(purchaseDetailList);
+        LOGGER.info("对接sap，转换退供参数：{}", JsonUtil.toJson(purchase));
+        return purchase;
+    }
+
+    /**  sap  出库单的信息转换*/
+    private Storage outboundInfo(Outbound outbound){
+        LOGGER.info("对接sap，出库单信息：{}", JsonUtil.toJson(outbound));
+        // 赋值sap 的入库单信息
+        Storage storage = new Storage();
+        List<StorageDetail> storageDetailList = Lists.newArrayList();
+        StorageDetail storageDetail;
+        ProductSkuInfo productSkuInfo;
+
+        storage.setAmount(outbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
+        storage.setOptTime(outbound.getOutboundTime());
+        storage.setOrderCode(outbound.getOutboundOderCode());
+        storage.setOrderCount(outbound.getPraMainUnitNum().intValue());
+        InnerValue innerValue = StringConvertUtil.inboundTypeConvert(outbound.getOutboundTypeCode());
+        storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getValue()));
+        if ((null != outbound) && (outbound.getOutboundTypeCode()).equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+            storage.setInOutFlag(5);
+            storage.setSourceOrderCode(outbound.getSourceOderCode());
+            storage.setSourceOrderType("5");
+            storage.setSourceOrderTypeName("退供");
+            storage.setTransportCode(outbound.getLogisticsCenterCode());
+            storage.setTransportName(outbound.getLogisticsCenterName());
+            storage.setStorageCode(outbound.getWarehouseCode());
+            storage.setStorageName(outbound.getWarehouseName());
+            storage.setSubOrderType("5");
+            storage.setSubOrderTypeName("退供出库");
+        }
+        storage.setSupplierCode(outbound.getSupplierCode());
+        storage.setSupplierName(outbound.getSupplierName());
+        storage.setCreateTime(Calendar.getInstance().getTime());
+        storage.setCreateByName(outbound.getUpdateBy());
+        // 查询出库单的商品信息
+        List<OutboundProduct> outboundProducts = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
+        LOGGER.info("对接sap，出库单商品信息，{}", JsonUtil.toJson(outboundProducts));
+        List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+
+        // 查询sku的批次信息
+        Map<String, List<OutboundBatch>> outboundBatchMap = new HashMap<>();
+        for(OutboundProduct product : outboundProducts) {
+            String key = String.format("%s,%s,%s", product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum());
+            if (outboundBatchMap.get(key) == null) {
+                outboundBatchMap.put(key, outboundBatchDao.outboundBatchBySap(product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum()));
+            }
+        }
+        if(outboundBatchMap != null){
+            LOGGER.info("对接sap，出库单商品批次信息，{}", JsonUtil.toJson(outboundBatchMap));
+        }
+        for(OutboundProduct product : outboundProducts) {
+            storageDetail = new StorageDetail();
+            storageDetail.setExpectCount(product.getPreOutboundMainNum().intValue());
+            storageDetail.setExpectMinUnitCount(product.getPreOutboundMainNum().intValue());
+            storageDetail.setExpectTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            //厂商指导价
+            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
+            if (productSkuInfo != null) {
+                storageDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+            } else {
+                storageDetail.setGuidePrice("0");
+            }
+            storageDetail.setMinUnitCount(product.getPraOutboundMainNum().intValue());
+            storageDetail.setSingleCount(product.getPraOutboundNum().intValue());
+            storageDetail.setSkuCode(product.getSkuCode());
+            storageDetail.setSkuName(product.getSkuName());
+            storageDetail.setSupplierCode(outbound.getSupplierCode());
+            storageDetail.setSupplierName(outbound.getSupplierName());
+            String desc = product.getNorms() + "/" + product.getColorName() + "/" + product.getModel();
+            storageDetail.setSkuDesc(desc);
+            storageDetail.setTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            storageDetail.setTaxRate(product.getTax().multiply(BigDecimal.valueOf(100)).intValue());
+            storageDetail.setUnit(product.getUnitName());
+            storageDetail.setUnitCount(Integer.valueOf(product.getOutboundBaseContent()));
+
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum());
+            List<OutboundBatch> batchList = outboundBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<ScmpStorageBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpStorageBatch.class);
+                storageDetail.setBatchList(infoBatch);
+            }
+            storageDetailList.add(storageDetail);
+        }
+        storage.setDetails(storageDetailList);
+        LOGGER.info("对接sap，转换出库单参数：{}", JsonUtil.toJson(storage));
+        return storage;
     }
 }

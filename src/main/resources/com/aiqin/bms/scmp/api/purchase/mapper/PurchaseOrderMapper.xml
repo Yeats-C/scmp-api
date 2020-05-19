@@ -263,7 +263,10 @@
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="synchrStatus != null">
+        synchr_status = #{synchrStatus,jdbcType=INTEGER},
       </if>
     </set>
     where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}

@@ -473,4 +473,10 @@
       #{item}
     </foreach>
   </select>
+  <select id="inboundList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"/>
+    from inbound_product
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

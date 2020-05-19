@@ -144,4 +144,11 @@
     from inbound_batch
     where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
   </select>
+  <select id="inboundListBySku" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from inbound_batch
+    where sku_code = #{skuCode, jdbcType=VARCHAR}
+    and inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
+  </select>
 </mapper>

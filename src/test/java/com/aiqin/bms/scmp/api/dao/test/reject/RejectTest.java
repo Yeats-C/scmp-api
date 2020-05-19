@@ -214,7 +214,7 @@ public class RejectTest extends SpringBootTestContext {
         detailList.add(detail1);
 
         rejectApplyQueryRequest.setDetailList(detailList);
-        //goodsRejectService.rejectApply(rejectApplyQueryRequest);
+       // goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
     @Test

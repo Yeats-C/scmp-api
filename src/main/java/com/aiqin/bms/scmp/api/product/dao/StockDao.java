@@ -132,4 +132,6 @@ public interface StockDao {
     StockBatchDetailResponse stockInfoByBatchDetail( @Param("skuCode") String skuCode,
                                                @Param("warehouseCode") String warehouseCode);
 
+    Integer stockCountByReject(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode);
+
 }

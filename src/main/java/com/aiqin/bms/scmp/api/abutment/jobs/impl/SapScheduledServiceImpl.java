@@ -120,7 +120,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
-        sapBaseDataService.stockSynchronization(sapOrderRequest);
+        //sapBaseDataService.stockSynchronization(sapOrderRequest);
     }
 
     /**
@@ -135,7 +135,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
-        sapBaseDataService.purchaseSynchronization(sapOrderRequest);
+        //sapBaseDataService.purchaseSynchronization(sapOrderRequest);
     }
 
     /**

@@ -109,7 +109,8 @@ public class OutboundController {
     public HttpResponse<OutboundBatch> selectOutboundBatchInfoByOutboundOderCode(@RequestParam(value = "outbound_oder_code")String outboundOderCode,
                                                                   @RequestParam(value = "page_size", required = false)Integer pageSize,
                                                                   @RequestParam(value = "page_no", required = false)Integer pageNo){
-        return outboundService.selectOutboundBatchInfoByOutboundOderCode(new OutboundBatch(outboundOderCode, pageSize, pageNo));
+        //return outboundService.selectOutboundBatchInfoByOutboundOderCode(new OutboundBatch(outboundOderCode, pageSize, pageNo));
+        return HttpResponse.success();
     }
 
     @ApiOperation("pushWms")

@@ -29,4 +29,8 @@ public interface InboundBatchDao {
 
     List<InboundBatch> selectInboundBatchList(String inboundOderCode);
 
+    List<InboundBatch> inboundListBySku(@Param("skuCode") String skuCode,
+                                        @Param("inboundOderCode") String inboundOderCode,
+                                        @Param("lineCode") Long lineCode);
+
 }

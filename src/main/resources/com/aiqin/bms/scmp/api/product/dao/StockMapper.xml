@@ -1757,4 +1757,11 @@
         where a.sku_code = #{skuCode,jdbcType=VARCHAR}
         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
+    <select id="stockCountByReject" resultType="java.lang.Integer">
+        select
+          available_count availableCount
+        from stock
+        where sku_code = #{skuCode,jdbcType=VARCHAR}
+        and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </select>
 </mapper>
