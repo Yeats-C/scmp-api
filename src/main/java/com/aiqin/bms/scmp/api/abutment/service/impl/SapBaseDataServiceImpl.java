@@ -1104,8 +1104,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //取供应商对应商品的表中数据
                 orderDetail.setSupplierCode(itemProductBatch.getSupplierCode());
                 orderDetail.setSupplierName(itemProductBatch.getSupplierName());
-                orderDetail.setSingleCount(itemProductBatch.getNum().intValue());
-                orderDetail.setDeliveryCount(itemProductBatch.getActualDeliverNum().intValue());
+                orderDetail.setSingleCount(itemProductBatch.getTotalCount().intValue());
+                orderDetail.setDeliveryCount(itemProductBatch.getActualTotalCount().intValue());
                 if (orderDetailMap.containsKey(orderInfoItem.getOrderCode())) {
                     orderDetails = orderDetailMap.get(orderInfoItem.getOrderCode());
                     orderDetails.add(orderDetail);

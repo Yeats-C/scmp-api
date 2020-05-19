@@ -584,14 +584,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(itemBatchLists != null){
             for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
                 BatchWmsInfo pBtachList = new BatchWmsInfo();
-                pBtachList.setLineCode(itemBatchList.getProductLineNum().intValue());
+                pBtachList.setLineCode(itemBatchList.getLineCode().intValue());
                 pBtachList.setSkuCode(itemBatchList.getSkuCode());
                 pBtachList.setSkuName(itemBatchList.getSkuName());
-                pBtachList.setBatchCode(itemBatchList.getBatchNumber());
-                pBtachList.setProdcutDate(itemBatchList.getProductTime().toString());
-                pBtachList.setBeOverdueData(itemBatchList.getBeOverdueData());
+                pBtachList.setBatchCode(itemBatchList.getBatchCode());
+                pBtachList.setProdcutDate(itemBatchList.getProductDate().toString());
+                pBtachList.setBeOverdueData(itemBatchList.getBeOverdueDate());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
-                pBtachList.setActualTotalCount(itemBatchList.getActualDeliverNum());
+                pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -684,13 +684,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             // 批次商品的
             productBatch = new OrderInfoItemProductBatch();
             productBatch.setOrderCode(item.getOrderStoreCode());
-            productBatch.setBatchNumber(item.getBatchCode());
+            productBatch.setBatchCode(item.getBatchCode());
             productBatch.setBatchInfoCode(item.getBatchInfoCode());
             productBatch.setSkuCode(item.getSkuCode());
             productBatch.setSkuName(item.getSkuName());
-            productBatch.setNum(item.getProductCount());
-            productBatch.setActualDeliverNum(item.getActualProductCount());
-            productBatch.setProductTime(item.getBatchDate());
+            productBatch.setTotalCount(item.getProductCount());
+            productBatch.setActualTotalCount(item.getActualProductCount());
+            productBatch.setProductDate(item.getBatchDate());
             productBatcheList.add(productBatch);
         }
         vo.setProductNum(productNum);

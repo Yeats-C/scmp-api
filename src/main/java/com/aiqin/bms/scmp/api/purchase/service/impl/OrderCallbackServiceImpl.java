@@ -315,8 +315,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 if (infoItem == null) {
                     throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
                 }
-                orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
-                orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setTotalCount(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setActualTotalCount(supplyDetailRequest.getActualDeliverNum());
                 orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
                 orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
                 orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
@@ -1514,20 +1514,20 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setNum(batch.getProductCount());
-                productBatch.setActualDeliverNum(batch.getActualTotalCount());
-                productBatch.setProductTime(batch.getProductDate());
-                productBatch.setBatchNumber(batch.getBatchCode());
+                productBatch.setTotalCount(batch.getProductCount());
+                productBatch.setActualTotalCount(batch.getActualTotalCount());
+                productBatch.setProductDate(batch.getProductDate());
+                productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
-                productBatch.setTransportCenterCode(response.getTransportCenterCode());
-                productBatch.setTransportCenterName(response.getTransportCenterName());
-                productBatch.setWarehouseCode(response.getWarehouseCode());
-                productBatch.setWarehouseName(response.getWarehouseName());
-                productBatch.setCompanyCode(response.getCompanyCode());
-                productBatch.setCompanyName(response.getCompanyName());
+          //      productBatch.setTransportCenterCode(response.getTransportCenterCode());
+          //      productBatch.setTransportCenterName(response.getTransportCenterName());
+          //      productBatch.setWarehouseCode(response.getWarehouseCode());
+          //      productBatch.setWarehouseName(response.getWarehouseName());
+          //      productBatch.setCompanyCode(response.getCompanyCode());
+          //      productBatch.setCompanyName(response.getCompanyName());
                 productBatch.setSupplierCode(response.getSupplierCode());
                 productBatch.setSupplierName(response.getSupplierName());
-                productBatch.setProductLineNum(batch.getLineCode());
+                productBatch.setLineCode(batch.getLineCode());
                 batchList.add(productBatch);
             }
             orderInfoItemProductBatchDao.insertBatch(batchList);

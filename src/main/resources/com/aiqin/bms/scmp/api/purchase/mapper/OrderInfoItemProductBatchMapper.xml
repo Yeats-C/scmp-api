@@ -200,22 +200,21 @@
     </trim>
   </insert>
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into order_info_item_product_batch (id, order_code, product_line_num,
-    original_line_num, sku_code, sku_name,
-    num, actual_deliver_num, product_time,
-    batch_remark, batch_number, lock_type,
-    transport_center_name, transport_center_code,
-    warehouse_name, warehouse_code, company_code,
-    company_name)
+    insert into order_info_item_product_batch (id, order_code, location_code,
+    line_code, original_line_code, sku_code, sku_name,
+    total_count, actual_total_count, return_total_count, product_date,
+    batch_remark, batch_id, batch_code, lock_type,
+    batch_info_code, be_overdue_data,
+    create_time, update_time, create_by_id, update_by_id,
+    create_by_name, update_by_name)
     values
     <foreach collection="list" open="" close="" separator="," item="item">
-      (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.productLineNum,jdbcType=BIGINT},
-      #{item.originalLineNum,jdbcType=BIGINT}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
-      #{item.num,jdbcType=BIGINT}, #{item.actualDeliverNum,jdbcType=BIGINT}, #{item.productTime,jdbcType=TIMESTAMP},
-      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchNumber,jdbcType=VARCHAR}, #{item.lockType,jdbcType=INTEGER},
-      #{item.transportCenterName,jdbcType=VARCHAR}, #{item.transportCenterCode,jdbcType=VARCHAR},
-      #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR})
+      (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.locationCode,jdbcType=BIGINT},
+      #{item.lineCode,jdbcType=BIGINT}, #{item.originalLineCode,jdbcType=BIGINT}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.totalCount,jdbcType=BIGINT}, #{item.actualTotalCount,jdbcType=BIGINT},  #{item.returnTotalCount,jdbcType=BIGINT}, #{item.productDate,jdbcType=TIMESTAMP},
+      #{item.beOverdueDate,jdbcType=TIMESTAMP}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR},
+      #{item.lockType,jdbcType=INTEGER}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, now(), now(),
+      #{item.createById,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch">

@@ -86,7 +86,7 @@ public class ManualChoseProductRespVo {
     private String productPropertyName;
 
     @ApiModelProperty("可用库存数（选择批次号，数量为批次号数量，未选择批次号数量为商品的库存数）")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long availableNum;
 
     @ApiModelProperty("税率")

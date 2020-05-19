@@ -57,7 +57,7 @@ public class SkuBatchRespVO {
     private String batchRemark;
 
     @ApiModelProperty("可用库存")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long availableNum;
 
     @ApiModelProperty("生产日期")
