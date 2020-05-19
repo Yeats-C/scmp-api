@@ -120,7 +120,7 @@ public interface AllocationMapper {
 
     List<Allocation> listByOutboundCodes(List<String> list);
 
-    StockBatch selectNumberByBatchAndSkuCode(@Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+    StockBatch selectNumberByBatchAndSkuCode(@Param("skuCode") String skuCode, @Param("batchInfoCode") String batchInfoCode);
 
     List<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 

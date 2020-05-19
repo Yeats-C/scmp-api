@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -18,13 +19,17 @@ public class OrderInfoItemProductBatch {
     @JsonProperty("order_code")
     private String orderCode;
 
+    @ApiModelProperty("库位号")
+    @JsonProperty("location_code")
+    private Long locationCode;
+
     @ApiModelProperty("商品行号")
-    @JsonProperty("product_line_num")
-    private Long productLineNum;
+    @JsonProperty("line_code")
+    private Long lineCode;
 
     @ApiModelProperty("原行号")
-    @JsonProperty("original_line_num")
-    private Long originalLineNum;
+    @JsonProperty("original_line_code")
+    private Long originalLineCode;
 
     @ApiModelProperty(value = "sku编码")
     @JsonProperty("sku_code")
@@ -35,56 +40,40 @@ public class OrderInfoItemProductBatch {
     private String skuName;
 
     @ApiModelProperty("数量")
-    @JsonProperty("num")
-    private Long num;
+    @JsonProperty("total_count")
+    private Long totalCount;
 
     @ApiModelProperty("实发数量")
-    @JsonProperty("actual_deliver_num")
-    private Long actualDeliverNum;
+    @JsonProperty("actual_total_count")
+    private Long actualTotalCount;
+
+    @ApiModelProperty("退货数量")
+    @JsonProperty("return_total_count")
+    private Long returnTotalCount;
 
     @ApiModelProperty("生产日期")
-    @JsonProperty("product_time")
-    private Date productTime;
+    @JsonProperty("product_date")
+    private Date productDate;
 
     @ApiModelProperty("过期日期")
-    @JsonProperty("be_overdue_data")
-    private String beOverdueData;
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
 
     @ApiModelProperty("批次备注")
     @JsonProperty("batch_remark")
     private String batchRemark;
 
     @ApiModelProperty("批次号")
-    @JsonProperty("batch_number")
-    private String batchNumber;
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty("批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
 
     @ApiModelProperty("锁定类型")
     @JsonProperty("lock_type")
     private Integer lockType;
-
-    @ApiModelProperty("物流中心名称")
-    @JsonProperty("transport_center_name")
-    private String transportCenterName;
-
-    @ApiModelProperty("物流中心编码")
-    @JsonProperty("transport_center_code")
-    private String transportCenterCode;
-
-    @ApiModelProperty("仓库名称")
-    @JsonProperty("warehouse_name")
-    private String warehouseName;
-
-    @ApiModelProperty("仓库编码")
-    @JsonProperty("warehouse_code")
-    private String warehouseCode;
-
-    @ApiModelProperty("公司编码")
-    @JsonProperty("company_code")
-    private String companyCode;
-
-    @ApiModelProperty("公司名称")
-    @JsonProperty("company_name")
-    private String companyName;
 
     @ApiModelProperty("供应商code")
     @JsonProperty("supplier_code")
@@ -93,5 +82,31 @@ public class OrderInfoItemProductBatch {
     @ApiModelProperty("供应商名称")
     @JsonProperty("supplier_name")
     private String supplierName;
+
+    @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty(value = "create_time")
+    private Date createTime;
+
+    @ApiModelProperty("更新时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonProperty(value = "update_time")
+    private Date updateTime;
+
+    @ApiModelProperty("创建人id")
+    @JsonProperty(value = "create_by_id")
+    private String createById;
+
+    @ApiModelProperty("更新人id")
+    @JsonProperty(value = "update_by_id")
+    private String updateById;
+
+    @ApiModelProperty("创建人名称")
+    @JsonProperty(value = "create_by_name")
+    private String createByName;
+
+    @ApiModelProperty("更新人名称")
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
 
 }

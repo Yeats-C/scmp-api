@@ -854,9 +854,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         for (int i = 0; i < vo.size(); i++) {
             LockOrderItemBatchReqVO reqVO = vo.get(i);
             OrderInfoItemProductBatch copy = BeanCopyUtils.copy(reqVO, OrderInfoItemProductBatch.class);
-            copy.setBatchNumber(System.currentTimeMillis() + i + "");
-            copy.setProductTime(date);
-            copy.setProductLineNum((long) i);
+            copy.setBatchCode(System.currentTimeMillis() + i + "");
+            copy.setProductDate(date);
+            copy.setLineCode((long) i);
             list.add(copy);
         }
         return list;

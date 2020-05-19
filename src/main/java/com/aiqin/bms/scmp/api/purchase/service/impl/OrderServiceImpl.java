@@ -485,7 +485,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(request,insertOutbound);
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
                 String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -522,15 +522,15 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(ErpOrderInfo request,String insertOutbound) {
+    private SaleSourcInfoSource insertWms(OrderInfoReqVO request,String insertOutbound) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
-        ssis.setOrderCode(request.getOrderStoreCode());
+        ssis.setOrderCode(request.getOrderCode());
         ssis.setOutboundOderCode(insertOutbound);
         ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setFromType("销售单");
-        ssis.setFromCode(request.getSourceCode());
+        ssis.setFromCode(request.getOrderCode());
         ssis.setPlatformCode("99");
         ssis.setPlatformName("独立网店");
         ssis.setIsUrgency("0");
@@ -550,28 +550,28 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }else {
             ssis.setAreaName(request.getDistrictName());
         }
-        ssis.setAddress(request.getReceiveAddress());
-        ssis.setMobile(request.getReceiveMobile());
-        ssis.setTel(request.getReceiveMobile());
-        ssis.setOrderPrice(request.getTotalProductAmount().doubleValue());
+        ssis.setAddress(request.getDetailAddress());
+        ssis.setMobile(request.getConsigneePhone());
+        ssis.setTel(request.getConsigneePhone());
+        ssis.setOrderPrice(request.getProductTotalAmount().doubleValue());
         ssis.setAmountReceivable(0.0);
         ssis.setIsinvoice(true);
         ssis.setInvoiceName(request.getInvoiceTitle());
-        ssis.setGoodsOwner(request.getReceivePerson()); // 货主 取收货人 要确认
+        ssis.setGoodsOwner(request.getConsignee()); // 货主 取收货人 要确认
         ssis.setRemark(request.getRemake());
 
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
-        List<ErpOrderItem> itemList = request.getItemList();
+        List<OrderInfoItemReqVO> itemList = request.getProductList();
        if(itemList != null){
-           for (ErpOrderItem list : itemList) {
+           for (OrderInfoItemReqVO list : itemList) {
                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
                sods.setSku(list.getSkuCode());
-               sods.setQty(list.getProductCount().intValue());
-               sods.setPrice(list.getPreferentialAmount().doubleValue());
-               sods.setActualAmount(list.getTotalPreferentialAmount().doubleValue());
-               sods.setGwf1(list.getOrderStoreCode());
-               sods.setGwf2(list.getLineCode().toString());
+               sods.setQty(list.getNum().intValue());
+               sods.setPrice(list.getPrice().doubleValue());
+               sods.setActualAmount(list.getPreferentialAllocation().doubleValue());
+               sods.setGwf1(list.getOrderCode());
+               sods.setGwf2(list.getProductLineNum().toString());
                sods.setGwf3(list.getColorName());
                sods.setGwf4(list.getModelCode());
                sods.setGwf5(list.getUnitName());
@@ -584,14 +584,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if(itemBatchLists != null){
             for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
                 BatchWmsInfo pBtachList = new BatchWmsInfo();
-                pBtachList.setLineCode(itemBatchList.getProductLineNum().intValue());
+                pBtachList.setLineCode(itemBatchList.getLineCode().intValue());
                 pBtachList.setSkuCode(itemBatchList.getSkuCode());
                 pBtachList.setSkuName(itemBatchList.getSkuName());
-                pBtachList.setBatchCode(itemBatchList.getBatchNumber());
-                pBtachList.setProdcutDate(itemBatchList.getProductTime().toString());
-                pBtachList.setBeOverdueData(itemBatchList.getBeOverdueData());
+                pBtachList.setBatchCode(itemBatchList.getBatchCode());
+                pBtachList.setProdcutDate(itemBatchList.getProductDate().toString());
+                pBtachList.setBeOverdueData(itemBatchList.getBeOverdueDate());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
-                pBtachList.setActualTotalCount(itemBatchList.getActualDeliverNum());
+                pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -638,34 +638,60 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         vo.setUpdateByName(request.getUpdateByName());
         List<OrderInfoItemReqVO> productList = Lists.newArrayList();
         OrderInfoItemReqVO product;
+        List<OrderInfoItemProductBatch> productBatcheList = Lists.newArrayList();
+        OrderInfoItemProductBatch productBatch;
         Long productNum = 0L;
         BigDecimal totalChannelAmount = BigDecimal.ZERO;
         for(ErpOrderItem item : request.getItemList()){
             product = new OrderInfoItemReqVO();
-            BeanUtils.copyProperties(item, product);
-            product.setCompanyCode(Global.COMPANY_09);
-            product.setCompanyName(Global.COMPANY_09_NAME);
-            product.setOrderCode(item.getOrderStoreCode());
-            product.setSpec(item.getProductSpec());
-            product.setModel(item.getModelCode());
-            product.setGivePromotion(item.getProductType());
-            product.setPrice(item.getProductAmount());
-            product.setNum(item.getProductCount());
-            product.setAmount(item.getTotalProductAmount());
-            product.setActivityApportionment(item.getTotalAcivityAmount());
-            product.setPreferentialAllocation(item.getTotalPreferentialAmount());
-            product.setProductLineNum(item.getLineCode());
-            product.setPromotionLineNum(item.getGiftLineCode());
-            BigDecimal amount = item.getPurchaseAmount() == null ? BigDecimal.ZERO : item.getPurchaseAmount();
-            product.setChannelUnitPrice(amount);
-            BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
-            product.setTotalChannelPrice(totalAmount);
-            totalChannelAmount = totalChannelAmount.add(totalAmount);
-            product.setTax(item.getTaxRate());
-            product.setCompanyCode(item.getCompanyCode());
-            product.setCompanyName(item.getCompanyName());
-            productNum += item.getProductCount();
-            productList.add(product);
+            Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
+            erpOrderItemMap.put(item.getSkuCode()+item.getBatchInfoCode()+item.getProductType(), item);
+            for (OrderInfoItemReqVO products : productList) {
+                String key = products.getSkuCode()+products.getBatchInfoCode()+products.getGivePromotion();
+                if (erpOrderItemMap.containsKey(key)) {
+                    product.setNum(item.getProductCount()+products.getNum());
+                    product.setAmount(item.getTotalProductAmount().add(product.getAmount()));
+                    product.setActivityApportionment(item.getTotalAcivityAmount().add(product.getActivityApportionment()));
+                    product.setPreferentialAllocation(item.getTotalPreferentialAmount().add(product.getPreferentialAllocation()));
+                 }else {
+                    BeanUtils.copyProperties(item, product);
+                    product.setCompanyCode(Global.COMPANY_09);
+                    product.setCompanyName(Global.COMPANY_09_NAME);
+                    product.setOrderCode(item.getOrderStoreCode());
+                    product.setSpec(item.getProductSpec());
+                    product.setModel(item.getModelCode());
+                    product.setGivePromotion(item.getProductType());
+                    product.setPrice(item.getProductAmount());
+                    product.setNum(item.getProductCount());
+                    product.setAmount(item.getTotalProductAmount());
+                    product.setActivityApportionment(item.getTotalAcivityAmount());
+                    product.setPreferentialAllocation(item.getTotalPreferentialAmount());
+                    product.setProductLineNum(item.getLineCode());
+                    product.setPromotionLineNum(item.getGiftLineCode());
+                    BigDecimal amount = item.getPurchaseAmount() == null ? BigDecimal.ZERO : item.getPurchaseAmount();
+                    product.setChannelUnitPrice(amount);
+                    BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
+                    product.setTotalChannelPrice(totalAmount);
+                    totalChannelAmount = totalChannelAmount.add(totalAmount);
+                    product.setTax(item.getTaxRate());
+                    product.setCompanyCode(item.getCompanyCode());
+                    product.setCompanyName(item.getCompanyName());
+                    productNum += item.getProductCount();
+                    productList.add(product);
+                }
+            }
+
+            // 批次商品的
+            productBatch = new OrderInfoItemProductBatch();
+            productBatch.setOrderCode(item.getOrderStoreCode());
+            productBatch.setBatchCode(item.getBatchCode());
+            productBatch.setBatchInfoCode(item.getBatchInfoCode());
+            productBatch.setSkuCode(item.getSkuCode());
+            productBatch.setSkuName(item.getSkuName());
+            productBatch.setTotalCount(item.getProductCount());
+            productBatch.setActualTotalCount(item.getActualProductCount());
+            productBatch.setProductDate(item.getBatchDate());
+            productBatcheList.add(productBatch);
         }
         vo.setProductNum(productNum);
         vo.setProductChannelTotalAmount(totalChannelAmount);

@@ -115,7 +115,7 @@ public class RejectTest extends SpringBootTestContext {
 //        RejectDetailStockRequest detail2 = new RejectDetailStockRequest();
 //        detailList.add(detail2);
 
-       //goodsRejectService.finishStock(rejectStockRequest);
+        //goodsRejectService.finishStock(rejectStockRequest);
 
 
     }

@@ -1027,8 +1027,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     }
 
     @Override
-    public StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode) {
-        StockBatch stockBatch = allocationMapper.selectNumberByBatchAndSkuCode(skuCode, batchCode);
+    public StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchInfoCode) {
+        StockBatch stockBatch = allocationMapper.selectNumberByBatchAndSkuCode(skuCode, batchInfoCode);
         return stockBatch;
     }
 

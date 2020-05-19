@@ -167,8 +167,8 @@ public class AllocationController {
     @GetMapping("/getNumberByBatchAndSkuCode")
     @ApiOperation("根据批次号sku获取该批次sku的库存数量")
     public HttpResponse<StockBatch> getNumberByBatchAndSkuCode(@RequestParam @ApiParam(value = "sku编码",required = true) String skuCode,
-                                                               @RequestParam @ApiParam(value = "批次号",required = true) String batchCode){
-        return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchCode));
+                                                               @RequestParam @ApiParam(value = "批次编码",required = true) String batchInfoCode){
+        return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchInfoCode));
     }
 
     @GetMapping("/getManualChoseProduct")

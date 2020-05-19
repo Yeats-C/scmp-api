@@ -32,6 +32,10 @@ public class SkuBatchRespVO {
     @JsonProperty("batch_code")
     private String warehouseBatchNumber;
 
+    @ApiModelProperty("批次编码（唯一）")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
@@ -53,7 +57,7 @@ public class SkuBatchRespVO {
     private String batchRemark;
 
     @ApiModelProperty("可用库存")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long availableNum;
 
     @ApiModelProperty("生产日期")

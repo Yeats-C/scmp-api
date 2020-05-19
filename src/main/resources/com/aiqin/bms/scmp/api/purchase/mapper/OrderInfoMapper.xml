@@ -223,6 +223,8 @@ transport_number
       <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="atransport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
+      <result column="abusiness_form" jdbcType="VARCHAR" property="businessForm" />
+      <result column="aplatform_type" jdbcType="VARCHAR" property="platformType" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -265,15 +267,26 @@ transport_number
       <collection property="batchList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemBatchRespVO">
           <result column="dsku_code" jdbcType="VARCHAR" property="skuCode" />
           <result column="dsku_name" jdbcType="VARCHAR" property="skuName" />
-          <result column="dnum" jdbcType="BIGINT" property="num" />
-          <result column="dactualDeliverNum" jdbcType="BIGINT" property="actualDeliverNum" />
-          <result column="dreturnNum" jdbcType="BIGINT" property="returnNum" />
-          <result column="dproduct_time" jdbcType="TIMESTAMP" property="productTime" />
+          <result column="dlocation_code" jdbcType="VARCHAR" property="locationCode" />
+          <result column="dline_code" jdbcType="VARCHAR" property="lineCode" />
+          <result column="doriginal_line_code" jdbcType="VARCHAR" property="originalLineCode" />
+          <result column="dtotal_count" jdbcType="BIGINT" property="totalCount" />
+          <result column="dactual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+          <result column="dreturn_total_count" jdbcType="BIGINT" property="returnTotalCount" />
+          <result column="dproduct_date" jdbcType="VARCHAR" property="productDate" />
           <result column="dbatch_remark" jdbcType="VARCHAR" property="batchRemark" />
-          <result column="dbatch_number" jdbcType="VARCHAR" property="batchNumber" />
+          <result column="dbatch_code" jdbcType="VARCHAR" property="batchCode" />
           <result column="dlock_type" jdbcType="INTEGER" property="lockType" />
           <result column="dsupplier_code" jdbcType="VARCHAR" property="supplierCode" />
           <result column="dsupplier_name" jdbcType="VARCHAR" property="supplierName" />
+          <result column="dbatch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
+          <result column="dbe_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+          <result column="dcreate_time" jdbcType="TIMESTAMP" property="createTime" />
+          <result column="dupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
+          <result column="dcreate_by_id" jdbcType="VARCHAR" property="createById" />
+          <result column="dupdate_by_id" jdbcType="VARCHAR" property="updateById" />
+          <result column="dcreate_by_name" jdbcType="VARCHAR" property="createByName" />
+          <result column="dupdate_by_name" jdbcType="VARCHAR" property="updateByName" />
       </collection>
   </resultMap>
   <select id="selectByOrderCode" resultMap="selectByOrderCode">
@@ -334,6 +347,8 @@ transport_number
              a.transport_company atransport_company,
              a.transport_company_code atransport_company_code,
              a.transport_number atransport_number,
+             a.business_form abusiness_form,
+             a.platform_type aplatform_type,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -371,15 +386,26 @@ transport_number
              c.operator_time coperator_time,
              d.sku_code dsku_code,
              d.sku_name dsku_name,
-             d.num dnum,
-             d.actual_deliver_num dactualDeliverNum,
-             d.return_num dreturnNum,
-             d.product_time dproduct_time,
+             d.location_code dlocation_code,
+             d.line_code dline_code,
+             d.original_line_code doriginal_line_code,
+             d.total_count dtotal_count,
+             d.actual_total_count dactual_total_count,
+             d.return_total_count dreturn_total_count,
+             d.product_date dproduct_date,
              d.batch_remark dbatch_remark,
-             d.batch_number dbatch_number,
+             d.batch_code dbatch_code,
              d.lock_type dlock_type,
              d.supplier_code dsupplier_code,
-             d.supplier_name dsupplier_name
+             d.supplier_name dsupplier_name,
+             d.batch_info_code dbatch_info_code,
+             d.be_overdue_date dbe_overdue_date,
+             d.create_time dcreate_time,
+             d.update_time dupdate_time,
+             d.create_by_id dcreate_by_id,
+             d.update_by_id dupdate_by_id,
+             d.create_by_name dcreate_by_name,
+             d.update_by_name dupdate_by_name
       from order_info a
       left join order_info_item b on a.order_code = b.order_code
       left join order_info_log c on c.order_code = a.order_code
@@ -960,7 +986,7 @@ transport_number
       logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
       order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
       actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
-      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number)
+      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number, business_form, platform_type)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
@@ -990,7 +1016,8 @@ transport_number
       now(), #{item.actualProductChannelTotalAmount,jdbcType=DECIMAL},
       #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
-      #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR}
+      #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
+      #{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT}
       )
     </foreach>
     </insert>
