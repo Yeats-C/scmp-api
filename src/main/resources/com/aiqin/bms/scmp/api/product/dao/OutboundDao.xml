@@ -686,5 +686,6 @@
     <include refid="Base_Column_List" />
     from outbound
     where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+    and outbound_type_code = #{outboundTypeCode,jdbcType=VARCHAR}
   </select>
 </mapper>

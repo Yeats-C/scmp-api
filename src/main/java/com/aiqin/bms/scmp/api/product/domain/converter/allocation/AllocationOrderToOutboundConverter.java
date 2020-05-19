@@ -124,15 +124,15 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             OutboundBatch batch = new OutboundBatch();
             batch.setSkuCode(batch1.getSkuCode());
             batch.setSkuName(batch1.getSkuName());
-            batch.setOutboundBatchCode(batch1.getCallInBatchNumber());
-            batch.setManufactureTime(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
-            batch.setBatchRemark(batch.getBatchRemark());
-            batch.setPreQty(batch1.getQuantity().longValue());
-            batch.setCreateBy(batch1.getCreateBy());
-            batch.setCreateTime(batch1.getCreateTime());
-            batch.setUpdateBy(batch1.getUpdateBy());
-            batch.setUpdateTime(batch1.getUpdateTime());
-            batch.setLineNum(batch1.getLineNum().longValue());
+//            batch.setOutboundBatchCode(batch1.getCallInBatchNumber());
+//            batch.setManufactureTime(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
+//            batch.setBatchRemark(batch.getBatchRemark());
+//            batch.setPreQty(batch1.getQuantity().longValue());
+//            batch.setCreateBy(batch1.getCreateBy());
+//            batch.setCreateTime(batch1.getCreateTime());
+//            batch.setUpdateBy(batch1.getUpdateBy());
+//            batch.setUpdateTime(batch1.getUpdateTime());
+//            batch.setLineNum(batch1.getLineNum().longValue());
             outboundBatchReqVos.add(batch);
         }
         outboundReqVo.setPreOutboundNum(preInboundNum);

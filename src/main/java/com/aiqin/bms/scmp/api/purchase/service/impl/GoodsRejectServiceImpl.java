@@ -579,22 +579,25 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         // 查询退供单规则单号
         String code = DateUtils.currentDate().replaceAll("-","");
         String recordCode = rejectRecordDao.rejectRecordByCode(code);
-        String rejectRecordCode;
-        if(StringUtils.isBlank(recordCode)){
-            rejectRecordCode = code + "0001";
-        }else {
-            Long lastCode = Long.valueOf(recordCode) + 1;
-            rejectRecordCode = lastCode.toString();
-        }
+
         for(RejectApplyRecordTransportCenter center:applyCenters){
+            Long rejectRecordCode;
+            if(StringUtils.isBlank(recordCode)){
+                String newRecordCode = code + "0001";
+                rejectRecordCode = Long.valueOf(newRecordCode);
+            }else {
+                rejectRecordCode = Long.valueOf(recordCode) + 1;
+            }
             rejectRecord.setRejectRecordId(IdUtil.rejectRecordId());
-            rejectRecord.setRejectRecordCode(rejectRecordCode);
+            rejectRecord.setRejectRecordCode(rejectRecordCode.toString());
             rejectRecord.setValidTime(center.getValidTime());
             rejectRecord.setPreDeliverTime(center.getPreDeliverTime());
             rejectRecord.setTransportCenterCode(center.getTransportCenterCode());
             rejectRecord.setTransportCenterName(center.getTransportCenterName());
             rejectRecord.setWarehouseCode(center.getWarehouseCode());
             rejectRecord.setWarehouseName(center.getWarehouseName());
+
+            ++rejectRecordCode;
         }
 
 

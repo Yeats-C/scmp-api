@@ -15,4 +15,8 @@ public interface PurchaseBatchDao {
                                @Param("purchaseOderCode") String purchaseOderCode,
                                @Param("lineCode") Integer lineCode);
 
+    List<PurchaseBatch> purchaseBtachList(@Param("skuCode") String skuCode,
+                               @Param("purchaseOderCode") String purchaseOderCode,
+                               @Param("lineCode") Integer lineCode);
+
 }

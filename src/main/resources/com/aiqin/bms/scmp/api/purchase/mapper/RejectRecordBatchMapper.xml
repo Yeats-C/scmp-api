@@ -103,4 +103,11 @@
     from reject_record_batch
     where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
+  <select id="rejectBatchList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from reject_record_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=INTEGER}
+  </select>
 </mapper>

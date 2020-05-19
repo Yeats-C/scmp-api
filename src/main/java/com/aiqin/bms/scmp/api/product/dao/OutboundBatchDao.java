@@ -24,4 +24,9 @@ public interface OutboundBatchDao {
     Integer updateBatchInfoByOutboundOderCodeAndLineNum(OutboundBatch outboundBatch);
 
     List<OutboundBatch> selectByOutboundBatchOderCode(String outboundOderCode);
+
+    List<OutboundBatch> outboundBatchBySap(@Param("skuCode") String skuCode,
+                                           @Param("outboundOderCode") String outboundOderCode,
+                                           @Param("lineCode") Long lineCode);
+
 }

@@ -984,9 +984,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             outboundBatch.setSkuCode(batch.getSkuCode());
             outboundBatch.setSupplierCode(batch.getSupplierCode());
             outboundBatch.setSupplierName(batch.getSupplierName());
-            outboundBatch.setPraQty(batch.getQuantity());
-            outboundBatch.setCreateBy(allocation.getCreateBy());
-            outboundBatch.setUpdateBy(allocation.getUpdateBy());
+//            outboundBatch.setPraQty(batch.getQuantity());
+//            outboundBatch.setCreateBy(allocation.getCreateBy());
+//            outboundBatch.setUpdateBy(allocation.getUpdateBy());
             batchList.add(outboundBatch);
         }
         OrderProductSkuResponse orderProductSkuResponse;
@@ -1541,7 +1541,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     private void updateOutbound(OutboundCallBackRequest request){
         // 根据来源单号查询销售单
-        Outbound outbound = outboundDao.selectBySourceCode(request.getOderCode());
+        Outbound outbound = outboundDao.selectBySourceCode(request.getOderCode(), String.valueOf(OutboundTypeEnum.ORDER.getCode()));
         // 设置状态
         outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -1597,13 +1597,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                 outboundBatch.setSkuCode(batch.getSkuCode());
                 outboundBatch.setSkuName(batch.getSkuName());
-                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
-                outboundBatch.setManufactureTime(batch.getProductDate());
-                outboundBatch.setBatchRemark(batch.getBatchRemark());
-                outboundBatch.setPraQty(batch.getActualTotalCount());
-                outboundBatch.setCreateBy(request.getDeliveryPerson());
-                outboundBatch.setUpdateBy(request.getDeliveryPerson());
-                outboundBatch.setLineNum(batch.getLineCode());
+//                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
+//                outboundBatch.setManufactureTime(batch.getProductDate());
+//                outboundBatch.setBatchRemark(batch.getBatchRemark());
+//                outboundBatch.setPraQty(batch.getActualTotalCount());
+//                outboundBatch.setCreateBy(request.getDeliveryPerson());
+//                outboundBatch.setUpdateBy(request.getDeliveryPerson());
+//                outboundBatch.setLineNum(batch.getLineCode());
                 outboundBatchList.add(outboundBatch);
             }
             outboundBatchDao.insertList(outboundBatchList);

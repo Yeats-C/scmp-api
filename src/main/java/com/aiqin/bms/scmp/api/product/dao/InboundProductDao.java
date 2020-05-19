@@ -51,4 +51,6 @@ public interface InboundProductDao {
     List<InboundProduct> listDetailForSap(SapOrderRequest sapOrderRequest);
 
     List<PurchaseInboundDetailSource> wmsByInboundProduct(String inboundOderCode);
+
+    List<InboundProduct> inboundList(String inboundOderCode);
 }

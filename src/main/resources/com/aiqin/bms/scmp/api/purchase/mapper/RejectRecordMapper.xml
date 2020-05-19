@@ -173,208 +173,195 @@
       #{settlementMethodCode,jdbcType=VARCHAR},#{settlementMethodName,jdbcType=VARCHAR},
        now(),now(),#{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR})
   </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-        update reject_record
-        <set>
-            <if test="rejectRecordId != null">
-                reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
-            </if>
-            <if test="rejectRecordCode != null">
-                reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
-            </if>
-            <if test="dutyPerson != null">
-                duty_person = #{dutyPerson,jdbcType=VARCHAR},
-            </if>
-            <if test="contactsPerson != null">
-                contacts_person = #{contactsPerson,jdbcType=VARCHAR},
-            </if>
-            <if test="contactsPersonPhone != null">
-                contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
-            </if>
-            <if test="provinceId != null">
-                province_id = #{provinceId,jdbcType=VARCHAR},
-            </if>
-            <if test="provinceName != null">
-                province_name = #{provinceName,jdbcType=VARCHAR},
-            </if>
-            <if test="cityId != null">
-                city_id = #{cityId,jdbcType=VARCHAR},
-            </if>
-            <if test="cityName != null">
-                city_name = #{cityName,jdbcType=VARCHAR},
-            </if>
-            <if test="districtId != null">
-                district_id = #{districtId,jdbcType=VARCHAR},
-            </if>
-            <if test="districtName != null">
-                district_name = #{districtName,jdbcType=VARCHAR},
-            </if>
-            <if test="address != null">
-                address = #{address,jdbcType=VARCHAR},
-            </if>
-            <if test="expectTime != null">
-                expect_time = #{expectTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="validDay != null">
-                valid_day = #{validDay,jdbcType=TIMESTAMP},
-            </if>
-            <if test="dictionaryId != null">
-                dictionary_id = #{dictionaryId,jdbcType=VARCHAR},
-            </if>
-            <if test="dictionaryName != null">
-                dictionary_name = #{dictionaryName,jdbcType=VARCHAR},
-            </if>
-            <if test="supplierCode != null">
-                supplier_code = #{supplierCode,jdbcType=VARCHAR},
-            </if>
-            <if test="supplierName != null">
-                supplier_name = #{supplierName,jdbcType=VARCHAR},
-            </if>
-            <if test="purchaseGroupCode != null">
-                purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
-            </if>
-            <if test="purchaseGroupName != null">
-                purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-            </if>
-            <if test="rejectStatus != null">
-                reject_status = #{rejectStatus,jdbcType=INTEGER},
-            </if>
-            <if test="remark != null">
-                remark = #{remark,jdbcType=VARCHAR},
-            </if>
-            <if test="transportRemark != null">
-                transport_remark = #{transportRemark,jdbcType=VARCHAR},
-            </if>
-            <if test="outStockTime != null">
-                out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="productCount != null">
-                product_count = #{productCount,jdbcType=INTEGER},
-            </if>
-            <if test="productAmount != null">
-                product_amount = #{productAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="singleCount != null">
-                single_count = #{singleCount,jdbcType=INTEGER},
-            </if>
-            <if test="giftAmount != null">
-                gift_amount = #{giftAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="returnCount != null">
-                return_count = #{returnCount,jdbcType=INTEGER},
-            </if>
-            <if test="returnAmount != null">
-                return_amount = #{returnAmount,jdbcType=DECIMAL},
-            </if>
-            <if test="createById != null">
-                create_by_id = #{createById,jdbcType=VARCHAR},
-            </if>
-            <if test="createByName != null">
-                create_by_name = #{createByName,jdbcType=VARCHAR},
-            </if>
-            <if test="updateById != null">
-                update_by_id = #{updateById,jdbcType=VARCHAR},
-            </if>
-            <if test="updateByName != null">
-                update_by_name = #{updateByName,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
-        </set>
-        where id = #{id,jdbcType=BIGINT}
-    </update>
-    <update id="updateStatus" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
-        update reject_record
-        set
-        reject_status = #{rejectStatus,jdbcType=INTEGER},
-        <if test="provinceId != null">
-            province_id = #{provinceId,jdbcType=VARCHAR},
-        </if>
-        <if test="provinceName != null">
-            province_name = #{provinceName,jdbcType=VARCHAR},
-        </if>
-        <if test="cityId != null">
-            city_id = #{cityId,jdbcType=VARCHAR},
-        </if>
-        <if test="cityName != null">
-            city_name = #{cityName,jdbcType=VARCHAR},
-        </if>
-        <if test="districtId != null">
-            district_id = #{districtId,jdbcType=VARCHAR},
-        </if>
-        <if test="districtName != null">
-            district_name = #{districtName,jdbcType=VARCHAR},
-        </if>
-        <if test="address != null">
-            address = #{address,jdbcType=VARCHAR},
-        </if>
-        <if test="contactsPersonPhone != null">
-            contacts_person_phone = #{contactsPersonPhone,jdbcType=VARCHAR},
-        </if>
-        <if test="contactsPerson != null">
-            contacts_person = #{contactsPerson,jdbcType=VARCHAR},
-        </if>
-        <if test="transportRemark != null">
-            transport_remark = #{transportRemark,jdbcType=VARCHAR},
-        </if>
-        <if test="transportUrl != null">
-            transport_url = #{transportUrl,jdbcType=VARCHAR},
-        </if>
-        <if test="outStockTime != null">
-            out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="updateById != null">
-            update_by_id = #{updateById,jdbcType=VARCHAR},
-        </if>
-        <if test="updateByName != null">
-            update_by_name = #{updateByName,jdbcType=VARCHAR},
-        </if>
-        <if test="actualProductCount != null">
-            actual_product_count = #{actualProductCount,jdbcType=INTEGER},
-        </if>
-        <if test="actualProductAmount != null">
-            actual_product_amount = #{actualProductAmount,jdbcType=DECIMAL},
-        </if>
-        <if test="actualGiftCount != null">
-            actual_gift_count = #{actualGiftCount,jdbcType=INTEGER},
-        </if>
-        <if test="actualGiftAmount != null">
-            actual_gift_amount = #{actualGiftAmount,jdbcType=DECIMAL},
-        </if>
-        <if test="actualReturnCount != null">
-            actual_return_count = #{actualReturnCount,jdbcType=INTEGER},
-        </if>
-        <if test="actualReturnAmount != null">
-            actual_return_amount = #{actualReturnAmount,jdbcType=DECIMAL},
-        </if>
-        <if test="actualSingleCount != null">
-            actual_single_count = #{actualSingleCount,jdbcType=INTEGER},
-        </if>
-        <if test="scoreCode != null">
-            score_code = #{scoreCode,jdbcType=VARCHAR},
-        </if>
-        <if test="deliveryTime != null">
-            delivery_time = #{deliveryTime,jdbcType=TIMESTAMP},
-        </if>
-        <if test="finishTime != null">
-            finish_time = #{finishTime,jdbcType=TIMESTAMP},
-        </if>
-        update_time =now()
-        <where>
-            <if test="rejectRecordId!=null">
-               and reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
-            </if>
-            <if test="rejectRecordCode!=null">
-                and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
-            </if>
-        </where>
-
-
-    </update>
+  <update id="update" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecord">
+      update reject_record
+      <set>
+          <if test="rejectApplyRecordCode != null">
+              reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
+          </if>
+          <if test="rejectRecordId != null">
+              reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
+          </if>
+          <if test="rejectRecordCode != null">
+              reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR},
+          </if>
+          <if test="rejectRecordName != null">
+              reject_record_name = #{rejectRecordName,jdbcType=VARCHAR},
+          </if>
+          <if test="companyCode != null">
+              company_code = #{companyCode,jdbcType=VARCHAR},
+          </if>
+          <if test="companyName != null">
+              company_name = #{companyName,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierCode != null">
+              supplier_code = #{supplierCode,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierName != null">
+              supplier_name = #{supplierName,jdbcType=VARCHAR},
+          </if>
+          <if test="settlementMethodCode != null">
+              settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+          </if>
+          <if test="settlementMethodName != null">
+              settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
+          </if>
+          <if test="purchaseGroupCode != null">
+              purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
+          </if>
+          <if test="purchaseGroupName != null">
+              purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
+          </if>
+          <if test="transportCenterCode != null">
+              transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+          </if>
+          <if test="transportCenterName != null">
+              transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+          </if>
+          <if test="warehouseCode != null">
+              warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+          </if>
+          <if test="warehouseName != null">
+              warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+          </if>
+          <if test="productCount != null">
+              product_count = #{productCount,jdbcType=BIGINT},
+          </if>
+          <if test="returnCount != null">
+              return_count = #{returnCount,jdbcType=BIGINT},
+          </if>
+          <if test="giftCount != null">
+              gift_count = #{giftCount,jdbcType=BIGINT},
+          </if>
+          <if test="totalCount != null">
+              total_count = #{totalCount,jdbcType=BIGINT},
+          </if>
+          <if test="productTaxAmount != null">
+              product_tax_amount = #{productTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="returnTaxAmount != null">
+              return_tax_amount = #{returnTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="giftTaxAmount != null">
+              gift_tax_amount = #{giftTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="actualProductCount != null">
+              actual_product_count = #{actualProductCount,jdbcType=BIGINT},
+          </if>
+          <if test="actualReturnCount != null">
+              actual_return_count = #{actualReturnCount,jdbcType=BIGINT},
+          </if>
+          <if test="actualGiftCount != null">
+              actual_gift_count = #{actualGiftCount,jdbcType=BIGINT},
+          </if>
+          <if test="actualTotalCount != null">
+              actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+          </if>
+          <if test="actualProductTaxAmount != null">
+              actual_product_tax_amount = #{actualProductTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="actualReturnTaxAmount != null">
+              actual_return_tax_amount = #{actualReturnTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="actualGiftTaxAmount != null">
+              actual_gift_tax_amount = #{actualGiftTaxAmount,jdbcType=DECIMAL},
+          </if>
+          <if test="validTime != null">
+              valid_time = #{validTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="preDeliverTime != null">
+              pre_deliver_time = #{preDeliverTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="chargePerson != null">
+              charge_person = #{chargePerson,jdbcType=VARCHAR},
+          </if>
+          <if test="accountCode != null">
+              account_code = #{accountCode,jdbcType=VARCHAR},
+          </if>
+          <if test="accountName != null">
+              account_name = #{accountName,jdbcType=VARCHAR},
+          </if>
+          <if test="contractCode != null">
+              contract_code = #{contractCode,jdbcType=VARCHAR},
+          </if>
+          <if test="contractName != null">
+              contract_name = #{contractName,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierPerson != null">
+              supplier_person = #{supplierPerson,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierMobile != null">
+              supplier_mobile = #{supplierMobile,jdbcType=VARCHAR},
+          </if>
+          <if test="provinceId != null">
+              province_id = #{provinceId,jdbcType=VARCHAR},
+          </if>
+          <if test="provinceName != null">
+              province_name = #{provinceName,jdbcType=VARCHAR},
+          </if>
+          <if test="cityId != null">
+              city_id = #{cityId,jdbcType=VARCHAR},
+          </if>
+          <if test="cityName != null">
+              city_name = #{cityName,jdbcType=VARCHAR},
+          </if>
+          <if test="districtId != null">
+              district_id = #{districtId,jdbcType=VARCHAR},
+          </if>
+          <if test="districtName != null">
+              district_name = #{districtName,jdbcType=VARCHAR},
+          </if>
+          <if test="detailAddress != null">
+              detail_address = #{detailAddress,jdbcType=VARCHAR},
+          </if>
+          <if test="scoreCode != null">
+              score_code = #{scoreCode,jdbcType=VARCHAR},
+          </if>
+          <if test="confirmTime != null">
+              confirm_time = #{confirmTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="outStockTime != null">
+              out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="sourceType != null">
+              source_type = #{sourceType,jdbcType=BIT},
+          </if>
+          <if test="sourceCode != null">
+              source_code = #{sourceCode,jdbcType=VARCHAR},
+          </if>
+          <if test="remark != null">
+              remark = #{remark,jdbcType=VARCHAR},
+          </if>
+          <if test="approvalCode != null">
+              approval_code = #{approvalCode,jdbcType=VARCHAR},
+          </if>
+          <if test="rejectStatus != null">
+              reject_status = #{rejectStatus,jdbcType=BIT},
+          </if>
+          <if test="createById != null">
+              create_by_id = #{createById,jdbcType=VARCHAR},
+          </if>
+          <if test="createByName != null">
+              create_by_name = #{createByName,jdbcType=VARCHAR},
+          </if>
+          <if test="updateById != null">
+              update_by_id = #{updateById,jdbcType=VARCHAR},
+          </if>
+          <if test="updateByName != null">
+              update_by_name = #{updateByName,jdbcType=VARCHAR},
+          </if>
+          <if test="createTime != null">
+              create_time = #{createTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="updateTime != null">
+              update_time = #{updateTime,jdbcType=TIMESTAMP},
+          </if>
+          <if test="synchrStatus != null">
+              synchr_status = #{synchrStatus,jdbcType=BIT},
+          </if>
+      </set>
+      where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+  </update>
     <select id="selectByRejectId" resultMap="BaseResultMap">
         select
         <include refid="Base_Column_List"/>
@@ -410,7 +397,7 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
-  <select id="selectByRejectCode" resultType="java.lang.String">
+  <select id="rejectRecordByCode" resultType="java.lang.String">
       select reject_record_code
       from reject_record
       where reject_record_code like concat(#{code,jdbcType=VARCHAR},'%')

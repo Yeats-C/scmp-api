@@ -160,9 +160,9 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
 //                    outboundBatch.setOutboundBatchCode(item.getBatchNo());
 //                    outboundBatch.setManufactureTime(item.getBatchCreateTime());
 //                    outboundBatch.setBatchRemark(item.getBatchRemark());
-                    outboundBatch.setPraQty(item.getProductCount());
-                    outboundBatch.setCreateBy(outbound.getCreateBy());
-                    outboundBatch.setUpdateBy(outbound.getUpdateBy());
+//                    outboundBatch.setPraQty(item.getProductCount());
+//                    outboundBatch.setCreateBy(outbound.getCreateBy());
+//                    outboundBatch.setUpdateBy(outbound.getUpdateBy());
                     outboundBatch.setCreateTime(new Date());
                     outboundBatch.setUpdateTime(new Date());
                     outboundBatch.setSupplierName(reqVo.getSupplierName());
