@@ -111,7 +111,9 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             reqVo1.setCreateTime(record.getCreateTime());
             reqVo1.setUpdateBy(record.getUpdateBy());
             reqVo1.setUpdateTime(record.getUpdateTime());
-            reqVo1.setLinenum(record.getLineNum().longValue());
+            if(record.getLineNum() != null){
+                reqVo1.setLinenum(record.getLineNum().longValue());
+            }
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
             preTaxAmount = record.getTaxAmount().add(preTaxAmount);
