@@ -1597,13 +1597,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                 outboundBatch.setSkuCode(batch.getSkuCode());
                 outboundBatch.setSkuName(batch.getSkuName());
-//                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
-//                outboundBatch.setManufactureTime(batch.getProductDate());
-//                outboundBatch.setBatchRemark(batch.getBatchRemark());
-//                outboundBatch.setPraQty(batch.getActualTotalCount());
-//                outboundBatch.setCreateBy(request.getDeliveryPerson());
-//                outboundBatch.setUpdateBy(request.getDeliveryPerson());
-//                outboundBatch.setLineNum(batch.getLineCode());
+                outboundBatch.setBatchCode(batch.getBatchCode());
+                outboundBatch.setProductDate(batch.getProductDate().toString());
+                outboundBatch.setBatchRemark(batch.getBatchRemark());
+                outboundBatch.setTotalCount(batch.getActualTotalCount());
+                outboundBatch.setCreateByName(request.getDeliveryPerson());
+                outboundBatch.setUpdateByName(request.getDeliveryPerson());
+                outboundBatch.setLineCode(batch.getLineCode());
                 outboundBatchList.add(outboundBatch);
             }
             outboundBatchDao.insertList(outboundBatchList);

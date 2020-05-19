@@ -17,8 +17,9 @@ import lombok.Data;
 @ApiModel("出库单批次skuWMS回调申请实体")
 public class OutboundBatchCallBackReqVo {
 
- //   @ApiModelProperty("出库单号")
- //   private String outboundOderCode;
+    @ApiModelProperty("出库单号")
+    @JsonProperty(value = "outbound_oder_code")
+    private String outboundOderCode;
 
     @ApiModelProperty("sku编号")
     @JsonProperty(value = "sku_code")
@@ -27,6 +28,11 @@ public class OutboundBatchCallBackReqVo {
     @ApiModelProperty("sku名称")
     @JsonProperty(value = "sku_name")
     private String skuName;
+
+    @ApiModelProperty("预计数量(最小单位数量)")
+    @JsonProperty(value = "total_count")
+    private Long totalCount;
+
 
     @ApiModelProperty("实际最小单位数量")
     @JsonProperty(value = "actual_total_count")
@@ -39,6 +45,10 @@ public class OutboundBatchCallBackReqVo {
     @ApiModelProperty("批次号")
     @JsonProperty(value = "batch_code")
     private String batchCode;
+
+    @ApiModelProperty("批次编号")
+    @JsonProperty(value = "batch_info_code")
+    private String batchInfoCode;
 
     @ApiModelProperty("生产日期")
     @JsonProperty(value = "product_date")

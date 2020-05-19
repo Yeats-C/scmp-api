@@ -62,10 +62,10 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCityName(reqVo.getCityName());
                 outbound.setCountyCode(reqVo.getDistrictId());
                 outbound.setCountyName(reqVo.getDistrictName());
-//                outbound.setConsignee(reqVo.getContactsPerson());
-//                outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
-//                outbound.setConsigneeRate(supplyCompany.getZipCode());
-//                outbound.setDetailedAddress(reqVo.getAddress());
+                outbound.setConsignee(reqVo.getSupplierPerson());
+                outbound.setConsigneeNumber(reqVo.getSupplierMobile());
+                outbound.setConsigneeRate(supplyCompany.getZipCode());
+                outbound.setDetailedAddress(reqVo.getDetailAddress());
                 //公司
                 outbound.setCompanyCode(reqVo.getCompanyCode());
                 outbound.setCompanyName(reqVo.getCompanyName());

@@ -754,7 +754,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
 
                 //设置实际数量
-                //outboundBatch.setPraQty(outboundBatchCallBackReqVo.getActualTotalCount());
+                outboundBatch.setActualTotalCount(outboundBatchCallBackReqVo.getActualTotalCount());
 
                 // 修改单条 批次
                 int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
@@ -765,9 +765,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //设置sku编码名称 批次号
                 stockBatchInfoRequest.setSkuCode(outboundBatch.getSkuCode());
                 stockBatchInfoRequest.setSkuName(outboundBatch.getSkuName());
-//                stockBatchInfoRequest.setBatchCode(outboundBatch.getOutboundBatchCode());
-//                //设置更改数量
-//                stockBatchInfoRequest.setChangeCount(outboundBatch.getPraQty());
+                stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
+                //设置更改数量
+                stockBatchInfoRequest.setChangeCount(outboundBatch.getActualTotalCount());
                 stockBatchVoRequestList.add(stockBatchInfoRequest);
           }
             changeStockRequest.setStockBatchList(stockBatchVoRequestList);
