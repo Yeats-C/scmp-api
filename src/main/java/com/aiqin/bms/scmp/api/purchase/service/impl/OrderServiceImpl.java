@@ -646,44 +646,48 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             product = new OrderInfoItemReqVO();
             Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
             erpOrderItemMap.put(item.getSkuCode()+item.getBatchInfoCode()+item.getProductType(), item);
-            for (OrderInfoItemReqVO products : productList) {
-                String key = products.getSkuCode()+products.getBatchInfoCode()+products.getGivePromotion();
-                if (erpOrderItemMap.containsKey(key)) {
-                    product.setNum(item.getProductCount()+products.getNum());
-                    product.setAmount(item.getTotalProductAmount().add(product.getAmount()));
-                    product.setActivityApportionment(item.getTotalAcivityAmount().add(product.getActivityApportionment()));
-                    product.setPreferentialAllocation(item.getTotalPreferentialAmount().add(product.getPreferentialAllocation()));
-                 }else {
-                    BeanUtils.copyProperties(item, product);
-                    product.setCompanyCode(Global.COMPANY_09);
-                    product.setCompanyName(Global.COMPANY_09_NAME);
-                    product.setOrderCode(item.getOrderStoreCode());
-                    product.setSpec(item.getProductSpec());
-                    product.setModel(item.getModelCode());
-                    product.setGivePromotion(item.getProductType());
-                    product.setPrice(item.getProductAmount());
-                    product.setNum(item.getProductCount());
-                    product.setAmount(item.getTotalProductAmount());
-                    product.setActivityApportionment(item.getTotalAcivityAmount());
-                    product.setPreferentialAllocation(item.getTotalPreferentialAmount());
-                    product.setProductLineNum(item.getLineCode());
-                    product.setPromotionLineNum(item.getGiftLineCode());
-                    BigDecimal amount = item.getPurchaseAmount() == null ? BigDecimal.ZERO : item.getPurchaseAmount();
-                    product.setChannelUnitPrice(amount);
-                    BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
-                    product.setTotalChannelPrice(totalAmount);
-                    totalChannelAmount = totalChannelAmount.add(totalAmount);
-                    product.setTax(item.getTaxRate());
-                    product.setCompanyCode(item.getCompanyCode());
-                    product.setCompanyName(item.getCompanyName());
-                    productNum += item.getProductCount();
-                    productList.add(product);
+            if (productList != null && productList.size() > 0){
+                for (OrderInfoItemReqVO products : productList) {
+                    String key = products.getSkuCode()+products.getBatchInfoCode()+products.getGivePromotion();
+                    if (erpOrderItemMap.containsKey(key)) {
+                        product.setNum(item.getProductCount()+products.getNum());
+                        product.setAmount(item.getTotalProductAmount().add(product.getAmount()));
+                        product.setActivityApportionment(item.getTotalAcivityAmount().add(product.getActivityApportionment()));
+                        product.setPreferentialAllocation(item.getTotalPreferentialAmount().add(product.getPreferentialAllocation()));
+                    }
                 }
+            }else {
+                BeanUtils.copyProperties(item, product);
+                product.setCompanyCode(Global.COMPANY_09);
+                product.setCompanyName(Global.COMPANY_09_NAME);
+                product.setOrderCode(item.getOrderStoreCode());
+                product.setSpec(item.getProductSpec());
+                product.setModel(item.getModelCode());
+                product.setGivePromotion(item.getProductType());
+                product.setPrice(item.getProductAmount());
+                product.setNum(item.getProductCount());
+                product.setAmount(item.getTotalProductAmount());
+                product.setActivityApportionment(item.getTotalAcivityAmount());
+                product.setPreferentialAllocation(item.getTotalPreferentialAmount());
+                product.setProductLineNum(item.getLineCode());
+                product.setPromotionLineNum(item.getGiftLineCode());
+                BigDecimal amount = item.getPurchaseAmount() == null ? BigDecimal.ZERO : item.getPurchaseAmount();
+                product.setChannelUnitPrice(amount);
+                BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(item.getProductCount()));
+                product.setTotalChannelPrice(totalAmount);
+                totalChannelAmount = totalChannelAmount.add(totalAmount);
+                product.setTax(item.getTaxRate());
+                product.setCompanyCode(item.getCompanyCode());
+                product.setCompanyName(item.getCompanyName());
+                productNum += item.getProductCount();
+                productList.add(product);
             }
+
 
             // 批次商品的
             productBatch = new OrderInfoItemProductBatch();
             productBatch.setOrderCode(item.getOrderStoreCode());
+            productBatch.setLineCode(item.getLineCode());
             productBatch.setBatchCode(item.getBatchCode());
             productBatch.setBatchInfoCode(item.getBatchInfoCode());
             productBatch.setSkuCode(item.getSkuCode());
@@ -691,11 +695,17 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             productBatch.setTotalCount(item.getProductCount());
             productBatch.setActualTotalCount(item.getActualProductCount());
             productBatch.setProductDate(item.getBatchDate());
+            productBatch.setLockType(item.getLockType());
+            productBatch.setCreateById(item.getCreateById());
+            productBatch.setCreateByName(item.getCreateByName());
+            productBatch.setUpdateById(item.getUpdateById());
+            productBatch.setUpdateByName(item.getUpdateByName());
             productBatcheList.add(productBatch);
         }
         vo.setProductNum(productNum);
         vo.setProductChannelTotalAmount(totalChannelAmount);
         vo.setProductList(productList);
+        vo.setItemBatchList(productBatcheList);
         return vo;
     }
 

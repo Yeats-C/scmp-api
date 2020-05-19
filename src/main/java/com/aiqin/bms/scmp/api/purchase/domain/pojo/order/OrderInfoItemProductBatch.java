@@ -63,6 +63,10 @@ public class OrderInfoItemProductBatch {
     @JsonProperty("batch_remark")
     private String batchRemark;
 
+    @ApiModelProperty("批次业务id")
+    @JsonProperty("batch_id")
+    private String batchId;
+
     @ApiModelProperty("批次号")
     @JsonProperty("batch_code")
     private String batchCode;

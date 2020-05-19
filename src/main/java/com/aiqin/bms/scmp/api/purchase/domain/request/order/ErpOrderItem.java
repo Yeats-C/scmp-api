@@ -209,4 +209,8 @@ public class ErpOrderItem {
     @JsonProperty("batch_code")
     private String batchCode;
 
+    @ApiModelProperty("锁定类型（1下单 2分配）")
+    @JsonProperty("lock_type")
+    private Integer lockType;
+
 }

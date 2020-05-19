@@ -204,7 +204,7 @@
     line_code, original_line_code, sku_code, sku_name,
     total_count, actual_total_count, return_total_count, product_date,
     batch_remark, batch_id, batch_code, lock_type,
-    batch_info_code, be_overdue_data,
+    batch_info_code, supplier_code, supplier_name,
     create_time, update_time, create_by_id, update_by_id,
     create_by_name, update_by_name)
     values
@@ -212,8 +212,8 @@
       (#{item.id,jdbcType=BIGINT}, #{item.orderCode,jdbcType=VARCHAR}, #{item.locationCode,jdbcType=BIGINT},
       #{item.lineCode,jdbcType=BIGINT}, #{item.originalLineCode,jdbcType=BIGINT}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.totalCount,jdbcType=BIGINT}, #{item.actualTotalCount,jdbcType=BIGINT},  #{item.returnTotalCount,jdbcType=BIGINT}, #{item.productDate,jdbcType=TIMESTAMP},
-      #{item.beOverdueDate,jdbcType=TIMESTAMP}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR},
-      #{item.lockType,jdbcType=INTEGER}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, now(), now(),
+      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchId,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},#{item.lockType,jdbcType=INTEGER},
+      #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, now(), now(),
       #{item.createById,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
     </foreach>
   </insert>
