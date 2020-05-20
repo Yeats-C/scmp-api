@@ -485,13 +485,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-                String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
-                HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
-                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-                if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
-                }
+            //    SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
+            //    String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
+            //    HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
+            //    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            //    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+            //        return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
+            //    }
             }
             logs.add(log);
         }
