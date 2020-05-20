@@ -97,4 +97,13 @@ public class OutboundBatch extends PagesRequest {
     @ApiModelProperty(value="修改人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    public OutboundBatch(String outboundOderCode, Integer pageSize, Integer pageNo) {
+        this.outboundOderCode = outboundOderCode;
+        this.setPageSize(pageSize);
+        this.setPageNo(pageNo);
+    }
+
+    public OutboundBatch() {
+    }
 }
