@@ -118,35 +118,6 @@
     inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
-  <resultMap id="ResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse">
-    <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode" />
-    <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName" />
-    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
-    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="sum_count" jdbcType="INTEGER" property="sumCount" />
-    <result column="sum_amount" jdbcType="DECIMAL" property="sumAmount" />
-    <result column="single_amount" jdbcType="DECIMAL" property="singleAmount" />
-    <result column="single_count" jdbcType="INTEGER" property="singleCount" />
-    <result column="product_total_amount" jdbcType="DECIMAL" property="productTotalAmount" />
-    <result column="settlement_method_code" jdbcType="VARCHAR" property="settlementMethodCode" />
-    <result column="settlement_method_name" jdbcType="VARCHAR" property="settlementMethodName" />
-    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
-    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
-  </resultMap>
-  <select id="selectByRejectCode"   resultMap="BaseResultMap">
-    select
-    reject_apply_record_detail_id,reject_apply_record_code, apply_type, purchase_group_code, purchase_group_name,
-    apply_record_status,barcode, sku_code, sku_name, product_id, category_id, category_name,
-    brand_id, brand_name, product_type, product_spec, unit_code,unit_name, stock_count, product_count,
-    tax_rate, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
-    product_amount, product_total_amount, product_cost, batch_no, batch_remark, batch_create_time,
-    settlement_method_code,settlement_method_name, supplier_code, supplier_name
-    from reject_apply_record_detail
-    where
-    reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
-  </select>
   <insert id="insertAll">
     insert into reject_apply_record_detail (reject_apply_record_detail_id, reject_apply_record_code,
     purchase_group_code, purchase_group_name, transport_center_code, transport_center_name, warehouse_code,
@@ -179,59 +150,17 @@
   <update id="update">
     update reject_apply_record_detail
     <set>
+      <if test="rejectApplyRecordDetailId != null">
+        reject_apply_record_detail_id = #{rejectApplyRecordDetailId,jdbcType=VARCHAR},
+      </if>
       <if test="rejectApplyRecordCode != null">
         reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR},
-      </if>
-      <if test="applyType != null">
-        apply_type = #{applyType,jdbcType=INTEGER},
       </if>
       <if test="purchaseGroupCode != null">
         purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR},
       </if>
       <if test="purchaseGroupName != null">
         purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR},
-      </if>
-      <if test="applyRecordStatus != null">
-        apply_record_status = #{applyRecordStatus,jdbcType=INTEGER},
-      </if>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuName != null">
-        sku_name = #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryId != null">
-        category_id = #{categoryId,jdbcType=VARCHAR},
-      </if>
-      <if test="categoryName != null">
-        category_name = #{categoryName,jdbcType=VARCHAR},
-      </if>
-      <if test="brandId != null">
-        brand_id = #{brandId,jdbcType=VARCHAR},
-      </if>
-      <if test="brandName != null">
-        brand_name = #{brandName,jdbcType=VARCHAR},
-      </if>
-      <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
-      </if>
-      <if test="productSpec != null">
-        product_spec = #{productSpec,jdbcType=VARCHAR},
-      </if>
-      <if test="unitCode != null">
-        unit_code = #{unitCode,jdbcType=VARCHAR},
-      </if>
-      <if test="stockCount != null">
-        stock_count = #{stockCount,jdbcType=INTEGER},
-      </if>
-      <if test="productCount != null">
-        product_count = #{productCount,jdbcType=INTEGER},
-      </if>
-      <if test="taxRate != null">
-        tax_rate = #{taxRate,jdbcType=INTEGER},
       </if>
       <if test="transportCenterCode != null">
         transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
@@ -245,26 +174,11 @@
       <if test="warehouseName != null">
         warehouse_name = #{warehouseName,jdbcType=VARCHAR},
       </if>
-      <if test="productAmount != null">
-        product_amount = #{productAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="productTotalAmount != null">
-        product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="productCost != null">
-        product_cost = #{productCost,jdbcType=DECIMAL},
-      </if>
-      <if test="batchNo != null">
-        batch_no = #{batchNo,jdbcType=VARCHAR},
-      </if>
-      <if test="batchRemark != null">
-        batch_remark = #{batchRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="batchCreateTime != null">
-        batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="settlementMethodCode != null">
         settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR},
+      </if>
+      <if test="settlementMethodName != null">
+        settlement_method_name = #{settlementMethodName,jdbcType=VARCHAR},
       </if>
       <if test="supplierCode != null">
         supplier_code = #{supplierCode,jdbcType=VARCHAR},
@@ -272,11 +186,92 @@
       <if test="supplierName != null">
         supplier_name = #{supplierName,jdbcType=VARCHAR},
       </if>
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
       </if>
-      <if test="createByName != null">
-        create_by_name = #{createByName,jdbcType=VARCHAR},
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="brandId != null">
+        brand_id = #{brandId,jdbcType=VARCHAR},
+      </if>
+      <if test="brandName != null">
+        brand_name = #{brandName,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryId != null">
+        category_id = #{categoryId,jdbcType=VARCHAR},
+      </if>
+      <if test="categoryName != null">
+        category_name = #{categoryName,jdbcType=VARCHAR},
+      </if>
+      <if test="productType != null">
+        product_type = #{productType,jdbcType=BIT},
+      </if>
+      <if test="barcode != null">
+        barcode = #{barcode,jdbcType=VARCHAR},
+      </if>
+      <if test="productSpec != null">
+        product_spec = #{productSpec,jdbcType=VARCHAR},
+      </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="unitCode != null">
+        unit_code = #{unitCode,jdbcType=VARCHAR},
+      </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="factorySkuCode != null">
+        factory_sku_code = #{factorySkuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="productAmount != null">
+        product_amount = #{productAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="productTotalAmount != null">
+        product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=DECIMAL},
+      </if>
+      <if test="lineCode != null">
+        line_code = #{lineCode,jdbcType=INTEGER},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="batchPurchasePrice != null">
+        batch_purchase_price = #{batchPurchasePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="locationCode != null">
+        location_code = #{locationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productCost != null">
+        product_cost = #{productCost,jdbcType=DECIMAL},
       </if>
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
@@ -284,27 +279,36 @@
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="deleteAll" parameterType="java.lang.String">
-    delete from reject_apply_record_detail
-    where     reject_apply_record_code =  #{rejectApplyRecordCode,jdbcType=VARCHAR}
-  </update>
-  <update id="updateStatus">
-         update reject_apply_record_detail
-         set
-         apply_record_status = 1
-         where reject_apply_record_code = #{rejectApplyRecordId,jdbcType=VARCHAR}
-  </update>
   <delete id="delete">
-    delete from reject_apply_record_transport_center
+    delete from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </delete>
+  <select id="rejectApplyByWarehouseProduct" resultType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
+    select sku_code skuCode, sku_name skuName, category_id categoryId, category_name categoryName,
+    brand_id brandId, brand_name brandName, product_type productType, product_spec productSpec,
+    color_code colorCode, color_name colorName, model_number modelNumber, unit_code unitCode, unit_name unitName,
+    sum(product_count) productCount, sum(total_count totalCount), factory_sku_code factorySkuCode, tax_rate taxRate,
+    product_amount productAmount, sum(product_total_amount) productTotalAmount, product_cost productCost,
+    barcode, settlement_method_code settlementMethodCode, supplier_code supplierCode,
+    warehouse_code warehouseCode
+    from reject_apply_record_detail
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    group by sku_code, product_type, settlement_method_code, supplier_code, warehouse_code, product_amount
+  </select>
+  <select id="rejectApplyByWarehouseBatch" resultType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
+    select sku_code skuCode, sku_name skuName, supplier_code supplierCode, supplier_name supplierName,
+    batch_code batchCode, batch_remark batchRemark, batch_info_code batchInfoCode, product_date productDate,
+    be_overdue_date beOverdueDate, batch_purchase_price purchasePrice, location_code locationCode
+    from reject_apply_record_detail
+    where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

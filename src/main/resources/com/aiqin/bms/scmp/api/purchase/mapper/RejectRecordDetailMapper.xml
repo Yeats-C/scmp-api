@@ -45,61 +45,35 @@
     product_cost, line_code, create_by_id, create_by_name, update_by_id, update_by_name,
     create_time, update_time
   </sql>
-  <insert id="insertAll"  >
-    insert into reject_record_detail ( reject_record_detail_id,reject_record_id, reject_record_code,
-      barcode,sku_code, sku_name, product_id,single_count,
-      category_id, category_name, brand_id, 
-      brand_name, product_type,product_count, product_spec,
-      unit_code,unit_name, tax_rate, product_amount,
-      product_total_amount, actual_count, actual_amount,
-      color_code,color_name,model_number,factory_sku_code,
-      batch_no, batch_remark, batch_create_time, 
-      create_by_id, create_by_name,update_by_id, update_by_name,
-      create_time, update_time, linnum
-      )
+  <insert id="insertAll">
+    insert into reject_record_detail (reject_record_detail_id, reject_record_id, reject_record_code, sku_code, sku_name, 
+      category_id, category_name, brand_id, brand_name, product_type, product_spec, color_code, color_name, 
+      model_number, unit_code, unit_name, product_count, total_count, factory_sku_code, tax_rate, 
+      barcode, product_amount, product_total_amount, actual_total_count, actual_product_total_amount, 
+      product_cost, line_code, create_by_id, create_by_name, update_by_id, update_by_name, 
+      create_time, update_time)
     values
     <foreach collection="list" separator="," item="item">
-    (
-      #{item.rejectRecordDetailId,jdbcType=VARCHAR},
-      #{rejectRecordId,jdbcType=VARCHAR},
-      #{rejectRecordCode,jdbcType=VARCHAR},
-      #{item.barcode,jdbcType=VARCHAR},
-      #{item.skuCode,jdbcType=VARCHAR},
-      #{item.skuName,jdbcType=VARCHAR},
-      #{item.productId,jdbcType=VARCHAR},
-      #{item.singleCount,jdbcType=VARCHAR},
-      #{item.categoryId,jdbcType=VARCHAR},
-      #{item.categoryName,jdbcType=VARCHAR},
-      #{item.brandId,jdbcType=VARCHAR},
-      #{item.brandName,jdbcType=VARCHAR},
-      #{item.productType,jdbcType=INTEGER},
-      #{item.productCount,jdbcType=INTEGER},
-      #{item.productSpec,jdbcType=VARCHAR},
-      #{item.unitCode,jdbcType=VARCHAR},
-      #{item.unitName,jdbcType=VARCHAR},
-      #{item.taxRate,jdbcType=DECIMAL},
-      #{item.productAmount,jdbcType=DECIMAL},
-      #{item.productTotalAmount,jdbcType=DECIMAL},
-      #{item.actualCount,jdbcType=INTEGER},
-      #{item.actualAmount,jdbcType=DECIMAL},
-      #{item.colorCode,jdbcType=VARCHAR},
-      #{item.colorName,jdbcType=VARCHAR},
-      #{item.modelNumber,jdbcType=VARCHAR},
-      #{item.factorySkuCode,jdbcType=VARCHAR},
-      #{item.batchNo,jdbcType=VARCHAR},
-      #{item.batchRemark,jdbcType=VARCHAR},
-      #{item.batchCreateTime,jdbcType=TIMESTAMP},
-      #{createById,jdbcType=VARCHAR},
-      #{createByName,jdbcType=VARCHAR},
-      #{createById,jdbcType=VARCHAR},
-      #{createByName,jdbcType=VARCHAR},
-      now(),now(), #{item.linnum,jdbcType=INTEGER}
-      )
+    (#{item.rejectRecordDetailId,jdbcType=VARCHAR}, #{item.rejectRecordId,jdbcType=VARCHAR}, 
+      #{item.rejectRecordCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR}, 
+      #{item.categoryId,jdbcType=VARCHAR}, #{item.categoryName,jdbcType=VARCHAR}, #{item.brandId,jdbcType=VARCHAR}, 
+      #{item.brandName,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, #{item.productSpec,jdbcType=VARCHAR}, 
+      #{item.colorCode,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR}, #{item.modelNumber,jdbcType=VARCHAR},
+      #{item.unitCode,jdbcType=VARCHAR}, #{item.unitName,jdbcType=VARCHAR}, #{item.productCount,jdbcType=BIGINT},
+      #{item.totalCount,jdbcType=BIGINT}, #{item.factorySkuCode,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL},
+      #{item.barcode,jdbcType=VARCHAR}, #{item.productAmount,jdbcType=DECIMAL}, #{item.productTotalAmount,jdbcType=DECIMAL},
+      #{item.actualTotalCount,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
+      #{item.productCost,jdbcType=DECIMAL}, #{item.lineCode,jdbcType=INTEGER}, #{item.createById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR},
+      now(), now())
     </foreach>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail">
+  <update id="update">
     update reject_record_detail
     <set>
+      <if test="rejectRecordDetailId != null">
+        reject_record_detail_id = #{rejectRecordDetailId,jdbcType=VARCHAR},
+      </if>
       <if test="rejectRecordId != null">
         reject_record_id = #{rejectRecordId,jdbcType=VARCHAR},
       </if>
@@ -111,9 +85,6 @@
       </if>
       <if test="skuName != null">
         sku_name = #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="productId != null">
-        product_id = #{productId,jdbcType=VARCHAR},
       </if>
       <if test="categoryId != null">
         category_id = #{categoryId,jdbcType=VARCHAR},
@@ -128,16 +99,40 @@
         brand_name = #{brandName,jdbcType=VARCHAR},
       </if>
       <if test="productType != null">
-        product_type = #{productType,jdbcType=INTEGER},
+        product_type = #{productType,jdbcType=BIT},
       </if>
       <if test="productSpec != null">
         product_spec = #{productSpec,jdbcType=VARCHAR},
       </if>
+      <if test="colorCode != null">
+        color_code = #{colorCode,jdbcType=VARCHAR},
+      </if>
+      <if test="colorName != null">
+        color_name = #{colorName,jdbcType=VARCHAR},
+      </if>
+      <if test="modelNumber != null">
+        model_number = #{modelNumber,jdbcType=VARCHAR},
+      </if>
       <if test="unitCode != null">
         unit_code = #{unitCode,jdbcType=VARCHAR},
       </if>
+      <if test="unitName != null">
+        unit_name = #{unitName,jdbcType=VARCHAR},
+      </if>
+      <if test="productCount != null">
+        product_count = #{productCount,jdbcType=BIGINT},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="factorySkuCode != null">
+        factory_sku_code = #{factorySkuCode,jdbcType=VARCHAR},
+      </if>
       <if test="taxRate != null">
         tax_rate = #{taxRate,jdbcType=DECIMAL},
+      </if>
+      <if test="barcode != null">
+        barcode = #{barcode,jdbcType=VARCHAR},
       </if>
       <if test="productAmount != null">
         product_amount = #{productAmount,jdbcType=DECIMAL},
@@ -145,26 +140,17 @@
       <if test="productTotalAmount != null">
         product_total_amount = #{productTotalAmount,jdbcType=DECIMAL},
       </if>
-      <if test="actualCount != null">
-        actual_count = #{actualCount,jdbcType=INTEGER},
+      <if test="actualTotalCount != null">
+        actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
       </if>
-      <if test="actualAmount != null">
-        actual_amount = #{actualAmount,jdbcType=DECIMAL},
+      <if test="actualProductTotalAmount != null">
+        actual_product_total_amount = #{actualProductTotalAmount,jdbcType=DECIMAL},
       </if>
-      <if test="batchNo != null">
-        batch_no = #{batchNo,jdbcType=VARCHAR},
+      <if test="productCost != null">
+        product_cost = #{productCost,jdbcType=DECIMAL},
       </if>
-      <if test="batchRemark != null">
-        batch_remark = #{batchRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="batchCreateTime != null">
-        batch_create_time = #{batchCreateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
-      </if>
-      <if test="createByName != null">
-        create_by_name = #{createByName,jdbcType=VARCHAR},
+      <if test="lineCode != null">
+        line_code = #{lineCode,jdbcType=INTEGER},
       </if>
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
@@ -172,12 +158,7 @@
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -192,61 +173,9 @@
     from reject_record_detail
     where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
-  <select id="selectProductByRejectId" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse" >
-    SELECT
-      sum(product_count) as productCount ,
-      sku_code as skuCode,
-      sku_name as skuName,
-      brand_name as brandName,
-      category_name as categoryName,
-      single_count as singleCount,
-      product_spec as productSpec,
-      unit_name as unitName,
-      color_name as colorName,
-      model_number as modelNumber,
-      tax_rate as taxRate,
-      factory_sku_code as factorySkuCode,
-      product_type as productType,
-      product_amount as productAmount,
-      actual_count as actualCount,
-      actual_amount as actualAmount,
-      sum(product_total_amount) as productTotalAmount,
-      sum(actual_count) as actualCount,
-      sum(actual_amount) as actualAmount
-    FROM reject_record_detail
-    WHERE      reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
-    GROUP BY sku_code,product_type
-  </select>
   <select id="selectByRejectId" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from
-    reject_record_detail
-    where
-    reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
-  </select>
-  <select id="selectByRejectDetailIdList" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from
-    reject_record_detail
-    where
-    id in(
-    <foreach collection="list" item="item" separator=","  >
-       #{item,jdbcType=VARCHAR}
-    </foreach>
-    )
-  </select>
-  <select id="listByRejectIds" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from
-    reject_record_detail
-    where
-    reject_record_id in(
-    <foreach collection="list" item="item" separator=","  >
-      #{item,jdbcType=VARCHAR}
-    </foreach>
-    )
+    select <include refid="Base_Column_List"/>
+    from reject_record_detail
+    where reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
   </select>
 </mapper>
