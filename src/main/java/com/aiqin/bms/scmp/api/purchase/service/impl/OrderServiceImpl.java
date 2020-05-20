@@ -486,7 +486,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                // 配送的情况下 调用wms
             //    SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-            //    String url = urlConfig.WMS_API_URL+"/sale/source/outbound";
+            //    String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
             //    HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
             //    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             //    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
