@@ -12,6 +12,8 @@ import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
@@ -36,6 +38,7 @@ import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -85,7 +88,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Resource
     private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
     @Resource
-    private StockService stockService;
+    private OutboundService outboundService;
     @Resource
     private SupplyCompanyDao supplyCompanyDao;
     @Resource
@@ -580,6 +583,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         String code = DateUtils.currentDate().replaceAll("-","");
         String recordCode = rejectRecordDao.rejectRecordByCode(code);
         List<RejectRecordBatch> batchList;
+        ReturnSupplyToOutBoundReqVo reqVo;
         for(RejectApplyRecordTransportCenter center:applyCenters){
             Long rejectRecordCode;
             if(StringUtils.isBlank(recordCode)){
@@ -599,10 +603,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             ++rejectRecordCode;
 
             // 查询对应库房的商品信息
-            List<RejectRecordDetail> applyRecordDetails = rejectApplyRecordDetailDao.rejectApplyByWarehouseProduct(rejectApplyRecordCode, center.getWarehouseCode());
+            List<RejectRecordDetail> recordDetails = rejectApplyRecordDetailDao.rejectApplyByWarehouseProduct(rejectApplyRecordCode, center.getWarehouseCode());
             // 每个sku的批次信息
             Map<String, List<RejectRecordBatch>> rejectBatchMap = new HashMap<>();
-            for(RejectRecordDetail detail:applyRecordDetails) {
+            for(RejectRecordDetail detail:recordDetails) {
                 String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
                         rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
                 rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
@@ -613,7 +617,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             BigDecimal productTaxAmount = big, returnTaxAmount = big, giftTaxAmount = big;
             Integer i = 1;
             batchList = Lists.newArrayList();
-            for(RejectRecordDetail detail:applyRecordDetails){
+            for(RejectRecordDetail detail:recordDetails){
                 detail.setRejectRecordDetailId(IdUtil.uuid());
                 detail.setRejectRecordId(rejectRecord.getRejectRecordId());
                 detail.setRejectRecordCode(rejectRecord.getRejectRecordCode());
@@ -652,13 +656,21 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             Integer rejectCount = rejectRecordDao.insert(rejectRecord);
             LOGGER.info("添加退供单信息条数：" + rejectCount);
 
-            Integer detailCount = rejectRecordDetailDao.insertAll(applyRecordDetails);
+            Integer detailCount = rejectRecordDetailDao.insertAll(recordDetails);
             LOGGER.info("添加退供单商品信息条数：" + detailCount);
 
             Integer batchCount = rejectRecordBatchDao.insertAll(batchList);
             LOGGER.info("添加退供单批次信息条数：" + batchCount);
+            if(rejectCount > 0){
+                // 调用生成出库单
+                reqVo = new ReturnSupplyToOutBoundReqVo();
+                reqVo.setRejectRecord(rejectRecord);
+                reqVo.setDetailList(recordDetails);
+                reqVo.setBatchList(batchList);
+                LOGGER.info("调用退供出库单:{}", JsonUtil.toJson(reqVo));
+                outboundService.returnSupplySave(reqVo);
+            }
         }
-
         return HttpResponse.success();
     }
 

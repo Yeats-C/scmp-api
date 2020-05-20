@@ -10,30 +10,22 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-
 public interface OutboundDao {
-
 
     /**
      * 分页查询以及搜索
-     * @param vo
-     * @return
      */
     List<Outbound> getOutboundList(QueryOutboundReqVo vo);
 
-    int deleteByPrimaryKey(Long id);
-
     Outbound selectByCode(String outboundOderCode);
 
-    int insert(Outbound record);
+    Integer insert(Outbound record);
 
     int insertSelective(Outbound record);
 
     Outbound selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(Outbound record);
-
-    int updateByPrimaryKey(Outbound record);
+    Integer update(Outbound record);
 
     List<Outbound> selectOutboundInfoByBoundSearch(BoundRequest boundRequest);
 
@@ -43,14 +35,8 @@ public interface OutboundDao {
 
     /**
      * 批量插入出库数据
-     * @author NullPointException
-     * @date 2019/6/26
-     * @param list
-     * @return int
      */
     int insertBatch(List<Outbound> list);
-
-    Outbound selectById(Long id);
 
     List<Outbound> listForSap(SapOrderRequest sapOrderRequest);
 

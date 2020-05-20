@@ -213,22 +213,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
             outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
-            int i = outboundDao.insertSelective(outbound);
+            int i = outboundDao.insert(outbound);
             log.info("出库主表保存结果:{}", i);
-            int j = outboundProductDao.insertBatch(outboundProducts);
+            int j = outboundProductDao.insertAll(outboundProducts);
             log.info("出库商品保存结果:{}", j);
             List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
             if(CollectionUtils.isNotEmpty(batchList)){
                 batchList.stream().forEach(outBoundBatch->outBoundBatch.setOutboundOderCode(outboundOderCode));
                 //添加供应商对应的商品信息
-                Integer count = outboundBatchDao.insertList(batchList);
-                LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
-            }
-            if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
-                List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(),OutboundBatch.class);
-                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(outboundOderCode));
-                int m = outboundBatchDao.insertInfo(outboundBatches);
-                log.info("出库商品批次保存结果:{}", m);
+                Integer count = outboundBatchDao.insertAll(batchList);
+                LOGGER.info("插入出库单批次结果:{}", count);
             }
 
             //更新编码
@@ -279,13 +273,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             int i = outboundDao.insertSelective(outbound);
             log.info("插入出库单主表返回结果", i);
 
-            int j = outboundProductDao.insertBatch(outboundProducts);
+            int j = outboundProductDao.insertAll(outboundProducts);
             log.info("插入出库单商品表返回结果", j);
 
             if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
                 outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
-                int m = outboundBatchDao.insertInfo(outboundBatches);
+                int m = outboundBatchDao.insertAll(outboundBatches);
                 log.info("插入出库单商品批次表返回结果", m);
             }
 
@@ -595,7 +589,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
         }
         // 更新数据库
-        outboundDao.updateByPrimaryKeySelective(outbound);
+        outboundDao.update(outbound);
         OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
         BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
         List<OutboundProductCallBackReqVo> list = new ArrayList<>();
@@ -697,7 +691,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP));
 
                 // 修改单条 sku
-                Integer count = outboundProductDao.updateByPrimaryKeySelective(outboundProduct);
+                Integer count = outboundProductDao.update(outboundProduct);
                 log.info("更新出库单商品信息" + outboundProduct, count);
 
                 //累加总的出库数量，出库主数量
@@ -783,7 +777,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //计算税额
             outbound.setPraTax(outbound.getPraTaxAmount().subtract(outbound.getPraAmount()));
             //修改实际的入库单主体
-            int k = outboundDao.updateByPrimaryKeySelective(outbound);
+            int k = outboundDao.update(outbound);
 
             // 回传类型
             returnSource(outbound.getId());
@@ -818,7 +812,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                int k = outboundDao.updateByPrimaryKeySelective(outbound);
+                int k = outboundDao.update(outbound);
             }catch (Exception e){
                 log.error(Global.ERROR, e);
                 log.error(e.getMessage());
@@ -845,7 +839,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                int k = outboundDao.updateByPrimaryKeySelective(outbound);
+                int k = outboundDao.update(outbound);
             } catch (Exception e) {
                 log.error(Global.ERROR, e);
                 log.error(e.getMessage());
@@ -875,7 +869,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
             outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = outboundDao.updateByPrimaryKeySelective(outbound);
+            int k = outboundDao.update(outbound);
 
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode() )){
             // 如果是移库
@@ -897,7 +891,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
             outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = outboundDao.updateByPrimaryKeySelective(outbound);
+            int k = outboundDao.update(outbound);
 
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.scrap.getCode() )){
             // 如果是报废
@@ -912,7 +906,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 int k1 = allocationMapper.updateByPrimaryKeySelective(allocation);
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                int k = outboundDao.updateByPrimaryKeySelective(outbound);
+                int k = outboundDao.update(outbound);
         }else{
             throw new GroundRuntimeException("无法回传匹配类型");
         }
@@ -1130,12 +1124,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         if(i!=list.size()){
             throw new BizException(ResultCode.SAVE_OUT_BOUND_FAILED);
         }
-        int i1 = outboundProductDao.insertBatch(productList);
+        int i1 = outboundProductDao.insertAll(productList);
         if(i1!=productList.size()){
             throw new BizException(ResultCode.SAVE_OUT_BOUND_PRODUCT_FAILED);
         }
         if (CollectionUtils.isNotEmpty(batchList)){
-            Integer integer = outboundBatchDao.insertInfo(batchList);
+            Integer integer = outboundBatchDao.insertAll(batchList);
             if(Objects.isNull(integer)||integer!=batchList.size()){
                 throw new BizException(ResultCode.SAVE_OUT_BOUND_BATCH_FAILED);
             }

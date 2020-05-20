@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -22,8 +23,8 @@ import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -36,8 +37,9 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSupplyToOutBoundReqVo, OutboundReqVo> {
+    @Resource
     private SkuService skuService;
-
+    @Resource
     private SupplyCompanyDao supplyCompanyDao;
 
     public ReturnSupply2outboundSaveConverter(SkuService skuService, SupplyCompanyDao supplyCompanyDao) {
@@ -46,38 +48,42 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
     }
 
     @Override
-    public OutboundReqVo convert(ReturnSupplyToOutBoundReqVo reqMainVo) {
+    public OutboundReqVo convert(ReturnSupplyToOutBoundReqVo request) {
         try {
-            RejectRecord reqVo = reqMainVo.getRejectRecord();
-            if (CollectionUtils.isEmpty(reqMainVo.getRejectRecordDetails())) {
+            RejectRecord rejectRecord = request.getRejectRecord();
+            if (CollectionUtils.isEmpty(request.getDetailList())) {
                 throw new BizException("出库单保存请求vo的商品项集合不能为空");
             }
-            SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(reqVo.getSupplierCode(), reqVo.getCompanyCode());
+            if (CollectionUtils.isEmpty(request.getBatchList())) {
+                throw new BizException("出库单保存请求vo的批次项集合不能为空");
+            }
 
-            if (null != reqVo) {
+            SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(rejectRecord.getSupplierCode(), rejectRecord.getCompanyCode());
+
+            if (null != rejectRecord) {
                 OutboundReqVo outbound = new OutboundReqVo();
-                outbound.setProvinceCode(reqVo.getProvinceId());
-                outbound.setProvinceName(reqVo.getProvinceName());
-                outbound.setCityCode(reqVo.getCityId());
-                outbound.setCityName(reqVo.getCityName());
-                outbound.setCountyCode(reqVo.getDistrictId());
-                outbound.setCountyName(reqVo.getDistrictName());
-//                outbound.setConsignee(reqVo.getContactsPerson());
-//                outbound.setConsigneeNumber(reqVo.getContactsPersonPhone());
-//                outbound.setConsigneeRate(supplyCompany.getZipCode());
-//                outbound.setDetailedAddress(reqVo.getAddress());
+                outbound.setProvinceCode(rejectRecord.getProvinceId());
+                outbound.setProvinceName(rejectRecord.getProvinceName());
+                outbound.setCityCode(rejectRecord.getCityId());
+                outbound.setCityName(rejectRecord.getCityName());
+                outbound.setCountyCode(rejectRecord.getDistrictId());
+                outbound.setCountyName(rejectRecord.getDistrictName());
+                outbound.setConsignee(rejectRecord.getSupplierPerson());
+                outbound.setConsigneeNumber(rejectRecord.getSupplierMobile());
+                outbound.setConsigneeRate(supplyCompany.getZipCode());
+                outbound.setDetailedAddress(rejectRecord.getDetailAddress());
                 //公司
-                outbound.setCompanyCode(reqVo.getCompanyCode());
-                outbound.setCompanyName(reqVo.getCompanyName());
-                //物流中心
-                outbound.setLogisticsCenterCode(reqVo.getTransportCenterCode());
-                outbound.setLogisticsCenterName(reqVo.getTransportCenterName());
+                outbound.setCompanyCode(rejectRecord.getCompanyCode());
+                outbound.setCompanyName(rejectRecord.getCompanyName());
+                //仓库
+                outbound.setLogisticsCenterCode(rejectRecord.getTransportCenterCode());
+                outbound.setLogisticsCenterName(rejectRecord.getTransportCenterName());
                 //库房
-                outbound.setWarehouseCode(reqVo.getWarehouseCode());
-                outbound.setWarehouseName(reqVo.getWarehouseName());
+                outbound.setWarehouseCode(rejectRecord.getWarehouseCode());
+                outbound.setWarehouseName(rejectRecord.getWarehouseName());
                 //供应单位
-                outbound.setSupplierCode(reqVo.getSupplierCode());
-                outbound.setSupplierName(reqVo.getSupplierName());
+                outbound.setSupplierCode(rejectRecord.getSupplierCode());
+                outbound.setSupplierName(rejectRecord.getSupplierName());
                 //状态
                 outbound.setOutboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.CREATE_INOUT.getName());
@@ -85,33 +91,24 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setOutboundTypeCode(OutboundTypeEnum.RETURN_SUPPLY.getCode());
                 outbound.setOutboundTypeName(OutboundTypeEnum.RETURN_SUPPLY.getName());
                 //原始单号
-                outbound.setSourceOderCode(reqVo.getRejectRecordCode());
-                //出库时间
-//                order.setOutboundTime(reqVo.getOutboundTime());
+                outbound.setSourceOderCode(rejectRecord.getRejectRecordCode());
                 //预计出库数量
-//                outbound.setPreOutboundNum(Long.parseLong(reqVo.getSingleCount().toString()));
-//                //预计主出库数量
-//                outbound.setPreMainUnitNum(Long.parseLong(reqVo.getSingleCount().toString()));
-//                //预计含税总金额
-//                outbound.setPreTaxAmount(reqVo.getGiftAmount().add(reqVo.getReturnAmount()).add(reqVo.getProductAmount()));
-//                //预计无税总金额
-//                outbound.setPreAmount(reqVo.getUntaxedAmount());
-                //预计税额
-//                outbound.setPreTax(reqVo.getSumAmount()-reqVo.getSumAmount());
-                outbound.setCreateBy(reqVo.getCreateByName());
-                outbound.setUpdateBy(reqVo.getUpdateByName());
-                outbound.setCreateTime(new Date());
-                outbound.setUpdateTime(new Date());
+                outbound.setPreOutboundNum(rejectRecord.getTotalCount());
+                //预计主出库数量
+                outbound.setPreMainUnitNum(rejectRecord.getTotalCount());
+                //预计含税总金额
+                outbound.setPreTaxAmount(rejectRecord.getGiftTaxAmount().add(
+                        rejectRecord.getReturnTaxAmount()).add(rejectRecord.getProductTaxAmount()));
+                outbound.setCreateBy(rejectRecord.getCreateByName());
+                outbound.setUpdateBy(rejectRecord.getUpdateByName());
+                outbound.setRemark(rejectRecord.getRemark());
 
-                outbound.setRemark(reqVo.getRemark());
-
-                List<String> skuCodes = reqMainVo.getRejectRecordDetails().stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
+                List<String> skuCodes = request.getDetailList().stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
                 List<ProductSkuCheckout> skuCheckOuts = skuService.getSkuCheckOuts(skuCodes);
                 Map<String, BigDecimal> map = skuCheckOuts.stream().collect(Collectors.toMap(ProductSkuCheckout::getSkuCode, ProductSkuCheckout::getInputTaxRate, (k1, k2) -> k2));
                 Map<String, PurchaseItemRespVo> map2 = skuService.getSalesSkuList(skuCodes).stream().collect(Collectors.toMap(PurchaseItemRespVo::getSkuCode, Function.identity(), (k1, k2) -> k2));
-                List<RejectRecordDetail> items = reqMainVo.getRejectRecordDetails();
-                List<OutboundProductReqVo> parts = Lists.newArrayList();
-                List<OutboundBatch> batchReqVos = Lists.newArrayList();
+                List<RejectRecordDetail> items = request.getDetailList();
+                List<OutboundProductReqVo> productList = Lists.newArrayList();
                 BigDecimal noTaxTotalAmount = BigDecimal.valueOf(0);
                 for (RejectRecordDetail item : items) {
                     OutboundProductReqVo outboundProduct = new OutboundProductReqVo();
@@ -140,8 +137,6 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setCreateBy(outbound.getCreateBy());
                     outboundProduct.setUpdateBy(outbound.getUpdateBy());
                     outboundProduct.setPreOutboundMainNum(item.getProductCount());
-                    outboundProduct.setCreateTime(new Date());
-                    outboundProduct.setUpdateTime(new Date());
                     outboundProduct.setLinenum(item.getLineCode().longValue());
                     //计算不含税单价
                     BigDecimal aLong = map.get(item.getSkuCode());
@@ -149,35 +144,24 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                     outboundProduct.setOutboundBaseContent("1");
                     outboundProduct.setOutboundBaseUnit("1");
                     //计算不含税总价 (现在是主单位数量 * 单价）
-//                long noTaxTotalPrice = noTaxPrice * o.getNum();
                     BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(item.getProductCount())).setScale(4, BigDecimal.ROUND_HALF_UP);
-                    noTaxTotalAmount = noTaxTotalPrice;
-                    parts.add(outboundProduct);
-                    OutboundBatch outboundBatch = new OutboundBatch();
-                    //sku
-                    outboundBatch.setSkuCode(item.getSkuCode());
-                    outboundBatch.setSkuName(item.getSkuName());
-//                    outboundBatch.setOutboundBatchCode(item.getBatchNo());
-//                    outboundBatch.setManufactureTime(item.getBatchCreateTime());
-//                    outboundBatch.setBatchRemark(item.getBatchRemark());
-//                    outboundBatch.setPraQty(item.getProductCount());
-//                    outboundBatch.setCreateBy(outbound.getCreateBy());
-//                    outboundBatch.setUpdateBy(outbound.getUpdateBy());
-                    outboundBatch.setCreateTime(new Date());
-                    outboundBatch.setUpdateTime(new Date());
-                    outboundBatch.setSupplierName(reqVo.getSupplierName());
-                    outboundBatch.setSupplierCode(reqVo.getSupplierCode());
-                    batchReqVos.add(outboundBatch);
+                    noTaxTotalAmount = noTaxTotalAmount.add(noTaxTotalPrice);
+                    productList.add(outboundProduct);
                 }
+                //预计无税总金额
                 outbound.setPreAmount(noTaxTotalAmount);
+                //预计税额
                 outbound.setPreTax(outbound.getPreTaxAmount().subtract(noTaxTotalAmount));
-                outbound.setList(parts);
-                outbound.setOutboundBatches(batchReqVos);
+                outbound.setList(productList);
+
+                // 批次信息
+                List<OutboundBatch> infoBatch = BeanCopyUtils.copyList(request.getBatchList(), OutboundBatch.class);
+                outbound.setOutboundBatches(infoBatch);
                 return outbound;
             }
         } catch (Exception e) {
             log.error(Global.ERROR, e);
-            if(e instanceof BizException){
+            if (e instanceof BizException) {
                 throw new BizException(e.getMessage());
             } else {
                 throw new BizException("出库单保存请求reqVo转换Po异常");

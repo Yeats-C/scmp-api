@@ -405,13 +405,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(outboundOderCode));
         int i = outboundDao.insertSelective(outbound);
         LOGGER.info("出库主表保存结果:{}", i);
-        int j = outboundProductDao.insertBatch(outboundProducts);
+        int j = outboundProductDao.insertAll(outboundProducts);
         LOGGER.info("出库商品保存结果:{}", j);
         List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
         if(CollectionUtils.isNotEmpty(batchList)){
             batchList.stream().forEach(outBoundBatch -> outBoundBatch.setOutboundOderCode(outboundOderCode));
             //添加供应商对应的商品信息
-            Integer count = outboundBatchDao.insertList(batchList);
+            Integer count = outboundBatchDao.insertAll(batchList);
             LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
         }
         //批次商品暂时没有
@@ -1606,9 +1606,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 //                outboundBatch.setLineNum(batch.getLineCode());
                 outboundBatchList.add(outboundBatch);
             }
-            outboundBatchDao.insertList(outboundBatchList);
+            outboundBatchDao.insertAll(outboundBatchList);
         }
-        Integer count = outboundDao.updateByPrimaryKey(outbound);
+        Integer count = outboundDao.update(outbound);
         if(count <= 0){
             LOGGER.error("发货回传失败, 出库单更新失败");
             throw new GroundRuntimeException(String.format("发货回传失败, 出库单更新失败"));

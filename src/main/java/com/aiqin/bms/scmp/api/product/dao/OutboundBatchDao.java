@@ -13,9 +13,7 @@ public interface OutboundBatchDao {
 
     Integer countOutboundBatchInfoByOutboundOderCode(String outboundOderCode);
 
-    Integer insertInfo(@Param("list")List<OutboundBatch> outboundBatches);
-
-    Integer insertList(List<OutboundBatch> list);
+    Integer insertAll(@Param("list")List<OutboundBatch> list);
 
     List<OutboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
 
