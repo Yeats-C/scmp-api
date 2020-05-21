@@ -314,7 +314,7 @@
                 out_stock_time = #{outStockTime,jdbcType=TIMESTAMP},
             </if>
             <if test="sourceType != null">
-                source_type = #{sourceType,jdbcType=BIT},
+                source_type = #{sourceType,jdbcType=INTEGER},
             </if>
             <if test="sourceCode != null">
                 source_code = #{sourceCode,jdbcType=VARCHAR},
@@ -326,7 +326,7 @@
                 approval_code = #{approvalCode,jdbcType=VARCHAR},
             </if>
             <if test="rejectStatus != null">
-                reject_status = #{rejectStatus,jdbcType=BIT},
+                reject_status = #{rejectStatus,jdbcType=INTEGER},
             </if>
             <if test="updateById != null">
                 update_by_id = #{updateById,jdbcType=VARCHAR},
@@ -336,7 +336,7 @@
             </if>
                 update_time = now(),
             <if test="synchrStatus != null">
-                synchr_status = #{synchrStatus,jdbcType=BIT},
+                synchr_status = #{synchrStatus,jdbcType=INTEGER},
             </if>
         </set>
       where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}

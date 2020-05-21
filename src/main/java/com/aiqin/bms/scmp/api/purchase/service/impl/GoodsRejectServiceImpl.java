@@ -4,15 +4,22 @@ import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
+import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
+import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
@@ -30,6 +37,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
@@ -103,6 +111,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private RejectApplyRecordTransportCenterDao rejectApplyRecordTransportCenterDao;
     @Resource
     private RejectRecordBatchDao rejectRecordBatchDao;
+    @Resource
+    private OutboundDao outboundDao;
+    @Resource
+    private StockService stockService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -526,21 +538,29 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         log.setRemark("手动");
         switch (status) {
             case 0:
+                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT)){
+                    LOGGER.info("退供单非待确认状态，不可以进行供应商确认的操作:{}", JsonUtil.toJson(record));
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供单非待确认状态，不可以进行供应商确认的操作"));
+                }
                 // 退供单供应商确认
                 log.setOperationContent("供应商确认");
                 record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
                 break;
             case 4:
+                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT) ||
+                        !record.getRejectStatus().equals(RejectRecordStatus.REJECT_TO_OUTBOUND)){
+                    LOGGER.info("退供单非待确认、待出库状态，不可以进行撤销的操作:{}", JsonUtil.toJson(record));
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供单非待确认、待出库状态，不可以进行撤销的操作"));
+                }
                 // 退供单撤销
                 log.setOperationContent("退供单撤销：" + rejectRecordCode);
                 record.setRejectStatus(RejectRecordStatus.REJECT_REVOKE);
-                break;
-            case 5:
-                // 退供单重发
-
-                // 重发成功，变为待出库
-                log.setOperationContent("退供单重发：" + rejectRecordCode);
-                record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
+                // 解锁库存、批次库存
+                this.rejectStock(3, rejectRecord);
+                // 撤销wms退供单
+                if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_TO_OUTBOUND)){
+                    //todo
+                }
                 break;
         }
         Integer count = rejectRecordDao.update(record);
@@ -669,67 +689,91 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 reqVo.setBatchList(batchList);
                 LOGGER.info("调用退供出库单:{}", JsonUtil.toJson(reqVo));
                 outboundService.returnSupplySave(reqVo);
+                // 锁定库存、批次库存
+                this.rejectStock(1, rejectRecord);
             }
         }
         return HttpResponse.success();
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    public HttpResponse rejectCancel(String rejectRecordId) {
-        try {
-//            RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
-//            if (record == null) {
-//                return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
-//            }
-//            RejectRecord rejectRecord = new RejectRecord();
-//            rejectRecord.setRejectRecordId(rejectRecordId);
-//            //rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
-//            Integer count = rejectRecordDao.updateStatus(rejectRecord);
-//            LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
-//            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
-//            //解锁库存
-//            ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, record);
-//            Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
-//            if (!stockStatus) {
-//                LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-//                throw new GroundRuntimeException("解锁库存异常");
-//            }
-//            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
-//                WorkFlowVO w = new WorkFlowVO();
-//                w.setFormNo(record.getRejectRecordCode());
-//                WorkFlowRespVO workFlowRespVO = cancelWorkFlow(w);
-//                if (!workFlowRespVO.getSuccess()) {
-//                    throw new GroundRuntimeException("审批流撤销失败!");
-//                }
-//            }
-            return HttpResponse.success();
-        } catch (GroundRuntimeException e) {
-            LOGGER.error("取消-更改退供申请异常:{}", e);
-            throw new GroundRuntimeException(String.format("取消-更改退供申请异常:{%s}", e.getMessage()));
-        }
-    }
+    private HttpResponse rejectStock(Integer type, RejectRecord rejectRecord) {
+        LOGGER.info("开始操作退供单的库存、批次库存:", rejectRecord);
+        ChangeStockRequest request = new ChangeStockRequest();
+        request.setOperationType(type);
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfo;
+        List<StockBatchInfoRequest> stockBatchList = Lists.newArrayList();
+        StockBatchInfoRequest stockBatchInfo;
 
-    public ILockStocksReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord) {
-        ILockStocksReqVO ILockStocksReqVO = new ILockStocksReqVO();
-        ILockStocksReqVO.setCompanyCode(rejectRecord.getCompanyCode());
-        ILockStocksReqVO.setTransportCenterCode(rejectRecord.getTransportCenterCode());
-        ILockStocksReqVO.setWarehouseCode(rejectRecord.getWarehouseCode());
-        ILockStocksReqVO.setPurchaseGroupCode(rejectRecord.getPurchaseGroupCode());
-        List<ILockStocksItemReqVo> list = new ArrayList<>();
-        ILockStocksItemReqVo itemReqVo;
-        for (RejectRecordDetail detail : detailList) {
-            itemReqVo = new ILockStocksItemReqVo();
-            //itemReqVo.setNum(Long.valueOf(detail.getSingleCount()));
-            itemReqVo.setSkuCode(detail.getSkuCode());
-            itemReqVo.setSkuName(detail.getSkuName());
-            itemReqVo.setDocumentType(2);
-            itemReqVo.setDocumentNum(detail.getRejectRecordCode());
-            itemReqVo.setRemark(rejectRecord.getRemark());
-            itemReqVo.setOperator(rejectRecord.getCreateByName());
-            list.add(itemReqVo);
+        // 查询出库单号
+        Outbound outbound = outboundDao.selectBySourceCode(rejectRecord.getRejectRecordCode(), String.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode()));
+        // 查询库房类型
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(rejectRecord.getWarehouseCode());
+        // 查询退供单的商品
+        List<RejectRecordDetail> detailList = rejectRecordDetailDao.selectByRejectId(rejectRecord.getRejectRecordId());
+        if (CollectionUtils.isEmpty(detailList)) {
+            LOGGER.info("锁库存、批次库存，退供单的商品信息为空:", detailList);
+            return HttpResponse.failure(ResultCode.REJECT_PRODUCT_NULL);
         }
-        ILockStocksReqVO.setItemReqVos(list);
-        return ILockStocksReqVO;
+        // 查询退供单的批次信息
+        List<RejectRecordBatch> recordBatches = rejectRecordBatchDao.rejectBatchInfoList(rejectRecord.getRejectRecordCode());
+        if (CollectionUtils.isEmpty(recordBatches)) {
+            LOGGER.info("锁库存、批次库存，退供单的批次信息为空:", detailList);
+            return HttpResponse.failure(ResultCode.REJECT_BATCH_NULL);
+        }
+
+        for (RejectRecordDetail product : detailList) {
+            stockInfo = BeanCopyUtils.copy(product, StockInfoRequest.class);
+            if (warehouse != null) {
+                stockInfo.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
+            }
+            stockInfo.setCompanyCode(rejectRecord.getCompanyCode());
+            stockInfo.setCompanyName(rejectRecord.getCompanyName());
+            stockInfo.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+            stockInfo.setTransportCenterName(rejectRecord.getTransportCenterName());
+            stockInfo.setWarehouseCode(rejectRecord.getWarehouseCode());
+            stockInfo.setWarehouseName(rejectRecord.getWarehouseName());
+            stockInfo.setDocumentCode(outbound.getOutboundOderCode());
+            stockInfo.setDocumentType(Global.OUTBOUND_TYPE);
+            stockInfo.setSourceDocumentCode(rejectRecord.getRejectRecordCode());
+            stockInfo.setSourceDocumentType(2);
+            stockInfo.setOperatorId(rejectRecord.getCreateById());
+            stockInfo.setOperatorName(rejectRecord.getCreateByName());
+            stockInfo.setChangeCount(product.getTotalCount());
+            list.add(stockInfo);
+        }
+        request.setStockList(list);
+
+        for (RejectRecordBatch batch : recordBatches){
+            stockBatchInfo = BeanCopyUtils.copy(batch, StockBatchInfoRequest.class);
+            if (warehouse != null) {
+                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+            }
+            stockBatchInfo.setCompanyCode(rejectRecord.getCompanyCode());
+            stockBatchInfo.setCompanyName(rejectRecord.getCompanyName());
+            stockBatchInfo.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+            stockBatchInfo.setTransportCenterName(rejectRecord.getTransportCenterName());
+            stockBatchInfo.setWarehouseCode(rejectRecord.getWarehouseCode());
+            stockBatchInfo.setWarehouseName(rejectRecord.getWarehouseName());
+            stockBatchInfo.setDocumentCode(outbound.getOutboundOderCode());
+            stockBatchInfo.setDocumentType(Global.OUTBOUND_TYPE);
+            stockBatchInfo.setSourceDocumentCode(rejectRecord.getRejectRecordCode());
+            stockBatchInfo.setSourceDocumentType(2);
+            stockBatchInfo.setOperatorId(rejectRecord.getCreateById());
+            stockBatchInfo.setOperatorName(rejectRecord.getCreateByName());
+            stockBatchInfo.setChangeCount(batch.getTotalCount());
+            stockBatchList.add(stockBatchInfo);
+        }
+        request.setStockBatchList(stockBatchList);
+        LOGGER.info("操作退供单的库存、批次库存的参数：{}", JsonUtil.toJson(request));
+        HttpResponse response = stockService.stockAndBatchChange(request);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("操作退供单的库存、批次库存成功");
+            return HttpResponse.success();
+        }else {
+            LOGGER.info("操作退供单的库存、批次库存失败:", response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "操作退供单的库存、批次库存失败"));
+        }
     }
 
     /**

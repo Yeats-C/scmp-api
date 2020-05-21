@@ -205,7 +205,9 @@ public interface ResultCode {
     MessageId REJECT_APPLY_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 1006, "退供申请单的商品信息为空");
     MessageId REJECT_APPLY_NULL = MessageId.create(Project.SCMP_API, 1007, "退供申请单的信息为空");
     MessageId REJECT_RECORD_NULL = MessageId.create(Project.SCMP_API, 1008, "退供单信息为空");
-    MessageId REJECT_APPLY_CENTER_NULL = MessageId.create(Project.SCMP_API, 1007, "退供申请单的分仓信息为空");
+    MessageId REJECT_APPLY_CENTER_NULL = MessageId.create(Project.SCMP_API, 1009, "退供申请单的分仓信息为空");
+    MessageId REJECT_PRODUCT_NULL = MessageId.create(Project.SCMP_API, 1010, "退供单的商品信息为空");
+    MessageId REJECT_BATCH_NULL = MessageId.create(Project.SCMP_API, 1011, "退供单的批次信息为空");
 
     //订单
     MessageId ORDER_SAVE_FAILURE = MessageId.create(Project.PURCHASE_API, 99, "订单保存失败");
@@ -234,6 +236,8 @@ public interface ResultCode {
     MessageId SAVE_OUT_BOUND_PRODUCT_FAILED = MessageId.create(Project.SCMP_API, 75, "保存入库商品数据失败");
     MessageId SAVE_OUT_BOUND_BATCH_FAILED = MessageId.create(Project.SCMP_API, 75, "保存入库批次数据失败");
     MessageId INBOUND_INFO_NULL = MessageId.create(Project.SCMP_API, 76, "入库单的信息为空");
+    MessageId OUTBOUND_PRODUCT_INFO_NULL = MessageId.create(Project.SCMP_API, 76, "出库单的商品信息为空");
+    MessageId OUTBOUND_BATCH_INFO_NULL = MessageId.create(Project.SCMP_API, 76, "出库单的商品信息为空");
 
     // 采购
     MessageId DL_CANCEL = MessageId.create(Project.SCMP_API, 206, "向dl发送撤销订单请求失败");

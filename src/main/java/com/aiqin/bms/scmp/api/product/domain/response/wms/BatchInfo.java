@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.response.inbound;
+package com.aiqin.bms.scmp.api.product.domain.response.wms;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import java.util.Date;
 
 @ApiModel(value = "批次信息")
 @Data
-public class BatchInfo implements Serializable {
+public class BatchInfo{
 
     @ApiModelProperty(value = "业务id")
     @JsonProperty("id")

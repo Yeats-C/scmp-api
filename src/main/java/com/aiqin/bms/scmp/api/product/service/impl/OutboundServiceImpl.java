@@ -27,6 +27,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundSource;
+import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundDetailSource;
+import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundSource;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
@@ -47,6 +51,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -197,8 +202,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
     /**
      * 保存出库信息
-     * @param stockReqVO
-     * @return
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -228,16 +231,85 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //更新编码
             encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
             // 保存日志
-            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
+            productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(),
+                    ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),
+                    new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 
-            //  调用推送接口
-            OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            outboundService.pushWms(outbound.getOutboundOderCode());
+            // 调用推送接口
+            if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
+                // 退供调用wms
+                this.pushRejectWms(outbound.getOutboundOderCode());
+            }
+            //OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
+            //outboundService.pushWms(outbound.getOutboundOderCode());
             // 跟新数据库状态
             return j;
         } catch (GroundRuntimeException e) {
             LOGGER.error("保存出库单失败:{}",e.getMessage());
             throw new GroundRuntimeException(String.format("保存出库单失败:%s",e.getMessage()));
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = GroundRuntimeException.class)
+    public HttpResponse pushRejectWms(String outboundOderCode){
+        LOGGER.info("开始调用退供单的wms：{}", outboundOderCode);
+        // 查询出库单的信息
+        Outbound outbound = outboundDao.selectByCode(outboundOderCode);
+        if(outbound == null){
+            LOGGER.info("调用WMS-退供的出库单信息为空:", outboundOderCode);
+            return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+        }
+        List<OutboundProduct> outboundProducts = outboundProductDao.selectByOutboundOderCode(outboundOderCode);
+        if(CollectionUtils.isEmpty(outboundProducts)){
+            LOGGER.info("调用WMS-退供的出库单商品信息为空:", outboundOderCode);
+            return HttpResponse.failure(ResultCode.OUTBOUND_PRODUCT_INFO_NULL);
+        }
+        List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outboundOderCode);
+        if(CollectionUtils.isEmpty(batchList)){
+            LOGGER.info("调用WMS-退供的出库单批次信息为空:", outboundOderCode);
+            return HttpResponse.failure(ResultCode.OUTBOUND_BATCH_INFO_NULL);
+        }
+        // 查询退供单的信息
+        RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(outbound.getSourceOderCode());
+        PurchaseOutboundSource outboundSource = BeanCopyUtils.copy(outbound, PurchaseOutboundSource.class);
+        outboundSource.setRejectRecordCode(outbound.getSourceOderCode());
+        outboundSource.setOperuserCode(rejectRecord.getCreateById());
+        outboundSource.setOperuserName(rejectRecord.getCreateByName());
+        outboundSource.setCreateDate(rejectRecord.getCreateTime());
+        outboundSource.setContactsPerson(rejectRecord.getSupplierPerson());
+        outboundSource.setContactsPersonPhone(rejectRecord.getSupplierMobile());
+        outboundSource.setProvinceId(outbound.getProvinceCode());
+        outboundSource.setCityId(outbound.getCityCode());
+        outboundSource.setDistrictId(outbound.getCountyCode());
+        outboundSource.setDistrictName(outbound.getCountyName());
+        outboundSource.setAddress(outbound.getDetailedAddress());
+        outboundSource.setRemark(rejectRecord.getRemark());
+        List<PurchaseOutboundDetailSource> detailSourceList = Lists.newArrayList();
+        PurchaseOutboundDetailSource detailSource;
+        for (OutboundProduct product : outboundProducts){
+            detailSource= BeanCopyUtils.copy(product, PurchaseOutboundDetailSource.class);
+            detailSource.setLineCode(product.getLinenum().toString());
+            detailSource.setTotalCount(product.getPreOutboundMainNum().intValue());
+            detailSource.setStockUnitCode(product.getUnitCode());
+            detailSource.setStockUnitName(product.getUnitName());
+            detailSource.setModelNumber(product.getModel());
+            detailSource.setSkuBarCode(product.getBarCode());
+            detailSourceList.add(detailSource);
+        }
+        outboundSource.setDetailList(detailSourceList);
+        List<BatchInfo> batchInfoList = BeanCopyUtils.copyList(batchList, BatchInfo.class);
+        outboundSource.setBatchInfo(batchInfoList);
+        LOGGER.info("调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
+        String url = urlConfig.WMS_API_URL2 + "/purchase/source/outbound";
+        HttpClient httpClient = HttpClient.post(url).json(outboundSource).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("退供出库单传入wms成功");
+            return HttpResponse.success();
+        } else {
+            LOGGER.error("退供出库单传入wms失败:{}", response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "操作退供单调用WMS失败"));
         }
     }
 
@@ -293,51 +365,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException(String.format("保存出库单失败%s",e.getMessage()));
-        }
-    }
-
-    /**
-     * 根据原始单据号查询出库信息
-     * @param sourceOderCode
-     * @return
-     */
-    @Override
-    public List<UpdateStockReqVo> selectUpdateStockInfoBySourceOrderCode(String sourceOderCode, String stockStatusCode) {
-        return outboundDao.selectUpdateStockInfoBySourceOrderCode(sourceOderCode,stockStatusCode);
-    }
-
-    /**
-     * 更新出库信息
-     * @param reqVO
-     * @return
-     */
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void updateOutBoundInfo(UpdateOutBoundReqVO reqVO) {
-        try {
-            //更新出库信息
-            reqVO.setCurrentDate(new Date());
-            outboundDao.updateOutboundInfo(reqVO);
-            //如果库存状态是"减库存并解锁" 需要更新明细信息
-            if(StockStatusEnum.REDUCE_UNLOCK_STOCK.getCode() == reqVO.getStockStatusCode()){
-                //根据原始单据号查询出库商品信息
-                List<OutboundProduct> outboundProducts = outboundProductDao.
-                        selectOutboundProductInfoBySourceOrderCode(reqVO.getSourceOrderCode());
-                //获取传过来的信息
-                List<UpdateOutboundProductReqVO> updateOutboundProductReqVOs = reqVO.getUpdateOutboundProductReqVOs();
-                for (UpdateOutboundProductReqVO updateOutboundProductReqVO : updateOutboundProductReqVOs) {
-                    for (OutboundProduct outboundProduct : outboundProducts) {
-                        if(updateOutboundProductReqVO.getSkuCode().equals(outboundProduct.getSkuCode())){
-                            updateOutboundProductReqVO.setId(outboundProduct.getId());
-                            updateOutboundProductReqVO.setCurrentDate(new Date());
-                        }
-                    }
-                }
-                outboundProductDao.updateBatch(updateOutboundProductReqVOs);
-            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            throw new BizException(ResultCode.OUTBOUND_SAVE_ERROR);
         }
     }
 

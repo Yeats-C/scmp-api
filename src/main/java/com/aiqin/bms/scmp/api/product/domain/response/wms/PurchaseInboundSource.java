@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.product.domain.response.inbound;
+package com.aiqin.bms.scmp.api.product.domain.response.wms;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonProperty;

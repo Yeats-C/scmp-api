@@ -179,4 +179,10 @@ public final class Global {
     public static final String AUDITOR_BY = "AUDITORBY";
     public static final String APPLY_TYPE = "APPLYTYPE";
 
+    /**
+     * 出入库类型 出库 0 入库 1
+     */
+    public static final Integer OUTBOUND_TYPE = 0;
+    public static final Integer INBOUND_TYPE = 1;
+
 }

@@ -5,7 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.PurchaseInboundDetailSource;
+import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
 
