@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
@@ -25,10 +27,13 @@ public interface RejectApplyRecordDetailDao {
 
     Integer delete(String rejectApplyRecordCode);
 
-    void deleteAll(String rejectApplyRecordCode);
+    List<RejectRecordDetail> rejectApplyByWarehouseProduct(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,
+                                                           @Param("warehouseCode") String warehouseCode);
 
-    List<RejectApplyDetailResponse> selectByRejectCode(String rejectApplyCode);
-
-    void updateStatus(String rejectApplyCode);
+    List<RejectRecordBatch> rejectApplyByWarehouseBatch(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,
+                                                        @Param("warehouseCode") String warehouseCode,
+                                                        @Param("skuCode") String skuCode,
+                                                        @Param("supplierCode") String supplierCode,
+                                                        @Param("settlementMethodCode") String settlementMethodCode);
 
 }

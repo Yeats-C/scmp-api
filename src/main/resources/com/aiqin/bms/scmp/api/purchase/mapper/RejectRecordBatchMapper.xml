@@ -26,21 +26,21 @@
     supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count, purchase_price,
     location_code, line_code, create_time, update_time
   </sql>
-  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
-    insert into reject_record_batch (id, reject_record_code, batch_code, 
-      batch_info_code, sku_code, sku_name, 
-      supplier_code, supplier_name, batch_remark, 
-      product_date, be_overdue_date, total_count, 
-      actual_total_count, purchase_price, location_code, line_code,
-      create_time, update_time)
-    values (#{id,jdbcType=BIGINT}, #{rejectRecordCode,jdbcType=VARCHAR}, #{batchCode,jdbcType=VARCHAR}, 
-      #{batchInfoCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
-      #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, 
-      #{productDate,jdbcType=VARCHAR}, #{beOverdueDate,jdbcType=VARCHAR}, #{totalCount,jdbcType=BIGINT}, 
-      #{actualTotalCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, #{locationCode,jdbcType=VARCHAR},
-      #{lineCode,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+  <insert id="insertAll">
+    insert into reject_record_batch (reject_record_code, batch_code, batch_info_code, sku_code, sku_name,
+      supplier_code, supplier_name, batch_remark, product_date, be_overdue_date, total_count,
+      actual_total_count, purchase_price, location_code, line_code, create_time, update_time)
+    values
+    <foreach collection="list" separator="," item="item">
+    (#{item.rejectRecordCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
+      #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=BIGINT},
+      #{item.actualTotalCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
+      #{item.lineCode,jdbcType=INTEGER}, now(), now())
+    </foreach>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch">
+  <update id="update">
     update reject_record_batch
     <set>
       <if test="rejectRecordCode != null">

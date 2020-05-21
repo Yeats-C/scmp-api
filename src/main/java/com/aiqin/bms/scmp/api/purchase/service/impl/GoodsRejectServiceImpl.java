@@ -5,12 +5,15 @@ import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
+import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
@@ -35,6 +38,7 @@ import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.FileReaderUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -84,7 +88,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Resource
     private GoodsRejectApprovalServiceImpl goodsRejectApprovalService;
     @Resource
-    private StockService stockService;
+    private OutboundService outboundService;
     @Resource
     private SupplyCompanyDao supplyCompanyDao;
     @Resource
@@ -568,7 +572,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if(CollectionUtils.isEmpty(applyCenters)) {
             return HttpResponse.failure(ResultCode.REJECT_APPLY_CENTER_NULL);
         }
-        List<RejectRecord> rejectRecordList = Lists.newArrayList();
         RejectRecord rejectRecord = BeanCopyUtils.copy(rejectApplyRecord, RejectRecord.class);
         rejectRecord.setRejectRecordName(rejectApplyRecord.getRejectApplyRecordName());
         rejectRecord.setSourceType(0);
@@ -579,7 +582,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         // 查询退供单规则单号
         String code = DateUtils.currentDate().replaceAll("-","");
         String recordCode = rejectRecordDao.rejectRecordByCode(code);
-
+        List<RejectRecordBatch> batchList;
+        ReturnSupplyToOutBoundReqVo reqVo;
         for(RejectApplyRecordTransportCenter center:applyCenters){
             Long rejectRecordCode;
             if(StringUtils.isBlank(recordCode)){
@@ -596,38 +600,100 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             rejectRecord.setTransportCenterName(center.getTransportCenterName());
             rejectRecord.setWarehouseCode(center.getWarehouseCode());
             rejectRecord.setWarehouseName(center.getWarehouseName());
-
             ++rejectRecordCode;
+
+            // 查询对应库房的商品信息
+            List<RejectRecordDetail> recordDetails = rejectApplyRecordDetailDao.rejectApplyByWarehouseProduct(rejectApplyRecordCode, center.getWarehouseCode());
+            // 每个sku的批次信息
+            Map<String, List<RejectRecordBatch>> rejectBatchMap = new HashMap<>();
+            for(RejectRecordDetail detail:recordDetails) {
+                String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
+                        rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
+                rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
+                        center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode()));
+            }
+
+            Long productCount = 0L, returnCount = 0L, giftCount = 0L, totalCount = 0L;
+            BigDecimal productTaxAmount = big, returnTaxAmount = big, giftTaxAmount = big;
+            Integer i = 1;
+            batchList = Lists.newArrayList();
+            for(RejectRecordDetail detail:recordDetails){
+                detail.setRejectRecordDetailId(IdUtil.uuid());
+                detail.setRejectRecordId(rejectRecord.getRejectRecordId());
+                detail.setRejectRecordCode(rejectRecord.getRejectRecordCode());
+               // 计算退供单的总商品数量与金额 0商品 1赠品 2实物返
+               if(detail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                   productCount += detail.getProductCount();
+                   productTaxAmount = productTaxAmount.add(detail.getProductTotalAmount());
+               }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                   giftCount += detail.getProductCount();
+                   giftTaxAmount = giftTaxAmount.add(detail.getProductTotalAmount());
+               }else if(detail.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                   returnCount += detail.getProductCount();
+                   returnTaxAmount = returnTaxAmount.add(detail.getProductTotalAmount());
+               }
+                totalCount += detail.getTotalCount();
+                detail.setLineCode(i);
+                // 查询对应的批次
+                String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
+                        rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
+                List<RejectRecordBatch> rejectRecordBatches = rejectBatchMap.get(key);
+                for(RejectRecordBatch recordBatch : rejectRecordBatches){
+                    recordBatch.setRejectRecordCode(rejectRecord.getRejectRecordCode());
+                    recordBatch.setLineCode(i);
+                    batchList.add(recordBatch);
+                }
+                ++i;
+            }
+            rejectRecord.setProductCount(productCount);
+            rejectRecord.setGiftCount(giftCount);
+            rejectRecord.setReturnCount(returnCount);
+            rejectRecord.setTotalCount(totalCount);
+            rejectRecord.setProductTaxAmount(productTaxAmount);
+            rejectRecord.setReturnTaxAmount(returnTaxAmount);
+            rejectRecord.setGiftTaxAmount(giftTaxAmount);
+
+            Integer rejectCount = rejectRecordDao.insert(rejectRecord);
+            LOGGER.info("添加退供单信息条数：" + rejectCount);
+
+            Integer detailCount = rejectRecordDetailDao.insertAll(recordDetails);
+            LOGGER.info("添加退供单商品信息条数：" + detailCount);
+
+            Integer batchCount = rejectRecordBatchDao.insertAll(batchList);
+            LOGGER.info("添加退供单批次信息条数：" + batchCount);
+            if(rejectCount > 0){
+                // 调用生成出库单
+                reqVo = new ReturnSupplyToOutBoundReqVo();
+                reqVo.setRejectRecord(rejectRecord);
+                reqVo.setDetailList(recordDetails);
+                reqVo.setBatchList(batchList);
+                LOGGER.info("调用退供出库单:{}", JsonUtil.toJson(reqVo));
+                outboundService.returnSupplySave(reqVo);
+            }
         }
-
-
-
-
-
-
         return HttpResponse.success();
     }
 
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse rejectCancel(String rejectRecordId) {
         try {
-            RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
-            if (record == null) {
-                return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
-            }
-            RejectRecord rejectRecord = new RejectRecord();
-            rejectRecord.setRejectRecordId(rejectRecordId);
-            //rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
-            Integer count = rejectRecordDao.updateStatus(rejectRecord);
-            LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
-            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
-            //解锁库存
-            ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, record);
-            Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
-            if (!stockStatus) {
-                LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-                throw new GroundRuntimeException("解锁库存异常");
-            }
+//            RejectRecord record = rejectRecordDao.selectByRejectId(rejectRecordId);
+//            if (record == null) {
+//                return HttpResponse.failure(ResultCode.NOT_HAVE_REJECT_RECORD);
+//            }
+//            RejectRecord rejectRecord = new RejectRecord();
+//            rejectRecord.setRejectRecordId(rejectRecordId);
+//            //rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_CANCEL);
+//            Integer count = rejectRecordDao.updateStatus(rejectRecord);
+//            LOGGER.info("取消-更改退供申请详情影响条数:{}", count);
+//            List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(rejectRecordId);
+//            //解锁库存
+//            ILockStocksReqVO iLockStockBatchReqVO = handleStockParam(list, record);
+//            Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
+//            if (!stockStatus) {
+//                LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
+//                throw new GroundRuntimeException("解锁库存异常");
+//            }
 //            if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDIT)||record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_AUDITTING)){
 //                WorkFlowVO w = new WorkFlowVO();
 //                w.setFormNo(record.getRejectRecordCode());

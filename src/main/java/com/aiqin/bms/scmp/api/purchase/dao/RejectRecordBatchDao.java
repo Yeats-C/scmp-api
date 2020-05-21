@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface RejectRecordBatchDao {
 
-    Integer insert(RejectRecordBatch record);
+    Integer insertAll(@Param("list") List<RejectRecordBatch> batchList);
 
     Integer update(RejectRecordBatch record);
 
