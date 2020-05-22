@@ -646,11 +646,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         log.info(" 出库单回调实体传入实体为 ：[{}]" + reqVo);
         Outbound outbound;
         try{ // 根据入库单编号查询旧的入库单主体
-         //   if(!Objects.isNull(reqVo.getId()) && reqVo.getId() != null){
-         //       outbound = outboundDao.selectById(reqVo.getId());
-         //   }else{
-         //       outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
-         //   }
             outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
             if(outbound == null){
                 log.info("WMS出库单回传，耘链未查询到此出库单，回传失败：" + reqVo);
@@ -662,8 +657,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //设置已回传状态
             outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
             outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
-            //设置出库时间
-            //outbound.setOutboundTime(reqVo.getBeginOutboundTime());
             //设置实际出库数量和出库主数量
             outbound.setPraOutboundNum(0L);
             outbound.setPraMainUnitNum(0L);
@@ -684,9 +677,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 // 退供出库 - 库存减少，锁定库存减少，可用库存不变
                 changeStockRequest.setOperationType(2);
             }
-           // changeStockRequest.set(outbound.getOutboundOderCode());
-           // changeStockRequest.setOperationType(2);
-           // List<StockVoRequest> stockVoRequestList = new ArrayList<>();
 
             // 更新出库商品信息
             List<StockInfoRequest> stockInfoRequestList = new ArrayList<>();
@@ -729,7 +719,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //不含税总金额
                 outbound.setPraAmount(outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(),returnOutboundProduct.getTax()).multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()))));
                 //  设置修改减少库存sku实体
-                //StockVoRequest stockVoRequest = new StockVoRequest();
                 StockInfoRequest stockInfoRequest = new StockInfoRequest();
                 //设置公司编码名称
                 stockInfoRequest.setCompanyCode(outbound.getCompanyCode());
@@ -764,7 +753,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             changeStockRequest.setStockList(stockInfoRequestList);
 
-            //TODO 等wms回传批次的格式 同时调用库存接口 减并解锁sku库存与批次库存
             // 更新出库批次商品信息
             List<StockBatchInfoRequest> stockBatchVoRequestList = new ArrayList<>();
             for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getBatchList()){
@@ -780,7 +768,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 // 修改单条 批次
                 int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
 
-                //TODO 设置修改减少库存sku批次实体
                 //  设置修改减少库存sku实体
                 StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
                 //设置sku编码名称 批次号
@@ -827,6 +814,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
+        // 设置出库时间
+        outbound.setOutboundTime(Calendar.getInstance().getTime());
+
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
             try {
@@ -839,6 +829,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //修改出库单完成状态
                 outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+                //设置出库时间
                 int k = outboundDao.update(outbound);
             }catch (Exception e){
                 log.error(Global.ERROR, e);

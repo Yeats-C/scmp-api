@@ -9,9 +9,6 @@ import lombok.Data;
  * @Classname: OutboundProductCallBackReqVo
  * 描述: 出库单skuWMS回调申请实体
  * @Author: Kt.w
- * @Date: 2019/3/6
- * @Version 1.0
- * @Since 1.0
  */
 @Data
 @ApiModel("出库单批次skuWMS回调申请实体")
@@ -32,7 +29,6 @@ public class OutboundBatchCallBackReqVo {
     @ApiModelProperty("预计数量(最小单位数量)")
     @JsonProperty(value = "total_count")
     private Long totalCount;
-
 
     @ApiModelProperty("实际最小单位数量")
     @JsonProperty(value = "actual_total_count")
@@ -65,12 +61,5 @@ public class OutboundBatchCallBackReqVo {
     @ApiModelProperty(value="库位号")
     @JsonProperty("location_code")
     private String locationCode;
-
-
-  //  @ApiModelProperty("预计出库数量")
-  //  private Long preQty;
-
-  //  @ApiModelProperty("实际出库数量")
-  //  private Long praQty;
 
 }

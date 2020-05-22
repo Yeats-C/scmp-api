@@ -7,9 +7,6 @@ import io.swagger.annotations.ApiModelProperty;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -23,23 +20,7 @@ import java.util.List;
  */
 @Data
 @ApiOperation("出库单wms回调请求实体")
-public class OutboundCallBackReqVo extends BaseDateRequest {
-
-//    @ApiModelProperty("id")
-//    private Long id;
-//
-//    @ApiModelProperty("入库时间")
-//    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-//    private Date outboundTime;
-//
-//    @ApiModelProperty("实际主单位数量")
-//    private Long praMainUnitNum;
-//
-//    @ApiModelProperty("操作人")
-//    private String createById;
-//
-//    @ApiModelProperty("sku 列表")
-//    private List<OutboundProductCallBackReqVo> list;
+public class OutboundCallBackReqVo{
 
     @ApiModelProperty("公司编码")
     @JsonProperty(value = "company_code")
@@ -52,10 +33,6 @@ public class OutboundCallBackReqVo extends BaseDateRequest {
     @ApiModelProperty("出库单编号")
     @JsonProperty(value = "outbound_oder_code")
     private String outboundOderCode;
-
-  //  @ApiModelProperty("来源单号")
-  //  @JsonProperty(value = "source_oder_code")
-  //  private String sourceOderCode;
 
     @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货  4.移库")
     @JsonProperty(value = "outbound_type_code")
@@ -94,40 +71,6 @@ public class OutboundCallBackReqVo extends BaseDateRequest {
     @ApiModelProperty("操作人名称")
     @JsonProperty(value = "operator_name")
     private String operatorName;
-
-  //  @ApiModelProperty("物流中心编码")
-  //  @NotEmpty(message = "物流中心编码不能为空")
-  //  private String logisticsCenterCode;
-
-  //  @ApiModelProperty("物流中心名称")
-  //  @NotEmpty(message = "物流中心名称不能为空")
-  //  private String logisticsCenterName;
-
-  //  @ApiModelProperty("库房编码")
-  //  @NotEmpty(message = "库房编码不能为空")
-  //  private String warehouseCode;
-
-  //  @ApiModelProperty("库房名称")
-  //  @NotEmpty(message = "库房名称不能为空")
-  //  private String warehouseName;
-
-  //  @ApiModelProperty("出库时间")
-  //  @NotEmpty(message = "出库时间不能为空")
-  //  @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-  //  private Date outboundTime;
-
-  //  @ApiModelProperty("实际主单位数量")
-  //  @NotNull(message = "实际主单位数量不能为空")
-  //  private Long praMainUnitNum;
-
-  //  @ApiModelProperty("实际含税总金额")
-  //  private BigDecimal praTaxAmount;
-
-  //  @ApiModelProperty("实际无税总金额")
-  //  private BigDecimal praAmount;
-
-  //  @ApiModelProperty("实际税额")
-  //  private BigDecimal praTax;
 
     @ApiModelProperty("回调sku列表")
     @JsonProperty(value = "list")
