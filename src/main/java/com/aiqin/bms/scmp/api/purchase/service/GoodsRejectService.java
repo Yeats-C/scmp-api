@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
@@ -47,5 +48,8 @@ public interface GoodsRejectService {
     HttpResponse generateRejectRecord(String rejectApplyRecordCode);
 
     String selectCategoryName(String categoryCode);
+
+    /** wms回传，变更退供单的实际值*/
+    HttpResponse rejectRecordWms(RejectStockRequest request);
 
 }

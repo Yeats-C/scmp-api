@@ -24,6 +24,7 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
@@ -781,6 +782,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
      */
     public String selectCategoryName(String categoryCode) {
         return dataManageService.selectCategoryName(categoryCode);
+    }
+
+    public HttpResponse rejectRecordWms(RejectStockRequest request){
+        return HttpResponse.success();
     }
 
 }

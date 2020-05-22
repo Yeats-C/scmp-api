@@ -1104,6 +1104,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         purchase.setOrderType("0");
         purchase.setOrderTypeDesc("采购");
         purchase.setPayDate(purchaseOrderInfo.getPaymentTime());
+        purchase.setAmount(purchaseOrderInfo.getProductTotalAmount());
         // 0.预付款 1.货到付款 2.月结 3.实销实结
         if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 0){
             purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
@@ -1120,7 +1121,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
         purchase.setSettlementType(purchaseOrderInfo.getSettlementMethodCode());
         purchase.setSettlementTypeDesc(purchaseOrderInfo.getSettlementMethodName());
-        purchase.setSkuCount(purchaseOrderInfo.getSingleCount());
+        purchase.setSkuCount(purchaseOrderInfo.getSingleCount().longValue());
         purchase.setCreateTime(Calendar.getInstance().getTime());
         purchase.setTransportCode(purchaseOrderInfo.getTransportCenterCode());
         purchase.setTransportName(purchaseOrderInfo.getTransportCenterName());
@@ -1139,12 +1140,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             } else {
                 purchaseDetail.setGuidePrice("0");
             }
-            purchaseDetail.setInputRate(product.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
-            purchaseDetail.setPrice(product.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            purchaseDetail.setInputRate(product.getTaxRate());
+            purchaseDetail.setPrice(product.getProductAmount());
             String desc = product.getProductSpec() + "/" + product.getColorName() + "/" + product.getModelNumber();
             purchaseDetail.setSkuDesc(desc);
             purchaseDetail.setStorageCount(product.getStockCount());
-            purchaseDetail.setSingleCount(product.getSingleCount().intValue());
+            purchaseDetail.setSingleCount(product.getSingleCount().longValue());
             if(product.getProductType() == 0){
                 purchaseDetail.setProductType(0);
             }else if(product.getProductType() == 1){
@@ -1236,12 +1237,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         purchase.setOrderTypeDesc("退供");
         purchase.setSettlementType(rejectRecord.getSettlementMethodCode());
         purchase.setSettlementTypeDesc(rejectRecord.getSettlementMethodName());
-        purchase.setSkuCount(rejectRecord.getTotalCount().intValue());
+        purchase.setSkuCount(rejectRecord.getTotalCount());
         purchase.setCreateTime(Calendar.getInstance().getTime());
         purchase.setTransportCode(rejectRecord.getTransportCenterCode());
         purchase.setTransportName(rejectRecord.getTransportCenterName());
         purchase.setCreateById(rejectRecord.getUpdateById());
         purchase.setCreateByName(rejectRecord.getUpdateByName());
+        BigDecimal amount = rejectRecord.getProductTaxAmount().add(rejectRecord.getReturnTaxAmount()).add(rejectRecord.getGiftTaxAmount());
+        purchase.setAmount(amount);
         // 赋值退供sap 详情
         for(RejectRecordDetail detail : rejectRecordDetails) {
             purchaseDetail = BeanCopyUtils.copy(detail, PurchaseDetail.class);
@@ -1255,11 +1258,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             } else {
                 purchaseDetail.setGuidePrice("0");
             }
-            purchaseDetail.setInputRate(detail.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
-            purchaseDetail.setPrice(detail.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            purchaseDetail.setInputRate(detail.getTaxRate());
+            purchaseDetail.setPrice(detail.getProductAmount());
             String desc = detail.getProductSpec() + "/" + detail.getColorName() + "/" + detail.getModelNumber();
             purchaseDetail.setSkuDesc(desc);
-            purchaseDetail.setSingleCount(detail.getTotalCount().intValue());
+            purchaseDetail.setSingleCount(detail.getTotalCount());
             // 查询库存数量
             String stockKey = String.format("%s,%s", detail.getSkuCode(), rejectRecord.getWarehouseCode());
             purchaseDetail.setStorageCount(rejectStockMap.get(stockKey));
