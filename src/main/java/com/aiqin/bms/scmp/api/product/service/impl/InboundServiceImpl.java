@@ -426,7 +426,7 @@ public class InboundServiceImpl implements InboundService {
             inboundSource.setOperuserCode(purchaseOrder.getCreateById());
             inboundSource.setOperuserName(purchaseOrder.getCreateByName());
             inboundSource.setOperuserDate(inbound.getCreateTime());
-            inboundSource.setPreArrivalTime(purchaseOrder.getPreArrivalTime().toString());
+            inboundSource.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
             inboundSource.setPurchaseOrderCode(purchaseOrder.getPurchaseOrderCode());
             inboundSource.setRemark(purchaseOrder.getRemark());
         }
@@ -454,22 +454,22 @@ public class InboundServiceImpl implements InboundService {
             log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundSource));
             String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            if (orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
-                if ("0".equals(responseWms.getResultCode())) {
-                    purchaseOrder.setInfoStatus(0);
-                    log.info("入库单传入dl成功");
-                } else {
-                    purchaseOrder.setInfoStatus(1);
-                    log.error("入库单传入wms失败:{}", responseWms.getReason());
-                }
+            HttpResponse response = httpClient.action().result(HttpResponse.class);
+            if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                //ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
+                //if ("0".equals(responseWms.getResultCode())) {
+                log.info("入库单推送wms成功");
+                //purchaseOrder.setInfoStatus(0);
+                //} else {
+                    //purchaseOrder.setInfoStatus(1);
+                    //log.error("入库单推送wms失败:{}", response.getMessage());
+                //}
             } else {
-                purchaseOrder.setInfoStatus(1);
-                log.error("入库单传入wms失败:{}", orderDto.getMessage());
+                //purchaseOrder.setInfoStatus(1);
+                log.error("入库单推送wms失败:{}", response.getMessage());
             }
-            Integer update = purchaseOrderDao.update(purchaseOrder);
-            log.error("更改采购单重发状态，判断是否发送WMS成功：", update);
+            //Integer update = purchaseOrderDao.update(purchaseOrder);
+            //log.error("更改采购单重发状态，判断是否发送WMS成功：", update);
         } else {
             //移库
             // todo

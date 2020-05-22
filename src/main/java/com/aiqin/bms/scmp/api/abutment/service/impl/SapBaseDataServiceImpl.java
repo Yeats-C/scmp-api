@@ -1173,18 +1173,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     }
 
     /**  sap 入库单的信息转换*/
-    private Storage inboundInfo(Inbound inbound){
+    private PurchaseStorage inboundInfo(Inbound inbound){
         LOGGER.info("对接sap，入库单信息：{}", JsonUtil.toJson(inbound));
         // 赋值sap 的入库单信息
-        Storage storage = new Storage();
-        List<StorageDetail> storageDetailList = Lists.newArrayList();
-        StorageDetail storageDetail;
-        ProductSkuInfo productSkuInfo;
-
-        storage.setAmount(inbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
-        storage.setOptTime(inbound.getInboundTime());
+        PurchaseStorage storage = new PurchaseStorage();
         storage.setOrderCode(inbound.getInboundOderCode());
-        storage.setOrderCount(inbound.getPraMainUnitNum().intValue());
         InnerValue innerValue = StringConvertUtil.inboundTypeConvert(inbound.getInboundTypeCode());
         storage.setOrderId(String.format("%s-%s", inbound.getInboundOderCode(), innerValue.getValue()));
         if ((null != inbound) && (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
@@ -1192,69 +1185,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setSourceOrderCode(inbound.getSourceOderCode());
             storage.setSourceOrderType("0");
             storage.setSourceOrderTypeName("采购");
-            storage.setTransportCode1(inbound.getLogisticsCenterCode());
-            storage.setTransportName1(inbound.getLogisticsCenterName());
-            storage.setStorageCode1(inbound.getWarehouseCode());
-            storage.setStorageName1(inbound.getWarehouseName());
             storage.setSubOrderType("0");
             storage.setSubOrderTypeName("采购入库");
         }
-        storage.setSupplierCode(inbound.getSupplierCode());
-        storage.setSupplierName(inbound.getSupplierName());
-        storage.setCreateTime(Calendar.getInstance().getTime());
-        storage.setCreateByName(inbound.getUpdateBy());
-        // 查询入库单的商品信息
-        List<InboundProduct> inboundProducts = inboundProductDao.inboundList(inbound.getInboundOderCode());
-        LOGGER.info("对接sap，入库单商品信息，{}", JsonUtil.toJson(inboundProducts));
-        List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
-        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
-
-        // 查询sku的批次信息
-        Map<String, List<InboundBatch>> inboundBatchMap = new HashMap<>();
-        for(InboundProduct product : inboundProducts) {
-            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
-            if (inboundBatchMap.get(key) == null) {
-                inboundBatchMap.put(key, inboundBatchDao.inboundListBySku(product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum()));
-            }
-        }
-        if(inboundBatchMap != null){
-            LOGGER.info("对接sap，入库单商品批次信息，{}", JsonUtil.toJson(inboundBatchMap));
-        }
-        for(InboundProduct product : inboundProducts){
-            storageDetail = new StorageDetail();
-            storageDetail.setExpectCount(product.getPreInboundNum().intValue());
-            storageDetail.setExpectMinUnitCount(product.getPreInboundMainNum().intValue());
-            storageDetail.setExpectTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
-            //厂商指导价
-            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
-            if (productSkuInfo != null) {
-                storageDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
-            } else {
-                storageDetail.setGuidePrice("0");
-            }
-            storageDetail.setMinUnitCount(product.getPraInboundMainNum().intValue());
-            storageDetail.setSingleCount(product.getPraInboundNum().intValue());
-            storageDetail.setSkuCode(product.getSkuCode());
-            storageDetail.setSkuName(product.getSkuName());
-            storageDetail.setSupplierCode(inbound.getSupplierCode());
-            storageDetail.setSupplierName(inbound.getSupplierName());
-            String desc = product.getNorms() + "/" + product.getColorName() + "/" + product.getModel();
-            storageDetail.setSkuDesc(desc);
-            storageDetail.setTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
-            storageDetail.setTaxRate(product.getTax().multiply(BigDecimal.valueOf(100)).intValue());
-            storageDetail.setUnit(product.getUnitName());
-            storageDetail.setUnitCount(Integer.valueOf(product.getInboundBaseContent()));
-
-            // 查询批次sku对应的批次信息
-            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
-            List<InboundBatch> batchList = inboundBatchMap.get(key);
-            if(CollectionUtils.isNotEmpty(batchList)){
-                List<ScmpStorageBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpStorageBatch.class);
-                storageDetail.setBatchList(infoBatch);
-            }
-            storageDetailList.add(storageDetail);
-        }
-        storage.setDetails(storageDetailList);
         LOGGER.info("对接sap，转换入库单参数：{}", JsonUtil.toJson(storage));
         return storage;
     }
@@ -1354,18 +1287,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     }
 
     /**  sap  出库单的信息转换*/
-    private Storage outboundInfo(Outbound outbound){
+    private PurchaseStorage outboundInfo(Outbound outbound){
         LOGGER.info("对接sap，出库单信息：{}", JsonUtil.toJson(outbound));
         // 赋值sap 的入库单信息
-        Storage storage = new Storage();
-        List<StorageDetail> storageDetailList = Lists.newArrayList();
-        StorageDetail storageDetail;
-        ProductSkuInfo productSkuInfo;
-
-        storage.setAmount(outbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
-        storage.setOptTime(outbound.getOutboundTime());
+        PurchaseStorage storage = new PurchaseStorage();
         storage.setOrderCode(outbound.getOutboundOderCode());
-        storage.setOrderCount(outbound.getPraMainUnitNum().intValue());
         InnerValue innerValue = StringConvertUtil.inboundTypeConvert(outbound.getOutboundTypeCode());
         storage.setOrderId(String.format("%s-%s", outbound.getOutboundOderCode(), innerValue.getValue()));
         if ((null != outbound) && (outbound.getOutboundTypeCode()).equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
@@ -1373,69 +1299,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setSourceOrderCode(outbound.getSourceOderCode());
             storage.setSourceOrderType("5");
             storage.setSourceOrderTypeName("退供");
-            storage.setTransportCode(outbound.getLogisticsCenterCode());
-            storage.setTransportName(outbound.getLogisticsCenterName());
-            storage.setStorageCode(outbound.getWarehouseCode());
-            storage.setStorageName(outbound.getWarehouseName());
             storage.setSubOrderType("5");
             storage.setSubOrderTypeName("退供出库");
         }
-        storage.setSupplierCode(outbound.getSupplierCode());
-        storage.setSupplierName(outbound.getSupplierName());
-        storage.setCreateTime(Calendar.getInstance().getTime());
-        storage.setCreateByName(outbound.getUpdateBy());
-        // 查询出库单的商品信息
-        List<OutboundProduct> outboundProducts = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
-        LOGGER.info("对接sap，出库单商品信息，{}", JsonUtil.toJson(outboundProducts));
-        List<String> skuCodes = outboundProducts.stream().map(OutboundProduct::getSkuCode).collect(Collectors.toList());
-        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
-
-        // 查询sku的批次信息
-        Map<String, List<OutboundBatch>> outboundBatchMap = new HashMap<>();
-        for(OutboundProduct product : outboundProducts) {
-            String key = String.format("%s,%s,%s", product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum());
-            if (outboundBatchMap.get(key) == null) {
-                outboundBatchMap.put(key, outboundBatchDao.outboundBatchBySap(product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum()));
-            }
-        }
-        if(outboundBatchMap != null){
-            LOGGER.info("对接sap，出库单商品批次信息，{}", JsonUtil.toJson(outboundBatchMap));
-        }
-        for(OutboundProduct product : outboundProducts) {
-            storageDetail = new StorageDetail();
-            storageDetail.setExpectCount(product.getPreOutboundMainNum().intValue());
-            storageDetail.setExpectMinUnitCount(product.getPreOutboundMainNum().intValue());
-            storageDetail.setExpectTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
-            //厂商指导价
-            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
-            if (productSkuInfo != null) {
-                storageDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
-            } else {
-                storageDetail.setGuidePrice("0");
-            }
-            storageDetail.setMinUnitCount(product.getPraOutboundMainNum().intValue());
-            storageDetail.setSingleCount(product.getPraOutboundNum().intValue());
-            storageDetail.setSkuCode(product.getSkuCode());
-            storageDetail.setSkuName(product.getSkuName());
-            storageDetail.setSupplierCode(outbound.getSupplierCode());
-            storageDetail.setSupplierName(outbound.getSupplierName());
-            String desc = product.getNorms() + "/" + product.getColorName() + "/" + product.getModel();
-            storageDetail.setSkuDesc(desc);
-            storageDetail.setTaxPrice(product.getPreTaxPurchaseAmount().multiply(BigDecimal.valueOf(10000)).toString());
-            storageDetail.setTaxRate(product.getTax().multiply(BigDecimal.valueOf(100)).intValue());
-            storageDetail.setUnit(product.getUnitName());
-            storageDetail.setUnitCount(Integer.valueOf(product.getOutboundBaseContent()));
-
-            // 查询批次sku对应的批次信息
-            String key = String.format("%s,%s,%s", product.getSkuCode(), outbound.getOutboundOderCode(), product.getLinenum());
-            List<OutboundBatch> batchList = outboundBatchMap.get(key);
-            if(CollectionUtils.isNotEmpty(batchList)){
-                List<ScmpStorageBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpStorageBatch.class);
-                storageDetail.setBatchList(infoBatch);
-            }
-            storageDetailList.add(storageDetail);
-        }
-        storage.setDetails(storageDetailList);
         LOGGER.info("对接sap，转换出库单参数：{}", JsonUtil.toJson(storage));
         return storage;
     }

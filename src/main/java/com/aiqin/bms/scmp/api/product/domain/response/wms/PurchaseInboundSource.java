@@ -66,7 +66,8 @@ public class PurchaseInboundSource implements Serializable{
     @NotNull(message = "预计到货日期不能为空")
     @ApiModelProperty(value = "预计到货日期")
     @JsonProperty("pre_arrival_time")
-    private String preArrivalTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date preArrivalTime;
 
     @ApiModelProperty(value = "备注")
     @JsonProperty("remark")

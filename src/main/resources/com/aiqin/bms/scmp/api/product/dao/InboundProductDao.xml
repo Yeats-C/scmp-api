@@ -479,4 +479,11 @@
     from inbound_product
     where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
+  <select id="wmsByInboundProduct" resultType="com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource">
+    select
+    sku_code skuCode, sku_name skuName, color_name colorName, model modelNumber, unit_code inboundUnitCode, unit_name inboundUnitName,
+    pre_inbound_num inboundNum, pre_inbound_main_num totalCount, linenum lineCode,tax
+    from inbound_product
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

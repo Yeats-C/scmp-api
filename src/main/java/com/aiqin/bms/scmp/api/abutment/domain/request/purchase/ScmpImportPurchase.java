@@ -1,9 +1,15 @@
 package com.aiqin.bms.scmp.api.abutment.domain.request.purchase;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import java.util.Date;
+import java.util.List;
 
 /**
  * @author sunx
@@ -17,10 +23,10 @@ public class ScmpImportPurchase {
     @JsonProperty("purchase")
     @ApiModelProperty("采购&退供单据")
     private Purchase purchase;
-
+    
     @JsonProperty("storage")
     @ApiModelProperty("出入库信息")
-    private Storage storage;
+    private PurchaseStorage storage;
     
     
 }
