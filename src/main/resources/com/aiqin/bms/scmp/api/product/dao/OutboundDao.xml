@@ -544,59 +544,6 @@
       </if>
     </where>
   </select>
-
-  <select id="selectUpdateStockInfoBySourceOrderCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo">
-          SELECT
-            a.company_code as companyCode,
-            a.supplier_code as supplyCode,
-            a.logistics_center_code as transportCenterCode,
-            a.warehouse_code as warehouseCode,
-            b.sku_code as skuCode,
-            b.pre_outbound_main_num as num,
-            #{arg1, jdbcType=VARCHAR} as stockStatusCode
-        FROM
-            outbound a
-            LEFT JOIN outbound_product b ON a.outbound_oder_code = b.outbound_oder_code
-        WHERE
-            a.source_oder_code = #{arg0, jdbcType=VARCHAR}
-  </select>
-  <update id="updateOutboundInfo" parameterType="com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO">
-    update outbound
-    <set>
-      <if test="stockStatusCode != null">
-        outbound_status_code = #{stockStatusCode,jdbcType=TINYINT},
-      </if>
-      <if test="stockStatusName != null">
-        outbound_status_name = #{stockStatusName,jdbcType=VARCHAR},
-      </if>
-      <if test="wmsDocumentCode != null">
-        wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
-      </if>
-      <if test="praOutboundNum != null">
-        pra_outbound_num = #{praOutboundNum,jdbcType=BIGINT},
-      </if>
-      <if test="praMainUnitNum != null">
-        pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
-      </if>
-      <if test="praTaxAmount != null">
-        pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="praAmount != null">
-        pra_amount = #{praAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="praTax != null">
-        pra_tax = #{praTax,jdbcType=DECIMAL},
-      </if>
-      <if test="operator != null">
-        update_by = #{operator,jdbcType=VARCHAR},
-      </if>
-      <if test="currentDate != null">
-        update_time = #{currentDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where
-    source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
-  </update>
   <select id="listForSap" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />

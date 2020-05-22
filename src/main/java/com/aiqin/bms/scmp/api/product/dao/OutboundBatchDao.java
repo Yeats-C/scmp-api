@@ -17,7 +17,7 @@ public interface OutboundBatchDao {
 
     List<OutboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
 
-    ReturnOutboundBatch selectBatchInfoByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("lineCode") Long lineCode);
+    OutboundBatch selectBatchInfoByLineCode(@Param("outboundOderCode") String outboundOderCode, @Param("batchInfoCode") String batchInfoCode);
 
     Integer updateBatchInfoByOutboundOderCodeAndLineNum(OutboundBatch outboundBatch);
 

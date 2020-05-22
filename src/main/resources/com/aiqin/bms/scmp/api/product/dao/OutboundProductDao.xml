@@ -222,13 +222,6 @@
       )
     </where>
   </select>
-
-  <select id="selectOutboundProductInfoBySourceOrderCode" resultMap="BaseResultMap">
-    select
-    a.id,  a.sku_code
-    from outbound_product a left join outbound b on a.outbound_oder_code = b.outbound_oder_code
-    where b.source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
-  </select>
   <update id="updateBatch" parameterType="java.util.List">
     <foreach collection="list" item="item" index="index" open="" close="" separator=";">
       update outbound_product
@@ -264,15 +257,12 @@
     where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </select>
 
-  <select id="selectByLinenum"  resultMap="BaseResultReturnOutboundProductMap">
-    select
-    <include refid="Base_Column_ReturnOutboundProduct" />
-    from outbound_product  a left join product_sku_checkout b on a.sku_code = b.sku_code
-    where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
-    and a.sku_code = #{skuCode,jdbcType=VARCHAR}
-    <if test="linenum != null">
-      and a.linenum = #{linenum,jdbcType=BIGINT}
-    </if>
+  <select id="selectByLineCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from outbound_product
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and linenum = #{linenum,jdbcType=BIGINT}
   </select>
 
   <select id="selectBySkuCode"  resultMap="BaseResultReturnOutboundProductMap">

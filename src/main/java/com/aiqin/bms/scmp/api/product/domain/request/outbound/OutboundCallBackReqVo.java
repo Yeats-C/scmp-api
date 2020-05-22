@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.domain.request.outbound;
 
-import com.aiqin.bms.scmp.api.product.domain.request.BaseDateRequest;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -11,12 +10,9 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * @Classname: OutboundCallBackReqVo
  * 描述: 出库单wms回调请求实体
  * @Author: Kt.w
  * @Date: 2019/3/6
- * @Version 1.0
- * @Since 1.0
  */
 @Data
 @ApiOperation("出库单wms回调请求实体")
@@ -34,7 +30,7 @@ public class OutboundCallBackReqVo{
     @JsonProperty(value = "outbound_oder_code")
     private String outboundOderCode;
 
-    @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货  4.移库")
+    @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货 4.移库")
     @JsonProperty(value = "outbound_type_code")
     private Integer outboundTypeCode;
 
@@ -57,10 +53,6 @@ public class OutboundCallBackReqVo{
     @JsonProperty(value = "finish_outbound_time")
     private Date finishOutboundTime;
 
-    @ApiModelProperty("出库状态 采购、退货、调拨（1.出库开始 2.出库完成） 移库（1.移库新建 2,。移库完成） 销售（1.开始拣货 2.扫描完成） 3.已全部发货")
-    @JsonProperty(value = "outbound_status")
-    private Integer outboundStatus;
-
     @ApiModelProperty(value="备注")
     private String remark;
 
@@ -73,12 +65,11 @@ public class OutboundCallBackReqVo{
     private String operatorName;
 
     @ApiModelProperty("回调sku列表")
-    @JsonProperty(value = "list")
-    private List<OutboundProductCallBackReqVo> list;
+    @JsonProperty(value = "detail_list")
+    private List<OutboundProductCallBackReqVo> detailList;
 
     @ApiModelProperty("回调sku批次列表")
     @JsonProperty(value = "batch_list")
     private List<OutboundBatchCallBackReqVo> batchList;
-
 
 }

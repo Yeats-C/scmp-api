@@ -6,7 +6,6 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * @Classname: OutboundProductCallBackReqVo
  * 描述: 出库单skuWMS回调申请实体
  */
 @Data

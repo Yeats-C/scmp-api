@@ -68,40 +68,11 @@
       #{item}
     </foreach>
   </select>
-  <sql id="Base_Column_ReturnOutboundBatch">
-    a.id, a.outbound_oder_code, a.sku_code, a.sku_name, a.outbound_batch_code, a.manufacture_time, a.batch_remark, a.pre_qty, a.pra_qty,
-    a.store_house_code, a.create_by, a.create_time, a.update_by, a.update_time, a.line_num, b.output_tax_rate, b.Input_tax_rate
-  </sql>
-  <resultMap id="BaseResultReturnOutboundBatchMap" type="com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundBatch">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="outbound_oder_code" jdbcType="VARCHAR" property="outboundOderCode" />
-    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
-    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="outbound_batch_code" jdbcType="VARCHAR" property="outboundBatchCode" />
-    <result column="manufacture_time" jdbcType="TIMESTAMP" property="manufactureTime" />
-    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="pre_qty" jdbcType="BIGINT" property="preQty" />
-    <result column="pra_qty" jdbcType="BIGINT" property="praQty" />
-    <result column="store_house_code" jdbcType="VARCHAR" property="storeHouseCode" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
-    <result column="output_tax_rate" jdbcType="BIGINT" property="outputTaxRate" />
-    <result column="Input_tax_rate" jdbcType="BIGINT" property="inputTaxRate" />
-  </resultMap>
-  <select id="selectBatchInfoByLinenum"  resultMap="BaseResultReturnOutboundBatchMap">
-    select
-    <include refid="Base_Column_ReturnOutboundBatch" />
-    from outbound_batch a left join product_sku_checkout b on a.sku_code = b.sku_code
-    where a.outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
-    and a.sku_code = #{skuCode,jdbcType=VARCHAR}
-    <if test="lineCode != null">
-      and a.linenum = #{lineCode,jdbcType=BIGINT}
-    </if>
+  <select id="selectBatchInfoByLineCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from outbound_batch
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
   </select>
 
   <update id="updateBatchInfoByOutboundOderCodeAndLineNum" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">

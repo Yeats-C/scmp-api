@@ -28,7 +28,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProdu
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
-import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundSource;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
@@ -38,6 +37,7 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
@@ -72,11 +72,8 @@ import java.util.*;
 
 /**
  * 描述:
- *
  * @author Kt.w
  * @date 2019/1/5
- * @Version 1.0
- * @since 1.0
  */
 @Slf4j
 @Service
@@ -128,11 +125,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     private ProductSkuStockInfoMapper productSkuStockInfoMapper;
 
-    /**
-     * 分页查询以及搜索
-     * @param vo
-     * @return
-     */
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
         try {
@@ -148,12 +140,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
     }
 
-    /**
-     * 查询出库信息
-     *
-     * @param boundRequest
-     * @return
-     */
     @Override
     public List<OutboundResponse> selectOutBoundInfoByBoundSearch(BoundRequest boundRequest) {
         try {
@@ -479,88 +465,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         return saveOutBoundInfo(convert);
     }
 
-//    /**
-//     * 入库单推送给wms
-//     * @param code
-//     * @return
-//     */
-//    @Override
-//    @Transactional(rollbackFor = Exception.class)
-//    public void pushWms(String code){
-//        log.error("异步推送给wms");
-//        String url = "";
-//        // 通过id查询 入库单主体
-//        OutboundWmsResVO outboundWmsReqVO = new OutboundWmsResVO();
-//
-//        Outbound outbound = outboundDao.selectByCode(code);
-//        BeanCopyUtils.copy(outbound,outboundWmsReqVO);
-//        List<OutboundProductWmsResVO> outboundProductWmsReqVOs =  outboundProductDao.selectMmsReqByOutboundOderCode(outbound.getOutboundOderCode());
-//
-//        //去重
-//        Set<OutboundProductWmsResVO> OutboundProductWmsResVOSet = new HashSet<>(outboundProductWmsReqVOs);
-//        outboundProductWmsReqVOs.clear();
-//        outboundProductWmsReqVOs.addAll(OutboundProductWmsResVOSet);
-//        outboundWmsReqVO.setList(outboundProductWmsReqVOs);
-//            //退供出库需要请求wms
-//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-//            //RejectRecord record = outboundDao.selectCreateById(outbound.getOutboundOderCode());
-//            AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-//            if(authToken != null){
-//                outboundWmsReqVO.setCreateById(authToken.getPersonId());
-//                outboundWmsReqVO.setCreateByName(authToken.getPersonName());
-//            }else {
-//                outboundWmsReqVO.setCreateById("0");
-//                outboundWmsReqVO.setCreateByName("系统");
-//            }
-//            url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
-//            log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
-//            HttpResponse orderDto = HttpClient.post(url).json(outboundWmsReqVO).timeout(10000).action().result(HttpResponse.class);
-//            if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
-//                ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()),ResponseWms.class);
-//                if(responseWms.getResultCode().equals(MessageId.SUCCESS_CODE)){
-//                    //设置wms编号
-//                    outbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
-//                    //设置入库状态
-//                    outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-//                    outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
-//                }else{
-//                    LOGGER.error("退供出库单传入wms失败:{}",responseWms.getReason());
-//                    throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",responseWms.getReason()));
-//                }
-//            }else{
-//                LOGGER.error("退供出库单传入wms失败:{}",orderDto.getMessage());
-//                throw new GroundRuntimeException(String.format("退供出库单传入wms失败:%s",orderDto.getMessage()));
-//            }
-//        }else{
-//            //其他出库 移库 预计数量=实际数量
-//            //设置出库状态
-//            outbound.setOutboundStatusCode(InOutStatus.SEND_INOUT.getCode());
-//            outbound.setOutboundStatusName(InOutStatus.SEND_INOUT.getName());
-//        }
-//        // 更新数据库
-//        outboundDao.updateByPrimaryKeySelective(outbound);
-//        OutboundCallBackReqVo outboundCallBackReqVo = new OutboundCallBackReqVo();
-//        BeanCopyUtils.copy(outbound,outboundCallBackReqVo);
-//        List<OutboundProductCallBackReqVo> list = new ArrayList<>();
-//        for (OutboundProductWmsResVO outboundProductWmsReqVO : outboundProductWmsReqVOs) {
-//            OutboundProductCallBackReqVo outboundProductCallBackReqVo = new OutboundProductCallBackReqVo();
-//            outboundProductCallBackReqVo.setLinenum(outboundProductWmsReqVO.getLinenum());
-//            outboundProductCallBackReqVo.setSkuCode(outboundProductWmsReqVO.getSkuCode());
-//            outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
-//            list.add(outboundProductCallBackReqVo);
-//        }
-//        outboundCallBackReqVo.setList(list);
-//        //保存日志
-//        productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
-//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
-//            workFlowCallBack(outboundCallBackReqVo);
-//        }
-//    }
-
     /**
-     * 入库单推送给wms
-     * @param code
-     * @return
+     * 出库单推送给wms
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -627,7 +533,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             //outboundProductCallBackReqVo.setPraOutboundMainNum(outboundProductWmsReqVO.getPreInboundMainNum());
             list.add(outboundProductCallBackReqVo);
         }
-        outboundCallBackReqVo.setList(list);
+        outboundCallBackReqVo.setDetailList(list);
         //保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
@@ -635,175 +541,165 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
     }
 
-    /**
-     * 出库单回调接口
-     * @param reqVo
-     * @return
-     */
     @Override
 //    @Async("myTaskAsyncPool")
-    public void workFlowCallBack(OutboundCallBackReqVo reqVo) {
-        log.info(" 出库单回调实体传入实体为 ：[{}]" + reqVo);
-        Outbound outbound;
-        try{ // 根据入库单编号查询旧的入库单主体
-            outbound = outboundDao.selectByCode(reqVo.getOutboundOderCode());
-            if(outbound == null){
-                log.info("WMS出库单回传，耘链未查询到此出库单，回传失败：" + reqVo);
-                throw  new GroundRuntimeException("WMS出库单回传，耘链未查询到此出库单，回传失败");
-            }
-            //保存日志
-          //  productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
+    public HttpResponse workFlowCallBack(OutboundCallBackReqVo request) {
+        LOGGER.info("出库单回调WMS开始，传入实体为：{}", JsonUtil.toJson(request));
+         // 根据入库单编号查询出库单
+         Outbound outbound = outboundDao.selectByCode(request.getOutboundOderCode());
+         if (outbound == null) {
+             LOGGER.info("WMS出库单回传，出库单信息为空：", JsonUtil.toJson(request));
+             return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+         }
 
-            //设置已回传状态
-            outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
-            outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
-            //设置实际出库数量和出库主数量
-            outbound.setPraOutboundNum(0L);
-            outbound.setPraMainUnitNum(0L);
-            //设置实际含税总金额。税额。不含税总金额
-            outbound.setPraTaxAmount(BigDecimal.ZERO);
-            outbound.setPraTax(BigDecimal.ZERO);
-            outbound.setPraAmount(BigDecimal.ZERO);
-            // 设置解锁并且减少库存
+         if (CollectionUtils.isEmpty(request.getDetailList())) {
+             LOGGER.info("WMS出库单回传，出库单商品信息为空：", JsonUtil.toJson(request.getDetailList()));
+             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "WMS出库单回传，出库单商品信息为空"));
+         }
+         //设置已回传状态
+         outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
+         outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
+         //设置实际出库数量和出库主数量
+         outbound.setPraOutboundNum(0L);
+         outbound.setPraMainUnitNum(0L);
+         //设置实际含税总金额。税额。不含税总金额
+         outbound.setPraTaxAmount(BigDecimal.ZERO);
+         outbound.setPraTax(BigDecimal.ZERO);
+         outbound.setPraAmount(BigDecimal.ZERO);
 
-            // 加在途数并且减少库存 实体（变更库存与批次库存）
-            ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            // 采购与调拨减库存并加在途 - 出库类型编码 1.退供 2.调拨 3.订单 4.移库
-            if(Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode()) ||
-                    Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ALLOCATE.getCode()) ||
-                    Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.MOVEMENT.getCode())){
-                changeStockRequest.setOperationType(2);
-            }else if(Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.RETURN_SUPPLY.getCode())){
-                // 退供出库 - 库存减少，锁定库存减少，可用库存不变
-                changeStockRequest.setOperationType(2);
-            }
+         // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
+         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+         // 采购与调拨减库存并加在途 - 出库类型编码
+         if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode()) ||
+                 Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ALLOCATE.getCode()) ||
+                 Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.MOVEMENT.getCode())) {
+             changeStockRequest.setOperationType(2);
+         } else if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
+             // 退供wms回传 - 库减并解锁库存、批次库存
+             LOGGER.info("退供开始操作库减并解锁库存、批次库存：", outbound.getSourceOderCode());
+             changeStockRequest.setOperationType(2);
+         }
 
-            // 更新出库商品信息
-            List<StockInfoRequest> stockInfoRequestList = new ArrayList<>();
-            for (OutboundProductCallBackReqVo outboundProductCallBackReqVo : reqVo.getList()) {
-                ReturnOutboundProduct returnOutboundProduct;
-                // 查询旧的sku，以及销项，进项税率
-                if(!Objects.isNull(outboundProductCallBackReqVo.getLineCode()) && outboundProductCallBackReqVo.getLineCode() != null){
-                     returnOutboundProduct = outboundProductDao.selectByLinenum(outbound.getOutboundOderCode(),outboundProductCallBackReqVo.getSkuCode(),outboundProductCallBackReqVo.getLineCode());
-                }else{
-                    List<ReturnOutboundProduct> list = outboundProductDao.selectBySkuCode(outbound.getOutboundOderCode(),outboundProductCallBackReqVo.getSkuCode());
-                    returnOutboundProduct = list.get(0);
-                }
-                OutboundProduct outboundProduct = new OutboundProduct();
-                //copy 实体
-                BeanCopyUtils.copy(returnOutboundProduct,outboundProduct);
-                if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode())){
-                    //如果是订单则使用销项税率
-                    returnOutboundProduct.setTax(returnOutboundProduct.getOutputTaxRate());
-                }else {
-                    //调拨，退供使用进项税率
-                    returnOutboundProduct.setTax(returnOutboundProduct.getInputTaxRate());
-                }
-                //设置实际数量，实际数量
-                Long actualTotalCount = outboundProductCallBackReqVo.getActualTotalCount();
-                outboundProduct.setPraOutboundNum(actualTotalCount/Long.valueOf(returnOutboundProduct.getOutboundBaseContent()));
-                outboundProduct.setPraOutboundMainNum(actualTotalCount);
-                //设置实际含税单价，实际含税总价
-                outboundProduct.setPraTaxPurchaseAmount(returnOutboundProduct.getPreTaxPurchaseAmount());
-                outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP));
+         List<StockInfoRequest> stockInfoRequestList = Lists.newArrayList();
+         OutboundProduct outboundProduct;
+         StockInfoRequest stockInfoRequest;
+         Long praOutboundCount = 0L, praTotalOutboundCount = 0L;
+         BigDecimal praOutboundAmount = BigDecimal.ZERO, praTotalOutboundAmount = BigDecimal.ZERO;
 
-                // 修改单条 sku
-                Integer count = outboundProductDao.update(outboundProduct);
-                log.info("更新出库单商品信息" + outboundProduct, count);
+         // 更新出库商品信息
+         for (OutboundProductCallBackReqVo detail : request.getDetailList()) {
+             // 查询对应的出库单商品信息
+             outboundProduct = outboundProductDao.selectByLineCode(outbound.getOutboundOderCode(), detail.getSkuCode(), detail.getLineCode());
 
-                //累加总的出库数量，出库主数量
-                outbound.setPraOutboundNum(outbound.getPraOutboundNum());
-                outbound.setPraMainUnitNum(outbound.getPraMainUnitNum());
-                //累加总的含税总金额  税额 不含税总金额
-                outbound.setPraTaxAmount(outbound.getPraTaxAmount().add(outboundProduct.getPraTaxAmount()));
-                //不含税总金额
-                outbound.setPraAmount(outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(),returnOutboundProduct.getTax()).multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()))));
-                //  设置修改减少库存sku实体
-                StockInfoRequest stockInfoRequest = new StockInfoRequest();
-                //设置公司编码名称
-                stockInfoRequest.setCompanyCode(outbound.getCompanyCode());
-                stockInfoRequest.setCompanyName(outbound.getCompanyName());
-                //设置物流中心编码名称
-                stockInfoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
-                stockInfoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
-                //设置库房编码名称
-                stockInfoRequest.setWarehouseCode(outbound.getWarehouseCode());
-                stockInfoRequest.setWarehouseName(outbound.getWarehouseName());
-                //设置sku编码名称
-                stockInfoRequest.setSkuCode(outboundProduct.getSkuCode());
-                stockInfoRequest.setSkuName(outboundProduct.getSkuName());
-                //设置更改数量
-                stockInfoRequest.setChangeCount(outboundProduct.getPraOutboundNum());
-                stockInfoRequest.setTaxRate(outboundProduct.getTax());
-                stockInfoRequest.setNewDelivery(outbound.getSupplierCode());
-                stockInfoRequest.setNewDeliveryName(outbound.getSupplierName());
-                stockInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
-                stockInfoRequest.setDocumentType(0);//0出库 1入库 2退供 3采购
-                stockInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-                stockInfoRequest.setSourceDocumentType(Integer.parseInt(outbound.getOutboundTypeCode().toString()));
-                stockInfoRequest.setOperatorId(reqVo.getOperatorId());
-                stockInfoRequest.setOperatorName(reqVo.getOperatorName());
-                if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())){
-                    AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(outbound.getSourceOderCode(), outboundProduct.getSkuCode(), outboundProduct.getLinenum().intValue());
-                    stockInfoRequest.setPreWayCount(allocationProductResVo.getQuantity());
-                }
+             //设置实际数量，实际数量/实际含税单价，实际含税总价
+             Long actualTotalCount = detail.getActualTotalCount();
+             outboundProduct.setPraOutboundNum(actualTotalCount / Long.valueOf(outboundProduct.getOutboundBaseContent()));
+             outboundProduct.setPraOutboundMainNum(actualTotalCount);
+             outboundProduct.setPraTaxPurchaseAmount(outboundProduct.getPreTaxPurchaseAmount());
+             outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).
+                     setScale(4, BigDecimal.ROUND_HALF_UP));
 
-                stockInfoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
-                stockInfoRequestList.add(stockInfoRequest);
-            }
-            changeStockRequest.setStockList(stockInfoRequestList);
+             // 修改出库单对应的回传数据
+             Integer count = outboundProductDao.update(outboundProduct);
+             log.info("更新出库单商品信息：" + outboundProduct, count);
 
-            // 更新出库批次商品信息
-            List<StockBatchInfoRequest> stockBatchVoRequestList = new ArrayList<>();
-            for(OutboundBatchCallBackReqVo outboundBatchCallBackReqVo : reqVo.getBatchList()){
-                // 查询旧的sku，以及销项，进项税率
-                ReturnOutboundBatch returnOutboundBatch = outboundBatchDao.selectBatchInfoByLinenum(outbound.getOutboundOderCode(), outboundBatchCallBackReqVo.getSkuCode(), outboundBatchCallBackReqVo.getLineCode());
-                OutboundBatch outboundBatch = new OutboundBatch();
-                //copy 实体
-                BeanCopyUtils.copy(returnOutboundBatch, outboundBatch);
+             // 计算出库单总的出库数量、主数量/总的含税总金额、税额、不含税总金额
+             praOutboundCount += outbound.getPraOutboundNum();
+             praTotalOutboundCount += outbound.getPraMainUnitNum();
+             praTotalOutboundAmount = outbound.getPraTaxAmount().add(outboundProduct.getPraTaxAmount());
+             praOutboundAmount = outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(), outboundProduct.getTax())
+                     .multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum())));
 
-                //设置实际数量
-                outboundBatch.setActualTotalCount(outboundBatchCallBackReqVo.getActualTotalCount());
+             // 设置修改减少库存sku实体
+             stockInfoRequest = new StockInfoRequest();
+             stockInfoRequest.setCompanyCode(outbound.getCompanyCode());
+             stockInfoRequest.setCompanyName(outbound.getCompanyName());
+             stockInfoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
+             stockInfoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
+             stockInfoRequest.setWarehouseCode(outbound.getWarehouseCode());
+             stockInfoRequest.setWarehouseName(outbound.getWarehouseName());
+             stockInfoRequest.setSkuCode(outboundProduct.getSkuCode());
+             stockInfoRequest.setSkuName(outboundProduct.getSkuName());
+             stockInfoRequest.setChangeCount(outboundProduct.getPraOutboundNum());
+             stockInfoRequest.setTaxRate(outboundProduct.getTax());
+             stockInfoRequest.setNewDelivery(outbound.getSupplierCode());
+             stockInfoRequest.setNewDeliveryName(outbound.getSupplierName());
+             stockInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
+             stockInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
+             stockInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
+             stockInfoRequest.setSourceDocumentType(outbound.getOutboundTypeCode().intValue());
+             stockInfoRequest.setOperatorId(request.getOperatorId());
+             stockInfoRequest.setOperatorName(request.getOperatorName());
+             // 调拨设置减在途数
+             if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())) {
+                 AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(outbound.getSourceOderCode(), outboundProduct.getSkuCode(), outboundProduct.getLinenum().intValue());
+                 stockInfoRequest.setPreWayCount(allocationProductResVo.getQuantity());
+             }
+             stockInfoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
+             stockInfoRequestList.add(stockInfoRequest);
+         }
+         outbound.setPraOutboundNum(praOutboundCount);
+         outbound.setPraMainUnitNum(praTotalOutboundCount);
+         outbound.setPraTaxAmount(praTotalOutboundAmount);
+         outbound.setPraAmount(praOutboundAmount);
+         outbound.setPraTax(praTotalOutboundAmount.subtract(praOutboundAmount));
+         changeStockRequest.setStockList(stockInfoRequestList);
 
-                // 修改单条 批次
-                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+         // 更新出库批次商品信息
+         List<StockBatchInfoRequest> stockBatchVoRequestList = Lists.newArrayList();
+         OutboundBatch outboundBatch;
+         StockBatchInfoRequest stockBatchInfoRequest;
+         if (CollectionUtils.isNotEmpty(request.getBatchList())) {
+             for (OutboundBatchCallBackReqVo batch : request.getBatchList()) {
+                 outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchInfoCode());
 
-                //  设置修改减少库存sku实体
-                StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
-                //设置sku编码名称 批次号
-                stockBatchInfoRequest.setSkuCode(outboundBatch.getSkuCode());
-                stockBatchInfoRequest.setSkuName(outboundBatch.getSkuName());
-                stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
-                //设置更改数量
-                stockBatchInfoRequest.setChangeCount(outboundBatch.getActualTotalCount());
-                stockBatchVoRequestList.add(stockBatchInfoRequest);
-          }
-            changeStockRequest.setStockBatchList(stockBatchVoRequestList);
-            // 解锁并且减库存
-           HttpResponse httpResponse= stockService.stockAndBatchChange(changeStockRequest);
-           if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
-               log.info("减并解锁库存成功，库存详情为:{}", changeStockRequest);
-           }else{
-               log.error(httpResponse.getMessage());
-               throw  new GroundRuntimeException("库存操作失败");
-           }
+                 //设置实际数量
+                 outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                 // 修改单条 批次
+                 int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+                 log.info("更新出库单批次信息：" , k);
 
-            //计算税额
-            outbound.setPraTax(outbound.getPraTaxAmount().subtract(outbound.getPraAmount()));
-            //修改实际的入库单主体
-            int k = outboundDao.update(outbound);
+                 //  设置修改减少库存sku实体
+                 stockBatchInfoRequest = new StockBatchInfoRequest();
+                 //设置sku编码名称 批次号
+                 stockBatchInfoRequest.setSkuCode(outboundBatch.getSkuCode());
+                 stockBatchInfoRequest.setSkuName(outboundBatch.getSkuName());
+                 stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
+                 stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
+                 stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
+                 stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
+                 stockBatchInfoRequest.setSourceDocumentType(outbound.getOutboundTypeCode().intValue());
+                 stockBatchInfoRequest.setOperatorId(request.getOperatorId());
+                 stockBatchInfoRequest.setOperatorName(request.getOperatorName());
+                 stockBatchInfoRequest.setChangeCount(outboundBatch.getActualTotalCount());
+                 stockBatchVoRequestList.add(stockBatchInfoRequest);
+             }
+             changeStockRequest.setStockBatchList(stockBatchVoRequestList);
+         }
+         LOGGER.info("回传wms-操作库存、批次库存的参数:{}", JsonUtil.toJson(changeStockRequest));
+         // 调用库存操作接口
+         HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+         if (httpResponse.getCode().equals(MsgStatus.SUCCESS)) {
+             LOGGER.info("回传wms操作库存成功，库存详情为:{}", JsonUtil.toJson(changeStockRequest));
+         } else {
+             LOGGER.error("回传wms操作库存失败", httpResponse.getMessage());
+             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "回传wms操作库存失败"));
+         }
+         //修改实际的入库单主体
+         Integer k = outboundDao.update(outbound);
+         LOGGER.error("回传wms-操作出库单实际数量、金额的变更", k);
+         // 保存日志
+         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(),
+                 ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(),new Date(),
+                 outbound.getCreateBy(), null);
 
-            // 回传类型
-            returnSource(outbound.getId());
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            throw new GroundRuntimeException("修改库存失败");
-        }
+         // 回传类型
+         returnSource(outbound.getId());
+         return HttpResponse.success();
     }
 
     /**
      * 根据类型回传给来源单号状态
-     * @param id
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -816,7 +712,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), id, HandleTypeCoce.COMPLETE_OUTBOUND_ODER.getName(), new Date(), outbound.getCreateBy(), null);
         // 设置出库时间
         outbound.setOutboundTime(Calendar.getInstance().getTime());
-
+        // 修改出库单完成状态
+        outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+        outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
         //如果是订单
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
             try {
@@ -826,43 +724,29 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 supplyOrderInfoReqVO.setOrderItems(orderItems);
                 // 调用订单接口
                 //returnOder(supplyOrderInfoReqVO);
-                //修改出库单完成状态
-                outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-                outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                //设置出库时间
-                int k = outboundDao.update(outbound);
             }catch (Exception e){
                 log.error(Global.ERROR, e);
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传订单失败");
             }
-
-
-        }//如果是退供
-        else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode() )){
-            try {
-                RejectStockRequest rejectStockRequest = new RejectStockRequest();
-                RejectDetailStockRequest rejectDetailStockRequest = new RejectDetailStockRequest();
-                List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
-                rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
-                rejectStockRequest.setOutStockTime(new Date());
-                for(OutboundProduct outboundProduct : list){
-                    rejectDetailStockRequest.setId(outboundProduct.getLinenum());
-                    rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundProduct.getPraOutboundMainNum().toString()) );
-                    rejectDetailStockRequests.add(rejectDetailStockRequest);
-                }
-                rejectStockRequest.setDetailList(rejectDetailStockRequests);
-                // 回传给退供
-                returnStorageResult(rejectStockRequest);
-
-                outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-                outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                int k = outboundDao.update(outbound);
-            } catch (Exception e) {
-                log.error(Global.ERROR, e);
-                log.error(e.getMessage());
-                throw new GroundRuntimeException("回传退供单失败");
+        }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
+            LOGGER.info("wms回传成功，根据出库单信息，变更对应退供单的实际值：", outbound.getSourceOderCode());
+            RejectStockRequest rejectStockRequest = new RejectStockRequest();
+            RejectDetailStockRequest rejectDetailStockRequest = new RejectDetailStockRequest();
+            List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
+            rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
+            for (OutboundProduct outboundProduct : list) {
+                rejectDetailStockRequest.setId(outboundProduct.getLinenum());
+                rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundProduct.getPraOutboundMainNum().toString()));
+                rejectDetailStockRequests.add(rejectDetailStockRequest);
             }
+            rejectStockRequest.setDetailList(rejectDetailStockRequests);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<RejectRecordBatch> infoBatch = BeanCopyUtils.copyList(batchList, RejectRecordBatch.class);
+                rejectStockRequest.setBatchList(infoBatch);
+            }
+            // 回传给退供
+            //returnStorageResult(rejectStockRequest);
 
         }// 如果是调拨
         else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode() )){
@@ -885,9 +769,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 log.error(Global.ERROR, e);
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
             }
-            outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = outboundDao.update(outbound);
 
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode() )){
             // 如果是移库
@@ -907,10 +788,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 log.error(Global.ERROR, e);
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
             }
-            outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = outboundDao.update(outbound);
-
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.scrap.getCode() )){
             // 如果是报废
                 Allocation allocation =allocationMapper .selectByCode(outbound.getSourceOderCode());
@@ -922,14 +799,14 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_SCRAP.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__SCRAP.getName(), null, HandleTypeCoce.ADD_SCRAP.getName(), "系统自动");
                 //跟新调拨单状态
                 int k1 = allocationMapper.updateByPrimaryKeySelective(allocation);
-                outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-                outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                int k = outboundDao.update(outbound);
         }else{
             throw new GroundRuntimeException("无法回传匹配类型");
         }
 
+        int k = outboundDao.update(outbound);
+        LOGGER.info("wms回传成功，变更出库单完成状态：", k);
     }
+
     /**
      * 回传订单接口
      * @param reqVO
@@ -949,21 +826,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //            log.error(Global.ERROR, e);
 //            log.error("出库单回传订单失败：[{}]",reqVO);
 //        }
-
-    }
-    /**
-     * 退供回传接口
-     * @param reqVO
-     */
-    @Override
-    @Async("myTaskAsyncPool")
-    public void returnStorageResult(RejectStockRequest reqVO) {
-        try {
-            //goodsRejectService.finishStock(reqVO);
-        } catch (GroundRuntimeException e) {
-            log.error(Global.ERROR, e);
-            log.error("出库单回传退供失败：[{}]",e);
-        }
 
     }
 

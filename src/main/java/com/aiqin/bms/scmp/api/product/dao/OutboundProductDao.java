@@ -25,8 +25,6 @@ public interface OutboundProductDao {
 
     List<OutboundProduct> selectOutboundProductListByOutBoundOderCodeList(@Param("outboundOderCodeList") List<String> outboundOderCodeList);
 
-    List<OutboundProduct> selectOutboundProductInfoBySourceOrderCode(String sourceOrderCode);
-
     int updateBatch(List<UpdateOutboundProductReqVO> records);
 
     /**
@@ -37,7 +35,7 @@ public interface OutboundProductDao {
     /**
      *  出库单sku 详情以及进项，销项水税率
      */
-    ReturnOutboundProduct selectByLinenum(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
+    OutboundProduct selectByLineCode(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     List<ReturnOutboundProduct> selectTax(@Param("outboundOderCode") String outboundOderCode, @Param("skuCode") String skuCode);
 

@@ -77,7 +77,7 @@ public interface OutboundService {
     /**
      * 出库单回调接口
      */
-    void  workFlowCallBack(OutboundCallBackReqVo reqVo);
+    HttpResponse workFlowCallBack(OutboundCallBackReqVo reqVo);
 
     /**
      * 根据类型回传给来源单号状态
@@ -88,11 +88,6 @@ public interface OutboundService {
      * 订单回传接口
      */
     void  returnOder(SupplyOrderInfoReqVO reqVO);
-
-    /**
-     * 退供会传接口
-     */
-    void returnStorageResult(RejectStockRequest reqVO);
 
     /**
      * 调拨生成入库单并且改变在途数
