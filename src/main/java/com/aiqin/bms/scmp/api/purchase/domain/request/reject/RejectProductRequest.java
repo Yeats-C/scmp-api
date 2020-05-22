@@ -33,7 +33,7 @@ public class RejectProductRequest extends PagesRequest {
     private String skuName;
 
     @ApiModelProperty(value = "品类id")
-    @JsonProperty("category_id")
+    @JsonProperty("category_code")
     private String categoryId;
 
     @ApiModelProperty(value = "品类名称")
@@ -41,7 +41,7 @@ public class RejectProductRequest extends PagesRequest {
     private String categoryName;
 
     @ApiModelProperty(value = "品牌id")
-    @JsonProperty("brand_id")
+    @JsonProperty("brand_code")
     private String brandId;
 
     @ApiModelProperty(value = "品牌名称")
