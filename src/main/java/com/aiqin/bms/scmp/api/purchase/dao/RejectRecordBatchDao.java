@@ -22,4 +22,6 @@ public interface RejectRecordBatchDao {
 
     List<RejectRecordBatch> rejectBatchInfoList(String rejectRecordCode);
 
+    Integer updateAll(@Param("list") List<RejectRecordBatch> record);
+
 }

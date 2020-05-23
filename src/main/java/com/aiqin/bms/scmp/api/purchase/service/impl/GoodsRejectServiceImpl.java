@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -11,11 +12,8 @@ import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
@@ -117,6 +115,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private OutboundDao outboundDao;
     @Resource
     private StockService stockService;
+    @Resource
+    private SapBaseDataService sapBaseDataService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -830,7 +830,15 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
         // 更新批次的实际信息
         if(CollectionUtils.isNotEmpty(request.getBatchList())){
-            //rejectRecordBatchDao.rejectBatchByBatch();
+            Integer count = rejectRecordBatchDao.updateAll(request.getBatchList());
+            LOGGER.info("wms回传-更新退供批次的实际值：{}", count);
+        }
+        Integer count = rejectRecordDao.update(rejectRecord);
+        LOGGER.info("wms回传-更新退供单的实际值：{}", count);
+        if(count > 0){
+            // 调用sap 传送退供单的数据给sap
+            sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
+            LOGGER.info("退供wms回传成功");
         }
         return HttpResponse.success();
     }

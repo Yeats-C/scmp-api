@@ -118,4 +118,38 @@
     from reject_record_batch
     where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
+  <update id="updateAll">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update reject_record_batch
+      <set>
+        <if test="batchCode != null">
+          batch_code = #{batchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="batchRemark != null">
+          batch_remark = #{batchRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="productDate != null">
+          product_date = #{productDate,jdbcType=VARCHAR},
+        </if>
+        <if test="beOverdueDate != null">
+          be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
+        </if>
+        <if test="actualTotalCount != null">
+          actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+        </if>
+        <if test="purchasePrice != null">
+          purchase_price = #{purchasePrice,jdbcType=DECIMAL},
+        </if>
+        <if test="locationCode != null">
+          location_code = #{locationCode,jdbcType=VARCHAR},
+        </if>
+        <if test="lineCode != null">
+          line_code = #{lineCode,jdbcType=INTEGER},
+        </if>
+        update_time = now(),
+      </set>
+      where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+      and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    </foreach>
+  </update>
 </mapper>

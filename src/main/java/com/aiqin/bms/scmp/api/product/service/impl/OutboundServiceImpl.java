@@ -747,7 +747,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 rejectStockRequest.setBatchList(infoBatch);
             }
             // 回传给退供
-            //returnStorageResult(rejectStockRequest);
+            goodsRejectService.rejectRecordWms(rejectStockRequest);
 
         }// 如果是调拨
         else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode() )){
