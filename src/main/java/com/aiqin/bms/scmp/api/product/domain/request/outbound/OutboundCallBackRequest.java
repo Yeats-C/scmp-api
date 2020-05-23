@@ -25,7 +25,7 @@ public class OutboundCallBackRequest {
 
     @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
     @NotEmpty(message = "订单类型")
-    @JsonProperty("orderTypeCode")
+    @JsonProperty("order_type_code")
     private Integer orderTypeCode;
 
     @ApiModelProperty("发货时间")

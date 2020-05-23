@@ -286,7 +286,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundSource.setDetailList(detailSourceList);
         List<BatchInfo> batchInfoList = BeanCopyUtils.copyList(batchList, BatchInfo.class);
         outboundSource.setBatchInfo(batchInfoList);
-        LOGGER.info("调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
+        LOGGER.info("退供调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
         String url = urlConfig.WMS_API_URL2 + "/purchase/source/outbound";
         HttpClient httpClient = HttpClient.post(url).json(outboundSource).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
