@@ -135,6 +135,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
         Map<String, List<StockBatch>> rejectApply = new HashMap<>();
         for (RejectApplyDetailHandleResponse response : list) {
+            if(response.getBatchManage() == 1){
+                continue;
+            }
             // 赋值四级品类名称
             response.setCategoryName(selectCategoryName(response.getCategoryId()));
             // 查询对应的批次信息
