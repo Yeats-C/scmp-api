@@ -125,4 +125,6 @@ public interface ReturnOrderInfoMapper {
     int updateByOrderCodes(@Param(value = "list")List<String> orderCodes);
 
     Integer insertList(List<ReturnOrderInfo> returnOrderInfoList);
+
+    void updateReturnOrderSynchrSap(ReturnOrderInfo returnOrderInfo);
 }

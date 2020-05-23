@@ -570,4 +570,13 @@
     where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
     and outbound_type_code = #{outboundTypeCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectOutbouondBySourceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
+  <update id="updateOutboundSynchrSap">
+    update outbound set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where source_oder_code = #{sourceOderCode}
+  </update>
 </mapper>

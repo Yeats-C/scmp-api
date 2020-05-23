@@ -37,4 +37,9 @@ public interface OutboundDao {
     void updateByOrderCodes(List<String> list);
 
     Outbound selectBySourceCode(@Param("sourceOderCode") String sourceOderCode, @Param("outboundTypeCode") String outboundTypeCode);
+
+    Outbound selectOutbouondBySourceCode(@Param("sourceOderCode") String sourceOderCode);
+
+    /** 调拨/损溢出库同步sap **/
+    void updateOutboundSynchrSap(Outbound outbound);
 }

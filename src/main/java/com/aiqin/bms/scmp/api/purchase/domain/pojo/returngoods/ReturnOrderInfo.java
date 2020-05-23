@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -23,12 +24,14 @@ public class ReturnOrderInfo {
     @ApiModelProperty("创建时间")
     private Date createDate;
 
+    //  0直送、1配送、2辅采
     @ApiModelProperty("类型：直送、配送、首单、首单赠送")
     private String orderType;
 
     @ApiModelProperty("订单类型编码")
     private Integer orderTypeCode;
 
+    // 退货类型  0客户退货、1缺货退货、2售后退货、3冲减单
     @ApiModelProperty("退货类型：客户退货、缺货退货、售后退货")
     private String returnOrderType;
 
@@ -240,5 +243,13 @@ public class ReturnOrderInfo {
 
     @ApiModelProperty(value = "预计退货数量")
     private Long preProductNum;
+
+    @ApiModelProperty(value="sap同步时间")
+    @JsonProperty("synchr_time")
+    private Date synchrTime;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
 
 }

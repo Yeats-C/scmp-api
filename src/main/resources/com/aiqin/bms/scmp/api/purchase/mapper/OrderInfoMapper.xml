@@ -83,6 +83,9 @@
       <result column="transport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="transport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="transport_number" jdbcType="VARCHAR" property="transportNumber" />
+      <result column="platform_type" jdbcType="TIMESTAMP" property="platformType" />
+      <result column="business_form" jdbcType="VARCHAR" property="businessForm" />
+      <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
   </resultMap>
   <sql id="Base_Column_List">
       id, order_code, order_type, order_type_code, customer_name, customer_code, create_date,
@@ -100,7 +103,7 @@
     update_time, actual_product_channel_total_amount, actual_order_amount, actual_product_num,
     order_original_name, actual_weight, actual_volume, actual_product_total_amount,transport_company,
 transport_company_code,
-transport_number
+transport_number, platform_type, business_form, tax_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
@@ -1660,5 +1663,8 @@ transport_number
     </update>
     <update id="updateDevliverAmountByOrderCode">
         update order_info set deliver_amount = #{deliverAmount} where order_code = #{orderCode}
+    </update>
+    <update id="updateOrderSynchrSap">
+        update order_info set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where order_code = #{orderCode}
     </update>
 </mapper>

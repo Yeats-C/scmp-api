@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.abutment.domain.request;
+package com.aiqin.bms.scmp.api.abutment.domain.request.sale;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -41,13 +41,11 @@ public class Order {
     @JsonProperty("parent_order_code")
     @ApiModelProperty("父订单编码")
     private String parentOrderCode;
-    /**
-     * 单据类型 0 销售单  5 配送退货  10 辅采单  15 直送  20 直送退货
-     */
+
     @JsonProperty("order_type")
-    @ApiModelProperty("单据类型 0 销售单  5 配送退货  10 辅采单  15 直送  20 直送退货")
+    @ApiModelProperty("单据类型 10 配送订单 15 直送订单 20 辅采订单  25 售后退货")
     @NotNull(message = "单据类型不能为空")
-    private Integer orderType;
+    private String orderType;
     /**
      * 订单类型描述
      */
@@ -58,13 +56,13 @@ public class Order {
      * 支付状态
      */
     @JsonProperty("pay_status")
-    @ApiModelProperty("支付状态")
+    @ApiModelProperty("支付状态 1 是未支付 2 是已支付")
     private Integer payStatus;
     /**
      * 支付方式编码
      */
     @JsonProperty("pay_type")
-    @ApiModelProperty("支付方式编码")
+    @ApiModelProperty("支付方式编码 1  转账")
     private String payType;
     /**
      * 支付方式描述
@@ -306,13 +304,6 @@ public class Order {
     @ApiModelProperty("最终操作人")
     private String createByName;
 
-    /**
-     * 业务单据明细信息
-     */
-    @JsonProperty("details")
-    @ApiModelProperty("业务单据明细信息")
-    private List<OrderDetail> details;
-
     @JsonProperty("order_status")
     @ApiModelProperty("订单状态编码")
     private String orderStatus;
@@ -320,4 +311,32 @@ public class Order {
     @JsonProperty("order_status_desc")
     @ApiModelProperty("订单状态描述")
     private String orderStatusDesc;
+
+    /**
+     * 平台类型
+     */
+    @JsonProperty("platform_type")
+    @ApiModelProperty("平台类型 0.新系统，1.DL")
+    private Integer platform_type;
+
+    /**
+     * 业务形式
+     */
+    @JsonProperty("business_form")
+    @ApiModelProperty("业务形式")
+    private String businessForm;
+
+    /**
+     * 税号
+     */
+    @JsonProperty("tax_id")
+    @ApiModelProperty("税号")
+    private String taxId;
+
+    /**
+     * 业务单据明细信息
+     */
+    @JsonProperty("details")
+    @ApiModelProperty("业务单据明细信息")
+    private List<OrderDetail> details;
 }

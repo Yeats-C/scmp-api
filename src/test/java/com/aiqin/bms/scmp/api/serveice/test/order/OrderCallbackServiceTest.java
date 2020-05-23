@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.SpringBootTestContext;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
+import com.aiqin.ground.util.http.HttpClient;
 import org.junit.Test;
 import org.springframework.stereotype.Service;
 
@@ -98,5 +99,14 @@ public class OrderCallbackServiceTest extends SpringBootTestContext {
 
     }
 
+    @Test
+    public void sendMsgToMine(){
+        HttpClient httpClient = HttpClient.post("http://192.168.200.203:8680/purchase/source/inbound")
+                .json("{\"supplierName\":\"CJYaaa\",\"operuserName\":\"张昀童\",\"batchInfo\":[{\"supplierName\":\"乐高（亚洲中国）智力开发有限公司\",\"createByName\":\"李三\",\"updateByName\":\"李三\",\"batchCode\":\"20200427\",\"updateTime\":\"2020-04-27 16:29:31\",\"supplierCode\":\"10000015\",\"totalCount\":10,\"productDate\":\"2020-04-27\",\"batchInfoCode\":\"10000002042_1086_20200427_10000015_52\",\"updateById\":\"12888\",\"lineCode\":1,\"skuName\":\"小骆驼羊奶500g\",\"createTime\":\"2020-04-27 16:29:31\",\"createById\":\"12888\",\"actualTotalCount\":8,\"skuCode\":\"10000002042\"},{\"supplierName\":\"乐高（亚洲中国）智力开发有限公司\",\"createByName\":\"李三\",\"updateByName\":\"李三\",\"batchCode\":\"20200427\",\"updateTime\":\"2020-04-27 16:29:31\",\"supplierCode\":\"10000015\",\"totalCount\":2,\"productDate\":\"2020-04-27\",\"batchInfoCode\":\"10000002042_1086_20200427_10000015_0\",\"updateById\":\"12888\",\"lineCode\":1,\"skuName\":\"小骆驼羊奶500g\",\"createTime\":\"2020-04-27 16:29:31\",\"createById\":\"12888\",\"actualTotalCount\":2,\"skuCode\":\"10000002042\"}],\"supplierCode\":\"10000007\",\"detailList\":[{\"lineCode\":\"1\",\"skuName\":\"最后一次\",\"colorName\":\"\",\"inboundUnitCode\":\"2\",\"inboundUnitName\":\"板\",\"modelNumber\":\"\",\"inboundNum\":\"0\",\"totalCount\":12,\"skuCode\":\"10000002042\"},{\"lineCode\":\"2\",\"skuName\":\"最后一次\",\"colorName\":\"\",\"inboundUnitCode\":\"2\",\"inboundUnitName\":\"板\",\"modelNumber\":\"\",\"inboundNum\":\"0\",\"totalCount\":7,\"skuCode\":\"10000002042\"}],\"warehouseName\":\"科捷天猫销售库\",\"warehouseCode\":\"1044\",\"preArrivalTime\":\"2020-05-13 12:14:47\",\"purchaseOrderCode\":\"100000332\",\"operuserCode\":\"12211\",\"operuserDate\":\"2020-05-06 13:42:53\",\"inboundOderCode\":\"10000033201\"}\t");
+
+        com.aiqin.ground.util.protocol.http.HttpResponse result = httpClient.action().result(com.aiqin.ground.util.protocol.http.HttpResponse.class);
+        System.out.printf("result=="+result.toString());
+
+    }
 
 }

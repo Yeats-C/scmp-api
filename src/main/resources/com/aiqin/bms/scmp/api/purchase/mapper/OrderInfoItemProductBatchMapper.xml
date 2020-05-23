@@ -4,29 +4,35 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
-    <result column="product_line_num" jdbcType="BIGINT" property="productLineNum" />
-    <result column="original_line_num" jdbcType="BIGINT" property="originalLineNum" />
+    <result column="location_code" jdbcType="BIGINT" property="locationCode" />
+    <result column="line_code" jdbcType="BIGINT" property="lineCode" />
+    <result column="original_line_code" jdbcType="BIGINT" property="originalLineCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="num" jdbcType="BIGINT" property="num" />
-    <result column="actual_deliver_num" jdbcType="BIGINT" property="actualDeliverNum" />
-    <result column="product_time" jdbcType="TIMESTAMP" property="productTime" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+    <result column="return_total_count" jdbcType="BIGINT" property="returnTotalCount" />
+    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
-    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
+    <result column="batch_id" jdbcType="VARCHAR" property="batchId" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
     <result column="lock_type" jdbcType="INTEGER" property="lockType" />
-    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
-    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
-    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
-    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
-    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
-    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
-    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_code, product_line_num, original_line_num, sku_code, sku_name, num, actual_deliver_num,
-    product_time, batch_remark, batch_number, lock_type, transport_center_name, transport_center_code,
-    warehouse_name, warehouse_code, company_code, company_name,supplier_code,supplier_name
+    id, order_code, line_code, original_line_code, sku_code, sku_name, total_count, actual_total_count, return_total_count,
+    product_date, batch_remark, batch_id, batch_code, lock_type, supplier_code,supplier_name,batch_info_code, be_overdue_date,
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -313,5 +319,12 @@
     batch_number as batchNumber, lock_type as lockType
     from order_info_item_product_batch
     where order_code = #{orderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="orderBatchList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from order_info_item_product_batch
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and line_code = #{productLineNum, jdbcType=INTEGER}
   </select>
 </mapper>

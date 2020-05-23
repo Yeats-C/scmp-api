@@ -40,4 +40,7 @@ public interface SapBaseDataService {
 
     void purchaseAndReject(String orderCode, Integer dataType);
 
+    void saleAndReturn(String orderCode, Integer dataType);
+
+    void allocationAndprofitLoss(String orderCode);
 }

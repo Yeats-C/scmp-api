@@ -680,4 +680,8 @@
     where source_oder_code = #{sourceOderCode}
     order by id desc limit 1
   </select>
+
+  <update id="updateInboundSynchrSap">
+    update inbound set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where source_oder_code = #{sourceOderCode}
+  </update>
 </mapper>

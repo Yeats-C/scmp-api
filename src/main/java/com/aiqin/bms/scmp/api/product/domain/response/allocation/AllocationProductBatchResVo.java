@@ -74,4 +74,19 @@ public class AllocationProductBatchResVo {
     @ApiModelProperty("行号")
     private Integer lineNum;
 
+    @ApiModelProperty("库位号")
+    private String locationCode;
+
+    @ApiModelProperty("实际出库最小单位数量")
+    private Integer calloutActualTotalCount;
+
+    @ApiModelProperty("实际入库最小单位数量")
+    private String callinActualTotalCount;
+
+    @ApiModelProperty("出库批次编码")
+    private Integer calloutBatchInfoCode;
+
+    @ApiModelProperty("入库批次编码")
+    private Integer callinBatchInfoCode;
+
 }

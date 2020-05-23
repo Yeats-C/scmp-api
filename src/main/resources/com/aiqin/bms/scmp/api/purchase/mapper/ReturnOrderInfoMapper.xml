@@ -2351,4 +2351,7 @@
             #{item,jdbcType=VARCHAR}
         </foreach>
     </update>
+    <update id="updateReturnOrderSynchrSap">
+        update return_order_info set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where return_order_code = #{returnOrderCode}
+    </update>
 </mapper>

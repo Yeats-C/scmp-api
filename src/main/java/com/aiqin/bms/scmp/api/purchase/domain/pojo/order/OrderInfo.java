@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -264,6 +265,18 @@ public class OrderInfo {
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
     private String platformType;
+
+    @JsonProperty("tax_id")
+    @ApiModelProperty("税号")
+    private String taxId;
+
+    @ApiModelProperty(value="sap同步时间")
+    @JsonProperty("synchr_time")
+    private Date synchrTime;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
 
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
