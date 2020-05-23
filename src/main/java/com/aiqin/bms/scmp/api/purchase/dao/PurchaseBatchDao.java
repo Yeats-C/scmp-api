@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,7 +16,7 @@ public interface PurchaseBatchDao {
                                @Param("purchaseOderCode") String purchaseOderCode,
                                @Param("lineCode") Integer lineCode);
 
-    List<PurchaseBatch> purchaseBtachList(@Param("skuCode") String skuCode,
+    List<ScmpPurchaseBatch> purchaseBatchListBySap(@Param("skuCode") String skuCode,
                                @Param("purchaseOderCode") String purchaseOderCode,
                                @Param("lineCode") Integer lineCode);
 

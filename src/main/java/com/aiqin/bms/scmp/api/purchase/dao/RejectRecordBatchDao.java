@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
 import org.apache.ibatis.annotations.Param;
 
@@ -15,9 +16,10 @@ public interface RejectRecordBatchDao {
 
     Integer listCount(String rejectRecordCode);
 
-    List<RejectRecordBatch> rejectBatchList(@Param("skuCode") String skuCode,
+    List<ScmpPurchaseBatch> rejectBatchListBySap(@Param("skuCode") String skuCode,
                                             @Param("rejectRecordCode") String rejectRecordCode,
                                             @Param("lineCode") Integer lineCode);
 
     List<RejectRecordBatch> rejectBatchInfoList(String rejectRecordCode);
+
 }

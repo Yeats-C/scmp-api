@@ -705,7 +705,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = Exception.class)
     @Async("myTaskAsyncPool")
     public void returnSource(Long id){
-        // 查询入库信息
+        // 查询出库信息
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
@@ -736,8 +736,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
             rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
             for (OutboundProduct outboundProduct : list) {
-                rejectDetailStockRequest.setId(outboundProduct.getLinenum());
-                rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundProduct.getPraOutboundMainNum().toString()));
+                rejectDetailStockRequest.setLineCode(outboundProduct.getLinenum().intValue());
+                rejectDetailStockRequest.setActualCount(outboundProduct.getPraOutboundMainNum());
+                rejectDetailStockRequest.setActualAmount(outboundProduct.getPraTaxAmount());
                 rejectDetailStockRequests.add(rejectDetailStockRequest);
             }
             rejectStockRequest.setDetailList(rejectDetailStockRequests);

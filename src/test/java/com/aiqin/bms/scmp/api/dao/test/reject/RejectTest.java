@@ -108,8 +108,8 @@ public class RejectTest extends SpringBootTestContext {
         rejectStockRequest.setOutStockTime(new Date());
         List<RejectDetailStockRequest> detailList= new ArrayList<>();
         RejectDetailStockRequest detail= new RejectDetailStockRequest();
-        detail.setId(2L);
-        detail.setActualCount(1);
+//        detail.setId(2L);
+//        detail.setActualCount(1);
         detailList.add(detail);
         rejectStockRequest.setDetailList(detailList);
 //        RejectDetailStockRequest detail2 = new RejectDetailStockRequest();

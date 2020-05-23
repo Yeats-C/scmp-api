@@ -35,16 +35,15 @@ import java.math.BigDecimal;
 @Data
 public class RejectDetailStockRequest {
 
-    @ApiModelProperty(value = "id")
-    private Long id;
-
     @ApiModelProperty(value="wms 传回来的实际数量")
     @JsonProperty("actual_count")
-    private Integer actualCount;
+    private Long actualCount;
 
     @ApiModelProperty(value="wms 传回来的实际金额")
     @JsonProperty("actual_amount")
     private BigDecimal actualAmount;
 
-
+    @ApiModelProperty(value="行号")
+    @JsonProperty("line_code")
+    private Integer lineCode;
 }

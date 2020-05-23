@@ -103,8 +103,11 @@
     from reject_record_batch
     where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
-  <select id="rejectBatchList" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
+  <select id="rejectBatchListBySap" resultType="com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch">
+    select
+    purchase_oder_code purchaseOrderCode, batch_code batchNo, batch_info_code batchInfoCode, sku_code skuCode,
+    sku_name skuName, supplier_code supplierCode, supplier_name supplierName, batch_remark batchRemark,
+    product_date productDate, actual_total_count actualTotalCount, location_code locationCode, line_code lineCode
     from reject_record_batch
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}

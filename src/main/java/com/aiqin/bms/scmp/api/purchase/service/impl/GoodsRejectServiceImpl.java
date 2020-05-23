@@ -24,6 +24,7 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -785,6 +786,52 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     public HttpResponse rejectRecordWms(RejectStockRequest request){
+        LOGGER.info("wms回传，开始更新退供单的实际值：{}", JsonUtil.toJson(request));
+        if(request == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询对应的退供单信息
+        RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(request.getRejectRecordCode());
+        rejectRecord.setOutStockTime(Calendar.getInstance().getTime());
+        rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_OUTBOUND_COMPLETE);
+
+        RejectRecordDetail rejectRecordDetail;
+        Long actualProductCount = 0L, actualReturnCount = 0L, actualGiftCount = 0L, actualTotalCount = 0L;
+        BigDecimal actualProductAmount = big, actualReturnAmount = big, actualGiftAmount = big;
+
+        for(RejectDetailStockRequest detail:request.getDetailList()){
+            // 查询对应的退供单商品信息
+            rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(), detail.getLineCode());
+            rejectRecordDetail.setActualTotalCount(detail.getActualCount());
+            // 商品类型  0商品 1赠品 2实物返
+            rejectRecordDetail.setActualProductTotalAmount(detail.getActualAmount());
+            Integer count = rejectRecordDetailDao.update(rejectRecordDetail);
+            LOGGER.info("更新退供单回传实际数值：", count);
+
+            if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                actualProductCount += detail.getActualCount();
+                actualProductAmount = actualProductAmount.add(detail.getActualAmount());
+            }else if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                actualGiftCount += detail.getActualCount();
+                actualGiftAmount = actualGiftAmount.add(detail.getActualAmount());
+            }else if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                actualReturnCount += detail.getActualCount();
+                actualReturnAmount = actualReturnAmount.add(detail.getActualAmount());
+            }
+            actualTotalCount += detail.getActualCount();
+        }
+        rejectRecord.setActualProductCount(actualProductCount);
+        rejectRecord.setActualReturnCount(actualReturnCount);
+        rejectRecord.setActualGiftCount(actualGiftCount);
+        rejectRecord.setActualTotalCount(actualTotalCount);
+        rejectRecord.setActualProductTaxAmount(actualProductAmount);
+        rejectRecord.setActualGiftTaxAmount(actualGiftAmount);
+        rejectRecord.setActualReturnTaxAmount(actualReturnAmount);
+
+        // 更新批次的实际信息
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+            //rejectRecordBatchDao.rejectBatchByBatch();
+        }
         return HttpResponse.success();
     }
 
