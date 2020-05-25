@@ -50,6 +50,7 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.platform.flows.client.service.FormOperateService;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -117,6 +118,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private StockService stockService;
     @Resource
     private SapBaseDataService sapBaseDataService;
+    @Resource
+    private FormOperateService formOperateService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -788,6 +791,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         return dataManageService.selectCategoryName(categoryCode);
     }
 
+    @Override
     public HttpResponse rejectRecordWms(RejectStockRequest request){
         LOGGER.info("wms回传，开始更新退供单的实际值：{}", JsonUtil.toJson(request));
         if(request == null){
@@ -843,6 +847,38 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
             LOGGER.info("退供wms回传成功");
         }
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse rejectApplyRecordCode(String rejectApplyRecordCode){
+
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+        // 查询退供申请单  0.待提交 1 待审核 2.审核中 3.审核通过 4.审核不通过 5. 撤销
+        RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyRecordCode);
+        RejectApplyRecord record = new RejectApplyRecord();
+        record.setRejectApplyRecordCode(rejectApplyRecordCode);
+        record.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_REVOKE);
+        record.setUpdateById(currentAuthToken.getPersonId());
+        record.setUpdateByName(currentAuthToken.getPersonName());
+        if(rejectApplyRecord.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_TO_REVIEW) ||
+                rejectApplyRecord.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_UNDER_REVIEW)){
+            // 撤销审批流
+            HttpResponse response = formOperateService.commonCancel(rejectApplyRecordCode, currentAuthToken.getPersonId());
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("退供申请单撤销审批流成功：", rejectApplyRecordCode);
+            }else {
+                LOGGER.info("退供申请单撤销审批流失败：", rejectApplyRecordCode);
+            }
+        }
+        Integer count = rejectApplyRecordDao.update(record);
+        LOGGER.info("退供申请单撤销数量：", count);
         return HttpResponse.success();
     }
 

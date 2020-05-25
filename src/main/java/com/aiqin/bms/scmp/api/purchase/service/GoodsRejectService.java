@@ -52,4 +52,6 @@ public interface GoodsRejectService {
     /** wms回传，变更退供单的实际值*/
     HttpResponse rejectRecordWms(RejectStockRequest request);
 
+    HttpResponse rejectApplyRecordCode(String rejectApplyRecordCode);
+
 }
