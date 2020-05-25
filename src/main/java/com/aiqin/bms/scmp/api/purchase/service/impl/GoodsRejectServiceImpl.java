@@ -872,9 +872,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 撤销审批流
             HttpResponse response = formOperateService.commonCancel(rejectApplyRecordCode, currentAuthToken.getPersonId());
             if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-                LOGGER.info("退供申请单撤销审批流成功：", rejectApplyRecordCode);
+                LOGGER.info("退供申请单撤销审批成功：", rejectApplyRecordCode);
             }else {
-                LOGGER.info("退供申请单撤销审批流失败：", rejectApplyRecordCode);
+                LOGGER.info("退供申请单撤销审批失败：", rejectApplyRecordCode);
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供申请单撤销审批失败:" + rejectApplyRecordCode));
             }
         }
         Integer count = rejectApplyRecordDao.update(record);
