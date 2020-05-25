@@ -254,11 +254,13 @@
         SELECT
         st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
         st.warehouse_code,st.warehouse_name,st.warehouse_type, st.sku_code,st.sku_name,
-        sum(ifnull(st.inventory_num,0)) AS inventory_num,sum(ifnull(st.available_num,0)) AS available_num,sum(ifnull(st.lock_num,0)) AS lock_num,sum(st.purchase_way_num) AS purchase_way_num,
-        sum(st.allocation_way_num) AS allocation_way_num,sum(st.total_way_num) AS total_way_num,st.new_delivery,st.new_delivery_name,
-        st.new_purchase_price,st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,
-        st.stock_unit_name,st.tax_price,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.stockup_num,st.stockupfinish_time,st.create_time,st.create_by,st.update_time,st.update_by
+        sum(ifnull(st.inventory_count,0)) inventory_num,sum(ifnull(st.available_count,0)) available_num,
+        sum(ifnull(st.lock_count,0)) lock_num,sum(st.purchase_way_count) purchase_way_num,
+        sum(st.allocation_way_count) allocation_way_num,sum(st.total_way_count) total_way_num,st.new_delivery,st.new_delivery_name,
+        st.new_purchase_price,ps.procurement_section_code purchase_group_code,ps.procurement_section_code purchase_group_name,
+        st.unit_code,st.unit_name,st.tax_rate,psc.config_status,pssi.spec,ps.color_code,ps.color_name,
+        ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
+        st.create_time,st.create_by_name create_by,st.update_time,st.update_by_name update_by
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
@@ -287,16 +289,16 @@
             AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            AND st.inventory_count <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            AND st.inventory_count <![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            AND st.available_count <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            AND st.available_count <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code = #{companyCode}
@@ -353,16 +355,16 @@
             AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            AND st.inventory_count <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            AND st.inventory_count<![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            AND st.available_count <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            AND st.available_count <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="companyCode!=null and companyCode!=''">
             AND st.company_code = #{companyCode}
