@@ -21,4 +21,7 @@ public class SupplyReturnOrderMainReqVOReturn {
 
     @ApiModelProperty("商品信息")
     private List<SupplyReturnOrderProductItemReqVOReturn> orderItems;
+
+    @ApiModelProperty("商品批次信息")
+    private List<SupplyReturnOrderProductBatchItemReqVOReturn> orderBatchItems;
 }
