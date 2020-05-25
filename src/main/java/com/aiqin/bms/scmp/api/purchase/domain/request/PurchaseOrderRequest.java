@@ -1,8 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
-import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;

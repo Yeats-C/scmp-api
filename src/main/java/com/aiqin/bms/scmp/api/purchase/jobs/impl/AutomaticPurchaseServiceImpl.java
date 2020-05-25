@@ -65,8 +65,6 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     @Resource
     private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityDao;
     @Resource
-    private PurchaseOrderDetailsDao purchaseOrderDetailsDao;
-    @Resource
     private OperationLogDao operationLogDao;
     @Resource
     private PurchaseManageService purchaseManageService;

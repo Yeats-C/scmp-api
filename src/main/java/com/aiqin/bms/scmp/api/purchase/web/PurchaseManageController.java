@@ -177,10 +177,4 @@ public class PurchaseManageController {
                                          @RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode) {
         return purchaseManageService.purchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
     }
-
-//    @GetMapping("/history/date")
-//    @ApiOperation("处理采购单的历史数据")
-//    public HttpResponse purchaseOrderPre(@RequestParam(value = "purchase_order_code", required = false)String code) {
-//        return purchaseManageService.historyDate(code);
-//    }
 }
