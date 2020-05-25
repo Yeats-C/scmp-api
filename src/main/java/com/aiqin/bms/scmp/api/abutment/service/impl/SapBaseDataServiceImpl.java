@@ -1217,10 +1217,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setOrderCode(inbound.getInboundOderCode());
         storage.setInOutFlag(inbound.getInboundTypeCode().intValue());
         storage.setSourceOrderCode(inbound.getSourceOderCode());
-        storage.setSourceOrderType("30");
-        storage.setSourceOrderTypeName("出入库");
-        storage.setSubOrderType(inbound.getInboundTypeCode().toString());
-        storage.setSubOrderTypeName(inbound.getInboundTypeName());
+        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
+            storage.setSourceOrderType("40");
+            storage.setSourceOrderTypeName("调拨出库");
+            storage.setSubOrderType("40");
+            storage.setSubOrderTypeName("调拨出库");
+        }else {
+            storage.setSourceOrderType("50");
+            storage.setSourceOrderTypeName("报溢");
+            storage.setSubOrderType("50");
+            storage.setSubOrderTypeName("报溢");
+        }
         storage.setTransportCode("出库中");
         storage.setTransportName("出库中");
         storage.setStorageCode("出库中");
@@ -1238,8 +1245,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setDiscountPrice("0");
         storage.setOptTime(inbound.getCreateTime());
         storage.setCreateTime(inbound.getCreateTime());
-        storage.setCreateById("");
-        storage.setCreateByName(inbound.getCreateBy());
 
         for (InboundProduct inboundProduct : inboundProducts) {
             detail = BeanCopyUtils.copy(inboundProduct, StorageDetail.class);
@@ -1301,6 +1306,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     // 商品类型  是否赠品（0商品1赠品）
                     info.setProductType("0");
                     infoBatch.add(info);
+
+                    storage.setCreateById(inboundBatch.getCreateById());
+                    storage.setCreateByName(inboundBatch.getCreateByName());
                 }
                 detail.setBatchList(infoBatch);
             }
@@ -1344,10 +1352,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setOrderCode(outbound.getOutboundOderCode());
         storage.setInOutFlag(outbound.getOutboundTypeCode().intValue());
         storage.setSourceOrderCode(outbound.getSourceOderCode());
-        storage.setSourceOrderType("30");
-        storage.setSourceOrderTypeName("出入库");
-        storage.setSubOrderType(outbound.getOutboundTypeCode().toString());
-        storage.setSubOrderTypeName(outbound.getOutboundTypeName());
+        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())){
+            storage.setSourceOrderType("35");
+            storage.setSourceOrderTypeName("调拨入库");
+            storage.setSubOrderType("35");
+            storage.setSubOrderTypeName("调拨入库");
+        }else {
+            storage.setSourceOrderType("45");
+            storage.setSourceOrderTypeName("报损");
+            storage.setSubOrderType("45");
+            storage.setSubOrderTypeName("报损");
+        }
         storage.setTransportCode("出库中");
         storage.setTransportName("出库中");
         storage.setStorageCode("出库中");
@@ -1365,9 +1380,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setDiscountPrice("0");
         storage.setOptTime(outbound.getCreateTime());
         storage.setCreateTime(outbound.getCreateTime());
-        storage.setCreateById("");
-        storage.setCreateByName(outbound.getCreateBy());
-
         for (OutboundProduct outboundProduct : outboundProducts) {
             detail = BeanCopyUtils.copy(outboundProduct, StorageDetail.class);
             if(outboundProduct.getLinenum() != null){
@@ -1428,6 +1440,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     // 商品类型  是否赠品（0商品1赠品）
                     info.setProductType("0");
                     infoBatch.add(info);
+
+                    storage.setCreateById(outboundBatch.getCreateById());
+                    storage.setCreateByName(outboundBatch.getCreateByName());
                 }
                 detail.setBatchList(infoBatch);
             }

@@ -43,7 +43,7 @@ public class Storage {
     private String sapOrderId;
 
     @JsonProperty("source_order_type")
-    @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库")
+    @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库 35 调拨入库 40 调拨出库 45 报损 50 报溢")
     private String sourceOrderType;
 
     @JsonProperty("source_order_type_name")
