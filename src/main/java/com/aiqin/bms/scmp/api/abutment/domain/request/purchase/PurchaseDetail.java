@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.domain.request.purchase;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -37,11 +38,11 @@ public class PurchaseDetail {
     private String skuDesc;
 
     @ApiModelProperty("单价")
-    private String price;
+    private BigDecimal price;
 
     @JsonProperty("single_count")
     @ApiModelProperty("数量")
-    private Integer singleCount;
+    private Long singleCount;
 
     @JsonProperty("product_type")
     @ApiModelProperty("商品类型0 商品  5 实物返 10  赠品")
@@ -52,7 +53,7 @@ public class PurchaseDetail {
 
     @JsonProperty("input_rate")
     @ApiModelProperty("进项税率")
-    private Integer inputRate;
+    private BigDecimal inputRate;
 
     @JsonProperty("storage_count")
     @ApiModelProperty("库存数量")

@@ -1777,11 +1777,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         List<String> skuCodes = purchaseOrderProducts.stream().map(PurchaseOrderProduct::getSkuCode).collect(Collectors.toList());
         Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
         // 查询sku的批次信息
-        Map<String, List<PurchaseBatch>> purchaseBatchMap = new HashMap<>();
+        Map<String, List<ScmpPurchaseBatch>> purchaseBatchMap = new HashMap<>();
         for(PurchaseOrderProduct product : purchaseOrderProducts) {
             String key = String.format("%s,%s,%s", product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum());
             if (purchaseBatchMap.get(key) == null) {
-                purchaseBatchMap.put(key, purchaseBatchDao.purchaseBtachList(product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum()));
+                purchaseBatchMap.put(key, purchaseBatchDao.purchaseBatchListBySap(product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum()));
             }
         }
         if(purchaseBatchMap != null){
@@ -1796,6 +1796,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         purchase.setOrderType("0");
         purchase.setOrderTypeDesc("采购");
         purchase.setPayDate(purchaseOrderInfo.getPaymentTime());
+        purchase.setAmount(purchaseOrderInfo.getProductTotalAmount());
         // 0.预付款 1.货到付款 2.月结 3.实销实结
         if(purchaseOrderInfo.getPaymentMode() != null && purchaseOrderInfo.getPaymentMode() == 0){
             purchase.setPayType(purchaseOrderInfo.getPaymentMode().toString());
@@ -1812,7 +1813,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         }
         purchase.setSettlementType(purchaseOrderInfo.getSettlementMethodCode());
         purchase.setSettlementTypeDesc(purchaseOrderInfo.getSettlementMethodName());
-        purchase.setSkuCount(purchaseOrderInfo.getSingleCount());
+        purchase.setSkuCount(purchaseOrderInfo.getSingleCount().longValue());
         purchase.setCreateTime(Calendar.getInstance().getTime());
         purchase.setTransportCode(purchaseOrderInfo.getTransportCenterCode());
         purchase.setTransportName(purchaseOrderInfo.getTransportCenterName());
@@ -1831,12 +1832,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             } else {
                 purchaseDetail.setGuidePrice("0");
             }
-            purchaseDetail.setInputRate(product.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
-            purchaseDetail.setPrice(product.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            purchaseDetail.setInputRate(product.getTaxRate());
+            purchaseDetail.setPrice(product.getProductAmount());
             String desc = product.getProductSpec() + "/" + product.getColorName() + "/" + product.getModelNumber();
             purchaseDetail.setSkuDesc(desc);
             purchaseDetail.setStorageCount(product.getStockCount());
-            purchaseDetail.setSingleCount(product.getSingleCount().intValue());
+            purchaseDetail.setSingleCount(product.getSingleCount().longValue());
             if(product.getProductType() == 0){
                 purchaseDetail.setProductType(0);
             }else if(product.getProductType() == 1){
@@ -1852,10 +1853,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             }
             // 查询批次sku对应的批次信息
             String key = String.format("%s,%s,%s", product.getSkuCode(), purchaseOrderInfo.getPurchaseOrderCode(), product.getLinnum());
-            List<PurchaseBatch> batchList = purchaseBatchMap.get(key);
+            List<ScmpPurchaseBatch> batchList = purchaseBatchMap.get(key);
             if(CollectionUtils.isNotEmpty(batchList)){
-                List<ScmpPurchaseBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpPurchaseBatch.class);
-                purchaseDetail.setBatchList(infoBatch);
+                purchaseDetail.setBatchList(batchList);
             }
             purchaseDetailList.add(purchaseDetail);
         }
@@ -1899,11 +1899,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         List<String> skuCodes = rejectRecordDetails.stream().map(RejectRecordDetail::getSkuCode).collect(Collectors.toList());
         Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
         // 查询退供单sku的批次信息
-        Map<String, List<RejectRecordBatch>> rejectBatchMap = new HashMap<>();
+        Map<String, List<ScmpPurchaseBatch>> rejectBatchMap = new HashMap<>();
         for(RejectRecordDetail detail : rejectRecordDetails) {
             String key = String.format("%s,%s,%s", detail.getSkuCode(), orderCode, detail.getLineCode());
             if (rejectBatchMap.get(key) == null) {
-                rejectBatchMap.put(key, rejectRecordBatchDao.rejectBatchList(detail.getSkuCode(), orderCode, detail.getLineCode()));
+                rejectBatchMap.put(key, rejectRecordBatchDao.rejectBatchListBySap(detail.getSkuCode(), orderCode, detail.getLineCode()));
             }
         }
         if(rejectBatchMap != null){
@@ -1928,12 +1928,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         purchase.setOrderTypeDesc("退供");
         purchase.setSettlementType(rejectRecord.getSettlementMethodCode());
         purchase.setSettlementTypeDesc(rejectRecord.getSettlementMethodName());
-        purchase.setSkuCount(rejectRecord.getTotalCount().intValue());
+        purchase.setSkuCount(rejectRecord.getTotalCount());
         purchase.setCreateTime(Calendar.getInstance().getTime());
         purchase.setTransportCode(rejectRecord.getTransportCenterCode());
         purchase.setTransportName(rejectRecord.getTransportCenterName());
         purchase.setCreateById(rejectRecord.getUpdateById());
         purchase.setCreateByName(rejectRecord.getUpdateByName());
+        BigDecimal amount = rejectRecord.getProductTaxAmount().add(rejectRecord.getReturnTaxAmount()).add(rejectRecord.getGiftTaxAmount());
+        purchase.setAmount(amount);
         // 赋值退供sap 详情
         for(RejectRecordDetail detail : rejectRecordDetails) {
             purchaseDetail = BeanCopyUtils.copy(detail, PurchaseDetail.class);
@@ -1947,11 +1949,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             } else {
                 purchaseDetail.setGuidePrice("0");
             }
-            purchaseDetail.setInputRate(detail.getTaxRate().multiply(BigDecimal.valueOf(100)).intValue());
-            purchaseDetail.setPrice(detail.getProductAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            purchaseDetail.setInputRate(detail.getTaxRate());
+            purchaseDetail.setPrice(detail.getProductAmount());
             String desc = detail.getProductSpec() + "/" + detail.getColorName() + "/" + detail.getModelNumber();
             purchaseDetail.setSkuDesc(desc);
-            purchaseDetail.setSingleCount(detail.getTotalCount().intValue());
+            purchaseDetail.setSingleCount(detail.getTotalCount());
             // 查询库存数量
             String stockKey = String.format("%s,%s", detail.getSkuCode(), rejectRecord.getWarehouseCode());
             purchaseDetail.setStorageCount(rejectStockMap.get(stockKey));
@@ -1966,10 +1968,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             purchaseDetail.setUniteCount(String.valueOf(detail.getTotalCount()/detail.getProductCount()));
             // 查询批次sku对应的批次信息
             String key = String.format("%s,%s,%s", detail.getSkuCode(), orderCode, detail.getLineCode());
-            List<RejectRecordBatch> batchList = rejectBatchMap.get(key);
+            List<ScmpPurchaseBatch> batchList = rejectBatchMap.get(key);
             if(CollectionUtils.isNotEmpty(batchList)){
-                List<ScmpPurchaseBatch> infoBatch = BeanCopyUtils.copyList(batchList, ScmpPurchaseBatch.class);
-                purchaseDetail.setBatchList(infoBatch);
+                purchaseDetail.setBatchList(batchList);
             }
             purchaseDetailList.add(purchaseDetail);
         }

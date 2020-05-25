@@ -286,7 +286,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundSource.setDetailList(detailSourceList);
         List<BatchInfo> batchInfoList = BeanCopyUtils.copyList(batchList, BatchInfo.class);
         outboundSource.setBatchInfo(batchInfoList);
-        LOGGER.info("调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
+        LOGGER.info("退供调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
         String url = urlConfig.WMS_API_URL2 + "/purchase/source/outbound";
         HttpClient httpClient = HttpClient.post(url).json(outboundSource).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
@@ -705,7 +705,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = Exception.class)
     @Async("myTaskAsyncPool")
     public void returnSource(Long id){
-        // 查询入库信息
+        // 查询出库信息
         Outbound outbound = outboundDao.selectByPrimaryKey(id);
         List<OutboundProduct> list = outboundProductDao.selectByOutboundOderCode(outbound.getOutboundOderCode());
         List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
@@ -736,8 +736,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
             rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
             for (OutboundProduct outboundProduct : list) {
-                rejectDetailStockRequest.setId(outboundProduct.getLinenum());
-                rejectDetailStockRequest.setActualCount(Integer.parseInt(outboundProduct.getPraOutboundMainNum().toString()));
+                rejectDetailStockRequest.setLineCode(outboundProduct.getLinenum().intValue());
+                rejectDetailStockRequest.setActualCount(outboundProduct.getPraOutboundMainNum());
+                rejectDetailStockRequest.setActualAmount(outboundProduct.getPraTaxAmount());
                 rejectDetailStockRequests.add(rejectDetailStockRequest);
             }
             rejectStockRequest.setDetailList(rejectDetailStockRequests);
@@ -746,7 +747,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 rejectStockRequest.setBatchList(infoBatch);
             }
             // 回传给退供
-            //returnStorageResult(rejectStockRequest);
+            goodsRejectService.rejectRecordWms(rejectStockRequest);
 
         }// 如果是调拨
         else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode() )){

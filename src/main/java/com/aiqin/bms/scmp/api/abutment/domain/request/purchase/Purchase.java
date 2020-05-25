@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -73,10 +74,10 @@ public class Purchase {
 
     @JsonProperty("sku_count")
     @ApiModelProperty("预计数量")
-    private Integer skuCount;
+    private Long skuCount;
 
     @ApiModelProperty(value = "预计金额", hidden = true)
-    private String amount;
+    private BigDecimal amount;
 
     @JsonProperty("group_code")
     @ApiModelProperty("采购组编码")

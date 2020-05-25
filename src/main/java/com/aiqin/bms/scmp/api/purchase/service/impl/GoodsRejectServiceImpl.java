@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -11,11 +12,8 @@ import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksItemReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
@@ -24,6 +22,8 @@ import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
@@ -50,6 +50,7 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.aiqin.platform.flows.client.service.FormOperateService;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -115,6 +116,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private OutboundDao outboundDao;
     @Resource
     private StockService stockService;
+    @Resource
+    private SapBaseDataService sapBaseDataService;
+    @Resource
+    private FormOperateService formOperateService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -133,6 +138,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
         Map<String, List<StockBatch>> rejectApply = new HashMap<>();
         for (RejectApplyDetailHandleResponse response : list) {
+            if(response.getBatchManage() == 1){
+                continue;
+            }
             // 赋值四级品类名称
             response.setCategoryName(selectCategoryName(response.getCategoryId()));
             // 查询对应的批次信息
@@ -781,6 +789,97 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
      */
     public String selectCategoryName(String categoryCode) {
         return dataManageService.selectCategoryName(categoryCode);
+    }
+
+    @Override
+    public HttpResponse rejectRecordWms(RejectStockRequest request){
+        LOGGER.info("wms回传，开始更新退供单的实际值：{}", JsonUtil.toJson(request));
+        if(request == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询对应的退供单信息
+        RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(request.getRejectRecordCode());
+        rejectRecord.setOutStockTime(Calendar.getInstance().getTime());
+        rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_OUTBOUND_COMPLETE);
+
+        RejectRecordDetail rejectRecordDetail;
+        Long actualProductCount = 0L, actualReturnCount = 0L, actualGiftCount = 0L, actualTotalCount = 0L;
+        BigDecimal actualProductAmount = big, actualReturnAmount = big, actualGiftAmount = big;
+
+        for(RejectDetailStockRequest detail:request.getDetailList()){
+            // 查询对应的退供单商品信息
+            rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(), detail.getLineCode());
+            rejectRecordDetail.setActualTotalCount(detail.getActualCount());
+            // 商品类型  0商品 1赠品 2实物返
+            rejectRecordDetail.setActualProductTotalAmount(detail.getActualAmount());
+            Integer count = rejectRecordDetailDao.update(rejectRecordDetail);
+            LOGGER.info("更新退供单回传实际数值：", count);
+
+            if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_0)){
+                actualProductCount += detail.getActualCount();
+                actualProductAmount = actualProductAmount.add(detail.getActualAmount());
+            }else if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_1)){
+                actualGiftCount += detail.getActualCount();
+                actualGiftAmount = actualGiftAmount.add(detail.getActualAmount());
+            }else if(rejectRecordDetail.getProductType().equals(Global.PRODUCT_TYPE_2)){
+                actualReturnCount += detail.getActualCount();
+                actualReturnAmount = actualReturnAmount.add(detail.getActualAmount());
+            }
+            actualTotalCount += detail.getActualCount();
+        }
+        rejectRecord.setActualProductCount(actualProductCount);
+        rejectRecord.setActualReturnCount(actualReturnCount);
+        rejectRecord.setActualGiftCount(actualGiftCount);
+        rejectRecord.setActualTotalCount(actualTotalCount);
+        rejectRecord.setActualProductTaxAmount(actualProductAmount);
+        rejectRecord.setActualGiftTaxAmount(actualGiftAmount);
+        rejectRecord.setActualReturnTaxAmount(actualReturnAmount);
+
+        // 更新批次的实际信息
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+            Integer count = rejectRecordBatchDao.updateAll(request.getBatchList());
+            LOGGER.info("wms回传-更新退供批次的实际值：{}", count);
+        }
+        Integer count = rejectRecordDao.update(rejectRecord);
+        LOGGER.info("wms回传-更新退供单的实际值：{}", count);
+        if(count > 0){
+            // 调用sap 传送退供单的数据给sap
+            sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
+            LOGGER.info("退供wms回传成功");
+        }
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse rejectApplyRecordCode(String rejectApplyRecordCode){
+
+        // 获取当前登录人的信息
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (currentAuthToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
+        // 查询退供申请单  0.待提交 1 待审核 2.审核中 3.审核通过 4.审核不通过 5. 撤销
+        RejectApplyRecord rejectApplyRecord = rejectApplyRecordDao.selectByRejectCode(rejectApplyRecordCode);
+        RejectApplyRecord record = new RejectApplyRecord();
+        record.setRejectApplyRecordCode(rejectApplyRecordCode);
+        record.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_REVOKE);
+        record.setUpdateById(currentAuthToken.getPersonId());
+        record.setUpdateByName(currentAuthToken.getPersonName());
+        if(rejectApplyRecord.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_TO_REVIEW) ||
+                rejectApplyRecord.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_UNDER_REVIEW)){
+            // 撤销审批流
+            HttpResponse response = formOperateService.commonCancel(rejectApplyRecordCode, currentAuthToken.getPersonId());
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("退供申请单撤销审批流成功：", rejectApplyRecordCode);
+            }else {
+                LOGGER.info("退供申请单撤销审批流失败：", rejectApplyRecordCode);
+            }
+        }
+        Integer count = rejectApplyRecordDao.update(record);
+        LOGGER.info("退供申请单撤销数量：", count);
+        return HttpResponse.success();
     }
 
 }

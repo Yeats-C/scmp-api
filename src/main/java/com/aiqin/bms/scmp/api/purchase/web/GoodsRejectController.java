@@ -273,4 +273,13 @@ public class GoodsRejectController {
         return goodsRejectService.operationRejectRecord(rejectRecord);
     }
 
+    @GetMapping("/apply/record/operation")
+    @ApiOperation("撤销退供申请单的操作")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "reject_record_code", value = "退供单号", type = "String"),})
+    public HttpResponse rejectApplyRecordCode(@RequestParam(value = "reject_apply_record_code", required = false) String rejectApplyRecordCode) {
+        LOGGER.info("撤销退供申请单的操作：", rejectApplyRecordCode);
+        return goodsRejectService.rejectApplyRecordCode(rejectApplyRecordCode);
+    }
+
 }

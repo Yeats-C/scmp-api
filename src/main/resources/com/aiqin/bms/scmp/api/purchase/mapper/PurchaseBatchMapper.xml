@@ -109,4 +109,14 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
+  <select id="purchaseBatchListBySap" resultType="com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch">
+    select
+    purchase_oder_code purchaseOrderCode, batch_code batchNo, batch_info_code batchInfoCode, sku_code skuCode,
+    sku_name skuName, supplier_code supplierCode, supplier_name supplierName, batch_remark batchRemark,
+    product_date productDate, actual_total_count actualTotalCount, location_code locationCode, line_code lineCode
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
+  </select>
 </mapper>

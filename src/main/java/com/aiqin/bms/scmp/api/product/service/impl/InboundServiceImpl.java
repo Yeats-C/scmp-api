@@ -408,7 +408,7 @@ public class InboundServiceImpl implements InboundService {
         Inbound inbound = inboundDao.selectByCode(inboundOderCode);
         PurchaseInboundSource inboundSource = BeanCopyUtils.copy(inbound, PurchaseInboundSource.class);
         List<PurchaseInboundDetailSource> inboundProductList = inboundProductDao.wmsByInboundProduct(inbound.getInboundOderCode());
-        inboundSource.setPurchaseInboundDetailSource(inboundProductList);
+        inboundSource.setDetailList(inboundProductList);
         List<InboundBatch> inboundBatches = inboundBatchDao.selectInboundBatchList(inbound.getInboundOderCode());
         List<BatchInfo> batchList = BeanCopyUtils.copyList(inboundBatches, BatchInfo.class);
         inboundSource.setBatchInfo(batchList);
@@ -456,20 +456,10 @@ public class InboundServiceImpl implements InboundService {
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
             if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                //ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
-                //if ("0".equals(responseWms.getResultCode())) {
                 log.info("入库单推送wms成功");
-                //purchaseOrder.setInfoStatus(0);
-                //} else {
-                    //purchaseOrder.setInfoStatus(1);
-                    //log.error("入库单推送wms失败:{}", response.getMessage());
-                //}
             } else {
-                //purchaseOrder.setInfoStatus(1);
                 log.error("入库单推送wms失败:{}", response.getMessage());
             }
-            //Integer update = purchaseOrderDao.update(purchaseOrder);
-            //log.error("更改采购单重发状态，判断是否发送WMS成功：", update);
         } else {
             //移库
             // todo

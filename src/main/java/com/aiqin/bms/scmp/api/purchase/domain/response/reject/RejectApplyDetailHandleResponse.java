@@ -175,69 +175,7 @@ public class RejectApplyDetailHandleResponse {
     @JsonProperty("batch_list")
     private List<StockBatch> batchList;
 
-
-//    @ApiModelProperty(value = "申请单类型: 0 手动 1自动")
-//    @JsonProperty("apply_type")
-//    private Integer applyType;
-//
-//    @ApiModelProperty(value = "退供申请单状态: 0  已完成 1 待提交")
-//    @JsonProperty("apply_record_status")
-//    private Integer applyRecordStatus;
-//
-//    @ApiModelProperty(value = "数量")
-//    @JsonProperty("product_count")
-//    private Integer productCount;
-//
-//    @ApiModelProperty(value = "单品数量")
-//    @JsonProperty("single_count")
-//    private Integer singleCount;
-//
-//    @ApiModelProperty(value = "含税单价")
-//    @JsonProperty("product_amount")
-//    private BigDecimal productAmount;
-//
-//    @ApiModelProperty(value = "含税总价")
-//    @JsonProperty("product_total_amount")
-//    private BigDecimal productTotalAmount;
-//
-//    @ApiModelProperty(value = "商品批次号")
-//    @JsonProperty("batch_code")
-//    private String batchNo;
-//
-//    @ApiModelProperty(value = "批次备注")
-//    @JsonProperty("batch_remark")
-//    private String batchRemark;
-//
-//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "批次创建时间")
-//    @JsonProperty("production_date")
-//    private Date batchCreateTime;
-//
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_by_id")
-//    private String createById;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_by_name")
-//    private String createByName;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_by_id")
-//    private String updateById;
-//
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_by_name")
-//    private String updateByName;
-//
-//    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("create_time")
-//    private Date createTime;
-//
-//    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-//    @ApiModelProperty(value = "")
-//    @JsonProperty("update_time")
-//    private Date updateTime;
-
+    @ApiModelProperty(value = "批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    @JsonProperty("batch_manage")
+    private Integer batchManage;
 }
