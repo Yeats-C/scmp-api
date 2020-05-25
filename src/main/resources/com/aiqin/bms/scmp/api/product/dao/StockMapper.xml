@@ -674,12 +674,14 @@
         SELECT
         st.id,st.stock_code,st.company_code,st.company_name,st.transport_center_code,st.transport_center_name,
         st.warehouse_code,st.warehouse_name,st.warehouse_type,st.sku_code,st.sku_name,
-        ifnull(st.inventory_num,0) inventory_num,ifnull(st.available_num,0) available_num,ifnull(st.lock_num,0) lock_num,
-        st.purchase_way_num,st.allocation_way_num,st.total_way_num,st.new_delivery,st.new_delivery_name,st.new_purchase_price,
-        st.purchase_group_code,st.purchase_group_name,st.stock_unit_code,psbp.large_unit,st.stock_unit_name,st.tax_price,
+        ifnull(st.inventory_count,0) inventory_num,ifnull(st.available_count,0) available_num,ifnull(st.lock_count,0) lock_num,
+        ifnull(st.purchase_way_count,0) purchase_way_num,ifnull(st.allocation_way_count,0) allocation_way_num,
+        ifnull(st.total_way_count,0) total_way_num,st.new_delivery,st.new_delivery_name,st.new_purchase_price,
+        ps.procurement_section_code purchase_group_code,ps.procurement_section_name purchase_group_name,
+        st.unit_code,psbp.large_unit,st.unit_name,
         pscc.Input_tax_rate tax_rate,psc.config_status,pssi.spec,ps.product_brand_name,ps.color_code,ps.color_name,
         ps.model_number,pssi.unit_code,pssi.unit_name,pssi.base_product_content,ps.product_category_code,ps.product_category_name,
-        st.tax_cost,st.stockup_num,st.stockupfinish_time,st.create_time,st.create_by,st.update_time,st.update_by
+        st.tax_cost,st.create_time,st.create_by_name,st.update_time,st.update_by_name
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
@@ -710,16 +712,16 @@
             AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            AND st.inventory_count <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            AND st.inventory_count <![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            AND st.available_count <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            AND st.available_count <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             AND st.transport_center_code = #{transportCenterText}
@@ -789,16 +791,16 @@
             AND ps.product_category_code LIKE concat(#{productCategoryText, jdbcType=VARCHAR}, '%')
         </if>
         <if test="inventoryBeginNum!=null">
-            AND st.inventory_num <![CDATA[>=]]> #{inventoryBeginNum}
+            AND st.inventory_count <![CDATA[>=]]> #{inventoryBeginNum}
         </if>
         <if test="inventoryFinishNum!=null">
-            AND st.inventory_num <![CDATA[<=]]> #{inventoryFinishNum}
+            AND st.inventory_count <![CDATA[<=]]> #{inventoryFinishNum}
         </if>
         <if test="availableBeginNum!=null">
-            AND st.available_num <![CDATA[>=]]> #{availableBeginNum}
+            AND st.available_count <![CDATA[>=]]> #{availableBeginNum}
         </if>
         <if test="availableFinishNum!=null">
-            AND st.available_num <![CDATA[<=]]> #{availableFinishNum}
+            AND st.available_count <![CDATA[<=]]> #{availableFinishNum}
         </if>
         <if test="transportCenterText!=null and transportCenterText!=''">
             AND st.transport_center_code = #{transportCenterText}
