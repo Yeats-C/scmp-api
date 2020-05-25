@@ -1138,7 +1138,7 @@
         ps.product_sort_name productSortName, psc.Input_tax_rate taxRate, ps.bar_code barcode, s.inventory_count stockCount,
         ps.procurement_section_code purchaseGroupCode, ps.procurement_section_name purchaseGroupName,
         psc.settlement_method_code settlementMethodCode, psc.settlement_method_name settlementMethodName,
-        su.factory_sku_code factorySkuCode, ps.product_code spuCode, ps.product_name spuName, ps.batch_manage batchManage
+        su.factory_sku_code factorySkuCode, ps.product_code spuCode, ps.product_name spuName, w.batch_manage batchManage
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
