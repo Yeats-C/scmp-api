@@ -70,6 +70,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -1443,6 +1444,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
+        request.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
+        request.setOrderTypeCode(response.getOrderTypeCode());
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
         if (CollectionUtils.isEmpty(detailList)) {
             LOGGER.info("销售单回传的详情信息缺失");
@@ -1514,9 +1517,15 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setTotalCount(batch.getProductCount());
+                productBatch.setTotalCount(batch.getTotalCount());
                 productBatch.setActualTotalCount(batch.getActualTotalCount());
-                productBatch.setProductDate(batch.getProductDate());
+                Date parse;
+                try{
+                    parse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(batch.getProductDate());
+                    productBatch.setProductDate(parse);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
           //      productBatch.setTransportCenterCode(response.getTransportCenterCode());
@@ -1535,6 +1544,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 更新出库单
         this.updateOutbound(request);
         // 调用爱亲供应链的接口 回传销售单的发货等信息
+        LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
         this.updateAiqinOrder(request);
         return HttpResponse.success();
     }
