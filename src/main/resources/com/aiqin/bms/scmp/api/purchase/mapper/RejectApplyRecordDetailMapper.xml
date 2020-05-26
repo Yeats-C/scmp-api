@@ -105,7 +105,7 @@
       r.brand_id brandId, r.brand_name brandName, r.category_id categoryId, r.category_name categoryName,
       r.product_type productType, r.barcode, r.product_spec productSpec, r.color_code colorCode,
       r.model_number modelNumber, r.unit_code unitCode, r.unit_name unitName, r.factory_sku_code factorySkuCode,
-      r.product_count productCount, r.total_count totalCount, r.productAmount, r.line_code lineCode,
+      r.product_count productCount, r.total_count totalCount, r.product_amount productAmount, r.line_code lineCode,
       r.product_total_amount productTotalAmount, psc.Input_tax_rate taxRate, r.batch_code batchCode,
       sb.inventory_count stockCount, sb.available_count availableCount, sb.tax_cost productCost,
       s.new_purchase_price newPurchasePrice, ifnull(su.tax_included_price, 0) purchaseMax,

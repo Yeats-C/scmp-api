@@ -99,7 +99,7 @@ WorkFlowBaseUrl:
     #采购申请详情
     applyPurchase: http://scmp.bms.aiqin.com/#/purchase/applyOrderDetail
     #退供申请详情
-    applyRefund: http://scmp.bms.aiqin.com/#/purchase/returnDetail
+    applyRefund: http://scmp.bms.aiqin.com/#/purchase/refundApplyDetai
 #审批流的host
 WorkFlowBaseHost:
   supplierHost: http://scmp.bms.aiqin.com
