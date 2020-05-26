@@ -970,7 +970,7 @@ public class InboundServiceImpl implements InboundService {
         }
         inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-        inbound.setInboundTime(new Date());
+        inbound.setInboundTime(Calendar.getInstance().getTime());
         int k = inboundDao.updateByPrimaryKeySelective(inbound);
     }
 
