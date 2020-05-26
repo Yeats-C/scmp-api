@@ -29,4 +29,6 @@ public interface ReturnOrderInfoInspectionItemMapper {
     List<ReturnOrderInfoInspectionItem> returnBatchList(@Param("skuCode") String skuCode,
                                                         @Param("returnOrderCode") String returnOrderCode,
                                                         @Param("productLineNum") Integer productLineNum);
+
+    ReturnOrderInfoInspectionItem returnOrderInfo(@Param("batchInfoCode") String batchInfoCode, @Param("returnOderCode") String returnOderCode, @Param("lineCode") Integer lineCode);
 }

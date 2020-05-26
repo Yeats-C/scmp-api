@@ -126,5 +126,6 @@ public interface ReturnOrderInfoMapper {
 
     Integer insertList(List<ReturnOrderInfo> returnOrderInfoList);
 
+    /** 调拨sap返回sap同步时间 */
     void updateReturnOrderSynchrSap(ReturnOrderInfo returnOrderInfo);
 }

@@ -14,9 +14,9 @@ public class SupplyReturnOrderProductBatchItemReqVOReturn {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty(value="采购单号")
-    @JsonProperty("purchase_oder_code")
-    private String purchaseOderCode;
+    @ApiModelProperty(value="退货单号")
+    @JsonProperty("return_oder_code")
+    private String returnOderCode;
 
     @ApiModelProperty(value="批次号/wms批次号")
     @JsonProperty("batch_code")

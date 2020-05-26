@@ -35,6 +35,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderChildernSource;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderPrimarySource;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
+import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -107,6 +108,9 @@ public class InboundServiceImpl implements InboundService {
     private SupplierCommonService supplierCommonService;
     @Autowired
     private PurchaseOrderProductDao purchaseOrderProductDao;
+    @Autowired
+    @Lazy(true)
+    private ReturnGoodsService returnGoodsService;
 
     /**
      * 分页查询以及列表搜索
@@ -927,21 +931,16 @@ public class InboundServiceImpl implements InboundService {
         }//如果是退货
         else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
             try {
-                //回传给退货
-                SupplyReturnOrderMainReqVOReturn supplyReturnOrderMainReqVO = new SupplyReturnOrderMainReqVOReturn();
-                SupplyReturnOrderInfoReqVOReturn supplyReturnOrderInfoReqVO = new SupplyReturnOrderInfoReqVOReturn();
-                supplyReturnOrderInfoReqVO.setReturnOrderCode(inbound.getSourceOderCode());
-                List<SupplyReturnOrderProductItemReqVOReturn> supplyReturnOrderProductItemReqVOS = BeanCopyUtils.copyList(list, SupplyReturnOrderProductItemReqVOReturn.class);
-                supplyReturnOrderMainReqVO.setOrderItems(supplyReturnOrderProductItemReqVOS);
-                supplyReturnOrderMainReqVO.setMainOrderInfo(supplyReturnOrderInfoReqVO);
-                returnOder(supplyReturnOrderMainReqVO);
+                //回传给退货 回调接口
+                returnOrder(inbound.getSourceOderCode(), list , batchList);
+                // returnOder(returnOrderMain);
                 inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+                inbound.setInboundTime(new Date());
                 int k = inboundDao.updateByPrimaryKeySelective(inbound);
             } catch (Exception e) {
                 log.error(Global.ERROR, e);
             }
-
         }// 如果是调拨
         else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
             //  回传给调拨
@@ -958,6 +957,54 @@ public class InboundServiceImpl implements InboundService {
         } else {
             throw new GroundRuntimeException("无法回传匹配类型");
         }
+    }
+
+    /**
+     *  回调退货接口
+     * @param sourceOderCode
+     * @param list
+     * @param batchList
+     */
+    @Async("myTaskAsyncPool")
+    public void returnOrder(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
+        SupplyReturnOrderMainReqVOReturn returnOrderMain = new SupplyReturnOrderMainReqVOReturn();
+
+        Long productNum = 0L;
+        // 退货商品信息
+        List<SupplyReturnOrderProductItemReqVOReturn> returnOrderProducts = new ArrayList<>();
+        for (InboundProduct inboundProduct : list) {
+            SupplyReturnOrderProductItemReqVOReturn returnOrderProduct = new SupplyReturnOrderProductItemReqVOReturn();
+            returnOrderProduct.setReturnOrderCode(sourceOderCode);
+            returnOrderProduct.setReturnNum(inboundProduct.getPraInboundMainNum());
+            returnOrderProduct.setSkuCode(inboundProduct.getSkuCode());
+            returnOrderProduct.setLinenum(inboundProduct.getLinenum());
+            returnOrderProducts.add(returnOrderProduct);
+
+            productNum += inboundProduct.getPraInboundMainNum().longValue();
+        }
+        // 退货批次信息
+        List<SupplyReturnOrderProductBatchItemReqVOReturn> returnOrderProductBatchs = new ArrayList<>();
+        for (InboundBatch inboundBatch: batchList) {
+            SupplyReturnOrderProductBatchItemReqVOReturn returnOrderProductBatch  = new SupplyReturnOrderProductBatchItemReqVOReturn();
+            BeanUtils.copyProperties(returnOrderProductBatch, inboundBatch);
+            returnOrderProductBatch.setReturnOderCode(sourceOderCode);
+            returnOrderProductBatchs.add(returnOrderProductBatch);
+        }
+
+        // 退货订单信息
+        SupplyReturnOrderInfoReqVOReturn returnOrderInfo = new SupplyReturnOrderInfoReqVOReturn();
+        Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode);
+        returnOrderInfo.setCompanyName(inbound.getCompanyName());
+        returnOrderInfo.setCompanyCode(inbound.getCompanyCode());
+        returnOrderInfo.setOperator(inbound.getCreateBy());
+        returnOrderInfo.setOrderStatus(ReturnOrderStatus.REFUND_COMPLETED.getStatusCode());
+        returnOrderInfo.setReturnOrderCode(sourceOderCode);
+        returnOrderInfo.setProductNum(productNum);
+
+        returnOrderMain.setOrderBatchItems(returnOrderProductBatchs);
+        returnOrderMain.setOrderItems(returnOrderProducts);
+        returnOrderMain.setMainOrderInfo(returnOrderInfo);
+        returnGoodsService.recordWMS(returnOrderMain);
     }
 
     /**
