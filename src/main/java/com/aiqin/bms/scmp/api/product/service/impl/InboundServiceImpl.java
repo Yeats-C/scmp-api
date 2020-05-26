@@ -620,6 +620,7 @@ public class InboundServiceImpl implements InboundService {
         }
 
         // 更新入库商品的信息
+        StockInfoRequest stockInfo;
         Long praInboundNum = 0L, praMainUnitNum = 0L;
         BigDecimal praTaxAmount = BigDecimal.ZERO, praAmount = BigDecimal.ZERO;
         for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
@@ -648,7 +649,7 @@ public class InboundServiceImpl implements InboundService {
             praAmount = inbound.getPraAmount().add(amount);
 
             // 设置修改在途数加库存参数
-            StockInfoRequest stockInfo = new StockInfoRequest();
+            stockInfo = new StockInfoRequest();
             stockInfo.setCompanyCode(inbound.getCompanyCode());
             stockInfo.setCompanyName(inbound.getCompanyName());
             stockInfo.setTransportCenterCode(inbound.getLogisticsCenterCode());
