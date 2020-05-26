@@ -1430,8 +1430,8 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(order.getWarehouseCode());
             if(warehouse != null){
                 dataMap.put("goodsAddress", warehouse.getProvinceName() + warehouse.getCityName() + "/" + warehouse.getDetailedAddress());
-                dataMap.put("mobile", warehouse.getPhone());
-                dataMap.put("goodsPerson", warehouse.getContact());
+                dataMap.put("mobile", warehouse.getPhone() == null ? "" : warehouse.getPhone());
+                dataMap.put("goodsPerson", warehouse.getContact() == null ? "" : warehouse.getContact());
             }
         }
         // 查询采购单的商品信息
@@ -1452,13 +1452,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 String salesCode = salesInfo == null || salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
                 map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
-                try {
-                    String str = new String(product.getProductSpec().getBytes("utf-8"));
-                    String spec = URLEncoder.encode(str, "utf-8");
-                    map.put("spec", spec);
-                } catch (UnsupportedEncodingException e) {
-                    LOGGER.info("规格转义失败", e);
-                }
+                map.put("spec", product.getProductSpec());
                 String type;
                 // 0商品 1赠品 2实物返
                 if (product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
