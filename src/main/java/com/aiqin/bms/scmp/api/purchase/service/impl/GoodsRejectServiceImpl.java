@@ -497,16 +497,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(String rejectRecordCode){
-        List<RejectRecordDetail> list = rejectRecordDetailDao.list(rejectRecordCode);
-        Integer count = rejectRecordDetailDao.listCount(rejectRecordCode);
+    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(RejectQueryRequest request){
+        List<RejectRecordDetail> list = rejectRecordDetailDao.list(request);
+        Integer count = rejectRecordDetailDao.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Override
-    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(String rejectRecordCode){
-        List<RejectRecordBatch> list = rejectRecordBatchDao.list(rejectRecordCode);
-        Integer count = rejectRecordBatchDao.listCount(rejectRecordCode);
+    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(RejectQueryRequest request){
+        List<RejectRecordBatch> list = rejectRecordBatchDao.list(request);
+        Integer count = rejectRecordBatchDao.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 

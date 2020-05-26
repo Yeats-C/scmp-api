@@ -38,9 +38,9 @@ public interface GoodsRejectService {
 
     HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode);
 
-    HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(String rejectRecordCode);
+    HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(RejectQueryRequest request);
 
-    HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(String rejectRecordCode);
+    HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(RejectQueryRequest request);
 
     HttpResponse operationRejectRecord(RejectRecord rejectRecord);
 

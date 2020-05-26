@@ -246,17 +246,29 @@ public class GoodsRejectController {
     @GetMapping("/record/product")
     @ApiOperation(value = "查询退供单商品")
     @ApiImplicitParam(name = "reject_record_code", value = "退供单code", type = "String")
-    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(@RequestParam("reject_record_code") String rejectRecordCode) {
+    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(@RequestParam("reject_record_code") String rejectRecordCode,
+                                                                           @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                           @RequestParam(value = "page_size", required = false) Integer pageSize) {
         LOGGER.info("查询退供单详情请求,reject_record_code:{}", rejectRecordCode);
-        return goodsRejectService.rejectProductInfo(rejectRecordCode);
+        RejectQueryRequest request = new RejectQueryRequest();
+        request.setRejectRecordCode(rejectRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.rejectProductInfo(request);
     }
 
     @GetMapping("/record/batch")
     @ApiOperation(value = "查询退供单批次")
     @ApiImplicitParam(name = "reject_record_code", value = "退供单code", type = "String")
-    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(@RequestParam("reject_record_code") String rejectRecordCode) {
+    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(@RequestParam("reject_record_code") String rejectRecordCode,
+                                                                        @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                        @RequestParam(value = "page_size", required = false) Integer pageSize) {
         LOGGER.info("查询退供单详情请求,reject_record_code:{}", rejectRecordCode);
-        return goodsRejectService.rejectBatchInfo(rejectRecordCode);
+        RejectQueryRequest request = new RejectQueryRequest();
+        request.setRejectRecordCode(rejectRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.rejectBatchInfo(request);
     }
 
     @GetMapping("/record/operation")

@@ -1,15 +1,16 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface RejectRecordDetailDao {
 
-    List<RejectRecordDetail> list(String rejectRecordCode);
+    List<RejectRecordDetail> list(RejectQueryRequest request);
 
-    Integer listCount(String rejectRecordCode);
+    Integer listCount(RejectQueryRequest request);
 
     Integer update(RejectRecordDetail record);
 
