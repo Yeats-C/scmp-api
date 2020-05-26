@@ -64,7 +64,6 @@
     </sql>
     <sql id="LIST_QUERY">
         <where>
-            use_status = 0
             and purchase_group_code in
             <foreach collection="groupList" open="(" close=")" item="item" separator=",">
                 #{item.purchaseGroupCode,jdbcType=VARCHAR}
@@ -127,7 +126,7 @@
       brand_id, brand_name, position_code, position_name, direct_supervisor_code, direct_supervisor_name, 
       account_code, account_name, contract_code, contract_name, charge_person, supplier_person, 
       supplier_mobile, province_id, province_name, city_id, city_name, district_id, 
-      district_name, detail_address, remark, apply_record_status, apply_type, use_status, 
+      district_name, detail_address, remark, apply_record_status, apply_type,
       create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time)
     values (#{rejectApplyRecordCode,jdbcType=VARCHAR}, #{rejectApplyRecordName,jdbcType=VARCHAR}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
@@ -142,7 +141,7 @@
       #{supplierMobile,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
       #{districtName,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{applyRecordStatus,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER}, #{useStatus,jdbcType=INTEGER}, 
+      #{applyRecordStatus,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
       #{updateByName,jdbcType=VARCHAR}, now(), now())
   </insert>
