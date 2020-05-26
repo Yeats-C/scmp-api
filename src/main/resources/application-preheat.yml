@@ -25,7 +25,7 @@ wms2:
   url: http://39.96.89.2:9001
 ground:
   druid:
-    url: jdbc:mysql://rm-2ze48puce4v05ig2v.mysql.rds.aliyuncs.com/preheat_bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    url: jdbc:mysql://rm-2ze48puce4v05ig2v.mysql.rds.aliyuncs.com/preheat_bms_scmp?connectTimeout=7500&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
     username: p_scmp_write
     password: grg4y4cDWA7XM8jraDnt7Q
     initial-size: 5
