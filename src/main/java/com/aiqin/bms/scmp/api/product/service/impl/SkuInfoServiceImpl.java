@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapProductSku;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapProductSkuBase;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapSkuSale;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapSkuStorageFinancial;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -12,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceChannelReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
@@ -20,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductA
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaForSkuReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO;
@@ -58,6 +64,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -77,10 +84,12 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
@@ -105,6 +114,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired
     private ApplyProductSkuConfigSpareWarehouseMapper applySpareWarehouseMapper;
+    @Value("${sap.product}")
+    private String PRODUCT_URL;
+    @Resource
+    private PriceChannelMapper priceChannelMapper;
     @Autowired
     ProductSkuBoxPackingDao productSkuBoxPackingDao;
     @Autowired
@@ -1885,11 +1898,38 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSku.setSelectionEffectiveEndTime(auditorTime);
                 applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
                 //审批通过之后传输给wms
-//                try {
-//                    sendWms(applyCode, skuCode, productSkuInfo);
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    sendWms(applyCode, skuCode, productSkuInfo);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                //进行sap传输
+                Map<String, List<SapSkuStorageFinancial>> SapSkuStorageFinancialMap = Maps.newHashMap();
+                List<QueryPriceChannelRespVo> priceChannels = priceChannelMapper.getList(new QueryPriceChannelReqVo());
+                ProductSkuCheckout productSkuCheckout;
+                Map<String, ProductSkuCheckout> skuCheckoutMap = null;
+                List<SapProductSku> productSkuList = Lists.newArrayList();
+                List<SapSkuSale> baseInfo2;
+                baseInfo2 = Lists.newArrayList();
+                SapProductSku  sapProductSku = new SapProductSku();
+                sapProductSku.setSapSkuCode(productSkuInfo.getProductCode());
+                sapProductSku.setIndustryDepartmentCode("A");
+                //取一级品类
+                sapProductSku.setCategoryCode(productSkuInfo.getProductCategoryCode().substring(0, 2));
+                sapProductSku.setSkuName(productSkuInfo.getProductName());
+                //基本视图
+                SapProductSkuBase  baseInfo = new SapProductSkuBase();
+                baseInfo.setUnit("EA");
+                baseInfo.setProductGroupCode(productSkuInfo.getProductCategoryCode().substring(0, 2));
+                baseInfo.setGroupCode(productSkuInfo.getProductCategoryCode());
+                baseInfo.setWeight("KG");
+                baseInfo.setStandard(productSkuInfo.getSpec());
+                sapProductSku.setBaseInfo(baseInfo);
+                sapProductSku.setBaseInfo1(SapSkuStorageFinancialMap.get(productSkuInfo.getSkuCode()));
+                productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
+                sapProductSku.setBaseInfo2(sapSkuSaleListHandler(productSkuCheckout, baseInfo2, priceChannels));
+                productSkuList.add(sapProductSku);
+                sapStorageAbutment(productSkuList);
 
             }
         }
@@ -1898,6 +1938,37 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 
+
+    /**
+     * sap商品对接
+     *
+     * @param productSkuList
+     */
+    private void sapStorageAbutment(List<SapProductSku> productSkuList) {
+        log.info("调用sap商品对接参数:{} ", JsonUtil.toJson(productSkuList));
+        HttpClient client = HttpClient.post(PRODUCT_URL).json(productSkuList).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            log.info("调用sap商品对接成功:{}", httpResponse.getMessage());
+        } else {
+            log.error("调用sap商品对接异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
+        }
+    }
+
+    private List<SapSkuSale> sapSkuSaleListHandler(ProductSkuCheckout productSkuCheckout, List<SapSkuSale> baseInfo2, List<QueryPriceChannelRespVo> priceChannels) {
+        SapSkuSale sapSkuSale;
+        for (QueryPriceChannelRespVo priceChannel : priceChannels) {
+            sapSkuSale = new SapSkuSale();
+            sapSkuSale.setSaleOrg(priceChannel.getPriceChannelCode());
+            sapSkuSale.setSubjectGroupCode("14");
+            sapSkuSale.setMainCategoryCode("NORM");
+            sapSkuSale.setTaxCategoryCode(Objects.isNull(productSkuCheckout)?"0":productSkuCheckout.getInputTaxRate().toString());
+            sapSkuSale.setDistributionChannelCode("00");
+            baseInfo2.add(sapSkuSale);
+        }
+        return baseInfo2;
+    }
     private void sendWms(String applyCode, String skuCode, ProductSkuInfo productSkuInfo) throws Exception {
         ProductSkuInfoWms productSkuInfoWms=new ProductSkuInfoWms();
         productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());

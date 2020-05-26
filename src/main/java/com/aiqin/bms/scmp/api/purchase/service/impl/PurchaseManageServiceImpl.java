@@ -618,8 +618,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 info.setPurchaseOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseBatches.add(info);
             }
-            Integer count = purchaseBatchDao.insertAll(purchaseBatches);
-            LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
+            if(CollectionUtils.isNotEmptyCollection(purchaseBatches)){
+                Integer count = purchaseBatchDao.insertAll(purchaseBatches);
+                LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
+            }
         }
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);

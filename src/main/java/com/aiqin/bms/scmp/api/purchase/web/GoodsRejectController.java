@@ -154,16 +154,30 @@ public class GoodsRejectController {
 
     @GetMapping("/apply/product")
     @ApiOperation(value = "退供申请单商品查询")
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode){
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
         LOGGER.info("退供申请单商品查询:{}", rejectApplyRecordCode);
-        return goodsRejectService.selectRejectApplyProduct(rejectApplyRecordCode);
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyProduct(request);
     }
 
     @GetMapping("/apply/batch")
     @ApiOperation(value = "退供申请单批次查询")
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode) {
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize) {
         LOGGER.info("退供申请单批次查询:{}", rejectApplyRecordCode);
-        return goodsRejectService.selectRejectApplyBatch(rejectApplyRecordCode);
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyBatch(request);
     }
 
     @PostMapping("/product/group")

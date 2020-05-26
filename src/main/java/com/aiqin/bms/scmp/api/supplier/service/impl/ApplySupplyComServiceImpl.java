@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.SapSupplier;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierBank;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierCompany;
+import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierPurchase;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -16,6 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
@@ -38,6 +43,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -50,6 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -69,6 +76,8 @@ import java.util.stream.Collectors;
 public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplySupplyComService, WorkFlowHelper {
     @Autowired
     private OperationLogService operationLogService;
+    @Value("${sap.supply}")
+    private String SUPPLY_URL;
     @Autowired
     private SupplyCompanyMapper supplyCompanyMapper;
     @Autowired
@@ -824,6 +833,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
           //审批成功之后将数据传给wms
             sendWms(applySupplyCompany);
+          //传输sap
+            sendSap(applySupplyCompany);
 
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
@@ -869,6 +880,77 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
     }
 
+    private void sendSap(ApplySupplyCompany supplyCompany) {
+        List<SapSupplier> sapSupplierList =Lists.newArrayList();
+        SapSupplier     sapSupplier = new SapSupplier();
+            sapSupplier.setFlag("M");
+            sapSupplier.setSupplierCode(supplyCompany.getApplySupplyCompanyCode());
+//            sapSupplier.setSupplierName(supplyCompany.getApplySupplyCompanyName());
+            sapSupplier.setSupplierGroupCode("Z001");
+            sapSupplier.setTaxNo(supplyCompany.getTaxId());
+//            supplyCompanyAccount = accountMap.get(supplyCompany.getSupplyCode());
+//            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(supplyCompanyAccount)) {
+//              List<SupplierBank>  supplierBankList = Lists.newArrayList();
+//                for (SupplyCompanyAccount companyAccount : supplyCompanyAccount) {
+//                    //供应商银行数据
+//                    SupplierBank  supplierBank = new SupplierBank();
+//                    supplierBank.setFlag("M");
+//                    supplierBank.setBankName(companyAccount.getBankAccount());
+//                    supplierBank.setBankCountryNo("CN");
+//                    supplierBank.setBankNo(companyAccount.getAccount());
+//                    supplierBankList.add(supplierBank);
+//                }
+//                sapSupplier.setBanks(supplierBankList);
+//            }
+//            contracts = contractMap.get(supplyCompany.getSupplyCode());
+//            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(contracts)) {
+//                companyList = Lists.newArrayList();
+//                supplierPurchases = Lists.newArrayList();
+//                for (ContractDTO contract : contracts) {
+//                    //供应商公司数据
+//                    supplierCompany = new SupplierCompany();
+//                    supplierPurchase = new SupplierPurchase();
+//                    supplierCompany.setCompanyCode("1000");
+//                    supplierCompany.setFlag("M");
+//                    //合同里的供应商付款条件
+//                    supplierCompany.setPayConditionCode(contract.getSettlementMethod().toString());
+//                    companyList.add(supplierCompany);
+//                    //供应商采购数据
+//                    supplierPurchase.setFlag("M");
+//                    supplierPurchase.setPurchaseOrg("1000");
+//                    supplierPurchase.setPayConditionCode(contract.getSettlementMethod().toString());
+//                    supplierPurchase.setCurrencyCode("CNY");
+//                    supplierPurchase.setReceiptTag("X");
+//                    supplierPurchases.add(supplierPurchase);
+//                }
+//                sapSupplier.setCompanyList(companyList);
+//                sapSupplier.setPurchaseList(supplierPurchases);
+//            }
+             sapSupplierList.add(sapSupplier);
+
+        sapSupplyAbutment(sapSupplierList);
+
+
+    }
+
+
+    /**
+     * sap供应商对接
+     *
+     * @param sapSupplierList
+     */
+    private void sapSupplyAbutment(List<SapSupplier> sapSupplierList) {
+        log.info("调用sap供应商对接参数:{} ", JsonUtil.toJson(sapSupplierList));
+        log.info("对接条数:{} ", sapSupplierList.size());
+        HttpClient client = HttpClient.post(SUPPLY_URL).json(sapSupplierList).timeout(10000);
+        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            log.info("调用sap供应商对接成功:{}", httpResponse.getMessage());
+        } else {
+            log.error("调用sap供应商对接异常:{}", httpResponse.getMessage());
+            throw new GroundRuntimeException(String.format("调用sap供应商对接异常:%s", httpResponse.getMessage()));
+        }
+    }
     private void sendWms(ApplySupplyCompany applySupplyCompany) {
         SupplierWms supplierWms=new SupplierWms();
         supplierWms.setAddress(applySupplyCompany.getAddress());
