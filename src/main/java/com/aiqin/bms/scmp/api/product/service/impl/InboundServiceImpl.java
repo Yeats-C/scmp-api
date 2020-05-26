@@ -571,7 +571,7 @@ public class InboundServiceImpl implements InboundService {
     @Override
 //    @Async("myTaskAsyncPool")
     public void workFlowCallBack(InboundCallBackRequest request) {
-        log.info("入库单回调实体传入实体:[{}]",JSON.toJSONString(request));
+        log.info("wms入库单回调实体传入实体:[{}]",JSON.toJSONString(request));
         // 根据入库单号，查询入库单主体
         Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
         if(inbound == null){
@@ -579,7 +579,6 @@ public class InboundServiceImpl implements InboundService {
             throw  new GroundRuntimeException("WMS入库单回传，耘链未查询到此入库单，回传失败");
         }
 
-        //inbound.setInboundTime(Calendar.getInstance().getTime());
         // 设置默认实际数量，实际数量与金额
         inbound.setPraInboundNum(0L);
         inbound.setPraMainUnitNum(0L);
@@ -904,7 +903,7 @@ public class InboundServiceImpl implements InboundService {
                 // 将入库单状态修改为完成
                 inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
                 inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                inbound.setInboundTime(new Date());
+                inbound.setInboundTime(Calendar.getInstance().getTime());
                 int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
                 OperationLog operationLog = new OperationLog();

@@ -514,7 +514,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse operationRejectRecord(RejectRecord rejectRecord){
         if(rejectRecord == null || StringUtils.isBlank(rejectRecord.getRejectRecordCode()) ||
-                StringUtils.isBlank(rejectRecord.getSynchrStatus().toString())){
+                StringUtils.isBlank(rejectRecord.getRejectStatus().toString())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 获取当前登录人的信息
