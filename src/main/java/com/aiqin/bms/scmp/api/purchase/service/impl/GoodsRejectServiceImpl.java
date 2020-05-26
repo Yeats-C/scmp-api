@@ -497,16 +497,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(String rejectRecordCode){
-        List<RejectRecordDetail> list = rejectRecordDetailDao.list(rejectRecordCode);
-        Integer count = rejectRecordDetailDao.listCount(rejectRecordCode);
+    public HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(RejectQueryRequest request){
+        List<RejectRecordDetail> list = rejectRecordDetailDao.list(request);
+        Integer count = rejectRecordDetailDao.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Override
-    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(String rejectRecordCode){
-        List<RejectRecordBatch> list = rejectRecordBatchDao.list(rejectRecordCode);
-        Integer count = rejectRecordBatchDao.listCount(rejectRecordCode);
+    public HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(RejectQueryRequest request){
+        List<RejectRecordBatch> list = rejectRecordBatchDao.list(request);
+        Integer count = rejectRecordBatchDao.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
@@ -872,9 +872,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 撤销审批流
             HttpResponse response = formOperateService.commonCancel(rejectApplyRecordCode, currentAuthToken.getPersonId());
             if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-                LOGGER.info("退供申请单撤销审批流成功：", rejectApplyRecordCode);
+                LOGGER.info("退供申请单撤销审批成功：", rejectApplyRecordCode);
             }else {
-                LOGGER.info("退供申请单撤销审批流失败：", rejectApplyRecordCode);
+                LOGGER.info("退供申请单撤销审批失败：", rejectApplyRecordCode);
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供申请单撤销审批失败:" + rejectApplyRecordCode));
             }
         }
         Integer count = rejectApplyRecordDao.update(record);

@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -36,8 +35,6 @@ public interface InboundDao {
     Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
 
     List<Inbound> selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode);
-
-    PurchaseOrderDetails selectCreateById(String inboundOderCode);
 
     List<Inbound> listForSap(SapOrderRequest sapOrderRequest);
 
