@@ -172,16 +172,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(String rejectApplyRecordCode) {
-        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailList(rejectApplyRecordCode);
-        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordDetailCount(rejectApplyRecordCode);
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(RejectApplyQueryRequest request) {
+        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailList(request);
+        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordDetailCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Override
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(String rejectApplyRecordCode) {
-        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordBatchList(rejectApplyRecordCode);
-        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordBatchCount(rejectApplyRecordCode);
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(RejectApplyQueryRequest request) {
+        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordBatchList(request);
+        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordBatchCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 

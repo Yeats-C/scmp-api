@@ -141,7 +141,7 @@
       #{supplierMobile,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
       #{districtName,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
-      #{applyRecordStatus,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER}, 
+      #{applyRecordStatus,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
       #{updateByName,jdbcType=VARCHAR}, now(), now())
   </insert>
