@@ -76,13 +76,13 @@ public class OrderDetail {
      */
     @JsonProperty("channel_price")
     @ApiModelProperty("渠道单价")
-    private String channelPrice;
+    private BigDecimal channelPrice;
     /**
      * 分销单价
      */
     @JsonProperty("distribution_price")
     @ApiModelProperty("分销单价")
-    private String distributionPrice;
+    private BigDecimal distributionPrice;
     /**
      * 数量
      */
@@ -94,13 +94,13 @@ public class OrderDetail {
      */
     @JsonProperty("activity_share_amount")
     @ApiModelProperty("活动分摊金额")
-    private String activityShareAmount;
+    private BigDecimal activityShareAmount;
     /**
      * 优惠分摊
      */
     @JsonProperty("discount_share_amount")
     @ApiModelProperty("优惠分摊")
-    private String discountShareAmount;
+    private BigDecimal discountShareAmount;
     /**
      * 实发数
      */

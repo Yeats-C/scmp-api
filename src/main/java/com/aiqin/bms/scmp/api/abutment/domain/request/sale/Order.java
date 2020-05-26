@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -236,19 +237,19 @@ public class Order {
      */
     @JsonProperty("pay_channel_amount")
     @ApiModelProperty("商品渠道总金额")
-    private String payChannelAmount;
+    private BigDecimal payChannelAmount;
     /**
      * 商品分销总金额
      */
     @JsonProperty("pay_distribution_amount")
     @ApiModelProperty("商品分销总金额")
-    private String payDistributionAmount;
+    private BigDecimal payDistributionAmount;
     /**
      * 运费
      */
     @JsonProperty("freight_fee")
     @ApiModelProperty("运费")
-    private String freightFee;
+    private BigDecimal freightFee;
     /**
      * 运费减免比例
      */
@@ -260,18 +261,18 @@ public class Order {
      */
     @JsonProperty("activity_discount_amount")
     @ApiModelProperty("活动优惠金额")
-    private String activityDiscountAmount;
+    private BigDecimal activityDiscountAmount;
     /**
      * 优惠额度
      */
     @JsonProperty("discount_amount")
     @ApiModelProperty("优惠额度")
-    private String discountAmount;
+    private BigDecimal discountAmount;
     /**
      * 订单金额
      */
     @ApiModelProperty("订单金额")
-    private String amount;
+    private BigDecimal amount;
 
     @JsonProperty("order_channel_code")
     @ApiModelProperty("订单渠道编码")

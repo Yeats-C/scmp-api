@@ -856,7 +856,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setSkuDesc(StringConvertUtil.productDesc(orderInfoItem.getColorName(), orderInfoItem.getSpec(), orderInfoItem.getModel()));
                 orderDetail.setUnit(orderInfoItem.getUnitName());
                 orderDetail.setScatteredUnit(orderInfoItem.getZeroDisassemblyCoefficient());
-                orderDetail.setChannelPrice(orderInfoItem.getChannelUnitPrice().toString());
+                orderDetail.setChannelPrice(orderInfoItem.getChannelUnitPrice());
                 orderDetail.setGiftFlag(orderInfoItem.getGivePromotion());
                 orderDetail.setSingleCount(orderInfoItem.getNum().intValue());
                 orderDetail.setDeliveryCount(orderInfoItem.getActualDeliverNum().intValue());
@@ -914,7 +914,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setReceiptUserName(orderInfo.getConsignee());
                 order.setReceiptMobile(orderInfo.getConsigneePhone());
                 order.setReceiptAddress(orderInfo.getDetailAddress());
-                order.setPayChannelAmount(orderInfo.getProductChannelTotalAmount().toString());
+                order.setPayChannelAmount(orderInfo.getProductChannelTotalAmount());
                 //渠道信息
                 order.setOrderChannelCode(orderInfo.getOrderOriginal());
                 order.setOrderChannelName(orderInfo.getOrderOriginalName());
@@ -958,7 +958,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setSkuDesc(StringConvertUtil.productDesc(returnOrderInfoItem.getColorName(), returnOrderInfoItem.getSpec(), returnOrderInfoItem.getModel()));
                 orderDetail.setUnit(returnOrderInfoItem.getUnitName());
                 orderDetail.setScatteredUnit(returnOrderInfoItem.getZeroDisassemblyCoefficient());
-                orderDetail.setChannelPrice(returnOrderInfoItem.getChannelUnitPrice().toString());
+                orderDetail.setChannelPrice(returnOrderInfoItem.getChannelUnitPrice());
                 //退货没有赠品
                 orderDetail.setGiftFlag(0);
                 orderDetail.setSingleCount(returnOrderInfoItem.getNum().intValue());
@@ -1015,7 +1015,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 order.setReceiptUserName(returnOrderInfo.getConsignee());
                 order.setReceiptMobile(returnOrderInfo.getConsigneePhone());
                 order.setReceiptAddress(returnOrderInfo.getDetailAddress());
-                order.setPayChannelAmount(returnOrderInfo.getProductChannelTotalAmount().toString());
+                order.setPayChannelAmount(returnOrderInfo.getProductChannelTotalAmount());
                 //渠道信息
                 order.setOrderChannelCode(returnOrderInfo.getOrderOriginal());
                 order.setOrderChannelName(returnOrderInfo.getOrderOriginalName());
@@ -1525,13 +1525,13 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         order.setReceiptAddr(returnOrderInfo.getProvinceName()+returnOrderInfo.getCityName()+returnOrderInfo.getDistrictName());
         order.setReceiptAddress(returnOrderInfo.getDetailAddress());
         if(returnOrderInfo.getProductChannelTotalAmount() != null){
-            order.setPayChannelAmount(returnOrderInfo.getProductChannelTotalAmount().toString());
+            order.setPayChannelAmount(returnOrderInfo.getProductChannelTotalAmount());
         }
         if(returnOrderInfo.getDeliverAmount() != null){
-            order.setFreightFee(returnOrderInfo.getDeliverAmount().toString());
+            order.setFreightFee(returnOrderInfo.getDeliverAmount());
         }
         if(returnOrderInfo.getReturnOrderAmount() != null){
-            order.setAmount(returnOrderInfo.getReturnOrderAmount().toString());
+            order.setAmount(returnOrderInfo.getReturnOrderAmount());
         }
         order.setOrderChannelCode(returnOrderInfo.getOrderOriginal());
         order.setOrderChannelName(returnOrderInfo.getOrderOriginalName());
@@ -1564,10 +1564,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setCategoryName(productSkuInfo.getProductCategoryName());
             }
             if(product.getChannelUnitPrice() != null){
-                orderDetail.setChannelPrice(product.getChannelUnitPrice().toString());
+                orderDetail.setChannelPrice(product.getChannelUnitPrice());
             }
             if(product.getPrice() != null){
-                orderDetail.setDistributionPrice(product.getPrice().toString());
+                orderDetail.setDistributionPrice(product.getPrice());
             }
             if(product.getNum() != null){
                 orderDetail.setSingleCount(product.getNum().intValue());
@@ -1684,16 +1684,16 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             order.setOrderCount(orderInfo.getProductNum().intValue());
         }
         if(orderInfo.getProductChannelTotalAmount() != null){
-            order.setPayChannelAmount(orderInfo.getProductChannelTotalAmount().toString());
+            order.setPayChannelAmount(orderInfo.getProductChannelTotalAmount());
         }
         if(orderInfo.getDeliverAmount() != null){
-            order.setFreightFee(orderInfo.getDeliverAmount().toString());
+            order.setFreightFee(orderInfo.getDeliverAmount());
         }
         if(orderInfo.getOrderAmount() != null){
-            order.setAmount(orderInfo.getOrderAmount().toString());
+            order.setAmount(orderInfo.getOrderAmount());
         }
         if(orderInfo.getProductTotalAmount() != null){
-            order.setPayDistributionAmount(orderInfo.getProductTotalAmount().toString());
+            order.setPayDistributionAmount(orderInfo.getProductTotalAmount());
         }
         Map<Integer, OrderStatus> allStatus = OrderStatus.getAllStatus();
         order.setOrderStatusDesc(allStatus.get(orderInfo.getOrderStatus()).getFrontOrderStatus());
@@ -1725,19 +1725,19 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 orderDetail.setOrderType(20);
             }
             if(product.getChannelUnitPrice() != null){
-                orderDetail.setChannelPrice(product.getChannelUnitPrice().toString());
+                orderDetail.setChannelPrice(product.getChannelUnitPrice());
             }
             if(product.getPrice() != null){
-                orderDetail.setDistributionPrice(product.getPrice().toString());
+                orderDetail.setDistributionPrice(product.getPrice());
             }
             if(product.getNum() != null){
                 orderDetail.setSingleCount(product.getNum().intValue());
             }
             if(product.getActivityApportionment() != null){
-                orderDetail.setActivityShareAmount(product.getActivityApportionment().toString());
+                orderDetail.setActivityShareAmount(product.getActivityApportionment());
             }
             if(product.getPreferentialAllocation() != null){
-                orderDetail.setDiscountShareAmount(product.getPreferentialAllocation().toString());
+                orderDetail.setDiscountShareAmount(product.getPreferentialAllocation());
             }
             if(product.getActualDeliverNum() != null){
                 orderDetail.setDeliveryCount(product.getActualDeliverNum().intValue());
