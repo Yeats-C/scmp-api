@@ -33,6 +33,7 @@ import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
+import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
@@ -59,6 +60,8 @@ import com.google.common.collect.Lists;
 import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -82,6 +85,8 @@ import java.util.stream.Collectors;
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_ALLOCATTION)
 public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService, WorkFlowHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
     @Autowired
     private AllocationMapper allocationMapper;
@@ -515,6 +520,30 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusName(AllocationEnum.getAllocationEnumNameByCode(status));
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
         return i;
+    }
+
+    @Override
+    public HttpResponse allocationWms(AllocationRequest request) {
+        LOGGER.info("wms回传，开始更新调拨单的实际值：{}", JsonUtil.toJson(request));
+        if(request == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        // 查询调拨单信息
+        Allocation allocation = allocationMapper.selectByCode(request.getAllocationCode());
+        allocation.setOutStockTime(Calendar.getInstance().getTime());
+        allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getStatus());
+        allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
+        int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+        LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
+//        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
+//            AllocationProduct allocationProduct = new AllocationProduct();
+//            // 查询调拨单商品信息
+//            allocationProduct.setAllocationCode(request.getAllocationCode());
+//            allocationProduct.setActualTotalCount(allocationDetailRequest.getActualCount());
+//            allocationProduct.setLineNum(allocationDetailRequest.getLineCode().longValue());
+//            allocationProduct.setTaxAmount(allocationDetailRequest.getActualAmount());
+//        }
+        return HttpResponse.success();
     }
 
     @Override

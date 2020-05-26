@@ -542,6 +542,9 @@
       <if test="remark != null">
         remark = #{remark,jdbcType=CLOB},
       </if>
+      <if test="outStockTime != null">
+        out_stock_time = #{outStockTime,jdbcType=CLOB},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>

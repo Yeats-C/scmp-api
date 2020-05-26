@@ -64,4 +64,6 @@ public class AllocationProduct extends CommonBean {
     @ApiModelProperty("行号")
     private Long lineNum;
 
+    @ApiModelProperty("实际调拨数量")
+    private Long actualTotalCount;
 }

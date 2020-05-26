@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.Global;
@@ -36,6 +37,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderChi
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderPrimarySource;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -53,6 +55,8 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +65,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -76,6 +81,8 @@ import java.util.*;
 @Service
 @Slf4j
 public class InboundServiceImpl implements InboundService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
     private static final BigDecimal big = BigDecimal.valueOf(0);
 
@@ -111,6 +118,8 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     @Lazy(true)
     private ReturnGoodsService returnGoodsService;
+    @Resource
+    private SapBaseDataService sapBaseDataService;
 
     /**
      * 分页查询以及列表搜索
@@ -906,10 +915,10 @@ public class InboundServiceImpl implements InboundService {
                 returnPurchase(inbound.getSourceOderCode(), list, batchList);
 
                 // 将入库单状态修改为完成
-                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                inbound.setInboundTime(new Date());
-                int k = inboundDao.updateByPrimaryKeySelective(inbound);
+//                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+//                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+//                inbound.setInboundTime(new Date());
+//                int k = inboundDao.updateByPrimaryKeySelective(inbound);
 
                 OperationLog operationLog = new OperationLog();
                 PurchaseOrder purchaseOrder = new PurchaseOrder();
@@ -934,10 +943,10 @@ public class InboundServiceImpl implements InboundService {
                 //回传给退货 回调接口
                 returnOrder(inbound.getSourceOderCode(), list , batchList);
                 // returnOder(returnOrderMain);
-                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-                inbound.setInboundTime(new Date());
-                int k = inboundDao.updateByPrimaryKeySelective(inbound);
+//                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+//                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+//                inbound.setInboundTime(new Date());
+//                int k = inboundDao.updateByPrimaryKeySelective(inbound);
             } catch (Exception e) {
                 log.error(Global.ERROR, e);
             }
@@ -945,18 +954,20 @@ public class InboundServiceImpl implements InboundService {
         else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
             //  回传给调拨
             inBoundReturn(inbound.getSourceOderCode());
-            inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = inboundDao.updateByPrimaryKeySelective(inbound);
         } else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
             //如果是移库
             inBoundReturnMovement(inbound.getSourceOderCode());
-            inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = inboundDao.updateByPrimaryKeySelective(inbound);
+//            inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+//            inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+//            inbound.setInboundTime(new Date());
+//            int k = inboundDao.updateByPrimaryKeySelective(inbound);
         } else {
             throw new GroundRuntimeException("无法回传匹配类型");
         }
+        inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
+        inbound.setInboundTime(new Date());
+        int k = inboundDao.updateByPrimaryKeySelective(inbound);
     }
 
     /**
@@ -970,17 +981,23 @@ public class InboundServiceImpl implements InboundService {
         SupplyReturnOrderMainReqVOReturn returnOrderMain = new SupplyReturnOrderMainReqVOReturn();
 
         Long productNum = 0L;
+        BigDecimal productTotalAmount = new BigDecimal(0);
+        BigDecimal orderAmount = new BigDecimal(0);
         // 退货商品信息
         List<SupplyReturnOrderProductItemReqVOReturn> returnOrderProducts = new ArrayList<>();
         for (InboundProduct inboundProduct : list) {
             SupplyReturnOrderProductItemReqVOReturn returnOrderProduct = new SupplyReturnOrderProductItemReqVOReturn();
             returnOrderProduct.setReturnOrderCode(sourceOderCode);
             returnOrderProduct.setReturnNum(inboundProduct.getPraInboundMainNum());
+            returnOrderProduct.setPrice(inboundProduct.getPraTaxPurchaseAmount());
+            returnOrderProduct.setAmount(inboundProduct.getPraTaxAmount());
             returnOrderProduct.setSkuCode(inboundProduct.getSkuCode());
             returnOrderProduct.setLinenum(inboundProduct.getLinenum());
             returnOrderProducts.add(returnOrderProduct);
 
             productNum += inboundProduct.getPraInboundMainNum().longValue();
+            productTotalAmount.add(inboundProduct.getPraTaxPurchaseAmount());
+            orderAmount.add(inboundProduct.getPraTaxAmount());
         }
         // 退货批次信息
         List<SupplyReturnOrderProductBatchItemReqVOReturn> returnOrderProductBatchs = new ArrayList<>();
@@ -1000,6 +1017,8 @@ public class InboundServiceImpl implements InboundService {
         returnOrderInfo.setOrderStatus(ReturnOrderStatus.REFUND_COMPLETED.getStatusCode());
         returnOrderInfo.setReturnOrderCode(sourceOderCode);
         returnOrderInfo.setProductNum(productNum);
+        returnOrderInfo.setProductTotalAmount(productTotalAmount);
+        returnOrderInfo.setOrderAmount(orderAmount);
 
         returnOrderMain.setOrderBatchItems(returnOrderProductBatchs);
         returnOrderMain.setOrderItems(returnOrderProducts);
@@ -1057,13 +1076,18 @@ public class InboundServiceImpl implements InboundService {
     public void inBoundReturn(String allocationCode) {
         try {
 //          productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__ALLOCATION.getName());
-            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
+//            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
                 Allocation allocation = allocationMapper.selectByCode(allocationCode);
                 //设置调拨状态
                 allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
                 allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
                 //跟新调拨单状态
-                int k = allocationMapper.updateByPrimaryKeySelective(allocation);
+                int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+            if(count > 0){
+                // 调用sap 传送调拨单的数据给sap
+                sapBaseDataService.allocationAndprofitLoss(allocationCode);
+                LOGGER.info("调拨wms回传成功");
+            }
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException("调拨单更改入库状态失败");
@@ -1102,13 +1126,18 @@ public class InboundServiceImpl implements InboundService {
     public void inBoundReturnMovement(String allocationCode) {
         try {
 //          productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
-            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
+//            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
             Allocation allocation = allocationMapper.selectByCode(allocationCode);
             //设置调拨状态
             allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
             allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
-            //跟新调拨单状态
-            int k = allocationMapper.updateByPrimaryKeySelective(allocation);
+            //更新调拨单状态
+            int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+            if(count > 0){
+                // 调用sap 传送调拨单的数据给sap
+                sapBaseDataService.allocationAndprofitLoss(allocationCode);
+                LOGGER.info("移库wms回传成功");
+            }
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException("移库单更改入库状态失败");

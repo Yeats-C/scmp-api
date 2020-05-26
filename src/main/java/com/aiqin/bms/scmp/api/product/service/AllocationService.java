@@ -3,19 +3,17 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -149,4 +147,7 @@ public interface AllocationService extends BaseService {
     BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 
     int updateWmsStatus(Byte status, String allocationCode);
+
+    /** 调拨出库wms回传 */
+    HttpResponse allocationWms(AllocationRequest request);
 }

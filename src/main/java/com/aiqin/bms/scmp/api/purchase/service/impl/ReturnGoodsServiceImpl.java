@@ -494,7 +494,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrderInfo.setCompanyCode(mainOrderInfo.getCompanyCode());
         returnOrderInfo.setCompanyName(mainOrderInfo.getCompanyName());
         returnOrderInfo.setOperator(mainOrderInfo.getOperator());
-        returnOrderInfo.setProductNum(mainOrderInfo.getProductNum());
+        returnOrderInfo.setActualProductNum(mainOrderInfo.getProductNum());
+        returnOrderInfo.setActualReturnOrderAmount(mainOrderInfo.getOrderAmount());
+        returnOrderInfo.setOrderStatus(mainOrderInfo.getOrderStatus());
+
         int returnInfo = returnOrderInfoMapper.updateByReturnOrderCodeSelective(returnOrderInfo);
         if (returnInfo <= 0) {
             log.info("更新退货单主表数据失败");
