@@ -119,4 +119,15 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

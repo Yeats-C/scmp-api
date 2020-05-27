@@ -16,6 +16,10 @@ public class PurchaseOrderProductRequest extends PagesRequest {
     @JsonProperty("purchase_order_id")
     private String purchaseOrderId;
 
+    @ApiModelProperty(value="采购单编码")
+    @JsonProperty("purchase_order_code")
+    private String purchaseOrderCode;
+
     @ApiModelProperty(value="是否分页 1不分页  0 分页")
     @JsonProperty("is_page")
     private Integer isPage;
