@@ -226,8 +226,13 @@ transport_number, platform_type, business_form, tax_id
       <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="atransport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
+      <result column="ainvoice_address" jdbcType="VARCHAR" property="invoiceAddress" />
+      <result column="ainvoice_mobile" jdbcType="VARCHAR" property="invoiceMobile" />
+      <result column="ainvoice_bank" jdbcType="VARCHAR" property="invoiceBank" />
+      <result column="ainvoice_bank_account" jdbcType="VARCHAR" property="invoiceBankAccount" />
       <result column="abusiness_form" jdbcType="VARCHAR" property="businessForm" />
       <result column="aplatform_type" jdbcType="VARCHAR" property="platformType" />
+      <result column="atax_id" jdbcType="VARCHAR" property="taxId" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -350,8 +355,13 @@ transport_number, platform_type, business_form, tax_id
              a.transport_company atransport_company,
              a.transport_company_code atransport_company_code,
              a.transport_number atransport_number,
+             a.invoice_address ainvoice_address,
+             a.invoice_mobile ainvoice_mobile,
+             a.invoice_bank ainvoice_bank,
+             a.invoice_bank_account ainvoice_bank_account,
              a.business_form abusiness_form,
              a.platform_type aplatform_type,
+             a.tax_id atax_id,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
