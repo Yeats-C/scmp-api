@@ -989,7 +989,8 @@ transport_number, platform_type, business_form, tax_id
       logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
       order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
       actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
-      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number, business_form, platform_type)
+      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
+      invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
@@ -1020,7 +1021,9 @@ transport_number, platform_type, business_form, tax_id
       #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
       #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
-      #{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT}
+      #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
+      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT,
+      #{item.taxId,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

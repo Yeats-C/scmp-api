@@ -35,6 +35,7 @@ import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -50,6 +51,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -485,13 +487,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
                // 配送的情况下 调用wms
-            //    SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-            //    String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
-            //    HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
-            //    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            //    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-            //        return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
-            //    }
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
+                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
+                String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
+                HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
+                HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    return HttpResponse.failure(null, "调用wms失败,原因：" + orderDto.getMessage());
+                }
             }
             logs.add(log);
         }
@@ -525,40 +528,46 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private SaleSourcInfoSource insertWms(OrderInfoReqVO request,String insertOutbound) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
-        ssis.setOrderCode(request.getOrderCode());
+        ssis.setOrderStoreCode(request.getOrderCode());
         ssis.setOutboundOderCode(insertOutbound);
-        ssis.setBity("OFFLINE");
         ssis.setWarehouseCode(request.getWarehouseCode());
-        ssis.setFromType("销售单");
-        ssis.setFromCode(request.getOrderCode());
-        ssis.setPlatformCode("99");
-        ssis.setPlatformName("独立网店");
-        ssis.setIsUrgency("0");
-        ssis.setDownDate(request.getCreateTime());
-        ssis.setPayTime(request.getPaymentTime());
-        ssis.setAuditTime(new Date());
-        ssis.setIsDeliveryPay(false);
-        ssis.setShopCode(request.getCustomerCode());
-        ssis.setShopName(request.getCustomerName());
-        ssis.setBunick(request.getCustomerName());
-        ssis.setConsignee(request.getCustomerName());
+        ssis.setWarehouseName(request.getWarehouseName());
+        ssis.setCustomerCode(request.getCustomerCode());
+        ssis.setCustomerName(request.getCustomerName());
+        ssis.setProvinceId(request.getProvinceCode());
         ssis.setProvinceName(request.getProvinceName());
+        ssis.setCityId(request.getCityCode());
         ssis.setCityName(request.getCityName());
         // 直辖市情况下 区/县为null
         if(request.getDistrictName() == null){
-            ssis.setAreaName(request.getCityName());
+            ssis.setDistrictName(request.getCityName());
         }else {
-            ssis.setAreaName(request.getDistrictName());
+            ssis.setDistrictName(request.getDistrictName());
         }
-        ssis.setAddress(request.getDetailAddress());
-        ssis.setMobile(request.getConsigneePhone());
-        ssis.setTel(request.getConsigneePhone());
-        ssis.setOrderPrice(request.getProductTotalAmount().doubleValue());
-        ssis.setAmountReceivable(0.0);
-        ssis.setIsinvoice(true);
-        ssis.setInvoiceName(request.getInvoiceTitle());
-        ssis.setGoodsOwner(request.getConsignee()); // 货主 取收货人 要确认
-        ssis.setRemark(request.getRemake());
+        if(request.getDistrictCode() == null){
+            ssis.setDistrictId(request.getCityCode());
+        }else {
+            ssis.setDistrictId(request.getDistrictCode());
+        }
+        ssis.setReceiveAddress(request.getDetailAddress());
+        ssis.setReceivePerson(request.getCustomerName());
+        ssis.setReceiveMobile(request.getConsigneePhone());
+        ssis.setDistributionModeCode(request.getDistributionModeCode());
+        ssis.setDistributionModeName(request.getDistributionMode());
+        ssis.setOrderAmount(request.getProductTotalAmount().toString());
+     //   ssis.setIsInvoice(request.getProductTotalAmount().toString());
+        ssis.setInvoiceTitle(request.getInvoiceTitle());
+        ssis.setInvoiceTaxNo(request.getTaxId());
+        ssis.setInvoiceAddress(request.getInvoiceAddress());
+        ssis.setInvoiceMobile(request.getInvoiceMobile());
+        ssis.setInvoiceBank(request.getInvoiceBank());
+        ssis.setInvoiceBankAccount(request.getInvoiceBankAccount());
+        ssis.setRemake(request.getRemake());
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String pTime = sf.format(Calendar.getInstance().getTime());
+        String cTime = sf.format(Calendar.getInstance().getTime());
+        ssis.setPayTime(pTime);
+        ssis.setCreateTime(cTime);
 
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
@@ -566,19 +575,22 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
        if(itemList != null){
            for (OrderInfoItemReqVO list : itemList) {
                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
-               sods.setSku(list.getSkuCode());
-               sods.setQty(list.getNum().intValue());
-               sods.setPrice(list.getPrice().doubleValue());
-               sods.setActualAmount(list.getPreferentialAllocation().doubleValue());
-               sods.setGwf1(list.getOrderCode());
-               sods.setGwf2(list.getProductLineNum().toString());
-               sods.setGwf3(list.getColorName());
-               sods.setGwf4(list.getModelCode());
-               sods.setGwf5(list.getUnitName());
+               sods.setLineCode(String.valueOf(list.getProductLineNum()));
+               sods.setSkuCode(list.getSkuCode());
+               sods.setSkuName(list.getSkuName());
+               sods.setProductCount(String.valueOf(list.getNum()));
+               sods.setProductAmount(String.valueOf(list.getPrice()));
+               BigDecimal totalCount = list.getPrice().multiply(new BigDecimal(list.getNum()));
+               sods.setActualTotalProductAmount(String.valueOf(totalCount));
+               sods.setColorName(list.getColorName());
+               sods.setModelNumber(list.getModelCode());
+               sods.setUnitCode(list.getUnitCode());
+               sods.setUnitName(list.getUnitName());
+              // sods.setSkuBarCode();  条形码 暂时没有
                plists.add(sods);
            }
        }
-        ssis.setSaleOutboundDetailedSource(plists);
+        ssis.setDetailList(plists);
         List<BatchWmsInfo> pBatchLists = new ArrayList<>();
         List<OrderInfoItemProductBatch> itemBatchLists = request.getItemBatchList();
         if(itemBatchLists != null){
@@ -599,7 +611,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBatchLists.add(pBtachList);
             }
         }
-        ssis.setOrderInfoItemProductBatches(pBatchLists);
+        ssis.setBatchInfo(pBatchLists);
         return ssis;
     }
 
@@ -691,6 +703,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 BeanUtils.copyProperties(item, product);
                 product.setCompanyCode(Global.COMPANY_09);
                 product.setCompanyName(Global.COMPANY_09_NAME);
+                product.setSupplierCode(item.getSupplierCode());
+                product.setSupplierName(item.getSupplierName());
                 product.setOrderCode(item.getOrderStoreCode());
                 product.setSpec(item.getProductSpec());
                 product.setModel(item.getModelCode());

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.response.order;
 
 import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -221,6 +222,9 @@ public class QueryOrderInfoRespVO {
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
     private String platformType;
+
+    @ApiModelProperty("税号")
+    private String taxId;
 
     @ApiModelProperty("商品信息")
     private List<QueryOrderInfoItemRespVO> productList;
