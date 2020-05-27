@@ -226,8 +226,13 @@ transport_number, platform_type, business_form, tax_id
       <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="atransport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="atransport_number" jdbcType="VARCHAR" property="transportNumber" />
+      <result column="ainvoice_address" jdbcType="VARCHAR" property="invoiceAddress" />
+      <result column="ainvoice_mobile" jdbcType="VARCHAR" property="invoiceMobile" />
+      <result column="ainvoice_bank" jdbcType="VARCHAR" property="invoiceBank" />
+      <result column="ainvoice_bank_account" jdbcType="VARCHAR" property="invoiceBankAccount" />
       <result column="abusiness_form" jdbcType="VARCHAR" property="businessForm" />
       <result column="aplatform_type" jdbcType="VARCHAR" property="platformType" />
+      <result column="atax_id" jdbcType="VARCHAR" property="taxId" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -350,8 +355,13 @@ transport_number, platform_type, business_form, tax_id
              a.transport_company atransport_company,
              a.transport_company_code atransport_company_code,
              a.transport_number atransport_number,
+             a.invoice_address ainvoice_address,
+             a.invoice_mobile ainvoice_mobile,
+             a.invoice_bank ainvoice_bank,
+             a.invoice_bank_account ainvoice_bank_account,
              a.business_form abusiness_form,
              a.platform_type aplatform_type,
+             a.tax_id atax_id,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -989,7 +999,8 @@ transport_number, platform_type, business_form, tax_id
       logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
       order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
       actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
-      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number, business_form, platform_type)
+      actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
+      invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
@@ -1020,7 +1031,9 @@ transport_number, platform_type, business_form, tax_id
       #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
       #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
-      #{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT}
+      #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
+      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT,
+      #{item.taxId,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

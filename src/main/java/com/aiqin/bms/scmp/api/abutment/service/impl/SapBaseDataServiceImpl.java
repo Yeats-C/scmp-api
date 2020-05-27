@@ -1090,10 +1090,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         if(dataType == 0){
             Order order = saleOrder(orderCode);
             scmpImportSale.setOrder(order);
-
+            Outbound outbound = outboundDao.selectBySourceCode(orderCode, String.valueOf(OutboundTypeEnum.ORDER.getCode()));
             PurchaseStorage purchaseStorage = new PurchaseStorage();
-            purchaseStorage.setOrderId(order.getOrderCode());
-            purchaseStorage.setOrderCode(order.getOrderCode());
+            purchaseStorage.setOrderId(outbound.getOutboundOderCode());
+            purchaseStorage.setOrderCode(outbound.getOutboundOderCode());
             purchaseStorage.setInOutFlag(Integer.parseInt(order.getOrderType()));
             purchaseStorage.setSourceOrderId(orderCode);
             purchaseStorage.setSourceOrderCode(orderCode);
@@ -1107,9 +1107,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Order order = returnOrder(orderCode);
             scmpImportSale.setOrder(order);
 
+            Inbound inbound = inboundDao.inboundCodeOrderLast(order.getOrderCode());
             PurchaseStorage purchaseStorage = new PurchaseStorage();
-            purchaseStorage.setOrderId(orderCode);
-            purchaseStorage.setOrderCode(orderCode);
+            purchaseStorage.setOrderId(inbound.getInboundOderCode());
+            purchaseStorage.setOrderCode(inbound.getInboundOderCode());
             purchaseStorage.setInOutFlag(Integer.parseInt(order.getOrderType()));
             purchaseStorage.setSourceOrderId(orderCode);
             purchaseStorage.setSourceOrderCode(orderCode);

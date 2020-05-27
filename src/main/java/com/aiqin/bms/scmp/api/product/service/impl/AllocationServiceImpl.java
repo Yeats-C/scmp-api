@@ -171,7 +171,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         //转化调拨单sku列表
         List<AllocationProductBatch>list = BeanCopyUtils.copyList(vo.getList(), AllocationProductBatch.class);
         list.stream().forEach(allocationProduct->{
-            allocationProduct.setTaxAmount(null != allocationProduct.getTaxAmount()?allocationProduct.getTaxAmount():0);
+            allocationProduct.setTaxAmount(null != allocationProduct.getTaxAmount()?allocationProduct.getTaxAmount(): new BigDecimal(0));
             allocationProduct.setTax(null != allocationProduct.getTax()?allocationProduct.getTax():BigDecimal.ZERO);
             allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice()?allocationProduct.getTaxPrice():BigDecimal.ZERO);
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
@@ -710,9 +710,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             //合并数量
             Long totalNum = v.stream().mapToLong(AllocationProductBatch::getQuantity).sum();
             product.setQuantity(totalNum);
-            //合并含税总成本
-            double totalTaxAmount = v.stream().mapToDouble(AllocationProductBatch::getTaxAmount).sum();
-            product.setTaxAmount(BigDecimal.valueOf(totalTaxAmount));
+            //合并含税总成本totalTaxAmount
+            BigDecimal totalTaxAmount = v.stream().map(AllocationProductBatch::getTaxAmount).reduce(BigDecimal.ZERO,BigDecimal::add);
+            product.setTaxAmount(totalTaxAmount);
             products.add(product);
         });
 

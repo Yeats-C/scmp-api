@@ -81,7 +81,7 @@ public class AllocationProductBatch extends CommonBean {
 
     @ApiModelProperty("含税总成本")
     @JsonProperty(value = "tax_amount")
-    private Double taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("图片地址")
     @JsonProperty(value = "picture_url")

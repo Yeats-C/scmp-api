@@ -374,11 +374,33 @@ public class ErpOrderInfo {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty("发票地址")
+    @JsonProperty("invoice_address")
+    private String invoiceAddress;
+
+    @ApiModelProperty("发票电话")
+    @JsonProperty("invoice_mobile")
+    private String invoiceMobile;
+
+    @ApiModelProperty("发票开户银行")
+    @JsonProperty("invoice_bank")
+    private String invoiceBank;
+
+    @ApiModelProperty("发票银行账号")
+    @JsonProperty("invoice_bank_account")
+    private String invoiceBankAccount;
+
     @ApiModelProperty("业务形式(熙云:批发业务  爱亲母婴:门店业务,批发业务,天猫业务,优选业务  爱亲科技:门店业务,批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    @JsonProperty("business_form")
     private String businessForm;
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
+    @JsonProperty("platform_type")
     private String platformType;
+
+    @ApiModelProperty("税号")
+    @JsonProperty("tax_id")
+    private String taxId;
 
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
