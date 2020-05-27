@@ -545,6 +545,9 @@
       <if test="outStockTime != null">
         out_stock_time = #{outStockTime,jdbcType=CLOB},
       </if>
+      <if test="inStockTime != null">
+        in_stock_time = #{inStockTime,jdbcType=CLOB},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>

@@ -766,15 +766,15 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
 
             HttpResponse httpResponse = orderCallbackService.outboundOrderCallBack(request);
-            if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
-                LOGGER.info("调用发货单成功");
-                // 调用sap 传送销售单的数据给sap
-                sapBaseDataService.saleAndReturn(outbound.getSourceOderCode(), 0);
-                LOGGER.info("销售wms回传成功");
-            }else {
-                LOGGER.error("调用发货单失败:{}", httpResponse.getMessage());
-                throw new GroundRuntimeException(String.format("调用发货单失败:%s", httpResponse.getMessage()));
-            }
+//            if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
+//                LOGGER.info("调用发货单成功");
+//                // 调用sap 传送销售单的数据给sap
+//                sapBaseDataService.saleAndReturn(outbound.getSourceOderCode(), 0);
+//                LOGGER.info("销售wms回传成功");
+//            }else {
+//                LOGGER.error("调用发货单失败:{}", httpResponse.getMessage());
+//                throw new GroundRuntimeException(String.format("调用发货单失败:%s", httpResponse.getMessage()));
+//            }
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
             LOGGER.info("wms回传成功，根据出库单信息，变更对应退供单的实际值：", outbound.getSourceOderCode());
             RejectStockRequest rejectStockRequest = new RejectStockRequest();
