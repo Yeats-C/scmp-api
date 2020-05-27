@@ -113,4 +113,10 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("税率")
     private BigDecimal tax;
 
+    @ApiModelProperty(value = "供应商编码")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "供应商名称")
+    private String supplierName;
+
 }
