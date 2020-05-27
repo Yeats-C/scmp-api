@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -176,5 +178,21 @@ public class PurchaseManageController {
                                          @RequestParam("purchase_order_type_code") Integer purchaseOrderTypeCode,
                                          @RequestParam(value = "purchase_order_code", required = false) String purchaseOrderCode) {
         return purchaseManageService.purchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
+    }
+
+    @GetMapping("/order/batch")
+    @ApiOperation("查询采购单批次")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "purchase_order_code", value = "采购单编码", type = "String"),
+            @ApiImplicitParam(name = "page_no", value = "当前页", type = "Integer"),
+            @ApiImplicitParam(name = "page_size", value = "每页条数", type = "Integer")})
+    public HttpResponse<PageResData<PurchaseBatch>> purchaseOrderBatch(@RequestParam("purchase_order_code") String purchaseOrderCode,
+                                                                       @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                       @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        PurchaseOrderProductRequest request = new PurchaseOrderProductRequest();
+        request.setPurchaseOrderCode(purchaseOrderCode);
+        request.setPageSize(pageSize);
+        request.setPageNo(pageNo);
+        return purchaseManageService.purchaseOrderBatch(request);
     }
 }
