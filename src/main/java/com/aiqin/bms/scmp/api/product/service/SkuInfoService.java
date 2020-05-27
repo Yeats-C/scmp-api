@@ -336,4 +336,6 @@ public interface SkuInfoService{
     Integer reUpdateApply(String formNo);
 
     Integer saveDraftSkuInfo2(AddSkuInfoReqVO addSkuInfoReqVO);
+
+    Integer saveDraftSkuInfo3();
 }
