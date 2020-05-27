@@ -256,7 +256,7 @@
         and company_code = #{companyCode,jdbcType=VARCHAR}
       </if>
     </where>
-    order by create_time desc
+    order by id desc
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="applyCount" resultType="java.lang.Integer">
