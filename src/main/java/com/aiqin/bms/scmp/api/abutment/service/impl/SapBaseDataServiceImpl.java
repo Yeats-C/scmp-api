@@ -1044,7 +1044,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             sap.setPurchase(purchase);
             // 查询最后的入库单信息
             Inbound inbound = inboundDao.inboundCodeOrderLast(purchase.getOrderCode());
-            sap.setPurchaseStorage(this.inboundPurchaseInfo(inbound));
+            Storage storage = this.inboundPurchaseInfo(inbound);
+            storage.setTransportCode1(purchase.getTransportCode());
+            storage.setTransportName1(purchase.getTransportName());
+            storage.setStorageCode(purchase.getWarehouseCode());
+            storage.setStorageName(purchase.getWarehouseName());
+            storage.setSupplierCode(purchase.getSupplierCode());
+            storage.setSupplierName(purchase.getSupplierName());
+            sap.setPurchaseStorage(storage);
         }else {
             sap.setPurchase(rejectOrder(orderCode));
             // 查询出库单
@@ -2067,6 +2074,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         List<ScmpStorageBatch> infoBatch;
         ScmpStorageBatch info;
         for(InboundProduct product : inboundProducts){
+            PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
             storageDetail = new StorageDetail();
             storageDetail.setExpectCount(product.getPreInboundNum());
             storageDetail.setExpectMinUnitCount(product.getPreInboundMainNum());
@@ -2090,7 +2098,19 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storageDetail.setTaxRate(product.getTax());
             storageDetail.setUnit(product.getUnitName());
             storageDetail.setUnitCount(Integer.valueOf(product.getInboundBaseContent()));
-
+            Integer type = null;
+            if(purchaseOrderProduct.getProductType() == 0){
+                type = 0;
+            }else if(purchaseOrderProduct.getProductType() == 1){
+                type = 5;
+            }else if(purchaseOrderProduct.getProductType() == 2){
+                type = 10;
+            }
+            storageDetail.setProductType(type);
+            storageDetail.setCategoryCode(purchaseOrderProduct.getCategoryId());
+            storageDetail.setCategoryName(purchaseOrderProduct.getCategoryName());
+            storageDetail.setBrandCode(purchaseOrderProduct.getBrandId());
+            storageDetail.setBrandName(purchaseOrderProduct.getBrandName());
             // 查询批次sku对应的批次信息
             String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
             List<InboundBatch> batchList = inboundBatchMap.get(key);
