@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class Storage {
     @ApiModelProperty("出入库单号")
     private String orderCode;
 
-    @JsonProperty("in_out_flag")
+    @JsonProperty("in_out_flag 0:出库 1:入库")
     @ApiModelProperty("出入库标识")
     private Integer inOutFlag;
 
@@ -43,7 +44,7 @@ public class Storage {
     private String sapOrderId;
 
     @JsonProperty("source_order_type")
-    @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库 35 调拨入库 40 调拨出库 45 报损 50 报溢")
+    @ApiModelProperty("来源业务单类型0 采购 5 退供 10 配送订单 15 直送订单 20 辅采订单  25 售后退货 30 出入库")
     private String sourceOrderType;
 
     @JsonProperty("source_order_type_name")
@@ -121,14 +122,22 @@ public class Storage {
 
     @JsonProperty("order_count")
     @ApiModelProperty("总数量")
-    private Integer orderCount;
+    private Long orderCount;
 
     @ApiModelProperty("总金额")
-    private String amount;
+    private BigDecimal amount;
 
     @JsonProperty("discount_price")
     @ApiModelProperty("折扣金额")
-    private String discountPrice;
+    private BigDecimal discountPrice;
+    
+    @JsonProperty("group_code")
+    @ApiModelProperty(value = "采购组编码")
+    private String groupCode;
+    
+    @JsonProperty("group_name")
+    @ApiModelProperty(value = "采购组描述")
+    private String groupName;
 
     @JsonProperty("opt_time")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")

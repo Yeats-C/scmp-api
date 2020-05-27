@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.domain.request.purchase;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -53,19 +54,19 @@ public class StorageDetail {
 
     @JsonProperty("tax_rate")
     @ApiModelProperty("税率")
-    private Integer taxRate;
+    private BigDecimal taxRate;
 
     @JsonProperty("expect_count")
     @ApiModelProperty("预计数量")
-    private Integer expectCount;
+    private Long expectCount;
 
     @JsonProperty("expect_min_unit_count")
     @ApiModelProperty("预计最小单位数量")
-    private Integer expectMinUnitCount;
+    private Long expectMinUnitCount;
 
     @JsonProperty("expect_tax_price")
     @ApiModelProperty("预计含税单价")
-    private String expectTaxPrice;
+    private BigDecimal expectTaxPrice;
 
     @JsonProperty("single_count")
     @ApiModelProperty("实际数量")
@@ -73,11 +74,11 @@ public class StorageDetail {
 
     @JsonProperty("min_unit_count")
     @ApiModelProperty("实际最小单位数量")
-    private Integer minUnitCount;
+    private Long minUnitCount;
 
     @JsonProperty("tax_price")
     @ApiModelProperty("实际含税单价")
-    private String taxPrice;
+    private BigDecimal taxPrice;
 
     @JsonProperty("guide_price")
     @ApiModelProperty("厂商指导价")
@@ -106,7 +107,7 @@ public class StorageDetail {
     @JsonProperty("category_name")
     @ApiModelProperty("品类名称")
     private String categoryName;
-
+    
     @JsonProperty("batch_list")
     @ApiModelProperty("批次信息")
     private List<ScmpStorageBatch> batchList;

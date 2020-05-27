@@ -104,4 +104,8 @@ public class StockInfoRequest {
     @ApiModelProperty("预计在途数")
     @JsonProperty(value = "pre_way_count")
     private Long preWayCount;
+
+    @ApiModelProperty("批次管理")
+    @JsonProperty(value = "batch_manage")
+    private Integer batch_manage;
 }

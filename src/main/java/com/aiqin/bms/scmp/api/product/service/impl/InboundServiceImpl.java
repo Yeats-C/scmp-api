@@ -1062,6 +1062,8 @@ public class InboundServiceImpl implements InboundService {
             HttpResponse httpResponse = purchaseManageService.getWarehousing(purchaseStorage);
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
+                // 回传成功之后，调用sap
+                //sapBaseDataService.purchaseAndReject(0, );
             }else {
                 log.error("入库单回传给采购接口失败");
             }
