@@ -835,4 +835,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         return HttpResponse.success(list);
     }
 
+    @Override
+    public HttpResponse<PageResData<PurchaseBatch>> purchaseOrderBatch(PurchaseOrderProductRequest request){
+        List<PurchaseBatch> list = purchaseBatchDao.list(request);
+        Integer count = purchaseBatchDao.listCount(request);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
 }
