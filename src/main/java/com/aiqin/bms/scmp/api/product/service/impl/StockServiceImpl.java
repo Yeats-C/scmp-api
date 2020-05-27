@@ -808,6 +808,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             case 9:
                 // 不验证任何库存。实际操作为：库存不变动，库存日志新增了减锁定和加锁定
                 break;
+
+            // 出库减并解锁库存逻辑
+            case 10:
+
+                break;
             default:
                 return null;
         }
