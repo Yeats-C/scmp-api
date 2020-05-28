@@ -44,7 +44,9 @@ import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.*;
@@ -135,6 +137,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     @Lazy(true)
     private AllocationService allocationService;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -584,16 +588,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
          // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
          ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-         // 采购与调拨减库存并加在途 - 出库类型编码
-         if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode()) ||
-                 Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ALLOCATE.getCode()) ||
-                 Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.MOVEMENT.getCode())) {
-             changeStockRequest.setOperationType(4);
-         } else if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
-             // 退供wms回传 - 库减并解锁库存、批次库存
-             LOGGER.info("退供开始操作库减并解锁库存、批次库存：", outbound.getSourceOderCode());
-             changeStockRequest.setOperationType(2);
-         }
+         changeStockRequest.setOperationType(10);
 
          List<StockInfoRequest> stockInfoRequestList = Lists.newArrayList();
          OutboundProduct outboundProduct;
@@ -635,7 +630,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
              stockInfoRequest.setWarehouseName(outbound.getWarehouseName());
              stockInfoRequest.setSkuCode(outboundProduct.getSkuCode());
              stockInfoRequest.setSkuName(outboundProduct.getSkuName());
-             stockInfoRequest.setChangeCount(outboundProduct.getPraOutboundNum());
+             stockInfoRequest.setChangeCount(actualTotalCount);
+             stockInfoRequest.setPreLockCount(outboundProduct.getPreOutboundMainNum());
              stockInfoRequest.setTaxRate(outboundProduct.getTax());
              stockInfoRequest.setNewDelivery(outbound.getSupplierCode());
              stockInfoRequest.setNewDeliveryName(outbound.getSupplierName());
@@ -660,7 +656,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
          outbound.setPraTax(praTotalOutboundAmount.subtract(praOutboundAmount));
          changeStockRequest.setStockList(stockInfoRequestList);
 
-         // 更新出库批次商品信息
+         // 查询对应的批次管理
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(outbound.getWarehouseCode());
+        LOGGER.info("wms出库回传，查询对应的库房批次管理信息：{}", JsonUtil.toJson(warehouse));
+
+        // 更新出库批次商品信息
          List<StockBatchInfoRequest> stockBatchVoRequestList = Lists.newArrayList();
          OutboundBatch outboundBatch;
          StockBatchInfoRequest stockBatchInfoRequest;

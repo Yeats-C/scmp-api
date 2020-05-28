@@ -529,22 +529,22 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             Boolean flage = false;
 
             // 查询入库单批次商品信息
-            Map<String, WarehouseDTO> batchMangeMap = new HashMap<>();
-            for(StockInfoRequest stockInfoRequest : request.getStockList()) {
-                String key = String.format("%s", stockInfoRequest.getWarehouseCode());
-                if (batchMangeMap.get(key) == null) {
-                    batchMangeMap.put(key, warehouseDao.getWarehouseByCode(stockInfoRequest.getWarehouseCode()));
-                }
-            }
+//            Map<String, WarehouseDTO> batchMangeMap = new HashMap<>();
+//            for(StockInfoRequest stockInfoRequest : request.getStockList()) {
+//                String key = String.format("%s", stockInfoRequest.getWarehouseCode());
+//                if (batchMangeMap.get(key) == null) {
+//                    batchMangeMap.put(key, warehouseDao.getWarehouseByCode(stockInfoRequest.getWarehouseCode()));
+//                }
+//            }
 
             // 将需要修改的库存进行逻辑计算
             List<StockFlow> stockFlows = new ArrayList<>();
             for (StockInfoRequest stockInfoRequest : request.getStockList()) {
-                String batchMange = String.format("%s", stockInfoRequest.getWarehouseCode());
-                WarehouseDTO warehouseDTO = batchMangeMap.get(batchMange);
-                if(warehouseDTO != null){
-                    stockInfoRequest.setBatchManage(warehouseDTO.getBatchManage());
-                }
+//                String batchMange = String.format("%s", stockInfoRequest.getWarehouseCode());
+//                WarehouseDTO warehouseDTO = batchMangeMap.get(batchMange);
+//                if(warehouseDTO != null){
+//                    stockInfoRequest.setBatchManage(warehouseDTO.getBatchManage());
+//                }
                 // 给sku加锁
                 long time = System.currentTimeMillis() + 30;
                 if (!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))) {
@@ -675,11 +675,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return HttpResponse.success();
     }
 
-    /** 参数转换成库存数据
-     * @param stock  库存实体
-     * @param request 请求改变实体
-     * @param operationType  操作类型
-     */
+    /** 参数转换成库存数据*/
     private Stock stockVoRequestToStock(Stock stock, StockInfoRequest request, Integer operationType) {
         if (request.getWarehouseCode() != null) {
             Integer warehouseType = stockDao.selectWarehouseType(request.getWarehouseCode());
@@ -830,7 +826,22 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
             // 出库减并解锁库存逻辑
             case 10:
-
+                Long preLockCount = request.getPreLockCount() == null ? 0L : request.getPreLockCount();
+                if(lockCount < preLockCount || inventoryCount < changeCount){
+                    LOGGER.error("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setInventoryCount(inventoryCount - changeCount);
+                stock.setLockCount(lockCount - preLockCount);
+                if(changeCount > preLockCount){
+                    if(availableCount < (changeCount - preLockCount)){
+                        LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
+                        throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
+                    }
+                    stock.setAvailableCount(availableCount - (changeCount - preLockCount));
+                }else {
+                    stock.setAvailableCount(availableCount + (changeCount - preLockCount));
+                }
                 break;
             default:
                 return null;
@@ -1160,6 +1171,26 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 锁转移(锁定库存移入/移出)
             case 9:
                 // 不验证任何库存。实际操作为：库存不变动，库存日志新增了减锁定和加锁定
+                break;
+
+            // 出库减并解锁库存逻辑
+            case 10:
+                Long preLockCount = stockBatchInfo.getPreLockCount() == null ? 0L : stockBatchInfo.getPreLockCount();
+                if(lockCount < preLockCount || inventoryCount < changeCount){
+                    LOGGER.error("wms回传出库减并解锁批次库存: 锁定库存、总库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
+                    throw new BizException("wms回传出库减并批次库存: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
+                }
+                stockBatch.setInventoryCount(inventoryCount - changeCount);
+                stockBatch.setLockCount(lockCount - preLockCount);
+                if(changeCount > preLockCount){
+                    if(availableCount < (changeCount - preLockCount)){
+                        LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
+                        throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+                    }
+                    stockBatch.setAvailableCount(availableCount - (changeCount - preLockCount));
+                }else {
+                    stockBatch.setAvailableCount(availableCount + (changeCount - preLockCount));
+                }
                 break;
             default:
                 return null;
