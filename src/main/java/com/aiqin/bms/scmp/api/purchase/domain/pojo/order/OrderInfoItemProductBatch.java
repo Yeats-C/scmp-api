@@ -52,9 +52,9 @@ public class OrderInfoItemProductBatch {
     private Long returnTotalCount;
 
     @ApiModelProperty("生产日期")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+  //  @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("product_date")
-    private Date productDate;
+    private String productDate;
 
     @ApiModelProperty("过期日期")
     @JsonProperty("be_overdue_date")
