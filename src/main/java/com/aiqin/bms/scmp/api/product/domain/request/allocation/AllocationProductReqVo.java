@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.allocation;
 
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -8,6 +9,7 @@ import lombok.Data;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 描述:调拨sku接受实体
@@ -118,4 +120,16 @@ public class AllocationProductReqVo {
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
     private String supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    @JsonProperty(value = "supplier_name")
+    private String supplierName;
+
+    @ApiModelProperty("出库批次编号")
+    @JsonProperty(value = "callout_batch_info_code")
+    private String calloutBatchInfoCode;
+
+  //  @ApiModelProperty("批次列表")
+  //  @JsonProperty("sku_batch")
+  //  private List<SkuBatchRespVO> skuBatchRespVOS;
 }

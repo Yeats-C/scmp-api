@@ -1032,7 +1032,7 @@ transport_number, platform_type, business_form, tax_id
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
       #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
       #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
-      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT,
+      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT},
       #{item.taxId,jdbcType=VARCHAR}
       )
     </foreach>

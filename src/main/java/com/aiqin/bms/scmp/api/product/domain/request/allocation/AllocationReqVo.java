@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -83,7 +84,7 @@ public class AllocationReqVo {
     @ApiModelProperty("含税总成本单位分(传入时需要乘以100)")
     @NotNull(message = "含税总成本不能为空")
     @JsonProperty("total_cost_rate")
-    private Long totalCostRate;
+    private BigDecimal totalCostRate;
 
     @ApiModelProperty("直属上级编码")
     @NotEmpty(message = "直属上级编码不能为空！")
