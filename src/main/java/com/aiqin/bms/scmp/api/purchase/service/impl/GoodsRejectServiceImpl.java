@@ -306,6 +306,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyDetailHandleResponse> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailByEdit(rejectApplyRecordCode);
         Map<String, List<StockBatch>> rejectApply = new HashMap<>();
         for (RejectApplyDetailHandleResponse response : list) {
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(response.getWarehouseCode());
+            response.setBatchManage(warehouse.getBatchManage());
+            if(response.getBatchManage() == 0){
+                continue;
+            }
             // 查询对应的批次信息
             String key = String.format("%s,%s,%s", response.getSkuCode(), response.getWarehouseCode(), response.getSupplierCode());
             if(rejectApply.get(key) == null){
@@ -398,17 +403,32 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if(request == null || CollectionUtils.isEmpty(request.getCenterList()) || CollectionUtils.isEmpty(request.getDetailList())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
+        // 获取当前登录人的信息
+        AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+        if (authToken == null) {
+            LOGGER.info("获取当前登录信息失败");
+            return HttpResponse.failure(ResultCode.USER_NOT_FOUND);
+        }
         try {
             // 获取退供申请单编码
             String rejectApplyCode;
             EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
+            RejectApplyRecord rejectApplyRecord = BeanCopyUtils.copy(request, RejectApplyRecord.class);
             if(request.getChoiceType() == 0){
                 rejectApplyCode = "TS" + encodingRule.getNumberingValue();
+                rejectApplyRecord.setCreateById(authToken.getPersonId());
+                rejectApplyRecord.setCreateByName(authToken.getPersonName());
             }else {
                 rejectApplyCode = request.getRejectApplyRecordCode();
             }
-            RejectApplyRecord rejectApplyRecord = BeanCopyUtils.copy(request, RejectApplyRecord.class);
             rejectApplyRecord.setRejectApplyRecordCode(rejectApplyCode);
+            rejectApplyRecord.setCompanyCode(authToken.getCompanyCode());
+            rejectApplyRecord.setCompanyName(authToken.getCompanyName());
+
+            rejectApplyRecord.setUpdateById(authToken.getPersonId());
+            rejectApplyRecord.setUpdateByName(authToken.getPersonName());
+            rejectApplyRecord.setApplyType(0);
             if(request.getSubmitType() == 0){
                 rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_NO_SUBMIT);
             }else {
@@ -418,9 +438,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             for(RejectApplyRecordTransportCenter center:request.getCenterList()){
                 center.setRejectApplyRecordCode(rejectApplyCode);
             }
+            Integer i = 1;
             for(RejectApplyRecordDetail detail:request.getDetailList()){
                 detail.setRejectApplyRecordDetailId(IdUtil.uuid());
                 detail.setRejectApplyRecordCode(rejectApplyCode);
+                detail.setCreateById(authToken.getPersonId());
+                detail.setCreateByName(authToken.getPersonName());
+                detail.setUpdateById(authToken.getPersonId());
+                detail.setUpdateByName(authToken.getPersonName());
+                detail.setLineCode(i);
+                ++ i;
             }
 
             // 新增
