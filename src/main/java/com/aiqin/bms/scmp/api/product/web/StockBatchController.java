@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.web;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchDetailResponse;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -105,6 +107,12 @@ public class StockBatchController {
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
         return stockBatchService.stockBatchFlow(request);
+    }
+
+    @GetMapping("/sku")
+    @ApiOperation(value = "查询sku对应的批次管理信息")
+    public HttpResponse<List<StockBatch>>  stockBatchSku(@RequestParam("sku_code") String skuCode){
+        return stockBatchService.stockBatchSku(skuCode);
     }
 
 }

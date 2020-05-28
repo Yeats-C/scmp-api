@@ -1,11 +1,14 @@
 package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatchFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockBatchSkuReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchDetailResponse;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+
+import java.util.List;
 
 /**
  * @author: zhao shuai
@@ -18,4 +21,6 @@ public interface StockBatchService {
     HttpResponse<StockBatchDetailResponse> stockBatchDetail(String stockBatchCode);
 
     HttpResponse<PageResData<StockBatchFlow>> stockBatchFlow(QueryStockBatchSkuReqVo request);
+
+    HttpResponse<List<StockBatch>> stockBatchSku(String skuCode);
 }
