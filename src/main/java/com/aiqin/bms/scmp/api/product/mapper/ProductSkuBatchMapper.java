@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductSkuBatchReq;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuBatchRespVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -19,4 +20,6 @@ public interface ProductSkuBatchMapper {
     void banById(Long id);
 
     void inserts(List<ProductSkuBatchReq> productSkuBatchReqList);
+
+    Integer productSkuBatchExist(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode);
 }

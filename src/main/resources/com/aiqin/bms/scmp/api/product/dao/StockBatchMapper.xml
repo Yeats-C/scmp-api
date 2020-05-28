@@ -451,6 +451,8 @@
     from stock_batch
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    <if test="supplierCode != null">
+       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>
