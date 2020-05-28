@@ -9,6 +9,10 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuBatchRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuBatchService;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.github.pagehelper.PageHelper;
@@ -27,6 +31,9 @@ public class ProductSkuBatchServiceImpl extends BaseServiceImpl implements Produ
 
     @Autowired
   private   ProductSkuBatchMapper productSkuBatchMapper;
+
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     public BasePage<ProductSkuBatchRespVo> getList(QueryProductSkuBatchReqVO queryProductSkuBatchReqVO) {
@@ -52,6 +59,11 @@ public class ProductSkuBatchServiceImpl extends BaseServiceImpl implements Produ
         );
         productSkuBatchMapper.inserts(productSkuBatchReqList);
         return true;
+    }
+
+    @Override
+    public List<QueryWarehouseResVo2> getWarehousetList() {
+        return  warehouseDao.findWarehouseListForBatch();
     }
 
 

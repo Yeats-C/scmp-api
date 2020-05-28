@@ -33,6 +33,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.store.ProductItemStore
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuDetailRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuListRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 
 import java.util.List;
 import java.util.Map;
@@ -52,4 +54,6 @@ public interface ProductSkuBatchService {
     Boolean banById(Long id);
 
     Boolean add(List<ProductSkuBatchReq> productSkuBatchReqList);
+
+    List<QueryWarehouseResVo2> getWarehousetList();
 }

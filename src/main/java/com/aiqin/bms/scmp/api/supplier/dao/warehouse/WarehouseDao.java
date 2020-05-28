@@ -4,6 +4,8 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -61,4 +63,6 @@ public interface WarehouseDao {
    List<WarehouseDTO> getWarehouseByLogisticsCenterCodeAndNotExistsType(@Param("logisticsCenterCode") String logisticsCenterCode, @Param("warehouseTypeCode") Byte warehouseTypeCode);
 
    List<WarehouseDTO> warehouseByBatchMange();
+
+    List<QueryWarehouseResVo2>  findWarehouseListForBatch();
 }

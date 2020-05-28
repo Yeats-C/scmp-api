@@ -29,6 +29,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.product.service.InspectionReportService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuBatchService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +69,17 @@ public class ProductSkuBatchController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/getWarehousetList")
+    @ApiOperation("查询商品仓库名称")
+    public HttpResponse<List<QueryWarehouseResVo2>> getWarehousetList(){
 
+        try {
+            return HttpResponse.success(productSkuBatchService.getWarehousetList());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @GetMapping("/banById")
     @ApiOperation("根据id来禁用")
     public HttpResponse<Boolean> banById(Long id){
