@@ -1768,8 +1768,9 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     BeanUtils.copyProperties(batch,info);
                     info.setPurchaseOrderCode(batch.getOrderCode());
                     if(batch.getProductDate() != null){
-                        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        info.setProductDate(formatter.format(batch.getProductDate()));
+                    //    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    //    info.setProductDate(formatter.format());
+                        info.setProductDate(batch.getProductDate());
                     }
                     info.setBatchNo(batch.getBatchCode());
                     info.setProductType(String.valueOf(product.getGivePromotion()));
