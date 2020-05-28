@@ -327,4 +327,18 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and line_code = #{productLineNum, jdbcType=INTEGER}
   </select>
+
+  <update id="updateBatch">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update order_info_item_product_batch
+      <set>
+        <if test="item.actualTotalCount != null and item.actualTotalCount != ''">
+          actual_total_count = #{item.actualTotalCount,jdbcType=BIGINT},
+        </if>
+      </set>
+      where order_code = #{item.orderCode,jdbcType=VARCHAR}
+      and sku_code = #{item.skuCode,jdbcType=BIGINT}
+      and batch_info_code = #{item.batchInfoCode,jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

@@ -27,6 +27,10 @@ public class OutboundCallBackBatchRequest {
     @JsonProperty("batch_code")
     private String batchCode;
 
+    @ApiModelProperty(value="批次编号")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
  //   @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")

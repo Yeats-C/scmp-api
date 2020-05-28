@@ -1530,29 +1530,32 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setTotalCount(batch.getTotalCount());
                 productBatch.setActualTotalCount(batch.getActualTotalCount());
-                Date parse;
-                try{
-                    parse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(batch.getProductDate());
-                    productBatch.setProductDate(parse);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
                 productBatch.setBatchCode(batch.getBatchCode());
+                productBatch.setBatchInfoCode(batch.getBatchInfoCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
+//                productBatch.setTotalCount(batch.getTotalCount());
+//                productBatch.setSupplierCode(response.getSupplierCode());
+//                productBatch.setSupplierName(response.getSupplierName());
+//                productBatch.setLineCode(batch.getLineCode());
+//                productBatch.setProductDate(batch.getProductDate());
+//                Date parse;
+//                try{
+//                    parse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(batch.getProductDate());
+//                    productBatch.setProductDate(parse);
+//                }catch (Exception e){
+//                    e.printStackTrace();
+//                }
           //      productBatch.setTransportCenterCode(response.getTransportCenterCode());
           //      productBatch.setTransportCenterName(response.getTransportCenterName());
           //      productBatch.setWarehouseCode(response.getWarehouseCode());
           //      productBatch.setWarehouseName(response.getWarehouseName());
           //      productBatch.setCompanyCode(response.getCompanyCode());
           //      productBatch.setCompanyName(response.getCompanyName());
-                productBatch.setSupplierCode(response.getSupplierCode());
-                productBatch.setSupplierName(response.getSupplierName());
-                productBatch.setLineCode(batch.getLineCode());
                 batchList.add(productBatch);
             }
-            orderInfoItemProductBatchDao.insertBatch(batchList);
+//            orderInfoItemProductBatchDao.insertBatch(batchList);
+            orderInfoItemProductBatchDao.updateBatch(batchList);
         }
         // 更新出库单
         this.updateOutbound(request);

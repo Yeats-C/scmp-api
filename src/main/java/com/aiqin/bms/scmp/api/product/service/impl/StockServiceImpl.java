@@ -52,6 +52,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -873,12 +874,14 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     @Transactional(rollbackFor = Exception.class)
     public List<OrderInfoItemProductBatch> lockBatchStock(List<LockOrderItemBatchReqVO> vo) {
         List<OrderInfoItemProductBatch> list = Lists.newArrayList();
-        Date date = new Date();
+        //Date date = new Date();
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String pTime = sf.format(Calendar.getInstance().getTime());
         for (int i = 0; i < vo.size(); i++) {
             LockOrderItemBatchReqVO reqVO = vo.get(i);
             OrderInfoItemProductBatch copy = BeanCopyUtils.copy(reqVO, OrderInfoItemProductBatch.class);
             copy.setBatchCode(System.currentTimeMillis() + i + "");
-            copy.setProductDate(date);
+            copy.setProductDate(pTime);
             copy.setLineCode((long) i);
             list.add(copy);
         }

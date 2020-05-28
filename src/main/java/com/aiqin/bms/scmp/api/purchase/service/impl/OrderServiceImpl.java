@@ -662,6 +662,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
         for(ErpOrderItem item : request.getItemList()){
             product = new OrderInfoItemReqVO();
+            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             if (productList != null && productList.size() > 0){
                 String key = item.getSkuCode()+item.getBatchInfoCode()+item.getProductType();
                 if (erpOrderItemMap.containsKey(key)) {
@@ -710,7 +711,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productBatch.setSkuName(item.getSkuName());
                     productBatch.setTotalCount(item.getProductCount());
                     productBatch.setActualTotalCount(item.getActualProductCount());
-                    productBatch.setProductDate(item.getBatchDate());
+                    productBatch.setProductDate(sf.format(item.getBatchDate()));
                     productBatch.setLockType(item.getLockType());
                     productBatch.setSupplierCode(item.getSupplierCode());
                     productBatch.setSupplierName(item.getSupplierName());
@@ -758,7 +759,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 productBatch.setSkuName(item.getSkuName());
                 productBatch.setTotalCount(item.getProductCount());
                 productBatch.setActualTotalCount(item.getActualProductCount());
-                productBatch.setProductDate(item.getBatchDate());
+                productBatch.setProductDate(sf.format(item.getBatchDate()));
                 productBatch.setLockType(item.getLockType());
                 productBatch.setSupplierCode(item.getSupplierCode());
                 productBatch.setSupplierName(item.getSupplierName());
