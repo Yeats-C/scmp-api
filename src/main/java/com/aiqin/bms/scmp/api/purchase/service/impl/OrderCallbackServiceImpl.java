@@ -1534,6 +1534,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchInfoCode(batch.getBatchInfoCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
+                batchList.add(productBatch);
 //                productBatch.setTotalCount(batch.getTotalCount());
 //                productBatch.setSupplierCode(response.getSupplierCode());
 //                productBatch.setSupplierName(response.getSupplierName());
@@ -1552,7 +1553,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
           //      productBatch.setWarehouseName(response.getWarehouseName());
           //      productBatch.setCompanyCode(response.getCompanyCode());
           //      productBatch.setCompanyName(response.getCompanyName());
-                batchList.add(productBatch);
             }
 //            orderInfoItemProductBatchDao.insertBatch(batchList);
             orderInfoItemProductBatchDao.updateBatch(batchList);
