@@ -397,11 +397,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //固定为1
                 storageDetail.setUnitCount(1);
                 storageDetail.setTradeExponent(1);
-                storageDetail.setTaxRate(profitLossProduct.getTax().intValue());
-                storageDetail.setExpectCount(profitLossProduct.getQuantity().intValue());
-                storageDetail.setExpectMinUnitCount(profitLossProduct.getQuantity().intValue());
+                storageDetail.setTaxRate(profitLossProduct.getTax());
+                storageDetail.setExpectCount(profitLossProduct.getQuantity());
+                storageDetail.setExpectMinUnitCount(profitLossProduct.getQuantity());
                 storageDetail.setSingleCount(profitLossProduct.getQuantity().intValue());
-                storageDetail.setMinUnitCount(profitLossProduct.getQuantity().intValue());
+                storageDetail.setMinUnitCount(profitLossProduct.getQuantity());
                 //厂商指导价
                 storageDetail.setGuidePrice(productMap.containsKey(profitLossProduct.getSkuCode()) ? productMap.get(profitLossProduct.getSkuCode()).toString() : "0");
                 if (storageDetailMap.containsKey(profitLossProduct.getOrderCode())) {
@@ -431,8 +431,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 } else {
                     quantity = 0L;
                 }
-                storage.setOrderCount(quantity.intValue());
-                storage.setDiscountPrice("0");
+                storage.setOrderCount(quantity);
+                storage.setDiscountPrice(BigDecimal.ZERO);
                 storage.setOptTime(profitLoss.getCreateTime());
                 storage.setCreateTime(profitLoss.getCreateTime());
                 storage.setCreateByName(profitLoss.getCreateBy());
@@ -539,11 +539,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //固定为1
                 storageDetail.setUnitCount(1);
                 storageDetail.setTradeExponent(1);
-                storageDetail.setTaxRate(inboundProduct.getTax().intValue());
-                storageDetail.setExpectCount(inboundProduct.getPreInboundNum().intValue());
-                storageDetail.setExpectMinUnitCount(inboundProduct.getPreInboundNum().intValue());
+                storageDetail.setTaxRate(inboundProduct.getTax());
+                storageDetail.setExpectCount(inboundProduct.getPreInboundNum());
+                storageDetail.setExpectMinUnitCount(inboundProduct.getPreInboundNum());
                 storageDetail.setSingleCount(inboundProduct.getPraInboundNum().intValue());
-                storageDetail.setMinUnitCount(inboundProduct.getPraInboundNum().intValue());
+                storageDetail.setMinUnitCount(inboundProduct.getPraInboundNum());
                 //退货和采购才有金额
                 inbounds = inboundMap.get(batch.getInboundOderCode());
                 if ((null != inbounds) && (inbounds.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || inbounds.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))) {
@@ -583,8 +583,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 storage.setSubOrderType(innerValue.getValue());
                 storage.setSubOrderTypeName(innerValue.getName());
                 storage.setOrderCode(inbound.getInboundOderCode());
-                storage.setOrderCount(inbound.getPraInboundNum().intValue());
-                storage.setDiscountPrice("0");
+                storage.setOrderCount(inbound.getPraInboundNum());
+                storage.setDiscountPrice(BigDecimal.ZERO);
                 storage.setOptTime(inbound.getInboundTime());
                 storage.setCreateTime(inbound.getCreateTime());
                 storage.setCreateByName(inbound.getCreateBy());
@@ -595,7 +595,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     storage.setSourceOrderCode(inbound.getSourceOderCode());
                     storage.setSourceOrderType(innerValueType.getValue());
                     storage.setSourceOrderTypeName(innerValueType.getValue());
-                    storage.setAmount(inbound.getPraTaxAmount().toString());
+                    storage.setAmount(inbound.getPraTaxAmount());
                     storage.setTransportCode(inbound.getLogisticsCenterCode());
                     storage.setTransportName(inbound.getLogisticsCenterName());
                     storage.setStorageCode(inbound.getWarehouseCode());
@@ -667,11 +667,11 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //固定为1
                 storageDetail.setUnitCount(1);
                 storageDetail.setTradeExponent(1);
-                storageDetail.setTaxRate(outboundProduct.getTax().intValue());
-                storageDetail.setExpectCount(outboundProduct.getPreOutboundNum().intValue());
-                storageDetail.setExpectMinUnitCount(outboundProduct.getPreOutboundNum().intValue());
+                storageDetail.setTaxRate(outboundProduct.getTax());
+                storageDetail.setExpectCount(outboundProduct.getPreOutboundNum());
+                storageDetail.setExpectMinUnitCount(outboundProduct.getPreOutboundNum());
                 storageDetail.setSingleCount(outboundProduct.getPraOutboundNum().intValue());
-                storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
+                storageDetail.setMinUnitCount(outboundProduct.getPraOutboundMainNum());
                 //销售和退供才有金额
                 outbounds = outboundMap.get(outboundProduct.getOutboundOderCode());
                 if ((null != outbounds) && (outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode()) || outbounds.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode()))) {
@@ -724,7 +724,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     }
                     storage.setSourceOrderId(String.format("%s-%d", outbound.getSourceOderCode(), 5));
                     storage.setSourceOrderCode(outbound.getSourceOderCode());
-                    storage.setAmount(outbound.getPraTaxAmount().toString());
+                    storage.setAmount(outbound.getPraTaxAmount());
                     storage.setTransportCode(outbound.getLogisticsCenterCode());
                     storage.setTransportName(outbound.getLogisticsCenterName());
                     storage.setStorageCode(outbound.getWarehouseCode());
@@ -747,8 +747,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     }
                 }
                 storage.setOrderCode(outbound.getOutboundOderCode());
-                storage.setOrderCount(outbound.getPraOutboundNum().intValue());
-                storage.setDiscountPrice("0");
+                storage.setOrderCount(outbound.getPraOutboundNum());
+                storage.setDiscountPrice(BigDecimal.ZERO);
                 storage.setOptTime(outbound.getOutboundTime());
                 storage.setCreateTime(outbound.getCreateTime());
                 storage.setCreateByName(outbound.getCreateBy());
@@ -1044,7 +1044,14 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             sap.setPurchase(purchase);
             // 查询最后的入库单信息
             Inbound inbound = inboundDao.inboundCodeOrderLast(purchase.getOrderCode());
-            sap.setStorage(this.inboundInfo(inbound));
+            Storage storage = this.inboundPurchaseInfo(inbound);
+            storage.setTransportCode1(purchase.getTransportCode());
+            storage.setTransportName1(purchase.getTransportName());
+            storage.setStorageCode(purchase.getWarehouseCode());
+            storage.setStorageName(purchase.getWarehouseName());
+            storage.setSupplierCode(purchase.getSupplierCode());
+            storage.setSupplierName(purchase.getSupplierName());
+            sap.setPurchaseStorage(storage);
         }else {
             sap.setPurchase(rejectOrder(orderCode));
             // 查询出库单
@@ -1238,12 +1245,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setStorageCode1(inbound.getWarehouseCode());
         storage.setStorageName1(inbound.getWarehouseName());
         if(inbound.getPraInboundNum() != null){
-            storage.setOrderCount(inbound.getPraInboundNum().intValue());
+            storage.setOrderCount(inbound.getPraInboundNum());
         }
         if(inbound.getPraTaxAmount() != null){
-            storage.setAmount(inbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            storage.setAmount(inbound.getPraTaxAmount());
         }
-        storage.setDiscountPrice("0");
+        storage.setDiscountPrice(BigDecimal.ZERO);
         storage.setOptTime(inbound.getCreateTime());
         storage.setCreateTime(inbound.getCreateTime());
 
@@ -1272,25 +1279,25 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 detail.setUnitCount(Integer.parseInt(inboundProduct.getInboundBaseContent()));
             }
             if(inboundProduct.getTax() != null){
-                detail.setTaxRate(inboundProduct.getTax().intValue());
+                detail.setTaxRate(inboundProduct.getTax());
             }
             if(inboundProduct.getPreInboundNum() != null){
-                detail.setExpectCount(inboundProduct.getPreInboundNum().intValue());
+                detail.setExpectCount(inboundProduct.getPreInboundNum());
             }
             if(inboundProduct.getPreInboundMainNum() != null){
-                detail.setExpectMinUnitCount(inboundProduct.getPreInboundMainNum().intValue());
+                detail.setExpectMinUnitCount(inboundProduct.getPreInboundMainNum());
             }
             if(inboundProduct.getPreTaxPurchaseAmount() != null){
-                detail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount().toString());
+                detail.setExpectTaxPrice(inboundProduct.getPreTaxPurchaseAmount());
             }
             if(inboundProduct.getPraInboundNum() != null){
                 detail.setSingleCount(inboundProduct.getPraInboundNum().intValue());
             }
             if(inboundProduct.getPraInboundMainNum() != null){
-                detail.setMinUnitCount(inboundProduct.getPraInboundMainNum().intValue());
+                detail.setMinUnitCount(inboundProduct.getPraInboundMainNum());
             }
             if(inboundProduct.getPraTaxPurchaseAmount() != null){
-                detail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount().toString());
+                detail.setTaxPrice(inboundProduct.getPraTaxPurchaseAmount());
             }
 
 
@@ -1373,12 +1380,12 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setStorageCode1(outbound.getWarehouseCode());
         storage.setStorageName1(outbound.getWarehouseName());
         if(outbound.getPraOutboundNum() != null){
-            storage.setOrderCount(outbound.getPraOutboundNum().intValue());
+            storage.setOrderCount(outbound.getPraOutboundNum());
         }
         if(outbound.getPraTaxAmount() != null){
-            storage.setAmount(outbound.getPraTaxAmount().multiply(BigDecimal.valueOf(10000)).toString());
+            storage.setAmount(outbound.getPraTaxAmount());
         }
-        storage.setDiscountPrice("0");
+        storage.setDiscountPrice(BigDecimal.ZERO);
         storage.setOptTime(outbound.getCreateTime());
         storage.setCreateTime(outbound.getCreateTime());
         for (OutboundProduct outboundProduct : outboundProducts) {
@@ -1393,25 +1400,25 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 detail.setUnitCount(Integer.parseInt(outboundProduct.getOutboundBaseContent()));
             }
             if(outboundProduct.getTax() != null){
-                detail.setTaxRate(outboundProduct.getTax().intValue());
+                detail.setTaxRate(outboundProduct.getTax());
             }
             if(outboundProduct.getPreOutboundNum() != null){
-                detail.setExpectCount(outboundProduct.getPreOutboundNum().intValue());
+                detail.setExpectCount(outboundProduct.getPreOutboundNum());
             }
             if(outboundProduct.getPreOutboundMainNum() != null){
-                detail.setExpectMinUnitCount(outboundProduct.getPreOutboundMainNum().intValue());
+                detail.setExpectMinUnitCount(outboundProduct.getPreOutboundMainNum());
             }
             if(outboundProduct.getPreTaxPurchaseAmount() != null){
-                detail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount().toString());
+                detail.setExpectTaxPrice(outboundProduct.getPreTaxPurchaseAmount());
             }
             if(outboundProduct.getPraOutboundNum() != null){
                 detail.setSingleCount(outboundProduct.getPraOutboundNum().intValue());
             }
             if(outboundProduct.getPraOutboundMainNum() != null){
-                detail.setMinUnitCount(outboundProduct.getPraOutboundMainNum().intValue());
+                detail.setMinUnitCount(outboundProduct.getPraOutboundMainNum());
             }
             if(outboundProduct.getPraTaxPurchaseAmount() != null){
-                detail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount().toString());
+                detail.setTaxPrice(outboundProduct.getPraTaxPurchaseAmount());
             }
             detail.setSupplierCode(outbound.getSupplierCode());
             detail.setSupplierName(outbound.getSupplierName());
@@ -2012,6 +2019,115 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             storage.setSubOrderTypeName("退供出库");
         }
         LOGGER.info("对接sap，转换出库单参数：{}", JsonUtil.toJson(storage));
+        return storage;
+    }
+
+    /**  sap 入库单的信息转换*/
+    private Storage inboundPurchaseInfo(Inbound inbound){
+        LOGGER.info("对接sap，入库单信息：{}", JsonUtil.toJson(inbound));
+        // 赋值sap 的入库单信息
+        Storage storage = new Storage();
+        List<StorageDetail> storageDetailList = Lists.newArrayList();
+        StorageDetail storageDetail;
+        ProductSkuInfo productSkuInfo;
+
+        storage.setAmount(inbound.getPraTaxAmount());
+        storage.setOptTime(inbound.getInboundTime());
+        storage.setOrderCode(inbound.getInboundOderCode());
+        storage.setOrderCount(inbound.getPraMainUnitNum());
+        InnerValue innerValue = StringConvertUtil.inboundTypeConvert(inbound.getInboundTypeCode());
+        storage.setOrderId(String.format("%s-%s", inbound.getInboundOderCode(), innerValue.getValue()));
+        if ((null != inbound) && (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
+            storage.setInOutFlag(0);
+            storage.setSourceOrderCode(inbound.getSourceOderCode());
+            storage.setSourceOrderType("0");
+            storage.setSourceOrderTypeName("采购");
+            storage.setTransportCode1(inbound.getLogisticsCenterCode());
+            storage.setTransportName1(inbound.getLogisticsCenterName());
+            storage.setStorageCode1(inbound.getWarehouseCode());
+            storage.setStorageName1(inbound.getWarehouseName());
+            storage.setSubOrderType("0");
+            storage.setSubOrderTypeName("采购入库");
+        }
+        storage.setSupplierCode(inbound.getSupplierCode());
+        storage.setSupplierName(inbound.getSupplierName());
+        storage.setCreateTime(Calendar.getInstance().getTime());
+        storage.setCreateByName(inbound.getUpdateBy());
+        // 查询入库单的商品信息
+        List<InboundProduct> inboundProducts = inboundProductDao.inboundList(inbound.getInboundOderCode());
+        LOGGER.info("对接sap，入库单商品信息，{}", JsonUtil.toJson(inboundProducts));
+        List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+
+        // 查询sku的批次信息
+        Map<String, List<InboundBatch>> inboundBatchMap = new HashMap<>();
+        for(InboundProduct product : inboundProducts) {
+            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
+            if (inboundBatchMap.get(key) == null) {
+                inboundBatchMap.put(key, inboundBatchDao.inboundListBySku(product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum()));
+            }
+        }
+        if(inboundBatchMap != null){
+            LOGGER.info("对接sap，入库单商品批次信息，{}", JsonUtil.toJson(inboundBatchMap));
+        }
+
+        List<ScmpStorageBatch> infoBatch;
+        ScmpStorageBatch info;
+        for(InboundProduct product : inboundProducts){
+            PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
+            storageDetail = new StorageDetail();
+            storageDetail.setExpectCount(product.getPreInboundNum());
+            storageDetail.setExpectMinUnitCount(product.getPreInboundMainNum());
+            storageDetail.setExpectTaxPrice(product.getPreTaxPurchaseAmount());
+            //厂商指导价
+            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
+            if (productSkuInfo != null) {
+                storageDetail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+            } else {
+                storageDetail.setGuidePrice("0");
+            }
+            storageDetail.setMinUnitCount(product.getPraInboundMainNum());
+            storageDetail.setSingleCount(product.getPraInboundNum().intValue());
+            storageDetail.setSkuCode(product.getSkuCode());
+            storageDetail.setSkuName(product.getSkuName());
+            storageDetail.setSupplierCode(inbound.getSupplierCode());
+            storageDetail.setSupplierName(inbound.getSupplierName());
+            String desc = product.getNorms() + "/" + product.getColorName() + "/" + product.getModel();
+            storageDetail.setSkuDesc(desc);
+            storageDetail.setTaxPrice(product.getPreTaxPurchaseAmount());
+            storageDetail.setTaxRate(product.getTax());
+            storageDetail.setUnit(product.getUnitName());
+            storageDetail.setUnitCount(Integer.valueOf(product.getInboundBaseContent()));
+            Integer type = null;
+            if(purchaseOrderProduct.getProductType() == 0){
+                type = 0;
+            }else if(purchaseOrderProduct.getProductType() == 1){
+                type = 5;
+            }else if(purchaseOrderProduct.getProductType() == 2){
+                type = 10;
+            }
+            storageDetail.setProductType(type);
+            storageDetail.setCategoryCode(purchaseOrderProduct.getCategoryId());
+            storageDetail.setCategoryName(purchaseOrderProduct.getCategoryName());
+            storageDetail.setBrandCode(purchaseOrderProduct.getBrandId());
+            storageDetail.setBrandName(purchaseOrderProduct.getBrandName());
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", product.getSkuCode(), inbound.getInboundOderCode(), product.getLinenum());
+            List<InboundBatch> batchList = inboundBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                infoBatch = new ArrayList<>();
+                for (InboundBatch inboundBatch : batchList) {
+                    info = BeanCopyUtils.copy(inboundBatch, ScmpStorageBatch.class);
+                    info.setPurchaseOrderCode(inboundBatch.getInboundOderCode());
+                    info.setBatchNo(inboundBatch.getBatchCode());
+                    infoBatch.add(info);
+                }
+                storageDetail.setBatchList(infoBatch);
+            }
+            storageDetailList.add(storageDetail);
+        }
+        storage.setDetails(storageDetailList);
+        LOGGER.info("对接sap，转换入库单参数：{}", JsonUtil.toJson(storage));
         return storage;
     }
 }
