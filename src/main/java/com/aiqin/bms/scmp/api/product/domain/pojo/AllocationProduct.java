@@ -1,11 +1,14 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ApiModel("调拨商品表")
 @Data
@@ -66,4 +69,8 @@ public class AllocationProduct extends CommonBean {
 
     @ApiModelProperty("实际调拨数量")
     private Long actualTotalCount;
+
+    @ApiModelProperty("批次列表")
+    @JsonProperty("sku_batch")
+    private List<SkuBatchRespVO> skuBatchRespVOS;
 }

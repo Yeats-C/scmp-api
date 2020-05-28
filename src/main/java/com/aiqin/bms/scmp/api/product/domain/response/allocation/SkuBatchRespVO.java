@@ -69,6 +69,10 @@ public class SkuBatchRespVO {
     @JsonProperty(value = "supplier_code")
     private String supplierCode;
 
+    @ApiModelProperty("库位号")
+    @JsonProperty(value = "location_code")
+    private String locationCode;
+
     @ApiModelProperty("税率")
     @JsonProperty("tax_rate")
     private BigDecimal taxRate;

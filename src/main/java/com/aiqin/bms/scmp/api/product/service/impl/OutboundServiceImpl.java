@@ -758,6 +758,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 orderItem.setSkuName(op.getSkuName());
                 orderItem.setActualProductCount(op.getPraOutboundMainNum());
                 orderItem.setLineCode(op.getLinenum());
+                orderItems.add(orderItem);
             }
             request.setDetailList(orderItems);
             if(CollectionUtils.isNotEmpty(batchList)){
