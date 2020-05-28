@@ -699,6 +699,26 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     product.setCompanyName(item.getCompanyName());
                     productNum += item.getProductCount();
                     productList.add(product);
+
+                    // 批次商品的
+                    productBatch = new OrderInfoItemProductBatch();
+                    productBatch.setOrderCode(item.getOrderStoreCode());
+                    productBatch.setLineCode(item.getLineCode());
+                    productBatch.setBatchCode(item.getBatchCode());
+                    productBatch.setBatchInfoCode(item.getBatchInfoCode());
+                    productBatch.setSkuCode(item.getSkuCode());
+                    productBatch.setSkuName(item.getSkuName());
+                    productBatch.setTotalCount(item.getProductCount());
+                    productBatch.setActualTotalCount(item.getActualProductCount());
+                    productBatch.setProductDate(item.getBatchDate());
+                    productBatch.setLockType(item.getLockType());
+                    productBatch.setSupplierCode(item.getSupplierCode());
+                    productBatch.setSupplierName(item.getSupplierName());
+                    productBatch.setCreateById(item.getCreateById());
+                    productBatch.setCreateByName(item.getCreateByName());
+                    productBatch.setUpdateById(item.getUpdateById());
+                    productBatch.setUpdateByName(item.getUpdateByName());
+                    productBatcheList.add(productBatch);
                 }
             }else {
                 BeanUtils.copyProperties(item, product);
@@ -727,29 +747,27 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 product.setCompanyName(item.getCompanyName());
                 productNum += item.getProductCount();
                 productList.add(product);
+
+                // 批次商品的
+                productBatch = new OrderInfoItemProductBatch();
+                productBatch.setOrderCode(item.getOrderStoreCode());
+                productBatch.setLineCode(item.getLineCode());
+                productBatch.setBatchCode(item.getBatchCode());
+                productBatch.setBatchInfoCode(item.getBatchInfoCode());
+                productBatch.setSkuCode(item.getSkuCode());
+                productBatch.setSkuName(item.getSkuName());
+                productBatch.setTotalCount(item.getProductCount());
+                productBatch.setActualTotalCount(item.getActualProductCount());
+                productBatch.setProductDate(item.getBatchDate());
+                productBatch.setLockType(item.getLockType());
+                productBatch.setSupplierCode(item.getSupplierCode());
+                productBatch.setSupplierName(item.getSupplierName());
+                productBatch.setCreateById(item.getCreateById());
+                productBatch.setCreateByName(item.getCreateByName());
+                productBatch.setUpdateById(item.getUpdateById());
+                productBatch.setUpdateByName(item.getUpdateByName());
+                productBatcheList.add(productBatch);
             }
-
-
-            // 批次商品的
-            productBatch = new OrderInfoItemProductBatch();
-            productBatch.setOrderCode(item.getOrderStoreCode());
-            productBatch.setLineCode(item.getLineCode());
-            productBatch.setBatchCode(item.getBatchCode());
-            productBatch.setBatchInfoCode(item.getBatchInfoCode());
-            productBatch.setSkuCode(item.getSkuCode());
-            productBatch.setSkuName(item.getSkuName());
-            productBatch.setTotalCount(item.getProductCount());
-            productBatch.setActualTotalCount(item.getActualProductCount());
-            productBatch.setProductDate(item.getBatchDate());
-            productBatch.setLockType(item.getLockType());
-            productBatch.setSupplierCode(item.getSupplierCode());
-            productBatch.setSupplierName(item.getSupplierName());
-            productBatch.setCreateById(item.getCreateById());
-            productBatch.setCreateByName(item.getCreateByName());
-            productBatch.setUpdateById(item.getUpdateById());
-            productBatch.setUpdateByName(item.getUpdateByName());
-            productBatcheList.add(productBatch);
-
             erpOrderItemMap.put(item.getSkuCode()+item.getBatchInfoCode()+item.getProductType(), item);
         }
         vo.setProductNum(productNum);
