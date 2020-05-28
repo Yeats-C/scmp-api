@@ -100,10 +100,22 @@ public class ReturnOrderInfoInspectionItem {
     @ApiModelProperty("仓库编码")
     private String warehouseCode;
 
+    @ApiModelProperty("供应商编码")
+    private String  supplierCode;
+
+    @ApiModelProperty("供应商名称")
+    private String  supplierName;
+
     @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productDate;
 
     @ApiModelProperty(value = "批次编码")
     private String batchInfoCode;
+
+    @ApiModelProperty(value = "库位号")
+    private String locationCode;
+
+    @ApiModelProperty(value = "过期日期")
+    private String beOverdueDate;
 }

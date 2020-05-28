@@ -109,7 +109,7 @@ public class StockBatchInfoRequest {
     @JsonProperty("tax_cost")
     private BigDecimal taxCost;
 
-//    @ApiModelProperty("批次号集合")
-//    @JsonProperty(value = "batch_code")
-//    private List<String> batchCodeList;
+    @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    @JsonProperty(value = "batch_manage")
+    private Integer batch_manage;
 }

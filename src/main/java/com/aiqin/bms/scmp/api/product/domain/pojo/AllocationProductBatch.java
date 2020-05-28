@@ -28,27 +28,27 @@ public class AllocationProductBatch extends CommonBean {
     private String skuName;
 
     @ApiModelProperty("品类")
-    @JsonProperty(value = "category")
+    @JsonProperty(value = "product_category_name")
     private String category;
 
     @ApiModelProperty("品牌")
-    @JsonProperty(value = "brand")
+    @JsonProperty(value = "product_brand_name")
     private String brand;
 
     @ApiModelProperty("颜色")
-    @JsonProperty(value = "color")
+    @JsonProperty(value = "color_name")
     private String color;
 
     @ApiModelProperty("规格")
-    @JsonProperty(value = "specification")
+    @JsonProperty(value = "spec")
     private String specification;
 
     @ApiModelProperty("型号")
-    @JsonProperty(value = "model")
+    @JsonProperty(value = "model_number")
     private String model;
 
     @ApiModelProperty("单位(销售单位)")
-    @JsonProperty(value = "unit")
+    @JsonProperty(value = "unit_name")
     private String unit;
 
     @ApiModelProperty("类别")
@@ -68,11 +68,11 @@ public class AllocationProductBatch extends CommonBean {
     private Long inventory;
 
     @ApiModelProperty("税率")
-    @JsonProperty(value = "tax")
+    @JsonProperty(value = "tax_rate")
     private BigDecimal tax;
 
     @ApiModelProperty("含税成本")
-    @JsonProperty(value = "tax_price")
+    @JsonProperty(value = "tax_cost")
     private BigDecimal taxPrice;
 
     @ApiModelProperty("数量")
@@ -81,7 +81,7 @@ public class AllocationProductBatch extends CommonBean {
 
     @ApiModelProperty("含税总成本")
     @JsonProperty(value = "tax_amount")
-    private Double taxAmount;
+    private BigDecimal taxAmount;
 
     @ApiModelProperty("图片地址")
     @JsonProperty(value = "picture_url")
@@ -92,11 +92,11 @@ public class AllocationProductBatch extends CommonBean {
     private Long lineNum;
 
     @ApiModelProperty("调出批次号")
-    @JsonProperty(value = "callOut_batch_number")
+    @JsonProperty(value = "call_out_batch_number")
     private String callOutBatchNumber;
 
     @ApiModelProperty("调入批次号")
-    @JsonProperty(value = "callIn_batch_number")
+    @JsonProperty(value = "call_in_batch_number")
     private String callInBatchNumber;
 
     @ApiModelProperty("批次备注")
@@ -118,4 +118,12 @@ public class AllocationProductBatch extends CommonBean {
     @ApiModelProperty("供应商code")
     @JsonProperty(value = "supplier_code")
     private String supplierCode;
+
+    @ApiModelProperty("调出批次编号")
+    @JsonProperty(value = "callout_batch_info_code")
+    private String calloutBatchInfoCode;
+
+    @ApiModelProperty("调入批次编号")
+    @JsonProperty(value = "callin_batch_info_code")
+    private String callinBatchInfoCode;
 }

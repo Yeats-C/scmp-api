@@ -27,6 +27,9 @@ public class ScmpImportPurchase {
     @JsonProperty("storage")
     @ApiModelProperty("出入库信息")
     private PurchaseStorage storage;
-    
-    
+
+    @JsonProperty("purchaseStorage")
+    @ApiModelProperty("采购出入库信息")
+    private Storage purchaseStorage;
+
 }

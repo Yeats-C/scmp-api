@@ -82,7 +82,7 @@ public interface OutboundService {
     /**
      * 根据类型回传给来源单号状态
      */
-     void returnSource(Long id);
+     void returnSource(Long id,OutboundCallBackReqVo requestVo);
 
     /**
      * 订单回传接口

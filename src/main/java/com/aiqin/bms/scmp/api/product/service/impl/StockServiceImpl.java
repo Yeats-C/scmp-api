@@ -29,6 +29,8 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -86,6 +88,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private StockBatchFlowDao stockBatchFlowDao;
     @Autowired
     private ProductSkuStockInfoMapper productSkuStockInfoDao;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -523,9 +527,23 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             List<Stock> adds = new ArrayList<>();
             Boolean flage = false;
 
+            // 查询入库单批次商品信息
+            Map<String, WarehouseDTO> batchMangeMap = new HashMap<>();
+            for(StockInfoRequest stockInfoRequest : request.getStockList()) {
+                String key = String.format("%s", stockInfoRequest.getWarehouseCode());
+                if (batchMangeMap.get(key) == null) {
+                    batchMangeMap.put(key, warehouseDao.getWarehouseByCode(stockInfoRequest.getWarehouseCode()));
+                }
+            }
+
             // 将需要修改的库存进行逻辑计算
             List<StockFlow> stockFlows = new ArrayList<>();
             for (StockInfoRequest stockInfoRequest : request.getStockList()) {
+                String batchMange = String.format("%s", stockInfoRequest.getWarehouseCode());
+                WarehouseDTO warehouseDTO = batchMangeMap.get(batchMange);
+                if(warehouseDTO != null){
+                    stockInfoRequest.setBatchManage(warehouseDTO.getBatchManage());
+                }
                 // 给sku加锁
                 long time = System.currentTimeMillis() + 30;
                 if (!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))) {
@@ -807,6 +825,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 锁转移(锁定库存移入/移出)
             case 9:
                 // 不验证任何库存。实际操作为：库存不变动，库存日志新增了减锁定和加锁定
+                break;
+
+            // 出库减并解锁库存逻辑
+            case 10:
+
                 break;
             default:
                 return null;

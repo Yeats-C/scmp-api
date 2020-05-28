@@ -1,7 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.OperationLog;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
@@ -40,4 +42,6 @@ public interface PurchaseManageService {
     HttpResponse purchaseOrderPre(String purchaseGroupCode, Integer purchaseOrderTypeCode, String purchaseOrderCode);
 
     HttpResponse cancelInbound(PurchaseOrder order);
+
+    HttpResponse<PageResData<PurchaseBatch>> purchaseOrderBatch(PurchaseOrderProductRequest request);
 }

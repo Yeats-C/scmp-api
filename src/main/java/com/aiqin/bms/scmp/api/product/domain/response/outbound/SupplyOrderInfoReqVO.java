@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -21,5 +22,11 @@ public class SupplyOrderInfoReqVO {
     @JsonProperty("")
     private String orderCode;
 
+    @ApiModelProperty(value = "")
+    @JsonProperty("out_stock_time")
+    private Date outStockTime;
+
     private List<SupplyOrderProductItemReqVO> orderItems;
+
+    private List<SupplyOrderProductBatchItemReqVO> orderBatchLists;
 }

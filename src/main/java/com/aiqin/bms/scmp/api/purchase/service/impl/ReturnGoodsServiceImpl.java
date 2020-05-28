@@ -14,7 +14,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderInfoReqVOReturn;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderProductBatchItemReqVOReturn;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderProductItemReqVOReturn;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
@@ -35,13 +40,17 @@ import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,10 +58,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.text.SimpleDateFormat;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -66,6 +73,8 @@ import java.util.stream.Collectors;
 @Service
 @Slf4j
 public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoodsService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ReturnGoodsServiceImpl.class);
 
     @Autowired
     private ReturnOrderInfoMapper returnOrderInfoMapper;
@@ -430,6 +439,71 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             isok=false;
         }
         return isok;
+    }
+
+    @Override
+    public Boolean recordWMS(SupplyReturnOrderMainReqVOReturn reqVO) {
+
+        // 更新商品信息
+        List<SupplyReturnOrderProductItemReqVOReturn> orderItems = reqVO.getOrderItems();
+        for (SupplyReturnOrderProductItemReqVOReturn orderItem : orderItems) {
+            ReturnOrderInfoItem returnOrderInfoItem = new ReturnOrderInfoItem();
+            returnOrderInfoItem.setReturnOrderCode(orderItem.getReturnOrderCode());
+            returnOrderInfoItem.setActualInboundNum(orderItem.getReturnNum().intValue());
+            returnOrderInfoItem.setSkuCode(orderItem.getSkuCode());
+            returnOrderInfoItem.setProductLineNum(orderItem.getLinenum());
+            int returnInfoProduct = returnOrderInfoItemMapper.updateByReturnActualNum(returnOrderInfoItem);
+            if (returnInfoProduct <= 0) {
+                log.info("更新退货单商品表数据sku为"+orderItem.getSkuCode()+"失败");
+                throw new GroundRuntimeException("更新退货单商品表数据失败");
+            }
+        }
+        // 更新商品批次信息
+        List<SupplyReturnOrderProductBatchItemReqVOReturn> orderBatchItems = reqVO.getOrderBatchItems();
+        List<ReturnOrderInfoInspectionItem> returnOrderInfoInspectionItems = new ArrayList<>();
+        for (SupplyReturnOrderProductBatchItemReqVOReturn orderBatchItem : orderBatchItems) {
+            // 根据批次编号 退货单号确认改批次是否存在
+            ReturnOrderInfoInspectionItem returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(orderBatchItem.getBatchInfoCode(),orderBatchItem.getReturnOderCode(),orderBatchItem.getLineCode());
+            if(returnBatchItem != null){
+                returnBatchItem.setActualInboundNum(orderBatchItem.getActualTotalCount().intValue());
+                int count = returnOrderInfoInspectionItemMapper.updateByPrimaryKey(returnBatchItem);
+                LOGGER.info("变更退货单批次参数：" + JsonUtil.toJson(returnBatchItem)+ "，-条数：", count);
+                continue;
+            }
+
+            ReturnOrderInfoInspectionItem returnOrderInfoInspectionItem = BeanCopyUtils.copy(orderBatchItem, ReturnOrderInfoInspectionItem.class);
+            returnOrderInfoInspectionItem.setReturnOrderCode(orderBatchItem.getReturnOderCode());
+            returnOrderInfoInspectionItem.setNum(0L);
+            returnOrderInfoInspectionItem.setActualInboundNum(orderBatchItem.getActualTotalCount().intValue());
+            returnOrderInfoInspectionItem.setProductLineNum(orderBatchItem.getLineCode().longValue());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            try{
+                Date parse = simpleDateFormat.parse(orderBatchItem.getProductDate());
+                returnOrderInfoInspectionItem.setProductDate(parse);
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            returnOrderInfoInspectionItems.add(returnOrderInfoInspectionItem);
+        }
+        int count = returnOrderInfoInspectionItemMapper.insertBatch(returnOrderInfoInspectionItems);
+        LOGGER.info("添加退货单单批次参数：" + JsonUtil.toJson(returnOrderInfoInspectionItems) + "，-条数：", count);
+        // 更新主信息
+        SupplyReturnOrderInfoReqVOReturn mainOrderInfo = reqVO.getMainOrderInfo();
+        ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
+        returnOrderInfo.setReturnOrderCode(mainOrderInfo.getReturnOrderCode());
+        returnOrderInfo.setCompanyCode(mainOrderInfo.getCompanyCode());
+        returnOrderInfo.setCompanyName(mainOrderInfo.getCompanyName());
+        returnOrderInfo.setOperator(mainOrderInfo.getOperator());
+        returnOrderInfo.setActualProductNum(mainOrderInfo.getProductNum());
+        returnOrderInfo.setActualReturnOrderAmount(mainOrderInfo.getOrderAmount());
+        returnOrderInfo.setOrderStatus(mainOrderInfo.getOrderStatus());
+
+        int returnInfo = returnOrderInfoMapper.updateByReturnOrderCodeSelective(returnOrderInfo);
+        if (returnInfo <= 0) {
+            log.info("更新退货单主表数据失败");
+            throw new GroundRuntimeException("更新退货单主表数据失败");
+        }
+        return Boolean.TRUE;
     }
 
 

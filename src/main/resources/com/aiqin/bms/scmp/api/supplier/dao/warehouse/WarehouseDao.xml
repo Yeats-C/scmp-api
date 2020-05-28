@@ -28,12 +28,13 @@
     <result column="wms_warehouse_code" jdbcType="VARCHAR" property="wmsWarehouseCode" />
     <result column="wms_warehouse_name" jdbcType="VARCHAR" property="wmsWarehouseName" />
     <result column="wms_warehouse_type" jdbcType="TINYINT" property="wmsWarehouseType" />
+    <result column="batch_manage" jdbcType="INTEGER" property="batchManage" />
   </resultMap>
   <sql id="Base_Column_List">
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
     warehouse_type_name, warehouse_type_code, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, contact, phone, enable, del_flag, 
-    create_by, create_time, update_by, update_time,warehouse_order
+    create_by, create_time, update_by, update_time, warehouse_order, batch_manage
   </sql>
   <select id="findWarehouseList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo" resultMap="BaseResultMap">
   select
@@ -395,5 +396,11 @@
       and warehouse_type_code != #{warehouseTypeCode,jdbcType=TINYINT}
     </if>
     order by warehouse_order asc
+  </select>
+  <select id="warehouseByBatchMange" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and batch_manage in (1,2)
   </select>
 </mapper>

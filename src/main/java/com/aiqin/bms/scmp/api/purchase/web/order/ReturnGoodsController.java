@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
@@ -76,6 +77,20 @@ public class ReturnGoodsController {
         log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
             return HttpResponse.success(returnGoodsService.recordDL(reqVO));
+        } catch (BizException e){
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+        }catch (Exception e) {
+            log.error(e.getMessage(),e);
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+        }
+    }
+
+    @ApiOperation("wms退货单回传接口")
+    @PostMapping("recordWMS/return")
+    public HttpResponse recordWMS(@RequestBody SupplyReturnOrderMainReqVOReturn reqVO){
+        log.info("ReturnGoodsController--updateReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
+        try {
+            return HttpResponse.success(returnGoodsService.recordWMS(reqVO));
         } catch (BizException e){
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
         }catch (Exception e) {

@@ -436,7 +436,7 @@
     sku_code as skuCode, sku_name as skuName, batch_code as warehouseBatchNumber, transport_center_code as transportCenterCode,
     transport_center_name as transportCenterName, warehouse_code as warehouseCode, warehouse_name as warehouseName,
     batch_remark as batchRemark, available_count as availableNum, product_date as productTime, supplier_code as supplierCode,
-    tax_cost as taxCost, tax_rate as taxRate,batch_info_code as batchInfoCode
+    tax_cost as taxCost, tax_rate as taxRate,batch_info_code as batchInfoCode, location_code as locationCode
     from stock_batch
     where sku_code=#{skuCode}
     <if test="transportCenterCode != null">
@@ -451,6 +451,8 @@
     from stock_batch
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    <if test="supplierCode != null">
+       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
   </select>
 </mapper>

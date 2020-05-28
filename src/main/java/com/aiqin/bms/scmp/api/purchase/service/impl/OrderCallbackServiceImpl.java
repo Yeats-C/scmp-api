@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
@@ -18,9 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.mapper.*;
-import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
-import com.aiqin.bms.scmp.api.product.service.SkuService;
-import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
@@ -62,7 +61,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -70,6 +71,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -178,6 +180,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
     @Resource
     private OrderInfoLogMapper orderInfoLogMapper;
+    @Resource
+    private OutboundService outboundService;
+    @Resource
+    private InboundService inboundService;
+    @Autowired
+    @Lazy(true)
+    private SapBaseDataService sapBaseDataService;
 
     /**
      * 销售出库接口
@@ -1192,6 +1201,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuList = request.getDetailList().stream().map(ProfitLossDetailRequest::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
             Map<String, OrderProductSkuResponse> productSkuResponseMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
+            // 报损报溢记录出入库
+            OutboundReqVo outboundReqVo = new OutboundReqVo();
+            outboundService.saveOutbound(outboundReqVo);
+            InboundReqSave inboundReqSave = new InboundReqSave();
+            inboundService.saveInbound2(inboundReqSave);
             //报溢数量 正数值
             Long profitQuantity;
             //报损数量 负数值
@@ -1443,6 +1457,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
+        request.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
+        request.setOrderTypeCode(response.getOrderTypeCode());
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
         if (CollectionUtils.isEmpty(detailList)) {
             LOGGER.info("销售单回传的详情信息缺失");
@@ -1514,9 +1530,15 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setTotalCount(batch.getProductCount());
+                productBatch.setTotalCount(batch.getTotalCount());
                 productBatch.setActualTotalCount(batch.getActualTotalCount());
-                productBatch.setProductDate(batch.getProductDate());
+                Date parse;
+                try{
+                    parse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(batch.getProductDate());
+                    productBatch.setProductDate(parse);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
                 productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
           //      productBatch.setTransportCenterCode(response.getTransportCenterCode());
@@ -1535,7 +1557,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 更新出库单
         this.updateOutbound(request);
         // 调用爱亲供应链的接口 回传销售单的发货等信息
+        LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
         this.updateAiqinOrder(request);
+
+        // 调用sap 传送销售单的数据给sap
+        sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
     }
 

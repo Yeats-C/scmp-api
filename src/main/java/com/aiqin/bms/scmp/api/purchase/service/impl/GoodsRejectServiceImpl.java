@@ -138,7 +138,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         List<RejectApplyDetailHandleResponse> list = stockDao.rejectProductList(rejectQueryRequest);
         Map<String, List<StockBatch>> rejectApply = new HashMap<>();
         for (RejectApplyDetailHandleResponse response : list) {
-            if(response.getBatchManage() == 1){
+            if(response.getBatchManage() == 0){
                 continue;
             }
             // 赋值四级品类名称
@@ -172,16 +172,16 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     }
 
     @Override
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(String rejectApplyRecordCode) {
-        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailList(rejectApplyRecordCode);
-        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordDetailCount(rejectApplyRecordCode);
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(RejectApplyQueryRequest request) {
+        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordDetailList(request);
+        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordDetailCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Override
-    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(String rejectApplyRecordCode) {
-        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordBatchList(rejectApplyRecordCode);
-        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordBatchCount(rejectApplyRecordCode);
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(RejectApplyQueryRequest request) {
+        List<RejectApplyRecordDetail> list = rejectApplyRecordDetailDao.rejectApplyRecordBatchList(request);
+        Integer count = rejectApplyRecordDetailDao.rejectApplyRecordBatchCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
@@ -514,7 +514,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse operationRejectRecord(RejectRecord rejectRecord){
         if(rejectRecord == null || StringUtils.isBlank(rejectRecord.getRejectRecordCode()) ||
-                StringUtils.isBlank(rejectRecord.getSynchrStatus().toString())){
+                StringUtils.isBlank(rejectRecord.getRejectStatus().toString())){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // 获取当前登录人的信息
@@ -555,7 +555,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
                 break;
             case 4:
-                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT) ||
+                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT) &&
                         !record.getRejectStatus().equals(RejectRecordStatus.REJECT_TO_OUTBOUND)){
                     LOGGER.info("退供单非待确认、待出库状态，不可以进行撤销的操作:{}", JsonUtil.toJson(record));
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供单非待确认、待出库状态，不可以进行撤销的操作"));

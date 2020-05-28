@@ -65,7 +65,8 @@
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, `type`, inventory_unit, inventory, tax, tax_price, quantity, tax_amount,
     del_flag, create_time, create_by, update_time, update_by, picture_url, line_num,
-    callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_code,supplier_name
+    callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_code,supplier_name,
+    location_code, callout_actual_total_count, callin_actual_total_count, callout_batch_info_code, callin_batch_info_code
   </sql>
   <sql id="Base_Column_OutBound_List">
     a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
@@ -89,6 +90,11 @@
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
+    <result column="callout_actual_total_count" jdbcType="BIGINT" property="calloutActualTotalCount" />
+    <result column="callin_actual_total_count" jdbcType="BIGINT" property="callinActualTotalCount" />
+    <result column="callout_batch_info_code" jdbcType="VARCHAR" property="calloutBatchInfoCode" />
+    <result column="callin_batch_info_code" jdbcType="VARCHAR" property="callinBatchInfoCode" />
 
   </resultMap>
   <select id="selectByAllocationCode" parameterType="java.lang.String" resultMap="ListResultMap">

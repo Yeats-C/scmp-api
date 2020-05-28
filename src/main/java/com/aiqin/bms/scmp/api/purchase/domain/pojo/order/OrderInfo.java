@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -259,11 +260,34 @@ public class OrderInfo {
     @ApiModelProperty("预计商品数量")
     private Long preProductNum;
 
+    @ApiModelProperty("发票地址")
+    private String invoiceAddress;
+
+    @ApiModelProperty("发票电话")
+    private String invoiceMobile;
+
+    @ApiModelProperty("发票开户银行")
+    private String invoiceBank;
+
+    @ApiModelProperty("发票银行账号")
+    private String invoiceBankAccount;
+
     @ApiModelProperty("业务形式(熙云:批发业务  爱亲母婴:门店业务,批发业务,天猫业务,优选业务  爱亲科技:门店业务,批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
     private String businessForm;
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
     private String platformType;
+
+    @ApiModelProperty("税号")
+    private String taxId;
+
+    @ApiModelProperty(value="sap同步时间")
+    @JsonProperty("synchr_time")
+    private Date synchrTime;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
 
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;

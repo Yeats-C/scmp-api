@@ -49,19 +49,19 @@ public class SupplyReturnOrderProductItemReqVOReturn {
     private String unitName;
 
     @ApiModelProperty("是否是赠品(0否1是)")
-    private Byte bePromotion;
+    private Integer bePromotion;
 
     @ApiModelProperty("数量")
     private Long num;
 
     @ApiModelProperty("总价")
-    private Long amount;
+    private BigDecimal amount;
 
     @ApiModelProperty("单价")
-    private Long price;
+    private BigDecimal price;
 
     @ApiModelProperty("优惠分摊")
-    private Long preferentialAllocation;
+    private BigDecimal preferentialAllocation;
 
     @ApiModelProperty("实发数量")
     @JsonProperty("actualDeliverNum")

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -135,5 +136,13 @@ public class Outbound {
 
     @ApiModelProperty("更新时间")
     private Date updateTime;
+
+    @ApiModelProperty(value="sap同步时间")
+    @JsonProperty("synchr_time")
+    private Date synchrTime;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
 
 }

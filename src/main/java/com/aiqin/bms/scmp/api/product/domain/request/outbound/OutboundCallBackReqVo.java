@@ -30,7 +30,7 @@ public class OutboundCallBackReqVo{
     @JsonProperty(value = "outbound_oder_code")
     private String outboundOderCode;
 
-    @ApiModelProperty("出库类型编码 1.采购 2.调拨 3.退货 4.移库")
+    @ApiModelProperty("出库类型编码 1.退供 2.调拨 3.订单 4.移库")
     @JsonProperty(value = "outbound_type_code")
     private Integer outboundTypeCode;
 

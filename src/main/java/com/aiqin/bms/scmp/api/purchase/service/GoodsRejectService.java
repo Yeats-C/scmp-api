@@ -22,9 +22,9 @@ public interface GoodsRejectService {
 
     HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(String rejectApplyRecordCode, String warehouseCode);
 
-    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(String rejectApplyRecordCode);
+    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(RejectApplyQueryRequest request);
 
-    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(String rejectApplyRecordCode);
+    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(RejectApplyQueryRequest request);
 
     HttpResponse<RejectApplyGroupResponse> productGroup(List<RejectApplyDetailRequest> request);
 

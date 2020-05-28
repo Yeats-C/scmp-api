@@ -1,9 +1,12 @@
-package com.aiqin.bms.scmp.api.abutment.domain.request;
+package com.aiqin.bms.scmp.api.abutment.domain.request.sale;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Data;
 
 /**
@@ -19,13 +22,13 @@ public class OrderDetail {
      * 订单id
      */
     @JsonProperty("order_id")
-    @ApiModelProperty(value = "订单id",hidden = true)
+    @ApiModelProperty(value = "订单id", hidden = true)
     private String orderId;
     /**
      * 订单类型
      */
     @JsonProperty("order_type")
-    @ApiModelProperty(value = "订单类型",hidden = true)
+    @ApiModelProperty(value = "订单类型", hidden = true)
     private Integer orderType;
     /**
      * sku编码
@@ -60,26 +63,26 @@ public class OrderDetail {
      * 是否赠品
      */
     @JsonProperty("gift_flag")
-    @ApiModelProperty("是否是赠品(0否1是)")
+    @ApiModelProperty("是否赠品")
     private Integer giftFlag;
-    /**
-     * 批次号
-     */
-    @JsonProperty("batch_no")
-    @ApiModelProperty("批次号")
-    private String batchNo;
+//    /**
+//     * 批次号
+//     */
+//    @JsonProperty("batch_no")
+//    @ApiModelProperty("批次号")
+//    private String batchNo;
     /**
      * 渠道单价
      */
     @JsonProperty("channel_price")
     @ApiModelProperty("渠道单价")
-    private String channelPrice;
+    private BigDecimal channelPrice;
     /**
      * 分销单价
      */
     @JsonProperty("distribution_price")
     @ApiModelProperty("分销单价")
-    private String distributionPrice;
+    private BigDecimal distributionPrice;
     /**
      * 数量
      */
@@ -91,13 +94,13 @@ public class OrderDetail {
      */
     @JsonProperty("activity_share_amount")
     @ApiModelProperty("活动分摊金额")
-    private String activityShareAmount;
+    private BigDecimal activityShareAmount;
     /**
      * 优惠分摊
      */
     @JsonProperty("discount_share_amount")
     @ApiModelProperty("优惠分摊")
-    private String discountShareAmount;
+    private BigDecimal discountShareAmount;
     /**
      * 实发数
      */
@@ -135,4 +138,32 @@ public class OrderDetail {
     @JsonProperty("supplier_name")
     @ApiModelProperty("供应商名称")
     private String supplierName;
+
+    @JsonProperty("brand_code")
+    @ApiModelProperty("品牌编码")
+    private String brandCode;
+
+    @JsonProperty("brand_name")
+    @ApiModelProperty("品牌名称")
+    private String brandName;
+
+    @JsonProperty("category_code")
+    @ApiModelProperty("品类编码")
+    private String categoryCode;
+
+    @JsonProperty("category_name")
+    @ApiModelProperty("品类名称")
+    private String categoryName;
+
+    /**
+     * 税率
+     */
+    @JsonProperty("input_rate")
+    @ApiModelProperty("税率")
+    private BigDecimal inputRate;
+
+    @JsonProperty("batch_list")
+    @ApiModelProperty("批次信息")
+    private List<ScmpPurchaseBatch> batchList;
+
 }

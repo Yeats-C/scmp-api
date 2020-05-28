@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
 import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
+import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderProductBatchItemReqVOReturn;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrd
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -173,4 +176,7 @@ public interface ReturnGoodsService {
     String record(ReturnReq reqVO);
 
     Boolean recordDL(ReturnDLReq reqVO);
+
+    /** wms回传退货接口 **/
+    Boolean recordWMS(SupplyReturnOrderMainReqVOReturn reqVO);
 }

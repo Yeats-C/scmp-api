@@ -618,8 +618,10 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 info.setPurchaseOderCode(purchaseStorage.getPurchaseOrderCode());
                 purchaseBatches.add(info);
             }
-            Integer count = purchaseBatchDao.insertAll(purchaseBatches);
-            LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
+            if(CollectionUtils.isNotEmptyCollection(purchaseBatches)){
+                Integer count = purchaseBatchDao.insertAll(purchaseBatches);
+                LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
+            }
         }
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
@@ -831,6 +833,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
         List<String> list = purchaseOrderDao.getPurchaseOrderPre(purchaseGroupCode, purchaseOrderTypeCode, purchaseOrderCode);
         return HttpResponse.success(list);
+    }
+
+    @Override
+    public HttpResponse<PageResData<PurchaseBatch>> purchaseOrderBatch(PurchaseOrderProductRequest request){
+        List<PurchaseBatch> list = purchaseBatchDao.list(request);
+        Integer count = purchaseBatchDao.listCount(request);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
 }

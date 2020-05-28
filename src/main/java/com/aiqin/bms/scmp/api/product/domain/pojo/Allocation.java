@@ -8,6 +8,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 
 @ApiModel("调拨主表")
@@ -165,6 +166,14 @@ public class Allocation extends CommonBean {
     @ApiModelProperty(value = "更新人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    @ApiModelProperty(value="出库时间")
+    @JsonProperty("out_stock_time")
+    private Date outStockTime;
+
+    @ApiModelProperty(value="入库时间")
+    @JsonProperty("in_stock_time")
+    private Date inStockTime;
 
     /** 以下是dl回调需要用的字段*/
 

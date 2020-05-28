@@ -43,4 +43,7 @@ public interface InboundDao {
     String cancelById(String code);
 
     Inbound inboundCodeOrderLast(String sourceOderCode);
+
+    /** 调拨/损溢入库同步sap **/
+    void updateInboundSynchrSap(Inbound inbound);
 }

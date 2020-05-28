@@ -44,4 +44,7 @@ public interface ReturnOrderInfoItemMapper {
     Integer insertList(List<ReturnOrderInfoItem> list);
 
     List<ReturnOrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
+
+    /** 更新退货单商品实际入库数量 */
+    int updateByReturnActualNum(ReturnOrderInfoItem returnOrderInfoItem);
 }

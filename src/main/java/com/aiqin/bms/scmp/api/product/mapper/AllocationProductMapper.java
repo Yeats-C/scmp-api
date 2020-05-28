@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -33,5 +34,7 @@ public interface AllocationProductMapper {
     int updateByPrimaryKey(AllocationProduct record);
 
     AllocationProductResVo selectQuantityBySkuCodeAndSource(String sourceOderCode, String skuCode, int i);
+
+    AllocationProductResVo selectAllocationProductByLineCode(@Param("allocationCode") String allocationCode, @Param("lineCode") Integer lineCode);
 }
 

@@ -52,6 +52,7 @@ public class OrderInfoItemProductBatch {
     private Long returnTotalCount;
 
     @ApiModelProperty("生产日期")
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("product_date")
     private Date productDate;
 
