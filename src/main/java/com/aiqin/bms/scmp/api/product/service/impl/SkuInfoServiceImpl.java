@@ -1550,13 +1550,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             String categoryId;
             PageHelper.startPage(querySkuListReqVO.getPageNo(),querySkuListReqVO.getPageSize());
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);
-//            for(QueryProductSkuListResp sku:queryProductSkuListResps){
-////                categoryId = sku.getProductCategoryCode();
-////                if (StringUtils.isNotBlank(categoryId)) {
-////                    String categoryName = dataManageService.selectCategoryName(categoryId);
-////                    sku.setProductCategoryName(categoryName);
-////                }
-////            }
+            if (CollectionUtils.isNotEmpty(queryProductSkuListResps)) {
+                for(QueryProductSkuListResp sku:queryProductSkuListResps){
+                    //SKU渠道信息
+                    List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getList(sku.getSkuCode());
+                    sku.setProductSkuChannels(skuChannelRespVos);
+                  }
+            }
             return PageUtil.getPageList(querySkuListReqVO.getPageNo(),queryProductSkuListResps);
         } catch (BizException e){
             throw new BizException(e.getMessage());

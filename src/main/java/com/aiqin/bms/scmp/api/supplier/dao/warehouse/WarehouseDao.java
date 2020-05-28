@@ -64,5 +64,5 @@ public interface WarehouseDao {
 
    List<WarehouseDTO> warehouseByBatchMange();
 
-    List<QueryWarehouseResVo2>  findWarehouseListForBatch();
+    List<WarehouseDTO>  findWarehouseListForBatch();
 }

@@ -202,6 +202,7 @@
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
+      <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
     <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
@@ -869,7 +870,7 @@
   </select>
   <select id="querySkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="QuerySkuListMap">
     SELECT
-      a.sku_code, a.sku_name, a.product_code, a.product_name,
+      a.sku_code, a.sku_name, a.product_code, a.product_name,goods_gifts,
       CASE a.on_sale WHEN 1 THEN '上架' WHEN 0 THEN '下架' ELSE '其他' END on_sale_name,
       a.product_category_code, a.product_property_name, a.product_brand_name,
       a.create_by, a.create_time, a.update_by, a.update_time, a.product_sort_name,
@@ -1755,7 +1756,7 @@
       i.warehouse_code        as warehouseCode,
       i.warehouse_name        as warehouseName,
       i.batch_remark          as batchRemark,
-      i.production_date       as productTime
+      i.product_date       as productTime
       from product_sku a
       left join product b
       on a.spu_code = b.product_code

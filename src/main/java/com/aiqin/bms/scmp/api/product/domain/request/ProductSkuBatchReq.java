@@ -77,7 +77,7 @@ public class ProductSkuBatchReq {
      * 表字段 : product_sku_batch.warehouse_type
      */
     @ApiModelProperty("库房类型(1.销售库 2.特卖库 3.残品库 4.监管库)")
-    private Boolean warehouseType;
+    private Byte warehouseType;
 
     /**
      * 创建人id

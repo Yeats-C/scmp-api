@@ -404,10 +404,9 @@
     where enable = 0 and batch_manage in (1,2)
   </select>
     <select id="findWarehouseListForBatch"
-            resultType="com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2">
+            resultMap="BaseResultMap">
         select
-      warehouse_code as warehouseCode,
-      warehouse_name as warehouseName
+        <include refid="Base_Column_List" />
     from warehouse
     where del_flag=0 and enable=0 and batch_manage = 2
     </select>

@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.SupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductSkuBatchReq;
+import com.aiqin.bms.scmp.api.product.domain.request.ProductSkuBatchReq2;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ocenter.QueryCenterSkuListReqVo;
@@ -33,6 +34,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.store.ProductItemStore
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuDetailRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuItemRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.store.StoreSkuListRespVO;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 
@@ -53,7 +55,7 @@ public interface ProductSkuBatchService {
 
     Boolean banById(Long id);
 
-    Boolean add(List<ProductSkuBatchReq> productSkuBatchReqList);
+    Boolean add(ProductSkuBatchReq2 productSkuBatchReq2);
 
-    List<QueryWarehouseResVo2> getWarehousetList();
+    List<WarehouseDTO> getWarehousetList();
 }
