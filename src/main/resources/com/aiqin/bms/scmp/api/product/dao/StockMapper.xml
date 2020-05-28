@@ -143,7 +143,7 @@
         <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
         <result column="tax_cost" jdbcType="DECIMAL" property="taxCost"/>
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
-        <result column="production_date" jdbcType="VARCHAR" property="productionDate"/>
+        <result column="product_date" jdbcType="VARCHAR" property="productionDate"/>
     </resultMap>
     <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
         <id column="id" jdbcType="BIGINT" property="id"/>
@@ -1278,7 +1278,7 @@
     <select id="selectSkuCodeByQueryBatchCodeList" parameterType="String" resultType="com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo">
         SELECT
         sb.batch_code as batchCode,
-        date_format(sb.production_date , '%Y-%m-%d %H:%i:%s') as productionDate,
+        date_format(sb.product_date , '%Y-%m-%d %H:%i:%s') as productionDate,
         sb.batch_remark as batchRemark,
         sb.available_num as availableNum
         FROM stock_batch sb
@@ -1295,7 +1295,7 @@
         select
         sb.id,sb.warehouse_code,sb.sku_code,sb.sku_name,ps.product_category_code,ps.product_category_name,ps.product_brand_code,ps.product_brand_name,
         ps.goods_gifts,sb.spec,sb.color_code,sb.color_name,sb.model_number,sb.unit_code,sb.unit_name,sb.available_num,sb.batch_code,
-        date_format(sb.production_date , '%Y-%m-%d %H:%i:%s') production_date,s.tax_rate,s.tax_cost
+        date_format(sb.product_date , '%Y-%m-%d %H:%i:%s') product_date,s.tax_rate,s.tax_cost
         from stock_batch sb
         left join stock s on sb.sku_code = s.sku_code
         left join product_sku ps on sb.sku_code = ps.sku_code
@@ -1384,7 +1384,7 @@
         a.warehouse_code        as warehouseCode,
         a.warehouse_name        as warehouseName,
         a.batch_remark          as batchRemark,
-        a.production_date       as productTime,
+        a.product_date       as productTime,
         #{changePriceType}      as changePriceType,
         #{companyCode}          as companyCode
         from stock_batch a
@@ -1425,7 +1425,7 @@
           a.warehouse_code        as warehouseCode,
           a.warehouse_name        as warehouseName,
           a.batch_remark          as batchRemark,
-          a.production_date       as productTime
+          a.product_date       as productTime
        from stock_batch a
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
     </select>
