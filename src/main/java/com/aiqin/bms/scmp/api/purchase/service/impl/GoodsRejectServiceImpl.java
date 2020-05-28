@@ -555,7 +555,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 record.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
                 break;
             case 4:
-                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT) ||
+                if(!record.getRejectStatus().equals(RejectRecordStatus.REJECT_NO_SUBMIT) &&
                         !record.getRejectStatus().equals(RejectRecordStatus.REJECT_TO_OUTBOUND)){
                     LOGGER.info("退供单非待确认、待出库状态，不可以进行撤销的操作:{}", JsonUtil.toJson(record));
                     return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退供单非待确认、待出库状态，不可以进行撤销的操作"));
