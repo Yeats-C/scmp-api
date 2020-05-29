@@ -190,4 +190,8 @@ public class RejectApplyDetailHandleResponse {
     @ApiModelProperty(value="含税总价")
     @JsonProperty("product_total_amount")
     private BigDecimal productTotalAmount;
+
+    @ApiModelProperty(value = "批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
 }
