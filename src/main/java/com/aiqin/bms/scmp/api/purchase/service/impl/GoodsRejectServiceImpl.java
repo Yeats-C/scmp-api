@@ -830,6 +830,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_OUTBOUND_COMPLETE);
 
         RejectRecordDetail rejectRecordDetail;
+        RejectRecordBatch recordBatch;
+        List<RejectRecordBatch> recordBatches = Lists.newArrayList();
         Long actualProductCount = 0L, actualReturnCount = 0L, actualGiftCount = 0L, actualTotalCount = 0L;
         BigDecimal actualProductAmount = big, actualReturnAmount = big, actualGiftAmount = big;
 
@@ -853,6 +855,26 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 actualReturnAmount = actualReturnAmount.add(detail.getActualAmount());
             }
             actualTotalCount += detail.getActualCount();
+
+            // 自动批次管理，wms回传添加退供单的批次
+            if(!request.getBatchManage().equals(0)){
+                recordBatch = new RejectRecordBatch();
+                recordBatch.setRejectRecordCode(request.getRejectRecordCode());
+                String batchCode = DateUtils.currentDate().replaceAll("-","");
+                recordBatch.setBatchCode(batchCode);
+                String batchInfoCode = rejectRecordDetail.getSkuCode() + "_" + rejectRecord.getWarehouseCode() + "_" +
+                        batchCode + "_" + rejectRecord.getSupplierCode() + "_" + rejectRecordDetail.getProductAmount();
+                recordBatch.setBatchInfoCode(batchInfoCode);
+                recordBatch.setSkuCode(rejectRecordDetail.getSkuCode());
+                recordBatch.setSkuName(rejectRecordDetail.getSkuName());
+                recordBatch.setSupplierCode(rejectRecord.getSupplierCode());
+                recordBatch.setSupplierName(rejectRecord.getSupplierName());
+                recordBatch.setProductDate(DateUtils.currentDate());
+                recordBatch.setTotalCount(rejectRecordDetail.getTotalCount());
+                recordBatch.setActualTotalCount(detail.getActualCount());
+                recordBatch.setLineCode(detail.getLineCode());
+                recordBatches.add(recordBatch);
+            }
         }
         rejectRecord.setActualProductCount(actualProductCount);
         rejectRecord.setActualReturnCount(actualReturnCount);
@@ -863,10 +885,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectRecord.setActualReturnTaxAmount(actualReturnAmount);
 
         // 更新批次的实际信息
-        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+        if(CollectionUtils.isNotEmpty(request.getBatchList()) && !request.getBatchManage().equals(0)){
             Integer count = rejectRecordBatchDao.updateAll(request.getBatchList());
             LOGGER.info("wms回传-更新退供批次的实际值：{}", count);
+        }else if(CollectionUtils.isNotEmpty(recordBatches)){
+            Integer count = rejectRecordBatchDao.insertAll(recordBatches);
+            LOGGER.info("wms回传-新增退供批次信息：{}", count);
         }
+
         Integer count = rejectRecordDao.update(rejectRecord);
         LOGGER.info("wms回传-更新退供单的实际值：{}", count);
         if(count > 0){

@@ -53,6 +53,10 @@ public class StockBatchInfoRequest {
     @JsonProperty(value = "batch_code")
     private String batchCode;
 
+    @ApiModelProperty("批次编号")
+    @JsonProperty(value = "batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty("生产日期")
     @JsonProperty(value = "product_date")
     private String productDate;
