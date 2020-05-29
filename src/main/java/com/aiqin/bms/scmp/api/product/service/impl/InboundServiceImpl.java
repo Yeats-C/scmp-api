@@ -40,8 +40,10 @@ import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
@@ -124,6 +126,8 @@ public class InboundServiceImpl implements InboundService {
     private SapBaseDataService sapBaseDataService;
     @Resource
     private EncodingRuleDao encodingRuleDao;
+    @Resource
+    private WarehouseDao warehouseDao;
 
     /**
      * 分页查询以及列表搜索
@@ -510,6 +514,10 @@ public class InboundServiceImpl implements InboundService {
             changeStockRequest.setOperationType(6);
         }
 
+        // 查询对应库房的批次管理
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(inbound.getWarehouseCode());
+        LOGGER.info("wms回传入库单的库房批次管理信息：{}", JsonUtil.toJson(warehouse));
+
         String key;
         Map<String, InboundProduct> products = new HashMap<>();
         for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
@@ -609,7 +617,7 @@ public class InboundServiceImpl implements InboundService {
         // 新增入库批次的信息
         List<InboundBatch> InboundBatchList = Lists.newArrayList();
         InboundBatch productBatch ;
-        if(CollectionUtils.isEmpty(request.getBatchList())){
+        if(warehouse.getBatchManage().equals(0)){
             for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
                 key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
                 InboundProduct product = products.get(key);
@@ -934,6 +942,10 @@ public class InboundServiceImpl implements InboundService {
     public void returnPurchase(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
         try {
+            // 查询对应的采购单
+            PurchaseOrder purchaseOrder = new PurchaseOrder();
+            purchaseOrder.setPurchaseOrderCode(sourceOderCode);
+            PurchaseOrder order = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
             List<PurchaseOrderProduct> purchaseOrderProducts = Lists.newArrayList();
             PurchaseOrderProduct purchaseOrderProduct;
             // 传送采购商品信息
@@ -959,7 +971,7 @@ public class InboundServiceImpl implements InboundService {
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
                 // 回传成功之后，调用sap
-                //sapBaseDataService.purchaseAndReject(0, );
+                sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
             }else {
                 log.error("入库单回传给采购接口失败");
             }
