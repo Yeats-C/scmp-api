@@ -281,6 +281,16 @@ mgs:
       - code: SCMP004006
         name: 商品销售区域配置
         link: '/product/productSaleArea'
+      - code: SCMP004007
+        name: 商品批次管理
+        link: '/product/productBatch'
+        methods:
+        - code: SCMP004007001
+          name: 新增
+        - code: SCMP004007002
+          name: 导入
+        - code: SCMP004007003
+          name: 禁用
       - code: SCMP004009
         name: 商品仓库管理
         link: '/product/store'
