@@ -638,6 +638,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
         rejectRecord.setApprovalCode(rejectApplyRecord.getRejectApplyRecordCode());
 
+        // 查询对应库房的批次管理
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(rejectRecord.getWarehouseCode());
+        LOGGER.info("生成退供单，查询对应库房的批次管理信息：{}", JsonUtil.toJson(warehouse));
+
         // 查询退供单规则单号
         String code = DateUtils.currentDate().replaceAll("-","");
         String recordCode = rejectRecordDao.rejectRecordByCode(code);
@@ -664,12 +668,15 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 查询对应库房的商品信息
             List<RejectRecordDetail> recordDetails = rejectApplyRecordDetailDao.rejectApplyByWarehouseProduct(rejectApplyRecordCode, center.getWarehouseCode());
             // 每个sku的批次信息
-            Map<String, List<RejectRecordBatch>> rejectBatchMap = new HashMap<>();
-            for(RejectRecordDetail detail:recordDetails) {
-                String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
-                        rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
-                rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
-                        center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode()));
+            Map<String, List<RejectRecordBatch>> rejectBatchMap = null;
+            if(!warehouse.getBatchManage().equals(0)){
+                rejectBatchMap = new HashMap<>();
+                for(RejectRecordDetail detail:recordDetails) {
+                    String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
+                            rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
+                    rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
+                            center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode()));
+                }
             }
 
             Long productCount = 0L, returnCount = 0L, giftCount = 0L, totalCount = 0L;
@@ -693,14 +700,17 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                }
                 totalCount += detail.getTotalCount();
                 detail.setLineCode(i);
-                // 查询对应的批次
-                String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
-                        rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
-                List<RejectRecordBatch> rejectRecordBatches = rejectBatchMap.get(key);
-                for(RejectRecordBatch recordBatch : rejectRecordBatches){
-                    recordBatch.setRejectRecordCode(rejectRecord.getRejectRecordCode());
-                    recordBatch.setLineCode(i);
-                    batchList.add(recordBatch);
+
+                if(!warehouse.getBatchManage().equals(0)){
+                    // 查询对应的批次
+                    String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
+                            rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
+                    List<RejectRecordBatch> rejectRecordBatches = rejectBatchMap.get(key);
+                    for(RejectRecordBatch recordBatch : rejectRecordBatches){
+                        recordBatch.setRejectRecordCode(rejectRecord.getRejectRecordCode());
+                        recordBatch.setLineCode(i);
+                        batchList.add(recordBatch);
+                    }
                 }
                 ++i;
             }
@@ -718,8 +728,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             Integer detailCount = rejectRecordDetailDao.insertAll(recordDetails);
             LOGGER.info("添加退供单商品信息条数：" + detailCount);
 
-            Integer batchCount = rejectRecordBatchDao.insertAll(batchList);
-            LOGGER.info("添加退供单批次信息条数：" + batchCount);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                Integer batchCount = rejectRecordBatchDao.insertAll(batchList);
+                LOGGER.info("添加退供单批次信息条数：" + batchCount);
+            }
+
             if(rejectCount > 0){
                 // 调用生成出库单
                 reqVo = new ReturnSupplyToOutBoundReqVo();
@@ -754,12 +767,6 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             LOGGER.info("锁库存、批次库存，退供单的商品信息为空:", detailList);
             return HttpResponse.failure(ResultCode.REJECT_PRODUCT_NULL);
         }
-        // 查询退供单的批次信息
-        List<RejectRecordBatch> recordBatches = rejectRecordBatchDao.rejectBatchInfoList(rejectRecord.getRejectRecordCode());
-        if (CollectionUtils.isEmpty(recordBatches)) {
-            LOGGER.info("锁库存、批次库存，退供单的批次信息为空:", detailList);
-            return HttpResponse.failure(ResultCode.REJECT_BATCH_NULL);
-        }
 
         for (RejectRecordDetail product : detailList) {
             stockInfo = BeanCopyUtils.copy(product, StockInfoRequest.class);
@@ -783,27 +790,31 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         }
         request.setStockList(list);
 
-        for (RejectRecordBatch batch : recordBatches){
-            stockBatchInfo = BeanCopyUtils.copy(batch, StockBatchInfoRequest.class);
-            if (warehouse != null) {
-                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+        // 查询退供单的批次信息
+        List<RejectRecordBatch> recordBatches = rejectRecordBatchDao.rejectBatchInfoList(rejectRecord.getRejectRecordCode());
+        if(CollectionUtils.isNotEmpty(recordBatches)){
+            for (RejectRecordBatch batch : recordBatches){
+                stockBatchInfo = BeanCopyUtils.copy(batch, StockBatchInfoRequest.class);
+                if (warehouse != null) {
+                    stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                }
+                stockBatchInfo.setCompanyCode(rejectRecord.getCompanyCode());
+                stockBatchInfo.setCompanyName(rejectRecord.getCompanyName());
+                stockBatchInfo.setTransportCenterCode(rejectRecord.getTransportCenterCode());
+                stockBatchInfo.setTransportCenterName(rejectRecord.getTransportCenterName());
+                stockBatchInfo.setWarehouseCode(rejectRecord.getWarehouseCode());
+                stockBatchInfo.setWarehouseName(rejectRecord.getWarehouseName());
+                stockBatchInfo.setDocumentCode(outbound.getOutboundOderCode());
+                stockBatchInfo.setDocumentType(Global.OUTBOUND_TYPE);
+                stockBatchInfo.setSourceDocumentCode(rejectRecord.getRejectRecordCode());
+                stockBatchInfo.setSourceDocumentType(2);
+                stockBatchInfo.setOperatorId(rejectRecord.getCreateById());
+                stockBatchInfo.setOperatorName(rejectRecord.getCreateByName());
+                stockBatchInfo.setChangeCount(batch.getTotalCount());
+                stockBatchList.add(stockBatchInfo);
             }
-            stockBatchInfo.setCompanyCode(rejectRecord.getCompanyCode());
-            stockBatchInfo.setCompanyName(rejectRecord.getCompanyName());
-            stockBatchInfo.setTransportCenterCode(rejectRecord.getTransportCenterCode());
-            stockBatchInfo.setTransportCenterName(rejectRecord.getTransportCenterName());
-            stockBatchInfo.setWarehouseCode(rejectRecord.getWarehouseCode());
-            stockBatchInfo.setWarehouseName(rejectRecord.getWarehouseName());
-            stockBatchInfo.setDocumentCode(outbound.getOutboundOderCode());
-            stockBatchInfo.setDocumentType(Global.OUTBOUND_TYPE);
-            stockBatchInfo.setSourceDocumentCode(rejectRecord.getRejectRecordCode());
-            stockBatchInfo.setSourceDocumentType(2);
-            stockBatchInfo.setOperatorId(rejectRecord.getCreateById());
-            stockBatchInfo.setOperatorName(rejectRecord.getCreateByName());
-            stockBatchInfo.setChangeCount(batch.getTotalCount());
-            stockBatchList.add(stockBatchInfo);
+            request.setStockBatchList(stockBatchList);
         }
-        request.setStockBatchList(stockBatchList);
         LOGGER.info("操作退供单的库存、批次库存的参数：{}", JsonUtil.toJson(request));
         HttpResponse response = stockService.stockAndBatchChange(request);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){

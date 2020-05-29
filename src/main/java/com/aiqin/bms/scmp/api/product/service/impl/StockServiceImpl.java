@@ -528,23 +528,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             List<Stock> adds = new ArrayList<>();
             Boolean flage = false;
 
-            // 查询入库单批次商品信息
-//            Map<String, WarehouseDTO> batchMangeMap = new HashMap<>();
-//            for(StockInfoRequest stockInfoRequest : request.getStockList()) {
-//                String key = String.format("%s", stockInfoRequest.getWarehouseCode());
-//                if (batchMangeMap.get(key) == null) {
-//                    batchMangeMap.put(key, warehouseDao.getWarehouseByCode(stockInfoRequest.getWarehouseCode()));
-//                }
-//            }
-
             // 将需要修改的库存进行逻辑计算
             List<StockFlow> stockFlows = new ArrayList<>();
             for (StockInfoRequest stockInfoRequest : request.getStockList()) {
-//                String batchMange = String.format("%s", stockInfoRequest.getWarehouseCode());
-//                WarehouseDTO warehouseDTO = batchMangeMap.get(batchMange);
-//                if(warehouseDTO != null){
-//                    stockInfoRequest.setBatchManage(warehouseDTO.getBatchManage());
-//                }
                 // 给sku加锁
                 long time = System.currentTimeMillis() + 30;
                 if (!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))) {
@@ -664,7 +650,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
             LOGGER.info("库存操作结束");
             // 调用批次库存操作
-            if(!request.getOperationType().equals(7)){
+            if(!request.getOperationType().equals(7) && CollectionUtils.isNotEmpty(request.getStockBatchList())){
                 this.changeStockBatch(request);
             }
         } catch (Exception e) {
