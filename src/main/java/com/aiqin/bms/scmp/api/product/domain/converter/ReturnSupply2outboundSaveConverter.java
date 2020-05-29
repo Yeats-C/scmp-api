@@ -155,8 +155,10 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setList(productList);
 
                 // 批次信息
-                List<OutboundBatch> infoBatch = BeanCopyUtils.copyList(request.getBatchList(), OutboundBatch.class);
-                outbound.setOutboundBatches(infoBatch);
+                if(org.apache.commons.collections.CollectionUtils.isNotEmpty(request.getBatchList())){
+                    List<OutboundBatch> infoBatch = BeanCopyUtils.copyList(request.getBatchList(), OutboundBatch.class);
+                    outbound.setOutboundBatches(infoBatch);
+                }
                 return outbound;
             }
         } catch (Exception e) {
