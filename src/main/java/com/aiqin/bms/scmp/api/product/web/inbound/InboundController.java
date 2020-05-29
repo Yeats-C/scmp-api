@@ -100,10 +100,4 @@ public class InboundController {
         return HttpResponse.success();
     }
 
-    @ApiOperation("测试wms")
-    @GetMapping("/test")
-    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
-        inboundService.pushWms(inboundOderCode);
-        return HttpResponse.success();
-    }
 }

@@ -622,11 +622,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
             }
         }
+
+        // 减在途数
+        //this.wayNum(purchaseOrder, 8);
+
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
         if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
-                productList.size() >= 1
-        ) {
+                productList.size() >= 1) {
             if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
                 // 变更入库中状态
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
@@ -674,7 +677,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), purchaseOrder.getApplyTypeForm());
             // 减在途数
-            //this.wayNum(purchaseOrder, 11);
+//            this.wayNum(purchaseOrder, 8);
         }
         return HttpResponse.success();
     }
@@ -745,9 +748,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     stockInfo.setChangeCount(singleCount);
                 }else {
                     // 减在途并加库存
-                    // TODO
                     stockInfo.setChangeCount(singleCount - actualSingleCount);
-                    //stockInfo.setPreWayCount();
+                    if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
+                        stockInfo.setPreWayCount(singleCount - actualSingleCount);
+                    }else {
+                        InboundProduct inboundProduct = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), product.getSkuCode(), product.getLinnum().longValue());
+                        stockInfo.setPreWayCount(inboundProduct.getPraInboundMainNum());
+                    }
                 }
                 list.add(stockInfo);
             }
