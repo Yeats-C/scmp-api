@@ -93,7 +93,7 @@
         )
         values
         <foreach collection="list" item="item" close="" open="" separator=",">
-            #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+            (    #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
             #{item.useStatus,jdbcType=BIT}, #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
             #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=BIT},
             #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, now(),

@@ -22,6 +22,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class ProductSkuBatchServiceImpl extends BaseServiceImpl implements Produ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean add(ProductSkuBatchReq2 productSkuBatchReq2) {
         AuthToken authToken = getUser();
         List<ProductSkuBatchReq> productSkuBatchReqList= Lists.newArrayList();
