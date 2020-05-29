@@ -88,6 +88,19 @@ public class SkuInfoController {
         }
     }
 
+    @PostMapping("/sendSap")
+    @ApiOperation("新增sku信息")
+    public HttpResponse<Integer> sendSap(){
+        try {
+            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo3());
+        } catch (BizException bz){
+            return HttpResponse.failure(bz.getMessageId(),0);
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+        }
+    }
+
     @PostMapping("/update")
     @ApiOperation("修改临时表信息")
     public HttpResponse<Integer> updateSkuInfo(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){

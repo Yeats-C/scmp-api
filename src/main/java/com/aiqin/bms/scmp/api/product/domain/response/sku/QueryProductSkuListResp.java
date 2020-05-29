@@ -8,6 +8,7 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @功能说明:
@@ -25,6 +26,9 @@ public class QueryProductSkuListResp {
 
     @ApiModelProperty("所属商品编码")
     private String productCode;
+
+    @ApiModelProperty("商品/赠品(0:商品，1:赠品，2:组合商品)")
+    private Byte goodsGifts;
 
     @ApiModelProperty("商品名称")
     private String productName;
@@ -79,5 +83,8 @@ public class QueryProductSkuListResp {
 
     @ApiModelProperty("货号")
     private String itemNumber;
+
+    @ApiModelProperty(value = "sku渠道信息")
+    private List<ProductSkuChannelRespVo> productSkuChannels;
 
 }

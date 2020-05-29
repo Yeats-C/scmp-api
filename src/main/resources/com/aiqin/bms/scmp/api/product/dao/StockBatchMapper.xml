@@ -454,5 +454,12 @@
     <if test="supplierCode != null">
        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
+    order by id asc
+  </select>
+  <select id="stockBatchInfoOne" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"></include>
+      from stock_batch
+      where sku_code = #{skuCode,jdbcType=VARCHAR}
+      and batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR}
   </select>
 </mapper>

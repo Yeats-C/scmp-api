@@ -105,7 +105,7 @@ public class StockInfoRequest {
     @JsonProperty(value = "pre_way_count")
     private Long preWayCount;
 
-    @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
-    @JsonProperty(value = "batch_manage")
-    private Integer batchManage;
+    @ApiModelProperty("预计锁定数")
+    @JsonProperty(value = "pre_lock_count")
+    private Long preLockCount;
 }
