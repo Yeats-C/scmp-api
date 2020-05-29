@@ -178,4 +178,16 @@ public class RejectApplyDetailHandleResponse {
     @ApiModelProperty(value = "批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
     @JsonProperty("batch_manage")
     private Integer batchManage;
+
+    @ApiModelProperty(value="最小单位数量数量")
+    @JsonProperty("total_count")
+    private Long totalCount;
+
+    @ApiModelProperty(value="含税单价")
+    @JsonProperty("product_amount")
+    private BigDecimal productAmount;
+
+    @ApiModelProperty(value="含税总价")
+    @JsonProperty("product_total_amount")
+    private BigDecimal productTotalAmount;
 }
