@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.domain.pojo;
 
 import com.aiqin.bms.scmp.api.common.CommonBean;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -69,12 +70,14 @@ public class Warehouse extends CommonBean {
     private String createBy;
 
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     @ApiModelProperty("更新人")
     private String updateBy;
 
     @ApiModelProperty("更新时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     @ApiModelProperty(value="wms库房code")
