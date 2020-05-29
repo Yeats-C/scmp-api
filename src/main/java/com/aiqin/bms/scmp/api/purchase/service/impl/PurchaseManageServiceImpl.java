@@ -109,7 +109,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
         purchaseOrder.setApprovalCode(purchaseOrderCode);
-        //purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);

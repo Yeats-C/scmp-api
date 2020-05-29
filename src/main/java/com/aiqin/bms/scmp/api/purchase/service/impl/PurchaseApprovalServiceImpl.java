@@ -18,6 +18,8 @@ import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,41 +72,25 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
                 order.setApplyStatus(Global.PURCHASE_APPLY_5);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
-                // 添加审批不通过操作日志
-//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getCode(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT_NOT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
                 // 审批中
                 order.setApplyStatus(Global.PURCHASE_APPLY_3);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
-                // 添加审批中操作日志
-//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getCode(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT.getName(), order.getRemark());
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-                //审批成功
-                order.setApplyStatus(Global.PURCHASE_APPLY_4);
-                Integer count = purchaseApplyDao.update(order);
-                LOGGER.info("影响条数:{}",count);
-                // 审批通过，创建采购单
+                //审批成功，创建采购单
                 LOGGER.info("开始调用审批成功，采购申请单："+ order.getPurchaseApplyCode());
-                purchaseApplyService.insertPurchaseOrder(order.getPurchaseApplyId());
-                // 添加审批通过操作日志
-//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getCode(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_CHECKOUT_ADOPT.getName(), order.getRemark());
-
+                HttpResponse response = purchaseApplyService.insertPurchaseOrder(order.getPurchaseApplyId());
+                if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                    order.setApplyStatus(Global.PURCHASE_APPLY_4);
+                    Integer count = purchaseApplyDao.update(order);
+                    LOGGER.info("影响条数:{}",count);
+                }
             } else if(Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())){
                 // 审批撤销
                 order.setApplyStatus(Global.PURCHASE_APPLY_6);
                 Integer count = purchaseApplyDao.update(order);
                 LOGGER.info("影响条数:{}",count);
-                // 添加审批不通过操作日志
-//                log(order.getPurchaseApplyId(), vo1.getApprovalUserCode(), vo1.getApprovalUserName(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getCode(),
-//                        PurchaseOrderLogEnum.PURCHASE_APPLY_REVOKE.getName(), order.getRemark());
             }
             return WorkFlowReturn.SUCCESS;
         }catch  (Exception e) {
@@ -155,18 +141,4 @@ public class PurchaseApprovalServiceImpl extends BaseServiceImpl implements Purc
             throw new BizException(workFlowRespVO.getMsg());
         }
     }
-
-//    private void log(String purchaseOrderId, String createById, String createByName, Integer code, String name, String remark){
-//        OperationLog log = new OperationLog();
-//        log.setOperationId(purchaseOrderId);
-//        log.setCreateById(createById);
-//        log.setCreateByName(createByName);
-//        log.setOperationType(code);
-//        log.setOperationContent(name);
-//        log.setRemark(remark);
-//        Integer count = operationLogDao.insert(log);
-//        LOGGER.info("操作日志{}", count);
-//    }
-
-
 }
