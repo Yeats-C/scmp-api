@@ -168,6 +168,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         center.setWarehouseCode(warehouseCode);
         List<RejectApplyRecordTransportCenter> recordCenterList = rejectApplyRecordTransportCenterDao.rejectApplyTransportCenterInfo(center);
         response.setRejectTransportList(recordCenterList);
+        List<FileRecord> fileRecords = fileRecordDao.fileList(rejectApplyRecordCode);
+        if(CollectionUtils.isNotEmpty(fileRecords)){
+            response.setFileList(fileRecords);
+        }
         return HttpResponse.successGenerics(response);
     }
 
