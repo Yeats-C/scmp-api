@@ -65,7 +65,7 @@
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
     unit, classes, `type`, inventory_unit, inventory, tax, tax_price, quantity, tax_amount,
     del_flag, create_time, create_by, update_time, update_by, picture_url, line_num,
-    callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_code,supplier_name,
+    callout_batch_number,callin_batch_number,batch_number_remark,product_date,be_overdue_date,supplier_code,supplier_name,
     location_code, callout_actual_total_count, callin_actual_total_count, callout_batch_info_code, callin_batch_info_code
   </sql>
   <sql id="Base_Column_OutBound_List">
@@ -88,6 +88,7 @@
     <result column="callin_batch_number" jdbcType="VARCHAR" property="callInBatchNumber" />
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
