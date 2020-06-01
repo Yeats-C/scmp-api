@@ -380,4 +380,13 @@
       line_num = #{lineNum,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="selectQuantityBySkuCodeAndSource" resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo">
+    select
+    quantity
+    from allocation_product
+    where
+    allocation_code = #{allocationCode, jdbcType=VARCHAR}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
+    and line_num = #{lineCode, jdbcType=BIGINT}
+  </select>
 </mapper>

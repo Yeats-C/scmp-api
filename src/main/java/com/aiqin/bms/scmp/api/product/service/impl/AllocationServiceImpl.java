@@ -536,6 +536,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
         int count = allocationMapper.updateByPrimaryKeySelective(allocation);
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
+
+        // 调拨出库完成调用调拨入库 生成调拨入库单 调用wms
+
+        return HttpResponse.success();
 //        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
 //            AllocationProduct allocationProduct = new AllocationProduct();
 //            // 查询调拨单商品信息
@@ -544,7 +548,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //            allocationProduct.setLineNum(allocationDetailRequest.getLineCode().longValue());
 //            allocationProduct.setTaxAmount(allocationDetailRequest.getActualAmount());
 //        }
-        return HttpResponse.success();
     }
 
     @Override
