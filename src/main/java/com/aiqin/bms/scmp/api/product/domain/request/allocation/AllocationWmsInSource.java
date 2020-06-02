@@ -16,19 +16,19 @@ import java.util.List;
 public class AllocationWmsInSource implements Serializable {
     @ApiModelProperty(value = "入库单号")
     @JsonProperty("inbound_oder_code")
-    private String inboundOderCodel;
+    private String inboundOderCode;
 
     @ApiModelProperty(value = "调拨单号")
     @JsonProperty("allocation_code")
     private String allocationCode;
 
     @ApiModelProperty(value = "库房编号")
-    @JsonProperty("callout_warehouse_code")
-    private String calloutWarehouseCode;
+    @JsonProperty("call_out_warehouse_code")
+    private String callOutWarehouseCode;
 
     @ApiModelProperty(value = "库房名称")
-    @JsonProperty("callout_warehouse_name")
-    private String calloutWarehouseName;
+    @JsonProperty("call_out_warehouse_name")
+    private String callOutWarehouseName;
 
     @ApiModelProperty(value="调拨单创建时间(yyyy-MM-dd HH:mm:ss)", example = "2001-01-01 01:01:01")
     @JsonProperty("create_time")
@@ -48,10 +48,10 @@ public class AllocationWmsInSource implements Serializable {
     private String remark;
 
     @ApiModelProperty(value="调拨入库推送源数据明细")
-    @JsonProperty("allocation_wms_product_sources")
-    private List<AllocationWmsProductSource> allocationWmsProductSources;
+    @JsonProperty("detail_list")
+    private List<AllocationWmsProductSource> detailList;
 
     @ApiModelProperty(value="调拨入库推送源商品批次数据明细")
-    @JsonProperty("allocation_wms_product_batch_sources")
-    private List<BatchWmsInfo> allocationWmsProductBatchSources;
+    @JsonProperty("batch_info")
+    private List<BatchWmsInfo> batchInfo;
 }

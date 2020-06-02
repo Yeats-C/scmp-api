@@ -139,12 +139,11 @@ public class AllocationController {
         }
     }
 
-    @ApiOperation("wms返回id")
+    @ApiOperation("wms返回调拨出库完成生成入库调用wms推送")
     @GetMapping("/updateWmsStatus")
-    public HttpResponse<Integer> updateWmsStatus( @RequestParam @ApiParam(value = "状态编码",required = true) Byte status ,
-                                               @RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
+    public HttpResponse<Integer> updateWmsStatus(@RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
         try {
-            return HttpResponse.success(allocationService. updateWmsStatus(status,allocationCode));
+            return HttpResponse.success(allocationService. updateWmsStatus(allocationCode));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);

@@ -323,17 +323,18 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             inboundProductReqVo.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
             inboundProductReqVo.setSkuCode(profitLossProductBatch.getSkuCode());
             inboundProductReqVo.setSkuName(profitLossProductBatch.getSkuName());
-            inboundProductReqVo.setInboundBatchCode(profitLossProductBatch.getBatchCode());
-            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            try {
-                Date parse = s.parse(profitLossProductBatch.getProductDate());
-                inboundProductReqVo.setManufactureTime(parse);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+            inboundProductReqVo.setBatchCode(profitLossProductBatch.getBatchCode());
+//            SimpleDateFormat s = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            try {
+//                Date parse = s.parse(profitLossProductBatch.getProductDate());
+//                inboundProductReqVo.setProductDate(parse);
+//            }catch (Exception e){
+//                e.printStackTrace();
+//            }
+            inboundProductReqVo.setProductDate(profitLossProductBatch.getProductDate());
             inboundProductReqVo.setBatchRemark(profitLossProductBatch.getBatchRemark());
-            inboundProductReqVo.setPraQty(profitLossProductBatch.getTotalCount());
-            inboundProductReqVo.setLinenum(profitLossProductBatch.getLineCode());
+            inboundProductReqVo.setActualTotalCount(profitLossProductBatch.getTotalCount());
+            inboundProductReqVo.setLineCode(profitLossProductBatch.getLineCode());
             inboundProductReqVo.setSupplierCode(profitLossProductBatch.getSupplierCode());
             inboundProductReqVo.setSupplierName(profitLossProductBatch.getSupplierName());
             inboundBatchReqVos.add(inboundProductReqVo);

@@ -1206,11 +1206,11 @@ public class InboundServiceImpl implements InboundService {
             for (InboundBatchReqVo inboundBatchReqVo : inboundBatchReqVos) {
                 BatchWmsInfo bwi = new BatchWmsInfo();
                 BeanUtils.copyProperties(bwi,inboundBatchReqVo);
-                bwi.setBatchCode(inboundBatchReqVo.getInboundBatchCode());
-                bwi.setProdcutDate(inboundBatchReqVo.getManufactureTime().toString());
-                bwi.setTotalCount(inboundBatchReqVo.getPreQty());
-                bwi.setActualTotalCount(inboundBatchReqVo.getPraQty());
-                bwi.setLineCode(inboundBatchReqVo.getLinenum().intValue());
+                bwi.setBatchCode(inboundBatchReqVo.getBatchCode());
+                bwi.setProdcutDate(inboundBatchReqVo.getProductDate());
+                bwi.setTotalCount(inboundBatchReqVo.getTotalCount());
+                bwi.setActualTotalCount(inboundBatchReqVo.getActualTotalCount());
+                bwi.setLineCode(inboundBatchReqVo.getLineCode().intValue());
                 bwiLists.add(bwi);
             }
             rops.setChildrenSourceList(rocsLists);

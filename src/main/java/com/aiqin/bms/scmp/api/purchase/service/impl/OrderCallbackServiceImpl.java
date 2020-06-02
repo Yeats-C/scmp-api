@@ -674,7 +674,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
                     inboundBatchReqVo.setSupplierCode(returnOrderInfoItem.getSupplyCode());
                     inboundBatchReqVo.setSupplierName(returnOrderInfoItem.getSupplyName());
-                    inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
+                    inboundBatchReqVo.setActualTotalCount(returnOrderInfoItem.getNum());
                     inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
                     inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
                     batchList.add(inboundBatchReqVo);
@@ -1097,7 +1097,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             inboundBatchReqVo.setSkuCode(batch.getSkuCode());
             inboundBatchReqVo.setSupplierCode(batch.getSupplierCode());
             inboundBatchReqVo.setSupplierName(batch.getSupplierName());
-            inboundBatchReqVo.setPraQty(batch.getQuantity());
+            inboundBatchReqVo.setActualTotalCount(batch.getQuantity());
             inboundBatchReqVo.setCreateBy(allocation.getCreateBy());
             inboundBatchReqVo.setUpdateBy(allocation.getUpdateBy());
             batchList.add(inboundBatchReqVo);

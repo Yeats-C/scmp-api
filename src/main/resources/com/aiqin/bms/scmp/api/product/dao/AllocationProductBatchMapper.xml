@@ -60,6 +60,11 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="product_picture_path" jdbcType="VARCHAR" property="pictureUrl" />
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="callin_batch_number" jdbcType="VARCHAR" property="callinBatchNumber" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="callin_batch_info_code" jdbcType="VARCHAR" property="callinBatchInfoCode" />
+    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
   </resultMap>
   <sql id="Base_Column_List">
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
@@ -71,7 +76,8 @@
   <sql id="Base_Column_OutBound_List">
     a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
    a.unit, classes, a.type, a.inventory_unit, a.inventory, a.tax, a.tax_price, a.quantity, a.tax_amount,
-    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num
+    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num,
+    a.product_date, a.be_overdue_date, a.callin_batch_info_code, a.callin_batch_number, a.batch_number_remark
   </sql>
   <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />

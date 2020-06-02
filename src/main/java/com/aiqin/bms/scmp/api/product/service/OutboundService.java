@@ -92,7 +92,7 @@ public interface OutboundService {
     /**
      * 调拨生成入库单并且改变在途数
      */
-    void createInbound(String formNo);
+    String createInbound(String formNo);
 
     /**
      * 移库生成入库单并且改变在途数
