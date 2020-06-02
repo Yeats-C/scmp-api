@@ -106,4 +106,11 @@ public class InboundController {
         inboundService.pushWms(inboundOderCode);
         return HttpResponse.success();
     }
+
+    @ApiOperation("测试wms调拨入库回传")
+    @GetMapping("/test/allocation")
+    public HttpResponse allocationTest(@RequestParam(value = "allocation_code")String allocationCode){
+        inboundService.inBoundReturn(allocationCode);
+        return HttpResponse.success();
+    }
 }
