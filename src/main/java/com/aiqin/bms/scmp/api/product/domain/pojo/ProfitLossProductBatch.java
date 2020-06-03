@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
+import java.util.Date;
 
 @ApiModel("损益批次商品管理")
 @Data
@@ -82,6 +82,14 @@ public class ProfitLossProductBatch {
     @ApiModelProperty(value = "修改人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    @ApiModelProperty(value = "创建时间")
+    @JsonProperty("create_time")
+    private Date createTime;
+
+    @ApiModelProperty(value = "修改时间")
+    @JsonProperty("update_time")
+    private Date updateTime;
 
 
 //    @ApiModelProperty("仓库编号")

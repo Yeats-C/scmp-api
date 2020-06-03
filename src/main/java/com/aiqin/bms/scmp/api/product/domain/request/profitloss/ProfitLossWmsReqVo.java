@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.product.domain.request.profitloss;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.List;
 
 @ApiModel("损溢wms回传主表")
@@ -39,10 +41,12 @@ public class ProfitLossWmsReqVo {
     private String status;
 
     @ApiModelProperty("创建时间")
-    private String createTime ;
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date createTime ;
 
     @ApiModelProperty("修改时间")
-    private String updateTime ;
+    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date updateTime ;
 
     @ApiModelProperty("创建人")
     private String createByName;
