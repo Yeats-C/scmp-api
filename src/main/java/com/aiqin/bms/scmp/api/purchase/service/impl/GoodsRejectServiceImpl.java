@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
@@ -32,6 +33,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyGroupRe
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -120,6 +122,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private SapBaseDataService sapBaseDataService;
     @Resource
     private FormOperateService formOperateService;
+    @Resource
+    private WmsCancelService wmsCancelService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -598,7 +602,12 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 this.rejectStock(3, rejectRecord);
                 // 撤销wms退供单
                 if(record.getRejectStatus().equals(RejectRecordStatus.REJECT_TO_OUTBOUND)){
-                    //todo
+                    CancelSource cancelSource = new CancelSource();
+                    cancelSource.setOrderType("4");
+                    cancelSource.setOrderCode(record.getRejectRecordCode());
+                    cancelSource.setWarehouseCode(record.getWarehouseCode());
+                    cancelSource.setWarehouseName(record.getWarehouseName());
+                    wmsCancelService.wmsCancel(cancelSource);
                 }
                 break;
         }
