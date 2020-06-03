@@ -299,10 +299,10 @@ public class InboundServiceImpl implements InboundService {
             int insertProducts = inboundProductDao.insertBatch(list);
             log.info("插入入库单商品表返回结果:{}", insertProducts);
 
-            List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
+            List<InboundBatch> batchList = reqVo.getInboundBatchList();
             if (CollectionUtils.isNotEmpty(batchList)) {
                 batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
-                Integer count = inboundBatchDao.insertList(batchList);
+                Integer count = inboundBatchDao.insertAll(batchList);
                 log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
             }
 

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
@@ -7,7 +8,10 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChan
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
@@ -299,5 +303,38 @@ public class DingApprovalController {
         }catch (Exception e) {
             return HttpResponse.failure(ResultCode.FILE_DOWN_ERROR);
         }
+    }
+
+    @GetMapping("/reject/apply/info")
+    @ApiOperation(value = "退供申请单查询(退供信息、分仓信息)")
+    public HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+                                                                           @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        return goodsRejectService.selectRejectApply(rejectApplyRecordCode, warehouseCode);
+    }
+
+    @GetMapping("/reject/apply/product")
+    @ApiOperation(value = "退供申请单商品查询")
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyProduct(request);
+    }
+
+    @GetMapping("/reject/apply/batch")
+    @ApiOperation(value = "退供申请单批次查询")
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyBatch(request);
     }
 }
