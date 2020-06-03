@@ -123,7 +123,8 @@
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
       update_time, update_by, picture_url, line_num,
-      callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_name,supplier_code)
+      callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_name,supplier_code,
+      be_overdue_date, callout_actual_total_count, callin_actual_total_count, callout_batch_info_code, callin_batch_info_code)
     values
     <foreach collection="list" item="t" index= "index" separator =",">
       (
@@ -156,7 +157,12 @@
       #{t.batchNumberRemark,jdbcType=VARCHAR},
       #{t.productDate,jdbcType=VARCHAR},
       #{t.supplierName,jdbcType=VARCHAR},
-      #{t.supplierCode,jdbcType=VARCHAR}
+      #{t.supplierCode,jdbcType=VARCHAR},
+      #{t.beOverdueDate,jdbcType=VARCHAR},
+      #{t.callOutActualTotalCount,jdbcType=VARCHAR},
+      #{t.callInActualTotalCount,jdbcType=VARCHAR},
+      #{t.callOutBatchInfoCode,jdbcType=VARCHAR},
+      #{t.callInBatchInfoCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

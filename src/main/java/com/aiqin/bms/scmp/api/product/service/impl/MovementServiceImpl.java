@@ -31,6 +31,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -103,6 +104,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     private EncodingRuleDao encodingRuleDao;
     @Autowired
     private StockService stockService;
+    @Autowired
+    private SupplierCommonService supplierCommonService;
 
     /**
      * 移库列表搜索
@@ -233,11 +236,31 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 LOGGER.error("wms回调:移库加库存异常");
                 throw new GroundRuntimeException("wms回调:加库存异常");
             }
+
+            //生成调拨单
+            allocationInsert(addAllocation, type, typeName);
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
             throw new GroundRuntimeException("订单回调异常");
         }
+    }
+
+    private void allocationInsert(Allocation allocation, byte type, String typeName) {
+        // 获取编码
+        String content = HandleTypeCoce.ADD_ALLOCATION.getName();
+        //保存日志
+        supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), content, null, HandleTypeCoce.ADD.getName(),"wms同步");
+        //设置状态(已完成)
+        allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+        allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+        allocation.setAllocationType(type);
+        allocation.setAllocationTypeName(typeName);
+        allocationMapper.insertSelective(allocation);
+        //添加详情
+        allocationProductMapper.saveList(allocation.getDetailList());
+        //添加供应商和商品关系
+        allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
     }
 
     private void handleProfitLossStockData(Allocation addAllocation, ChangeStockRequest changeStockRequest) {
