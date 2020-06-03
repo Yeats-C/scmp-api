@@ -4564,20 +4564,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     public Integer saveDraftSkuInfo2(AddSkuInfoReqVO addSkuInfoReqVO) {
+        ProductSkuInfo productSkuInfo=productSkuDao.getSkuInfo("203407");
         ProductSkuInfoWms productSkuInfoWms=new ProductSkuInfoWms();
-        productSkuInfoWms.setSkuCode("testcode001");
-        productSkuInfoWms.setSkuName("testname001");
-        productSkuInfoWms.setProductBrandCode("测试品牌code");
-        productSkuInfoWms.setProductBrandName("测试品牌name");
-        productSkuInfoWms.setProductCategoryCode("测试品类code");
-        productSkuInfoWms.setProductCategoryName("测试品类name");
-        productSkuInfoWms.setSkuAbbreviation("测试品类简称");
-        productSkuInfoWms.setModelNumber("128*12");
-        productSkuInfoWms.setQualityAssuranceManagement((byte) 1);
-        productSkuInfoWms.setQualityDate("2020-03-03");
-        productSkuInfoWms.setUpdateTime(new Date());
-        productSkuInfoWms.setGoodsGifts((byte) 1);
-        productSkuInfoWms.setManufacturerGuidePrice(new BigDecimal(8.88));
+        BeanCopyUtils.copy(productSkuInfo,productSkuInfoWms);
+//        productSkuInfoWms.setSkuCode("testcode001");
+//        productSkuInfoWms.setSkuName("testname001");
+//        productSkuInfoWms.setProductBrandCode("测试品牌code");
+//        productSkuInfoWms.setProductBrandName("测试品牌name");
+//        productSkuInfoWms.setProductCategoryCode("测试品类code");
+//        productSkuInfoWms.setProductCategoryName("测试品类name");
+//        productSkuInfoWms.setSkuAbbreviation("测试品类简称");
+//        productSkuInfoWms.setModelNumber("128*12");
+//        productSkuInfoWms.setQualityAssuranceManagement((byte) 1);
+//        productSkuInfoWms.setQualityDate("2020-03-03");
+//        productSkuInfoWms.setUpdateTime(new Date());
+//        productSkuInfoWms.setGoodsGifts((byte) 1);
+//        productSkuInfoWms.setManufacturerGuidePrice(new BigDecimal(8.88));
         log.info(JSON.toJSONString(productSkuInfoWms));
         sendWms2(productSkuInfoWms);
 
