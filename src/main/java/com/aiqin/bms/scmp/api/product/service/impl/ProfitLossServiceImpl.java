@@ -413,15 +413,15 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     }
 
     private OutboundReqVo outbount(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchList) {
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+      //  EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
         // 更新编码库
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+      //  encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         List<OutboundProductReqVo> list = new ArrayList<>();
         List<OutboundBatch> outboundBatches = new ArrayList<>();
         for (ProfitLossDetailRequest profitLossDetailRequest : profitLossProductList) {
             OutboundProductReqVo outboundProductReqVo = new OutboundProductReqVo();
-            outboundProductReqVo.setOutboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+       //     outboundProductReqVo.setOutboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
             outboundProductReqVo.setSkuCode(profitLossDetailRequest.getSkuCode());
             outboundProductReqVo.setSkuName(profitLossDetailRequest.getSkuName());
             outboundProductReqVo.setPictureUrl(profitLossDetailRequest.getPictureUrl());
@@ -451,7 +451,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             for (ProfitLossProductBatch profitLossProductBatch : batchList) {
                 OutboundBatch outboundBatch = new OutboundBatch();
                 BeanCopyUtils.copy(outboundBatch, profitLossProductBatch);
-                outboundBatch.setOutboundOderCode(encodingRule.getNumberingValue()+"");
+         //       outboundBatch.setOutboundOderCode(encodingRule.getNumberingValue()+"");
                 outboundBatch.setActualTotalCount(profitLossProductBatch.getTotalCount());
                 outboundBatches.add(outboundBatch);
             }
@@ -461,7 +461,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         outboundReqVo.setCompanyName(COMPANY_NAME);
         outboundReqVo.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outboundReqVo.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-        outboundReqVo.setOutboundOderCode(encodingRule.getNumberingValue()+"");
+     //   outboundReqVo.setOutboundOderCode(encodingRule.getNumberingValue()+"");
         outboundReqVo.setOutboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
         outboundReqVo.setOutboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
         outboundReqVo.setSourceOderCode(profitLoss.getOrderCode());

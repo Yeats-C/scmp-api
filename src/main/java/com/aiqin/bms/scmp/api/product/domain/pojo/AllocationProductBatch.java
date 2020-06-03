@@ -126,4 +126,13 @@ public class AllocationProductBatch extends CommonBean {
     @ApiModelProperty("调入批次编号")
     @JsonProperty(value = "call_in_batch_info_code")
     private String callInBatchInfoCode;
+
+    @ApiModelProperty("实际出库最小单位数量")
+    @JsonProperty(value = "call_out_actual_total_count")
+    private Long callOutActualTotalCount;
+
+    @ApiModelProperty("实际入库最小单位数量")
+    @JsonProperty(value = "call_in_actual_total_count")
+    private Long callInActualTotalCount;
+
 }
