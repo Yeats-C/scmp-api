@@ -465,8 +465,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         InboundProductReqVo reqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
-        List<InboundBatchReqVo> batchReqVoList = Lists.newArrayList();
-        InboundBatchReqVo inboundBatchReqVo;
         ProductSkuPictures productSkuPicture;
         ProductSkuPurchaseInfo skuPurchaseInfo;
         for (PurchaseOrderProduct product : products) {
@@ -519,17 +517,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
             preNoTaxAmount = noTax.add(preNoTaxAmount);
             list.add(reqVo);
-            //出库加入供应商与商品关系
-            inboundBatchReqVo = new InboundBatchReqVo();
-            inboundBatchReqVo.setInboundOderCode(request.getInboundOrderCode());
-            inboundBatchReqVo.setSkuName(product.getSkuName());
-            inboundBatchReqVo.setSkuCode(product.getSkuCode());
-            inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
-            inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
-            inboundBatchReqVo.setPraQty(product.getSingleCount().longValue());
-            inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
-            inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
-            batchReqVoList.add(inboundBatchReqVo);
         }
         save.setPreInboundNum(preInboundNum);
         save.setPreMainUnitNum(preInboundMainNum);
@@ -538,7 +525,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         save.setRemark(null);
         save.setList(list);
-        save.setInboundBatchReqVos(batchReqVoList);
         return save;
     }
 
