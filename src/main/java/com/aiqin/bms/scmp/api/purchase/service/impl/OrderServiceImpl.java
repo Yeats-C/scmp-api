@@ -38,10 +38,13 @@ import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +70,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderServiceImpl.class);
     @Autowired
     private OrderInfoMapper orderInfoMapper;
     @Autowired
@@ -458,6 +462,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
+        LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
         Date date = Calendar.getInstance().getTime();
         // 数据处理
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
@@ -472,6 +477,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         orderBtachs.addAll(infoBtach);
         // 调用销售单生成出库单信息
         String insertOutbound = this.insertOutbound(vo);
+        LOGGER.info("调用销售单生成出库单信息{}",  JSONObject.toJSONString(insertOutbound));
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -509,18 +515,23 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private void saveDatas(List<OrderInfoItem> infoItems, List<OrderInfo> info, List<OrderInfoItemProductBatch> orderBtachs) {
         int insert = orderInfoMapper.insertBatch(info);
         if (insert != info.size()) {
+            LOGGER.info("订单主表插入信息{}",  JSONObject.toJSONString(info));
             log.error("订单主表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
         int i = orderInfoItemMapper.insertBatch(infoItems);
         if(i!=infoItems.size()){
+            LOGGER.info("订单商品表插入信息{}",  JSONObject.toJSONString(infoItems));
             log.error("订单附表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
-        int i1 = orderInfoItemProductBatchMapper.insertBatch(orderBtachs);
-        if(i!=infoItems.size()){
-            log.error("订单批次附表插入影响条数：[{}]", insert);
-            throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
+        if(orderBtachs.size() > 0 && orderBtachs != null){
+            int i1 = orderInfoItemProductBatchMapper.insertBatch(orderBtachs);
+            if(i!=infoItems.size()){
+                LOGGER.info("订单商品批次表插入信息{}",  JSONObject.toJSONString(orderBtachs));
+                log.error("订单批次附表插入影响条数：[{}]", insert);
+                throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
+            }
         }
     }
 
