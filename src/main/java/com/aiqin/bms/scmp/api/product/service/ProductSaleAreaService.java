@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.AreaBasic;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ApplyProductSkuSaleAreaMainDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.salearea.ProductSkuSaleAreaMainDraftDTO;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductSaleAreaApplyVO;
@@ -14,7 +15,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.salearea.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Set;
 
@@ -33,7 +36,7 @@ public interface ProductSaleAreaService {
      * @param request
      * @return java.lang.Boolean
      */
-    Boolean addSaleAreaDraft(ProductSkuSaleAreaMainReqVO request) throws Exception;
+    Boolean addSaleArea(ProductSkuSaleAreaMainReqVO request) throws Exception;
 
     /**
      * 保存新增销售区域草稿
@@ -42,18 +45,17 @@ public interface ProductSaleAreaService {
      * @param request
      * @return java.lang.Boolean
      */
-    Boolean saveDraft(ProductSkuSaleAreaMainReqVO request) throws Exception;
+    Boolean saveData(ProductSkuSaleAreaMainReqVO request) throws Exception;
     /**
-     * 保存临时数据
+     * 保存数据
      * @author NullPointException
      * @date 2019/6/4
      * @param copy
      * @param productSkuSaleAreaInfoDrafts
-     * @param skuSaleAreaDrafts
      * @param channelDrafts
      * @return void
      */
-    void saveDraftData(ProductSkuSaleAreaMainDraft copy, List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts, List<ProductSkuSaleAreaDraft> skuSaleAreaDrafts, List<ProductSkuSaleAreaChannelDraft> channelDrafts);
+    void saveDraftData(ProductSkuSaleAreaMainDraft copy, List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts, List<ProductSkuSaleAreaChannelDraft> channelDrafts);
 
     /**
      * 分页获取销售区域正式数据
@@ -231,13 +233,12 @@ public interface ProductSaleAreaService {
      */
     Boolean cancelApply(String code);
     /**
-     * 编辑时查看信息
+     * 编辑时正式数据
      * @author NullPointException
      * @date 2019/6/5
-     * @param code
      * @return com.aiqin.mgs.product.api.domain.response.salearea.ProductSaleAreaForOfficialMainRespVO
      */
-    ProductSaleAreaForOfficialMainRespVO editView(String code);
+    Boolean editView (ProductSkuSaleAreaMainReqVO productSkuSaleAreaMainReqVO) throws Exception ;
     /**
      * 销售区域sku列表的查询
      * @author NullPointException
@@ -282,4 +283,17 @@ public interface ProductSaleAreaService {
     DetailRequestRespVo getInfoByForm(String formNo);
 
     HttpResponse skuAreaSale(String skuCode, String provinceCode, String storeCode);
+
+   QueryProductSaleAreaSkuRespVO skuDetail(QueryProductDetailReqVO id);
+
+    Boolean skuEdit(QueryProductDetailReqVO reqVO);
+
+
+    BasePage<AreaBasic> officialSkuList2(QueryProductSaleAreaReqVO2 reqVO);
+
+    List<SkuSaleAreaImport>  importData(MultipartFile file);
+
+    HttpResponse exportSkuBysaleCode(HttpServletResponse resp, String saleCode);
+
+    Boolean importDataConfirm(  List<SkuSaleAreaImport> list);
 }

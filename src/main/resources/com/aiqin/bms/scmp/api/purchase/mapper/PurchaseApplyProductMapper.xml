@@ -860,4 +860,23 @@
     and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
     group by sku_code,product_type
   </select>
+  <select id="productList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
+    select
+    apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName,
+    product_type as productType, supplier_code as supplierCode, supplier_name as supplierName, receipt_time as receiptTime,
+    purchase_group_code as purchaseGroupCode, purchase_group_name as purchaseGroupName, base_product_content as baseProductContent,
+    transport_center_code as transportCenterCode, transport_center_name as transportCenterName,
+    box_gauge as boxGauge, stock_unit_name as stockUnitName, product_sort_code as productSortCode, product_sort_name as productSortName,
+    brand_id as brandId, brand_name as brandName, category_id as categoryId, category_name as categoryName,
+    last_time as lastTime, sales_volume as salesVolume, model_number as modelNumber, product_spec as productSpec,
+    color_name as colorName,product_property_code as productPropertyCode, product_property_name as productPropertyName,
+    warehouse_code as warehouseCode,  warehouse_name as warehouseName, receipt_turnover as receiptTurnover,
+    tax_rate as taxRate, ifnull(stock_count, 0) as stockCount, ifnull(stock_amount, 0) as stockAmount,
+    ifnull(purchase_whole, 0) as purchaseWhole, ifnull(purchase_single, 0) as purchaseSingle,
+    product_purchase_amount as productPurchaseAmount, ifnull(stock_turnover, 0) as stockTurnover,
+    ifnull(receipt_turnover, 0) as receiptTurnover
+    from purchase_apply_product
+    where apply_product_status = 1
+    and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

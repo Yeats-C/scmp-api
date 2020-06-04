@@ -121,15 +121,13 @@
     </trim>
   </insert>
     <insert id="insertBatch">
-          insert into product_sku_price_area_info (id, main_code, type,
-      status, name, code,
+          insert into product_sku_price_area_info (id, main_code,  name, code,
       company_code, company_name, effective_time_start,
       effective_time_end, be_effective, un_effective_reason
       )
     values
     <foreach collection="items" item="item" close="" open="" separator=",">
-    (#{item.id,jdbcType=BIGINT}, #{item.mainCode,jdbcType=VARCHAR}, #{item.type,jdbcType=INTEGER},
-      #{item.status,jdbcType=INTEGER}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
+    (#{item.id,jdbcType=BIGINT}, #{item.mainCode,jdbcType=VARCHAR}, #{item.name,jdbcType=VARCHAR}, #{item.code,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR}, #{item.effectiveTimeStart,jdbcType=TIMESTAMP},
       #{item.effectiveTimeEnd,jdbcType=TIMESTAMP}, #{item.beEffective,jdbcType=INTEGER}, #{item.unEffectiveReason,jdbcType=VARCHAR}
       )

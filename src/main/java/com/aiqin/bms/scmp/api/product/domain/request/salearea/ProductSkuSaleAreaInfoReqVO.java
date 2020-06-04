@@ -21,9 +21,6 @@ public class ProductSkuSaleAreaInfoReqVO {
     @ApiModelProperty("1区域2门店")
     private Integer type;
 
-    @ApiModelProperty("0禁止1开放")
-    private Integer status;
-
     @ApiModelProperty("区域或门店名称")
     private String name;
 

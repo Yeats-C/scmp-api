@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceI
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceJog;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO1;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import org.apache.ibatis.annotations.MapKey;
@@ -90,7 +91,7 @@ public interface ProductSkuPriceInfoMapper {
      * @param code
      * @return com.aiqin.mgs.product.api.domain.response.price.ProductSkuPriceInfoRespVO
      */
-    ProductSkuPriceInfoRespVO selectInfoByCode(String code);
+    ProductSkuPriceInfoRespVO1 selectInfoByCode(@Param("code") String code);
 
     BigDecimal selectPriceTax(@Param("skuCode") String skuCode, @Param("supplierCode") String supplierCode);
     /**

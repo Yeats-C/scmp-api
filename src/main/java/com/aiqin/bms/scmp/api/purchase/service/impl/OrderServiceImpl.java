@@ -33,10 +33,9 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -45,6 +44,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -81,6 +81,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private ProductSkuCheckoutDao productSkuCheckoutDao;
     @Autowired
     private OrderCallbackService orderCallbackService;
+    @Autowired
+    private UrlConfig urlConfig;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -425,7 +427,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    //@Transactional(rollbackFor = Exception.class)
     public HttpResponse insertSaleOrder(ErpOrderInfo request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -486,7 +488,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         this.insertOutbound(vo);
         return HttpResponse.success();
     }
-
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
@@ -562,7 +563,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 出库单参数填充
-    private void insertOutbound(OrderInfoReqVO vo) {
+    private String insertOutbound(OrderInfoReqVO vo) {
         OutboundReqVo outboundReqVo = new OutboundReqVo();
         // 公司
         outboundReqVo.setCompanyCode(Global.COMPANY_09);
@@ -649,7 +650,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 税额
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
-        outboundService.saveOutbound(outboundReqVo);
+        String outboundOderCode = outboundService.saveOutbound(outboundReqVo);
+        return outboundOderCode;
     }
 
     @Override

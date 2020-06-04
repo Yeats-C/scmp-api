@@ -48,7 +48,7 @@ public class ProductSkuSaleAreaJobImpl implements ProductSkuSaleAreaJob {
         if (CollectionUtils.isEmpty(list)) {
             return;
         }
-        list.forEach(o -> o.setBeEffective(1));
+//        list.forEach(o -> o.setBeEffective(1));
         int i = productSkuSaleAreaMainMapper.updateByCode(list);
         if (i != list.size()) {
             log.error("需要更新的条数：[{}] 实际更新的条数: [{}]", list.size(), i);

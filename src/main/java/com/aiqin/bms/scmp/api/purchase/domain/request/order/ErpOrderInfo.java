@@ -376,5 +376,4 @@ public class ErpOrderInfo {
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;
-
 }

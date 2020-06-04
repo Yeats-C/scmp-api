@@ -29,6 +29,14 @@
       #{item}
     </foreach>
   </delete>
+
+
+    <delete id="deleteByCode">
+        delete from product_sku_sale_area_channel
+        where code = #{code}
+    </delete>
+
+
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaChannel">
     insert into product_sku_sale_area_channel (id, code, price_channel_code, 
       price_channel_name, company_code, company_name

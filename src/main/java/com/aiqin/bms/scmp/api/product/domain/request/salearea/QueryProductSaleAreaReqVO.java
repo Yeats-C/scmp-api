@@ -16,26 +16,24 @@ import lombok.Data;
 @ApiModel("销售区域查询请求vo")
 public class QueryProductSaleAreaReqVO extends PageReq {
 
-    @ApiModelProperty("sku编码")
-    private String skuCode;
 
-    @ApiModelProperty("sku名称")
-    private String skuName;
-
-    @ApiModelProperty("编码")
+    @ApiModelProperty("销售区域编码")
     private String code;
 
-    @ApiModelProperty("名称")
+    @ApiModelProperty("销售区域名称")
     private String name;
 
     @ApiModelProperty("是否禁用(0禁用1启用)")
     private Integer beDisable;
 
-    @ApiModelProperty("供货渠道类别编码")
-    private String categoriesSupplyChannelsCode;
+    @ApiModelProperty("允许区域名称")
+    private String allowAreaName;
 
-    @ApiModelProperty("直送供应商名称")
-    private String directDeliverySupplierCode;
+    @ApiModelProperty("允许门店名称")
+    private String allowStoreName;
+
+
+    private String personId;
 
     @ApiModelProperty("公司编码")
     private String companyCode;

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.ProductSkuChangePriceSaleAreaMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="change_price_code" jdbcType="VARCHAR" property="changePriceCode" />
+    <result column="sale_area_code" jdbcType="VARCHAR" property="saleAreaCode" />
+    <result column="sale_area_name" jdbcType="VARCHAR" property="saleAreaName" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, change_price_code, sale_area_code, sale_area_name, status
+  </sql>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_change_price_sale_area
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectByChangePriceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from product_sku_change_price_sale_area
+    where change_price_code = #{code}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from product_sku_change_price_sale_area
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea">
+    insert into product_sku_change_price_sale_area (id, change_price_code, sale_area_code, 
+      sale_area_name, status)
+    values (#{id,jdbcType=BIGINT}, #{changePriceCode,jdbcType=VARCHAR}, #{saleAreaCode,jdbcType=VARCHAR}, 
+      #{saleAreaName,jdbcType=VARCHAR}, #{status,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea">
+    insert into product_sku_change_price_sale_area
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="changePriceCode != null">
+        change_price_code,
+      </if>
+      <if test="saleAreaCode != null">
+        sale_area_code,
+      </if>
+      <if test="saleAreaName != null">
+        sale_area_name,
+      </if>
+      <if test="status != null">
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="changePriceCode != null">
+        #{changePriceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="saleAreaCode != null">
+        #{saleAreaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="saleAreaName != null">
+        #{saleAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea">
+    update product_sku_change_price_sale_area
+    <set>
+      <if test="changePriceCode != null">
+        change_price_code = #{changePriceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="saleAreaCode != null">
+        sale_area_code = #{saleAreaCode,jdbcType=VARCHAR},
+      </if>
+      <if test="saleAreaName != null">
+        sale_area_name = #{saleAreaName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        status = #{status,jdbcType=INTEGER},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea">
+    update product_sku_change_price_sale_area
+    set change_price_code = #{changePriceCode,jdbcType=VARCHAR},
+      sale_area_code = #{saleAreaCode,jdbcType=VARCHAR},
+      sale_area_name = #{saleAreaName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=INTEGER}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

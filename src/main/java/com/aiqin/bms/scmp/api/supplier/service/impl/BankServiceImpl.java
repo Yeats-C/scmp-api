@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.supplier.service.BankService;
-import com.aiqin.bms.scmp.api.util.HttpClientHelper;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.http.message.BasicNameValuePair;
@@ -29,9 +28,7 @@ public class BankServiceImpl implements BankService {
         BasicNameValuePair param1 = new BasicNameValuePair("bank_name",bank_name);
         BasicNameValuePair param2 = new BasicNameValuePair("page_no", "1");
         BasicNameValuePair param3 = new BasicNameValuePair("page_size", "10");
-        HttpClient httpClient = HttpClientHelper.getCurrentClient(HttpClient.get(stringBuilder.toString()).addParameters(param1,param2,param3));
-        HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-
+        HttpResponse orderDto = HttpClient.get(stringBuilder.toString()).addParameters(param1,param2,param3).action().result(HttpResponse.class);
         return orderDto;
     }
 }

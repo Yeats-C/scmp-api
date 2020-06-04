@@ -1,8 +1,13 @@
 package com.aiqin.bms.scmp.api.product.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuSaleAreaImport;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleArea;
+import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductDetailReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.salearea.QueryProductSaleAreaReqVO2;
 import com.aiqin.bms.scmp.api.product.domain.response.salearea.QueryProductSaleAreaSkuRespVO;
+import com.github.pagehelper.Page;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -42,7 +47,7 @@ public interface ProductSkuSaleAreaMapper {
      * @date 2019/6/6
      * @return java.util.List<com.aiqin.mgs.product.api.domain.response.salearea.QueryProductSaleAreaSkuRespVO>
      */
-    List<QueryProductSaleAreaSkuRespVO> officialSkuList(List<Long> id);
+    List<QueryProductSaleAreaSkuRespVO> officialSkuList(@Param("list")List<Long> list, @Param("personId")String personId);
     /**
      * 差数量
      * @author NullPointException
@@ -53,4 +58,17 @@ public interface ProductSkuSaleAreaMapper {
     List<Long> officialSkuListCount(QueryProductSaleAreaReqVO reqVO);
 
     String selectMainCode(String skuCode);
+
+    QueryProductSaleAreaSkuRespVO skuDetail( QueryProductDetailReqVO reqVO);
+
+    List<ProductSkuInfo> getSkuList(QueryProductDetailReqVO reqVO);
+
+
+    void deleteByCode(QueryProductDetailReqVO reqVO);
+
+    List<Long> officialSkuListCount2(QueryProductSaleAreaReqVO2 reqVO);
+
+    List<QueryProductSaleAreaSkuRespVO> officialSkuList2(@Param("list")List<Long> list, @Param("personId") String personId);
+
+    void insertImports(SkuSaleAreaImport skuConfigImports);
 }

@@ -33,6 +33,11 @@
       #{item}
     </foreach>
   </delete>
+
+    <delete id="deleteByCode">
+        delete from product_sku_sale_area_info
+        where main_code =  #{mainCode}
+    </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSaleAreaInfo">
     insert into product_sku_sale_area_info (id, main_code, sku_code, 
       type, status, name, 
@@ -177,5 +182,12 @@
       and code = #{code,jdbcType=VARCHAR}
       and type = #{type,jdbcType=INTEGER}
     </where>
+  </select>
+
+  <select id="selectBySkuCode" resultType="com.aiqin.bms.scmp.api.product.domain.response.ProductSkuSaleAreaInfoRespVo">
+    SELECT distinct b.name AS name, b.code AS code FROM
+    product_sku_change_price_info a LEFT JOIN product_sku_change_price_area_info b
+    ON a.code = b.main_code
+    where a.sku_code = #{skuCode}
   </select>
 </mapper>

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.response.order;
 
 import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;

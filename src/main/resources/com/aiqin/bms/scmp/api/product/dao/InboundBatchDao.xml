@@ -119,67 +119,6 @@
     </foreach>
   </insert>
 
-  <select id="selectWmsStockByInboundOderCode" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundBatchWmsReqVO" resultMap="WmsReq">
-    select
-    <include refid="Batch_Wms_Response_List" />
-    from inbound_batch a left join product_sku b on a.sku_code = b.sku_code
-    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
-  </select>
-
-  <select id="selectByLinenum" resultMap="BaseResultLinenumMap">
-    select
-    <include refid="Base_Column_ByLinenum" />
-    from inbound_batch a left JOIN product_sku_checkout b on a.sku_code = b.sku_code
-    where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
-    and a.sku_code = #{skuCode,jdbcType=VARCHAR}
-    <if test="linenum != null">
-      and a.linenum = #{linenum,jdbcType=BIGINT}
-    </if>
-  </select>
-
-  <update id="updateBatchInfoByInboundOderCodeAndLineNum" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch">
-    update inbound_batch
-    <set>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
-      </if>
-      <if test="skuName != null">
-        sku_name = #{skuName,jdbcType=VARCHAR},
-      </if>
-      <if test="inboundBatchCode != null">
-        inbound_batch_code = #{inboundBatchCode,jdbcType=VARCHAR},
-      </if>
-      <if test="manufactureTime != null">
-        manufacture_time = #{manufactureTime,jdbcType=VARCHAR},
-      </if>
-      <if test="batchRemark != null">
-        batch_remark = #{batchRemark,jdbcType=VARCHAR},
-      </if>
-      <if test="preQty != null">
-        pre_qty = #{preQty,jdbcType=BIGINT},
-      </if>
-      <if test="praQty != null">
-        pra_qty = #{praQty,jdbcType=BIGINT},
-      </if>
-      <if test="storeHouseCode != null">
-        store_house_code = #{storeHouseCode,jdbcType=VARCHAR},
-      </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where line_num = #{linenum,jdbcType=BIGINT}
-    and  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
-  </update>
   <select id="listBySourceCodes" resultMap="BaseResultMap">
     select
         CONCAT(i.source_oder_code,ib.sku_code) as inbound_oder_code , ib.supplier_code , ib.supplier_name

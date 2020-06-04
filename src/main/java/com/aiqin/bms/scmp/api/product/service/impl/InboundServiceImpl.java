@@ -244,7 +244,7 @@ public class InboundServiceImpl implements InboundService {
      * @return
      */
     @Override
-   //@Transactional(rollbackFor = GroundRuntimeException.class)
+    @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
             log.info("采购单入库参数：" + reqVo);
@@ -419,20 +419,18 @@ public class InboundServiceImpl implements InboundService {
         //采购传入wms
         if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
             //采购日志列表
-            if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
-                OperationLog operationLog = new OperationLog();
-                PurchaseOrder purchaseOrder = new PurchaseOrder();
-                purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
-                PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-                if (resultPurchaseOrder != null) {
-                    operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
-                    operationLog.setCreateByName(inbound.getCreateBy());
-                    operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
-                    operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
-                    operationLog.setCreateTime(new Date());
-                    operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
-                    purchaseManageService.addLog(operationLog);
-                }
+            OperationLog operationLog = new OperationLog();
+            PurchaseOrder purchaseOrder = new PurchaseOrder();
+            purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+            PurchaseOrder resultPurchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+            if (resultPurchaseOrder != null) {
+                operationLog.setOperationId(resultPurchaseOrder.getPurchaseOrderId());
+                operationLog.setCreateByName(inbound.getCreateBy());
+                operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+                operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+                operationLog.setCreateTime(new Date());
+                operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
+                purchaseManageService.addLog(operationLog);
             }
 
             PurchaseOrderDetails order = inboundDao.selectCreateById(inbound.getInboundOderCode());
@@ -445,20 +443,26 @@ public class InboundServiceImpl implements InboundService {
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             if (orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
                 ResponseWms responseWms = JsonUtil.fromJson(JsonUtil.toJson(orderDto.getData()), ResponseWms.class);
+                purchaseOrder.setPurchaseOrderId(resultPurchaseOrder.getPurchaseOrderId());
                 if ("0".equals(responseWms.getResultCode())) {
                     //设置wms编号
 //                    inbound.setWmsDocumentCode(responseWms.getUniquerRequestNumber());
+                    purchaseOrder.setInfoStatus(0);
                     log.info("入库单传入dl成功");
                 } else {
+                    purchaseOrder.setInfoStatus(1);
                     log.error("入库单传入wms失败:{}", responseWms.getReason());
-                    throw new GroundRuntimeException(String.format("入库单传入wms失败:%s", responseWms.getReason()));
+                    //throw new GroundRuntimeException(String.format("入库单传入wms失败:%s", responseWms.getReason()));
                 }
             } else {
+                purchaseOrder.setInfoStatus(1);
                 log.error("入库单传入wms失败:{}", orderDto.getMessage());
-                throw new GroundRuntimeException(String.format("入库单传入wms失败:%s", orderDto.getMessage()));
+                //throw new GroundRuntimeException(String.format("入库单传入wms失败:%s", orderDto.getMessage()));
             }
+            Integer update = purchaseOrderDao.update(purchaseOrder);
+            log.error("更改采购单重发状态，判断是否发送DL成功：", update);
+        }else {
             //移库
-        } else {
             if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
                 //记录调拨待入库
                 supplierCommonService.getInstance(inbound.getSourceOderCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");

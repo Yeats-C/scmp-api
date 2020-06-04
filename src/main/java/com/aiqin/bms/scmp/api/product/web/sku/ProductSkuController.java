@@ -103,19 +103,6 @@ public class ProductSkuController {
         return HttpResponse.success(skuService.getStoreSkuDetailByCode(skuCode));
     }
 
-    @PostMapping("/merchant/list")
-    @ApiOperation("微商城sku列表")
-    public HttpResponse<List<MerchantSkuItemRespVO>> getMerchantSkuListByCodes(@RequestBody QueryMerchantSkuListReqVO queryMerchantSkuListReqVO){
-        return HttpResponse.success(skuService.getMerchantSkuListByCodes(queryMerchantSkuListReqVO));
-    }
-
-    @PostMapping("/search/by/code")
-    @ApiOperation(value = "根据skuCodeList查询sku信息")
-    public HttpResponse<List<ProductSkuResponse>> selectSkuInfoListCanUseBySkuCodeList(@RequestBody List<String> skuCodeList){
-        List<ProductSkuResponse> ProductSkuResponseList = skuService.selectSkuInfoListCanUseBySkuCodeList(skuCodeList);
-        return HttpResponse.success(ProductSkuResponseList);
-    }
-
     @GetMapping("/inspection/report/list")
     @ApiOperation("根据销售码查询对应质检报告信息")
     public HttpResponse<List<InspectionReportRespVO>> getInspectionReportByCode(String saleCode){
@@ -162,12 +149,6 @@ public class ProductSkuController {
     @ApiOperation("oms根据查询条件分页查询sku列表")
     public HttpResponse getPageSkuList(@RequestBody QuerySkuListPageReq querySkuListPageReq){
         return HttpResponse.success(skuService.queryOmsSkuPage(querySkuListPageReq));
-    }
-
-    @GetMapping("/info/by/code")
-    @ApiOperation("根据skuCode查询sku信息")
-    public HttpResponse<ProductSkuResponse> selectSkuInfoBySkuCode(@RequestParam(value = "sku_code") String skuCode){
-        return HttpResponse.success(skuService.selectSkuInfoBySkuCode(skuCode));
     }
 
 
