@@ -46,7 +46,7 @@ public class Stock {
 
     @ApiModelProperty("库房类型")
     @JsonProperty(value = "warehouse_type")
-    private String warehouseType;
+    private Integer warehouseType;
 
     @ApiModelProperty("sku编码")
     @JsonProperty(value = "sku_code")
