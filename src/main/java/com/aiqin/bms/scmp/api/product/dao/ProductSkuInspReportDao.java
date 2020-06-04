@@ -26,7 +26,7 @@ public interface ProductSkuInspReportDao {
      * @param saleCode
      * @return
      */
-    String getInspectionReportsByCode(String saleCode);
+    InspectionReportRespVO getInspectionReportsByCode(String saleCode);
 
     InspectionReportRespVO getInspectionReport(QueryInspectionReportReqVO queryInspectionReportReqVO);
 
