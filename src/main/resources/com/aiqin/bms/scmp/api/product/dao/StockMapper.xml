@@ -1161,6 +1161,7 @@
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
        select
           a.stock_batch_code      as warehouseBatchNumber,
+          a.batch_code      as batchCode,
           a.transport_center_code as transportCenterCode,
           a.transport_center_name as transportCenterName,
           a.warehouse_code        as warehouseCode,

@@ -21,6 +21,10 @@ public class BatchInfo {
     @JsonProperty("warehouse_batch_number")
     private String warehouseBatchNumber;
 
+    @ApiModelProperty("仓库批次号编码")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
     @ApiModelProperty(value = "仓库批次号名称",hidden = true)
     private String warehouseBatchName;
 
