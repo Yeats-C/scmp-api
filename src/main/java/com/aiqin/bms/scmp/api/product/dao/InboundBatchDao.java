@@ -17,7 +17,7 @@ public interface InboundBatchDao {
 
     List<InboundBatch> listBySourceCodes(@Param("list") List<String> orderCodes);
 
-    Integer insertList(List<InboundBatchReqVo> batchList);
+    Integer insertList(@Param("list") List<InboundBatchReqVo> batchList);
 
     List<InboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
 

@@ -78,6 +78,15 @@ public class ProfitLossDetailRequest {
     @ApiModelProperty("批次号")
     @JsonProperty("batch_code")
     private String batchCode;
+
+    @ApiModelProperty("损溢类型编号（1 增加库存，2 减少库存）")
+    @JsonProperty("loss_order_code")
+    private String lossOrderCode;
+
+    @ApiModelProperty("损溢类型名称（1-报溢、2-报损）")
+    @JsonProperty("loss_order_name")
+    private String lossOrderName;
+
     /**                        */
     @ApiModelProperty("sku名称")
     @JsonProperty("sku_name")
