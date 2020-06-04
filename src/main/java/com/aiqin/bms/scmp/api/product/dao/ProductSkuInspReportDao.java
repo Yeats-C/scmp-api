@@ -25,7 +25,7 @@ public interface ProductSkuInspReportDao {
      * @param saleCode
      * @return
      */
-    List<InspectionReportRespVO> getInspectionReportsByCode(String saleCode);
+    String getInspectionReportsByCode(String saleCode);
 
     InspectionReportRespVO getInspectionReport(QueryInspectionReportReqVO queryInspectionReportReqVO);
 
@@ -56,5 +56,7 @@ public interface ProductSkuInspReportDao {
     List<ProductSkuInspReportRespVo> getListBySkuCodeAndProductDate(QueryProductSkuInspReportReqVo reportReqVo);
 
     Integer updateInspection(ProductSkuInspReport productSkuInspReport);
+
+    List<InspectionReportRespVO> getInspectionReportsBySkuCode(@Param("skuCode")String skuCode);
 
 }
