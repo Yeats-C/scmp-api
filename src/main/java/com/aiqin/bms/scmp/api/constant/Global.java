@@ -160,6 +160,11 @@ public final class Global {
     public static final String SPECIAL_TYPE = "特卖库";
     public static final String DEFECTIVE_TYPE = "残品库";
 
+    public static final Integer SALE_INFO_TYPE= 1;
+    public static final Integer SPECIAL_INFO_TYPE = 2;
+    public static final Integer DEFECTIVE_INFO_TYPE = 3;
+    public static final Integer GIFT_INFO_TYPE = 4;
+
     /**
      * 统计报表数据类型
      *  0 公司 1 部门

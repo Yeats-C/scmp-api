@@ -96,7 +96,7 @@ public class SynchronizationStockServiceImpl implements SynchronizationStockServ
                     stock.setSkuCode(sku.getSkuCode());
                     stock.setSkuName(sku.getSkuName());
                     // 查询库存
-                    stock.setWarehouseType(ware.getWarehouseTypeCode());
+                    stock.setWarehouseType(Integer.valueOf(ware.getWarehouseTypeCode()));
                     stock.setWarehouseCode(ware.getWarehouseCode());
                     stock.setTransportCenterCode(ware.getTransportCenterCode());
                     stock.setCompanyCode("09");
