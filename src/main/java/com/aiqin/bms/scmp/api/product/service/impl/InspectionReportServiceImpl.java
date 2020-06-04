@@ -26,12 +26,16 @@ public class InspectionReportServiceImpl implements InspectionReportService {
     @Override
     public HttpResponse<List<InspectionReportRespVO>> getInspectionReportByCode(String saleCode) {
         try {
-            String skuCode = productSkuInspReportDao.getInspectionReportsByCode(saleCode);
-            if (StringUtils.isEmpty(skuCode)) {
+            InspectionReportRespVO inspectionReportRespVO = productSkuInspReportDao.getInspectionReportsByCode(saleCode);
+            if (StringUtils.isEmpty(inspectionReportRespVO.getSkuCode())) {
                 return HttpResponse.success("没有该商品信息");
             }
-            List<InspectionReportRespVO> inspectionReportRespVOS = productSkuInspReportDao.getInspectionReportsBySkuCode(skuCode);
-            return HttpResponse.success(inspectionReportRespVOS);
+            List<InspectionReportRespVO> inspectionReportRespVOS = productSkuInspReportDao.getInspectionReportsBySkuCode(inspectionReportRespVO.getSkuCode());
+            if(inspectionReportRespVOS.size() > 0 && inspectionReportRespVOS != null){
+                return HttpResponse.success(inspectionReportRespVOS);
+            }else {
+                return HttpResponse.success(inspectionReportRespVO.getSkuName());
+            }
         } catch (BizException e){
             throw new BizException(e.getMessage());
         }
