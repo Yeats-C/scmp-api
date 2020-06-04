@@ -3,12 +3,12 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
-import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
@@ -20,10 +20,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBat
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author knight.xie
@@ -38,9 +36,6 @@ public interface StockService {
     /** 功能描述: 查询库存商品(采购退供使用) 不分页*/
     List<QueryStockSkuRespVo> selectStockSkus(QueryStockSkuReqVo reqVO);
 
-    /** 根据搜索条件查询库房库存stock信息 */
-    PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest);
-
     /** 根据搜索条件查询物流中心stock信息*/
     PageResData selectTransportStockInfoByPage(StockRequest stockRequest);
 
@@ -52,15 +47,11 @@ public interface StockService {
     /** 根据搜索条件查询stock信息*/
     PageResData selectStockSumInfoByPage(StockRequest stockRequest);
 
-    /** 根据stockid查询单个库存信息*/
-    PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size);
+    HttpResponse<StockRespVO> stockWarehouseInfo(String stockCode);
 
-    /** 退供锁定库存*/
-    Boolean returnSupplyLockStock(ILockStockReqVO reqVO);
+    PageResData<StockFlow> selectStockFlow(StockLogsRequest request);
 
     Boolean returnSupplyLockStocks(ILockStocksReqVO reqVO);
-
-    Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO);
 
     /** 接受采购单,保存或更新库存,保存入库流水*/
     InboundReqVo save(InboundReqVo reqVo);
@@ -70,8 +61,6 @@ public interface StockService {
     HttpResponse changeStock(StockChangeRequest stockChangeRequest);
 
     HttpResponse stockAndBatchChange(ChangeStockRequest request);
-
-    Map<String,Long>getLatestPurchasePriceBySkuCodes(@Param("skuCodes") List<String> skuCodes);
 
     HttpResponse logs(StockLogsRequest stockLogsRequest);
 

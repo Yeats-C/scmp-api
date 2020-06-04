@@ -2433,19 +2433,23 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
+
+        SupplyCompanyDetailDTO supplyCompanyDetailDTO=  supplyCompanyDao.getSupplyComDetail(Long.valueOf(1556));
         SupplierWms supplierWms=new SupplierWms();
-        supplierWms.setAddress("测试地址");
-        supplierWms.setArea("测试地区");
-        supplierWms.setContactName("张三");
-        supplierWms.setDelFlag((byte) 1);
-        supplierWms.setEmail("13213@qq.com");
-        supplierWms.setMobilePhone("2111123213123");
-        supplierWms.setRemark("备注");
-        supplierWms.setSupplierAbbreviation("测试简称");
-        supplierWms.setSupplyCode("testcode001");
-        supplierWms.setSupplyName("testname001");
-        supplierWms.setSupplyType("testtype001");
-        supplierWms.setUpdateTime(new Date());
+
+        BeanCopyUtils.copy(supplyCompanyDetailDTO,supplierWms);
+//        supplierWms.setAddress("测试地址");
+//        supplierWms.setArea("测试地区");
+//        supplierWms.setContactName("张三");
+//        supplierWms.setDelFlag((byte) 1);
+//        supplierWms.setEmail("13213@qq.com");
+//        supplierWms.setMobilePhone("2111123213123");
+//        supplierWms.setRemark("备注");
+//        supplierWms.setSupplierAbbreviation("测试简称");
+//        supplierWms.setSupplyCode("testcode001");
+//        supplierWms.setSupplyName("testname001");
+//        supplierWms.setSupplyType("testtype001");
+//        supplierWms.setUpdateTime(new Date());
         sendWms2(supplierWms);
         log.info(JSON.toJSONString(supplierWms));
         return HttpResponse.success();
