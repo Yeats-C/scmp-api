@@ -943,7 +943,7 @@
     <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
         <result column="skuCode" property="skuCode"/>
         <result column="skuName" property="skuName"/>
-        <result column="warehouseBatchCode" property="warehouseBatchCode"/>
+        <result column="batchCode" property="batchCode"/>
         <result column="productCategoryName" property="productBrandName"/>
         <result column="productBrandName" property="productBrandName"/>
         <result column="spec" property="spec"/>
@@ -969,7 +969,7 @@
         select
         a.sku_code              as skuCode,
         a.sku_name              as skuName,
-        a.stock_batch_code              as warehouseBatchCode,
+        a.batch_code              as batchCode,
         b.product_category_name as productCategoryName,
         b.product_brand_name    as productBrandName,
         d.spec                  as spec,
@@ -1023,6 +1023,7 @@
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
        select
           a.stock_batch_code      as warehouseBatchNumber,
+          a.batch_code      as batchCode,
           a.transport_center_code as transportCenterCode,
           a.transport_center_name as transportCenterName,
           a.warehouse_code        as warehouseCode,
