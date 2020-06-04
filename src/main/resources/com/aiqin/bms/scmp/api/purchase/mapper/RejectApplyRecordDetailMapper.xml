@@ -289,7 +289,7 @@
     select sku_code skuCode, sku_name skuName, category_id categoryId, category_name categoryName,
     brand_id brandId, brand_name brandName, product_type productType, product_spec productSpec,
     color_code colorCode, color_name colorName, model_number modelNumber, unit_code unitCode, unit_name unitName,
-    sum(product_count) productCount, sum(total_count totalCount), factory_sku_code factorySkuCode, tax_rate taxRate,
+    sum(product_count) productCount, sum(total_count) totalCount, factory_sku_code factorySkuCode, tax_rate taxRate,
     product_amount productAmount, sum(product_total_amount) productTotalAmount, product_cost productCost,
     barcode, settlement_method_code settlementMethodCode, supplier_code supplierCode,
     warehouse_code warehouseCode
