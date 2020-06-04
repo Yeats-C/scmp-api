@@ -647,16 +647,17 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_TO_OUTBOUND);
         rejectRecord.setApprovalCode(rejectApplyRecord.getRejectApplyRecordCode());
 
-        // 查询对应库房的批次管理
-        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(rejectRecord.getWarehouseCode());
-        LOGGER.info("生成退供单，查询对应库房的批次管理信息：{}", JsonUtil.toJson(warehouse));
-
         // 查询退供单规则单号
         String code = DateUtils.currentDate().replaceAll("-","");
         String recordCode = rejectRecordDao.rejectRecordByCode(code);
         List<RejectRecordBatch> batchList;
         ReturnSupplyToOutBoundReqVo reqVo;
         for(RejectApplyRecordTransportCenter center:applyCenters){
+
+            // 查询对应库房的批次管理
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(center.getWarehouseCode());
+            LOGGER.info("生成退供单，查询对应库房的批次管理信息：{}", JsonUtil.toJson(warehouse));
+
             Long rejectRecordCode;
             if(StringUtils.isBlank(recordCode)){
                 String newRecordCode = code + "0001";

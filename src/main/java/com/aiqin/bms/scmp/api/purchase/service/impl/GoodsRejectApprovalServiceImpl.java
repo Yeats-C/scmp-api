@@ -89,7 +89,7 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {
-            LOGGER.error("审批回调异常:{}", e.getMessage());
+            LOGGER.error("审批回调异常:{}", e.getStackTrace());
             return WorkFlowReturn.SUCCESS;
         }
     }
