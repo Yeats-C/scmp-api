@@ -155,6 +155,10 @@ public class StockRespVO {
     @JsonProperty(value = "product_brand_name")
     private String productBrandName;
 
+    @ApiModelProperty("品牌编码")
+    @JsonProperty(value = "product_brand_code")
+    private String productBrandCode;
+
     @ApiModelProperty("销售库存数")
     @JsonProperty(value = "sale_count")
     private Long saleCount;
@@ -171,21 +175,9 @@ public class StockRespVO {
     @JsonProperty(value = "sale_purchase_way_count")
     private Long salePurchaseWayCount;
 
-    @ApiModelProperty("赠品库存数")
-    @JsonProperty(value = "gift_count")
-    private Long giftCount;
-
-    @ApiModelProperty("赠品锁定库存数")
-    @JsonProperty(value = "gift_lock_count")
-    private Long giftLockCount;
-
-    @ApiModelProperty("赠品采购在途数")
-    @JsonProperty(value = "gift_way_count")
-    private Long giftWayCount;
-
-    @ApiModelProperty("赠品采购在途数")
-    @JsonProperty(value = "gift_purchase_way_Count")
-    private Long giftPurchaseWayCount;
+    @ApiModelProperty("销售含税总成本")
+    @JsonProperty(value = "sale_total_amount")
+    private BigDecimal saleTotalAmount;
 
     @ApiModelProperty("特卖库存数")
     @JsonProperty(value = "special_sale_count")
@@ -198,6 +190,14 @@ public class StockRespVO {
     @ApiModelProperty("特卖在途数")
     @JsonProperty(value = "special_sale_way_count")
     private Long specialSaleWayCount;
+
+    @ApiModelProperty("特卖含税总成本")
+    @JsonProperty(value = "special_sale_total_amount")
+    private BigDecimal specialSaleTotalAmount;
+
+    @ApiModelProperty("残品含税总成本")
+    @JsonProperty(value = "bad_total_amount")
+    private BigDecimal badTotalAmount;
 
     @ApiModelProperty("残品库存数")
     @JsonProperty(value = "bad_count")
@@ -244,5 +244,9 @@ public class StockRespVO {
     @ApiModelProperty("更新人")
     @JsonProperty(value = "update_by_name")
     private String updateByName;
+
+    @ApiModelProperty("仓库库存总计")
+    @JsonProperty(value = "sum_list")
+    private StockSumResponse sumList;
 
 }
