@@ -297,6 +297,21 @@
         <if test="batchNumber != null and batchNumber !=''">
             and a.warehouse_batch_number = #{batchNumber}
         </if>
+        <if test="areaCode != null and areaCode !=''">
+            and c.code = #{areaCode}
+        </if>
+         <if test="isBatchPrice != null and isBatchPrice ==1 ">
+        and a.warehouse_batch_number IS NULL
+        </if>
+        <if test="isBatchPrice != null and isBatchPrice ==0 ">
+            and a.warehouse_batch_number is NOT null
+        </if>
+        <if test="isAreaPrice != null and isAreaPrice ==1 ">
+            and a.be_contain_area = 1
+        </if>
+        <if test="isAreaPrice != null and isAreaPrice ==0 ">
+            and a.be_contain_area = 0
+        </if>
         order by a.create_time desc
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>

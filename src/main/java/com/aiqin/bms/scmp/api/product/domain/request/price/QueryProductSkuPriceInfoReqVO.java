@@ -96,4 +96,15 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
 
     @ApiModelProperty(value ="4级品类编码",hidden = true)
     private String productCategoryLv4Code;
+
+    @ApiModelProperty("是否批次价格 0:否 1：是 不填就是全部")
+    private Integer isBatchPrice;
+
+
+    @ApiModelProperty("是否区域价格 0:否 1：是  不填就是全部")
+    private Integer isAreaPrice;
+
+
+    @ApiModelProperty("区域编码")
+    private String areaCode;
 }
