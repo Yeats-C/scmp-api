@@ -445,9 +445,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
             for(RejectApplyRecordTransportCenter center:request.getCenterList()){
                 center.setRejectApplyRecordCode(rejectApplyCode);
+                center.setRejectApplyRecordName(rejectApplyRecord.getRejectApplyRecordName());
             }
             Integer i = 1;
             for(RejectApplyRecordDetail detail:request.getDetailList()){
+                detail.setProductCount(detail.getTotalCount());
                 detail.setRejectApplyRecordDetailId(IdUtil.uuid());
                 detail.setRejectApplyRecordCode(rejectApplyCode);
                 detail.setCreateById(authToken.getPersonId());
