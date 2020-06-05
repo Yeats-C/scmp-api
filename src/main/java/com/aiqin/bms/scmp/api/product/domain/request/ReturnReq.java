@@ -12,8 +12,10 @@ import java.util.List;
  */
 @Data
 public class ReturnReq {
+
     @ApiModelProperty(value = "退货信息表")
     private ReturnOrderInfoReq returnOrderInfo;
+
     @ApiModelProperty(value = "退货单明细")
     private List<ReturnOrderDetailReq> returnOrderDetailReqList;
 }

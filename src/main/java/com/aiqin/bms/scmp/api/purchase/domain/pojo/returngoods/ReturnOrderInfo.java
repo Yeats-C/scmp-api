@@ -24,21 +24,13 @@ public class ReturnOrderInfo {
     @ApiModelProperty("创建时间")
     private Date createDate;
 
-    //  0直送、1配送、2辅采
-    @ApiModelProperty("类型：直送、配送、首单、首单赠送")
-    private String orderType;
+    @ApiModelProperty("类型：0直送、1配送、2辅采")
+    private Integer orderType;
 
-    @ApiModelProperty("订单类型编码")
-    private Integer orderTypeCode;
+    @ApiModelProperty("退货类型：0客户退货、1缺货退货、2售后退货、3冲减单")
+    private Integer returnOrderType;
 
-    // 退货类型  0客户退货、1缺货退货、2售后退货、3冲减单
-    @ApiModelProperty("退货类型：客户退货、缺货退货、售后退货")
-    private String returnOrderType;
-
-    @ApiModelProperty("退货类型编码")
-    private Integer returnOrderTypeCode;
-
-    @ApiModelProperty("支付状态0未支付1已支付")
+    @ApiModelProperty("支付状态 0 已支付 1未支付")
     private Integer paymentStatus;
 
     @ApiModelProperty("是否锁定(0否1是）")

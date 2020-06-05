@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspecti
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -57,18 +58,11 @@ public class ReturnGoodsController {
         }
     }
 
-    @ApiOperation("退货单调用接口")
-    @PostMapping("record/return")
+    @ApiOperation("运营中台推送退货单")
+    @PostMapping("/record/return")
     public HttpResponse<String> record(@RequestBody ReturnReq reqVO){
-        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.record(reqVO));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
+        log.info("运营中台推送退货单参数：[{}]", JsonUtil.toJson(reqVO));
+        return HttpResponse.successGenerics(returnGoodsService.record(reqVO));
     }
 
     @ApiOperation("DL退货单调用接口")

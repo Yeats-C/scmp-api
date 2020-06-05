@@ -42,7 +42,7 @@ public class ReturnOrderDetailReq {
     @ApiModelProperty(value = "型号")
     private String modelCode;
 
-    @ApiModelProperty(value = "base_product_spec")
+    @ApiModelProperty(value = "规格")
     private Long baseProductSpec;
 
     @ApiModelProperty(value = "单位编码")

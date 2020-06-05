@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
@@ -554,15 +555,32 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         return returnDLReq;
     }
 
-    private void returnOrderAdd(ReturnReq reqVO) {
-        //进行主表添加
-        ReturnOrderInfoReq returnOrderInfoReq=reqVO.getReturnOrderInfo();
-        ReturnOrderInfo returnOrderInfo=new ReturnOrderInfo();
-        BeanUtils.copyProperties(returnOrderInfoReq,returnOrderInfo);
-        returnOrderInfo.setOrderCode(returnOrderInfoReq.getOrderStoreCode());
-        returnOrderInfo.setId(null);
-        returnOrderInfoMapper.insert(returnOrderInfo);
-        List<ReturnOrderDetailReq> returnOrderDetailReqList=reqVO.getReturnOrderDetailReqList();
+    private HttpResponse returnOrderAdd(ReturnReq request) {
+        LOGGER.info("运营中台调用耘链，开始生成退货单：{}", JsonUtil.toJson(request));
+        // 进行主表添加
+        if(request == null || request.getReturnOrderInfo() == null || CollectionUtils.isEmptyCollection(request.getReturnOrderDetailReqList())){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        ReturnOrderInfoReq returnOrderInfo = request.getReturnOrderInfo();
+        ReturnOrderInfo returnOrder = BeanCopyUtils.copy(request.getReturnOrderInfo(), ReturnOrderInfo.class);
+        returnOrder.setOrderCode(returnOrderInfo.getOrderStoreCode());
+        returnOrder.setCreateDate(returnOrderInfo.getCreateTime());
+        returnOrder.setBeLock(returnOrderInfo.getReturnLock());
+        returnOrder.setLockReason(returnOrderInfo.getReturnReason());
+        returnOrder.setConsignee(returnOrderInfo.getReceivePerson());
+        returnOrder.setConsigneePhone(returnOrderInfo.getReceivePerson());
+        returnOrder.setDistributionMode(returnOrderInfo.getDistributionModeName());
+        // 退货单状态
+        if(returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_0)){
+            returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
+        }else if(returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)){
+            returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode());
+        }
+        returnOrder.setPaymentTypeCode(returnOrderInfo.getPaymentCode());
+        returnOrder.setPaymentType(returnOrderInfo.getPaymentName());
+        returnOrder.setProductNum(returnOrderInfo.getProductCount());
+        returnOrderInfoMapper.insert(returnOrder);
+        List<ReturnOrderDetailReq> returnOrderDetailReqList=request.getReturnOrderDetailReqList();
         //进行商品书写
         if(CollectionUtils.isEmptyCollection(returnOrderDetailReqList)){
             throw  new BizException("集合为空");
@@ -587,16 +605,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setProductLineNum(returnOrderDetailReq.getLineCode());
             returnOrderInfoItem.setProductStatus(returnOrderDetailReq.getProductStatus());
             returnOrderInfoItem.setActualInboundNum(Math.toIntExact(returnOrderDetailReq.getActualReturnProductCount()));
-            returnOrderInfoItem.setCompanyCode(returnOrderInfoReq.getCompanyCode());
-            returnOrderInfoItem.setCompanyName(returnOrderInfoReq.getCompanyName());
+//            returnOrderInfoItem.setCompanyCode(returnOrderInfoReq.getCompanyCode());
+//            returnOrderInfoItem.setCompanyName(returnOrderInfoReq.getCompanyName());
             returnOrderInfoItem.setChannelUnitPrice(returnOrderDetailReq.getProductAmount());
             returnOrderInfoItem.setActualChannelUnitPrice(returnOrderDetailReq.getProductAmount());
             returnOrderInfoItem.setActualAmount(returnOrderDetailReq.getProductAmount());
             returnOrderInfoItem.setActualPrice(returnOrderDetailReq.getTotalProductAmount());
-            returnOrderInfoItem.setWarehouseCode(returnOrderInfoReq.getWarehouseCode());
-            returnOrderInfoItem.setWarehouseName(returnOrderInfoReq.getWarehouseName());
-            returnOrderInfoItem.setSupplyCode(returnOrderInfoReq.getSupplierCode());
-            returnOrderInfoItem.setSupplyName(returnOrderInfoReq.getSupplierName());
+//            returnOrderInfoItem.setWarehouseCode(returnOrderInfoReq.getWarehouseCode());
+//            returnOrderInfoItem.setWarehouseName(returnOrderInfoReq.getWarehouseName());
+//            returnOrderInfoItem.setSupplyCode(returnOrderInfoReq.getSupplierCode());
+//            returnOrderInfoItem.setSupplyName(returnOrderInfoReq.getSupplierName());
             returnOrderInfoItem.setTax(returnOrderDetailReq.getTaxRate());
             returnOrderInfoItemMapper.insert(returnOrderInfoItem);
 
@@ -612,15 +630,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 null,
                 null,
                 null);
-        returnOrderInfoLog.setOrderCode(returnOrderInfoReq.getReturnOrderCode());
-        returnOrderInfoLog.setStatus(Integer.valueOf(InOutStatus.CREATE_INOUT.getCode()));
-        returnOrderInfoLog.setStatusDesc(InOutStatus.CREATE_INOUT.getName());
-        returnOrderInfoLog.setRemark(returnOrderInfoReq.getRemark());
-        returnOrderInfoLog.setOperator(returnOrderInfoReq.getCreateByName());
-        returnOrderInfoLog.setOperatorTime(returnOrderInfoReq.getCreateTime());
-        returnOrderInfoLog.setCompanyCode(returnOrderInfoReq.getCompanyCode());
-        returnOrderInfoLog.setCompanyName(returnOrderInfoReq.getCompanyName());
+//        returnOrderInfoLog.setOrderCode(returnOrderInfoReq.getReturnOrderCode());
+//        returnOrderInfoLog.setStatus(Integer.valueOf(InOutStatus.CREATE_INOUT.getCode()));
+//        returnOrderInfoLog.setStatusDesc(InOutStatus.CREATE_INOUT.getName());
+//        returnOrderInfoLog.setRemark(returnOrderInfoReq.getRemark());
+//        returnOrderInfoLog.setOperator(returnOrderInfoReq.getCreateByName());
+//        returnOrderInfoLog.setOperatorTime(returnOrderInfoReq.getCreateTime());
+//        returnOrderInfoLog.setCompanyCode(returnOrderInfoReq.getCompanyCode());
+//        returnOrderInfoLog.setCompanyName(returnOrderInfoReq.getCompanyName());
         returnOrderInfoLogMapper.insert(returnOrderInfoLog);
+        return HttpResponse.success();
     }
 
     private InboundReqSave getInboundReqSave(ReturnReq reqVO) {
