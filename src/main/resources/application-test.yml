@@ -20,7 +20,7 @@ product:
 wms:
   url: http://abutment.api.aiqin.com
 wms2:
-    url: http://39.96.89.2:9001
+    url: http://172.16.0.93:9001
 ground:
   druid:
     url: jdbc:mysql://rm-2zedpm9s6b931qhe2.mysql.rds.aliyuncs.com/bms_scmp?connectTimeout=5000&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true

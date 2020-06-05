@@ -176,8 +176,17 @@
         <if test="collectType == 0">
             AND st.sku_code = #{publicName, jdbcType=VARCHAR}
         </if>
-        <if test="collectType == 1">
-            AND ps.product_category_code = #{publicName, jdbcType=VARCHAR}
+        <if test="collectType == 1 and categoryLevel == 1">
+            AND ps.product_category_code like concat(#{publicName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="collectType == 1 and categoryLevel == 2">
+            AND ps.product_category_code like concat(#{publicName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="collectType == 1 and categoryLevel == 3">
+            AND ps.product_category_code like concat(#{publicName, jdbcType=VARCHAR}, '%')
+        </if>
+        <if test="collectType == 1 and categoryLevel == 4">
+            AND ps.product_category_code like concat(#{publicName, jdbcType=VARCHAR}, '%')
         </if>
         <if test="collectType == 2">
             AND ps.product_brand_code = #{publicName, jdbcType=VARCHAR}
@@ -270,7 +279,9 @@
         pssi.unit_name unitName, ps.product_category_code productCategoryCode, ps.product_brand_name productBrandName,
         psc.config_status configStatus, CONCAT(pssi.base_product_content, '/', pssi.unit_name) largeUnit, st.tax_rate taxRate,
         st.new_purchase_price newPurchasePrice, ps.procurement_section_code purchaseGroupCode, ps.procurement_section_name purchaseGroupName,
-        ps.product_category_name productCategoryName, ps.product_brand_code productBrandCode, st.warehouse_type warehouseType
+        ps.product_category_name productCategoryName, ps.product_brand_code productBrandCode, st.warehouse_type warehouseType,
+        SUBSTRING(ps.product_category_code, 1, 2) categoryOne, SUBSTRING(ps.product_category_code, 1, 4) categoryTwo,
+        SUBSTRING(ps.product_category_code, 1, 6) categoryThree, ps.product_category_code categoryFour
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
@@ -280,17 +291,27 @@
         <if test="collectType == 0">
           GROUP BY st.transport_center_code, st.sku_code
         </if>
-        <if test="collectType == 1">
-            GROUP BY ps.product_category_code, st.sku_code
+        <if test="collectType == 1 and categoryLevel == 1">
+            GROUP BY categoryOne, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 2">
+            GROUP BY categoryTwo, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 3">
+            GROUP BY categoryThree, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 4">
+            GROUP BY categoryFour, st.transport_center_code
         </if>
         <if test="collectType == 2">
-            GROUP BY ps.product_brand_code, st.sku_code
+            GROUP BY ps.product_brand_code, st.transport_center_code
         </if>
         limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
     <select id="selectTransportStockInfoByPageCount" resultType="java.lang.Integer">
         select count(1) from (SELECT
-        st.stock_code
+        st.stock_code, SUBSTRING(ps.product_category_code, 1, 2) categoryOne, SUBSTRING(ps.product_category_code, 1, 4) categoryTwo,
+        SUBSTRING(ps.product_category_code, 1, 6) categoryThree, ps.product_category_code categoryFour
         FROM stock AS st
         LEFT JOIN product_sku_config AS psc ON psc.sku_code = st.sku_code AND psc.transport_center_code = st.transport_center_code
         LEFT JOIN product_sku AS ps ON st.sku_code = ps.sku_code
@@ -300,11 +321,20 @@
         <if test="collectType == 0">
             GROUP BY st.transport_center_code, st.sku_code
         </if>
-        <if test="collectType == 1">
-            GROUP BY ps.product_category_code, st.sku_code
+        <if test="collectType == 1 and categoryLevel == 1">
+            GROUP BY categoryOne, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 2">
+            GROUP BY categoryTwo, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 3">
+            GROUP BY categoryThree, st.transport_center_code
+        </if>
+        <if test="collectType == 1 and categoryLevel == 4">
+            GROUP BY categoryFour, st.transport_center_code
         </if>
         <if test="collectType == 2">
-            GROUP BY ps.product_brand_code, st.sku_code
+            GROUP BY ps.product_brand_code, st.transport_center_code
         </if>
         ) AS tableCount
     </select>

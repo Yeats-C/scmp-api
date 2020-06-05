@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.converter.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
@@ -92,6 +93,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private ProductSkuStockInfoMapper productSkuStockInfoDao;
     @Autowired
     private WarehouseDao warehouseDao;
+    @Autowired
+    private ProductCategoryDao productCategoryDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -200,19 +203,37 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         stockRequest.setGroupList(groupVoList);
         List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
         if (CollectionUtils.isNotEmpty(stockList)) {
+            Map<String, ProductCategory> categoryMap = null;
+            if(stockRequest.getCollectType() == 1){
+                categoryMap = new HashMap<>();
+                for (StockRespVO vo : stockList) {
+                    String key = this.categoryType(stockRequest, vo);
+                    if (categoryMap.get(key) == null) {
+                        categoryMap.put(key, productCategoryDao.getProductCategoryById(key));
+                    }
+                }
+            }
+
             Map<String, StockRespVO> map = new HashMap<>();
+            // 查询库存详情
             for (StockRespVO vo : stockList) {
                 if (vo == null || vo.getTransportCenterCode() == null || vo.getWarehouseType() == null) {
                     continue;
                 }
                 String key = this.collectType(stockRequest, vo);
                 if (map.get(key) == null) {
-                    if (stockRequest.getCollectType() == 1) {
-                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getProductCategoryCode(), 1));
-                    } else if (stockRequest.getCollectType() == 2) {
-                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getProductBrandCode(), 2));
+                    if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 1) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryOne(), 1, 1));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 2) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryTwo(), 1, 2));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 3) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryThree(), 1, 3));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 4) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryFour(), 1, 4));
+                    }else if (stockRequest.getCollectType() == 2) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getProductBrandCode(), 2, null));
                     } else {
-                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getSkuCode(), 0));
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getSkuCode(), 0, null));
                     }
                 }
             }
@@ -224,6 +245,15 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 if (vo == null || vo.getTransportCenterCode() == null || vo.getWarehouseType() == null) {
                     continue;
                 }
+                String categoryKey = this.categoryType(stockRequest, vo);
+                if(stockRequest.getCollectType() ==1){
+                    ProductCategory productCategory = categoryMap.get(categoryKey);
+                    if(productCategory != null){
+                        vo.setProductCategoryCode(productCategory.getCategoryId());
+                        vo.setProductCategoryName(productCategory.getCategoryName());
+                    }
+                }
+
                 String key = this.collectType(stockRequest, vo);
                 StockRespVO stock = map.get(key);
                 if (stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)) {
@@ -307,12 +337,33 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private String collectType(StockRequest stockRequest, StockRespVO vo){
         String key;
         // 汇总方式 0.商品 1.品类 2.品牌
-        if (stockRequest.getCollectType() == 1) {
-            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getProductCategoryCode());
-        } else if (stockRequest.getCollectType() == 2) {
+        if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 1) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryOne());
+        } else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 2) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryTwo());
+        }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 3) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryThree());
+        }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 4) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryFour());
+        }else if (stockRequest.getCollectType() == 2) {
             key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getProductBrandCode());
         } else {
             key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getSkuCode());
+        }
+        return key;
+    }
+
+    private String categoryType(StockRequest stockRequest, StockRespVO vo){
+        String key;
+        // 汇总方式 0.商品 1.品类 2.品牌
+        if (stockRequest.getCategoryLevel() == 2) {
+            key = String.format("%s", vo.getCategoryTwo());
+        } else if (stockRequest.getCategoryLevel() == 3) {
+            key = String.format("%s", vo.getCategoryThree());
+        } else if (stockRequest.getCategoryLevel() == 4){
+            key = String.format("%s", vo.getCategoryFour());
+        }else {
+            key = String.format("%s", vo.getCategoryOne());
         }
         return key;
     }
