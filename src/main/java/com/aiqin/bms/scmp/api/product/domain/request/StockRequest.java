@@ -58,7 +58,7 @@ public class StockRequest extends PagesRequest {
     private Long saleBeginCount;
 
     @ApiModelProperty("销售库存数finish")
-    @JsonProperty(value = "sale_finish_num")
+    @JsonProperty(value = "sale_finish_count")
     private Long saleFinishCount;
 
     @ApiModelProperty("特卖库存数begin")
