@@ -991,8 +991,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //支付时间
                 order.setPayTime(returnOrderInfo.getOperatorTime());
                 //订单类别
-                order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode().toString());
-                order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
+                //order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode());
+                order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType().toString());
                 //仓库
                 order.setStorageCode(returnOrderInfo.getTransportCenterCode());
                 order.setStorageName(returnOrderInfo.getTransportCenterName());
@@ -1508,10 +1508,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 //        }
         order.setOrderType("25");
         order.setOrderTypeDesc("售后退货");
-        if(returnOrderInfo.getReturnOrderTypeCode() != null){
-            order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode().toString());
+        if(returnOrderInfo.getReturnOrderType() != null){
+            order.setOrderCategoryCode(returnOrderInfo.getReturnOrderType().toString());
         }
-        order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
+        //order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
         order.setPayTime(returnOrderInfo.getCreateTime());
         order.setPayStatus(returnOrderInfo.getPaymentStatus());
         order.setPayType(returnOrderInfo.getPaymentTypeCode());
