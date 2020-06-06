@@ -116,4 +116,8 @@ public class StockRequest extends PagesRequest {
     @JsonProperty(value = "collect_type")
     private Integer collectType;
 
+    @ApiModelProperty("品类级别 1 一级 2 二级 3 三级 4 四级")
+    @JsonProperty(value = "category_level")
+    private Integer categoryLevel;
+
 }

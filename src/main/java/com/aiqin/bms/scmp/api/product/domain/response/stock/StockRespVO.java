@@ -249,4 +249,20 @@ public class StockRespVO {
     @JsonProperty(value = "sum_list")
     private StockSumResponse sumList;
 
+    @ApiModelProperty("品类级别1")
+    @JsonProperty(value = "category_one")
+    private String categoryOne;
+
+    @ApiModelProperty("品类级别2")
+    @JsonProperty(value = "category_two")
+    private String categoryTwo;
+
+    @ApiModelProperty("品类级别3")
+    @JsonProperty(value = "category_three")
+    private String categoryThree;
+
+    @ApiModelProperty("品类级别4")
+    @JsonProperty(value = "category_four")
+    private String categoryFour;
+
 }
