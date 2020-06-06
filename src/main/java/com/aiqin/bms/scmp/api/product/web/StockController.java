@@ -10,7 +10,6 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
@@ -67,7 +66,6 @@ public class StockController {
         return stockService.stockWarehouseInfo(stockCode);
     }
 
-
     @GetMapping("/search/stock/flow")
     @ApiOperation(value = "查询库房库存详情流水")
     public HttpResponse<PageResData<StockFlow>> selectStockFlow(@RequestParam(value = "stock_code") String stockCode,
@@ -109,11 +107,11 @@ public class StockController {
     }
 
     // 暂时保留
-    @PostMapping("change1")
-    @ApiOperation(value = "库存修改")
-    public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
-        return stockService.changeStock(stockChangeRequest);
-    }
+//    @PostMapping("change1")
+//    @ApiOperation(value = "库存修改")
+//    public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
+//        return stockService.changeStock(stockChangeRequest);
+//    }
 
     @PostMapping("/change")
     @ApiOperation(value = "库存修改")

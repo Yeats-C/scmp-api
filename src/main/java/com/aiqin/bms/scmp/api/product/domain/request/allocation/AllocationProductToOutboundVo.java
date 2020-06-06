@@ -92,4 +92,19 @@ public class AllocationProductToOutboundVo {
     @ApiModelProperty("行号")
     private Long linenum;
 
+    @ApiModelProperty("调入批次号")
+    private String callinBatchNumber;
+
+    @ApiModelProperty("生产日期")
+    private String productDate;
+
+    @ApiModelProperty("过期日期")
+    private String beOverdueDate;
+
+    @ApiModelProperty("入库批次编码")
+    private String callinBatchInfoCode;
+
+    @ApiModelProperty("批次备注")
+    private String batchNumberRemark;
+
 }

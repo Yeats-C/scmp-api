@@ -27,8 +27,8 @@ public class Storage {
     @ApiModelProperty("出入库单号")
     private String orderCode;
 
-    @JsonProperty("in_out_flag 0:出库 1:入库")
-    @ApiModelProperty("出入库标识")
+    @JsonProperty("in_out_flag")
+    @ApiModelProperty("出入库标识 0:出库 1:入库")
     private Integer inOutFlag;
 
     @JsonProperty("source_order_id")

@@ -20,29 +20,41 @@ public class InboundBatchReqVo extends PagesRequest{
     @ApiModelProperty("入库单号")
     private String inboundOderCode;
 
+    @ApiModelProperty("批次号/wms批次号")
+    private String batchCode;
+
+    @ApiModelProperty("批次编号")
+    private String batchInfoCode;
+
     @ApiModelProperty("sku编号")
     private String skuCode;
 
     @ApiModelProperty("sku名称")
     private String skuName;
 
-    @ApiModelProperty("批次号")
-    private String inboundBatchCode;
-
-    @ApiModelProperty("生产日期")
-    private Date manufactureTime;
-
     @ApiModelProperty("批次备注")
     private String batchRemark;
 
-    @ApiModelProperty("预计数量")
-    private Long preQty;
+    @ApiModelProperty("生产日期")
+    private String productDate;
 
-    @ApiModelProperty("实际数量")
-    private Long praQty;
+    @ApiModelProperty("过期日期")
+    private String beOverdueDate;
+
+    @ApiModelProperty("最小单位数量")
+    private Long totalCount;
+
+    @ApiModelProperty("实际最小单位数量")
+    private Long actualTotalCount;
 
     @ApiModelProperty("库位号")
-    private String storeHouseCode;
+    private String locationCode;
+
+    @ApiModelProperty("行号")
+    private Long lineCode;
+
+    @ApiModelProperty("创建人id")
+    private String createById;
 
     @ApiModelProperty("创建人")
     private String createBy;
@@ -50,14 +62,14 @@ public class InboundBatchReqVo extends PagesRequest{
     @ApiModelProperty("创建时间")
     private Date createTime;
 
+    @ApiModelProperty("更新人id")
+    private String updateById;
+
     @ApiModelProperty("更新人")
     private String updateBy;
 
     @ApiModelProperty("更新时间")
     private Date updateTime;
-
-    @ApiModelProperty("行号")
-    private Long linenum;
 
     @ApiModelProperty("供应商Code")
     private String supplierCode;

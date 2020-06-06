@@ -146,7 +146,7 @@ public interface AllocationService extends BaseService {
      */
     BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 
-    int updateWmsStatus(Byte status, String allocationCode);
+    int updateWmsStatus(String allocationCode);
 
     /** 调拨出库wms回传 */
     HttpResponse allocationWms(AllocationRequest request);

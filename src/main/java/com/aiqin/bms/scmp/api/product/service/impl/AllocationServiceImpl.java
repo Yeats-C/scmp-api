@@ -467,58 +467,74 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     /**
      *  获取wms返回状态更新数据
-     * @param status
      * @param allocationCode
      * @return
      */
     @Override
-    public int updateWmsStatus(Byte status, String allocationCode) {
+    public int updateWmsStatus(String allocationCode) {
         // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
         // 已完成状态时调用wms。 入库
-        AllocationWmsInSource allocationInboundSource = new AllocationWmsInSource();
-        List<AllocationWmsProductSource> aOutboundDetails = new ArrayList<>();
-        if(status == 5){
-            // 获取调拨数据
-            Allocation allocation = allocationMapper.selectByCode(allocationCode);
-            List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
-            List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocationCode);
-            // 接收对象
-            AllocationWmsInSource aWmsInSource = new AllocationWmsInSource();
-            List<AllocationWmsProductSource> aWmsInProSource = new ArrayList<>();
-            List<BatchWmsInfo> aWmsInProBatchSource = new ArrayList<>();
+   //     AllocationWmsInSource allocationInboundSource = new AllocationWmsInSource();
+ //       List<AllocationWmsProductSource> aOutboundDetails = new ArrayList<>();
+        // 调拨出库完成调用调拨入库 生成调拨入库单 调用wms
+   //     Allocation allocation1 = allocationMapper.selectByCode(allocationCode);
+   //     String inboundOderCode = outboundService.createInbound(allocation1.getFormNo());
+        // 获取调拨数据
+        Allocation allocation = allocationMapper.selectByCode(allocationCode);
+        List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
+        List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocationCode);
+        // 接收对象
+        AllocationWmsInSource aWmsInSource = new AllocationWmsInSource();
+        List<AllocationWmsProductSource> aWmsInProSource = new ArrayList<>();
+        List<BatchWmsInfo> aWmsInProBatchSource = new ArrayList<>();
 
-            BeanUtils.copyProperties(aWmsInSource,allocation);
-            for (AllocationProductResVo aProductList : aProductLists) {
-                AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
-                BeanUtils.copyProperties(aWmsProductList,aProductList);
-                aWmsProductList.setLineCode(aProductList.getLineNum().toString());
-                aWmsProductList.setUnitName(aProductList.getUnit());
-                aWmsProductList.setColorName(aProductList.getColor());
-                aWmsProductList.setModelNumber(aProductList.getModel());
-            }
-            for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
-                BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
-                BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
-                aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
-                aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
-                aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
-                aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
-            }
-            aWmsInSource.setAllocationWmsProductSources(aWmsInProSource);
-            aWmsInSource.setAllocationWmsProductBatchSources(aWmsInProBatchSource);
-            String url = urlConfig.WMS_API_URL+"/allocation/source/inbound";
-            HttpClient httpClient = HttpClient.post(url).json(allocationInboundSource).timeout(200000);
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                return 0;
-            }
+        aWmsInSource.setInboundOderCode(allocation.getInboundOderCode());
+        aWmsInSource.setAllocationCode(allocation.getAllocationCode());
+        aWmsInSource.setCallOutWarehouseCode(allocation.getCallInWarehouseCode());
+        aWmsInSource.setCallOutWarehouseName(allocation.getCallInWarehouseName());
+        aWmsInSource.setCreateTime(new Date());
+        aWmsInSource.setCreateById(allocation.getCreateById());
+        aWmsInSource.setCreateByName(allocation.getCreateByName());
+        aWmsInSource.setRemark(allocation.getRemark());
+        for (AllocationProductResVo aProductList : aProductLists) {
+            AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
+            aWmsProductList.setSkuCode(aProductList.getSkuCode());
+            aWmsProductList.setSkuName(aProductList.getSkuName());
+            aWmsProductList.setTotalCount(aProductList.getQuantity().toString());
+            aWmsProductList.setUnitName(aProductList.getUnit());
+            aWmsProductList.setColorName(aProductList.getColor());
+            aWmsProductList.setModelNumber(aProductList.getModel());
+            aWmsProductList.setLineCode(aProductList.getLineNum().toString());
+            aWmsProductList.setUnitName(aProductList.getUnit());
+            aWmsProductList.setColorName(aProductList.getColor());
+            aWmsProductList.setModelNumber(aProductList.getModel());
+            aWmsInProSource.add(aWmsProductList);
+        }
+        for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
+            BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
+            aWmsProductBatchList.setSkuCode(aProductBatchList.getSkuCode());
+            aWmsProductBatchList.setSkuName(aProductBatchList.getSkuName());
+            aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
+            aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
+            aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
+            aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+            aWmsInProBatchSource.add(aWmsProductBatchList);
+        }
+        aWmsInSource.setDetailList(aWmsInProSource);
+        aWmsInSource.setBatchInfo(aWmsInProBatchSource);
+        System.out.println(JSON.toJSON(aWmsInSource));
+        String url = urlConfig.WMS_API_URL2+"/allocation/source/inbound";
+        HttpClient httpClient = HttpClient.post(url).json(aWmsInSource).timeout(200000);
+        HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+        if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+            return 0;
         }
 
-        Allocation allocation = new Allocation();
+        Allocation allocation1 = new Allocation();
         Long id  = allocationMapper.findIdByAllocationCode(allocationCode);
-        allocation.setId(id);
-        allocation.setAllocationStatusCode(status);
-        allocation.setAllocationStatusName(AllocationEnum.getAllocationEnumNameByCode(status));
+        allocation1.setId(id);
+        allocation1.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+        allocation1.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
         return i;
     }
@@ -536,6 +552,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
         int count = allocationMapper.updateByPrimaryKeySelective(allocation);
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
+        return HttpResponse.success();
 //        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
 //            AllocationProduct allocationProduct = new AllocationProduct();
 //            // 查询调拨单商品信息
@@ -544,7 +561,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //            allocationProduct.setLineNum(allocationDetailRequest.getLineCode().longValue());
 //            allocationProduct.setTaxAmount(allocationDetailRequest.getActualAmount());
 //        }
-        return HttpResponse.success();
     }
 
     @Override
