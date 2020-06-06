@@ -712,8 +712,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 for(RejectRecordDetail detail:recordDetails) {
                     String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
                             rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
-                    rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
-                            center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode()));
+                    if(rejectBatchMap.get(key) == null){
+                        rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
+                                center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode(),
+                                detail.getProductType()));
+                    }
                 }
             }
 
@@ -849,6 +852,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 stockBatchInfo.setOperatorId(rejectRecord.getCreateById());
                 stockBatchInfo.setOperatorName(rejectRecord.getCreateByName());
                 stockBatchInfo.setChangeCount(batch.getTotalCount());
+                stockBatchInfo.setTaxCost(batch.getPurchasePrice());
                 stockBatchList.add(stockBatchInfo);
             }
             request.setStockBatchList(stockBatchList);

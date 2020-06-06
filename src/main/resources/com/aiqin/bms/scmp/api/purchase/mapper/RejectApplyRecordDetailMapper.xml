@@ -308,5 +308,7 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and product_type = #{productType,jdbcType=INTEGER}
+    and batch_info_code is not null
   </select>
 </mapper>
