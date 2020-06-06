@@ -294,6 +294,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                             product.getProductType(), amount, product.getBatchCode());
                     if(rejectProduct.get(productKey) == null){
                         rejectApplyRecordDetail = BeanCopyUtils.copy(product, RejectApplyRecordDetail.class);
+                        rejectApplyRecordDetail.setBatchPurchasePrice(product.getPurchasePrice());
                         rejectProduct.put(productKey, rejectApplyRecordDetail);
                     }
                     rejectProductList.add(rejectProduct.get(productKey));
