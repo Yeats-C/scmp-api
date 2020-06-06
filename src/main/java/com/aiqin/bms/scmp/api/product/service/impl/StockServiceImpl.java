@@ -246,8 +246,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 if (vo == null || vo.getTransportCenterCode() == null) {
                     continue;
                 }
-                String categoryKey = this.categoryType(stockRequest, vo);
                 if (stockRequest.getCollectType() == 1) {
+                    String categoryKey = this.categoryType(stockRequest, vo);
                     ProductCategory productCategory = categoryMap.get(categoryKey);
                     if (productCategory != null) {
                         vo.setProductCategoryCode(productCategory.getCategoryId());
