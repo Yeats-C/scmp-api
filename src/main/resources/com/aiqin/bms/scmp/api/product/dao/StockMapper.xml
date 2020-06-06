@@ -173,6 +173,7 @@
         from stock st
         LEFT JOIN product_sku ps ON st.sku_code = ps.sku_code
         where st.transport_center_code = #{transportCenterCode, jdbcType=VARCHAR}
+        and st.warehouse_type in (1, 2, 3)
         <if test="collectType == 0">
             AND st.sku_code = #{publicName, jdbcType=VARCHAR}
         </if>
@@ -191,6 +192,7 @@
         <if test="collectType == 2">
             AND ps.product_brand_code = #{publicName, jdbcType=VARCHAR}
         </if>
+        group by warehouseType
     </select>
     <select id="stockByWarehouseTypeSum" resultMap="BaseResultMap">
         select

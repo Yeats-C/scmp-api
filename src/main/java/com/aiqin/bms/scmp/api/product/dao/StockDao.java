@@ -134,7 +134,7 @@ public interface StockDao {
 
     Stock centerStock(@Param("skuCode")String skuCode, @Param("warehouseType") Integer warehouseType);
 
-    StockRespVO transportStock(@Param("transportCenterCode")String transportCenterCode, @Param("publicName") String publicName,
+    List<StockRespVO> transportStock(@Param("transportCenterCode")String transportCenterCode, @Param("publicName") String publicName,
                       @Param("collectType") Integer collectType, @Param("categoryLevel") Integer categoryLevel);
 
     List<Stock> stockByWarehouseTypeSum();

@@ -203,6 +203,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         stockRequest.setGroupList(groupVoList);
         List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
         if (CollectionUtils.isNotEmpty(stockList)) {
+            // 品类分级查询
             Map<String, ProductCategory> categoryMap = null;
             if(stockRequest.getCollectType() == 1){
                 categoryMap = new HashMap<>();
@@ -214,10 +215,10 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
             }
 
-            Map<String, StockRespVO> map = new HashMap<>();
+            Map<String, List<StockRespVO>> map = new HashMap<>();
             // 查询库存详情
             for (StockRespVO vo : stockList) {
-                if (vo == null || vo.getTransportCenterCode() == null || vo.getWarehouseType() == null) {
+                if (vo == null || vo.getTransportCenterCode() == null) {
                     continue;
                 }
                 String key = this.collectType(stockRequest, vo);
@@ -242,54 +243,57 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                  badCount = 0L, badLockCount = 0L, badWayCount = 0L;
             BigDecimal saleAmount = BigDecimal.ZERO, specialAmount = BigDecimal.ZERO, badAmount = BigDecimal.ZERO;
             for (StockRespVO vo : stockList) {
-                if (vo == null || vo.getTransportCenterCode() == null || vo.getWarehouseType() == null) {
+                if (vo == null || vo.getTransportCenterCode() == null) {
                     continue;
                 }
                 String categoryKey = this.categoryType(stockRequest, vo);
-                if(stockRequest.getCollectType() ==1){
+                if (stockRequest.getCollectType() == 1) {
                     ProductCategory productCategory = categoryMap.get(categoryKey);
-                    if(productCategory != null){
+                    if (productCategory != null) {
                         vo.setProductCategoryCode(productCategory.getCategoryId());
                         vo.setProductCategoryName(productCategory.getCategoryName());
                     }
                 }
 
                 String key = this.collectType(stockRequest, vo);
-                StockRespVO stock = map.get(key);
-                if (stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)) {
-                    vo.setSaleCount(stock.getInventoryCount());
-                    vo.setSaleLockCount(stock.getLockCount());
-                    vo.setSaleWayCount(stock.getTotalWayCount());
-                    vo.setSalePurchaseWayCount(stock.getPurchaseWayCount());
-                    vo.setSaleTotalAmount(stock.getTotalTaxCost());
-                    saleCount += stock.getInventoryCount();
-                    saleLockCount += stock.getLockCount();
-                    saleWayCount += stock.getTotalWayCount();
-                    salePurchaseWayCount += stock.getPurchaseWayCount();
-                    saleAmount = saleAmount.add(stock.getTotalTaxCost());
-                } else if (stock.getWarehouseType().equals(Global.SPECIAL_INFO_TYPE)) {
-                    // 特卖
-                    vo.setSpecialSaleCount(stock.getInventoryCount());
-                    vo.setSpecialSaleLockCount(stock.getLockCount());
-                    vo.setSpecialSaleWayCount(stock.getTotalWayCount());
-                    vo.setSpecialSaleTotalAmount(stock.getTotalTaxCost());
-                    specialCount += stock.getInventoryCount();
-                    specialLockCount += stock.getLockCount();
-                    specialWayCount += stock.getTotalWayCount();
-                    saleAmount = saleAmount.add(stock.getTotalTaxCost());
-                } else if (stock.getWarehouseType().equals(Global.DEFECTIVE_INFO_TYPE)) {
-                    // 残品
-                    vo.setBadCount(stock.getInventoryCount());
-                    vo.setBadLockCount(stock.getLockCount());
-                    vo.setBadWayCount(stock.getTotalWayCount());
-                    vo.setBadTotalAmount(stock.getTotalTaxCost());
-                    badCount += stock.getInventoryCount();
-                    badLockCount += stock.getLockCount();
-                    badWayCount += stock.getTotalWayCount();
-                    badAmount = badAmount.add(stock.getTotalTaxCost());
+                List<StockRespVO> list = map.get(key);
+                // 销售
+                for (StockRespVO stock : list) {
+                    if (stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)) {
+                        vo.setSaleCount(stock.getInventoryCount());
+                        vo.setSaleLockCount(stock.getLockCount());
+                        vo.setSaleWayCount(stock.getTotalWayCount());
+                        vo.setSalePurchaseWayCount(stock.getPurchaseWayCount());
+                        vo.setSaleTotalAmount(stock.getTotalTaxCost());
+                        saleCount += stock.getInventoryCount();
+                        saleLockCount += stock.getLockCount();
+                        saleWayCount += stock.getTotalWayCount();
+                        salePurchaseWayCount += stock.getPurchaseWayCount();
+                        saleAmount = saleAmount.add(stock.getTotalTaxCost());
+                    } else if (stock.getWarehouseType().equals(Global.SPECIAL_INFO_TYPE)) {
+                        // 特卖
+                        vo.setSpecialSaleCount(stock.getInventoryCount());
+                        vo.setSpecialSaleLockCount(stock.getLockCount());
+                        vo.setSpecialSaleWayCount(stock.getTotalWayCount());
+                        vo.setSpecialSaleTotalAmount(stock.getTotalTaxCost());
+                        specialCount += stock.getInventoryCount();
+                        specialLockCount += stock.getLockCount();
+                        specialWayCount += stock.getTotalWayCount();
+                        saleAmount = saleAmount.add(stock.getTotalTaxCost());
+                    } else if (stock.getWarehouseType().equals(Global.DEFECTIVE_INFO_TYPE)) {
+                        // 残品
+                        vo.setBadCount(stock.getInventoryCount());
+                        vo.setBadLockCount(stock.getLockCount());
+                        vo.setBadWayCount(stock.getTotalWayCount());
+                        vo.setBadTotalAmount(stock.getTotalTaxCost());
+                        badCount += stock.getInventoryCount();
+                        badLockCount += stock.getLockCount();
+                        badWayCount += stock.getTotalWayCount();
+                        badAmount = badAmount.add(stock.getTotalTaxCost());
+                    }
                 }
             }
-            // 计算所有商品信息计算
+            // 计算所有商品信息库存总计
             StockSumResponse response = new StockSumResponse();
             response.setSaleCount(saleCount);
             response.setSaleLockCount(saleLockCount);
