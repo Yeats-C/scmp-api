@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.ReturnInboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
 import org.apache.ibatis.annotations.Param;
@@ -35,11 +34,6 @@ public interface InboundProductDao {
 
     List<InboundProduct> selectInboundProductListByInboundOderCodeList(@Param("inBoundOderCodeList") List<String> inboundOderCodeList);
 
-    /**
-     * 通过入库单编码查询sku
-     */
-    List<InboundProductWmsReqVO> selectMmsReqByInboundOderCode(String inboundOderCode);
-
     InboundProduct inboundByLineCode(@Param("inboundOderCode") String inboundOderCode, @Param("skuCode") String skuCode, @Param("linenum") Long linenum);
 
     List<PurchaseApplyDetailResponse> selectPurchaseInfoByPurchaseNum(Inbound inbound);
@@ -52,5 +46,4 @@ public interface InboundProductDao {
 
     List<PurchaseInboundDetailSource> wmsByInboundProduct(String inboundOderCode);
 
-    List<InboundProduct> inboundList(String inboundOderCode);
 }

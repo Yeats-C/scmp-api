@@ -2055,7 +2055,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setCreateTime(Calendar.getInstance().getTime());
         storage.setCreateByName(inbound.getUpdateBy());
         // 查询入库单的商品信息
-        List<InboundProduct> inboundProducts = inboundProductDao.inboundList(inbound.getInboundOderCode());
+        List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inbound.getInboundOderCode());
         LOGGER.info("对接sap，入库单商品信息，{}", JsonUtil.toJson(inboundProducts));
         List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
         Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);

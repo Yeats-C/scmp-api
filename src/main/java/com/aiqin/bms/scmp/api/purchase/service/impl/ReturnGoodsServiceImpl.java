@@ -8,19 +8,15 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
-import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderInfoReqVOReturn;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderProductBatchItemReqVOReturn;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderProductItemReqVOReturn;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
@@ -39,6 +35,7 @@ import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -53,12 +50,12 @@ import org.apache.commons.lang.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
@@ -66,7 +63,6 @@ import java.util.stream.Collectors;
 
 /**
  * Description:
- *
  * @author: NullPointException
  * @date: 2019-06-13
  * @time: 17:35
@@ -79,22 +75,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Autowired
     private ReturnOrderInfoMapper returnOrderInfoMapper;
-
     @Autowired
     private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
-
     @Autowired
     private UrlConfig urlConfig;
-
     @Autowired
     private WarehouseService warehouseService;
-
     @Autowired
     private InboundService inboundService;
-
     @Autowired
     private ReturnOrderInfoInspectionItemMapper returnOrderInfoInspectionItemMapper;
-
     @Autowired
     private ReturnOrderInfoLogMapper returnOrderInfoLogMapper;
 
@@ -376,7 +366,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         //进行入库记录
         InboundReqSave inbound = getInboundReqSave(reqVO);
         //回传入库单编号
-        return inboundService.saveInbound2(inbound);
+        return inboundService.saveInbound(inbound);
     }
 
     @Override
@@ -594,90 +584,61 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     private InboundReqSave getInboundReqSave(ReturnReq reqVO) {
-        InboundReqSave inbound=new InboundReqSave();
-        ReturnOrderInfoReq returnOrderInfo=reqVO.getReturnOrderInfo();
-        inbound.setCompanyCode(returnOrderInfo.getCompanyCode());
-        inbound.setCompanyName(returnOrderInfo.getCompanyName());
-        //进行第一次状态
+        LOGGER.info("根据运营中台退货单，开始生成耘链入库单：{}", JsonUtil.toJson(reqVO));
+        ReturnOrderInfoReq returnOrderInfo = reqVO.getReturnOrderInfo();
+        InboundReqSave inbound = BeanCopyUtils.copy(returnOrderInfo, InboundReqSave.class);
+        inbound.setCompanyCode(Global.COMPANY_09);
+        inbound.setCompanyName(Global.COMPANY_09_NAME);
         inbound.setInboundStatusCode(InOutStatus.CREATE_INOUT.getCode());
         inbound.setInboundStatusName(InOutStatus.CREATE_INOUT.getName());
-        // 进行退货设置
         inbound.setInboundTypeCode(InboundTypeEnum.ORDER.getCode());
         inbound.setInboundTypeName(InboundTypeEnum.ORDER.getName());
         inbound.setSourceOderCode(returnOrderInfo.getReturnOrderCode());
-        inbound.setInboundTime(new Date());
         inbound.setLogisticsCenterCode(returnOrderInfo.getTransportCenterCode());
         inbound.setLogisticsCenterName(returnOrderInfo.getTransportCenterName());
         inbound.setWarehouseCode(returnOrderInfo.getWarehouseCode());
-        inbound.setWarehouseName(returnOrderInfo.getWarehouseName());
-        inbound.setSupplierCode(returnOrderInfo.getSupplierCode());
-        inbound.setSupplierName(returnOrderInfo.getSupplierName());
-        //预计到货时间?
-        inbound.setPreArrivalTime(null);
-        //预计入库数量？
-        inbound.setPreInboundNum(returnOrderInfo.getActualProductCount());
-        //预计入库数量？
-        inbound.setPraInboundNum(returnOrderInfo.getActualProductCount());
-        //预计主单位数量?
-        inbound.setPreMainUnitNum(returnOrderInfo.getActualProductCount());
+        //预计入库数量
+        inbound.setPreInboundNum(returnOrderInfo.getProductCount());
+        //预计主单位数量
+        inbound.setPreMainUnitNum(returnOrderInfo.getProductCount());
         inbound.setPreTaxAmount(returnOrderInfo.getReturnOrderAmount());
-        inbound.setPraAmount(returnOrderInfo.getReturnOrderAmount());
-        //省编码
         inbound.setProvinceCode(returnOrderInfo.getProvinceId());
-        inbound.setProvinceName(returnOrderInfo.getProvinceName());
-        //城市
         inbound.setCityCode(returnOrderInfo.getCityId());
-        inbound.setCityName(returnOrderInfo.getCityName());
-        //区
         inbound.setCountyCode(returnOrderInfo.getDistrictId());
         inbound.setCountyName(returnOrderInfo.getDistrictName());
-        //详细地址
         inbound.setDetailedAddress(returnOrderInfo.getReceiveAddress());
-        //创建人
         inbound.setCreateBy(returnOrderInfo.getCreateByName());
-        inbound.setCreateTime(returnOrderInfo.getCreateTime());
-        //修改人
-        inbound.setUpdateBy(returnOrderInfo.getUpdateByName());
-        inbound.setUpdateTime(returnOrderInfo.getUpdateTime());
+        inbound.setUpdateBy(returnOrderInfo.getCreateByName());
 
-        if(CollectionUtils.isEmptyCollection(reqVO.getReturnOrderDetailReqList())){
-         throw new BizException("传输列表详情为空");
-        }
         //进行商品设置
-        List<InboundProductReqVo> list= Lists.newArrayList();
-        for (ReturnOrderDetailReq returnOrderDetailReq:
-        reqVO.getReturnOrderDetailReqList()) {
-            InboundProductReqVo inboundProductReqVo=new InboundProductReqVo();
-            inboundProductReqVo.setInboundOderCode(returnOrderDetailReq.getReturnOrderDetailId());
-            inboundProductReqVo.setSkuCode(returnOrderDetailReq.getSkuCode());
-            inboundProductReqVo.setSkuName(returnOrderDetailReq.getSkuName());
-            inboundProductReqVo.setPictureUrl(returnOrderDetailReq.getPictureUrl());
-            inboundProductReqVo.setNorms(returnOrderDetailReq.getProductSpec());
-            inboundProductReqVo.setColorCode(returnOrderDetailReq.getColorCode());
-            inboundProductReqVo.setColorName(returnOrderDetailReq.getColorName());
-            inboundProductReqVo.setModel(returnOrderDetailReq.getModelCode());
-            inboundProductReqVo.setUnitCode(returnOrderDetailReq.getUnitCode());
-            inboundProductReqVo.setUnitName(returnOrderDetailReq.getUnitName());
-            inboundProductReqVo.setInboundNorms(returnOrderDetailReq.getModelCode());
-            inboundProductReqVo.setInboundBaseUnit(String.valueOf(returnOrderDetailReq.getZeroDisassemblyCoefficient()));
-            inboundProductReqVo.setPreInboundNum(returnOrderDetailReq.getReturnProductCount());
-            inboundProductReqVo.setPreInboundMainNum(returnOrderDetailReq.getReturnProductCount());
-            inboundProductReqVo.setPreTaxPurchaseAmount(returnOrderDetailReq.getProductAmount());
-            inboundProductReqVo.setPreTaxAmount(returnOrderDetailReq.getTotalProductAmount());
-            inboundProductReqVo.setPraInboundNum(returnOrderDetailReq.getReturnProductCount());
-            inboundProductReqVo.setPraInboundMainNum(returnOrderDetailReq.getReturnProductCount());
-            inboundProductReqVo.setPraTaxPurchaseAmount(returnOrderDetailReq.getProductAmount());
-            inboundProductReqVo.setPraTaxAmount(returnOrderDetailReq.getTotalProductAmount());
-            inboundProductReqVo.setCreateBy(returnOrderDetailReq.getCreateByName());
-            inboundProductReqVo.setCreateTime(returnOrderDetailReq.getCreateTime());
-            inboundProductReqVo.setUpdateBy(returnOrderDetailReq.getUpdateByName());
-            inboundProductReqVo.setUpdateTime(returnOrderDetailReq.getUpdateTime());
-            inboundProductReqVo.setSupplyCode(inboundProductReqVo.getSupplyCode());
-            inboundProductReqVo.setSupplyName(inboundProductReqVo.getSupplyName());
+        List<InboundProductReqVo> list = Lists.newArrayList();
+        InboundProductReqVo inboundProductReqVo;
+        BigDecimal preAmount = BigDecimal.ZERO;
+        Long productCount =0L;
+        for (ReturnOrderDetailReq detail : reqVO.getReturnOrderDetailReqList()) {
+            inboundProductReqVo = BeanCopyUtils.copy(detail, InboundProductReqVo.class);
+            inboundProductReqVo.setInboundOderCode(inbound.getInboundOderCode());
+            inboundProductReqVo.setNorms(detail.getProductSpec());
+            inboundProductReqVo.setModel(detail.getModelCode());
+            inboundProductReqVo.setInboundNorms(detail.getProductSpec());
+            inboundProductReqVo.setInboundBaseUnit(String.valueOf(detail.getZeroDisassemblyCoefficient()));
+            inboundProductReqVo.setPreInboundNum(detail.getReturnProductCount());
+            inboundProductReqVo.setPreInboundMainNum(detail.getReturnProductCount());
+            inboundProductReqVo.setPreTaxPurchaseAmount(detail.getProductAmount());
+            inboundProductReqVo.setPreTaxAmount(detail.getTotalProductAmount());
+            inboundProductReqVo.setCreateBy(returnOrderInfo.getCreateByName());
+            inboundProductReqVo.setUpdateBy(returnOrderInfo.getCreateByName());
             list.add(inboundProductReqVo);
+            // 计算预计无税金额、税额
+            BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getTotalProductAmount(), detail.getTaxRate());
+            preAmount = preAmount.add(noTax);
+            productCount += detail.getReturnProductCount();
         }
         inbound.setList(list);
-
+        inbound.setPreMainUnitNum(productCount);
+        inbound.setPraAmount(preAmount);
+        inbound.setPreTax(inbound.getPreTaxAmount().subtract(preAmount));
+        LOGGER.info("根据运营中台退货单，转换生成耘链入库单参数：{}", JsonUtil.toJson(inbound));
         return inbound;
     }
 
