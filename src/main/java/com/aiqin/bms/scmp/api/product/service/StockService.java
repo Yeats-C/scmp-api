@@ -36,11 +36,9 @@ public interface StockService {
     /** 功能描述: 查询库存商品(采购退供使用) 不分页*/
     List<QueryStockSkuRespVo> selectStockSkus(QueryStockSkuReqVo reqVO);
 
-    /** 根据搜索条件查询物流中心stock信息*/
-    PageResData selectTransportStockInfoByPage(StockRequest stockRequest);
+    PageResData<StockRespVO> selectTransportStockInfoByPage(StockRequest stockRequest);
 
-    /** 库房库存*/
-    PageResData selectStorehouseStockInfoByPage(StockRequest stockRequest);
+    PageResData<StockRespVO> selectStorehouseStockInfoByPage(StockRequest stockRequest);
 
     List<QueryStockSkuRespVo> selectStockSku(QueryStockSkuReqVo reqVO);
 

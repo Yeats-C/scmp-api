@@ -19,7 +19,8 @@ public class ProfitLoss extends CommonBean {
     @JsonProperty("order_code")
     private String orderCode;
 
-    @ApiModelProperty("订单类型(0:报损 1:报益)")
+  //  @ApiModelProperty("订单类型(0:报损 1:报益)")
+    @ApiModelProperty("订单类型(损溢类别:指定损溢--0、盘点损溢--1)")
     @JsonProperty("order_type")
     private Integer orderType;
 

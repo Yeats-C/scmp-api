@@ -11,6 +11,10 @@ import java.util.List;
 @ApiModel("新增供应商字典详细请求实体")
 @Data
 public class DictionarySaveReqDTO {
+    @ApiModelProperty("供应商字典编码")
+    @NotEmpty(message = "供应商字典编码不能为空")
+    private String dictionaryCode;
+
     @ApiModelProperty("供应商字典名称")
     @NotEmpty(message = "供应商字典名称不能为空")
     private String dictionaryName;

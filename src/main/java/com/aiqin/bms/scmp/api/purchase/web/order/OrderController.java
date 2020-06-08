@@ -15,6 +15,8 @@ import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +35,8 @@ import java.util.List;
 @Api(description = "订单api")
 @RequestMapping("/order")
 public class OrderController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
@@ -148,7 +152,8 @@ public class OrderController {
     @PostMapping("/aiqin/sale")
     @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
     public HttpResponse insertSaleOrder(@RequestBody ErpOrderInfo vo) {
-        log.info("爱亲供应链销售单参数", vo);
+//        log.info("爱亲供应链销售单参数", vo);
+        LOGGER.info("爱亲供应链销售单参数{}",  JSONObject.toJSONString(vo));
         return orderService.insertSaleOrder(vo);
     }
 

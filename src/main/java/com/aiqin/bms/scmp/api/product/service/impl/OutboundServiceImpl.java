@@ -15,6 +15,8 @@ import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.order.OrderInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
@@ -908,18 +910,19 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 }
                 // 回传给调拨
                 allocationService.allocationWms(request);
-//                Allocation allocation = allocationMapper.selectByCode(outbound.getSourceOderCode());
+
+                //生成入库单
+                // 调拨出库完成调用调拨入库 生成调拨入库单 调用wms
+                Allocation allocation = allocationMapper.selectByCode(outbound.getSourceOderCode());
+                createInbound(allocation.getFormNo());
+                allocationService.updateWmsStatus(allocation.getAllocationCode());
 //                //设置调拨状态
 //                allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getStatus());
 //                allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_TO_OUTBOUND.getName());
-//
 ////                productCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocation.getAllocationCode() ,HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getName());
 //                supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS_OUTBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
-//
 //                //跟新调拨单状态
 //                int k = allocationMapper.updateByPrimaryKeySelective(allocation);
-                //生成入库单
-                //createInbound(allocation.getFormNo());
             } catch (Exception e) {
                 log.error(Global.ERROR, e);
                 throw new GroundRuntimeException("调拨单更改出库状态失败");
@@ -986,7 +989,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     }
 
     @Override
-    public void createInbound(String id) {
+    public String createInbound(String id) {
         try {
             AllocationToOutboundVo allocationResVo =  new AllocationToOutboundVo();
             AllocationDTO allocation = allocationMapper.selectByFormNO1(id);
@@ -1002,13 +1005,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             String inboundOderCode = inboundService.saveInbound(convert1);
             //更改调拨在途数
 
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+            // 调用锁定库存数
+            ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
             stockChangeRequest.setOperationType(7);
-            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-            // stockChangeRequest.setOrderType();
-            List<StockVoRequest> list1 = new ArrayList<>();
-            for (AllocationProductToOutboundVo allocationProduct : list) {
-                StockVoRequest stockVoRequest = new StockVoRequest();
+            List<StockInfoRequest> list1 = new ArrayList<>();
+            for (InboundProductReqVo allocationProduct : convert1.getList()) {
+                StockInfoRequest stockVoRequest = new StockInfoRequest();
                 // 设置公司名称编码
                 stockVoRequest.setCompanyCode(allocation.getCompanyCode());
                 stockVoRequest.setCompanyName(allocation.getCompanyName());
@@ -1019,23 +1021,75 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //设置库房名称编码
                 stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
                 stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
-                //设置采购组编码名称
-                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
-                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
                 //设置sku编号名称
                 stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
                 stockVoRequest.setSkuName(allocationProduct.getSkuName());
-                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+                stockVoRequest.setChangeCount(allocationProduct.getPreInboundMainNum());
                 //设置类型
                 stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
-                stockVoRequest.setDocumentNum(allocation.getAllocationCode());
-                stockVoRequest.setOperator(allocation.getUpdateBy());
+                stockVoRequest.setDocumentCode(allocation.getAllocationCode());
+                stockVoRequest.setOperatorName(allocation.getUpdateBy());
                 stockVoRequest.setRemark(allocation.getRemark());
                 list1.add(stockVoRequest);
             }
-            stockChangeRequest.setStockVoRequests(list1);
+            List<StockBatchInfoRequest> batchList1 = new ArrayList<>();
+            for (AllocationProductToOutboundVo allocationProduct : list) {
+                StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
+                stockBatchInfoRequest.setCompanyCode(allocation.getCompanyCode());
+                stockBatchInfoRequest.setCompanyName(allocation.getCompanyName());
+                stockBatchInfoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+                stockBatchInfoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+                stockBatchInfoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+                stockBatchInfoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+                stockBatchInfoRequest.setSkuCode(allocationProduct.getSkuCode());
+                stockBatchInfoRequest.setSkuName(allocationProduct.getSkuName());
+                stockBatchInfoRequest.setChangeCount(allocationProduct.getQuantity());
+                stockBatchInfoRequest.setBatchCode(allocationProduct.getCallinBatchNumber());
+                stockBatchInfoRequest.setBatchInfoCode(allocationProduct.getCallinBatchInfoCode());
+                stockBatchInfoRequest.setProductDate(allocationProduct.getProductDate());
+                stockBatchInfoRequest.setBeOverdueDate(allocationProduct.getBeOverdueDate());
+                stockBatchInfoRequest.setBatchRemark(allocationProduct.getBatchNumberRemark());
+                stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
+                stockBatchInfoRequest.setOperatorName(allocation.getUpdateBy());
+            }
+            stockChangeRequest.setStockList(list1);
+            stockChangeRequest.setStockBatchList(batchList1);
+            HttpResponse httpResponse= stockService.stockAndBatchChange(stockChangeRequest);
+//            StockChangeRequest stockChangeRequest = new StockChangeRequest();
+//            stockChangeRequest.setOperationType(7);
+//            stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+            // stockChangeRequest.setOrderType();
+//            List<StockVoRequest> list1 = new ArrayList<>();
+//            for (AllocationProductToOutboundVo allocationProduct : list) {
+//                StockVoRequest stockVoRequest = new StockVoRequest();
+//                // 设置公司名称编码
+//                stockVoRequest.setCompanyCode(allocation.getCompanyCode());
+//                stockVoRequest.setCompanyName(allocation.getCompanyName());
+//                // 设置物流中心名称编码
+//                //如果改在途数，需要设置为入库的仓库
+//                stockVoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+//                stockVoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+//                //设置库房名称编码
+//                stockVoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+//                stockVoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+//                //设置采购组编码名称
+//                stockVoRequest.setPurchaseGroupCode(allocation.getPurchaseGroupCode());
+//                stockVoRequest.setPurchaseGroupName(allocation.getPurchaseGroupName());
+//                //设置sku编号名称
+//                stockVoRequest.setSkuCode(allocationProduct.getSkuCode());
+//                stockVoRequest.setSkuName(allocationProduct.getSkuName());
+//                stockVoRequest.setChangeNum(allocationProduct.getQuantity());
+//                //设置类型
+//                stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+//                stockVoRequest.setDocumentNum(allocation.getAllocationCode());
+//                stockVoRequest.setOperator(allocation.getUpdateBy());
+//                stockVoRequest.setRemark(allocation.getRemark());
+//                list1.add(stockVoRequest);
+//            }
+//            stockChangeRequest.setStockVoRequests(list1);
             // 调用锁定库存数
-            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+//            HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
             if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
                 supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
             }else{
@@ -1046,6 +1100,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_INBOUND.getStatus());
             allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_INBOUND.getName());
             allocationMapper.updateByPrimaryKeySelective(allocation);
+            return inboundOderCode;
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             throw  new GroundRuntimeException("保存出库单失败");

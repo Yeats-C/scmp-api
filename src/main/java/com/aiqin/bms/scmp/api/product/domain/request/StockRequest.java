@@ -112,4 +112,12 @@ public class StockRequest extends PagesRequest {
     @JsonProperty(value = "sales_code")
     private String salesCode;
 
+    @ApiModelProperty("汇总方式 0.商品 1.品类 2.品牌")
+    @JsonProperty(value = "collect_type")
+    private Integer collectType;
+
+    @ApiModelProperty("品类级别 1 一级 2 二级 3 三级 4 四级")
+    @JsonProperty(value = "category_level")
+    private Integer categoryLevel;
+
 }

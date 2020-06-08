@@ -71,7 +71,6 @@ public class SupplierDictionaryController {
     })
     public HttpResponse<DictionaryDetailResVO> getListDictionary(Long id,String dictionaryType) {
             return supplierDictionaryService.getListDictionary(id, dictionaryType);
-
     }
 
     @PostMapping("/list")
@@ -90,12 +89,14 @@ public class SupplierDictionaryController {
     }
 
     @PostMapping("/infoList")
-    @ApiOperation("根据dictionaryName查询详细--->前端使用")
+//    @ApiOperation("根据dictionaryName查询详细--->前端使用")
+    @ApiOperation("根据dictionaryCode查询详细--->前端使用")
     public HttpResponse<List<DictionaryCodeResVo>> getDictionaryName(@RequestBody DictionaryInfoReqVO dictionaryInfoReqVO){
         return  HttpResponse.success(supplierDictionaryService.getCode(dictionaryInfoReqVO,dictionaryInfoReqVO.getDictionaryType()));
     }
     @PostMapping("/infoList/getDictionary")
-    @ApiOperation("根据dictionaryName查询详细--->后端使用")
+//    @ApiOperation("根据dictionaryName查询详细--->后端使用")
+    @ApiOperation("根据dictionaryCode查询详细--->后端使用")
     public HttpResponse<List<DictionaryCodeResVo>> dictionaryName(@RequestBody DictiReVo dictiReVo){
         String dictionaryType=dictiReVo.getDictionaryType();
         DictionaryInfoReqVO dictionaryInfoReqVO=new DictionaryInfoReqVO();

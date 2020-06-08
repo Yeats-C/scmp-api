@@ -2,11 +2,13 @@ package com.aiqin.bms.scmp.api.supplier.domain.response.dictionary;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @ApiModel("供应商字典返回实体")
+@Data
 public class DictionaryDetailResVO{
     @ApiModelProperty("主键id")
     private Long id;
@@ -28,29 +30,29 @@ public class DictionaryDetailResVO{
 
     private List<DictionaryInfoResponseVO> listInfo;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getDictionaryName() {
-        return dictionaryName;
-    }
-
-    public void setDictionaryName(String dictionaryName) {
-        this.dictionaryName = dictionaryName;
-    }
-
-    public String getDictionaryType() {
-        return dictionaryType;
-    }
-
-    public void setDictionaryType(String dictionaryType) {
-        this.dictionaryType = dictionaryType;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
+//
+//    public String getDictionaryName() {
+//        return dictionaryName;
+//    }
+//
+//    public void setDictionaryName(String dictionaryName) {
+//        this.dictionaryName = dictionaryName;
+//    }
+//
+//    public String getDictionaryType() {
+//        return dictionaryType;
+//    }
+//
+//    public void setDictionaryType(String dictionaryType) {
+//        this.dictionaryType = dictionaryType;
+//    }
 
 //    public String getDictionaryTypeName() {
 //        if(dictionaryType.equals("SupplyChain")){
@@ -69,27 +71,27 @@ public class DictionaryDetailResVO{
 //        }
 //    }
 
-    public Byte getDelFlag() {
-        return delFlag;
-    }
-
-    public void setDelFlag(Byte delFlag) {
-        this.delFlag = delFlag;
-    }
-
-    public List<DictionaryInfoResponseVO> getListInfo() {
-        return listInfo;
-    }
-
-    public void setListInfo(List<DictionaryInfoResponseVO> listInfo) {
-        this.listInfo = listInfo;
-    }
-
-    public Byte getEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(Byte enabled) {
-        this.enabled = enabled;
-    }
+//    public Byte getDelFlag() {
+//        return delFlag;
+//    }
+//
+//    public void setDelFlag(Byte delFlag) {
+//        this.delFlag = delFlag;
+//    }
+//
+//    public List<DictionaryInfoResponseVO> getListInfo() {
+//        return listInfo;
+//    }
+//
+//    public void setListInfo(List<DictionaryInfoResponseVO> listInfo) {
+//        this.listInfo = listInfo;
+//    }
+//
+//    public Byte getEnabled() {
+//        return enabled;
+//    }
+//
+//    public void setEnabled(Byte enabled) {
+//        this.enabled = enabled;
+//    }
 }

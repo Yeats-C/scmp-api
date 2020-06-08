@@ -128,16 +128,17 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
             InboundBatchReqVo batch = new InboundBatchReqVo();
             batch.setSkuCode(batch1.getSkuCode());
             batch.setSkuName(batch1.getSkuName());
-            batch.setInboundBatchCode(batch1.getCallInBatchNumber());
-            batch.setManufactureTime(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
+            batch.setBatchCode(batch1.getCallInBatchNumber());
+//            batch.setProductDate(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
+            batch.setProductDate(batch1.getProductDate());
             batch.setBatchRemark(batch.getBatchRemark());
-            batch.setPreQty(batch1.getQuantity().longValue());
+            batch.setTotalCount(batch1.getQuantity().longValue());
             batch.setCreateBy(batch1.getCreateBy());
             batch.setCreateTime(batch1.getCreateTime());
             batch.setUpdateBy(batch1.getUpdateBy());
             batch.setUpdateTime(batch1.getUpdateTime());
             if(!Objects.isNull(batch1.getLineNum()) && batch1.getLineNum() != null){
-                batch.setLinenum(batch1.getLineNum().longValue());
+                batch.setLineCode(batch1.getLineNum().longValue());
             }
             inboundBatchReqVos.add(batch);
         }

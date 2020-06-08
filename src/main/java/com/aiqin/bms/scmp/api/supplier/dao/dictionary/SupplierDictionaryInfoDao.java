@@ -39,4 +39,6 @@ public interface SupplierDictionaryInfoDao {
     Map<String,SupplierDictionaryInfo> selectByName(@Param("list") List<String> dicName, @Param("companyCode") String companyCode);
 
     List<InnerValue> allList();
+
+    List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(@Param("status")  Integer status);
 }

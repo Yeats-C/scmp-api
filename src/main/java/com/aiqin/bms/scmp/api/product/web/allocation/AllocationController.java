@@ -6,11 +6,8 @@ import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
@@ -139,12 +136,22 @@ public class AllocationController {
         }
     }
 
-    @ApiOperation("wms返回id")
+    @ApiOperation("wms返回调拨出库完成生成入库调用wms推送")
     @GetMapping("/updateWmsStatus")
-    public HttpResponse<Integer> updateWmsStatus( @RequestParam @ApiParam(value = "状态编码",required = true) Byte status ,
-                                               @RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
+    public HttpResponse<Integer> updateWmsStatus(@RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
         try {
-            return HttpResponse.success(allocationService. updateWmsStatus(status,allocationCode));
+            return HttpResponse.success(allocationService. updateWmsStatus(allocationCode));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
+        }
+    }
+
+    @ApiOperation("wms调拨出库回传更新调拨数据")
+    @PostMapping("/updateWmsStatus")
+    public HttpResponse updateWmsAllocation(@RequestBody AllocationRequest request){
+        try {
+            return HttpResponse.success(allocationService. allocationWms(request));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);

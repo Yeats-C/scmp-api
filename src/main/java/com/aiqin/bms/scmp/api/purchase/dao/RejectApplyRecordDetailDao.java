@@ -35,6 +35,7 @@ public interface RejectApplyRecordDetailDao {
                                                         @Param("warehouseCode") String warehouseCode,
                                                         @Param("skuCode") String skuCode,
                                                         @Param("supplierCode") String supplierCode,
-                                                        @Param("settlementMethodCode") String settlementMethodCode);
+                                                        @Param("settlementMethodCode") String settlementMethodCode,
+                                                        @Param("productType") Integer productType);
 
 }

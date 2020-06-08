@@ -4,10 +4,13 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.service.MovementService;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
+import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -15,6 +18,8 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +37,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/product/movement")
 @Slf4j
 public class MovementController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectController.class);
 
     @Autowired
     private MovementService movementService;
@@ -96,5 +103,17 @@ public class MovementController {
         } catch ( Exception e){
             return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
         }
+    }
+
+    /**
+     *
+     * @param request
+     * @return
+     */
+    @PostMapping("/wms/transfers")
+    @ApiOperation(value = "移库wms推送回调")
+    public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
+        LOGGER.info("移库wms回调,request:{}", request.toString());
+        return movementService.movementWmsEcho(request);
     }
 }

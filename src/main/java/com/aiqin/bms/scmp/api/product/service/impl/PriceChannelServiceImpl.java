@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.web.SapAbutmentController;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -28,15 +29,15 @@ import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author knight.xie
@@ -48,6 +49,9 @@ import java.util.Set;
 @Service
 @Slf4j
 public class PriceChannelServiceImpl implements PriceChannelService {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(PriceChannelServiceImpl.class);
+
 
     @Autowired
     private PriceChannelMapper priceChannelMapper;
@@ -102,12 +106,17 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         if(Objects.isNull(id)) {
             throw new BizException(ResultCode.ID_EMPTY);
         }
+        // 查询渠道管理主表
         PriceChannel priceChannel = priceChannelMapper.selectByPrimaryKey(id);
         if(Objects.isNull(priceChannel)){
             throw new BizException(ResultCode.OBJECT_EMPTY);
         }
+        // 查询渠道管理详情表
+        List<PriceChannelItem> priceChannelItems = priceChannelItemMapper.selectByPriceChannelCode(priceChannel.getPriceChannelCode());
+        List<CommonPriceChannelReqVo> priceList = BeanCopyUtils.copyList(priceChannelItems, CommonPriceChannelReqVo.class);
         PriceChannelRespVo respVo = new PriceChannelRespVo();
         BeanCopyUtils.copy(priceChannel,respVo);
+        respVo.setPriceList(priceList);
         return respVo;
     }
 
@@ -120,6 +129,7 @@ public class PriceChannelServiceImpl implements PriceChannelService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int add(AddPriceChannelReqVo addVo) {
+        LOGGER.info("渠道管理新增数据信息:{}", JSON.toJSON(addVo));
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         String companyCode = "";
         if (null != authToken) {
@@ -140,9 +150,10 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         priceChannel.setPriceChannelEnable(StatusTypeCode.EN_ABLE.getStatus());
         priceChannel.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
         Integer m = ((PriceChannelService) AopContext.currentProxy()).insertSelective(priceChannel);
-        List<PriceChannelItem> items = reqTransFormItem(addVo, priceChannel.getPriceChannelCode(), priceChannel.getPriceChannelName());
+        List<PriceChannelItem> items = reqTransFormItem(addVo.getPriceList(), priceChannel.getPriceChannelCode(), priceChannel.getPriceChannelName());
         //先删除原有的
         priceChannelItemMapper.deleteByPriceChannelCode(priceChannel.getPriceChannelCode());
+        LOGGER.info("需要保存的明细数据:{}", JSON.toJSON(items));
         ((PriceChannelService) AopContext.currentProxy()).insertBatchItem(items);
         return m;
     }
@@ -175,6 +186,7 @@ public class PriceChannelServiceImpl implements PriceChannelService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int update(UpdatePriceChannelReqVo updateVo) {
+        LOGGER.info("渠道管理修改数据信息:{}", JSON.toJSON(updateVo));
         if(Objects.isNull(updateVo.getId())) {
             throw new BizException(ResultCode.ID_EMPTY);
         }
@@ -194,9 +206,10 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         }
         BeanCopyUtils.copy(updateVo,priceChannel);
         int m = ((PriceChannelService) AopContext.currentProxy()).updateByPrimaryKeySelective(priceChannel);
-        List<PriceChannelItem> items = reqTransFormItem(updateVo, priceChannel.getPriceChannelCode(), priceChannel.getPriceChannelName());
+        List<PriceChannelItem> items = reqTransFormItem(updateVo.getPriceList(), priceChannel.getPriceChannelCode(), priceChannel.getPriceChannelName());
         //先删除原有的
         priceChannelItemMapper.deleteByPriceChannelCode(priceChannel.getPriceChannelCode());
+        LOGGER.info("需要保存的明细数据:{}", JSON.toJSON(items));
         ((PriceChannelService) AopContext.currentProxy()).insertBatchItem(items);
         return m;
     }
@@ -236,104 +249,115 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         return priceChannelMapper.selectByChannelNames(channelList,companyCode);
     }
 
-    private void itemTransFormChannelResp(PriceChannelRespVo respVo){
-        if(Objects.isNull(respVo)){
-            throw new BizException(ResultCode.OBJECT_EMPTY);
-        }
-        List<PriceChannelItem> priceChannelItems = priceChannelItemMapper.selectByPriceChannelCode(respVo.getPriceChannelCode());
-        priceChannelItems.forEach(item->{
-            if(Objects.equals(PriceTypeCode.CHANNEL_PRICE,item.getPriceTypeCode())){
-                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
-                    respVo.setChannelPriceCode(item.getPriceProjectCode());
-                    respVo.setChannelPriceName(item.getPriceProjectName());
-                } else {
-                    respVo.setTemporaryChannelPriceCode(item.getPriceProjectCode());
-                    respVo.setTemporaryChannelPriceName(item.getPriceProjectName());
-                }
-            } else if(Objects.equals(PriceTypeCode.DISTRIBUTION_PRICE,item.getPriceTypeCode())){
-                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
-                    respVo.setDistributionPriceCode(item.getPriceProjectCode());
-                    respVo.setDistributionPriceName(item.getPriceProjectName());
-                } else {
-                    respVo.setTemporaryDistributionPriceCode(item.getPriceProjectCode());
-                    respVo.setTemporaryDistributionPriceName(item.getPriceProjectName());
-                }
-            } else if(Objects.equals(PriceTypeCode.SALE_PRICE,item.getPriceTypeCode())){
-                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
-                    respVo.setSalePriceCode(item.getPriceProjectCode());
-                    respVo.setSalePriceName(item.getPriceProjectName());
-                } else {
-                    respVo.setTemporarySalePriceCode(item.getPriceProjectCode());
-                    respVo.setTemporarySalePriceName(item.getPriceProjectName());
-                }
-            }
-        });
-    }
+//    private void itemTransFormChannelResp(PriceChannelRespVo respVo){
+//        if(Objects.isNull(respVo)){
+//            throw new BizException(ResultCode.OBJECT_EMPTY);
+//        }
+//        List<PriceChannelItem> priceChannelItems = priceChannelItemMapper.selectByPriceChannelCode(respVo.getPriceChannelCode());
+//        priceChannelItems.forEach(item->{
+//            if(Objects.equals(PriceTypeCode.CHANNEL_PRICE,item.getPriceTypeCode())){
+//                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
+//                    respVo.setChannelPriceCode(item.getPriceProjectCode());
+//                    respVo.setChannelPriceName(item.getPriceProjectName());
+//                } else {
+//                    respVo.setTemporaryChannelPriceCode(item.getPriceProjectCode());
+//                    respVo.setTemporaryChannelPriceName(item.getPriceProjectName());
+//                }
+//            } else if(Objects.equals(PriceTypeCode.DISTRIBUTION_PRICE,item.getPriceTypeCode())){
+//                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
+//                    respVo.setDistributionPriceCode(item.getPriceProjectCode());
+//                    respVo.setDistributionPriceName(item.getPriceProjectName());
+//                } else {
+//                    respVo.setTemporaryDistributionPriceCode(item.getPriceProjectCode());
+//                    respVo.setTemporaryDistributionPriceName(item.getPriceProjectName());
+//                }
+//            } else if(Objects.equals(PriceTypeCode.SALE_PRICE,item.getPriceTypeCode())){
+//                if(Objects.equals(PriceTypeCode.SALE_ATTR,item.getPriceCategoryCode())){
+//                    respVo.setSalePriceCode(item.getPriceProjectCode());
+//                    respVo.setSalePriceName(item.getPriceProjectName());
+//                } else {
+//                    respVo.setTemporarySalePriceCode(item.getPriceProjectCode());
+//                    respVo.setTemporarySalePriceName(item.getPriceProjectName());
+//                }
+//            }
+//        });
+//    }
 
-    private List<PriceChannelItem> reqTransFormItem(CommonPriceChannelReqVo reqVo, String priceChannelCode, String priceChannelName){
+    private List<PriceChannelItem> reqTransFormItem(List<CommonPriceChannelReqVo> reqVos, String priceChannelCode, String priceChannelName){
         List<PriceChannelItem> items = Lists.newArrayList();
-        PriceChannelItem item = null;
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getChannelPriceCode());
-        item.setPriceProjectName(reqVo.getChannelPriceName());
-        item.setPriceTypeCode(PriceTypeCode.CHANNEL_PRICE);
-        item.setPriceTypeName(PriceTypeCode.CHANNEL_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
-        items.add(item);
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getTemporaryChannelPriceCode());
-        item.setPriceProjectName(reqVo.getTemporaryChannelPriceName());
-        item.setPriceTypeCode(PriceTypeCode.CHANNEL_PRICE);
-        item.setPriceTypeName(PriceTypeCode.CHANNEL_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
-        items.add(item);
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getDistributionPriceCode());
-        item.setPriceProjectName(reqVo.getDistributionPriceName());
-        item.setPriceTypeCode(PriceTypeCode.DISTRIBUTION_PRICE);
-        item.setPriceTypeName(PriceTypeCode.DISTRIBUTION_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
-        items.add(item);
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getTemporaryDistributionPriceCode());
-        item.setPriceProjectName(reqVo.getTemporaryDistributionPriceName());
-        item.setPriceTypeCode(PriceTypeCode.DISTRIBUTION_PRICE);
-        item.setPriceTypeName(PriceTypeCode.DISTRIBUTION_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
-        items.add(item);
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getSalePriceCode());
-        item.setPriceProjectName(reqVo.getSalePriceName());
-        item.setPriceTypeCode(PriceTypeCode.SALE_PRICE);
-        item.setPriceTypeName(PriceTypeCode.SALE_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
-        items.add(item);
-        item = new PriceChannelItem();
-        item.setPriceChannelCode(priceChannelCode);
-        item.setPriceChannelName(priceChannelName);
-        item.setPriceProjectCode(reqVo.getTemporarySalePriceCode());
-        item.setPriceProjectName(reqVo.getTemporarySalePriceName());
-        item.setPriceTypeCode(PriceTypeCode.SALE_PRICE);
-        item.setPriceTypeName(PriceTypeCode.SALE_PRICE_NAME);
-        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
-        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
-        items.add(item);
+        for (CommonPriceChannelReqVo reqVo : reqVos) {
+            PriceChannelItem item = new PriceChannelItem();
+            item.setPriceChannelCode(priceChannelCode);
+            item.setPriceChannelName(priceChannelName);
+            item.setPriceProjectCode(reqVo.getPriceProjectCode());
+            item.setPriceProjectName(reqVo.getPriceProjectName());
+            item.setPriceTypeCode(reqVo.getPriceTypeCode());
+            item.setPriceTypeName(reqVo.getPriceTypeName());
+            item.setPriceCategoryCode(reqVo.getPriceCategoryCode());
+            item.setPriceCategoryName(reqVo.getPriceCategoryName());
+            item.setEnable(reqVo.getEnable());
+            items.add(item);
+        }
         return items;
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getChannelPriceCode());
+//        item.setPriceProjectName(reqVo.getChannelPriceName());
+//        item.setPriceTypeCode(PriceTypeCode.CHANNEL_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.CHANNEL_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
+//        items.add(item);
+//        item = new PriceChannelItem();
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getTemporaryChannelPriceCode());
+//        item.setPriceProjectName(reqVo.getTemporaryChannelPriceName());
+//        item.setPriceTypeCode(PriceTypeCode.CHANNEL_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.CHANNEL_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
+//        items.add(item);
+//        item = new PriceChannelItem();
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getDistributionPriceCode());
+//        item.setPriceProjectName(reqVo.getDistributionPriceName());
+//        item.setPriceTypeCode(PriceTypeCode.DISTRIBUTION_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.DISTRIBUTION_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
+//        items.add(item);
+//        item = new PriceChannelItem();
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getTemporaryDistributionPriceCode());
+//        item.setPriceProjectName(reqVo.getTemporaryDistributionPriceName());
+//        item.setPriceTypeCode(PriceTypeCode.DISTRIBUTION_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.DISTRIBUTION_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
+//        items.add(item);
+//        item = new PriceChannelItem();
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getSalePriceCode());
+//        item.setPriceProjectName(reqVo.getSalePriceName());
+//        item.setPriceTypeCode(PriceTypeCode.SALE_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.SALE_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.SALE_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.SALE_ATTR_NAME);
+//        items.add(item);
+//        item = new PriceChannelItem();
+//        item.setPriceChannelCode(priceChannelCode);
+//        item.setPriceChannelName(priceChannelName);
+//        item.setPriceProjectCode(reqVo.getTemporarySalePriceCode());
+//        item.setPriceProjectName(reqVo.getTemporarySalePriceName());
+//        item.setPriceTypeCode(PriceTypeCode.SALE_PRICE);
+//        item.setPriceTypeName(PriceTypeCode.SALE_PRICE_NAME);
+//        item.setPriceCategoryCode(PriceTypeCode.TEMPORARY_ATTR);
+//        item.setPriceCategoryName(PriceTypeCode.TEMPORARY_ATTR_NAME);
+//        items.add(item);
     }
 
 

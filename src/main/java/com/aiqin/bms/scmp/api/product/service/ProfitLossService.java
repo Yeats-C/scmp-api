@@ -2,9 +2,11 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
+import com.aiqin.bms.scmp.api.product.domain.request.profitloss.ProfitLossWmsReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.profitloss.QueryProfitLossVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.DetailProfitLossRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 /**
  * @author knight.xie
@@ -30,4 +32,5 @@ public interface ProfitLossService extends BaseService {
     DetailProfitLossRespVo view(Long id);
 
 
+    HttpResponse profitLossWmsEcho(ProfitLossWmsReqVo request);
 }

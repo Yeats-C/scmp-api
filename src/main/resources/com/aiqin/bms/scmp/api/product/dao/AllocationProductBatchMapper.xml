@@ -60,6 +60,11 @@
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="product_picture_path" jdbcType="VARCHAR" property="pictureUrl" />
     <result column="line_num" jdbcType="BIGINT" property="linenum" />
+    <result column="callin_batch_number" jdbcType="VARCHAR" property="callinBatchNumber" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="callin_batch_info_code" jdbcType="VARCHAR" property="callinBatchInfoCode" />
+    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
   </resultMap>
   <sql id="Base_Column_List">
     id, allocation_code, sku_code, sku_name, category, brand, color, specification, model, 
@@ -71,7 +76,8 @@
   <sql id="Base_Column_OutBound_List">
     a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
    a.unit, classes, a.type, a.inventory_unit, a.inventory, a.tax, a.tax_price, a.quantity, a.tax_amount,
-    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num
+    a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, b.product_picture_path, a.line_num,
+    a.product_date, a.be_overdue_date, a.callin_batch_info_code, a.callin_batch_number, a.batch_number_remark
   </sql>
   <resultMap id="ListResultMap" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo">
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -117,7 +123,8 @@
       tax_price, quantity, tax_amount, 
       del_flag, create_time, create_by, 
       update_time, update_by, picture_url, line_num,
-      callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_name,supplier_code)
+      callout_batch_number,callin_batch_number,batch_number_remark,product_date,supplier_name,supplier_code,
+      be_overdue_date, callout_actual_total_count, callin_actual_total_count, callout_batch_info_code, callin_batch_info_code)
     values
     <foreach collection="list" item="t" index= "index" separator =",">
       (
@@ -150,7 +157,12 @@
       #{t.batchNumberRemark,jdbcType=VARCHAR},
       #{t.productDate,jdbcType=VARCHAR},
       #{t.supplierName,jdbcType=VARCHAR},
-      #{t.supplierCode,jdbcType=VARCHAR}
+      #{t.supplierCode,jdbcType=VARCHAR},
+      #{t.beOverdueDate,jdbcType=VARCHAR},
+      #{t.callOutActualTotalCount,jdbcType=VARCHAR},
+      #{t.callInActualTotalCount,jdbcType=VARCHAR},
+      #{t.callOutBatchInfoCode,jdbcType=VARCHAR},
+      #{t.callInBatchInfoCode,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>

@@ -28,27 +28,27 @@ public class AllocationProductBatch extends CommonBean {
     private String skuName;
 
     @ApiModelProperty("品类")
-    @JsonProperty(value = "product_category_name")
+    @JsonProperty(value = "category")
     private String category;
 
     @ApiModelProperty("品牌")
-    @JsonProperty(value = "product_brand_name")
+    @JsonProperty(value = "brand")
     private String brand;
 
     @ApiModelProperty("颜色")
-    @JsonProperty(value = "color_name")
+    @JsonProperty(value = "color")
     private String color;
 
     @ApiModelProperty("规格")
-    @JsonProperty(value = "spec")
+    @JsonProperty(value = "specification")
     private String specification;
 
     @ApiModelProperty("型号")
-    @JsonProperty(value = "model_number")
+    @JsonProperty(value = "model")
     private String model;
 
     @ApiModelProperty("单位(销售单位)")
-    @JsonProperty(value = "unit_name")
+    @JsonProperty(value = "unit")
     private String unit;
 
     @ApiModelProperty("类别")
@@ -120,10 +120,19 @@ public class AllocationProductBatch extends CommonBean {
     private String supplierCode;
 
     @ApiModelProperty("调出批次编号")
-    @JsonProperty(value = "callout_batch_info_code")
-    private String calloutBatchInfoCode;
+    @JsonProperty(value = "call_out_batch_info_code")
+    private String callOutBatchInfoCode;
 
     @ApiModelProperty("调入批次编号")
-    @JsonProperty(value = "callin_batch_info_code")
-    private String callinBatchInfoCode;
+    @JsonProperty(value = "call_in_batch_info_code")
+    private String callInBatchInfoCode;
+
+    @ApiModelProperty("实际出库最小单位数量")
+    @JsonProperty(value = "call_out_actual_total_count")
+    private Long callOutActualTotalCount;
+
+    @ApiModelProperty("实际入库最小单位数量")
+    @JsonProperty(value = "call_in_actual_total_count")
+    private Long callInActualTotalCount;
+
 }
