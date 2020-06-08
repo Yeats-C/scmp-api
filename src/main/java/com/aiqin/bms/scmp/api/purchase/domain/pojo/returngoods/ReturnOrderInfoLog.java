@@ -39,6 +39,9 @@ public class ReturnOrderInfoLog {
     @ApiModelProperty("公司名称")
     private String companyName;
 
+    public ReturnOrderInfoLog() {
+    }
+
     public ReturnOrderInfoLog(Long id, String returnOrderCode, Integer orderStatus, String backgroundOrderStatus, String standardDescription, String remark, String operator, Date date, String companyCode, String companyName) {
     }
 }

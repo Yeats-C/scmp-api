@@ -33,19 +33,19 @@ public class ReturnOrderInfo {
     @ApiModelProperty("支付状态 0 已支付 1未支付")
     private Integer paymentStatus;
 
-    @ApiModelProperty("是否锁定(0否1是）")
+    @ApiModelProperty("是否锁定(0是 1否）")
     private Integer beLock;
 
     @ApiModelProperty("锁定原因")
     private String lockReason;
 
-    @ApiModelProperty("是否是异常订单(0否1是)")
+    @ApiModelProperty("是否是异常订单(0是 1否)")
     private Integer beException;
 
     @ApiModelProperty("异常原因")
     private String exceptionReason;
 
-    @ApiModelProperty("是否删除(0否1是)")
+    @ApiModelProperty("是否删除(0是 1否)")
     private Integer beDelete;
 
     @ApiModelProperty("物流中心名称")

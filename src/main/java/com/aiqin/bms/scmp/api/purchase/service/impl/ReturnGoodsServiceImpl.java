@@ -521,44 +521,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
     }
 
-
-
-    private ReturnDLReq test1() {
-        ReturnDLReq returnDLReq=new ReturnDLReq();
-        ReturnOrderInfoDLReq returnOrderInfoDLReq=new ReturnOrderInfoDLReq();
-        returnOrderInfoDLReq.setActualProductCount(1000L);
-        returnOrderInfoDLReq.setReturnOrderCode("20191220015100001");
-        returnOrderInfoDLReq.setReturnById("12272");
-        returnOrderInfoDLReq.setReturnTime(new Date());
-        returnDLReq.setReturnOrderInfoDLReq(returnOrderInfoDLReq);
-
-        List<ReturnOrderDetailDLReq> returnOrderDetailDLReqList=Lists.newArrayList();
-        ReturnOrderDetailDLReq returnOrderDetailDLReq=new ReturnOrderDetailDLReq();
-        returnOrderDetailDLReq.setActualReturnProductCount(Long.valueOf(11));
-        returnOrderDetailDLReq.setSkuCode("102423");
-        returnOrderDetailDLReq.setSkuName("奶粉");
-        returnOrderDetailDLReq.setLineCode(Long.valueOf(1));
-        returnOrderDetailDLReqList.add(returnOrderDetailDLReq);
-        returnDLReq.setReturnOrderDetailDLReqList(returnOrderDetailDLReqList);
-
-
-        List<ReturnBatchDetailDLReq> returnBatchDetailDLReqList=Lists.newArrayList();
-        ReturnBatchDetailDLReq returnBatchDetailDLReq=new ReturnBatchDetailDLReq();
-        returnBatchDetailDLReq.setActualReturnProductCount(Long.valueOf(10));
-        returnBatchDetailDLReq.setSkuCode("102423");
-        returnBatchDetailDLReq.setSkuName("奶粉");
-        returnBatchDetailDLReq.setBatchNum(1);
-        returnBatchDetailDLReq.setLineCode(1L);
-        returnBatchDetailDLReqList.add(returnBatchDetailDLReq);
-        returnDLReq.setReturnBatchDetailDLReqList(returnBatchDetailDLReqList);
-
-        return returnDLReq;
-    }
-
     private HttpResponse returnOrderAdd(ReturnReq request) {
         LOGGER.info("运营中台调用耘链，开始生成退货单：{}", JsonUtil.toJson(request));
         // 进行主表添加
-        if(request == null || request.getReturnOrderInfo() == null || CollectionUtils.isEmptyCollection(request.getReturnOrderDetailReqList())){
+        if (request == null || request.getReturnOrderInfo() == null ||
+                CollectionUtils.isEmptyCollection(request.getReturnOrderDetailReqList())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         ReturnOrderInfoReq returnOrderInfo = request.getReturnOrderInfo();
@@ -567,78 +534,62 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setCreateDate(returnOrderInfo.getCreateTime());
         returnOrder.setBeLock(returnOrderInfo.getReturnLock());
         returnOrder.setLockReason(returnOrderInfo.getReturnReason());
+        returnOrder.setDetailAddress(returnOrderInfo.getReceiveAddress());
         returnOrder.setConsignee(returnOrderInfo.getReceivePerson());
         returnOrder.setConsigneePhone(returnOrderInfo.getReceivePerson());
         returnOrder.setDistributionMode(returnOrderInfo.getDistributionModeName());
         // 退货单状态
-        if(returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_0)){
+        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_0)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
-        }else if(returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)){
+        } else if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode());
         }
         returnOrder.setPaymentTypeCode(returnOrderInfo.getPaymentCode());
         returnOrder.setPaymentType(returnOrderInfo.getPaymentName());
         returnOrder.setProductNum(returnOrderInfo.getProductCount());
-        returnOrderInfoMapper.insert(returnOrder);
-        List<ReturnOrderDetailReq> returnOrderDetailReqList=request.getReturnOrderDetailReqList();
-        //进行商品书写
-        if(CollectionUtils.isEmptyCollection(returnOrderDetailReqList)){
-            throw  new BizException("集合为空");
-        }
-        for (ReturnOrderDetailReq returnOrderDetailReq:
-        returnOrderDetailReqList ) {
-            ReturnOrderInfoItem returnOrderInfoItem=new ReturnOrderInfoItem();
-            returnOrderInfoItem.setReturnOrderCode(returnOrderDetailReq.getReturnOrderCode());
-            returnOrderInfoItem.setSkuCode(returnOrderDetailReq.getSkuCode());
-            returnOrderInfoItem.setSkuName(returnOrderDetailReq.getSkuName());
-            returnOrderInfoItem.setPictureUrl(returnOrderDetailReq.getPictureUrl());
-            returnOrderInfoItem.setColorCode(returnOrderDetailReq.getColorCode());
-            returnOrderInfoItem.setColorName(returnOrderDetailReq.getColorName());
-            returnOrderInfoItem.setModelCode(returnOrderDetailReq.getModelCode());
-            returnOrderInfoItem.setUnitCode(returnOrderDetailReq.getUnitCode());
-            returnOrderInfoItem.setUnitName(returnOrderDetailReq.getUnitName());
-            returnOrderInfoItem.setZeroDisassemblyCoefficient(Math.toIntExact(returnOrderDetailReq.getZeroDisassemblyCoefficient()));
-            returnOrderInfoItem.setPrice(returnOrderDetailReq.getProductAmount());
-            returnOrderInfoItem.setNum(returnOrderDetailReq.getReturnProductCount());
-            returnOrderInfoItem.setAmount(returnOrderDetailReq.getTotalProductAmount());
-            returnOrderInfoItem.setActivityCode(returnOrderDetailReq.getActivityCode());
-            returnOrderInfoItem.setProductLineNum(returnOrderDetailReq.getLineCode());
-            returnOrderInfoItem.setProductStatus(returnOrderDetailReq.getProductStatus());
-            returnOrderInfoItem.setActualInboundNum(Math.toIntExact(returnOrderDetailReq.getActualReturnProductCount()));
-//            returnOrderInfoItem.setCompanyCode(returnOrderInfoReq.getCompanyCode());
-//            returnOrderInfoItem.setCompanyName(returnOrderInfoReq.getCompanyName());
-            returnOrderInfoItem.setChannelUnitPrice(returnOrderDetailReq.getProductAmount());
-            returnOrderInfoItem.setActualChannelUnitPrice(returnOrderDetailReq.getProductAmount());
-            returnOrderInfoItem.setActualAmount(returnOrderDetailReq.getProductAmount());
-            returnOrderInfoItem.setActualPrice(returnOrderDetailReq.getTotalProductAmount());
-//            returnOrderInfoItem.setWarehouseCode(returnOrderInfoReq.getWarehouseCode());
-//            returnOrderInfoItem.setWarehouseName(returnOrderInfoReq.getWarehouseName());
-//            returnOrderInfoItem.setSupplyCode(returnOrderInfoReq.getSupplierCode());
-//            returnOrderInfoItem.setSupplyName(returnOrderInfoReq.getSupplierName());
-            returnOrderInfoItem.setTax(returnOrderDetailReq.getTaxRate());
-            returnOrderInfoItemMapper.insert(returnOrderInfoItem);
+        returnOrder.setProductTotalAmount(returnOrderInfo.getReturnOrderAmount());
+        returnOrder.setWeight(returnOrderInfo.getTotalWeight());
+        returnOrder.setVolume(returnOrderInfo.getTotalVolume());
+        returnOrder.setCompanyCode(Global.COMPANY_09);
+        returnOrder.setCompanyName(Global.COMPANY_09_NAME);
+        Integer count = returnOrderInfoMapper.insert(returnOrder);
+        LOGGER.info("添加退货单条数：", count);
 
+        List<ReturnOrderDetailReq> detailList = request.getReturnOrderDetailReqList();
+        List<ReturnOrderInfoItem> details = Lists.newArrayList();
+        ReturnOrderInfoItem returnOrderInfoItem;
+        for (ReturnOrderDetailReq returnOrderDetail : detailList) {
+            returnOrderInfoItem = BeanCopyUtils.copy(returnOrderDetail, ReturnOrderInfoItem.class);
+            returnOrderInfoItem.setSpec(returnOrderDetail.getProductSpec());
+            returnOrderInfoItem.setModel(returnOrderDetail.getModelCode());
+            returnOrderInfoItem.setBaseProductContent(returnOrderDetail.getBaseProductSpec().intValue());
+            returnOrderInfoItem.setGivePromotion(returnOrderDetail.getProductType());
+            returnOrderInfoItem.setPrice(returnOrderDetail.getProductAmount());
+            returnOrderInfoItem.setNum(returnOrderDetail.getReturnProductCount());
+            returnOrderInfoItem.setAmount(returnOrderDetail.getTotalProductAmount());
+            returnOrderInfoItem.setProductLineNum(returnOrderDetail.getLineCode());
+            returnOrderInfoItem.setProductStatus(returnOrderDetail.getProductStatus());
+            returnOrderInfoItem.setCompanyCode(Global.COMPANY_09);
+            returnOrderInfoItem.setCompanyName(Global.COMPANY_09_NAME);
+            returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getProductAmount());
+            returnOrderInfoItem.setTax(returnOrderDetail.getTaxRate());
+            details.add(returnOrderInfoItem);
         }
-        //书写日志
-        ReturnOrderInfoLog returnOrderInfoLog=new ReturnOrderInfoLog(null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null,
-                null);
-//        returnOrderInfoLog.setOrderCode(returnOrderInfoReq.getReturnOrderCode());
-//        returnOrderInfoLog.setStatus(Integer.valueOf(InOutStatus.CREATE_INOUT.getCode()));
-//        returnOrderInfoLog.setStatusDesc(InOutStatus.CREATE_INOUT.getName());
-//        returnOrderInfoLog.setRemark(returnOrderInfoReq.getRemark());
-//        returnOrderInfoLog.setOperator(returnOrderInfoReq.getCreateByName());
-//        returnOrderInfoLog.setOperatorTime(returnOrderInfoReq.getCreateTime());
-//        returnOrderInfoLog.setCompanyCode(returnOrderInfoReq.getCompanyCode());
-//        returnOrderInfoLog.setCompanyName(returnOrderInfoReq.getCompanyName());
-        returnOrderInfoLogMapper.insert(returnOrderInfoLog);
+        Integer detailCount = returnOrderInfoItemMapper.insertList(details);
+        LOGGER.info("添加退货单详情条数：", detailCount);
+
+        // 添加退货单日志
+        ReturnOrderInfoLog log = new ReturnOrderInfoLog();
+        log.setOrderCode(returnOrder.getReturnOrderCode());
+        log.setStatus(Integer.valueOf(InOutStatus.CREATE_INOUT.getCode()));
+        log.setStatusDesc(InOutStatus.CREATE_INOUT.getName());
+        log.setRemark(returnOrder.getRemake());
+        log.setOperator(returnOrder.getCreateByName());
+        log.setOperatorTime(returnOrder.getCreateTime());
+        log.setCompanyCode(Global.COMPANY_09);
+        log.setCompanyName(Global.COMPANY_09_NAME);
+        Integer logCount = returnOrderInfoLogMapper.insert(log);
+        LOGGER.info("添加退货单日志条数：", logCount);
         return HttpResponse.success();
     }
 
