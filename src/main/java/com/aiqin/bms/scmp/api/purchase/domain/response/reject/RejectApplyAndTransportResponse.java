@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.reject;
 
+import com.aiqin.bms.scmp.api.purchase.domain.FileRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordTransportCenter;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,4 +21,8 @@ public class RejectApplyAndTransportResponse extends RejectApplyRecord {
     @ApiModelProperty(value = "退供分仓列表")
     @JsonProperty("reject_transport_list")
     private List<RejectApplyRecordTransportCenter> rejectTransportList;
+
+    @ApiModelProperty(value = "文件列表")
+    @JsonProperty("file_list")
+    private List<FileRecord> fileList;
 }

@@ -19,6 +19,9 @@ public class ProductSkuChangePriceAreaInfo {
     @ApiModelProperty("区域名称")
     private String name;
 
+    @ApiModelProperty("1区域2门店")
+    private Integer type;
+
     @ApiModelProperty("区域编码")
     private String code;
 

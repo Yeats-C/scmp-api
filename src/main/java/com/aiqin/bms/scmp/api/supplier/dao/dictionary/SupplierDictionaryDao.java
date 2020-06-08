@@ -22,6 +22,8 @@ public interface SupplierDictionaryDao {
 
     Integer checkName(@Param("supplierDictionaryName") String supplierDictionaryName, @Param("id") Long id, @Param("companyCode") String companyCode);
 
+    Integer checkCode(@Param("supplierDictionaryCode") String supplierDictionaryCode, @Param("id") Long id, @Param("companyCode") String companyCode);
+
     List<DictionaryCodeResVo>getCode(DictionaryInfoReqVO dictionaryInfoReqVO);
 
 

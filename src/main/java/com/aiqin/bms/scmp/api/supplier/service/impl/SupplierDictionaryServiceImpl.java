@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.web.SapAbutmentController;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.ResultCode;
@@ -23,17 +24,21 @@ import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -46,6 +51,8 @@ import java.util.List;
 @Service
 @Slf4j
 public class SupplierDictionaryServiceImpl implements SupplierDictionaryService {
+
+    private static Logger LOGGER = LoggerFactory.getLogger(SupplierDictionaryServiceImpl.class);
 
 
     @Autowired
@@ -77,7 +84,9 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
      */
     @Override
     public HttpResponse<DictionaryDetailResVO> getListDictionary(Long id,String project) {
+        LOGGER.info("查看字典管理详情信息:{}", id+","+project);
         try {
+            // 判断id和project不为空的
             projectAndId(id, project);
             DictionaryDetailResVO supplierDictionaryDetailResVO = new DictionaryDetailResVO();
             if (id != null) {
@@ -148,6 +157,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
     @Override
     @Transactional
     public HttpResponse<Integer> batchInsert(DictionarySaveReqDTO listDTO) {
+        LOGGER.info("字典管理新增信息:{}", JsonUtil.toJson(listDTO));
         int flg = 0;
         String project=listDTO.getDictionaryType();
         try {
@@ -160,31 +170,44 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
             if(null != authToken){
                 companyCode = authToken.getCompanyCode();
             }
+            // 通过字典名判断表里数据是否重复
             String codNa = listDTO.getDictionaryName();
-            Integer integer = supplierDictionaryDao.checkName(codNa, null,companyCode);
-                if (integer > 0) {
-                log.error("字典名称不能重复");
-                throw new GroundRuntimeException("字典名称不能重复");
+//            Integer integer = supplierDictionaryDao.checkName(codNa, null,companyCode);
+//                if (integer > 0) {
+//                log.error("字典名称不能重复");
+//                throw new GroundRuntimeException("字典名称不能重复");
+//            }
+            // 查询供应商字典表 (编码要手动填写 不用自动生成)
+//            EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_CODE);
+//            long code = encodingRule.getNumberingValue();
+//            encodingRuleService.updateNumberValue(code, encodingRule.getId());
+            String code = listDTO.getDictionaryCode();
+            Integer integer = supplierDictionaryDao.checkCode(code, null,companyCode);
+            if (integer > 0) {
+                log.error("字典编码不能重复");
+                LOGGER.info("字典编码不能重复:{}", code);
+                throw new GroundRuntimeException("字典编码不能重复");
             }
-            EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_CODE);
-            long code = encodingRule.getNumberingValue();
-            encodingRuleService.updateNumberValue(code, encodingRule.getId());
+
+            // 获取保存数据进行保存
             List<SupplierDictionaryInfo> save = new LinkedList<>();
             SupplierDictionary supplierDictionary = new SupplierDictionary();
-            supplierDictionary.setSupplierDictionaryCode(code + "");
+            supplierDictionary.setSupplierDictionaryCode(code);
             supplierDictionary.setSupplierDictionaryName(codNa);
             supplierDictionary.setSupplierType(listDTO.getDictionaryType());
             supplierDictionary.setEnabled(HandlingExceptionCode.ZERO);
             supplierDictionary.setDelFlag(HandlingExceptionCode.ZERO);
             ((SupplierDictionaryService) AopContext.currentProxy()).insertSelective(supplierDictionary);
+            // 详情数据不为空 添加详情数据
             if (listDTO.getListInfo() != null && listDTO.getListInfo().size() > 0) {
                 listDTO.getListInfo().forEach(infoReqVO -> {
                     SupplierDictionaryInfo supplierDic1 = new SupplierDictionaryInfo();
+                    // 查询供应商字典详情表
                     EncodingRule encodingRule1 = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_INFO_CODE);
                     long coif = encodingRule1.getNumberingValue();
                     encodingRuleService.updateNumberValue(coif, encodingRule1.getId());
                     supplierDic1.setSupplierContent(infoReqVO.getDictionaryContent());
-                    supplierDic1.setSupplierDictionaryCode(code + "");
+                    supplierDic1.setSupplierDictionaryCode(code);
                     supplierDic1.setSupplierDictionaryName(codNa);
                     supplierDic1.setEnabled(HandlingExceptionCode.ZERO);
                     supplierDic1.setDelFlag(HandlingExceptionCode.ZERO);
@@ -216,6 +239,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
         String project=listDTO.getDictionaryType();
         int flg = 0;
         Long dId = listDTO.getId();
+        // 判断id和project不为空的
         projectAndId(dId, project);
         try {
             String companyCode = "";
@@ -224,30 +248,41 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 companyCode = authToken.getCompanyCode();
             }
             String codNa = listDTO.getDictionaryName();
-            Integer integer = supplierDictionaryDao.checkName(codNa, dId,companyCode);
+            // 字典名称不能重复 要换成通过code去判断
+//            Integer integer = supplierDictionaryDao.checkName(codNa, dId,companyCode);
+//            if (integer > 0) {
+//                log.error("字典名称不能重复");
+//                throw new GroundRuntimeException("字典名称不能重复");
+//            }
+            // 通过code去判断编码是否重复
+            String codCo = listDTO.getDictionaryCode();
+            Integer integer = supplierDictionaryDao.checkCode(codCo, dId,companyCode);
             if (integer > 0) {
-                log.error("字典名称不能重复");
-                throw new GroundRuntimeException("字典名称不能重复");
+                log.error("字典编码不能重复");
+                LOGGER.info("字典编码不能重复:{}", codCo);
+                throw new GroundRuntimeException("字典编码不能重复");
             }
-            String code = null;
+//            String code = null;
+            // 详情表存在的情况下修改 不存在的话新增
             List<SupplierDictionaryInfo> save = new LinkedList<>();
             List<SupplierDictionaryInfo> update = new LinkedList<>();
             if (dId != null) {
                 SupplierDictionary supplierDictionary = supplierDictionaryMapper.selectByPrimaryKey(dId);
                 SupplierDictionary supplierDictionary1 = new SupplierDictionary();
-                code = supplierDictionary.getSupplierDictionaryCode();
+//                code = supplierDictionary.getSupplierDictionaryCode();
                 supplierDictionary1.setSupplierDictionaryName(codNa);
                 supplierDictionary1.setSupplierType(listDTO.getDictionaryType());
                 supplierDictionary1.setDelFlag(listDTO.getDelFlag());
                 supplierDictionary1.setId(dId);
-                supplierDictionary1.setSupplierDictionaryCode(code);
+                supplierDictionary1.setSupplierDictionaryCode(codCo);
                 supplierDictionary1.setCreateBy(supplierDictionary.getCreateBy());
                 supplierDictionary1.setCreateTime(supplierDictionary.getCreateTime());
                 supplierDictionary1.setUpdateBy(supplierDictionary.getUpdateBy());
                 supplierDictionary1.setUpdateTime(supplierDictionary.getUpdateTime());
                 supplierDictionary1.setEnabled(listDTO.getEnabled());
+                LOGGER.info("更新字典编码主表:{}", supplierDictionary1);
                 ((SupplierDictionaryService) AopContext.currentProxy()).updateDictionary(supplierDictionary1);
-                String finalCode = code;
+                String finalCode = codCo;
                 if (listDTO.getListInfo() != null && listDTO.getListInfo().size() > 0) {
                     listDTO.getListInfo().forEach(infoReqVO -> {
                         if (infoReqVO.getId() != null && infoReqVO.getId() != 0) {
@@ -279,12 +314,11 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 }
             }
             if (save.size() > 0) {
+                LOGGER.info("新增编辑新加字典编码详情表:{}", save);
                 flg = ((SupplierDictionaryService) AopContext.currentProxy()).insertList(save);
-
-
             }
             if (update.size() > 0) {
-
+                LOGGER.info("更新编辑字典编码详情表:{}", update);
                 flg = ((SupplierDictionaryService) AopContext.currentProxy()).updateList(update);
             }
         } catch (Exception ex) {
@@ -304,7 +338,9 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
     @Override
     @Transactional
     public HttpResponse<Integer> offOrOn(Long id,String project) {
+        LOGGER.info("删除字典编码参数:{}", id+","+project);
         int resultNum = 0;
+        // 判断id和project不为空的
         projectAndId(id, project);
         try {
             SupplierDictionary supplierDictionary = supplierDictionaryMapper.selectByPrimaryKey(id);
@@ -317,6 +353,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                     resultNum = supplierDictionaryDao.offOrOn(id);
                 } else {
                     log.error("code 关联不存在");
+                    LOGGER.info("code 关联不存在:{}", code);
                     throw new GroundRuntimeException("code 关联不存在");
                 }
             }
@@ -361,10 +398,12 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
         Long id = supplierDictionary.getId();
         if (StringUtils.isNotBlank(neme) && id != null) {
             SupplierDictionary newSupplier = supplierDictionaryMapper.selectByPrimaryKey(id);
+            // name不同改变 通过code改详情表name
             if (!neme.equals(newSupplier.getSupplierDictionaryName())) {
                 supplierEventTriggeringServie.pushSuplier(DataBaseType.SUPPLIER_DICTIONARY, newSupplier.getSupplierDictionaryCode(), neme);
             }
         }
+        // 更新供应商字典主表
         int k = supplierDictionaryMapper.updateByPrimaryKeySelective(supplierDictionary);
         if (k > 0) {
             return k;
@@ -379,6 +418,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
     public HttpResponse<Integer> enabled(EnabledSave enabledSave,String project) {
         Long id = enabledSave.getId();
         Byte status = enabledSave.getStatus();
+        // 判断id和project不为空的
         projectAndId(id, project);
         SupplierDictionary supplierDictionary = supplierDictionaryMapper.selectByPrimaryKey(id);
         if (supplierDictionary != null) {
@@ -443,6 +483,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
     @Override
     public List<DictionaryCodeResVo> getCode(DictionaryInfoReqVO dictionaryInfoReqVO,String dictionaryType) {
         try {
+            LOGGER.info("通过name/code查询详情:{}", JsonUtil.toJson(dictionaryInfoReqVO));
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
             if(null != authToken){
                 dictionaryInfoReqVO.setCompanyCode(authToken.getCompanyCode());

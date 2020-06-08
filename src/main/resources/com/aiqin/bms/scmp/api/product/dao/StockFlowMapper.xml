@@ -35,38 +35,6 @@
         <result column="update_by_id" jdbcType="VARCHAR" property="updateById"/>
         <result column="update_by_name" jdbcType="VARCHAR" property="createByName"/>
     </resultMap>
-    <resultMap id="StockResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <result column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
-        <result column="company_code" jdbcType="VARCHAR" property="companyCode"/>
-        <result column="company_name" jdbcType="VARCHAR" property="companyName"/>
-        <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode"/>
-        <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName"/>
-        <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode"/>
-        <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName"/>
-        <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType"/>
-        <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <result column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <result column="inventory_num" jdbcType="BIGINT" property="inventoryNum"/>
-        <result column="available_num" jdbcType="BIGINT" property="availableNum"/>
-        <result column="lock_num" jdbcType="BIGINT" property="lockNum"/>
-        <result column="purchase_way_num" jdbcType="BIGINT" property="purchaseWayNum"/>
-        <result column="allocation_way_num" jdbcType="BIGINT" property="allocationWayNum"/>
-        <result column="total_way_num" jdbcType="BIGINT" property="totalWayNum"/>
-        <result column="new_delivery" jdbcType="VARCHAR" property="newDelivery"/>
-        <result column="new_delivery_name" jdbcType="VARCHAR" property="newDeliveryName"/>
-        <result column="new_purchase_price" jdbcType="DECIMAL" property="newPurchasePrice"/>
-        <result column="purchase_group_code" jdbcType="VARCHAR" property="purchaseGroupCode"/>
-        <result column="purchase_group_name" jdbcType="VARCHAR" property="purchaseGroupName"/>
-        <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
-        <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
-        <result column="tax_price" jdbcType="DECIMAL" property="taxPrice"/>
-        <result column="tax_rate" jdbcType="DECIMAL" property="taxRate"/>
-        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
-        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
-        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
-    </resultMap>
     <sql id="Base_Column_List">
         id, stock_code, flow_code, sku_code, sku_name, before_inventory_count, after_inventory_count,
         before_available_count, after_available_count, before_lock_count, after_lock_count,
@@ -76,16 +44,6 @@
         remark, stock_cost, use_status, create_time, create_by_id, create_by_name,
         update_time, update_by_id, update_by_name
     </sql>
-    <sql id="Stock_Column">
-
-    </sql>
-    <select id="selectOneStockInfoByStockFlow"  resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock" resultMap="StockResultMap">
-        select <include refid="Stock_Column"></include> from stock
-        where company_code=#{companyCode}
-        and transport_center_code=#{transportCenterCode}
-        and warehouse_code=#{warehouseCode}
-        and sku_code=#{skuCode}
-    </select>
     <insert id="insertOne">
         insert into stock_flow (
         stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,
@@ -139,4 +97,15 @@
             </if>
         </where>
     </update>
+    <select id="list" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        FROM stock_flow
+        where stock_code = #{stockCode, jdbcType=VARCHAR}
+        limit #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="listCount" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM stock_flow
+        where stock_code = #{stockCode, jdbcType=VARCHAR}
+    </select>
 </mapper>

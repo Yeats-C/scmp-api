@@ -11,7 +11,6 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
@@ -21,9 +20,11 @@ import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
@@ -59,8 +60,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private static final Logger LOGGER = LoggerFactory.getLogger(PurchaseManageServiceImpl.class);
 
     @Resource
-    private PurchaseApplyProductDao purchaseApplyProductDao;
-    @Resource
     private PurchaseOrderDao purchaseOrderDao;
     @Resource
     private PurchaseOrderProductDao purchaseOrderProductDao;
@@ -87,11 +86,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     @Resource
     private PurchaseApplyService purchaseApplyService;
     @Resource
-    private PurchaseApplyDao purchaseApplyDao;
-    @Resource
-    private PurchaseApplyTransportCenterDao purchaseApplyTransportCenterDao;
-    @Resource
     private PurchaseBatchDao purchaseBatchDao;
+    @Resource
+    private WmsCancelService wmsCancelService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -109,7 +106,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
         purchaseOrder.setApprovalCode(purchaseOrderCode);
-        //purchaseOrder.setInfoStatus(Global.PURCHASE_APPLY_STATUS_0);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
         purchaseOrder.setStorageStatus(Global.STORAGE_STATUS_0);
         purchaseOrder.setPurchaseMode(0);
@@ -229,6 +225,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     // 调用取消入库单
                     if(order.getInfoStatus().equals(0)){
                         this.cancelInbound(order);
+                        CancelSource cancelSource = new CancelSource();
+                        cancelSource.setOrderType("3");
+                        cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
+                        cancelSource.setWarehouseCode(order.getWarehouseCode());
+                        cancelSource.setWarehouseName(order.getWarehouseName());
+                        cancelSource.setRemark(purchaseOrder.getCancelReason());
+                        wmsCancelService.wmsCancel(cancelSource);
                     }
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
@@ -267,21 +270,29 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), type);
                 // 调用入库单的取消
                 this.cancelInbound(order);
+                // 调用取消wms单据
+                CancelSource cancelSource = new CancelSource();
+                cancelSource.setOrderType("3");
+                cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
+                cancelSource.setWarehouseCode(purchaseOrder.getWarehouseCode());
+                cancelSource.setWarehouseName(purchaseOrder.getWarehouseName());
+                cancelSource.setRemark(purchaseOrder.getCancelReason());
+                wmsCancelService.wmsCancel(cancelSource);
                 break;
-            case 11:
-                // 重发
-                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
-                    LOGGER.info("采购单非待确认状态，不能进行重发操作");
-                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
-                }
-                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
-                //InboundServiceImpl service = (InboundServiceImpl) AopContext.currentProxy();
-                // 根据采购单号查询入库单号
-                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(order.getPurchaseOrderCode());
-                // 入库单号
-                String code = num <= 9 ? ("0" + num.toString()) : num.toString();
-                inboundService.pushWms(order.getPurchaseOrderCode() + code);
-                break;
+//            case 11:
+//                // 重发
+//                if(!order.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_0)){
+//                    LOGGER.info("采购单非待确认状态，不能进行重发操作");
+//                    return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
+//                }
+//                purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
+//                //InboundServiceImpl service = (InboundServiceImpl) AopContext.currentProxy();
+//                // 根据采购单号查询入库单号
+//                Integer num = inboundDao.selectMaxPurchaseNumBySourceOderCode(order.getPurchaseOrderCode());
+//                // 入库单号
+//                String code = num <= 9 ? ("0" + num.toString()) : num.toString();
+//                inboundService.pushWms(order.getPurchaseOrderCode() + code);
+//                break;
         }
         Integer count = purchaseOrderDao.update(purchaseOrder);
         LOGGER.error("变更采购单状态" + count);
@@ -289,24 +300,19 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     }
 
     // 撤销未完成的入库单
-    public HttpResponse cancelInbound(PurchaseOrder order){
+    public HttpResponse cancelInbound(PurchaseOrder order) {
         // 查询入库单id
         String id = inboundDao.cancelById(order.getPurchaseOrderCode());
-        if(StringUtils.isBlank(id)){
+        if (StringUtils.isBlank(id)) {
             LOGGER.info("未查询到入库单");
             return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
         }
-        String s = inboundService.repealOrder(id, order.getUpdateById(), order.getUpdateByName(), order.getCancelRemark());
-        if(!s.equals("0")){
-            return HttpResponse.failure(ResultCode.DL_CANCEL);
-        }else {
-            // 将入库单状态修改为取消
-            Inbound inbound = new Inbound();
-            inbound.setId(Long.valueOf(id));
-            inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
-            inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
-            inboundDao.updateByPrimaryKeySelective(inbound);
-        }
+        // 将入库单状态修改为取消
+        Inbound inbound = new Inbound();
+        inbound.setId(Long.valueOf(id));
+        inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
+        inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
+        inboundDao.updateByPrimaryKeySelective(inbound);
         return HttpResponse.success();
     }
 
@@ -466,8 +472,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         InboundProductReqVo reqVo;
         // 入库sku商品
         List<InboundProductReqVo> list = Lists.newArrayList();
-        List<InboundBatchReqVo> batchReqVoList = Lists.newArrayList();
-        InboundBatchReqVo inboundBatchReqVo;
         ProductSkuPictures productSkuPicture;
         ProductSkuPurchaseInfo skuPurchaseInfo;
         for (PurchaseOrderProduct product : products) {
@@ -520,17 +524,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
             preNoTaxAmount = noTax.add(preNoTaxAmount);
             list.add(reqVo);
-            //出库加入供应商与商品关系
-            inboundBatchReqVo = new InboundBatchReqVo();
-            inboundBatchReqVo.setInboundOderCode(request.getInboundOrderCode());
-            inboundBatchReqVo.setSkuName(product.getSkuName());
-            inboundBatchReqVo.setSkuCode(product.getSkuCode());
-            inboundBatchReqVo.setSupplierCode(purchaseOrder.getSupplierCode());
-            inboundBatchReqVo.setSupplierName(purchaseOrder.getSupplierName());
-            inboundBatchReqVo.setActualTotalCount(product.getSingleCount().longValue());
-            inboundBatchReqVo.setCreateBy(purchaseOrder.getCreateByName());
-            inboundBatchReqVo.setUpdateBy(purchaseOrder.getUpdateByName());
-            batchReqVoList.add(inboundBatchReqVo);
         }
         save.setPreInboundNum(preInboundNum);
         save.setPreMainUnitNum(preInboundMainNum);
@@ -539,7 +532,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         save.setPreTax(preTaxAmount.subtract(preNoTaxAmount));
         save.setRemark(null);
         save.setList(list);
-        save.setInboundBatchReqVos(batchReqVoList);
         return save;
     }
 
@@ -623,11 +615,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
             }
         }
+
+        // 减在途数
+        //this.wayNum(purchaseOrder, 8);
+
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
         if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
-                productList.size() >= 1
-        ) {
+                productList.size() >= 1) {
             if(!purchaseOrder.getPurchaseOrderStatus().equals(Global.PURCHASE_ORDER_6)){
                 // 变更入库中状态
                 order.setPurchaseOrderStatus(Global.PURCHASE_ORDER_6);
@@ -675,7 +670,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), purchaseOrder.getApplyTypeForm());
             // 减在途数
-            //this.wayNum(purchaseOrder, 11);
+//            this.wayNum(purchaseOrder, 8);
         }
         return HttpResponse.success();
     }
@@ -746,9 +741,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     stockInfo.setChangeCount(singleCount);
                 }else {
                     // 减在途并加库存
-                    // TODO
                     stockInfo.setChangeCount(singleCount - actualSingleCount);
-                    //stockInfo.setPreWayCount();
+                    if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
+                        stockInfo.setPreWayCount(singleCount - actualSingleCount);
+                    }else {
+                        InboundProduct inboundProduct = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), product.getSkuCode(), product.getLinnum().longValue());
+                        stockInfo.setPreWayCount(inboundProduct.getPraInboundMainNum());
+                    }
                 }
                 list.add(stockInfo);
             }

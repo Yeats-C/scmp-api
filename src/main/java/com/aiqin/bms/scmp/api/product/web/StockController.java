@@ -3,15 +3,13 @@ package com.aiqin.bms.scmp.api.product.web;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
-import com.aiqin.bms.scmp.api.product.domain.response.PurchaseOutBoundRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
@@ -45,12 +43,6 @@ public class StockController {
     @Autowired
     private ApplyUseTagRecordService applyUseTagRecordService;
 
-    @PostMapping("/search/page")
-    @ApiOperation(value = "总库存管理列表")
-    public HttpResponse<PageResData<Stock>> selectWarehouseStockInfoByPage(@RequestBody StockRequest stockRequest) {
-        return HttpResponse.success(stockService.selectWarehouseStockInfoByPage(stockRequest));
-    }
-
     @PostMapping("/search/transport/page")
     @ApiOperation(value = "仓库库存管理列表")
     public HttpResponse<PageResData<StockRespVO>> selectTransportStockInfoByPage(@RequestBody StockRequest stockRequest) {
@@ -69,12 +61,21 @@ public class StockController {
         return HttpResponse.success(stockService.selectStockSumInfoByPage(stockRequest));
     }
 
-    @GetMapping("/search/one/info")
-    @ApiOperation(value = "根据stockId查询单个stock信息")
-    public HttpResponse<List<StockFlowRespVo>> selectOneStockInfoByStockId(@RequestParam(value = "stock_code") String stockCode,
-                                                                           @RequestParam(value = "page_no", required = false) Integer page_no,
-                                                                           @RequestParam(value = "page_size", required = false) Integer page_size) {
-        return HttpResponse.success(stockService.selectOneStockInfoByStockId(stockCode,page_no,page_size));
+    @GetMapping("/search/warehouse/info")
+    public HttpResponse<StockRespVO> stockWarehouseInfo(@RequestParam(value = "stock_code") String stockCode){
+        return stockService.stockWarehouseInfo(stockCode);
+    }
+
+    @GetMapping("/search/stock/flow")
+    @ApiOperation(value = "查询库房库存详情流水")
+    public HttpResponse<PageResData<StockFlow>> selectStockFlow(@RequestParam(value = "stock_code") String stockCode,
+                                                                @RequestParam(value = "page_no", required = false) Integer pageNo,
+                                                                @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        StockLogsRequest request = new StockLogsRequest();
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        request.setStockCode(stockCode);
+        return HttpResponse.success(stockService.selectStockFlow(request));
     }
 
     @PostMapping("/search/sku/page")
@@ -106,11 +107,11 @@ public class StockController {
     }
 
     // 暂时保留
-    @PostMapping("change1")
-    @ApiOperation(value = "库存修改")
-    public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
-        return stockService.changeStock(stockChangeRequest);
-    }
+//    @PostMapping("change1")
+//    @ApiOperation(value = "库存修改")
+//    public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
+//        return stockService.changeStock(stockChangeRequest);
+//    }
 
     @PostMapping("/change")
     @ApiOperation(value = "库存修改")

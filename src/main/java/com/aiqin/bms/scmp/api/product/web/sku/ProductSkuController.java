@@ -106,7 +106,7 @@ public class ProductSkuController {
     @GetMapping("/inspection/report/list")
     @ApiOperation("根据销售码查询对应质检报告信息")
     public HttpResponse<List<InspectionReportRespVO>> getInspectionReportByCode(String saleCode){
-        return HttpResponse.success(inspectionReportService.getInspectionReportByCode(saleCode));
+        return inspectionReportService.getInspectionReportByCode(saleCode);
     }
 
     @PostMapping("/inspection/report/detail")

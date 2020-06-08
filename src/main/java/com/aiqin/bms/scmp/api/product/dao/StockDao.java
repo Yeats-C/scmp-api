@@ -24,15 +24,13 @@ import java.util.List;
 
 public interface StockDao {
 
-    List<StockRespVO> selectWarehouseStockInfoByPage(StockRequest stockRequest);
-
-    Integer countWarehouseStockInfoByPage(StockRequest stockRequest);
-
     List<StockRespVO> selectTransportStockInfoByPage(StockRequest stockRequest);
 
     Integer selectTransportStockInfoByPageCount(StockRequest stockRequest);
 
     List<StockRespVO> selectStorehouseStockInfoByPage(StockRequest stockRequest);
+
+    StockRespVO stockWarehouseInfo(String stockCode);
 
     Integer countStorehouseStockInfoByPage(StockRequest stockRequest);
 
@@ -133,5 +131,12 @@ public interface StockDao {
                                                @Param("warehouseCode") String warehouseCode);
 
     Integer stockCountByReject(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode);
+
+    Stock centerStock(@Param("skuCode")String skuCode, @Param("warehouseType") Integer warehouseType);
+
+    List<StockRespVO> transportStock(@Param("transportCenterCode")String transportCenterCode, @Param("publicName") String publicName,
+                      @Param("collectType") Integer collectType, @Param("categoryLevel") Integer categoryLevel);
+
+    List<Stock> stockByWarehouseTypeSum();
 
 }

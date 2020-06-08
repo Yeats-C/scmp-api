@@ -10,9 +10,6 @@ import java.util.Date;
 
 @Data
 public class StockRespVO {
-    @ApiModelProperty("主键")
-    @JsonProperty("id")
-    private Long id;
 
     @ApiModelProperty("库存编码")
     @JsonProperty(value = "stock_code")
@@ -26,15 +23,15 @@ public class StockRespVO {
     @JsonProperty(value = "company_name")
     private String companyName;
 
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty("仓库编码")
     @JsonProperty(value = "transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("物流中心名称")
+    @ApiModelProperty("仓库名称")
     @JsonProperty(value = "transport_center_name")
     private String transportCenterName;
 
-    @ApiModelProperty("库房code")
+    @ApiModelProperty("库房编码")
     @JsonProperty(value = "warehouse_code")
     private String warehouseCode;
 
@@ -42,11 +39,11 @@ public class StockRespVO {
     @JsonProperty(value = "warehouse_name")
     private String warehouseName;
 
-    @ApiModelProperty("库房类型")
+    @ApiModelProperty("库房类型 1.销售库 2.特卖库 3.残品库 4.监管库")
     @JsonProperty(value = "warehouse_type")
-    private String warehouseType;
+    private Integer warehouseType;
 
-    @ApiModelProperty("sku号")
+    @ApiModelProperty("sku编码")
     @JsonProperty(value = "sku_code")
     private String skuCode;
 
@@ -55,28 +52,28 @@ public class StockRespVO {
     private String skuName;
 
     @ApiModelProperty("库存数")
-    @JsonProperty(value = "inventory_num")
-    private Long inventoryNum;
+    @JsonProperty(value = "inventory_count")
+    private Long inventoryCount;
 
     @ApiModelProperty("可用库存数")
-    @JsonProperty(value = "available_num")
-    private Long availableNum;
+    @JsonProperty(value = "available_count")
+    private Long availableCount;
 
     @ApiModelProperty("锁定库存数")
-    @JsonProperty(value = "lock_num")
-    private Long lockNum;
+    @JsonProperty(value = "lock_count")
+    private Long lockCount;
 
     @ApiModelProperty("采购在途数")
-    @JsonProperty(value = "purchase_way_num")
-    private Long purchaseWayNum;
+    @JsonProperty(value = "purchase_way_count")
+    private Long purchaseWayCount;
 
     @ApiModelProperty("调拨在途数")
-    @JsonProperty(value = "allocation_way_num")
-    private Long allocationWayNum;
+    @JsonProperty(value = "allocation_way_count")
+    private Long allocationWayCount;
 
     @ApiModelProperty("总在途数")
-    @JsonProperty(value = "total_way_num")
-    private Long totalWayNum;
+    @JsonProperty(value = "total_way_count")
+    private Long totalWayCount;
 
     @ApiModelProperty("最新供货单位")
     @JsonProperty(value = "new_delivery")
@@ -106,13 +103,9 @@ public class StockRespVO {
     @JsonProperty(value = "stock_unit_name")
     private String stockUnitName;
 
-    @ApiModelProperty("库存含税金额")
+    @ApiModelProperty("库存含税成本")
     @JsonProperty(value = "tax_price")
     private BigDecimal taxPrice;
-
-    @ApiModelProperty("备品含税金额")
-    @JsonProperty(value = "tax_rate")
-    private BigDecimal taxRate;
 
     @ApiModelProperty("状态")
     @JsonProperty(value = "config_status")
@@ -162,74 +155,77 @@ public class StockRespVO {
     @JsonProperty(value = "product_brand_name")
     private String productBrandName;
 
+    @ApiModelProperty("品牌编码")
+    @JsonProperty(value = "product_brand_code")
+    private String productBrandCode;
+
     @ApiModelProperty("销售库存数")
-    @JsonProperty(value = "sale_num")
-    private Long saleNum;
+    @JsonProperty(value = "sale_count")
+    private Long saleCount;
 
     @ApiModelProperty("销售锁定库存数")
-    @JsonProperty(value = "sale_lock_num")
-    private Long saleLockNum;
+    @JsonProperty(value = "sale_lock_count")
+    private Long saleLockCount;
 
     @ApiModelProperty("销售在途数")
-    @JsonProperty(value = "sale_way_num")
-    private Long saleWayNum;
+    @JsonProperty(value = "sale_way_count")
+    private Long saleWayCount;
 
     @ApiModelProperty("销售采购在途数")
-    @JsonProperty(value = "sale_purchase_way_num")
-    private Long salePurchaseWayNum;
+    @JsonProperty(value = "sale_purchase_way_count")
+    private Long salePurchaseWayCount;
 
-    @ApiModelProperty("赠品库存数")
-    @JsonProperty(value = "gift_num")
-    private Long giftNum;
-
-    @ApiModelProperty("赠品锁定库存数")
-    @JsonProperty(value = "gift_lock_num")
-    private Long giftLockNum;
-
-    @ApiModelProperty("赠品采购在途数")
-    @JsonProperty(value = "gift_way_num")
-    private Long giftWayNum;
-
-    @ApiModelProperty("赠品采购在途数")
-    @JsonProperty(value = "gift_purchase_way_num")
-    private Long giftPurchaseWayNum;
+    @ApiModelProperty("销售含税总成本")
+    @JsonProperty(value = "sale_total_amount")
+    private BigDecimal saleTotalAmount;
 
     @ApiModelProperty("特卖库存数")
-    @JsonProperty(value = "special_sale_num")
-    private Long specialSaleNum;
+    @JsonProperty(value = "special_sale_count")
+    private Long specialSaleCount;
 
     @ApiModelProperty("特卖锁定库存数")
-    @JsonProperty(value = "special_sale_lock_num")
-    private Long specialSaleLockNum;
+    @JsonProperty(value = "special_sale_lock_count")
+    private Long specialSaleLockCount;
 
     @ApiModelProperty("特卖在途数")
-    @JsonProperty(value = "special_sale_way_num")
-    private Long specialSaleWayNum;
+    @JsonProperty(value = "special_sale_way_count")
+    private Long specialSaleWayCount;
+
+    @ApiModelProperty("特卖含税总成本")
+    @JsonProperty(value = "special_sale_total_amount")
+    private BigDecimal specialSaleTotalAmount;
+
+    @ApiModelProperty("残品含税总成本")
+    @JsonProperty(value = "bad_total_amount")
+    private BigDecimal badTotalAmount;
 
     @ApiModelProperty("残品库存数")
-    @JsonProperty(value = "bad_num")
-    private Long badNum;
+    @JsonProperty(value = "bad_count")
+    private Long badCount;
 
     @ApiModelProperty("残品锁定库存数")
-    @JsonProperty(value = "bad_lock_num")
-    private Long badLockNum;
+    @JsonProperty(value = "bad_lock_count")
+    private Long badLockCount;
 
     @ApiModelProperty("残品在途数")
-    @JsonProperty(value = "bad_way_num")
-    private Long badWayNum;
-
-    @ApiModelProperty("备货数量")
-    @JsonProperty(value = "stockup_num")
-    private Integer stockupNum;
-
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
-    @ApiModelProperty("备货完成时间")
-    @JsonProperty(value = "stockupfinish_time")
-    private Date stockupfinishTime;
+    @JsonProperty(value = "bad_way_count")
+    private Long badWayCount;
 
     @ApiModelProperty("昨天含税成本")
     @JsonProperty(value = "tax_cost")
     private BigDecimal taxCost;
+
+    @ApiModelProperty("含税总成本")
+    @JsonProperty(value = "total_tax_cost")
+    private BigDecimal totalTaxCost;
+
+    @ApiModelProperty("未税成本")
+    @JsonProperty(value = "no_tax_cost")
+    private BigDecimal noTaxCost;
+
+    @ApiModelProperty("税率")
+    @JsonProperty(value = "tax_rate")
+    private BigDecimal taxRate;
 
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("创建时间")
@@ -237,8 +233,8 @@ public class StockRespVO {
     private Date createTime;
 
     @ApiModelProperty("创建人")
-    @JsonProperty(value = "create_by")
-    private String createBy;
+    @JsonProperty(value = "create_by_name")
+    private String createByName;
 
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @ApiModelProperty("更新时间")
@@ -246,7 +242,27 @@ public class StockRespVO {
     private Date updateTime;
 
     @ApiModelProperty("更新人")
-    @JsonProperty(value = "update_by")
-    private String updateBy;
+    @JsonProperty(value = "update_by_name")
+    private String updateByName;
+
+    @ApiModelProperty("仓库库存总计")
+    @JsonProperty(value = "sum_list")
+    private StockSumResponse sumList;
+
+    @ApiModelProperty("品类级别1")
+    @JsonProperty(value = "category_one")
+    private String categoryOne;
+
+    @ApiModelProperty("品类级别2")
+    @JsonProperty(value = "category_two")
+    private String categoryTwo;
+
+    @ApiModelProperty("品类级别3")
+    @JsonProperty(value = "category_three")
+    private String categoryThree;
+
+    @ApiModelProperty("品类级别4")
+    @JsonProperty(value = "category_four")
+    private String categoryFour;
 
 }

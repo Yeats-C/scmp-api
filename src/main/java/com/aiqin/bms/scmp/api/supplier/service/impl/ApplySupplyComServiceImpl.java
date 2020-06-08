@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq;
+import com.aiqin.bms.scmp.api.product.service.WarehouseConfigService;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.*;
@@ -61,6 +63,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -76,6 +79,8 @@ import java.util.stream.Collectors;
 public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplySupplyComService, WorkFlowHelper {
     @Autowired
     private OperationLogService operationLogService;
+    @Resource
+    private WarehouseConfigService warehouseConfigService;
     @Value("${sap.supply}")
     private String SUPPLY_URL;
     @Autowired
@@ -750,6 +755,16 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             supplyCompany.setAuditorBy(vo.getApprovalUserName());
             supplyCompany.setAuditorTime(new Date());
             String content;
+            //查看是否有对应供应商集团
+            QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
+            querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
+//           supplierDao.getSupplierList(querySupplierReqVO);
+         if (CollectionUtils.isEmptyCollection(supplierDao.getSupplierList(querySupplierReqVO))){
+        querySupplierReqVO.setSupplierCode(applySupplyCompany.getSupplierCode());
+        querySupplierReqVO.setCompanyCode(applySupplyCompany.getCompanyCode());
+        querySupplierReqVO.setCreateBy(applySupplyCompany.getCreateBy());
+        supplierDao.add(querySupplierReqVO);
+        }
             HandleTypeCoce handleTypeCoce;
             if (null != oldSupplyCompany) {
                 //删除原有的发货/退货信息
@@ -2433,19 +2448,23 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     public HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
+
+        SupplyCompanyDetailDTO supplyCompanyDetailDTO=  supplyCompanyDao.getSupplyComDetail(Long.valueOf(1556));
         SupplierWms supplierWms=new SupplierWms();
-        supplierWms.setAddress("测试地址");
-        supplierWms.setArea("测试地区");
-        supplierWms.setContactName("张三");
-        supplierWms.setDelFlag((byte) 1);
-        supplierWms.setEmail("13213@qq.com");
-        supplierWms.setMobilePhone("2111123213123");
-        supplierWms.setRemark("备注");
-        supplierWms.setSupplierAbbreviation("测试简称");
-        supplierWms.setSupplyCode("testcode001");
-        supplierWms.setSupplyName("testname001");
-        supplierWms.setSupplyType("testtype001");
-        supplierWms.setUpdateTime(new Date());
+
+        BeanCopyUtils.copy(supplyCompanyDetailDTO,supplierWms);
+//        supplierWms.setAddress("测试地址");
+//        supplierWms.setArea("测试地区");
+//        supplierWms.setContactName("张三");
+//        supplierWms.setDelFlag((byte) 1);
+//        supplierWms.setEmail("13213@qq.com");
+//        supplierWms.setMobilePhone("2111123213123");
+//        supplierWms.setRemark("备注");
+//        supplierWms.setSupplierAbbreviation("测试简称");
+//        supplierWms.setSupplyCode("testcode001");
+//        supplierWms.setSupplyName("testname001");
+//        supplierWms.setSupplyType("testtype001");
+//        supplierWms.setUpdateTime(new Date());
         sendWms2(supplierWms);
         log.info(JSON.toJSONString(supplierWms));
         return HttpResponse.success();

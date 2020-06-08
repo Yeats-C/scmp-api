@@ -12,13 +12,6 @@ import java.util.List;
 @ApiModel("库存request")
 @Data
 public class StockRequest extends PagesRequest {
-    @ApiModelProperty("物流中心CodeOrName")
-    @JsonProperty(value = "transport_center_text")
-    private String transportCenterText;
-
-    @ApiModelProperty("仓库CodeOrName")
-    @JsonProperty(value = "warehouse_text")
-    private String warehouseText;
 
     @ApiModelProperty("sku号")
     @JsonProperty(value = "sku_code")
@@ -32,79 +25,99 @@ public class StockRequest extends PagesRequest {
     @JsonProperty(value = "config_status")
     private Integer configStatus;
 
-    @ApiModelProperty("品类编码CodeOrName")
-    @JsonProperty(value = "product_category_text")
-    private String productCategoryText;
+    @ApiModelProperty("属性编码")
+    @JsonProperty(value = "product_property_code")
+    private String productPropertyCode;
 
-    @ApiModelProperty("品牌编码CodeOrName")
-    @JsonProperty(value = "brand_text")
-    private String brandText;
+    @ApiModelProperty("品类编码")
+    @JsonProperty(value = "product_category_code")
+    private String productCategoryCode;
 
-    @ApiModelProperty("属性编码CodeOrName")
-    @JsonProperty(value = "property_text")
-    private String propertyText;
+    @ApiModelProperty("品牌编码")
+    @JsonProperty(value = "product_brand_code")
+    private String productBrandCode;
 
     @ApiModelProperty("库存数begin")
-    @JsonProperty(value = "inventory_begin_num")
-    private Long inventoryBeginNum;
+    @JsonProperty(value = "inventory_begin_count")
+    private Long inventoryBeginCount;
 
     @ApiModelProperty("库存数finish")
-    @JsonProperty(value = "inventory_finish_num")
-    private Long inventoryFinishNum;
+    @JsonProperty(value = "inventory_finish_count")
+    private Long inventoryFinishCount;
 
     @ApiModelProperty("可用库存数begin")
-    @JsonProperty(value = "available_begin_num")
-    private Long availableBeginNum;
+    @JsonProperty(value = "available_begin_count")
+    private Long availableBeginCount;
 
     @ApiModelProperty("可用库存数finish")
-    @JsonProperty(value = "available_finish_num")
-    private Long availableFinishNum;
+    @JsonProperty(value = "available_finish_count")
+    private Long availableFinishCount;
 
     @ApiModelProperty("销售库存数begin")
-    @JsonProperty(value = "sale_begin_num")
-    private Long saleBeginNum;
+    @JsonProperty(value = "sale_begin_count")
+    private Long saleBeginCount;
 
     @ApiModelProperty("销售库存数finish")
     @JsonProperty(value = "sale_finish_num")
-    private Long saleFinishNum;
+    private Long saleFinishCount;
 
     @ApiModelProperty("特卖库存数begin")
-    @JsonProperty(value = "special_sale_begin_num")
-    private Long specialSaleBeginNum;
+    @JsonProperty(value = "special_sale_begin_count")
+    private Long specialSaleBeginCount;
 
     @ApiModelProperty("特卖库存数finish")
-    @JsonProperty(value = "special_sale_finish_num")
-    private Long specialSaleFinishNum;
+    @JsonProperty(value = "special_sale_finish_count")
+    private Long specialSaleFinishCount;
 
     @ApiModelProperty("残品库存数begin")
-    @JsonProperty(value = "bad_begin_num")
-    private Long badBeginNum;
+    @JsonProperty(value = "bad_begin_count")
+    private Long badBeginCount;
 
     @ApiModelProperty("残品库存数finish")
-    @JsonProperty(value = "bad_finish_num")
-    private Long badFinishNum;
+    @JsonProperty(value = "bad_finish_count")
+    private Long badFinishCount;
 
-    @ApiModelProperty("公司编码：备用")
+    @ApiModelProperty("仓库")
+    @JsonProperty(value = "transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty("库房")
+    @JsonProperty(value = "warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty("公司编码")
     @JsonProperty(value = "company_code")
     private Long companyCode;
 
     @ApiModelProperty("在途数begin")
-    @JsonProperty(value = "total_way_begin_num")
-    private Long totalWayBeginNum;
+    @JsonProperty(value = "total_way_begin_count")
+    private Long totalWayBeginCount;
 
     @ApiModelProperty("在途数finish")
-    @JsonProperty(value = "total_way_finish_num")
-    private Long totalWayFinishNum;
+    @JsonProperty(value = "total_way_finish_count")
+    private Long totalWayFinishCount;
 
     @ApiModelProperty("采购组编码")
-    @JsonProperty(value = "procurement_section_code")
-    private String procurementSectionCode;
+    @JsonProperty(value = "purchase_group_code")
+    private String purchaseGroupCode;
 
     @ApiModelProperty("采购组名称")
-    @JsonProperty(value = "procurement_section_name")
-    private String procurementSectionName;
+    @JsonProperty(value = "purchase_group_name")
+    private String purchaseGroupName;
 
     @ApiModelProperty(value="不需要传的参数")
     private List<PurchaseGroupVo> groupList;
+
+    @ApiModelProperty("销售条形码")
+    @JsonProperty(value = "sales_code")
+    private String salesCode;
+
+    @ApiModelProperty("汇总方式 0.商品 1.品类 2.品牌")
+    @JsonProperty(value = "collect_type")
+    private Integer collectType;
+
+    @ApiModelProperty("品类级别 1 一级 2 二级 3 三级 4 四级")
+    @JsonProperty(value = "category_level")
+    private Integer categoryLevel;
 
 }

@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
 import com.aiqin.bms.scmp.api.product.domain.converter.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
@@ -24,16 +25,17 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseR
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.stock.StockSumResponse;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -91,6 +93,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private ProductSkuStockInfoMapper productSkuStockInfoDao;
     @Autowired
     private WarehouseDao warehouseDao;
+    @Autowired
+    private ProductCategoryDao productCategoryDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -124,83 +128,54 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     @Override
     public PageResData selectStockSumInfoByPage(StockRequest stockRequest) {
-        try {
-            LOGGER.info("中央库存列表查询");
-            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
-            PageResData pageResData = new PageResData();
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-                return pageResData;
-            }
-            stockRequest.setGroupList(groupVoList);
-            List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
-            HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
-            List<StockRespVO> lists = new ArrayList<>();
-            Stock stock = null;
-            int i = 0;
-            for (StockRespVO stockRespVO : stockList) {
-                String str = stockRespVO.getSkuCode();
-                if (stockRespMap.get(str) == null) {
-                    stockRespMap.put(str, stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
-                } else {
-                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
+        LOGGER.info("中央库存列表查询参数：{}", JsonUtil.toJson(stockRequest));
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
+            return pageResData;
+        }
+        stockRequest.setGroupList(groupVoList);
+        List<StockRespVO> stockList = stockDao.selectStockSumInfoByPage(stockRequest);
+        if (CollectionUtils.isNotEmpty(stockList)) {
+            Map<String, Stock> map = new HashMap<>();
+            for (StockRespVO vo : stockList) {
+                if (vo == null || vo.getSkuCode() == null || vo.getWarehouseType() == null) {
+                    continue;
+                }
+                String key = String.format("%s,%s", vo.getSkuCode(), vo.getWarehouseType());
+                if (map.get(key) == null) {
+                    map.put(key, stockDao.centerStock(vo.getSkuCode(), vo.getWarehouseType()));
                 }
             }
-            for (Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()) {
-                lists.add(entry.getValue());
+            for (StockRespVO vo : stockList) {
+                if (vo == null || vo.getSkuCode() == null || vo.getWarehouseType() == null) {
+                    continue;
+                }
+                String key = String.format("%s,%s", vo.getSkuCode(), vo.getWarehouseType());
+                Stock stock = map.get(key);
+                if (stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)) {
+                    vo.setSaleCount(stock.getInventoryCount());
+                    vo.setSaleLockCount(stock.getLockCount());
+                    vo.setSaleWayCount(stock.getTotalWayCount());
+                    vo.setSalePurchaseWayCount(stock.getPurchaseWayCount());
+                } else if (stock.getWarehouseType().equals(Global.SPECIAL_INFO_TYPE)) {
+                    // 特卖
+                    vo.setSpecialSaleCount(stock.getInventoryCount());
+                    vo.setSpecialSaleLockCount(stock.getLockCount());
+                    vo.setSpecialSaleWayCount(stock.getTotalWayCount());
+                    vo.setSalePurchaseWayCount(stock.getPurchaseWayCount());
+                } else if (stock.getWarehouseType().equals(Global.DEFECTIVE_INFO_TYPE)) {
+                    // 残品
+                    vo.setBadCount(stock.getInventoryCount());
+                    vo.setBadLockCount(stock.getLockCount());
+                    vo.setBadWayCount(stock.getTotalWayCount());
+                }
             }
-            Integer count = stockDao.selectStockSumInfoByPageCount(stockRequest);
-            pageResData.setTotalCount(count);
-            pageResData.setDataList(lists);
-            return pageResData;
-        } catch (Exception e) {
-            LOGGER.error("中央列表查询失败", e);
-            throw new GroundRuntimeException(e.getMessage());
         }
-    }
-
-    private void stockCommon(HashMap<String, StockRespVO> stockRespMap, StockRespVO stockRespVO, String str, Stock stock, int i) {
-        StockRespVO key = stockRespMap.get(str);
-        if (StringUtils.isNotBlank(stockRespVO.getCompanyCode()) || StringUtils.isNotBlank(stockRespVO.getSkuCode())) {
-            stock = new Stock();
-            Stock stockInfo;
-            stock.setSkuCode(stockRespVO.getSkuCode());
-            stock.setCompanyCode(stockRespVO.getCompanyCode());
-            if (i == 1) {
-                stock.setTransportCenterCode(stockRespVO.getTransportCenterCode());
-            }
-            stock.setWarehouseType(Global.SALE_TYPE);
-            stockInfo = stockDao.selectStockSum(stock);
-            if (stockInfo != null) {
-                key.setSaleNum(stockInfo.getAvailableCount());
-                key.setSaleLockNum(stockInfo.getLockCount());
-                key.setSaleWayNum(stockInfo.getTotalWayCount());
-                key.setPurchaseWayNum(stockInfo.getPurchaseWayCount());
-            }
-            stock.setWarehouseType(Global.GIFT_TYPE);
-            stockInfo = stockDao.selectStockSum(stock);
-            if (stockInfo != null) {
-                key.setGiftNum(stockInfo.getAvailableCount());
-                key.setGiftLockNum(stockInfo.getLockCount());
-                key.setGiftWayNum(stockInfo.getTotalWayCount());
-                key.setGiftPurchaseWayNum(stockInfo.getPurchaseWayCount());
-            }
-            stock.setWarehouseType(Global.SPECIAL_TYPE);
-            stockInfo = stockDao.selectStockSum(stock);
-            if (stockInfo != null) {
-                key.setSpecialSaleNum(stockInfo.getAvailableCount());
-                key.setSpecialSaleLockNum(stockInfo.getLockCount());
-                key.setSpecialSaleWayNum(stockInfo.getTotalWayCount());
-            }
-            stock.setWarehouseType(Global.DEFECTIVE_TYPE);
-            stockInfo = stockDao.selectStockSum(stock);
-            if (stockInfo != null) {
-                key.setBadNum(stockInfo.getAvailableCount());
-                key.setBadLockNum(stockInfo.getLockCount());
-                key.setBadWayNum(stockInfo.getTotalWayCount());
-            }
-            stockRespMap.put(str, key);
-        }
+        Integer count = stockDao.selectStockSumInfoByPageCount(stockRequest);
+        pageResData.setTotalCount(count);
+        pageResData.setDataList(stockList);
+        return pageResData;
     }
 
     /**
@@ -218,122 +193,224 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     }
 
     @Override
-    public PageResData selectWarehouseStockInfoByPage(StockRequest stockRequest) {
-        try {
-            LOGGER.info("总库存管理列表查询");
-            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
-            PageResData pageResData = new PageResData();
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-                return pageResData;
-            }
-            stockRequest.setGroupList(groupVoList);
-            List<StockRespVO> stockList = stockDao.selectWarehouseStockInfoByPage(stockRequest);
-            Integer total = stockDao.countWarehouseStockInfoByPage(stockRequest);
-            pageResData.setTotalCount(total);
-            pageResData.setDataList(stockList);
+    public PageResData<StockRespVO> selectTransportStockInfoByPage(StockRequest stockRequest) {
+        LOGGER.info("库存仓库列表查询：{}", JsonUtil.toJson(stockRequest));
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
+        if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
             return pageResData;
-        } catch (Exception e) {
-            LOGGER.error("总库存管理列表查询失败", e);
-            throw new GroundRuntimeException(e.getMessage());
         }
-    }
-
-    @Override
-    public PageResData selectTransportStockInfoByPage(StockRequest stockRequest) {
-        try {
-            LOGGER.info("物流中心库存列表查询");
-            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
-            PageResData pageResData = new PageResData();
-            if (org.apache.commons.collections.CollectionUtils.isEmpty(groupVoList)) {
-                return pageResData;
-            }
-            stockRequest.setGroupList(groupVoList);
-            List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
-            HashMap<String, StockRespVO> stockRespMap = new HashMap<>();
-            List<StockRespVO> lists = new ArrayList<>();
-            Stock stock = null;
-            int i = 1;
-            // 遍历获取分页数据
-            for (StockRespVO stockRespVO : stockList) {
-                String str = stockRespVO.getTransportCenterCode() + stockRespVO.getSkuCode();
-                if (stockRespMap.get(str) == null) {
-                    stockRespMap.put(str, stockRespVO);
-                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
-                } else {
-                    stockCommon(stockRespMap, stockRespVO, str, stock, i);
+        stockRequest.setGroupList(groupVoList);
+        List<StockRespVO> stockList = stockDao.selectTransportStockInfoByPage(stockRequest);
+        if (CollectionUtils.isNotEmpty(stockList)) {
+            // 品类分级查询
+            Map<String, ProductCategory> categoryMap = null;
+            if(stockRequest.getCollectType() == 1){
+                categoryMap = new HashMap<>();
+                for (StockRespVO vo : stockList) {
+                    String key = this.categoryType(stockRequest, vo);
+                    if (categoryMap.get(key) == null) {
+                        categoryMap.put(key, productCategoryDao.getProductCategoryById(key));
+                    }
                 }
             }
-            for (Map.Entry<String, StockRespVO> entry : stockRespMap.entrySet()) {
-                lists.add(entry.getValue());
+
+            Map<String, List<StockRespVO>> map = new HashMap<>();
+            // 查询库存详情
+            for (StockRespVO vo : stockList) {
+                if (vo == null || vo.getTransportCenterCode() == null) {
+                    continue;
+                }
+                String key = this.collectType(stockRequest, vo);
+                if (map.get(key) == null) {
+                    if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 1) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryOne(), 1, 1));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 2) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryTwo(), 1, 2));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 3) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryThree(), 1, 3));
+                    }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 4) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getCategoryFour(), 1, 4));
+                    }else if (stockRequest.getCollectType() == 2) {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getProductBrandCode(), 2, null));
+                    } else {
+                        map.put(key, stockDao.transportStock(vo.getTransportCenterCode(), vo.getSkuCode(), 0, null));
+                    }
+                }
             }
-            Integer count = stockDao.selectTransportStockInfoByPageCount(stockRequest);
-            pageResData.setTotalCount(count);
-            pageResData.setDataList(lists);
-            return pageResData;
-        } catch (Exception e) {
-            LOGGER.error("物流中心库存列表查询失败", e);
-            throw new GroundRuntimeException(e.getMessage());
+            Long saleCount = 0L, saleLockCount = 0L, saleWayCount = 0L, salePurchaseWayCount = 0L,
+                 specialCount = 0L, specialLockCount = 0L, specialWayCount = 0L,
+                 badCount = 0L, badLockCount = 0L, badWayCount = 0L;
+            BigDecimal saleAmount = BigDecimal.ZERO, specialAmount = BigDecimal.ZERO, badAmount = BigDecimal.ZERO;
+            for (StockRespVO vo : stockList) {
+                if (vo == null || vo.getTransportCenterCode() == null) {
+                    continue;
+                }
+                if (stockRequest.getCollectType() == 1) {
+                    String categoryKey = this.categoryType(stockRequest, vo);
+                    ProductCategory productCategory = categoryMap.get(categoryKey);
+                    if (productCategory != null) {
+                        vo.setProductCategoryCode(productCategory.getCategoryId());
+                        vo.setProductCategoryName(productCategory.getCategoryName());
+                    }
+                }
+
+                String key = this.collectType(stockRequest, vo);
+                List<StockRespVO> list = map.get(key);
+                // 销售
+                for (StockRespVO stock : list) {
+                    if (stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)) {
+                        vo.setSaleCount(stock.getInventoryCount());
+                        vo.setSaleLockCount(stock.getLockCount());
+                        vo.setSaleWayCount(stock.getTotalWayCount());
+                        vo.setSalePurchaseWayCount(stock.getPurchaseWayCount());
+                        vo.setSaleTotalAmount(stock.getTotalTaxCost());
+                        saleCount += stock.getInventoryCount();
+                        saleLockCount += stock.getLockCount();
+                        saleWayCount += stock.getTotalWayCount();
+                        salePurchaseWayCount += stock.getPurchaseWayCount();
+                        saleAmount = saleAmount.add(stock.getTotalTaxCost());
+                    } else if (stock.getWarehouseType().equals(Global.SPECIAL_INFO_TYPE)) {
+                        // 特卖
+                        vo.setSpecialSaleCount(stock.getInventoryCount());
+                        vo.setSpecialSaleLockCount(stock.getLockCount());
+                        vo.setSpecialSaleWayCount(stock.getTotalWayCount());
+                        vo.setSpecialSaleTotalAmount(stock.getTotalTaxCost());
+                        specialCount += stock.getInventoryCount();
+                        specialLockCount += stock.getLockCount();
+                        specialWayCount += stock.getTotalWayCount();
+                        saleAmount = saleAmount.add(stock.getTotalTaxCost());
+                    } else if (stock.getWarehouseType().equals(Global.DEFECTIVE_INFO_TYPE)) {
+                        // 残品
+                        vo.setBadCount(stock.getInventoryCount());
+                        vo.setBadLockCount(stock.getLockCount());
+                        vo.setBadWayCount(stock.getTotalWayCount());
+                        vo.setBadTotalAmount(stock.getTotalTaxCost());
+                        badCount += stock.getInventoryCount();
+                        badLockCount += stock.getLockCount();
+                        badWayCount += stock.getTotalWayCount();
+                        badAmount = badAmount.add(stock.getTotalTaxCost());
+                    }
+                }
+            }
+            // 计算所有商品信息库存总计
+            StockSumResponse response = new StockSumResponse();
+            response.setSaleCount(saleCount);
+            response.setSaleLockCount(saleLockCount);
+            response.setSaleWayCount(saleWayCount);
+            response.setSalePurchaseWayCount(salePurchaseWayCount);
+            response.setSaleAmount(saleAmount);
+            response.setSpecialCount(specialCount);
+            response.setSpecialLockCount(specialLockCount);
+            response.setSpecialWayCount(specialWayCount);
+            response.setSpecialAmount(specialAmount);
+            response.setBadCount(badCount);
+            response.setBadLockCount(badLockCount);
+            response.setBadWayCount(badWayCount);
+            response.setBadAmount(badAmount);
+            List<Stock> stocks = stockDao.stockByWarehouseTypeSum();
+            if(CollectionUtils.isNotEmpty(stocks)){
+                for(Stock stock:stocks){
+                    if(stock.getWarehouseType().equals(Global.SALE_INFO_TYPE)){
+                        response.setTotalSaleCount(stock.getInventoryCount());
+                        response.setTotalSaleLockCount(stock.getLockCount());
+                        response.setTotalSaleWayCount(stock.getTotalWayCount());
+                        response.setTotalSalePurchaseWayCount(stock.getPurchaseWayCount());
+                        response.setTotalSaleAmount(stock.getTaxCost());
+                    }else if(stock.getWarehouseType().equals(Global.SPECIAL_INFO_TYPE)){
+                        response.setTotalSpecialCount(stock.getInventoryCount());
+                        response.setTotalSpecialLockCount(stock.getLockCount());
+                        response.setTotalSpecialWayCount(stock.getTotalWayCount());
+                        response.setTotalSpecialAmount(stock.getTaxCost());
+                    }else if(stock.getWarehouseType().equals(Global.DEFECTIVE_INFO_TYPE)){
+                        response.setTotalBadCount(stock.getInventoryCount());
+                        response.setTotalBadLockCount(stock.getLockCount());
+                        response.setTotalBadWayCount(stock.getTotalWayCount());
+                        response.setTotalBadAmount(stock.getTaxCost());
+                    }
+                }
+            }
+            stockList.get(0).setSumList(response);
         }
+        Integer count = stockDao.selectTransportStockInfoByPageCount(stockRequest);
+        pageResData.setTotalCount(count);
+        pageResData.setDataList(stockList);
+        return pageResData;
+    }
+
+    private String collectType(StockRequest stockRequest, StockRespVO vo){
+        String key;
+        // 汇总方式 0.商品 1.品类 2.品牌
+        if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 1) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryOne());
+        } else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 2) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryTwo());
+        }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 3) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryThree());
+        }else if (stockRequest.getCollectType() == 1 && stockRequest.getCategoryLevel() == 4) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getCategoryFour());
+        }else if (stockRequest.getCollectType() == 2) {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getProductBrandCode());
+        } else {
+            key = String.format("%s,%s", vo.getTransportCenterCode(), vo.getSkuCode());
+        }
+        return key;
+    }
+
+    private String categoryType(StockRequest stockRequest, StockRespVO vo){
+        String key;
+        // 汇总方式 0.商品 1.品类 2.品牌
+        if (stockRequest.getCategoryLevel() == 2) {
+            key = String.format("%s", vo.getCategoryTwo());
+        } else if (stockRequest.getCategoryLevel() == 3) {
+            key = String.format("%s", vo.getCategoryThree());
+        } else if (stockRequest.getCategoryLevel() == 4){
+            key = String.format("%s", vo.getCategoryFour());
+        }else {
+            key = String.format("%s", vo.getCategoryOne());
+        }
+        return key;
     }
 
     @Override
     public PageResData selectStorehouseStockInfoByPage(StockRequest stockRequest) {
-        try {
-            LOGGER.info("物流中心库存列表查询");
-            List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
-            PageResData pageResData = new PageResData();
-            if (CollectionUtils.isEmpty(groupVoList)) {
-                return pageResData;
-            }
-            stockRequest.setGroupList(groupVoList);
-            List<StockRespVO> stockList = stockDao.selectStorehouseStockInfoByPage(stockRequest);
-            Integer total = stockDao.countStorehouseStockInfoByPage(stockRequest);
-            pageResData.setTotalCount(total);
-            pageResData.setDataList(stockList);
+        LOGGER.info("库房库存列表查询");
+        List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
+        PageResData pageResData = new PageResData();
+        if (CollectionUtils.isEmpty(groupVoList)) {
             return pageResData;
-        } catch (Exception e) {
-            LOGGER.error("物流中心库存列表查询失败", e);
-            throw new GroundRuntimeException(e.getMessage());
         }
+        stockRequest.setGroupList(groupVoList);
+        List<StockRespVO> stockList = stockDao.selectStorehouseStockInfoByPage(stockRequest);
+        Integer total = stockDao.countStorehouseStockInfoByPage(stockRequest);
+        pageResData.setTotalCount(total);
+        pageResData.setDataList(stockList);
+        return pageResData;
     }
 
     @Override
-    public PageInfo<StockFlowRespVo> selectOneStockInfoByStockId(String stockCode, Integer page_no, Integer page_size) {
-        try {
-            LOGGER.info("根据stockId查询单个stock信息");
-            PageHelper.startPage(page_no, page_size);
-            // List<StockRespVO> stockRespVOs = stockDao.selectOneStockInfoByStockId(stockId);
-            // Long total = stockDao.selectOneStockInfoByStockIdInfoByPage(stockId);
-            // new PageResData<>(total.intValue(), stockRespVOs);
-            return new PageInfo<>(stockDao.selectOneStockInfoByStockId(stockCode));
-        } catch (Exception e) {
-            LOGGER.error("根据stockId查询单个stock信息失败", e);
-            throw new GroundRuntimeException(e.getMessage());
+    public HttpResponse<StockRespVO> stockWarehouseInfo(String stockCode) {
+        if (StringUtils.isBlank(stockCode)) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        StockRespVO vo = stockDao.stockWarehouseInfo(stockCode);
+        // 计算含税总成本，未税成本
+        if(vo != null){
+            vo.setTotalTaxCost(vo.getTaxCost().multiply(BigDecimal.valueOf(vo.getInventoryCount())).setScale(4, BigDecimal.ROUND_HALF_UP));
+            vo.setNoTaxCost(Calculate.computeNoTaxPrice(vo.getTaxCost(), vo.getTaxRate()));
+        }
+        return HttpResponse.success(vo);
     }
 
-
     @Override
-    public Boolean returnSupplyLockStock(ILockStockReqVO reqVO) {
-        try {
-            //生成库存数据
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            //操作类型
-            Integer integer1 = 1;
-            stockChangeRequest.setOperationType(integer1);
-            //sku信息
-            List<StockVoRequest> convert = new ReturnSupplyToStockConverter().convert(reqVO);
-            stockChangeRequest.setStockVoRequests(convert);
-            //采购编码
-            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
-            HttpResponse httpResponse = changeStock(stockChangeRequest);
-            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                return true;
-            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-        }
-        return false;
+    public PageResData<StockFlow> selectStockFlow(StockLogsRequest request) {
+        LOGGER.info("根据库存流水信息：", request);
+        PageResData pageResData = new PageResData();
+        List<StockFlow> list = stockFlowDao.list(request);
+        Integer count = stockFlowDao.listCount(request);
+        pageResData.setDataList(list);
+        pageResData.setTotalCount(count);
+        return pageResData;
     }
 
     // 退供加锁
@@ -362,37 +439,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return false;
     }
 
-    // 退供解锁
-    @Override
-    public Boolean returnSupplyUnLockStocks(ILockStocksReqVO reqVO) {
-        try {
-            //生成库存数据
-            StockChangeRequest stockChangeRequest = new StockChangeRequest();
-            //操作类型
-            Integer integer1 = 3;
-            stockChangeRequest.setOperationType(integer1);
-            //sku信息
-            List<StockVoRequest> convert = new ReturnSupplyToStocksConverter().convert(reqVO);
-            stockChangeRequest.setStockVoRequests(convert);
-            //采购编码
-            stockChangeRequest.setOrderCode(reqVO.getSourceOderCode());
-            HttpResponse httpResponse = changeStock(stockChangeRequest);
-            if (MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                return true;
-            }
-        } catch (Exception e) {
-            LOGGER.error("调用退供解锁接口失败", e);
-            log.error(Global.ERROR, e);
-            throw new GroundRuntimeException(e.getMessage());
-        }
-        return false;
-    }
-
-    /**
-     * @param reqVo
-     * @return
-     * @throws BizException
-     */
     private List<VerifyReturnSupplyErrorRespVo> verifyReturnSupplyItem(ILockStockReqVO reqVo) throws BizException {
         List<VerifyReturnSupplyErrorRespVo> errorRespVos = Lists.newLinkedList();
         List<ILockStockItemReqVo> itemRespVos = (List<ILockStockItemReqVo>) reqVo.getItemReqVos();
@@ -528,23 +574,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             List<Stock> adds = new ArrayList<>();
             Boolean flage = false;
 
-            // 查询入库单批次商品信息
-//            Map<String, WarehouseDTO> batchMangeMap = new HashMap<>();
-//            for(StockInfoRequest stockInfoRequest : request.getStockList()) {
-//                String key = String.format("%s", stockInfoRequest.getWarehouseCode());
-//                if (batchMangeMap.get(key) == null) {
-//                    batchMangeMap.put(key, warehouseDao.getWarehouseByCode(stockInfoRequest.getWarehouseCode()));
-//                }
-//            }
-
             // 将需要修改的库存进行逻辑计算
             List<StockFlow> stockFlows = new ArrayList<>();
             for (StockInfoRequest stockInfoRequest : request.getStockList()) {
-//                String batchMange = String.format("%s", stockInfoRequest.getWarehouseCode());
-//                WarehouseDTO warehouseDTO = batchMangeMap.get(batchMange);
-//                if(warehouseDTO != null){
-//                    stockInfoRequest.setBatchManage(warehouseDTO.getBatchManage());
-//                }
                 // 给sku加锁
                 long time = System.currentTimeMillis() + 30;
                 if (!redisLockService.lock(stockInfoRequest.getSkuCode(), String.valueOf(time))) {
@@ -664,7 +696,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
             LOGGER.info("库存操作结束");
             // 调用批次库存操作
-            if(!request.getOperationType().equals(7)){
+            if(!request.getOperationType().equals(7) && CollectionUtils.isNotEmpty(request.getStockBatchList())){
                 this.changeStockBatch(request);
             }
         } catch (Exception e) {
@@ -847,20 +879,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 return null;
         }
         return stock;
-    }
-
-    @Override
-    public Map<String, Long> getLatestPurchasePriceBySkuCodes(List<String> skuCodes) {
-        List<Stock> list = stockDao.getLatestPurchasePriceBySkuCodes(skuCodes);
-        Map<String, Long> map = new HashMap<>();
-        if (CollectionUtils.isNotEmpty(list)) {
-            list.stream().forEach(o -> {
-                String countString = String.valueOf(o.getNewPurchasePrice());
-                Long count = Long.valueOf(countString);
-                map.put(o.getSkuCode(), count);
-            });
-        }
-        return map;
     }
 
     @Override

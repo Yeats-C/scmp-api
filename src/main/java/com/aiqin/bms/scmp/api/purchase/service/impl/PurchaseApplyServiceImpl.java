@@ -609,7 +609,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     }
 
     // 创建采购单
-    public void insertPurchaseOrder(String purchaseApplyId){
+    public HttpResponse insertPurchaseOrder(String purchaseApplyId){
         // 查询采购申请单分仓信息
         PurchaseApplyTransportCenter applyTransportCenter = new PurchaseApplyTransportCenter();
         applyTransportCenter.setPurchaseApplyId(purchaseApplyId);
@@ -675,6 +675,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             // 调用采购单接口
             purchaseManageService.purchaseOrder(orderRequest);
         }
+        return HttpResponse.success();
     }
 
     @Override

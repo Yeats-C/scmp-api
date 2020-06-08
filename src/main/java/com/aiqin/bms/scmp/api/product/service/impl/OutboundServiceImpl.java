@@ -271,11 +271,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             LOGGER.info("调用WMS-退供的出库单商品信息为空:", outboundOderCode);
             return HttpResponse.failure(ResultCode.OUTBOUND_PRODUCT_INFO_NULL);
         }
-        List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outboundOderCode);
-        if(CollectionUtils.isEmpty(batchList)){
-            LOGGER.info("调用WMS-退供的出库单批次信息为空:", outboundOderCode);
-            return HttpResponse.failure(ResultCode.OUTBOUND_BATCH_INFO_NULL);
-        }
+
         // 查询退供单的信息
         RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(outbound.getSourceOderCode());
         PurchaseOutboundSource outboundSource = BeanCopyUtils.copy(outbound, PurchaseOutboundSource.class);
@@ -304,8 +300,14 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             detailSourceList.add(detailSource);
         }
         outboundSource.setDetailList(detailSourceList);
-        List<BatchInfo> batchInfoList = BeanCopyUtils.copyList(batchList, BatchInfo.class);
-        outboundSource.setBatchInfo(batchInfoList);
+
+        // 查询批次信息
+        List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outboundOderCode);
+        if(CollectionUtils.isNotEmpty(batchList)){
+            List<BatchInfo> batchInfoList = BeanCopyUtils.copyList(batchList, BatchInfo.class);
+            outboundSource.setBatchInfo(batchInfoList);
+        }
+
         LOGGER.info("退供调用WMS -入参：{}", JsonUtil.toJson(outboundSource));
         String url = urlConfig.WMS_API_URL2 + "/purchase/source/outbound";
         HttpClient httpClient = HttpClient.post(url).json(outboundSource).timeout(20000);
@@ -343,7 +345,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
-            LOGGER.info("出库单号---------------------：" + outboundOderCode);
+            LOGGER.info("出库单号：" + outboundOderCode);
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);

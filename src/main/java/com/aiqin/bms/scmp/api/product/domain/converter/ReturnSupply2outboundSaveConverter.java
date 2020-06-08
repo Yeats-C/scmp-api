@@ -54,9 +54,6 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
             if (CollectionUtils.isEmpty(request.getDetailList())) {
                 throw new BizException("出库单保存请求vo的商品项集合不能为空");
             }
-            if (CollectionUtils.isEmpty(request.getBatchList())) {
-                throw new BizException("出库单保存请求vo的批次项集合不能为空");
-            }
 
             SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(rejectRecord.getSupplierCode(), rejectRecord.getCompanyCode());
 
@@ -70,7 +67,9 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setCountyName(rejectRecord.getDistrictName());
                 outbound.setConsignee(rejectRecord.getSupplierPerson());
                 outbound.setConsigneeNumber(rejectRecord.getSupplierMobile());
-                outbound.setConsigneeRate(supplyCompany.getZipCode());
+                if(supplyCompany != null && supplyCompany.getZipCode() != null){
+                    outbound.setConsigneeRate(supplyCompany.getZipCode());
+                }
                 outbound.setDetailedAddress(rejectRecord.getDetailAddress());
                 //公司
                 outbound.setCompanyCode(rejectRecord.getCompanyCode());
@@ -155,8 +154,10 @@ public class ReturnSupply2outboundSaveConverter implements Converter<ReturnSuppl
                 outbound.setList(productList);
 
                 // 批次信息
-                List<OutboundBatch> infoBatch = BeanCopyUtils.copyList(request.getBatchList(), OutboundBatch.class);
-                outbound.setOutboundBatches(infoBatch);
+                if(org.apache.commons.collections.CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0){
+                    List<OutboundBatch> infoBatch = BeanCopyUtils.copyList(request.getBatchList(), OutboundBatch.class);
+                    outbound.setOutboundBatches(infoBatch);
+                }
                 return outbound;
             }
         } catch (Exception e) {

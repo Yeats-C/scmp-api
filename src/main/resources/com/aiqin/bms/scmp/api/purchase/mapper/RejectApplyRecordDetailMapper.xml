@@ -39,8 +39,8 @@
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
-    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
-    <result column="be_overdue_date" jdbcType="TIMESTAMP" property="beOverdueDate" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="batch_purchase_price" jdbcType="DECIMAL" property="batchPurchasePrice" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
     <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
@@ -101,21 +101,19 @@
       r.transport_center_code transportCenterCode, r.transport_center_name transportCenterName,
       r.warehouse_code warehouseCode, r.warehouse_name warehouseName, r.color_name colorName,
       r.settlement_method_code settlementMethodCode, r.settlement_method_name settlementMethodName,
-      r.supplier_code supplierCode, r.supplier_name, r.sku_code skuCode, r.sku_name skuName,
+      r.supplier_code supplierCode, r.supplier_name supplierName, r.sku_code skuCode, r.sku_name skuName,
       r.brand_id brandId, r.brand_name brandName, r.category_id categoryId, r.category_name categoryName,
       r.product_type productType, r.barcode, r.product_spec productSpec, r.color_code colorCode,
       r.model_number modelNumber, r.unit_code unitCode, r.unit_name unitName, r.factory_sku_code factorySkuCode,
       r.product_count productCount, r.total_count totalCount, r.product_amount productAmount, r.line_code lineCode,
       r.product_total_amount productTotalAmount, psc.Input_tax_rate taxRate, r.batch_code batchCode,
-      sb.inventory_count stockCount, sb.available_count availableCount, sb.tax_cost productCost,
+      s.inventory_count stockCount, s.available_count availableCount, s.tax_cost productCost,
       s.new_purchase_price newPurchasePrice, ifnull(su.tax_included_price, 0) purchaseMax,
-      sb.purchase_price purchasePrice, sb.location_code locationCode
+      r.batch_purchase_price purchasePrice, r.location_code locationCode, r.batch_info_code batchInfoCode
     from reject_apply_record_detail r
     inner join stock s on s.sku_code = r.sku_code and s.warehouse_code = r.warehouse_code
-    inner join stock_batch sb on sb.sku_code = r.sku_code and sb.warehouse_code = r.warehouse_code
-    and sb.supplier_code = sb.supplier_code
     inner join product_sku_checkout psc on s.sku_code = psc.sku_code
-    inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
+    inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code and su.supply_unit_code = r.supplier_code
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </select>
   <insert id="insertAll">
@@ -141,8 +139,8 @@
       #{item.unitName,jdbcType=VARCHAR}, #{item.factorySkuCode,jdbcType=VARCHAR}, #{item.productCount,jdbcType=BIGINT},
       #{item.totalCount,jdbcType=BIGINT}, #{item.productAmount,jdbcType=DECIMAL}, #{item.productTotalAmount,jdbcType=DECIMAL},
       #{item.taxRate,jdbcType=DECIMAL}, #{item.lineCode,jdbcType=INTEGER}, #{item.batchCode,jdbcType=VARCHAR},
-      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=TIMESTAMP},
-      #{item.beOverdueDate,jdbcType=TIMESTAMP}, #{item.batchPurchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
+      #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.batchPurchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
       #{item.productCost,jdbcType=DECIMAL}, #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
       #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, now(), now())
     </foreach>
@@ -259,10 +257,10 @@
         batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
       </if>
       <if test="productDate != null">
-        product_date = #{productDate,jdbcType=TIMESTAMP},
+        product_date = #{productDate,jdbcType=VARCHAR},
       </if>
       <if test="beOverdueDate != null">
-        be_overdue_date = #{beOverdueDate,jdbcType=TIMESTAMP},
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
       </if>
       <if test="batchPurchasePrice != null">
         batch_purchase_price = #{batchPurchasePrice,jdbcType=DECIMAL},
@@ -291,7 +289,7 @@
     select sku_code skuCode, sku_name skuName, category_id categoryId, category_name categoryName,
     brand_id brandId, brand_name brandName, product_type productType, product_spec productSpec,
     color_code colorCode, color_name colorName, model_number modelNumber, unit_code unitCode, unit_name unitName,
-    sum(product_count) productCount, sum(total_count totalCount), factory_sku_code factorySkuCode, tax_rate taxRate,
+    sum(product_count) productCount, sum(total_count) totalCount, factory_sku_code factorySkuCode, tax_rate taxRate,
     product_amount productAmount, sum(product_total_amount) productTotalAmount, product_cost productCost,
     barcode, settlement_method_code settlementMethodCode, supplier_code supplierCode,
     warehouse_code warehouseCode
@@ -310,5 +308,7 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and product_type = #{productType,jdbcType=INTEGER}
+    and batch_info_code is not null
   </select>
 </mapper>

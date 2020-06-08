@@ -29,6 +29,10 @@ public class QueryProductSkuPriceInfoRespVO {
     @ApiModelProperty("sku编码")
     private String skuCode;
 
+
+    @ApiModelProperty("批次号")
+    private String batchCode;
+
     @ApiModelProperty("sku名称")
     private String skuName;
 
