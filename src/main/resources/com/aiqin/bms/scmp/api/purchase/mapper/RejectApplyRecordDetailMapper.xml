@@ -39,8 +39,8 @@
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
     <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
-    <result column="product_date" jdbcType="TIMESTAMP" property="productDate" />
-    <result column="be_overdue_date" jdbcType="TIMESTAMP" property="beOverdueDate" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
     <result column="batch_purchase_price" jdbcType="DECIMAL" property="batchPurchasePrice" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
     <result column="product_cost" jdbcType="DECIMAL" property="productCost" />
@@ -139,8 +139,8 @@
       #{item.unitName,jdbcType=VARCHAR}, #{item.factorySkuCode,jdbcType=VARCHAR}, #{item.productCount,jdbcType=BIGINT},
       #{item.totalCount,jdbcType=BIGINT}, #{item.productAmount,jdbcType=DECIMAL}, #{item.productTotalAmount,jdbcType=DECIMAL},
       #{item.taxRate,jdbcType=DECIMAL}, #{item.lineCode,jdbcType=INTEGER}, #{item.batchCode,jdbcType=VARCHAR},
-      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=TIMESTAMP},
-      #{item.beOverdueDate,jdbcType=TIMESTAMP}, #{item.batchPurchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
+      #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.batchPurchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
       #{item.productCost,jdbcType=DECIMAL}, #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
       #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, now(), now())
     </foreach>
@@ -257,10 +257,10 @@
         batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
       </if>
       <if test="productDate != null">
-        product_date = #{productDate,jdbcType=TIMESTAMP},
+        product_date = #{productDate,jdbcType=VARCHAR},
       </if>
       <if test="beOverdueDate != null">
-        be_overdue_date = #{beOverdueDate,jdbcType=TIMESTAMP},
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
       </if>
       <if test="batchPurchasePrice != null">
         batch_purchase_price = #{batchPurchasePrice,jdbcType=DECIMAL},
@@ -308,5 +308,7 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     and settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
+    and product_type = #{productType,jdbcType=INTEGER}
+    and batch_info_code is not null
   </select>
 </mapper>

@@ -161,11 +161,11 @@ public class RejectApplyRecordDetail {
 
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
-    private Date productDate;
+    private String productDate;
 
     @ApiModelProperty(value="过期日期")
     @JsonProperty("be_overdue_date")
-    private Date beOverdueDate;
+    private String beOverdueDate;
 
     @ApiModelProperty(value="批次采购价")
     @JsonProperty("batch_purchase_price")

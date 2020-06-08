@@ -294,6 +294,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                             product.getProductType(), amount, product.getBatchCode());
                     if(rejectProduct.get(productKey) == null){
                         rejectApplyRecordDetail = BeanCopyUtils.copy(product, RejectApplyRecordDetail.class);
+                        rejectApplyRecordDetail.setBatchPurchasePrice(product.getPurchasePrice());
                         rejectProduct.put(productKey, rejectApplyRecordDetail);
                     }
                     rejectProductList.add(rejectProduct.get(productKey));
@@ -712,8 +713,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 for(RejectRecordDetail detail:recordDetails) {
                     String key = String.format("%s,%s,%s", rejectApplyRecordCode, center.getWarehouseCode(), detail.getSkuCode(),
                             rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode());
-                    rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
-                            center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode()));
+                    if(rejectBatchMap.get(key) == null){
+                        rejectBatchMap.put(key, rejectApplyRecordDetailDao.rejectApplyByWarehouseBatch(rejectApplyRecordCode,
+                                center.getWarehouseCode(), detail.getSkuCode(), rejectRecord.getSupplierCode(), rejectRecord.getSettlementMethodCode(),
+                                detail.getProductType()));
+                    }
                 }
             }
 
@@ -849,6 +853,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 stockBatchInfo.setOperatorId(rejectRecord.getCreateById());
                 stockBatchInfo.setOperatorName(rejectRecord.getCreateByName());
                 stockBatchInfo.setChangeCount(batch.getTotalCount());
+                stockBatchInfo.setTaxCost(batch.getPurchasePrice());
                 stockBatchList.add(stockBatchInfo);
             }
             request.setStockBatchList(stockBatchList);
