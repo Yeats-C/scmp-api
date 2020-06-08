@@ -38,6 +38,9 @@ public class SupplierDetailRespVO {
     @ApiModelProperty("直属上级名称")
     private String directSupervisorName;
 
+    @ApiModelProperty("下属供应商")
+    private List<SupplyComListRespVO> supplyComListRespVOList;
+
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;
 
