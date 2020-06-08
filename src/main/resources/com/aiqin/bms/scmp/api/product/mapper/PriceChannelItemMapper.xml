@@ -20,7 +20,7 @@
   <sql id="Base_Column_List">
     id, price_channel_code, price_channel_name, del_flag, create_time, update_time, create_by, 
     update_by, price_project_code, price_project_name, price_type_code, price_type_name, 
-    price_category_code, price_category_name
+    price_category_code, price_category_name, enable
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -168,14 +168,14 @@
       del_flag, create_time, update_time,
       create_by, update_by, price_project_code,
       price_project_name, price_type_code, price_type_name,
-      price_category_code, price_category_name)
+      price_category_code, price_category_name, enable)
     values
     <foreach collection="list" item="item" open="" close="" separator=",">
       (#{item.priceChannelCode,jdbcType=VARCHAR}, #{item.priceChannelName,jdbcType=VARCHAR},
       #{item.delFlag,jdbcType=TINYINT}, #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateTime,jdbcType=TIMESTAMP},
       #{item.createBy,jdbcType=VARCHAR}, #{item.updateBy,jdbcType=VARCHAR}, #{item.priceProjectCode,jdbcType=VARCHAR},
       #{item.priceProjectName,jdbcType=VARCHAR}, #{item.priceTypeCode,jdbcType=VARCHAR}, #{item.priceTypeName,jdbcType=VARCHAR},
-      #{item.priceCategoryCode,jdbcType=VARCHAR}, #{item.priceCategoryName,jdbcType=VARCHAR})
+      #{item.priceCategoryCode,jdbcType=VARCHAR}, #{item.priceCategoryName,jdbcType=VARCHAR}, #{item.enable,jdbcType=TINYINT})
     </foreach>
 
   </insert>

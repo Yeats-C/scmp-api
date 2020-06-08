@@ -9,9 +9,12 @@ import com.aiqin.bms.scmp.api.product.domain.request.basicprice.*;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.*;
 import com.aiqin.bms.scmp.api.product.service.PriceChannelService;
 import com.aiqin.bms.scmp.api.product.service.PriceProjectService;
+import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -130,18 +133,6 @@ public class PriceProjectController {
         }
     }
 
-    @PostMapping("/channel/list")
-    @ApiOperation(value = "获取渠道列表信息")
-    public HttpResponse<BasePage<QueryPriceChannelRespVo>> queryChannelList(@RequestBody QueryPriceChannelReqVo reqVo){
-        try {
-            log.info("request uri:{},参数信息:{}","/basic/price/channel/list", JSON.toJSON(reqVo));
-            return HttpResponse.success(priceChannelService.getList(reqVo));
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
-
     @PostMapping("/channel/all")
     @ApiOperation(value = "获取所有渠道列表信息")
     public HttpResponse<List<QueryPriceChannelRespVo>> queryAllChannelList(){
@@ -181,8 +172,28 @@ public class PriceProjectController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @GetMapping("/get/type/category")
+    @ApiOperation(value = "获取价格类型/大类（属性）")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "status", value = "状态（1.类型，2.大类（属性））", type = "Integer"),})
+    public List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(@RequestParam(value = "status", required = false) Integer status){
+        return priceProjectService.selectPriceTypeAndCategory(status);
+    }
+
+    @PostMapping("/channel/list")
+    @ApiOperation(value = "获取渠道列表信息")
+    public HttpResponse<BasePage<QueryPriceChannelRespVo>> queryChannelList(@RequestBody QueryPriceChannelReqVo reqVo){
+        try {
+            log.info("request uri:{},参数信息:{}","/basic/price/channel/list", JSON.toJSON(reqVo));
+            return HttpResponse.success(priceChannelService.getList(reqVo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @GetMapping("/channel/get")
-    @ApiOperation(value = "获取渠道信息")
+    @ApiOperation(value = "获取渠道信息(详情信息)")
     public HttpResponse<PriceChannelRespVo> getChannel(@RequestParam @NotNull(message = "主键ID不能为空") Long id){
         try {
             log.info("request uri:{},参数信息:[{}]","/basic/price/channel/get",id);

@@ -34,4 +34,7 @@ public class PriceChannelItem extends CommonBean {
 
     @ApiModelProperty("价格大类名称")
     private String priceCategoryName;
+
+    @ApiModelProperty("是否禁用(0:启用 1:禁用)")
+    private Byte enable;
 }

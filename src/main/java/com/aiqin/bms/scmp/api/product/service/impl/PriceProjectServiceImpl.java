@@ -16,6 +16,8 @@ import com.aiqin.bms.scmp.api.product.mapper.PriceProjectMapper;
 import com.aiqin.bms.scmp.api.product.service.PriceProjectService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
+import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO;
+import com.aiqin.bms.scmp.api.supplier.service.SupplierDictionaryInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -50,6 +52,10 @@ public class PriceProjectServiceImpl implements PriceProjectService {
 
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+
+    @Autowired
+    private SupplierDictionaryInfoService supplierDictionaryInfoService;
+
     /**
      * 查询List
      *
@@ -74,6 +80,7 @@ public class PriceProjectServiceImpl implements PriceProjectService {
      */
     @Override
     public List<QueryPriceProjectRespVo> getAll() {
+        // 查出该公司所有启动的价格项目管理
         QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         if(null != authToken){
@@ -209,23 +216,23 @@ public class PriceProjectServiceImpl implements PriceProjectService {
              throw new BizException(MessageId.create(Project.PRODUCT_API, 63,
                      addVo.getPriceProjectName()+"名称已存在,请重新输入"));
         }
-        //价格类型和属性是否选择正确
-        PriceTypeEnum priceTypeEnum = PriceTypeEnum.getPriceTypeEnumByTypeCode(addVo.getPriceTypeCode(),addVo.getPriceCategoryCode());
-        if (null == priceTypeEnum) {
-            throw new BizException(ResultCode.PRICE_TYPE_NO_EXITST);
-        }
-        //如果是采购,采购只允许存在一条数据
-        if(Objects.equals(priceTypeEnum,PriceTypeEnum.PURCHASE)){
-            QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
-            reqVo.setCompanyCode(companyCode);
-            reqVo.setPriceType(priceTypeEnum.getTypeCode());
-            reqVo.setPriceCategory(priceTypeEnum.getAttrCodes());
-            reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
-            List<QueryPriceProjectRespVo> list = priceProjectMapper.getList(reqVo);
-            if(CollectionUtils.isNotEmpty(list)){
-                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
-            }
-        }
+        //价格类型和属性是否选择正确 （目前不需要进行类型和属性的判断）
+//        PriceTypeEnum priceTypeEnum = PriceTypeEnum.getPriceTypeEnumByTypeCode(addVo.getPriceTypeCode(),addVo.getPriceCategoryCode());
+//        if (null == priceTypeEnum) {
+//            throw new BizException(ResultCode.PRICE_TYPE_NO_EXITST);
+//        }
+        //如果是采购,采购只允许存在一条数据  （目前没有采购）
+//        if(Objects.equals(priceTypeEnum,PriceTypeEnum.PURCHASE)){
+//            QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
+//            reqVo.setCompanyCode(companyCode);
+//            reqVo.setPriceType(priceTypeEnum.getTypeCode());
+//            reqVo.setPriceCategory(priceTypeEnum.getAttrCodes());
+//            reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+//            List<QueryPriceProjectRespVo> list = priceProjectMapper.getList(reqVo);
+//            if(CollectionUtils.isNotEmpty(list)){
+//                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
+//            }
+//        }
         PriceProject priceProject = new PriceProject();
         BeanCopyUtils.copy(addVo,priceProject);
         //设置编码
@@ -264,26 +271,26 @@ public class PriceProjectServiceImpl implements PriceProjectService {
             throw new BizException(MessageId.create(Project.PRODUCT_API, 63,
                     updateVo.getPriceProjectName()+"名称已存在,请重新输入"));
         }
-        //价格类型和属性是否选择正确
-        PriceTypeEnum priceTypeEnum = PriceTypeEnum.getPriceTypeEnumByTypeCode(updateVo.getPriceTypeCode(),updateVo.getPriceCategoryCode());
-        if (null == priceTypeEnum) {
-            throw new BizException(ResultCode.PRICE_TYPE_NO_EXITST);
-        }
-        //如果是采购,采购只允许存在一条数据
-        if(Objects.equals(priceTypeEnum,PriceTypeEnum.PURCHASE)){
-            QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
-            reqVo.setCompanyCode(companyCode);
-            reqVo.setPriceType(priceTypeEnum.getTypeCode());
-            reqVo.setPriceCategory(priceTypeEnum.getAttrCodes());
-            reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
-            List<QueryPriceProjectRespVo> list = priceProjectMapper.getList(reqVo);
-            if(CollectionUtils.isNotEmpty(list) && list.size() > 1){
-                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
-            }
-            if(!Objects.equals(list.get(0).getId(),updateVo.getId())){
-                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
-            }
-        }
+        //价格类型和属性是否选择正确 （目前不需要进行类型和属性的判断）
+//        PriceTypeEnum priceTypeEnum = PriceTypeEnum.getPriceTypeEnumByTypeCode(updateVo.getPriceTypeCode(),updateVo.getPriceCategoryCode());
+//        if (null == priceTypeEnum) {
+//            throw new BizException(ResultCode.PRICE_TYPE_NO_EXITST);
+//        }
+        //如果是采购,采购只允许存在一条数据 （目前没有采购）
+//        if(Objects.equals(priceTypeEnum,PriceTypeEnum.PURCHASE)){
+//            QueryPriceProjectReqVo reqVo = new QueryPriceProjectReqVo();
+//            reqVo.setCompanyCode(companyCode);
+//            reqVo.setPriceType(priceTypeEnum.getTypeCode());
+//            reqVo.setPriceCategory(priceTypeEnum.getAttrCodes());
+//            reqVo.setEnable(StatusTypeCode.EN_ABLE.getStatus().toString());
+//            List<QueryPriceProjectRespVo> list = priceProjectMapper.getList(reqVo);
+//            if(CollectionUtils.isNotEmpty(list) && list.size() > 1){
+//                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
+//            }
+//            if(!Objects.equals(list.get(0).getId(),updateVo.getId())){
+//                throw new BizException(ResultCode.ONLY_ONE_PURCHASE_PRICE);
+//            }
+//        }
         BeanCopyUtils.copy(updateVo,priceProject);
         return ((PriceProjectService) AopContext.currentProxy()).updateByPrimaryKeySelective(priceProject);
     }
@@ -306,6 +313,13 @@ public class PriceProjectServiceImpl implements PriceProjectService {
     public Integer updateByPrimaryKeySelective(PriceProject priceProject){
 
         return  priceProjectMapper.updateByPrimaryKeySelective(priceProject);
+    }
+
+    @Override
+    public List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(Integer status) {
+//        状态（1.类型，2.大类（属性））
+        List<DictionaryInfoResponseVO> dis = supplierDictionaryInfoService.selectPriceTypeAndCategory(status);
+        return dis;
     }
 }
 

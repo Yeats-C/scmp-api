@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * @author knight.xie
@@ -14,7 +15,8 @@ import javax.validation.constraints.NotEmpty;
  */
 @ApiModel("修改价格渠道")
 @Data
-public class UpdatePriceChannelReqVo extends CommonPriceChannelReqVo{
+//public class UpdatePriceChannelReqVo extends CommonPriceChannelReqVo{
+public class UpdatePriceChannelReqVo{
 
     @ApiModelProperty("主键ID")
     private Long id;
@@ -28,4 +30,7 @@ public class UpdatePriceChannelReqVo extends CommonPriceChannelReqVo{
 
     @ApiModelProperty("是否禁用(0:启用 1:禁用)")
     private Byte priceChannelEnable;
+
+    @ApiModelProperty("价格项目列表")
+    private List<CommonPriceChannelReqVo> priceList;
 }
