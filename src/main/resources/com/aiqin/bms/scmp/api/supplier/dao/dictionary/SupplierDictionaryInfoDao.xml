@@ -172,6 +172,7 @@
   </select>
   <select id="selectPriceTypeAndCategory" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO">
     select
+    id,supplier_weight dictionaryWeight, del_flag delFlag, enabled,
     supplier_dictionary_value dictionaryDictionaryValue, supplier_content dictionaryContent
     from supplier_dictionary_info
     where del_flag=0
