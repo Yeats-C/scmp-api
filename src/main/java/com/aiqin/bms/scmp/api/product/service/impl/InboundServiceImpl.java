@@ -1000,7 +1000,7 @@ public class InboundServiceImpl implements InboundService {
                 int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
                 // 调用sap 传送调拨单的数据给sap
-                sapBaseDataService.allocationAndprofitLoss(allocationCode);
+                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
                 LOGGER.info("调拨wms回传成功");
             }
         } catch (Exception e) {
@@ -1051,7 +1051,7 @@ public class InboundServiceImpl implements InboundService {
             int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
                 // 调用sap 传送调拨单的数据给sap
-                sapBaseDataService.allocationAndprofitLoss(allocationCode);
+                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
                 LOGGER.info("移库wms回传成功");
             }
         } catch (Exception e) {

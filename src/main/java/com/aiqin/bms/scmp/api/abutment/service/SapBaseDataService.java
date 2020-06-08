@@ -42,5 +42,5 @@ public interface SapBaseDataService {
 
     void saleAndReturn(String orderCode, Integer dataType);
 
-    void allocationAndprofitLoss(String orderCode);
+    void allocationAndprofitLoss(String orderCode, Integer dataType);
 }

@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.basicprice.QueryPriceChannelReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
+import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
 import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -49,6 +50,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -1165,14 +1167,18 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      * 调拨&损溢调用sap
      */
     @Override
-    public void allocationAndprofitLoss(String orderCode) {
-        // 数据类型 dataType 0.调拨 1.损溢
+    public void allocationAndprofitLoss(String orderCode, Integer dataType) {
+        // 数据类型 dataType 0.调拨 1.损溢   (损溢不记录出入库 数据从单据中拿)
         List<Storage> storages = new ArrayList<>();
-        storages.add(outbound(orderCode));
-        storages.add(inbound(orderCode));
+        if(dataType == 0){
+            storages.add(outbound(orderCode));
+            storages.add(inbound(orderCode));
+        }else {
+            Storage storage = profitLoss(orderCode);
+            storages.add(storage);
+        }
         // 调用sap 接口
-        String s = JsonUtil.toJson(storages);
-        System.out.println(s);
+        LOGGER.error("调用结算saps数据:{}", JsonUtil.toJson(storages));
         HttpClient client = HttpClient.post(STORAGE_URL).json(storages).timeout(10000);
         HttpResponse httpResponse = client.action().result(HttpResponse.class);
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
@@ -1192,6 +1198,107 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             LOGGER.error("调用结算sap" +storages.get(0).getSubOrderTypeName()+ "单据异常:{}", httpResponse.getMessage());
             throw new GroundRuntimeException(String.format("调用结算sap" +storages.get(0).getSubOrderTypeName()+ "单据异常:%s", httpResponse.getMessage()));
         }
+    }
+
+    private Storage profitLoss(String orderCode) {
+        // 查询损溢单信息
+        ProfitLoss profitLoss = profitLossMapper.selectByOrderCode(orderCode);
+        // 查询损溢单商品信息
+        List<ProfitLossProduct> listByOrderCode = profitLossProductMapper.getListByOrderCode(profitLoss.getOrderCode());
+        List<String> skuCodes = listByOrderCode.stream().map(ProfitLossProduct::getSkuCode).collect(Collectors.toList());
+        Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);
+        // 查询损溢单批次商品信息
+        Map<String, List<ProfitLossProductBatch>> productBatchMap = new HashMap<>();
+        for(ProfitLossProduct detail : listByOrderCode) {
+            String key = String.format("%s,%s,%s", detail.getSkuCode(), detail.getOrderCode(), detail.getLineNum());
+            if (productBatchMap.get(key) == null) {
+                productBatchMap.put(key, profitLossProductBatchMapper.getBatchListByOrderCode(detail.getSkuCode(), detail.getOrderCode(), detail.getLineNum()));
+            }
+        }
+        List<StorageDetail> details = Lists.newArrayList();
+        StorageDetail detail;
+        ProductSkuInfo productSkuInfo;
+        Storage storage = BeanCopyUtils.copy(profitLoss, Storage.class);
+        storage.setOrderId(profitLoss.getId().toString());
+        storage.setOrderCode(profitLoss.getOrderCode());
+        storage.setInOutFlag(1);
+        storage.setSourceOrderCode(profitLoss.getOrderCode());
+        storage.setSourceOrderType("50");
+        storage.setSourceOrderTypeName("报溢");
+        storage.setSubOrderType("50");
+        storage.setSubOrderTypeName("报溢");
+        storage.setTransportCode("出库中");
+        storage.setTransportName("出库中");
+        storage.setStorageCode("出库中");
+        storage.setStorageName("出库中");
+        storage.setTransportCode1(profitLoss.getLogisticsCenterCode());
+        storage.setTransportName1(profitLoss.getLogisticsCenterName());
+        storage.setStorageCode1(profitLoss.getWarehouseCode());
+        storage.setStorageName1(profitLoss.getWarehouseName());
+        storage.setOrderCount(profitLoss.getProfitQuantity()+profitLoss.getLossQuantity());
+        storage.setAmount(profitLoss.getProfitTotalCostRate());
+        storage.setDiscountPrice(BigDecimal.ZERO);
+        storage.setOptTime(profitLoss.getCreateTime());
+        storage.setCreateTime(profitLoss.getCreateTime());
+        storage.setCreateByName(profitLoss.getCreateBy());
+        for (ProfitLossProduct product : listByOrderCode) {
+            detail = BeanCopyUtils.copy(product, StorageDetail.class);
+            detail.setUnit(product.getUnit());
+            detail.setSkuDesc(product.getColor()+product.getSpecification()+product.getModel());
+            detail.setProductType(0);
+//            detail.setSupplierCode(product.getSupplierCode());
+//            detail.setSupplierName(product.getSupplierName());
+            // 厂商指导价
+            productSkuInfo = productSkuInfoMap.get(product.getSkuCode());
+            if (productSkuInfo != null) {
+                detail.setGuidePrice(productSkuInfo.getManufacturerGuidePrice().toString());
+                detail.setCategoryCode(productSkuInfo.getProductCategoryCode());
+                detail.setCategoryName(productSkuInfo.getProductCategoryName());
+                detail.setBrandCode(productSkuInfo.getProductBrandCode());
+                detail.setBrandName(productSkuInfo.getProductBrandName());
+                detail.setGuidePrice("0");
+            } else {
+                detail.setGuidePrice("0");
+            }
+            if(product.getLineNum() != null){
+                detail.setStorageLocationCode(product.getLineNum().toString());
+            }
+            if(product.getTax() != null){
+                detail.setTaxRate(product.getTax());
+            }
+//            detail.setUnitCount(Integer.parseInt(product.getInboundBaseContent()));
+            if(product.getQuantity() != null){
+                detail.setExpectCount(product.getQuantity());
+                detail.setExpectMinUnitCount(product.getQuantity());
+                detail.setSingleCount(product.getQuantity().intValue());
+                detail.setMinUnitCount(product.getQuantity());
+            }
+            if(product.getTaxPrice() != null){
+                detail.setExpectTaxPrice(product.getTaxPrice());
+                detail.setTaxPrice(product.getTaxPrice());
+            }
+            // 查询批次sku对应的批次信息
+            String key = String.format("%s,%s,%s", product.getSkuCode(), product.getOrderCode(), product.getLineNum());
+            List<ProfitLossProductBatch> batchList = productBatchMap.get(key);
+            if(CollectionUtils.isNotEmpty(batchList)){
+                List<ScmpStorageBatch> infoBatch = new ArrayList<>();
+                for (ProfitLossProductBatch productBatch : batchList) {
+                    ScmpStorageBatch info = new ScmpStorageBatch();
+                    BeanUtils.copyProperties(productBatch, info);
+                    info.setPurchaseOrderCode(productBatch.getOrderCode());
+                    info.setBatchNo(productBatch.getBatchCode());
+                    // 商品类型  是否赠品（0商品1赠品）
+                    info.setProductType("0");
+                    infoBatch.add(info);
+                    storage.setCreateById(productBatch.getCreateById());
+                    storage.setCreateByName(productBatch.getCreateByName());
+                }
+                detail.setBatchList(infoBatch);
+            }
+            details.add(detail);
+        }
+        storage.setDetails(details);
+        return storage;
     }
 
     /**
@@ -1225,17 +1332,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setOrderCode(inbound.getInboundOderCode());
         storage.setInOutFlag(inbound.getInboundTypeCode().intValue());
         storage.setSourceOrderCode(inbound.getSourceOderCode());
-        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
+//        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
             storage.setSourceOrderType("40");
             storage.setSourceOrderTypeName("调拨出库");
             storage.setSubOrderType("40");
             storage.setSubOrderTypeName("调拨出库");
-        }else {
-            storage.setSourceOrderType("50");
-            storage.setSourceOrderTypeName("报溢");
-            storage.setSubOrderType("50");
-            storage.setSubOrderTypeName("报溢");
-        }
+//        }else {
+//            storage.setSourceOrderType("50");
+//            storage.setSourceOrderTypeName("报溢");
+//            storage.setSubOrderType("50");
+//            storage.setSubOrderTypeName("报溢");
+//        }
         storage.setTransportCode("出库中");
         storage.setTransportName("出库中");
         storage.setStorageCode("出库中");
@@ -1360,17 +1467,17 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setOrderCode(outbound.getOutboundOderCode());
         storage.setInOutFlag(outbound.getOutboundTypeCode().intValue());
         storage.setSourceOrderCode(outbound.getSourceOderCode());
-        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())){
+//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())){
             storage.setSourceOrderType("35");
             storage.setSourceOrderTypeName("调拨入库");
             storage.setSubOrderType("35");
             storage.setSubOrderTypeName("调拨入库");
-        }else {
-            storage.setSourceOrderType("45");
-            storage.setSourceOrderTypeName("报损");
-            storage.setSubOrderType("45");
-            storage.setSubOrderTypeName("报损");
-        }
+//        }else {
+//            storage.setSourceOrderType("45");
+//            storage.setSourceOrderTypeName("报损");
+//            storage.setSubOrderType("45");
+//            storage.setSubOrderTypeName("报损");
+//        }
         storage.setTransportCode("出库中");
         storage.setTransportName("出库中");
         storage.setStorageCode("出库中");

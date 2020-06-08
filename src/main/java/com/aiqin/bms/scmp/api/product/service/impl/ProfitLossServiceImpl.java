@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
@@ -94,6 +95,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     private InboundService inboundService;
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+    @Autowired
+    private SapBaseDataService sapBaseDataService;
     /**
      * 分页查询
      *
@@ -290,9 +293,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 LOGGER.error("wms回调:减库存异常");
                 throw new GroundRuntimeException("wms回调:减库存异常");
             }
-            // 减库存 保存出库
-            OutboundReqVo outboundReqVo = outbount(profitLoss, profitLossProductList, batchList);
-            outboundService.save(outboundReqVo);
+            // 减库存 保存出库 损溢不进行出入库记录
+//            OutboundReqVo outboundReqVo = outbount(profitLoss, profitLossProductList, batchList);
+//            outboundService.save(outboundReqVo);
         }
         if (groupByList.get(1) != null) {
             //操作类型 直接加库存 6
@@ -303,10 +306,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 LOGGER.error("wms回调:加库存异常");
                 throw new GroundRuntimeException("wms回调:加库存异常");
             }
-            // 加库存 保存入库
-            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);
-            inboundService.saveInbound2(inboundReqSave);
+            // 加库存 保存入库 损溢不进行出入库记录
+//            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);
+//            inboundService.saveInbound2(inboundReqSave);
         }
+        // 损溢单完成调用sap
+        sapBaseDataService.allocationAndprofitLoss(request.getOrderCode(),1);
+        LOGGER.info("移库wms回传成功");
         return HttpResponse.success();
     }
 
@@ -380,8 +386,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         inboundReqSave.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         inboundReqSave.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
         inboundReqSave.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
-        inboundReqSave.setInboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
-        inboundReqSave.setInboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
+//        inboundReqSave.setInboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
+//        inboundReqSave.setInboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
         inboundReqSave.setSourceOderCode(profitLoss.getOrderCode());
     //    inboundReqSave.setInboundTime();
         inboundReqSave.setLogisticsCenterCode(profitLoss.getLogisticsCenterCode());
@@ -462,8 +468,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         outboundReqVo.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outboundReqVo.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
      //   outboundReqVo.setOutboundOderCode(encodingRule.getNumberingValue()+"");
-        outboundReqVo.setOutboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
-        outboundReqVo.setOutboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
+//        outboundReqVo.setOutboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
+//        outboundReqVo.setOutboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
         outboundReqVo.setSourceOderCode(profitLoss.getOrderCode());
         outboundReqVo.setLogisticsCenterCode(profitLoss.getLogisticsCenterCode());
         outboundReqVo.setLogisticsCenterName(profitLoss.getLogisticsCenterName());
