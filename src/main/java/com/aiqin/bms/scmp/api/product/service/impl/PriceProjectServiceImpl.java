@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
@@ -316,10 +317,10 @@ public class PriceProjectServiceImpl implements PriceProjectService {
     }
 
     @Override
-    public List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(Integer status) {
+    public HttpResponse<List<DictionaryInfoResponseVO>> selectPriceTypeAndCategory(Integer status) {
 //        状态（1.类型，2.大类（属性））
         List<DictionaryInfoResponseVO> dis = supplierDictionaryInfoService.selectPriceTypeAndCategory(status);
-        return dis;
+        return HttpResponse.success(dis);
     }
 }
 

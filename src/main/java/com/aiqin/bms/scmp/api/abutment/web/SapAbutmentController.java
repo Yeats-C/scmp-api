@@ -112,9 +112,10 @@ public class SapAbutmentController {
 
     @GetMapping("/allocation/profitLoss")
     @ApiOperation("调拨&损溢")
-    public HttpResponse allocationSynchronization(@RequestParam("order_code") String orderCode) {
-        LOGGER.info("调拨/损溢单同步sap.调拨/损溢单单号:{}", JsonUtil.toJson(orderCode));
-        sapBaseDataService.allocationAndprofitLoss(orderCode);
+    public HttpResponse allocationSynchronization(@RequestParam("order_code") String orderCode,
+                                                  @RequestParam("data_type") Integer dataType) {
+        LOGGER.info("调拨/损溢单同步sap.调拨/损溢单单号:{}", JsonUtil.toJson(orderCode+","+dataType));
+        sapBaseDataService.allocationAndprofitLoss(orderCode, dataType);
         return HttpResponse.success();
     }
 

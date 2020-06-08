@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceProjectRes
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.PriceProjetGroupType;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -90,5 +91,5 @@ public interface PriceProjectService  {
      */
     Integer updateByPrimaryKeySelective(PriceProject priceProject);
 
-    List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(Integer status);
+    HttpResponse<List<DictionaryInfoResponseVO>> selectPriceTypeAndCategory(Integer status);
 }
