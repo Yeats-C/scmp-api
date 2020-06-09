@@ -641,37 +641,40 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         List<StockBatchInfoRequest> stockBatchInfoRequests = Lists.newArrayList();
         if(CollectionUtils.isNotEmptyCollection(productBatchs)) {
             for (AllocationProductBatch allocationProductBatch : productBatchs) {
-                StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
-                // 设置公司名称编码
-                stockBatchInfoRequest.setCompanyCode(allocation.getCompanyCode());
-                stockBatchInfoRequest.setCompanyName(allocation.getCompanyName());
-                // 设置物流中心名称编码
-                // 设置仓库名称编码
-                stockBatchInfoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
-                stockBatchInfoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
-                //设置库房名称编码
-                stockBatchInfoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
-                stockBatchInfoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
-                //设置sku编号名称
-                stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
-                stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
-                // 变化数/税率/成本
-                stockBatchInfoRequest.setChangeCount(allocationProductBatch.getQuantity());
-                stockBatchInfoRequest.setTaxRate(allocationProductBatch.getTax().setScale(4, BigDecimal.ROUND_HALF_UP));
-                stockBatchInfoRequest.setTaxCost(allocationProductBatch.getTaxPrice());
-                //设置类型
-                stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
-                stockBatchInfoRequest.setProductDate(allocationProductBatch.getProductDate());
-                stockBatchInfoRequest.setBeOverdueDate(allocationProductBatch.getBeOverdueDate());
-                stockBatchInfoRequest.setSupplierCode(allocationProductBatch.getSupplierCode());
-                stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
-                stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
-                stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
-                stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
-                stockBatchInfoRequest.setOperatorId(allocation.getUpdateById());
-                stockBatchInfoRequest.setOperatorName(allocation.getUpdateByName());
-                stockBatchInfoRequest.setBatchRemark(allocationProductBatch.getBatchNumberRemark());
-                stockBatchInfoRequests.add(stockBatchInfoRequest);
+                String callOutBatchNumber = allocationProductBatch.getCallOutBatchNumber();
+                if(callOutBatchNumber!=null){
+                    StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
+                    // 设置公司名称编码
+                    stockBatchInfoRequest.setCompanyCode(allocation.getCompanyCode());
+                    stockBatchInfoRequest.setCompanyName(allocation.getCompanyName());
+                    // 设置物流中心名称编码
+                    // 设置仓库名称编码
+                    stockBatchInfoRequest.setTransportCenterCode(allocation.getCallOutLogisticsCenterCode());
+                    stockBatchInfoRequest.setTransportCenterName(allocation.getCallOutLogisticsCenterName());
+                    //设置库房名称编码
+                    stockBatchInfoRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+                    stockBatchInfoRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+                    //设置sku编号名称
+                    stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
+                    stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
+                    // 变化数/税率/成本
+                    stockBatchInfoRequest.setChangeCount(allocationProductBatch.getQuantity());
+                    stockBatchInfoRequest.setTaxRate(allocationProductBatch.getTax().setScale(4, BigDecimal.ROUND_HALF_UP));
+                    stockBatchInfoRequest.setTaxCost(allocationProductBatch.getTaxPrice());
+                    //设置类型
+                    stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
+                    stockBatchInfoRequest.setProductDate(allocationProductBatch.getProductDate());
+                    stockBatchInfoRequest.setBeOverdueDate(allocationProductBatch.getBeOverdueDate());
+                    stockBatchInfoRequest.setSupplierCode(allocationProductBatch.getSupplierCode());
+                    stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                    stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
+                    stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                    stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
+                    stockBatchInfoRequest.setOperatorId(allocation.getUpdateById());
+                    stockBatchInfoRequest.setOperatorName(allocation.getUpdateByName());
+                    stockBatchInfoRequest.setBatchRemark(allocationProductBatch.getBatchNumberRemark());
+                    stockBatchInfoRequests.add(stockBatchInfoRequest);
+                }
             }
         }
         return stockBatchInfoRequests;
