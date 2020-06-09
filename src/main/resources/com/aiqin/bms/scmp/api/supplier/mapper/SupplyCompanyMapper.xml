@@ -10,6 +10,8 @@
     <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
     <result column="city_id" jdbcType="VARCHAR" property="cityId" />
     <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
     <result column="district_id" jdbcType="VARCHAR" property="districtId" />
     <result column="district_name" jdbcType="VARCHAR" property="districtName" />
     <result column="address" jdbcType="VARCHAR" property="address" />
@@ -52,7 +54,7 @@
     del_flag, supplier_code, supply_code, apply_supply_company_code, auditor_by, auditor_time, 
     apply_status, supplier_name, purchasing_group_code, zip_code,purchasing_group_name,tax_id,
     corporate_representative,registered_capital,enable,company_code,company_name,max_order_amount,min_order_amount,
-    business_license,star_score
+    business_license,star_score,supplier_abbreviation,property
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -104,7 +106,8 @@
       auditor_time, apply_status, supplier_name, 
       purchasing_group_code, zip_code,purchasing_group_name,tax_id,
       corporate_representative,registered_capital,enable,
-      company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,payment_method,brand,delivery_area,remark,approval_name)
+      company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
+      payment_method,brand,delivery_area,remark,approval_name,supplier_abbreviation,property)
     values (#{id,jdbcType=BIGINT}, #{supplyName,jdbcType=VARCHAR}, #{supplyType,jdbcType=VARCHAR}, 
       #{supplyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -119,7 +122,8 @@
       #{taxId,jdbcType=VARCHAR}, #{corporateRepresentative,jdbcType=VARCHAR}, #{registeredCapital,jdbcType=DECIMAL},
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount,jdbcType=BIGINT}, #{minOrderAmount,jdbcType=BIGINT},#{businessLicense, jdbcType=VARCHAR},
-      #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR})
+      #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{paymentMethod,jdbcType=VARCHAR},
+      #{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR},#{supplierAbbreviation,jdbcType=VARCHAR},#{property,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     insert into supply_company
@@ -550,6 +554,8 @@
       brand = #{brand,jdbcType=VARCHAR},
       delivery_area = #{deliveryArea,jdbcType=VARCHAR},
       remark = #{remark,jdbcType=VARCHAR},
+      supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
+      property = #{property,jdbcType=VARCHAR},
       approval_name = #{approvalName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

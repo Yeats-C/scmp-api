@@ -181,4 +181,10 @@ public class SupplyCompany extends CommonBean {
 
     @ApiModelProperty("审批名称")
     private String approvalName;
+
+    @ApiModelProperty("供应商集团简称")
+    private String supplierAbbreviation;
+
+    @ApiModelProperty("供应商属性 0:自营 1:平台")
+    private String property;
 }

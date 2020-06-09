@@ -27,6 +27,7 @@ public interface SupplyCompanyDao {
      */
     List<SupplyComListRespVO> getSupplyCompanyList(QuerySupplyComReqVO querySupplyComReqVO);
 
+
     /**
      * 根据ID获取供货单位及结算,收货信息
      *
