@@ -177,7 +177,7 @@ public class PriceProjectController {
     @ApiOperation(value = "获取价格类型/大类（属性）")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "status", value = "状态（1.类型，2.大类（属性））", type = "Integer"),})
-    public List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(@RequestParam(value = "status", required = false) Integer status){
+    public HttpResponse<List<DictionaryInfoResponseVO>> selectPriceTypeAndCategory(@RequestParam(value = "status", required = false) Integer status){
         return priceProjectService.selectPriceTypeAndCategory(status);
     }
 
