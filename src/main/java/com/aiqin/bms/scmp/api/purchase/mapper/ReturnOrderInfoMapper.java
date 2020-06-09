@@ -16,7 +16,7 @@ public interface ReturnOrderInfoMapper {
 
     ReturnOrderInfo selectByPrimaryKey(Long id);
 
-    int updateByPrimaryKeySelective(ReturnOrderInfo record);
+    int update(ReturnOrderInfo record);
 
     int insertBatch(List<ReturnOrderInfo> orders);
 

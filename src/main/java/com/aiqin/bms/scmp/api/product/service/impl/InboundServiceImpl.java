@@ -580,7 +580,7 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setTransportCenterName(inbound.getLogisticsCenterName());
             stockInfo.setWarehouseCode(inbound.getWarehouseCode());
             stockInfo.setWarehouseName(inbound.getWarehouseName());
-            //stockInfo.setWarehouseType();
+            stockInfo.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
             stockInfo.setSkuCode(product.getSkuCode());
             stockInfo.setSkuName(product.getSkuName());
             stockInfo.setChangeCount(inboundProduct.getActualTotalCount());
@@ -623,7 +623,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 新增入库批次的信息
         List<InboundBatch> InboundBatchList = Lists.newArrayList();
-        InboundBatch productBatch ;
+        InboundBatch productBatch;
         if(warehouse.getBatchManage().equals(0)){
             for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
                 key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
@@ -848,27 +848,14 @@ public class InboundServiceImpl implements InboundService {
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传采购单失败失败");
             }
-        }//如果是退货
-        else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
-            try {
-                //回传给退货 回调接口
-                returnOrder(inbound.getSourceOderCode(), list , batchList);
-                // returnOder(returnOrderMain);
-//                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-//                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-//                inbound.setInboundTime(new Date());
-//                int k = inboundDao.updateByPrimaryKeySelective(inbound);
-            } catch (Exception e) {
-                log.error(Global.ERROR, e);
-            }
+        }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+            // 退货 - 调用退货回调
+            returnGoodsService.recordWMS(inbound.getInboundOderCode());
 
         }// 如果是调拨
         else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
             //  回传给调拨
             inBoundReturn(inbound.getSourceOderCode());
-            inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = inboundDao.updateByPrimaryKeySelective(inbound);
         } else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
             //如果是移库
             inBoundReturnMovement(inbound.getSourceOderCode());
@@ -892,7 +879,7 @@ public class InboundServiceImpl implements InboundService {
      * @param batchList
      */
     @Async("myTaskAsyncPool")
-    public void returnOrder(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
+    public void returnGoods(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         SupplyReturnOrderMainReqVOReturn returnOrderMain = new SupplyReturnOrderMainReqVOReturn();
 
         Long productNum = 0L;
@@ -938,7 +925,7 @@ public class InboundServiceImpl implements InboundService {
         returnOrderMain.setOrderBatchItems(returnOrderProductBatchs);
         returnOrderMain.setOrderItems(returnOrderProducts);
         returnOrderMain.setMainOrderInfo(returnOrderInfo);
-        returnGoodsService.recordWMS(returnOrderMain);
+        //returnGoodsService.recordWMS(returnOrderMain);
     }
 
     /**

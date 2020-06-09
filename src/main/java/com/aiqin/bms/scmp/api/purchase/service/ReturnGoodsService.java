@@ -64,5 +64,5 @@ public interface ReturnGoodsService {
 
     Boolean recordDL(ReturnDLReq reqVO);
 
-    Boolean recordWMS(SupplyReturnOrderMainReqVOReturn reqVO);
+    HttpResponse recordWMS(String inboundOderCode);
 }

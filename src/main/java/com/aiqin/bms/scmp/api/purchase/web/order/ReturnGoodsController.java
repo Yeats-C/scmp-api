@@ -84,7 +84,7 @@ public class ReturnGoodsController {
     public HttpResponse recordWMS(@RequestBody SupplyReturnOrderMainReqVOReturn reqVO){
         log.info("ReturnGoodsController--updateReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
         try {
-            return HttpResponse.success(returnGoodsService.recordWMS(reqVO));
+            return HttpResponse.success();
         } catch (BizException e){
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
         }catch (Exception e) {

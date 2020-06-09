@@ -13,11 +13,9 @@ public interface ReturnOrderInfoItemMapper {
 
     List<ReturnOrderInfoItem> selectByReturnOrderCode(@Param("returnOrderCode") String returnOrderCode);
 
-    int updateByPrimaryKeySelective(ReturnOrderInfoItem record);
+    Integer update(ReturnOrderInfoItem record);
 
     int updateByReturnOrderCodeSelective(ReturnOrderInfoItem record);
-
-    //int updateByPrimaryKey(ReturnOrderInfoItem record);
 
     int insertBatch(List<ReturnOrderInfoItem> orderItems);
 
@@ -27,6 +25,7 @@ public interface ReturnOrderInfoItemMapper {
 
     List<ReturnOrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 
-    /** 更新退货单商品实际入库数量 */
-    int updateByReturnActualNum(ReturnOrderInfoItem returnOrderInfoItem);
+    ReturnOrderInfoItem returnOrderOne(@Param("returnOrderCode") String returnOrderCode,
+                                       @Param("skuCode") String skuCode,
+                                       @Param("lineCode") Long lineCode);
 }

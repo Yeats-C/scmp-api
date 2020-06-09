@@ -102,7 +102,7 @@
       )
     </foreach>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem">
+    <update id="update">
         update return_order_info_item
         <set>
             <if test="returnOrderCode != null">
@@ -320,23 +320,11 @@
                 #{item}
             </foreach>
     </select>
-    <update id="updateByReturnActualNum">
-        update return_order_info_item
-        <set>
-            <if test="actualInboundNum != null">
-                actual_inbound_num = #{actualInboundNum,jdbcType=INTEGER}
-            </if>
-        </set>
-        <where>
-            <if test="returnOrderCode != null">
-               return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode != null">
-                and sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="productLineNum != null">
-                and product_line_num = #{productLineNum,jdbcType=BIGINT}
-            </if>
-        </where>
-    </update>
+    <select id="returnOrderOne" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from return_order_info_item
+        where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
+        and product_line_num = #{lineCode,jdbcType=BIGINT}
+    </select>
 </mapper>
