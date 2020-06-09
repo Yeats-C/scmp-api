@@ -148,12 +148,12 @@
       and a.return_order_code LIKE CONCAT(CONCAT('%',#{returnOrderCode},'%'))
     </if>
       <if test="orderTypeCode != null and orderTypeCode.size > 0">
-      and a.order_type_code in
+      and a.order_type in
       <foreach collection="orderTypeCode" open="(" close=")" separator="," item="item">
        #{item}
       </foreach>
     </if>
-    order by create_date desc
+    order by id desc
   </select>
   <resultMap id="selectReturnOrderDetail" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderDetailRespVO">
     <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
@@ -250,9 +250,7 @@
                a.order_code aorder_code,
                a.create_date acreate_date,
                a.order_type aorder_type,
-               a.order_type_code aorder_type_code,
                a.return_order_type areturn_order_type,
-               a.return_order_type_code areturn_order_type_code,
                a.payment_status apayment_status,
                a.be_lock abe_lock,
                a.lock_reason alock_reason,
@@ -335,7 +333,6 @@
                b.unit_name bunit_name,
                b.zero_disassembly_coefficient bzero_disassembly_coefficient,
                b.give_promotion bgive_promotion,
-               b.batch_code bbatch_code,
                b.price bprice,
                b.num bnum,
                b.amount bamount,
@@ -353,8 +350,8 @@
                b.actual_amount bactual_amount,
                b.actual_price bactual_price
         from return_order_info a
-                 left join return_order_info_item b
-                           on a.return_order_code = b.return_order_code
+        left join return_order_info_item b
+        on a.return_order_code = b.return_order_code
         where a.return_order_code = #{code}
   </select>
   <select id="selectreturnInspectionList"
@@ -1034,12 +1031,12 @@
                    a.warehouse_name awarehouseName,
                    b.sku_code bskuCode,
                    b.sku_name bskuName,
-                   b.inbound_batch_code bbatchNumber,
-                   b.pre_qty bnum,
+--                    b.inbound_batch_code bbatchNumber,
+--                    b.pre_qty bnum,
                    b.supplier_name bsupplier_name,
                    b.supplier_code bsupplier_code,
-                   b.batch_remark bbatchRemark,
-                   b.manufacture_time bproductDate
+                   b.batch_remark bbatchRemark
+--                    ,b.manufacture_time bproductDate
               from inbound a
                      left join inbound_batch b
                                on a.inbound_oder_code = b.inbound_oder_code
