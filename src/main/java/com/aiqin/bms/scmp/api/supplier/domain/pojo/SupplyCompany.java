@@ -187,4 +187,9 @@ public class SupplyCompany extends CommonBean {
 
     @ApiModelProperty("供应商属性 0:自营 1:平台")
     private String property;
+
+    @ApiModelProperty("付款方式编号")
+    private String payTypeCode;
+    @ApiModelProperty("付款方式名称")
+    private String payTypeName;
 }
