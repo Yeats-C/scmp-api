@@ -74,6 +74,10 @@ public class TransportAddRequest {
     //@JsonProperty("remark")
     private String remark;
 
+    @ApiModelProperty("订单商品总件数")
+//    @JsonProperty("order_commodity_num")
+    private Long orderCommodityNum;
+
     @ApiModelProperty("订单列表")
     //@JsonProperty("orders_list")
     List<TransportOrders> ordersList;

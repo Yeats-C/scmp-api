@@ -75,11 +75,11 @@ public class TransportServiceImpl implements TransportService {
         transport.setTransportCode(code);
         List<TransportOrders> transportOrders = BeanCopyUtils.copyList(transportAddRequest.getOrdersList(), TransportOrders.class);
         Long transportAmount=0L;
-        Long orderCommodityNum=0L;
+//        Long orderCommodityNum=0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
             transportAmount+=transportOrder.getOrderAmount();
-            orderCommodityNum+=transportOrder.getProductNum();
+//            orderCommodityNum+=transportOrder.getProductNum();
         }
         //查询一次收货信息设置值
         OrderInfo orderInfo= orderService.selectByOrderCode(transportOrders.get(0).getOrderCode());
@@ -90,7 +90,8 @@ public class TransportServiceImpl implements TransportService {
         transport.setDetailedAddress(orderInfo.getDetailAddress());
         transport.setStatus(1);//设置未发运状态
         transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
-        transport.setOrderCommodityNum(orderCommodityNum);
+        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
+        transport.setZip(orderInfo.getZipCode());
         transportMapper.insertOne(transport);
         transportOrdersMapper.insertBatch(transportOrders);
         //写入发运单创建日志
