@@ -39,6 +39,14 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
     @ApiModelProperty("供应商集团编码")
     private String supplierCode;
 
+
+    @ApiModelProperty("供应商集团简称")
+    private String supplierAbbreviation;
+
+    @ApiModelProperty("供应商属性 0:自营 1:平台")
+    private String property;
+
+
     @ApiModelProperty("简称")
     private String applyAbbreviation;
 
