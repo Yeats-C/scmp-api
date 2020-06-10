@@ -4,6 +4,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportLog;
@@ -17,10 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.TransportMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.TransportOrdersMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -67,17 +65,22 @@ public class TransportServiceImpl implements TransportService {
     @Override
     @Transactional(rollbackFor = RuntimeException.class)
     public HttpResponse saveTransport(TransportAddRequest transportAddRequest) {
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         Transport transport=new Transport();
         //获取一个运输单号
         String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
         transport.setLogisticsFee(transport.getAdditionalLogisticsFee()+transport.getStandardLogisticsFee());
         transport.setTransportCode(code);
+        transport.setCreateBy(currentAuthToken.getPersonName());
+        transport.setUpdateBy(currentAuthToken.getPersonName());
         List<TransportOrders> transportOrders = BeanCopyUtils.copyList(transportAddRequest.getOrdersList(), TransportOrders.class);
         Long transportAmount=0L;
 //        Long orderCommodityNum=0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
+            transportOrder.setCreateBy(currentAuthToken.getPersonName());
+            transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             transportAmount+=transportOrder.getOrderAmount();
 //            orderCommodityNum+=transportOrder.getProductNum();
         }
@@ -100,6 +103,8 @@ public class TransportServiceImpl implements TransportService {
         transportLog.setType("新增");
         transportLog.setContent("新增发运单");
         transportLog.setRemark(transport.getRemark());
+        transportLog.setCreateBy(currentAuthToken.getPersonName());
+        transportLog.setUpdateBy(currentAuthToken.getPersonName());
         transportLogMapper.insertOne(transportLog);
         return HttpResponse.success();
     }

@@ -212,9 +212,9 @@
         #{remark},
         #{delFlag},
         #{createBy},
-        #{createTime},
+        now(),
         #{updateBy},
-        #{updateTime}
+        now()
         )
     </insert>
     <select id="selectOrderOneByOrderCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.order.SupplyOrderInfo">
