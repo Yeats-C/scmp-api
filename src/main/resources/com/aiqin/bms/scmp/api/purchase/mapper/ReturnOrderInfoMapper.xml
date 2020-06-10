@@ -354,51 +354,6 @@
         on a.return_order_code = b.return_order_code
         where a.return_order_code = #{code}
   </select>
-  <select id="selectreturnInspectionList"
-          resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.QueryReturnInspectionRespVO">
-    select
-    a.return_order_code returnOrderCode,
-    a.return_order_type returnOrderType,
-    a.order_code orderCode,
-    a.order_type orderType,
-    a.customer_name customerName,
-    a.transport_center_name transportCenterName,
-    a.warehouse_name warehouseName,
-    a.supplier_name supplierName,
-    a.order_status orderStatus,
-    a.create_date createDate,
-    a.product_num productNum,
-    a.product_total_amount productTotalAmount,
-    a.return_order_amount returnOrderAmount
-    from return_order_info a
-    left join return_order_info_item b
-    on a.return_order_code = b.return_order_code
-    where a.company_code = #{companyCode}
-    <if test="createDateStart != null">
-      and a.create_date &gt;=#{createDateStart,jdbcType=TIMESTAMP}
-    </if>
-    <if test="createDateEnd != null">
-      and a.create_date &lt;=#{createDateEnd,jdbcType=TIMESTAMP}
-    </if>
-    <if test="orderStatus != null and orderStatus != ''">
-      and a.order_status = #{orderStatus}
-    </if>
-    <if test="transportCenterCode != null and transportCenterCode != ''">
-      and a.transport_center_code = #{transportCenterCode}
-    </if>
-    <if test="warehouseCode != null and warehouseCode != ''">
-      and a.warehouse_code = #{warehouseCode}
-    </if>
-    <if test="customerCode != null and customerCode != ''">
-      and a.customer_code like concat('%',#{customerCode},'%')
-    </if>
-    <if test="orderCode != null and orderCode != ''">
-      and a.order_code = #{orderCode}
-    </if>
-    <if test="returnOrderCode != null and returnOrderCode != ''">
-      and a.return_order_code = #{returnOrderCode}
-    </if>
-  </select>
   <resultMap id="selectInspectionDetail" type="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.InspectionDetailRespVO">
     <result column="areturn_order_code" jdbcType="VARCHAR" property="returnOrderCode" />
     <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />
@@ -1551,12 +1506,9 @@
       actual_product_channel_total_amount = #{actualProductChannelTotalAmount,jdbcType=BIGINT}
     where return_order_code = #{returnOrderCode,jdbcType=BIGINT}
     </update>
-    <update id="updateByReturnOrderCodeSelective">
+    <update id="update">
         update return_order_info
         <set>
-            <if test="returnOrderCode != null">
-                return_order_code = #{returnOrderCode,jdbcType=VARCHAR},
-            </if>
             <if test="orderCode != null">
                 order_code = #{orderCode,jdbcType=VARCHAR},
             </if>
@@ -1731,24 +1683,13 @@
             <if test="orderOriginal != null">
                 order_original = #{orderOriginal,jdbcType=VARCHAR},
             </if>
-            <if test="createById != null">
-                create_by_id = #{createById,jdbcType=VARCHAR},
-            </if>
-            <if test="createByName != null">
-                create_by_name = #{createByName,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
             <if test="updateById != null">
                 update_by_id = #{updateById,jdbcType=VARCHAR},
             </if>
             <if test="updateByName != null">
                 update_by_name = #{updateByName,jdbcType=VARCHAR},
             </if>
-            <if test="updateTime != null">
-                update_time = #{updateTime,jdbcType=TIMESTAMP},
-            </if>
+                update_time = now(),
             <if test="volume != null">
                 volume = #{volume,jdbcType=VARCHAR},
             </if>
@@ -1800,4 +1741,50 @@
     <update id="updateReturnOrderSynchrSap">
         update return_order_info set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where return_order_code = #{returnOrderCode}
     </update>
+  <sql id="LIST_QUERY">
+      <where>
+          <if test="createBeginTime != null">
+              and create_time &gt;= #{createBeginTime,jdbcType=VARCHAR}
+          </if>
+          <if test="createFinishTime != null">
+              and create_time &lt;= #{createFinishTime,jdbcType=VARCHAR}
+          </if>
+          <if test="transportCenterCode != null">
+              and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+          </if>
+          <if test="warehouseCode != null">
+              and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+          </if>
+          <if test="returnOrderCode != null and returnOrderCode != ''">
+              and return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+          </if>
+          <if test="orderCode != null ">
+              and order_code = #{orderCode,jdbcType=VARCHAR}
+          </if>
+          <if test="customerCode != null">
+              and customer_code = #{customerCode,jdbcType=VARCHAR}
+          </if>
+          <if test="orderStatus != null">
+              and order_status = #{orderStatus,jdbcType=INTEGER}
+          </if>
+          <if test="companyCode != null">
+              and company_code = #{companyCode,jdbcType=VARCHAR}
+          </if>
+          <if test="returnOrderType != null">
+              and return_order_type = #{returnOrderType,jdbcType=INTEGER}
+          </if>
+      </where>
+  </sql>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from return_order_info
+    <include refid="LIST_QUERY"/>
+    order by id desc
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from return_order_info
+    <include refid="LIST_QUERY"/>
+  </select>
 </mapper>

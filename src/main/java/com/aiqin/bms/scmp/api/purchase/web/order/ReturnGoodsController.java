@@ -1,18 +1,14 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnDLReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
-import com.aiqin.bms.scmp.api.product.domain.response.ReturnDLResp;
-import com.aiqin.bms.scmp.api.product.domain.response.ReturnResp;
-import com.aiqin.bms.scmp.api.product.domain.response.inbound.SupplyReturnOrderMainReqVOReturn;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnInspectionReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.QueryReturnOrderManagementReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnInspectionReq;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderInfoReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -62,7 +58,7 @@ public class ReturnGoodsController {
     @PostMapping("/record/return")
     public HttpResponse<String> record(@RequestBody ReturnReq reqVO){
         log.info("运营中台推送退货单参数：[{}]", JsonUtil.toJson(reqVO));
-        return HttpResponse.successGenerics(returnGoodsService.record(reqVO));
+        return returnGoodsService.record(reqVO);
     }
 
     @ApiOperation("DL退货单调用接口")
@@ -78,21 +74,6 @@ public class ReturnGoodsController {
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
         }
     }
-
-    @ApiOperation("wms退货单回传接口")
-    @PostMapping("recordWMS/return")
-    public HttpResponse recordWMS(@RequestBody SupplyReturnOrderMainReqVOReturn reqVO){
-        log.info("ReturnGoodsController--updateReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success();
-        } catch (BizException e){
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-        }
-    }
-
 
     @ApiOperation("退货单管理")
     @PostMapping("/returnOrderManagement")
@@ -178,19 +159,13 @@ public class ReturnGoodsController {
         }
     }
 
-    @ApiOperation("退货验货")
-    @PostMapping("/returnInspection")
-    public HttpResponse<BasePage<QueryReturnInspectionRespVO>> returnInspection(@RequestBody QueryReturnInspectionReqVO reqVO){
-        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.returnInspection(reqVO));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
+    @ApiOperation("退货列表")
+    @PostMapping("/list")
+    public HttpResponse<PageResData<ReturnOrderInfo>> returnInspection(@RequestBody ReturnGoodsRequest request){
+        log.info("调用退货单列表参数：{}", JsonUtil.toJson(request));
+        return returnGoodsService.returnOrderList(request);
     }
+
     @ApiOperation("验货详情")
     @GetMapping("/inspectionDetail")
     public HttpResponse<InspectionDetailRespVO> inspectionDetail(@RequestParam String code){
@@ -205,17 +180,10 @@ public class ReturnGoodsController {
         }
     }
     @ApiOperation("验货保存")
-    @PostMapping("/saveReturnInspection")
-    public HttpResponse<Boolean> saveReturnInspection(@RequestBody List<ReturnInspectionReq> reqVO,@RequestParam String remark){
-        log.info("ReturnGoodsController---saveReturnInspection---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.saveReturnInspection(reqVO,remark));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
+    @PostMapping("/inspection/save")
+    public HttpResponse<Boolean> saveReturnInspection(@RequestBody ReturnInspectionRequest request){
+        log.info("退货验货提交参数：[{}]", JsonUtil.toJson(request));
+        return returnGoodsService.saveReturnInspection(request);
     }
 
     @ApiOperation("验货查看")

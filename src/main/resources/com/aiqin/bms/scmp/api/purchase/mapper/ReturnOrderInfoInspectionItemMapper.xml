@@ -188,7 +188,12 @@
     where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
     and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
     <if test="lineCode != null">
-      and line_code = #{lineCode,jdbcType=BIGINT}
+        and line_code = #{lineCode,jdbcType=BIGINT}
     </if>
+  </select>
+  <select id="returnOrderBatchList" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"></include>
+      from return_order_info_inspection_item
+      where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
   </select>
 </mapper>
