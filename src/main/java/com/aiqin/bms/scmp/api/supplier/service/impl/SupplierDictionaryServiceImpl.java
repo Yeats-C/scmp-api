@@ -52,7 +52,7 @@ import java.util.List;
 @Slf4j
 public class SupplierDictionaryServiceImpl implements SupplierDictionaryService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(SapAbutmentController.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(SupplierDictionaryServiceImpl.class);
 
 
     @Autowired

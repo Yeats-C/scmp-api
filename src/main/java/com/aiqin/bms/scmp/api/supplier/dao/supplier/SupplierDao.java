@@ -53,4 +53,6 @@ public interface SupplierDao {
      */
     @MapKey("supplierName")
     Map<String, Supplier> selectByNameList(@Param("list") List<String> supplierNameList, @Param("companyCode") String companyCode);
+
+    void add(QuerySupplierReqVO querySupplierReqVO);
 }

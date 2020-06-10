@@ -20,6 +20,11 @@ public class QuerySupplierReqVO extends PageReq{
     @ApiModelProperty("供应商集团名称/简称")
     private String supplierNameOrShort;
 
+    @ApiModelProperty("所属供应商名称")
+    private String supplierName;
+
+    @ApiModelProperty("创建人")
+    private String createBy;
 
     @ApiModelProperty("是否禁用,全部:空字符串,禁用:1,启用:0")
     private String enable;
