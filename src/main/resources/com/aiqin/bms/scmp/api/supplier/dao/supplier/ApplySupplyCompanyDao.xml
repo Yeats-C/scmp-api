@@ -52,6 +52,7 @@
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
     <result column="apply_status" jdbcType="VARCHAR" property="applyStatus"/>
+    <result column="property" jdbcType="VARCHAR" property="property"/>
 
     <result column="apply_supply_name" jdbcType="VARCHAR" property="applySupplyName" />
     <result column="supply_company_code" jdbcType="VARCHAR" property="applySupplyCode" />
@@ -223,6 +224,7 @@
     SELECT
 	  a.apply_supply_company_code apply_code,
 	  a.form_no,
+	  a.property,
       CASE
       a.apply_type
       WHEN 1 THEN

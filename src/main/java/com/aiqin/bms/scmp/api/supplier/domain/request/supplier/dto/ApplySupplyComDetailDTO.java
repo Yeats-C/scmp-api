@@ -20,6 +20,9 @@ public class ApplySupplyComDetailDTO {
     @ApiModelProperty("申请类型")
     private String applyTypeName;
 
+    @ApiModelProperty("属性")
+    private String property;
+
     @ApiModelProperty("申请人")
     private String applyBy;
 

@@ -23,6 +23,9 @@ public class ApplySupplyComInfoRespVO {
     @ApiModelProperty("申请供货单位编码")
     private String applySupplyCode;
 
+    @ApiModelProperty("属性")
+    private String property;
+
     @ApiModelProperty("申请供货单位类型")
     private String applySupplyType;
 
