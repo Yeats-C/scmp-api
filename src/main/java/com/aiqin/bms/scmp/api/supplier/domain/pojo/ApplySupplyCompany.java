@@ -19,6 +19,8 @@ public class ApplySupplyCompany extends CommonBean {
 
     @ApiModelProperty("申请供应单位类型")
     private String applySupplyType;
+    @ApiModelProperty("供应商集团简称")
+    private String supplierAbbreviation;
 
     @ApiModelProperty("简称")
     private String applyAbbreviation;
