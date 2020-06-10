@@ -1054,14 +1054,14 @@
     </select>
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
        select
-          a.stock_batch_code      as warehouseBatchNumber,
-          a.batch_code      as batchCode,
-          a.transport_center_code as transportCenterCode,
-          a.transport_center_name as transportCenterName,
-          a.warehouse_code        as warehouseCode,
-          a.warehouse_name        as warehouseName,
-          a.batch_remark          as batchRemark,
-          a.product_date       as productTime
+          a.stock_batch_code      as warehouse_batch_number,
+          a.batch_code      as batch_code,
+          a.transport_center_code as transport_center_code,
+          a.transport_center_name as transport_center_name,
+          a.warehouse_code        as warehouse_code,
+          a.warehouse_name        as warehouse_name,
+          a.batch_remark          as batch_remark,
+          a.product_date       as production_date
        from stock_batch a
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
     </select>
