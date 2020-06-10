@@ -33,7 +33,7 @@
             ) values (
             #{item.transportCode},#{item.orderCode},#{item.commodityAmount},#{item.orderAmount},#{item.status},#{item.type},
             #{item.transportCenterCode},#{item.transportCenterName},#{item.warehouseCode},#{item.warehouseName},#{item.productNum},
-            #{item.deliverTime},#{item.delFlag},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime}
+            #{item.deliverTime},#{item.delFlag},#{item.createBy},now(),#{item.updateBy},now()
             )
         </foreach>
     </insert>
