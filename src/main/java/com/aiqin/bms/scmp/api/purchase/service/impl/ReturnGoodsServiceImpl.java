@@ -232,7 +232,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         for (int i = 0; i < items.size(); i++) {
             ReturnOrderInfoInspectionItem item = items.get(i);
-            item.setProductLineNum((long)i*10);
+            item.setLineCode((long)i*10);
         }
         int i = returnOrderInfoInspectionItemMapper.insertBatch(items);
         if(i!=items.size()){
@@ -426,7 +426,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
               returnOrderInfoInspectionItem.setReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
               returnOrderInfoInspectionItem.setSkuCode(returnBatchDetailDLReq.getSkuCode());
               returnOrderInfoInspectionItem.setSkuName(returnBatchDetailDLReq.getSkuName());
-              returnOrderInfoInspectionItem.setProductLineNum(returnBatchDetailDLReq.getLineCode());
+              returnOrderInfoInspectionItem.setLineCode(returnBatchDetailDLReq.getLineCode());
               returnOrderInfoInspectionItem.setBatchCode(String.valueOf(returnBatchDetailDLReq.getBatchNum()));
               returnOrderInfoInspectionItemMapper.insert(returnOrderInfoInspectionItem);
           }
@@ -491,37 +491,45 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         // 查询入库单的批次信息
         List<InboundBatch> inboundBatches = inboundBatchDao.selectInboundBatchList(inboundOderCode);
-        List<InboundBatch> batchList = Lists.newArrayList();
-        InboundBatch inboundBatch;
-//        for (InboundBatch batch : inboundBatches) {
-//            // 根据批次号、sku、行号查询对应的批次
-//            ReturnOrderInfoInspectionItem returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(orderBatchItem.getBatchInfoCode(),orderBatchItem.getReturnOderCode(),orderBatchItem.getLineCode());
-//            if(returnBatchItem != null){
-//                returnBatchItem.setActualInboundNum(orderBatchItem.getActualTotalCount().intValue());
-//                int count = returnOrderInfoInspectionItemMapper.updateByPrimaryKey(returnBatchItem);
-//                LOGGER.info("变更退货单批次参数：" + JsonUtil.toJson(returnBatchItem)+ "，-条数：", count);
-//                continue;
-//            }
-//
-//            ReturnOrderInfoInspectionItem returnOrderInfoInspectionItem = BeanCopyUtils.copy(orderBatchItem, ReturnOrderInfoInspectionItem.class);
-//            returnOrderInfoInspectionItem.setReturnOrderCode(orderBatchItem.getReturnOderCode());
-//            returnOrderInfoInspectionItem.setNum(0L);
-//            returnOrderInfoInspectionItem.setActualInboundNum(orderBatchItem.getActualTotalCount().intValue());
-//            returnOrderInfoInspectionItem.setProductLineNum(orderBatchItem.getLineCode().longValue());
-//            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//            try{
-//                Date parse = simpleDateFormat.parse(orderBatchItem.getProductDate());
-//                returnOrderInfoInspectionItem.setProductDate(parse);
-//            }catch (Exception e){
-//                e.printStackTrace();
-//            }
-//            returnOrderInfoInspectionItems.add(returnOrderInfoInspectionItem);
-//        }
-//        int count = returnOrderInfoInspectionItemMapper.insertBatch(returnOrderInfoInspectionItems);
-//        LOGGER.info("添加退货单单批次参数：" + JsonUtil.toJson(returnOrderInfoInspectionItems) + "，-条数：", count);
+        List<ReturnOrderInfoInspectionItem> batchList = Lists.newArrayList();
+        ReturnOrderInfoInspectionItem returnBatchItem;
+        ReturnOrderInfoInspectionItem returnBatch;
+        for (InboundBatch batch : inboundBatches) {
+            // 根据批次号、sku、行号查询对应的批次
+            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
+                    inbound.getSourceOderCode(), batch.getLineCode());
+            returnBatchItem.setActualProductCount(batch.getActualTotalCount());
 
-        int returnInfo = returnOrderInfoMapper.update(returnOrder);
-        log.info("更新退货单主表数据失败");
+            if(returnBatchItem == null){
+                // 根据sku  行号查询对应的批次
+                returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
+                        inbound.getSourceOderCode(), null);
+                returnBatchItem.setActualProductCount(batch.getActualTotalCount() + returnBatchItem.getActualProductCount());
+                if(returnBatchItem == null){
+                    returnBatch = new ReturnOrderInfoInspectionItem();
+                    returnBatch.setReturnOrderCode(inbound.getSourceOderCode());
+                    returnBatch.setSkuCode(batch.getSkuCode());
+                    returnBatch.setSkuName(batch.getSkuName());
+                    returnBatch.setLineCode(batch.getLineCode().longValue());
+                    returnBatch.setReturnProductCount(batch.getTotalCount());
+                    returnBatch.setActualProductCount(batch.getActualTotalCount());
+                    returnBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                    returnBatch.setBatchCode(batch.getBatchCode());
+                    returnBatch.setBeOverdueDate(batch.getBeOverdueDate());
+                    returnBatch.setProductDate(batch.getProductDate());
+                    returnBatch.setBatchRemark(batch.getBatchRemark());
+                    batchList.add(returnBatch);
+                }
+            }
+
+           Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
+            LOGGER.info("更新退货单批次：", i);
+        }
+        Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);
+        LOGGER.info("添加退货单批次：", count);
+
+        Integer returnInfo = returnOrderInfoMapper.update(returnOrder);
+        log.info("更新退货单主信息：", returnInfo);
         return HttpResponse.success();
     }
 

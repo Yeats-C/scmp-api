@@ -1604,7 +1604,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     }
                     info.setPurchaseOrderCode(returnBatch.getReturnOrderCode());
                     info.setBatchNo(returnBatch.getBatchCode());
-                    info.setActualTotalCount(returnBatch.getActualInboundNum().longValue());
+                    info.setActualTotalCount(returnBatch.getActualProductCount().longValue());
                     info.setProductType("0");
                     infoBatch.add(info);
                 }
