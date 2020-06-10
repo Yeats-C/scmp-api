@@ -843,7 +843,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
           //审批成功之后将数据传给wms
-            sendWms(applySupplyCompany);
+//            sendWms(applySupplyCompany);
           //传输sap
             sendSap(applySupplyCompany);
 
