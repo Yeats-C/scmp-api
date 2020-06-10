@@ -84,6 +84,7 @@
     <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
     <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
     <result column="city_id" jdbcType="VARCHAR" property="cityId" />

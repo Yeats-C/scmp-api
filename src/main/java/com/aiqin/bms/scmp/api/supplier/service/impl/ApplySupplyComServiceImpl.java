@@ -755,16 +755,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             supplyCompany.setAuditorBy(vo.getApprovalUserName());
             supplyCompany.setAuditorTime(new Date());
             String content;
-            //查看是否有对应供应商集团
-            QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
-            querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
-//           supplierDao.getSupplierList(querySupplierReqVO);
-         if (CollectionUtils.isEmptyCollection(supplierDao.getSupplierList(querySupplierReqVO))){
-        querySupplierReqVO.setSupplierCode(applySupplyCompany.getSupplierCode());
-        querySupplierReqVO.setCompanyCode(applySupplyCompany.getCompanyCode());
-        querySupplierReqVO.setCreateBy(applySupplyCompany.getCreateBy());
-        supplierDao.add(querySupplierReqVO);
-        }
+
             HandleTypeCoce handleTypeCoce;
             if (null != oldSupplyCompany) {
                 //删除原有的发货/退货信息
@@ -782,6 +773,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 supplyCompany.setStarScore(oldSupplyCompany.getStarScore());
                 handleTypeCoce = HandleTypeCoce.UPDATE;
                 content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
+                addSupplier(applySupplyCompany, supplyCompany);
                 supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
             } else {
                 EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
@@ -793,8 +785,12 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
                 handleTypeCoce = HandleTypeCoce.ADD;
                 supplyCompanyMapper.insert(supplyCompany);
+                addSupplier(applySupplyCompany, supplyCompany);
                 encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
+
+
+
             applySupplyCompany.setSupplyCompanyCode(supplyCompany.getSupplyCode());
             if (applySupplyCompanyAccount != null) {
                 applySupplyCompanyAccount.setSupplyCompanyCode(supplyCompany.getSupplyCode());
@@ -893,6 +889,24 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         String content = applyStatus.getContent().replace(Global.CREATE_BY, applySupplyCompany.getCreateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
+    }
+
+    private void addSupplier(ApplySupplyCompany applySupplyCompany, SupplyCompany supplyCompany) {
+        //查看是否有对应供应商集团
+        QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
+        querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
+//           supplierDao.getSupplierList(querySupplierReqVO);
+        if (CollectionUtils.isEmptyCollection(supplierDao.getSupplierList(querySupplierReqVO))){
+            querySupplierReqVO.setSupplierCode(supplyCompany.getSupplyCode());
+            querySupplierReqVO.setCompanyCode(supplyCompany.getCompanyCode());
+            querySupplierReqVO.setCreateBy(supplyCompany.getCreateBy());
+            if (StringUtils.isEmpty(supplyCompany.getSupplierAbbreviation())){
+                querySupplierReqVO.setSupplierNameOrShort("");
+            }else {
+                querySupplierReqVO.setSupplierNameOrShort(supplyCompany.getSupplierAbbreviation());
+            }
+            supplierDao.add(querySupplierReqVO);
+        }
     }
 
     private void sendSap(ApplySupplyCompany supplyCompany) {

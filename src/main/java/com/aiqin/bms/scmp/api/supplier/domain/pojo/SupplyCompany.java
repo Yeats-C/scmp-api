@@ -20,7 +20,7 @@ public class SupplyCompany extends CommonBean {
     @ApiModelProperty("供应单位类型")
     private String supplyType;
 
-    @ApiModelProperty("简称")
+    @ApiModelProperty("供应商简称")
     private String supplyAbbreviation;
 
     @ApiModelProperty("省id")
