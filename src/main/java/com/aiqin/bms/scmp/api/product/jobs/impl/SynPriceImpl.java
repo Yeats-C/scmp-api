@@ -115,24 +115,24 @@ public class SynPriceImpl implements SynPrice {
             List<String> codes = infos.stream().map(ProductSkuChangePriceInfo::getOfficialCode).distinct().collect(Collectors.toList());
             List<ProductSkuPriceInfo> priceInfos = productSkuPriceInfoMapper.selectByCodes(codes);
             Map<String, ProductSkuPriceInfo> infoMap = priceInfos.stream().collect(Collectors.toMap(o -> o.getCode(), Function.identity()));
-            if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(dto.getChangePriceType())) {
-                for (ProductSkuChangePriceInfo info : infos) {
-                    ProductSkuPriceInfo priceInfo = infoMap.get(info.getOfficialCode());
-                    ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
-                    priceInfo.setApplyCode(info.getCode());
-                    priceInfo.setPriceTax(info.getPurchasePriceNew());
-                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), BigDecimal.ZERO));
-                    priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
-                    priceInfo.setUpdateTime(new Date());
-                    priceInfo.setTax(BigDecimal.ZERO); //TODO 需要从商品上取
-                    ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
-                    ProductSkuPriceInfoLog log2 = new ProductSkuPriceInfoLog(copy.getCode(),copy.getPriceTax(),copy.getPriceNoTax(),copy.getTax(),priceInfo.getEffectiveTimeStart(),new Date(),2,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
-                    logs.add(log);
-                    logs.add(log2);
-                    info.setBeSynchronize(1);
-                    priceInfoList.add(priceInfo);
-                }
-            } else if (CommonConstant.SALE_CHANGE_PRICE.equals(dto.getChangePriceType())) {
+//            if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(dto.getChangePriceType())) {
+//                for (ProductSkuChangePriceInfo info : infos) {
+//                    ProductSkuPriceInfo priceInfo = infoMap.get(info.getOfficialCode());
+//                    ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
+//                    priceInfo.setApplyCode(info.getCode());
+//                    priceInfo.setPriceTax(info.getPurchasePriceNew());
+//                    priceInfo.setPriceNoTax(Calculate.computeNoTaxPrice(info.getPurchasePriceNew(), BigDecimal.ZERO));
+//                    priceInfo.setUpdateBy(Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()));
+//                    priceInfo.setUpdateTime(new Date());
+//                    priceInfo.setTax(BigDecimal.ZERO); //TODO 需要从商品上取
+//                    ProductSkuPriceInfoLog log = new ProductSkuPriceInfoLog(priceInfo.getCode(),priceInfo.getPriceTax(),priceInfo.getPriceNoTax(),priceInfo.getTax(),priceInfo.getEffectiveTimeStart(),null,1,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+//                    ProductSkuPriceInfoLog log2 = new ProductSkuPriceInfoLog(copy.getCode(),copy.getPriceTax(),copy.getPriceNoTax(),copy.getTax(),priceInfo.getEffectiveTimeStart(),new Date(),2,Optional.ofNullable(dto.getUpdateBy()).orElse(dto.getCreateBy()),new Date());
+//                    logs.add(log);
+//                    logs.add(log2);
+//                    info.setBeSynchronize(1);
+//                    priceInfoList.add(priceInfo);
+//                }
+//            } else if (CommonConstant.SALE_CHANGE_PRICE.equals(dto.getChangePriceType())) {
                 for (ProductSkuChangePriceInfo info : infos) {
                     ProductSkuPriceInfo priceInfo = infoMap.get(info.getOfficialCode());
                     ProductSkuPriceInfo copy = BeanCopyUtils.copy(priceInfo, ProductSkuPriceInfo.class);
@@ -149,10 +149,10 @@ public class SynPriceImpl implements SynPrice {
                     info.setBeSynchronize(1);
                     priceInfoList.add(priceInfo);
                 }
-            } else {
-                log.error("数据错误：[{}]");
-                continue;
-            }
+//            } else {
+//                log.error("数据错误：[{}]");
+//                continue;
+//            }
             changePriceInfos.addAll(infos);
         }
         int i1 = productSkuPriceInfoMapper.updateBatch(priceInfoList);

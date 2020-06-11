@@ -194,6 +194,7 @@
         <result column="abatch_code" property="batchCode"/>
         <result column="aprice_item_name" property="priceItemName"/>
         <result column="aprice_type_name" property="priceTypeName"/>
+        <result column="aprice_attribute_name" property="priceAttributeName"/>
         <result column="aprice_tax" property="priceTax"/>
         <result column="aeffective_time_start" property="effectiveTimeStart"/>
         <result column="aeffective_time_end" property="effectiveTimeEnd"/>
@@ -224,6 +225,7 @@
         d.batch_code abatch_code,
         a.price_item_name aprice_item_name,
         a.price_type_name aprice_type_name,
+        a.price_attribute_name aprice_attribute_name,
         a.price_tax aprice_tax,
         a.supplier_name asupplier_name,
         a.warehouse_batch_number awarehouse_batch_number,
