@@ -434,6 +434,8 @@
     select
        a.id,
        a.apply_type as applyType,
+       a.pay_type_code as payTypeCode,
+       a.pay_type_name as payTypeName,
        a.apply_supply_company_code as applyCode,
        a.apply_status as status,
        '供应商' as modelType,

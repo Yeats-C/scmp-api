@@ -784,8 +784,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 supplyCompany.setSupplyCode(String.valueOf(encodingRule.getNumberingValue()));
                 content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
                 handleTypeCoce = HandleTypeCoce.ADD;
-                supplyCompanyMapper.insert(supplyCompany);
                 addSupplier(applySupplyCompany, supplyCompany);
+                supplyCompanyMapper.insert(supplyCompany);
                 encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
 
