@@ -1185,7 +1185,7 @@
         <result column="ainboundTime" property="inboundTime"/>
         <result column="astatus" property="status"/>
         <result column="awarehouseName" property="warehouseName"/>
-        <collection property="detailList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInfoApplyInboundDetailRespVO">
+        <collection property="detailList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInboundBatchResponse">
             <result column="bskuCode" property="skuCode"/>
             <result column="bskuName" property="skuName"/>
             <result column="bpictureUrl" property="pictureUrl"/>

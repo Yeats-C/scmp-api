@@ -1,9 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
-import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnDLReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
@@ -16,34 +16,41 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
-/**
- * 退货接口
- * @date: 2019-06-13
- * @time: 17:35
- */
 public interface ReturnGoodsService {
 
-    Boolean save(List<ReturnOrderInfoReqVO> reqVO);
+    HttpResponse record(ReturnReq reqVO);
+
+    HttpResponse<PageResData<ReturnOrderInfo>> returnOrderList(ReturnGoodsRequest request);
+
+    HttpResponse<PageResData<ReturnOrderInfoItem>> returnOrderProductList(ReturnGoodsRequest request);
+
+    HttpResponse<PageResData<ReturnOrderInfoInspectionItem>> returnOrderBatchList(ReturnGoodsRequest request);
+
+    HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode);
+
+    HttpResponse inboundBatch(InboundBatchReqVo request);
+
+    HttpResponse returnOrderCancel(String returnOrderCode);
+
+    HttpResponse saveReturnInspection(ReturnInspectionRequest request);
+
+    HttpResponse returnReceipt(List<ReturnOrderInfoItem> itemList);
+
+
+
+
 
     void saveLog(List<ReturnOrderInfoLog> logs);
 
     void saveData(List<ReturnOrderInfoItem> orderItems, List<ReturnOrderInfo> orders);
 
-    HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode);
-
     List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code);
 
-    HttpResponse<PageResData<ReturnOrderInfo>> returnOrderList(ReturnGoodsRequest request);
-
     InspectionDetailRespVO inspectionDetail(String code);
-
-    HttpResponse saveReturnInspection(ReturnInspectionRequest request);
 
     InspectionViewRespVO inspectionView(String code);
 
     ReturnOrderDetailRespVO directReturnOrderDetail(String code);
-
-    Boolean returnReceipt(List<ReturnReceiptReqVO> reqVO, String code);
 
     Boolean changeStatus(ChangeOrderStatusReqVO reqVO);
 
@@ -51,9 +58,9 @@ public interface ReturnGoodsService {
 
     Boolean changeOrderStatus(String code, Integer status);
 
-    HttpResponse record(ReturnReq reqVO);
+    HttpResponse recordWMS(String inboundOderCode);
+
+    Boolean save(List<ReturnOrderInfoReqVO> reqVO);
 
     Boolean recordDL(ReturnDLReq reqVO);
-
-    HttpResponse recordWMS(String inboundOderCode);
 }

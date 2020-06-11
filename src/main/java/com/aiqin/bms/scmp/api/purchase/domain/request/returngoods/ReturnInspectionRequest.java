@@ -24,13 +24,6 @@ public class ReturnInspectionRequest {
     @JsonProperty("inspection_remark")
     private String inspectionRemark;
 
-    @ApiModelProperty("验货操作人")
-    private String operator;
-
-    @ApiModelProperty("验货操作人编码")
-    @JsonProperty("operator_code")
-    private String operatorCode;
-
     @ApiModelProperty("验货商品信息")
     @JsonProperty("item_list")
     private List<ReturnOrderInfoInspectionItem> itemList;

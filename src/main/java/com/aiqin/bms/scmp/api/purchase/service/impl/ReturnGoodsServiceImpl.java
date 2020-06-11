@@ -15,6 +15,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
@@ -168,7 +169,17 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 查询退货单的日志信息
         List<ReturnOrderInfoLog> logs = returnOrderInfoLogMapper.returnOrderLog(returnOrderCode);
         response.setLogList(logs);
+        // 查询入库单的基本信息
+        List<Inbound> inbounds = inboundDao.inboundBySource(returnOrderCode, String.valueOf(InboundTypeEnum.ORDER.getCode()));
+        response.setInboundList(inbounds);
         return HttpResponse.successGenerics(response);
+    }
+
+    @Override
+    public HttpResponse inboundBatch(InboundBatchReqVo request){
+        List<ReturnOrderInboundBatchResponse> list = returnOrderInfoInspectionItemMapper.inboundBatchByReturnOrderList(request);
+        Integer count = returnOrderInfoInspectionItemMapper.inboundBatchByReturnOrderCount(request);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
     @Override
@@ -180,6 +191,20 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     public HttpResponse<PageResData<ReturnOrderInfo>> returnOrderList(ReturnGoodsRequest request) {
         List<ReturnOrderInfo> list = returnOrderInfoMapper.list(request);
         Integer count = returnOrderInfoMapper.listCount(request);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    @Override
+    public HttpResponse<PageResData<ReturnOrderInfoItem>> returnOrderProductList(ReturnGoodsRequest request){
+        List<ReturnOrderInfoItem> list = returnOrderInfoItemMapper.list(request);
+        Integer count = returnOrderInfoItemMapper.listCount(request);
+        return HttpResponse.successGenerics(new PageResData<>(count, list));
+    }
+
+    @Override
+    public HttpResponse<PageResData<ReturnOrderInfoInspectionItem>> returnOrderBatchList(ReturnGoodsRequest request){
+        List<ReturnOrderInfoInspectionItem> list = returnOrderInfoInspectionItemMapper.list(request);
+        Integer count = returnOrderInfoInspectionItemMapper.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
 
@@ -216,6 +241,20 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
+    public HttpResponse returnOrderCancel(String returnOrderCode){
+       if(StringUtils.isBlank(returnOrderCode)){
+           return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+       }
+       ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
+       returnOrderInfo.setUpdateByName(getUser().getPersonName());
+       returnOrderInfo.setUpdateById(getUser().getPersonId());
+       returnOrderInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
+       Integer count = returnOrderInfoMapper.update(returnOrderInfo);
+       LOGGER.info("更改退货单异常终止：{}", count);
+       return HttpResponse.success();
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse saveReturnInspection(ReturnInspectionRequest request) {
         if(request == null){
@@ -225,8 +264,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
         returnOrder.setReturnOrderCode(request.getReturnOrderCode());
         returnOrder.setInspectionRemark(request.getInspectionRemark());
-        returnOrder.setUpdateById(request.getOperator());
-        returnOrder.setUpdateByName(request.getOperatorCode());
+        returnOrder.setUpdateById(getUser().getPersonId());
+        returnOrder.setUpdateByName(getUser().getPersonName());
         Integer orderCount = returnOrderInfoMapper.update(returnOrder);
         LOGGER.info("更新退货单保存验货信息：", orderCount);
 
@@ -283,17 +322,28 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean returnReceipt(List<ReturnReceiptReqVO> reqVO, String code) {
-        //更新状态
-        ChangeOrderStatusReqVO vo = new ChangeOrderStatusReqVO();
-        vo.setOperatorCode(getUser().getPersonName());
-        vo.setOperatorCode(getUser().getPersonId());
-        vo.setOrderCode(code);
-        vo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
-        changeStatus(vo);
-        //更新数量
-        saveReturnReceipt(reqVO);
-        return Boolean.TRUE;
+    public HttpResponse returnReceipt(List<ReturnOrderInfoItem> itemList) {
+        if(CollectionUtils.isEmptyCollection(itemList)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        ReturnOrderInfoItem returnOrderInfoItem;
+        for(ReturnOrderInfoItem item : itemList){
+            returnOrderInfoItem = new ReturnOrderInfoItem();
+            returnOrderInfoItem.setId(item.getId());
+            returnOrderInfoItem.setActualPrice(item.getPrice());
+            returnOrderInfoItem.setActualChannelUnitPrice(item.getChannelUnitPrice());
+            Integer count = returnOrderInfoItemMapper.update(returnOrderInfoItem);
+            LOGGER.info("直送退货单实退的商品数量：{}", count);
+        }
+
+        ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
+        returnOrderInfo.setReturnOrderCode(itemList.get(0).getReturnOrderCode());
+        returnOrderInfo.setUpdateById(getUser().getPersonId());
+        returnOrderInfo.setUpdateByName(getUser().getPersonName());
+        returnOrderInfo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        Integer returnCount = returnOrderInfoMapper.update(returnOrderInfo);
+        LOGGER.info("退货单退货收货完成变更退货单状态：{}", returnCount);
+        return HttpResponse.success();
     }
 
     @Override

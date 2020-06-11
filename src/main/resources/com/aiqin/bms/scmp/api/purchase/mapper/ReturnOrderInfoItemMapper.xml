@@ -327,4 +327,15 @@
         and sku_code = #{skuCode,jdbcType=VARCHAR}
         and product_line_num = #{lineCode,jdbcType=BIGINT}
     </select>
+    <select id="list" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List" />
+        from return_order_info_item
+        where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+        LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+    </select>
+    <select id="listCount" resultType="java.lang.Integer">
+        select count(1)
+        from return_order_info_item
+        where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

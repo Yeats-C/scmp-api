@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.returngoods;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -20,4 +21,8 @@ public class ReturnOrderDetailResponse extends ReturnOrderInfo {
     @ApiModelProperty("日志信息")
     @JsonProperty("log_list")
     private List<ReturnOrderInfoLog> logList;
+
+    @ApiModelProperty("入库单基本信息")
+    @JsonProperty("inbound_list")
+    private List<Inbound> inboundList;
 }

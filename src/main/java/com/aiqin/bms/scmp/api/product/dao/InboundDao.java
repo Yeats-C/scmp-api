@@ -32,8 +32,6 @@ public interface InboundDao {
     /*** 批量保存入库信息*/
     int insertBatch(List<Inbound> inboundList);
 
-    Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
-
     List<Inbound> selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode);
 
     List<Inbound> listForSap(SapOrderRequest sapOrderRequest);
@@ -46,4 +44,8 @@ public interface InboundDao {
 
     /** 调拨/损溢入库同步sap **/
     void updateInboundSynchrSap(Inbound inbound);
+
+    List<Inbound> inboundBySource(@Param("sourceOderCode")String sourceOderCode,
+                                  @Param("inboundTypeCode")String inboundTypeCode);
+
 }

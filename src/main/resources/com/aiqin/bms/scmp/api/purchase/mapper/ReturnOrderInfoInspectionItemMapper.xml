@@ -196,4 +196,33 @@
       from return_order_info_inspection_item
       where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
   </select>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="inboundBatchByReturnOrderList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInboundBatchResponse">
+    SELECT a.sku_code skuCode, a.sku_name skuName, b.picture_url pictureUrl, b.spec, b.color_name colorName,
+      b.model,  CONCAT(b.base_product_content, '/', b.unit_name) as boxGauge, a.total_count productCount,
+      b.product_status productStatus, a.batch_code batchCode, a.product_date productDate, a.batch_remark batchRemark,
+      a.supplier_code supplierCode, a.supplier_name supplierName
+    FROM inbound_batch a
+    INNER JOIN return_order_info_item b
+    on a.sku_code = b.sku_code and a.line_code = b.product_line_num
+    WHERE a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="inboundBatchByReturnOrderCount" resultType="java.lang.Integer">
+    SELECT count(1)
+    FROM inbound_batch a
+    INNER JOIN return_order_info_item b
+    on a.sku_code = b.sku_code and a.line_code = b.product_line_num
+    WHERE a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

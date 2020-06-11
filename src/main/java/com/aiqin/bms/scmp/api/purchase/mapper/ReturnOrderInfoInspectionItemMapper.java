@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnGoodsRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInboundBatchResponse;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -22,4 +25,12 @@ public interface ReturnOrderInfoInspectionItemMapper {
                                                   @Param("lineCode") Integer lineCode);
 
     List<ReturnOrderInfoInspectionItem> returnOrderBatchList(String returnOderCode);
+
+    List<ReturnOrderInfoInspectionItem> list(ReturnGoodsRequest request);
+
+    Integer listCount(ReturnGoodsRequest request);
+
+    List<ReturnOrderInboundBatchResponse> inboundBatchByReturnOrderList(InboundBatchReqVo request);
+
+    Integer inboundBatchByReturnOrderCount(InboundBatchReqVo request);
 }

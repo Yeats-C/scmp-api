@@ -31,5 +31,5 @@ public class ReturnOrderInfoApplyInboundRespVO {
     private String warehouseName;
 
     @ApiModelProperty("批次信息")
-    private List<ReturnOrderInfoApplyInboundDetailRespVO> detailList;
+    private List<ReturnOrderInboundBatchResponse> detailList;
 }
