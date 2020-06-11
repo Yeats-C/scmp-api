@@ -472,13 +472,30 @@
         where stock_code = #{stockCode,jdbcType=VARCHAR}
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into stock(
-        stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
-        warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
-        new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
-        tax_price,tax_rate,tax_cost,create_time,create_by,update_time,update_by, stockup_num
+        INSERT INTO stock (
+        stock_code,
+        company_code,
+        company_name,
+        transport_center_code,
+        transport_center_name,
+        warehouse_code,
+        warehouse_name,
+        warehouse_type,
+        sku_code,
+        sku_name,
+        new_delivery,
+        new_delivery_name,
+        new_purchase_price,
+         unit_code,
+        unit_name,
+        tax_rate,
+        tax_cost,
+        create_time,
+        create_by_name,
+        update_time,
+        update_by_name
         )
-        values
+        VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.stockCode},
@@ -491,27 +508,17 @@
             #{item.warehouseType},
             #{item.skuCode},
             #{item.skuName},
-            #{item.inventoryNum},
-            #{item.availableNum},
-            #{item.lockNum},
-            #{item.purchaseWayNum},
-            #{item.allocationWayNum},
-            #{item.totalWayNum},
             #{item.newDelivery},
             #{item.newDeliveryName},
             #{item.newPurchasePrice},
-            #{item.purchaseGroupCode},
-            #{item.purchaseGroupName},
-            #{item.stockUnitCode},
-            #{item.stockUnitName},
-            #{item.taxPrice},
+            #{item.unitCode},
+            #{item.unitName},
             #{item.taxRate},
             #{item.taxCost},
             NOW(),
             #{item.createBy},
             NOW(),
-            #{item.updateBy},
-            #{item.stockupNum}
+            #{item.updateBy}
             )
         </foreach>
     </insert>
