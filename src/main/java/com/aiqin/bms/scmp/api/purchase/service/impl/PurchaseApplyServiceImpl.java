@@ -40,6 +40,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -1452,7 +1453,11 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
                 String salesCode = salesInfo == null || salesInfo.getPurchaseCode() == null ? "" : salesInfo.getPurchaseCode();
                 map.put("distribution", salesCode);
                 map.put("skuName", product.getSkuName());
-                map.put("spec", product.getProductSpec());
+                String spec = product.getProductSpec();
+                if(product.getProductSpec().contains("/*")){
+                    spec = product.getProductSpec().replace("/*","/ *");
+                }
+                map.put("spec", spec);
                 String type;
                 // 0商品 1赠品 2实物返
                 if (product.getProductType().equals(Global.PRODUCT_TYPE_0)) {
@@ -1488,6 +1493,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         dataMap.put("productList", productList);
         dataMap.put("amountSum", amountSum.toString());
         dataMap.put("boxSum", box);
+        LOGGER.info("pdf导出转换参数：{}", JsonUtil.toJson(dataMap));
         try {
             response.setContentType("*/*");
             response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8") + ".pdf");
