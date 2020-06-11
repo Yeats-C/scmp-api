@@ -61,60 +61,24 @@ public class ReturnGoodsController {
         return returnGoodsService.record(reqVO);
     }
 
-    @ApiOperation("DL退货单调用接口")
-    @PostMapping("recordDL/return")
-    public HttpResponse recordDL(@RequestBody ReturnDLReq reqVO){
-        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.recordDL(reqVO));
-        } catch (BizException e){
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-        }
-    }
+//    @ApiOperation("DL退货单调用接口")
+//    @PostMapping("recordDL/return")
+//    public HttpResponse recordDL(@RequestBody ReturnDLReq reqVO){
+//        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
+//        try {
+//            return HttpResponse.success(returnGoodsService.recordDL(reqVO));
+//        } catch (BizException e){
+//            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+//        }catch (Exception e) {
+//            log.error(e.getMessage(),e);
+//            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
+//        }
+//    }
 
-    @ApiOperation("退货单管理")
-    @PostMapping("/returnOrderManagement")
-    public HttpResponse<BasePage<QueryReturnOrderManagementRespVO>> returnOrderManagement(@RequestBody QueryReturnOrderManagementReqVO reqVO){
-        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.returnOrderManagement(reqVO));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
-
-    @ApiOperation("直供退货单管理")
-    @PostMapping("/directReturnOrderManagement")
-    public HttpResponse<BasePage<QueryReturnOrderManagementRespVO>> directReturnOrderManagement(@RequestBody QueryReturnOrderManagementReqVO reqVO){
-        log.info("ReturnGoodsController---returnOrderManagement---param：[{}]", JSONObject.toJSONString(reqVO));
-        try {
-            return HttpResponse.success(returnGoodsService.directReturnOrderManagement(reqVO));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
-    }
-
-    @ApiOperation("退货详情")
-    @GetMapping("/returnOrderDetail")
-    public HttpResponse<ReturnOrderDetailRespVO> returnOrderDetail(@RequestParam String code){
-        log.info("ReturnGoodsController---returnOrderDetail---param：[{}]", code);
-        try {
-            return HttpResponse.success(returnGoodsService.returnOrderDetail(code));
-        } catch (BizException e){
-            return HttpResponse.failure(e.getMessageId());
-        }catch (Exception e) {
-            log.error(e.getMessage(),e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
+    @ApiOperation("退货详情(退货信息、客户信息及地址、退货数量及金额)")
+    @GetMapping("/detail")
+    public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(@RequestParam("return_order_code") String returnOrderCode) {
+        return returnGoodsService.returnOrderDetail(returnOrderCode);
     }
 
     @ApiOperation("更改状态")

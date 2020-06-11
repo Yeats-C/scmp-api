@@ -991,7 +991,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //1 是未支付 2 是已支付
                 order.setPayStatus(2);
                 //支付时间
-                order.setPayTime(returnOrderInfo.getOperatorTime());
+                order.setPayTime(returnOrderInfo.getUpdateTime());
                 //订单类别
                 //order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode());
                 order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType().toString());
@@ -1004,7 +1004,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //供应商
 //                order.setSupplierCode(returnOrderInfo.getSupplierCode());
 //                order.setSupplierName(returnOrderInfo.getSupplierName());
-                order.setOrderCount(returnOrderInfo.getProductNum().intValue());
+                order.setOrderCount(returnOrderInfo.getProductCount().intValue());
                 order.setWeight(returnOrderInfo.getWeight().toString());
                 order.setVolume(returnOrderInfo.getVolume().toString());
 //                order.setInvoiceFlag(Integer.valueOf(returnOrderInfo.getInvoiceType()));
@@ -1623,8 +1623,8 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         order.setPayStatus(returnOrderInfo.getPaymentStatus());
         order.setPayType(returnOrderInfo.getPaymentTypeCode());
         order.setPayTypeDesc(returnOrderInfo.getPaymentType());
-        if(returnOrderInfo.getProductNum() != null){
-            order.setOrderCount(returnOrderInfo.getProductNum().intValue());
+        if(returnOrderInfo.getProductCount() != null){
+            order.setOrderCount(returnOrderInfo.getProductCount().intValue());
         }
         order.setCreateTime(Calendar.getInstance().getTime());
         order.setStorageCode(returnOrderInfo.getTransportCenterCode());

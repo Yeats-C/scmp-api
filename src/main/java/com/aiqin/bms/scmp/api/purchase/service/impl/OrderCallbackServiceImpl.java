@@ -559,7 +559,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     detailList.add(returnOrderInfoItem);
                 }
                 //实际金额 数量
-                returnOrderInfo.setActualProductNum(request.getProductNum());
+                returnOrderInfo.setActualProductCount(request.getProductNum());
                 returnOrderInfo.setActualReturnOrderAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setProductChannelTotalAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setActualProductChannelTotalAmount(request.getReturnOrderAmount());

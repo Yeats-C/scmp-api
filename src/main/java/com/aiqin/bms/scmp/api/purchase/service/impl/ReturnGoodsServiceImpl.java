@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoIt
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoInspectionItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
@@ -48,6 +49,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -108,14 +110,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         reqVO.parallelStream().forEach(o -> {
             ReturnOrderInfo info = BeanCopyUtils.copy(o, ReturnOrderInfo.class);
             info.setCreateDate(date);
-            info.setOperator(CommonConstant.SYSTEM_AUTO);
-            info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
-            info.setOperatorTime(date);
+//            info.setOperator(CommonConstant.SYSTEM_AUTO);
+//            info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
+//            info.setOperatorTime(date);
             orders.add(info);
             List<ReturnOrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getItemReqVOList(), ReturnOrderInfoItem.class);
             orderItems.addAll(orderItem);
             //拼装日志信息
-            ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,info.getReturnOrderCode(),info.getOrderStatus(), ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getOperator(),date,info.getCompanyCode(),info.getCompanyName());
+            ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,info.getReturnOrderCode(),info.getOrderStatus(),
+                    ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
+                    ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getUpdateByName(),date,info.getCompanyCode(),info.getCompanyName());
             logs.add(log);
         });
         //保存
@@ -154,22 +158,19 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    public BasePage<QueryReturnOrderManagementRespVO> returnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
-        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(), list);
+    public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
+        LOGGER.info("查询退货单详情：", returnOrderCode);
+        if(StringUtils.isBlank(returnOrderCode)){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode1(returnOrderCode);
+        ReturnOrderDetailResponse response = BeanCopyUtils.copy(returnOrderInfo, ReturnOrderDetailResponse.class);
+        // 查询退货单的日志信息
+        List<ReturnOrderInfoLog> logs = returnOrderInfoLogMapper.returnOrderLog(returnOrderCode);
+        response.setLogList(logs);
+        return HttpResponse.successGenerics(response);
     }
 
-    @Override
-    public ReturnOrderDetailRespVO returnOrderDetail(String code) {
-        ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
-        if(Objects.isNull(respVO)){
-            throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
-        }
-        respVO.setInboundList(inboundInfo(code));
-        return respVO;
-    }
     @Override
     public List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code) {
        return returnOrderInfoMapper.selectInbound(code);
@@ -224,11 +225,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
         returnOrder.setReturnOrderCode(request.getReturnOrderCode());
         returnOrder.setInspectionRemark(request.getInspectionRemark());
-        returnOrder.setOperator(request.getOperator());
-        returnOrder.setOperatorCode(request.getOperatorCode());
         returnOrder.setUpdateById(request.getOperator());
         returnOrder.setUpdateByName(request.getOperatorCode());
-        returnOrder.setOperatorTime(Calendar.getInstance().getTime());
         Integer orderCount = returnOrderInfoMapper.update(returnOrder);
         LOGGER.info("更新退货单保存验货信息：", orderCount);
 
@@ -249,19 +247,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         return HttpResponse.success();
     }
 
-    @Override
-    @Async("myTaskAsyncPool")
-    @Transactional(rollbackFor = Exception.class)
-    public void sendToInBound(List<ReturnOrderInfoInspectionItem> items) {
-        //TODO 调用入库接口
-        //这里会有多个入库单的信息
-        List<InboundReqSave> list = dealData(items);
-        Boolean b = inboundService.saveList(list);
-        if(b){
-            //TODO 存日志
-            //该状态
-        }
-    }
     /**
      * 补充数据
      * @author NullPointException
@@ -285,18 +270,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     public InspectionViewRespVO inspectionView(String code) {
         return returnOrderInfoMapper.selectInspectionView(code);
-    }
-
-    @Override
-    public BasePage<QueryReturnOrderManagementRespVO> directReturnOrderManagement(QueryReturnOrderManagementReqVO reqVO) {
-        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-        List<Integer> orderTypes = Lists.newArrayList();
-        orderTypes.add(OrderType.DIRECT_DELIVERY.getNum());
-        orderTypes.add(OrderType.DIRECT_DELIVERY_FUCAI.getNum());
-        reqVO.setOrderTypeCode(orderTypes);
-        reqVO.setCompanyCode(getUser().getCompanyCode());
-        List<QueryReturnOrderManagementRespVO> list = returnOrderInfoMapper.selectReturnOrderManagementList(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
@@ -334,9 +307,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         //校验 TODO
         order.setOrderStatus(reqVO.getOrderStatus());
-        order.setOperator(reqVO.getOperator());
-        order.setOperatorCode(reqVO.getOperatorCode());
-        order.setOperatorTime(date);
+//        order.setOperator(reqVO.getOperator());
+//        order.setOperatorCode(reqVO.getOperatorCode());
+//        order.setOperatorTime(date);
         order.setRemake(reqVO.getRemark());
         //更新
         updateByOrderCode(order);
@@ -403,7 +376,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         returnOrder.setPaymentTypeCode(returnOrderInfo.getPaymentCode());
         returnOrder.setPaymentType(returnOrderInfo.getPaymentName());
-        returnOrder.setProductNum(returnOrderInfo.getProductCount());
+        returnOrder.setProductCount(returnOrderInfo.getProductCount());
         returnOrder.setProductTotalAmount(returnOrderInfo.getReturnOrderAmount());
         returnOrder.setWeight(returnOrderInfo.getTotalWeight());
         returnOrder.setVolume(returnOrderInfo.getTotalVolume());
@@ -466,7 +439,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         ReturnOrderInfo returnOrderInfo=new ReturnOrderInfo();
         returnOrderInfo.setReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
-        returnOrderInfo.setActualProductNum(returnOrderInfoDLReq.getActualProductCount());
+        returnOrderInfo.setActualProductCount(returnOrderInfoDLReq.getActualProductCount());
         returnOrderInfo.setUpdateById(returnOrderInfoDLReq.getReturnById());
         returnOrderInfo.setUpdateTime(returnOrderInfoDLReq.getReturnTime());
         returnOrderInfoMapper.updateByReturnOrderCodeSelective(returnOrderInfo);
@@ -522,7 +495,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
         }
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
-        returnOrder.setActualProductNum(inbound.getPraMainUnitNum());
+        returnOrder.setActualProductCount(inbound.getPraMainUnitNum());
         returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
         returnOrder.setUpdateByName(inbound.getUpdateBy());
 
@@ -552,11 +525,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setActualVolume(0L);
         returnOrder.setActualWeight(0L);
         // 计算实际体积/重量
-        if(returnOrder.getVolume() > 0 && returnOrder.getActualProductNum() > 0){
-            returnOrder.setActualVolume(returnOrder.getActualProductNum() / returnOrder.getVolume());
+        if(returnOrder.getVolume() > 0 && returnOrder.getActualProductCount() > 0){
+            returnOrder.setActualVolume(returnOrder.getActualProductCount() / returnOrder.getVolume());
         }
-        if(returnOrder.getWeight() > 0 && returnOrder.getActualProductNum() > 0){
-            returnOrder.setActualWeight(returnOrder.getActualProductNum() / returnOrder.getWeight());
+        if(returnOrder.getWeight() > 0 && returnOrder.getActualProductCount() > 0){
+            returnOrder.setActualWeight(returnOrder.getActualProductCount() / returnOrder.getWeight());
         }
         // 查询入库单的批次信息
         List<InboundBatch> inboundBatches = inboundBatchDao.selectInboundBatchList(inboundOderCode);
@@ -632,9 +605,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         inbound.setLogisticsCenterName(returnOrderInfo.getTransportCenterName());
         inbound.setWarehouseCode(returnOrderInfo.getWarehouseCode());
         //预计入库数量
-        inbound.setPreInboundNum(returnOrderInfo.getProductNum());
+        inbound.setPreInboundNum(returnOrderInfo.getProductCount());
         //预计主单位数量
-        inbound.setPreMainUnitNum(returnOrderInfo.getProductNum());
+        inbound.setPreMainUnitNum(returnOrderInfo.getProductCount());
         inbound.setPreTaxAmount(returnOrderInfo.getReturnOrderAmount());
         inbound.setCountyCode(returnOrderInfo.getDistrictCode());
         inbound.setCountyName(returnOrderInfo.getDistrictName());

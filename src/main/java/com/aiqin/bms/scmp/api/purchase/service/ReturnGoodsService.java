@@ -29,9 +29,7 @@ public interface ReturnGoodsService {
 
     void saveData(List<ReturnOrderInfoItem> orderItems, List<ReturnOrderInfo> orders);
 
-    BasePage<QueryReturnOrderManagementRespVO> returnOrderManagement(QueryReturnOrderManagementReqVO reqVO);
-
-    ReturnOrderDetailRespVO returnOrderDetail(String code);
+    HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode);
 
     List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code);
 
@@ -41,11 +39,7 @@ public interface ReturnGoodsService {
 
     HttpResponse saveReturnInspection(ReturnInspectionRequest request);
 
-    void sendToInBound(List<ReturnOrderInfoInspectionItem> items);
-
     InspectionViewRespVO inspectionView(String code);
-
-    BasePage<QueryReturnOrderManagementRespVO> directReturnOrderManagement(QueryReturnOrderManagementReqVO reqVO);
 
     ReturnOrderDetailRespVO directReturnOrderDetail(String code);
 

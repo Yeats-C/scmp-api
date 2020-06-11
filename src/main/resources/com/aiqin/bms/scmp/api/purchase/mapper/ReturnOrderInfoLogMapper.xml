@@ -17,11 +17,10 @@
     id, order_code, status, status_desc, content, remark, operator, operator_time, company_code, 
     company_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+  <select id="returnOrderLog" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
     from return_order_info_log
-    where id = #{id,jdbcType=BIGINT}
+    where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog">
     insert into return_order_info_log (id, order_code, status, 

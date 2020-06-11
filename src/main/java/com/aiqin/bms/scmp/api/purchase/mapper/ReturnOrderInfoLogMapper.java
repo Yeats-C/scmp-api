@@ -8,7 +8,7 @@ public interface ReturnOrderInfoLogMapper {
 
     int insert(ReturnOrderInfoLog record);
 
-    ReturnOrderInfoLog selectByPrimaryKey(Long id);
-
     int insertBatch(List<ReturnOrderInfoLog> logs);
+
+    List<ReturnOrderInfoLog> returnOrderLog(String orderCode);
 }

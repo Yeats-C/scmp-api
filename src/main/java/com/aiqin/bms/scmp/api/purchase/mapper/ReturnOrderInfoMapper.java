@@ -34,7 +34,7 @@ public interface ReturnOrderInfoMapper {
 
     List<ReturnOrderInfoApplyInboundRespVO> selectInbound(String code);
 
-    ReturnOrderInfo selectByCode1(String orderCode);
+    ReturnOrderInfo selectByCode1(String returnOrderCode);
 
     int updateByOrderCode(ReturnOrderInfo order);
 

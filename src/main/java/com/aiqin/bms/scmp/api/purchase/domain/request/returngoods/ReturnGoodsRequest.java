@@ -6,6 +6,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @ApiModel("退货单请求类")
 public class ReturnGoodsRequest extends PagesRequest {
@@ -38,16 +40,25 @@ public class ReturnGoodsRequest extends PagesRequest {
     @JsonProperty("customer_code")
     private String customerCode;
 
-    @ApiModelProperty("订单状态")
-    @JsonProperty("order_status")
-    private Integer orderStatus;
+//    @ApiModelProperty("订单状态")
+//    @JsonProperty("order_status")
+//    private Integer orderStatus;
 
     @ApiModelProperty("公司编码")
     @JsonProperty("company_code")
     private String companyCode;
 
-    @ApiModelProperty("退货类型 0.客户取消 1.缺货取消 2.划单取消 3.售后退货")
+    @ApiModelProperty("退货类型 1.客户取消 2.缺货取消 3.划单取消 4.售后退货")
     @JsonProperty("return_order_type")
     private Integer returnOrderType;
+
+    @ApiModelProperty("订单类型 1.直送 2.配送 3.辅采")
+    @JsonProperty("order_type")
+    private Integer orderType;
+
+    @ApiModelProperty("订单状态 1.待审核 2.审核通过 3.退单同步中 4.等待退货验货 5.等待退货入库 " +
+            " 11.退货完成 12.退款完成 97.退货异常终止 98.审核不通过 99.已取消")
+    @JsonProperty("order_status")
+    private List<Integer> orderStatus;
 
 }
