@@ -20,6 +20,12 @@ public class ApplySupplyComDetailDTO {
     @ApiModelProperty("申请类型")
     private String applyTypeName;
 
+    @ApiModelProperty("支付类型名称")
+    private String payTypeName ;
+
+    @ApiModelProperty("支付类型编码")
+    private String payTypeCode ;
+
     @ApiModelProperty("属性")
     private String property;
 

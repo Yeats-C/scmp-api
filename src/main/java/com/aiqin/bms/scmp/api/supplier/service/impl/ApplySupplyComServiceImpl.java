@@ -843,7 +843,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
           //审批成功之后将数据传给wms
-//            sendWms(applySupplyCompany);
+           sendWms(applySupplyCompany);
           //传输sap
             sendSap(applySupplyCompany);
 
@@ -895,8 +895,9 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         //查看是否有对应供应商集团
         QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
         querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
-//           supplierDao.getSupplierList(querySupplierReqVO);
-        if (CollectionUtils.isEmptyCollection(supplierDao.getSupplierList(querySupplierReqVO))){
+        List<SupplierListRespVO> supplierDaoSupplierList   =supplierDao.getSupplierList(querySupplierReqVO);
+        if (CollectionUtils.isEmptyCollection(supplierDaoSupplierList)){
+            supplyCompany.setSupplierCode(supplyCompany.getSupplyCode());
             querySupplierReqVO.setSupplierCode(supplyCompany.getSupplyCode());
             querySupplierReqVO.setCompanyCode(supplyCompany.getCompanyCode());
             querySupplierReqVO.setCreateBy(supplyCompany.getCreateBy());
@@ -906,6 +907,12 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 querySupplierReqVO.setSupplierNameOrShort(supplyCompany.getSupplierAbbreviation());
             }
             supplierDao.add(querySupplierReqVO);
+        }else {
+            if (StringUtils.isNotEmpty(supplierDaoSupplierList.get(0).getSupplierCode())){
+                supplyCompany.setSupplierCode(supplierDaoSupplierList.get(0).getSupplierCode());
+            }else {
+                supplyCompany.setSupplierCode(supplyCompany.getSupplyCode());
+            }
         }
     }
 
@@ -996,7 +1003,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+            url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/supplierInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
             HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){

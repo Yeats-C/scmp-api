@@ -48,6 +48,8 @@
   <resultMap id="ApplySupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDetailDTO">
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="pay_type_code" jdbcType="VARCHAR" property="payTypeCode" />
+    <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="apply_by" jdbcType="VARCHAR" property="applyBy" />
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
@@ -224,6 +226,8 @@
     SELECT
 	  a.apply_supply_company_code apply_code,
 	  a.form_no,
+	  a.pay_type_code,
+	  a.pay_type_name,
 	  a.property,
       CASE
       a.apply_type

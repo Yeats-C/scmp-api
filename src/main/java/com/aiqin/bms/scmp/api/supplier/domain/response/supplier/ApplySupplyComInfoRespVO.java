@@ -23,6 +23,12 @@ public class ApplySupplyComInfoRespVO {
     @ApiModelProperty("申请供货单位编码")
     private String applySupplyCode;
 
+    @ApiModelProperty("支付类型名称")
+    private String payTypeName ;
+
+    @ApiModelProperty("支付类型编码")
+    private String payTypeCode ;
+
     @ApiModelProperty("属性")
     private String property;
 
