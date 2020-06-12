@@ -38,5 +38,5 @@ public interface ReturnGoodsService {
 
     HttpResponse recordWMS(String inboundOderCode);
 
-    Boolean recordDL(ReturnDLReq reqVO);
+    HttpResponse changeParameter(String returnOrderCode);
 }
