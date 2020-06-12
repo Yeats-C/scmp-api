@@ -231,4 +231,17 @@
     on a.sku_code = b.sku_code and a.line_code = b.product_line_num
     WHERE a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
+  <select id="returnOrderByWarehouse" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    group by warehouse_code
+    order by warehouse_code asc
+  </select>
+  <select id="returnOrderBatchListByWarehouse" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

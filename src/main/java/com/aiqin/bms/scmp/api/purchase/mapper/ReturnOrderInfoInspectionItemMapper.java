@@ -33,4 +33,9 @@ public interface ReturnOrderInfoInspectionItemMapper {
     List<ReturnOrderInboundBatchResponse> inboundBatchByReturnOrderList(InboundBatchReqVo request);
 
     Integer inboundBatchByReturnOrderCount(InboundBatchReqVo request);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderByWarehouse(@Param("returnOrderCode") String returnOrderCode);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderBatchListByWarehouse(@Param("returnOrderCode") String returnOrderCode,
+                                                                        @Param("warehouseCode") String warehouseCode);
 }

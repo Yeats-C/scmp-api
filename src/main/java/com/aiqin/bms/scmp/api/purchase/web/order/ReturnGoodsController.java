@@ -62,7 +62,7 @@ public class ReturnGoodsController {
         return returnGoodsService.returnOrderProductList(request);
     }
 
-    @ApiOperation("退货商品列表")
+    @ApiOperation("退货批次列表")
     @GetMapping("/batch/list")
     public HttpResponse<PageResData<ReturnOrderInfoInspectionItem>> returnOrderBatchList(
             @RequestParam("return_order_code") String returnOrderCode,
