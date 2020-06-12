@@ -1,12 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.product.domain.request.ReturnDLReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
@@ -14,17 +11,13 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.ground.util.json.JsonUtil;
-import com.aiqin.ground.util.protocol.MessageId;
-import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -117,32 +110,12 @@ public class ReturnGoodsController {
         return returnGoodsService.returnReceipt(itemList);
     }
 
-//    @ApiOperation("退货单同步")
-//    @PostMapping("/save")
-//    public HttpResponse<Boolean> saveReturnOrder(@RequestBody @Valid List<ReturnOrderInfoReqVO> reqVO){
-//        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
-//        try {
-//            return HttpResponse.success(returnGoodsService.save(reqVO));
-//        } catch (BizException e){
-//            return HttpResponse.failure(e.getMessageId());
-//        }catch (Exception e) {
-//            log.error(e.getMessage(),e);
-//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//        }
-//    }
-//
-//    @ApiOperation("DL退货单调用接口")
-//    @PostMapping("recordDL/return")
-//    public HttpResponse recordDL(@RequestBody ReturnDLReq reqVO){
-//        log.info("ReturnGoodsController---saveReturnOrder---param：[{}]", JSONObject.toJSONString(reqVO));
-//        try {
-//            return HttpResponse.success(returnGoodsService.recordDL(reqVO));
-//        } catch (BizException e){
-//            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-//        }catch (Exception e) {
-//            log.error(e.getMessage(),e);
-//            return HttpResponse.failure(MessageId.create(Project.SCMP_API, -1, e.getMessage()));
-//        }
-//    }
+    @ApiOperation("验货查询对应sku的销售批次信息")
+    @GetMapping("/order/batch")
+    public HttpResponse<List<OrderInfoItemProductBatch>> orderBatch(@RequestParam("order_code") String orderCode,
+                                                              @RequestParam(value = "sku_code") String skuCode,
+                                                              @RequestParam(value = "line_code") Integer lineCode){
+        return returnGoodsService.orderBatch(orderCode, skuCode, lineCode);
+    }
 
 }

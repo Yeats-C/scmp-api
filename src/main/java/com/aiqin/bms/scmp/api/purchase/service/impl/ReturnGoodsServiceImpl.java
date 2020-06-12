@@ -4,7 +4,6 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
-import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
@@ -18,22 +17,16 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
-import com.aiqin.bms.scmp.api.product.domain.request.returngoods.ReturnReceiptReqVO;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.ChangeOrderStatusReqVO;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoInspectionItemMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoLogMapper;
-import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
-import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
-import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -55,8 +48,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Description:
@@ -77,8 +68,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Autowired
     private UrlConfig urlConfig;
     @Autowired
-    private WarehouseService warehouseService;
-    @Autowired
     private InboundService inboundService;
     @Autowired
     private ReturnOrderInfoInspectionItemMapper returnOrderInfoInspectionItemMapper;
@@ -90,66 +79,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private InboundProductDao inboundProductDao;
     @Autowired
     private InboundBatchDao inboundBatchDao;
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean save(List<ReturnOrderInfoReqVO> reqVO) {
-        //校验
-        validateOrderData(reqVO);
-        Date date = new Date();
-        //数据处理
-        List<ReturnOrderInfo> orders = Lists.newCopyOnWriteArrayList();
-        List<ReturnOrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
-        List<ReturnOrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
-        reqVO.parallelStream().forEach(o -> {
-            ReturnOrderInfo info = BeanCopyUtils.copy(o, ReturnOrderInfo.class);
-            info.setCreateDate(date);
-//            info.setOperator(CommonConstant.SYSTEM_AUTO);
-//            info.setOperatorCode(CommonConstant.SYSTEM_AUTO_CODE);
-//            info.setOperatorTime(date);
-            orders.add(info);
-            List<ReturnOrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getItemReqVOList(), ReturnOrderInfoItem.class);
-            orderItems.addAll(orderItem);
-            //拼装日志信息
-            ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,info.getReturnOrderCode(),info.getOrderStatus(),
-                    ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),
-                    ReturnOrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getUpdateByName(),date,info.getCompanyCode(),info.getCompanyName());
-            logs.add(log);
-        });
-        //保存
-        saveData(orderItems, orders);
-        //存日志
-        saveLog(logs);
-        return true;
-    }
-
-    @Override
-    public void saveLog(List<ReturnOrderInfoLog> logs) {
-        if(CollectionUtils.isEmptyCollection(logs)){
-            return;
-        }
-        int i = returnOrderInfoLogMapper.insertBatch(logs);
-        if (i != logs.size()) {
-            log.info("需要插入订单日志条数[{}]，实际插入订单日志的条数：[{}]",logs.size(),i);
-//            throw new BizException(ResultCode.LOG_SAVE_ERROR);
-        }
-    }
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void saveData(List<ReturnOrderInfoItem> orderItems, List<ReturnOrderInfo> orders) {
-        if (CollectionUtils.isNotEmptyCollection(orders)) {
-            int i = returnOrderInfoMapper.insertBatch(orders);
-            if (i != orderItems.size()) {
-                throw new BizException(ResultCode.SAVE_RETURN_ORDER_FAILED);
-            }
-        }
-        if (CollectionUtils.isNotEmptyCollection(orderItems)) {
-            int i = returnOrderInfoItemMapper.insertBatch(orderItems);
-            if (i != orderItems.size()) {
-                throw new BizException(ResultCode.SAVE_RETURN_ORDER_ITEM_FAILED);
-            }
-        }
-    }
+    @Autowired
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -176,11 +107,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    public List<ReturnOrderInfoApplyInboundRespVO> inboundInfo(String code) {
-       return returnOrderInfoMapper.selectInbound(code);
-    }
-
-    @Override
     public HttpResponse<PageResData<ReturnOrderInfo>> returnOrderList(ReturnGoodsRequest request) {
         List<ReturnOrderInfo> list = returnOrderInfoMapper.list(request);
         Integer count = returnOrderInfoMapper.listCount(request);
@@ -199,38 +125,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         List<ReturnOrderInfoInspectionItem> list = returnOrderInfoInspectionItemMapper.list(request);
         Integer count = returnOrderInfoInspectionItemMapper.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
-    }
-
-    @Override
-    public InspectionDetailRespVO inspectionDetail(String code) {
-        //首先查出数据
-        InspectionDetailRespVO respVO = returnOrderInfoMapper.selectInspectionDetail(code);
-        if(Objects.isNull(respVO)){
-            throw new BizException(ResultCode.QUERY_INSPECTION_DETAIL_ERROR);
-        }
-       List<ReturnOrderInfoInspectionItemRespVO> inspectionItemRespVO =  returnOrderInfoMapper.selectInspectionItemList(code,respVO.getOrderCode());
-        //根据仓编码查询下面的库
-        List<WarehouseResVo> warehouse = warehouseService.getWarehouseByLogisticsCenterCode(respVO.getTransportCenterCode());
-        if(CollectionUtils.isEmptyCollection(warehouse)){
-            throw new BizException(ResultCode.DATA_ERROR);
-        }
-        respVO.setWarehouseResVoList(warehouse);
-        Map<Byte, WarehouseResVo> warehouseTypeMap = warehouse.stream().collect(Collectors.toMap(WarehouseResVo::getWarehouseTypeCode, Function.identity(), (k1, k2) -> k1));
-        for (ReturnOrderInfoInspectionItemRespVO o : inspectionItemRespVO) {
-            o.setOriginalLineNum(o.getProductLineNum().intValue());
-            o.setProductLineNum(null);
-            //根据批次判断需要入哪个仓
-            //首先判断新品/残品
-            if (Objects.equals(CommonConstant.NEW_PRODUCT, o.getProductStatus())) {
-                o.setWarehouseCode(warehouseTypeMap.get((byte) 1).getWarehouseCode());
-            } else if (Objects.equals(CommonConstant.DEFECTIVE, o.getProductStatus())) {
-                o.setWarehouseCode(warehouseTypeMap.get((byte) 2).getWarehouseCode());
-            } else {
-                throw new BizException(ResultCode.DATA_ERROR);
-            }
-        }
-        respVO.setInspectionItemList(inspectionItemRespVO);
-        return respVO;
     }
 
     @Override
@@ -279,40 +173,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         return HttpResponse.success();
     }
 
-    /**
-     * 补充数据
-     * @author NullPointException
-     * @date 2019/6/27
-     * @param items
-     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave>
-     */
-    private List<InboundReqSave> dealData(List<ReturnOrderInfoInspectionItem> items) {
-        if (CollectionUtils.isEmptyCollection(items)) {
-            throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
-        }
-        //查数据
-        ReturnOrderInfoDTO dto = returnOrderInfoMapper.selectByCode(items.get(0).getReturnOrderCode());
-        if(Objects.isNull(dto)){
-            throw new BizException(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
-        }
-        dto.setItems(items);
-        return new ReturnOrderToInboundConverter().convert(dto);
-    }
-
-    @Override
-    public InspectionViewRespVO inspectionView(String code) {
-        return returnOrderInfoMapper.selectInspectionView(code);
-    }
-
-    @Override
-    public ReturnOrderDetailRespVO directReturnOrderDetail(String code) {
-        ReturnOrderDetailRespVO respVO =  returnOrderInfoMapper.selectReturnOrderDetail(code);
-        if(Objects.isNull(respVO)){
-            throw new BizException(ResultCode.GET_RETURN_GOODS_DETAIL_FAILED);
-        }
-        return respVO;
-    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse returnReceipt(List<ReturnOrderInfoItem> itemList) {
@@ -340,56 +200,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean changeStatus(ChangeOrderStatusReqVO reqVO) {
-        Date date = new Date();
-        //先查后改
-        ReturnOrderInfo order = returnOrderInfoMapper.selectByCode1(reqVO.getOrderCode());
-        if (Objects.isNull(order)) {
-            throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
+    public HttpResponse<List<OrderInfoItemProductBatch>> orderBatch(String orderCode, String skuCode, Integer lineCode){
+        if(StringUtils.isBlank(orderCode) && StringUtils.isBlank(skuCode) || lineCode == null){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        //校验 TODO
-        order.setOrderStatus(reqVO.getOrderStatus());
-//        order.setOperator(reqVO.getOperator());
-//        order.setOperatorCode(reqVO.getOperatorCode());
-//        order.setOperatorTime(date);
-        order.setRemake(reqVO.getRemark());
-        //更新
-        updateByOrderCode(order);
-        //存日志
-        ReturnOrderInfoLog log = new ReturnOrderInfoLog(null,reqVO.getOrderCode(),reqVO.getOrderStatus(), ReturnOrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(),ReturnOrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(),null,reqVO.getOperator(),date,order.getCompanyCode(),order.getCompanyName());
-        List<ReturnOrderInfoLog> logs = Lists.newArrayList();
-        logs.add(log);
-        saveLog(logs);
-        return Boolean.TRUE;
-    }
-
-    public void updateByOrderCode(ReturnOrderInfo order) {
-       int i =  returnOrderInfoMapper.updateByOrderCode(order);
-        if(i<1){
-            throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void saveReturnReceipt(List<ReturnReceiptReqVO> reqVO) {
-        int i = returnOrderInfoItemMapper.updateActualInboundNumByIdAndReturnOrderCode(reqVO);
-        if (i!=reqVO.size()) {
-            throw new BizException(ResultCode.SAVE_RETURN_RECEIPT_FAILED);
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Boolean changeOrderStatus(String code, Integer status) {
-        ChangeOrderStatusReqVO vo = new ChangeOrderStatusReqVO();
-        vo.setOperatorCode(getUser().getPersonName());
-        vo.setOperatorCode(getUser().getPersonId());
-        vo.setOrderCode(code);
-        vo.setOrderStatus(status);
-        changeStatus(vo);
-        return Boolean.TRUE;
+        List<OrderInfoItemProductBatch> orderInfoItemProductBatches = orderInfoItemProductBatchMapper.orderBatchList(skuCode, orderCode, lineCode);
+        return HttpResponse.successGenerics(orderInfoItemProductBatches);
     }
 
     @Override
@@ -477,7 +293,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         //进行主表修改
         ReturnOrderInfoDLReq returnOrderInfoDLReq=reqVO.getReturnOrderInfoDLReq();
-        if (ObjectUtils.equals(null,returnOrderInfoMapper.selectByCode(returnOrderInfoDLReq.getReturnOrderCode()))){
+        if (ObjectUtils.equals(null,returnOrderInfoMapper.selectByCode1(returnOrderInfoDLReq.getReturnOrderCode()))){
             throw new BizException("没有对应退货主单");
         }
         ReturnOrderInfo returnOrderInfo=new ReturnOrderInfo();
@@ -485,7 +301,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrderInfo.setActualProductCount(returnOrderInfoDLReq.getActualProductCount());
         returnOrderInfo.setUpdateById(returnOrderInfoDLReq.getReturnById());
         returnOrderInfo.setUpdateTime(returnOrderInfoDLReq.getReturnTime());
-        returnOrderInfoMapper.updateByReturnOrderCodeSelective(returnOrderInfo);
+        returnOrderInfoMapper.update(returnOrderInfo);
         //进行验证
         List<ReturnOrderInfoItem> returnOrderInfoItems=returnOrderInfoItemMapper.selectByReturnOrderCode(returnOrderInfoDLReq.getReturnOrderCode());
         if(CollectionUtils.isEmptyCollection(returnOrderInfoItems)){
@@ -519,14 +335,15 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
       }
       Boolean isok;
       //发送请求
-        if (sendRecordDL(reqVO)){
-            log.info("回调成功");
-            isok=true;
-        }else {
-            log.info("回调失败");
-            isok=false;
-        }
-        return isok;
+//        if (sendRecordDL(reqVO)){
+//            log.info("回调成功");
+//            isok=true;
+//        }else {
+//            log.info("回调失败");
+//            isok=false;
+//        }
+//        return isok;
+        return null;
     }
 
     @Override
@@ -618,17 +435,18 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         return HttpResponse.success();
     }
 
-
-    public Boolean sendRecordDL(ReturnDLReq reqVO) {
-        try {
-            StringBuilder sb = new StringBuilder();
-            sb.append(urlConfig.Order_URL).append("/reject/info");
-            HttpClient httpClient = HttpClient.post(String.valueOf(sb)).json(reqVO).timeout(100000);
-            HttpResponse<Boolean> response = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){});
-            return response.getData();
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw  new BizException("查询出错");
+    public Boolean echoAiQinReturnOrder(ReturnDLReq reqVO) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(urlConfig.Order_URL).append("/reject/info");
+        HttpClient httpClient = HttpClient.post(String.valueOf(sb)).json(reqVO).timeout(10000);
+        HttpResponse<Boolean> response = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
+        });
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("退货单回传运营中台成功");
+            return true;
+        }else {
+            LOGGER.info("退货单回传运营中台失败：{}", JsonUtil.toJson(reqVO));
+            return false;
         }
     }
 
@@ -708,17 +526,5 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         LOGGER.info("根据运营中台退货单，转换生成耘链入库单参数：{}", JsonUtil.toJson(inbound));
         return inbound;
-    }
-
-    /**
-     * 参数验证
-     *
-     * @param reqVO
-     * @return void
-     * @author NullPointException
-     * @date 2019/6/19
-     */
-    private void validateOrderData(List<ReturnOrderInfoReqVO> reqVO) {
-
     }
 }
