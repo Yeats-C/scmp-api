@@ -131,4 +131,8 @@ public class ReturnOrderInfoInspectionItem {
     @ApiModelProperty(value = "批次备注")
     @JsonProperty("batch_remark")
     private String batchRemark;
+
+    @ApiModelProperty(value = "锁定类型 1.下单锁定 2.分配锁定")
+    @JsonProperty("lock_type")
+    private Integer lockType;
 }
