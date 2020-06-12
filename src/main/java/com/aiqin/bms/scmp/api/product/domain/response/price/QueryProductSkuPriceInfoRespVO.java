@@ -42,6 +42,9 @@ public class QueryProductSkuPriceInfoRespVO {
     @ApiModelProperty("价格类型")
     private String priceTypeName;
 
+    @ApiModelProperty("价格属性")
+    private String priceAttributeName;
+
     @ApiModelProperty("含税金额")
     private Long priceTax;
 

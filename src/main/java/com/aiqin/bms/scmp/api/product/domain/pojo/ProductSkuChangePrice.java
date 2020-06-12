@@ -16,11 +16,11 @@ public class ProductSkuChangePrice {
     @ApiModelProperty("编码")
     private String code;
 
-    @ApiModelProperty("变价类型编码")
-    private String changePriceType;
+//    @ApiModelProperty("变价类型编码")
+//    private String changePriceType;
 
-    @ApiModelProperty("变价类型名称")
-    private String changePriceName;
+//    @ApiModelProperty("变价类型名称")
+//    private String changePriceName;
 
     @ApiModelProperty("名称")
     private String name;

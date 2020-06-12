@@ -1927,8 +1927,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 baseInfo.setStandard(productSkuInfo.getSpec());
                 sapProductSku.setBaseInfo(baseInfo);
                 sapProductSku.setBaseInfo1(SapSkuStorageFinancialMap.get(productSkuInfo.getSkuCode()));
-                productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
-                sapProductSku.setBaseInfo2(sapSkuSaleListHandler(productSkuCheckout, baseInfo2, priceChannels));
+//               productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
+                sapProductSku.setBaseInfo2(sapSkuSaleListHandler(null, baseInfo2, priceChannels));
                 productSkuList.add(sapProductSku);
                 sapStorageAbutment(productSkuList);
 

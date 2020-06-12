@@ -24,11 +24,20 @@ public class SupplyComDetailRespVO {
     @ApiModelProperty("主键Id")
     private Long id;
 
+
+    @ApiModelProperty("供应商属性 0:自营 1:平台")
+    private String property;
+
     @ApiModelProperty("供应商编号")
     private String applySupplyCode;
 
     @ApiModelProperty("供应商名称")
     private String applySupplyName;
+
+    @ApiModelProperty("付款方式编号")
+    private String payTypeCode;
+    @ApiModelProperty("付款方式名称")
+    private String payTypeName;
 
     @ApiModelProperty("供应商类型")
     private String applySupplyType;

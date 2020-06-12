@@ -38,6 +38,7 @@
 	del_flag,
 	create_time,
 	create_by,
+	supplier_abbreviation,
 	company_code
 )
 VALUES
@@ -49,6 +50,7 @@ VALUES
          0,
 		now(),
  #{createBy,jdbcType=VARCHAR},
+  #{supplierNameOrShort,jdbcType=VARCHAR},
  #{companyCode,jdbcType=VARCHAR}
 	)
     </insert>

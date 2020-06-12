@@ -32,6 +32,9 @@
   </resultMap>
   <resultMap id="SupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.SupplyCompanyDetailDTO">
     <result column="id" jdbcType="BIGINT" property="supplyComId" />
+    <result column="property" jdbcType="VARCHAR" property="property" />
+    <result column="pay_type_code" jdbcType="VARCHAR" property="payTypeCode" />
+    <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="supply_name" jdbcType="VARCHAR" property="supplyName" />
     <result column="formal_code" jdbcType="VARCHAR" property="formalCode" />
     <result column="supply_code" jdbcType="VARCHAR" property="supplyCode"/>
@@ -84,6 +87,7 @@
     <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="supply_type" jdbcType="VARCHAR" property="supplyType" />
     <result column="supply_abbreviation" jdbcType="VARCHAR" property="supplyAbbreviation" />
+    <result column="supplier_abbreviation" jdbcType="VARCHAR" property="supplierAbbreviation" />
     <result column="province_id" jdbcType="VARCHAR" property="provinceId" />
     <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
     <result column="city_id" jdbcType="VARCHAR" property="cityId" />
@@ -202,6 +206,9 @@
     SELECT
       sc.id,
       sc.supply_name,
+      sc.property,
+      sc.pay_type_code,
+      sc.pay_type_name,
       sc.supply_code,
       sc.supply_type,
       si.supplier_content supply_type_name,

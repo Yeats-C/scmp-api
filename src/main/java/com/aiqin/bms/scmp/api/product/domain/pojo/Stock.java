@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.pojo;
 
+import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -11,7 +12,7 @@ import java.util.Date;
 
 @ApiModel("库存实体Model")
 @Data
-public class Stock {
+public class Stock extends CommonBean {
     @ApiModelProperty("主键")
     @JsonProperty("id")
     private Long id;
@@ -23,6 +24,10 @@ public class Stock {
     @ApiModelProperty("公司编码")
     @JsonProperty(value = "company_code")
     private String companyCode;
+
+    @ApiModelProperty("库存数量")
+    @JsonProperty("inventory_num")
+    private Integer inventoryNum;
 
     @ApiModelProperty("公司名称")
     @JsonProperty(value = "company_name")
@@ -44,9 +49,17 @@ public class Stock {
     @JsonProperty(value = "warehouse_name")
     private String warehouseName;
 
+    @ApiModelProperty("锁定库存数")
+    @JsonProperty(value = "lock_num")
+    private Long lockNum;
+
     @ApiModelProperty("库房类型")
     @JsonProperty(value = "warehouse_type")
     private Integer warehouseType;
+
+    @ApiModelProperty("库存数量")
+    @JsonProperty("available_num")
+    private Long availableNum;
 
     @ApiModelProperty("sku编码")
     @JsonProperty(value = "sku_code")
@@ -103,6 +116,11 @@ public class Stock {
     @ApiModelProperty("税率")
     @JsonProperty(value = "tax_rate")
     private BigDecimal taxRate;
+
+
+    @ApiModelProperty("含税成本")
+    @JsonProperty("tax_price")
+    private Long taxPrice;
 
     @ApiModelProperty("昨天含税成本")
     @JsonProperty(value = "tax_cost")

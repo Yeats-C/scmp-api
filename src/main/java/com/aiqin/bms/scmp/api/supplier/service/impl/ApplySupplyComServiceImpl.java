@@ -755,16 +755,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             supplyCompany.setAuditorBy(vo.getApprovalUserName());
             supplyCompany.setAuditorTime(new Date());
             String content;
-            //查看是否有对应供应商集团
-            QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
-            querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
-//           supplierDao.getSupplierList(querySupplierReqVO);
-         if (CollectionUtils.isEmptyCollection(supplierDao.getSupplierList(querySupplierReqVO))){
-        querySupplierReqVO.setSupplierCode(applySupplyCompany.getSupplierCode());
-        querySupplierReqVO.setCompanyCode(applySupplyCompany.getCompanyCode());
-        querySupplierReqVO.setCreateBy(applySupplyCompany.getCreateBy());
-        supplierDao.add(querySupplierReqVO);
-        }
+
             HandleTypeCoce handleTypeCoce;
             if (null != oldSupplyCompany) {
                 //删除原有的发货/退货信息
@@ -782,6 +773,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 supplyCompany.setStarScore(oldSupplyCompany.getStarScore());
                 handleTypeCoce = HandleTypeCoce.UPDATE;
                 content = HandleTypeCoce.UPDATE_SUPPLY_COMPANY.getName();
+                addSupplier(applySupplyCompany, supplyCompany);
                 supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
             } else {
                 EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
@@ -792,9 +784,13 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 supplyCompany.setSupplyCode(String.valueOf(encodingRule.getNumberingValue()));
                 content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
                 handleTypeCoce = HandleTypeCoce.ADD;
+                addSupplier(applySupplyCompany, supplyCompany);
                 supplyCompanyMapper.insert(supplyCompany);
                 encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
+
+
+
             applySupplyCompany.setSupplyCompanyCode(supplyCompany.getSupplyCode());
             if (applySupplyCompanyAccount != null) {
                 applySupplyCompanyAccount.setSupplyCompanyCode(supplyCompany.getSupplyCode());
@@ -847,7 +843,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             supplierCommonService.getInstance(supplyCompany.getSupplyCode(), handleTypeCoce.getStatus(), ObjectTypeCode.SUPPLY_COMPANY.getStatus(), content, null, handleTypeCoce.getName(), applySupplyCompany.getCreateBy());
           //审批成功之后将数据传给wms
-            sendWms(applySupplyCompany);
+           sendWms(applySupplyCompany);
           //传输sap
             sendSap(applySupplyCompany);
 
@@ -893,6 +889,31 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         String content = applyStatus.getContent().replace(Global.CREATE_BY, applySupplyCompany.getCreateBy()).replace(Global.AUDITOR_BY, vo.getApprovalUserName());
         supplierCommonService.getInstance(applySupplyCompany.getApplySupplyCompanyCode(), applyHandleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(), content, null, applyHandleTypeCoce.getName(), vo.getApprovalUserName());
         return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
+    }
+
+    private void addSupplier(ApplySupplyCompany applySupplyCompany, SupplyCompany supplyCompany) {
+        //查看是否有对应供应商集团
+        QuerySupplierReqVO querySupplierReqVO=new QuerySupplierReqVO();
+        querySupplierReqVO.setSupplierName(applySupplyCompany.getSupplierName());
+        List<SupplierListRespVO> supplierDaoSupplierList   =supplierDao.getSupplierList(querySupplierReqVO);
+        if (CollectionUtils.isEmptyCollection(supplierDaoSupplierList)){
+            supplyCompany.setSupplierCode(supplyCompany.getSupplyCode());
+            querySupplierReqVO.setSupplierCode(supplyCompany.getSupplyCode());
+            querySupplierReqVO.setCompanyCode(supplyCompany.getCompanyCode());
+            querySupplierReqVO.setCreateBy(supplyCompany.getCreateBy());
+            if (StringUtils.isEmpty(supplyCompany.getSupplierAbbreviation())){
+                querySupplierReqVO.setSupplierNameOrShort("");
+            }else {
+                querySupplierReqVO.setSupplierNameOrShort(supplyCompany.getSupplierAbbreviation());
+            }
+            supplierDao.add(querySupplierReqVO);
+        }else {
+            if (StringUtils.isNotEmpty(supplierDaoSupplierList.get(0).getSupplierCode())){
+                supplyCompany.setSupplierCode(supplierDaoSupplierList.get(0).getSupplierCode());
+            }else {
+                supplyCompany.setSupplierCode(supplyCompany.getSupplyCode());
+            }
+        }
     }
 
     private void sendSap(ApplySupplyCompany supplyCompany) {
@@ -982,7 +1003,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
+            url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/supplierInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
             HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
