@@ -204,24 +204,6 @@
         where warehouse_type in (1, 2, 3)
         group by warehouse_type
     </select>
-    <select id="selectOneStockInfoByStockId" parameterType="java.lang.String"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo">
-        select
-        sf.id as id,
-        sf.lock_status as lockStatus,
-        SUM(sf.change_num) as changeNum,
-        sf.document_type as documentType,
-        sf.document_num as documentNum,
-        sf.source_document_type as sourceDocumentType,
-        sf.source_document_num as sourceDocumentNum,
-        sf.update_time,
-        sf.update_by as updateBy,
-        sf.remark as remark
-        from stock_flow as sf
-        where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
-        GROUP BY sf.lock_status,sf.sku_code,sf.document_num
-        order by sf.update_time DESC
-    </select>
     <sql id="Query_Stock_Sku_Where">
         <where>
             1 = 1
@@ -709,20 +691,6 @@
             where id=#{item.id}
         </foreach>
     </update>
-    <select id="getLatestPurchasePriceBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        stock
-        WHERE
-        del_flag = 0
-        <if test="list != null and list.size > 0">
-            AND sku_code IN
-            <foreach collection="list" item="item" open="(" separator="," close=")">
-                #{item,jdbcType=VARCHAR}
-            </foreach>
-        </if>
-    </select>
     <select id="selectStockLogs" resultMap="StockFlowMap">
         select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
     </select>
@@ -1163,27 +1131,6 @@
         from stock
         group by sku_code
     </select>
-    <select id="selectStockSum" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-        select
-        sku_code skuCode, sku_name skuName, sum(ifnull(inventory_count,0)) inventoryNum, sum(ifnull(available_count,0)) availableNum,
-        sum(ifnull(lock_count,0)) lockNum, sum(ifnull(purchase_way_count,0)) purchaseWayNum,
-        sum(ifnull(total_way_count,0)) totalWayNum
-        from stock
-        <where>
-            <if test="transportCenterCode!=null and transportCenterCode!=''">
-                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode!=null and skuCode!=''">
-                AND sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseType!=null and warehouseType!=''">
-                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
-            </if>
-            <if test="companyCode!=null and companyCode!=''">
-                AND company_code = #{companyCode,jdbcType=VARCHAR}
-            </if>
-        </where>
-    </select>
     <insert id="insertReplaceAll">
         replace into stock(
         stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
@@ -1224,31 +1171,6 @@
             #{item.stockupNum})
         </foreach>
     </insert>
-    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-        select
-        sku_code skuCode, sku_name skuName, ifnull(inventory_num,0) as inventoryNum, ifnull(available_num,0) as availableNum,
-        ifnull(total_way_num,0) as totalWayNum, ifnull(tax_cost,0) as taxCost, ifnull(new_purchase_price,0) as newPurchasePrice,
-        stock_code as stockCode
-        from stock
-        <where>
-            <if test="skuCode!=null and skuCode!=''">
-                AND sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="transportCenterCode!=null and transportCenterCode!=''">
-                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseCode!=null and warehouseCode!=''">
-                AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseType!=null and warehouseType!=''">
-                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
-            </if>
-            <if test="companyCode!=null and companyCode!=''">
-                AND company_code = #{companyCode,jdbcType=VARCHAR}
-            </if>
-        </where>
-        limit 1
-    </select>
     <resultMap id="SapProductStock" type="com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse">
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>

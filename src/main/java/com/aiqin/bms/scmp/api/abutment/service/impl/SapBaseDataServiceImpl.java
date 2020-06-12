@@ -991,10 +991,10 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //1 是未支付 2 是已支付
                 order.setPayStatus(2);
                 //支付时间
-                order.setPayTime(returnOrderInfo.getOperatorTime());
+                order.setPayTime(returnOrderInfo.getUpdateTime());
                 //订单类别
-                order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode().toString());
-                order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
+                //order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode());
+                order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType().toString());
                 //仓库
                 order.setStorageCode(returnOrderInfo.getTransportCenterCode());
                 order.setStorageName(returnOrderInfo.getTransportCenterName());
@@ -1004,7 +1004,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                 //供应商
 //                order.setSupplierCode(returnOrderInfo.getSupplierCode());
 //                order.setSupplierName(returnOrderInfo.getSupplierName());
-                order.setOrderCount(returnOrderInfo.getProductNum().intValue());
+                order.setOrderCount(returnOrderInfo.getProductCount().intValue());
                 order.setWeight(returnOrderInfo.getWeight().toString());
                 order.setVolume(returnOrderInfo.getVolume().toString());
 //                order.setInvoiceFlag(Integer.valueOf(returnOrderInfo.getInvoiceType()));
@@ -1615,16 +1615,16 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
 //        }
         order.setOrderType("25");
         order.setOrderTypeDesc("售后退货");
-        if(returnOrderInfo.getReturnOrderTypeCode() != null){
-            order.setOrderCategoryCode(returnOrderInfo.getReturnOrderTypeCode().toString());
+        if(returnOrderInfo.getReturnOrderType() != null){
+            order.setOrderCategoryCode(returnOrderInfo.getReturnOrderType().toString());
         }
-        order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
+        //order.setOrderCategoryDesc(returnOrderInfo.getReturnOrderType());
         order.setPayTime(returnOrderInfo.getCreateTime());
         order.setPayStatus(returnOrderInfo.getPaymentStatus());
         order.setPayType(returnOrderInfo.getPaymentTypeCode());
         order.setPayTypeDesc(returnOrderInfo.getPaymentType());
-        if(returnOrderInfo.getProductNum() != null){
-            order.setOrderCount(returnOrderInfo.getProductNum().intValue());
+        if(returnOrderInfo.getProductCount() != null){
+            order.setOrderCount(returnOrderInfo.getProductCount().intValue());
         }
         order.setCreateTime(Calendar.getInstance().getTime());
         order.setStorageCode(returnOrderInfo.getTransportCenterCode());
@@ -1711,7 +1711,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
                     }
                     info.setPurchaseOrderCode(returnBatch.getReturnOrderCode());
                     info.setBatchNo(returnBatch.getBatchCode());
-                    info.setActualTotalCount(returnBatch.getActualInboundNum().longValue());
+                    info.setActualTotalCount(returnBatch.getActualProductCount().longValue());
                     info.setProductType("0");
                     infoBatch.add(info);
                 }
@@ -2162,7 +2162,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         storage.setCreateTime(Calendar.getInstance().getTime());
         storage.setCreateByName(inbound.getUpdateBy());
         // 查询入库单的商品信息
-        List<InboundProduct> inboundProducts = inboundProductDao.inboundList(inbound.getInboundOderCode());
+        List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inbound.getInboundOderCode());
         LOGGER.info("对接sap，入库单商品信息，{}", JsonUtil.toJson(inboundProducts));
         List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
         Map<String, ProductSkuInfo> productSkuInfoMap = productInfoBySkuCode(skuCodes);

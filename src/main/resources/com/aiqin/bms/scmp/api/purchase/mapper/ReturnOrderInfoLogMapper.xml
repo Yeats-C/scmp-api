@@ -17,16 +17,11 @@
     id, order_code, status, status_desc, content, remark, operator, operator_time, company_code, 
     company_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
+  <select id="returnOrderLog" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
     from return_order_info_log
-    where id = #{id,jdbcType=BIGINT}
+    where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from return_order_info_log
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog">
     insert into return_order_info_log (id, order_code, status, 
       status_desc, content, remark, 
@@ -36,73 +31,6 @@
       #{statusDesc,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{operator,jdbcType=VARCHAR}, #{operatorTime,jdbcType=TIMESTAMP}, #{companyCode,jdbcType=VARCHAR}, 
       #{companyName,jdbcType=VARCHAR})
-  </insert>
-  <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog">
-    insert into return_order_info_log
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="orderCode != null">
-        order_code,
-      </if>
-      <if test="status != null">
-        status,
-      </if>
-      <if test="statusDesc != null">
-        status_desc,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-      <if test="remark != null">
-        remark,
-      </if>
-      <if test="operator != null">
-        operator,
-      </if>
-      <if test="operatorTime != null">
-        operator_time,
-      </if>
-      <if test="companyCode != null">
-        company_code,
-      </if>
-      <if test="companyName != null">
-        company_name,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="orderCode != null">
-        #{orderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        #{status,jdbcType=INTEGER},
-      </if>
-      <if test="statusDesc != null">
-        #{statusDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null">
-        #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="operator != null">
-        #{operator,jdbcType=VARCHAR},
-      </if>
-      <if test="operatorTime != null">
-        #{operatorTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="companyCode != null">
-        #{companyCode,jdbcType=VARCHAR},
-      </if>
-      <if test="companyName != null">
-        #{companyName,jdbcType=VARCHAR},
-      </if>
-    </trim>
   </insert>
   <insert id="insertBatch">
     insert into return_order_info_log (id, order_code, status,
@@ -117,50 +45,4 @@
       #{item.companyName,jdbcType=VARCHAR})
     </foreach>
   </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog">
-    update return_order_info_log
-    <set>
-      <if test="orderCode != null">
-        order_code = #{orderCode,jdbcType=VARCHAR},
-      </if>
-      <if test="status != null">
-        status = #{status,jdbcType=INTEGER},
-      </if>
-      <if test="statusDesc != null">
-        status_desc = #{statusDesc,jdbcType=VARCHAR},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="remark != null">
-        remark = #{remark,jdbcType=VARCHAR},
-      </if>
-      <if test="operator != null">
-        operator = #{operator,jdbcType=VARCHAR},
-      </if>
-      <if test="operatorTime != null">
-        operator_time = #{operatorTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="companyCode != null">
-        company_code = #{companyCode,jdbcType=VARCHAR},
-      </if>
-      <if test="companyName != null">
-        company_name = #{companyName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog">
-    update return_order_info_log
-    set order_code = #{orderCode,jdbcType=VARCHAR},
-      status = #{status,jdbcType=INTEGER},
-      status_desc = #{statusDesc,jdbcType=VARCHAR},
-      content = #{content,jdbcType=VARCHAR},
-      remark = #{remark,jdbcType=VARCHAR},
-      operator = #{operator,jdbcType=VARCHAR},
-      operator_time = #{operatorTime,jdbcType=TIMESTAMP},
-      company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
 </mapper>

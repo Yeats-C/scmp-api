@@ -412,16 +412,6 @@
       )
     </where>
   </select>
-
-  <select id="selectMmsReqByInboundOderCode" parameterType="java.lang.String" resultMap="MmsReq"  resultType="com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundProductWmsReqVO">
-    select
-    <include refid="Base_Column_MmsReq" />
-    from inbound_product a
-    left join inbound b on b.inbound_oder_code = a.inbound_oder_code
-    left join purchase_order_product c on a.linenum = c.linnum and b.source_oder_code = c.purchase_order_code
-    where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
-  </select>
-
   <select id="inboundByLineCode" resultMap="BaseResultMap">
     select
       a.*, b.Input_tax_rate as tax
@@ -472,12 +462,6 @@
     <foreach collection="orderCodeList" separator="," item="item" open="(" close=")">
       #{item}
     </foreach>
-  </select>
-  <select id="inboundList" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List"/>
-    from inbound_product
-    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
   <select id="wmsByInboundProduct" resultType="com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource">
     select

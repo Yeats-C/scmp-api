@@ -88,11 +88,6 @@ public interface InboundService {
     void inBoundReturn(String allocationCode);
 
     /**
-     * 入库单回传退货
-     */
-    void returnOder(SupplyReturnOrderMainReqVOReturn storageResultItemReqVo);
-
-    /**
      * 入库单回传给移库
      */
     void inBoundReturnMovement(String allocationCode);

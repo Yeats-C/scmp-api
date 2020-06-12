@@ -190,4 +190,10 @@ public final class Global {
     public static final Integer OUTBOUND_TYPE = 0;
     public static final Integer INBOUND_TYPE = 1;
 
+    /**
+     *  订单类型  0直送、1配送、2辅采
+     */
+    public static final Integer ORDER_TYPE_0 = 0;
+    public static final Integer ORDER_TYPE_1 = 1;
+    public static final Integer ORDER_TYPE_2 = 2;
 }
