@@ -1063,7 +1063,7 @@ public class InboundServiceImpl implements InboundService {
     private HttpResponse returnOrderWms(Inbound inbound) {
         LOGGER.info("开始调用退货单的wms：{}", inbound);
         // 查询退货单
-        ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode1(inbound.getSourceOderCode());
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
 
         ReturnOrderPrimarySource returnOder = BeanCopyUtils.copy(inbound, ReturnOrderPrimarySource.class);
         returnOder.setCreateById(returnOrderInfo.getCreateById());

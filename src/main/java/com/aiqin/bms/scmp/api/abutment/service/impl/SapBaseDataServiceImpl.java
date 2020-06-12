@@ -1575,7 +1575,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private Order returnOrder(String orderCode) {
         // 查询退货单信息
-        ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode1(orderCode);
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(orderCode);
         LOGGER.info("对接sap，退货单信息，{}", JsonUtil.toJson(returnOrderInfo));
         // 查询退供单商品信息
         List<ReturnOrderInfoItem> returnOrderInfoItem = returnOrderInfoItemMapper.selectByReturnOrderCode(orderCode);
