@@ -17,7 +17,7 @@ public interface ReturnOrderInfoMapper {
 
     int insertBatch(List<ReturnOrderInfo> orders);
 
-    ReturnOrderInfo selectByCode1(String returnOrderCode);
+    ReturnOrderInfo selectByCode(String returnOrderCode);
 
     List<ReturnOrderInfo> listForSap(SapOrderRequest sapOrderRequest);
 

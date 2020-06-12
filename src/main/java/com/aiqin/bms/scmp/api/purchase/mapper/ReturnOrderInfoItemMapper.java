@@ -16,11 +16,7 @@ public interface ReturnOrderInfoItemMapper {
 
     Integer update(ReturnOrderInfoItem record);
 
-    int updateByReturnOrderCodeSelective(ReturnOrderInfoItem record);
-
     int insertBatch(List<ReturnOrderInfoItem> orderItems);
-
-    int updateActualInboundNumByIdAndReturnOrderCode(@Param("items") List<ReturnReceiptReqVO> reqVO);
 
     Integer insertList(List<ReturnOrderInfoItem> list);
 

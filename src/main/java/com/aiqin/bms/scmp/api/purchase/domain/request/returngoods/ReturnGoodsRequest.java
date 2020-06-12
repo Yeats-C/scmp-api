@@ -40,10 +40,6 @@ public class ReturnGoodsRequest extends PagesRequest {
     @JsonProperty("customer_code")
     private String customerCode;
 
-//    @ApiModelProperty("订单状态")
-//    @JsonProperty("order_status")
-//    private Integer orderStatus;
-
     @ApiModelProperty("公司编码")
     @JsonProperty("company_code")
     private String companyCode;
