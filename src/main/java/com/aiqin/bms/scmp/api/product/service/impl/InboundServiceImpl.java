@@ -420,7 +420,7 @@ public class InboundServiceImpl implements InboundService {
         return saveInbound(convert);
     }
 
-    /** 入库单推送给wms */
+    /** 入库单采购推送给wms */
     @Override
     //@Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
@@ -476,7 +476,7 @@ public class InboundServiceImpl implements InboundService {
                 purchaseManageService.addLog(operationLog);
             }
 
-            log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundSource));
+            log.info("向wms发送入库单的参数是：{}",  JsonUtil.toJson(inboundSource));
             String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
@@ -964,7 +964,7 @@ public class InboundServiceImpl implements InboundService {
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
                 // 回传成功之后，调用sap
-                sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
+                //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
             }else {
                 log.error("入库单回传给采购接口失败");
             }

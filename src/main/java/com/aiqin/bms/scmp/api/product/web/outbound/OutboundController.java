@@ -102,7 +102,7 @@ public class OutboundController {
     @ApiOperation("pushWms")
     @GetMapping("/pushWms")
     public HttpResponse pushWms(String code) {
-        outboundService.pushWms(code);
+        outboundService.pushRejectWms(code);
         return HttpResponse.success();
     }
 }

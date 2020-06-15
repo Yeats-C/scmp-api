@@ -246,9 +246,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 // 退供调用wms
                 this.pushRejectWms(outbound.getOutboundOderCode());
             }
-            //OutboundServiceImpl outboundService = (OutboundServiceImpl) AopContext.currentProxy();
-            //outboundService.pushWms(outbound.getOutboundOderCode());
-            // 跟新数据库状态
             return j;
         } catch (GroundRuntimeException e) {
             LOGGER.error("保存出库单失败:{}",e.getMessage());
