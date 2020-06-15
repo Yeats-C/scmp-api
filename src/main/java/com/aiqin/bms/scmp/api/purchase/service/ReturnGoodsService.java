@@ -34,7 +34,7 @@ public interface ReturnGoodsService {
 
     HttpResponse returnReceipt(List<ReturnOrderInfoItem> itemList);
 
-    HttpResponse<List<OrderInfoItemProductBatch>> orderBatch(String orderCode, String skuCode, Integer lineCode);
+    HttpResponse<PageResData<ReturnOrderInspectionResponse>> inspectionBatch(ReturnGoodsRequest request);
 
     HttpResponse recordWMS(String inboundOderCode);
 

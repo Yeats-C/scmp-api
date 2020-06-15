@@ -228,4 +228,10 @@
         from return_order_info_item
         where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
     </select>
+    <select id="returnOrderByLastLineCode" resultType="java.lang.Long">
+        select product_line_num
+        from return_order_info_item
+        where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+        order by product_line_num desc limit 1
+    </select>
 </mapper>

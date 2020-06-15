@@ -110,12 +110,17 @@ public class ReturnGoodsController {
         return returnGoodsService.returnReceipt(itemList);
     }
 
-    @ApiOperation("验货查询对应sku的销售批次信息")
-    @GetMapping("/order/batch")
-    public HttpResponse<List<OrderInfoItemProductBatch>> orderBatch(@RequestParam("order_code") String orderCode,
-                                                              @RequestParam(value = "sku_code") String skuCode,
-                                                              @RequestParam(value = "line_code") Integer lineCode){
-        return returnGoodsService.orderBatch(orderCode, skuCode, lineCode);
+    @ApiOperation("验货批次列表")
+    @GetMapping("/inspection/batch/list")
+    public HttpResponse<PageResData<ReturnOrderInspectionResponse>> inspectionBatch(
+            @RequestParam("return_order_code") String returnOrderCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        ReturnGoodsRequest request = new ReturnGoodsRequest();
+        request.setReturnOrderCode(returnOrderCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return returnGoodsService.inspectionBatch(request);
     }
 
 }
