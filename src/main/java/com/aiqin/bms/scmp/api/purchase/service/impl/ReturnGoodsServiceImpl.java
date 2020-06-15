@@ -561,6 +561,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         Integer returnInfo = returnOrderInfoMapper.update(returnOrder);
         log.info("更新退货单主信息：", returnInfo);
+
+        // 回传运营中台信息
+        changeParameter(returnOrder.getReturnOrderCode());
         return HttpResponse.success();
     }
 

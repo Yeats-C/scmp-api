@@ -490,6 +490,7 @@ public class InboundServiceImpl implements InboundService {
 
     @Override
 //    @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class)
     public void workFlowCallBack(InboundCallBackRequest request) {
         log.info("wms入库单回调实体传入实体:[{}]",JSON.toJSONString(request));
         // 根据入库单号，查询入库单主体
