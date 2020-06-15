@@ -307,8 +307,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    public HttpResponse<PageResData<ReturnOrderInspectionResponse>> inspectionBatch(ReturnGoodsRequest request){
-        List<ReturnOrderInfoItem> list = returnOrderInfoItemMapper.list(request);
+    public HttpResponse<List<ReturnOrderInspectionResponse>> inspectionBatch(String returnOrderCode){
+        List<ReturnOrderInfoItem> list = returnOrderInfoItemMapper.selectByReturnOrderCode(returnOrderCode);
         List<ReturnOrderInspectionResponse> responses = BeanCopyUtils.copyList(list, ReturnOrderInspectionResponse.class);
         if(CollectionUtils.isNotEmptyCollection(responses)){
             for(ReturnOrderInspectionResponse response:responses){
@@ -320,8 +320,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 response.setBatchList(batches);
             }
         }
-        Integer count = returnOrderInfoItemMapper.listCount(request);
-        return HttpResponse.successGenerics(new PageResData<>(count, responses));
+        return HttpResponse.successGenerics(responses);
     }
 
     @Override

@@ -35,6 +35,7 @@
     <result column="actual_amount" jdbcType="DECIMAL" property="actualAmount" />
     <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
     <result column="tax" jdbcType="DECIMAL" property="tax" />
+    <result column="insert_type" jdbcType="INTEGER" property="insertType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
@@ -42,7 +43,7 @@
     give_promotion, price, num, amount, activity_code, product_line_num,
     promotion_line_num, product_status, actual_inbound_num, company_name, company_code,
     channel_unit_price, total_channel_price, actual_channel_unit_price, actual_total_channel_price,
-    actual_amount, actual_price, tax
+    actual_amount, actual_price, tax, insert_type
   </sql>
   <select id="selectByReturnOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
       select

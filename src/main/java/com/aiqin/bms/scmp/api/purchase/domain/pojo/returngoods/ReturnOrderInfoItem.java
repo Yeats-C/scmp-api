@@ -156,4 +156,8 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("税率")
     private BigDecimal tax;
 
+    @ApiModelProperty("是否为验货之后新增商品 0 是 1 否")
+    @JsonProperty("insert_type")
+    private Integer insertType;
+
 }

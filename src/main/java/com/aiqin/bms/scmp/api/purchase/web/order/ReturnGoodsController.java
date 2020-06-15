@@ -112,15 +112,9 @@ public class ReturnGoodsController {
 
     @ApiOperation("验货批次列表")
     @GetMapping("/inspection/batch/list")
-    public HttpResponse<PageResData<ReturnOrderInspectionResponse>> inspectionBatch(
-            @RequestParam("return_order_code") String returnOrderCode,
-            @RequestParam(value = "page_no", required = false) Integer pageNo,
-            @RequestParam(value = "page_size", required = false) Integer pageSize){
-        ReturnGoodsRequest request = new ReturnGoodsRequest();
-        request.setReturnOrderCode(returnOrderCode);
-        request.setPageNo(pageNo);
-        request.setPageSize(pageSize);
-        return returnGoodsService.inspectionBatch(request);
+    public HttpResponse<List<ReturnOrderInspectionResponse>> inspectionBatch(
+            @RequestParam("return_order_code") String returnOrderCode){
+        return returnGoodsService.inspectionBatch(returnOrderCode);
     }
 
 }
