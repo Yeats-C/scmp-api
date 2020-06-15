@@ -178,7 +178,7 @@
       #{item.productCount,jdbcType=BIGINT}, #{item.actualProductCount,jdbcType=BIGINT}, #{item.batchCode,jdbcType=VARCHAR},
       #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR},
       #{item.locationCode,jdbcType=VARCHAR}, #{item.returnProductCount,jdbcType=BIGINT}, #{item.batchRemark,jdbcType=VARCHAR},
-      #{lockType,jdbcType=INTEGER})
+      #{item.lockType,jdbcType=INTEGER})
     </foreach>
   </insert>
   <select id="returnBatchList" resultMap="BaseResultMap">

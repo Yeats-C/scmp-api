@@ -1069,7 +1069,9 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setCreateById(returnOrderInfo.getCreateById());
         returnOder.setCreateByIdSH(returnOrderInfo.getCreateById());
         returnOder.setCreateByNameSH(returnOrderInfo.getCreateByName());
-        returnOder.setCreateDate(inbound.getCreateTime().toString());
+
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        returnOder.setCreateDate(sdf.format(inbound.getCreateTime()));
         returnOder.setTransportCompanyCode(returnOrderInfo.getTransportCompanyCode());
         returnOder.setTransportNumber(returnOrderInfo.getTransportNumber());
         returnOder.setConsigneePhone(returnOrderInfo.getConsigneePhone());

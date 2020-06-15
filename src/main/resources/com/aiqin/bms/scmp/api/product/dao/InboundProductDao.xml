@@ -390,9 +390,9 @@
       #{item.praTaxPurchaseAmount,jdbcType=DECIMAL},
       #{item.praTaxAmount,jdbcType=DECIMAL},
       #{item.createBy,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP},
+      now(),
       #{item.updateBy,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP},
+      now(),
       #{item.linenum,jdbcType=BIGINT},
       #{item.tax,jdbcType=DECIMAL}
       )

@@ -16,9 +16,7 @@ public interface ReturnOrderInfoItemMapper {
 
     Integer update(ReturnOrderInfoItem record);
 
-    int insertBatch(List<ReturnOrderInfoItem> orderItems);
-
-    Integer insertList(List<ReturnOrderInfoItem> list);
+    Integer insertList(@Param("list") List<ReturnOrderInfoItem> list);
 
     List<ReturnOrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 
