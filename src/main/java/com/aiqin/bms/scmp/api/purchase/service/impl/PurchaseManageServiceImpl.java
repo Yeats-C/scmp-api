@@ -617,7 +617,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
 
         // 减在途数
-        this.wayNum(purchaseOrder, 8);
+        //this.wayNum(purchaseOrder, 8);
 
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);

@@ -614,9 +614,22 @@ public class InboundServiceImpl implements InboundService {
                     stockInfo.setNewPurchasePrice(product.getPraTaxPurchaseAmount());
                 }
                 // 判断是否为最后一次采购
+                Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
+                Integer actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount.intValue();
                 if(purchase.getInboundLine() == inbound.getPurchaseNum()){
-                    Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
-                    stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
+                    if(actualCount > 0){
+                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
+                    }else if(actualCount == 0){
+                        stockInfo.setPreWayCount(actualSingleCount);
+                    }else {
+                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                    }
+                }else {
+                    if(actualCount >= 0){
+                        stockInfo.setPreWayCount(actualSingleCount);
+                    }else {
+                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                    }
                 }
             }
             productList.add(stockInfo);
