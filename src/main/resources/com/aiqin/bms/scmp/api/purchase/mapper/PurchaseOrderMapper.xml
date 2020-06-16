@@ -89,7 +89,7 @@
       supplier_mobile, delivery_time, warehouse_time, payment_mode, payment_time, remark,
       inbound_line, pre_payment_amount, account_code, account_name, contract_code, contract_name,
       create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name,
-      , supplier_company_code, supplier_company_name)
+      supplier_company_code, supplier_company_name)
     values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
       #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
