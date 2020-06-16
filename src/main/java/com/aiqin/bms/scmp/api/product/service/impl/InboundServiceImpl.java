@@ -554,7 +554,8 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct product = products.get(key);
             Long actualTotalCount = inboundProduct.getActualTotalCount();
             product.setPraInboundMainNum(actualTotalCount);
-            product.setPraInboundNum(actualTotalCount / Long.valueOf(product.getInboundBaseContent()));
+            Long baseContent = product.getInboundBaseContent() == null ? 1L : Long.valueOf(product.getInboundBaseContent());
+            product.setPraInboundNum(actualTotalCount / baseContent);
             //实际含税进价
             product.setPraTaxPurchaseAmount(product.getPreTaxPurchaseAmount());
             //单个SKU的实际含税金额
@@ -632,7 +633,8 @@ public class InboundServiceImpl implements InboundService {
                 String productDate = DateUtils.currentDate();
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
                 String batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                        batchCode + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
+                        batchCode + "_" + inbound.getSupplierCode() + "_" +
+                        product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -684,7 +686,8 @@ public class InboundServiceImpl implements InboundService {
                 InboundProduct product = products.get(key);
                 // 根据批次编号查询批次是否存在
                 String batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                        batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
+                        batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" +
+                        product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
                 productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode(), batchInfo.getLineCode());
                 productBatch.setUpdateById(request.getOperatorId());
                 productBatch.setUpdateByName(request.getOperatorName());

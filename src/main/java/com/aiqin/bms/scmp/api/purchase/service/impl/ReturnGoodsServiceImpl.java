@@ -514,10 +514,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setActualVolume(0L);
         returnOrder.setActualWeight(0L);
         // 计算实际体积/重量
-        if(returnOrder.getVolume() > 0 && returnOrder.getActualProductCount() > 0){
+        if(returnOrder.getVolume() != null && returnOrder.getVolume() > 0 && returnOrder.getActualProductCount() > 0){
             returnOrder.setActualVolume(returnOrder.getActualProductCount() / returnOrder.getVolume());
         }
-        if(returnOrder.getWeight() > 0 && returnOrder.getActualProductCount() > 0){
+        if(returnOrder.getWeight() != null && returnOrder.getWeight() > 0 && returnOrder.getActualProductCount() > 0){
             returnOrder.setActualWeight(returnOrder.getActualProductCount() / returnOrder.getWeight());
         }
         // 查询入库单的批次信息
@@ -556,8 +556,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
            Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
             LOGGER.info("更新退货单批次：", i);
         }
-        Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);
-        LOGGER.info("添加退货单批次：", count);
+        if(CollectionUtils.isNotEmptyCollection(batchList)){
+            Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);
+            LOGGER.info("添加退货单批次：", count);
+        }
 
         Integer returnInfo = returnOrderInfoMapper.update(returnOrder);
         log.info("更新退货单主信息：", returnInfo);
