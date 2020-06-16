@@ -48,10 +48,13 @@
   <resultMap id="ApplySupplyComDetailMap" type="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.ApplySupplyComDetailDTO">
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
     <result column="apply_type_name" jdbcType="VARCHAR" property="applyTypeName" />
+    <result column="pay_type_code" jdbcType="VARCHAR" property="payTypeCode" />
+    <result column="pay_type_name" jdbcType="VARCHAR" property="payTypeName" />
     <result column="apply_by" jdbcType="VARCHAR" property="applyBy" />
     <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime" />
     <result column="form_no" jdbcType="VARCHAR" property="formNo"/>
     <result column="apply_status" jdbcType="VARCHAR" property="applyStatus"/>
+    <result column="property" jdbcType="VARCHAR" property="property"/>
 
     <result column="apply_supply_name" jdbcType="VARCHAR" property="applySupplyName" />
     <result column="supply_company_code" jdbcType="VARCHAR" property="applySupplyCode" />
@@ -135,7 +138,7 @@
       purchasing_group_name,tax_id,corporate_representative,registered_capital,
       enable,update_time,update_by,add_account, company_code,company_name,max_order_amount,
       min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
-      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark,supplier_abbreviation,property
+      supply_company_code,apply_status,payment_method,brand,delivery_area,remark,approval_name,approval_remark,supplier_abbreviation,property,pay_type_code,pay_type_name
     )
     values ( #{applySupplyName,jdbcType=VARCHAR},#{applySupplyType,jdbcType=VARCHAR},#{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{applyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
@@ -152,7 +155,7 @@
       #{maxOrderAmount, jdbcType=BIGINT}, #{minOrderAmount, jdbcType=BIGINT}, #{businessLicense, jdbcType=VARCHAR}, #{starScore, jdbcType=DECIMAL},
       #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{supplyCompanyCode,jdbcType=VARCHAR},#{applyStatus,jdbcType=TINYINT},
       #{paymentMethod,jdbcType=VARCHAR},#{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},
-      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR},#{supplierAbbreviation,jdbcType=VARCHAR},#{property,jdbcType=VARCHAR}
+      #{approvalName,jdbcType=VARCHAR},#{approvalRemark,jdbcType=VARCHAR},#{supplierAbbreviation,jdbcType=VARCHAR},#{property,jdbcType=VARCHAR},#{payTypeCode,jdbcType=VARCHAR},#{payTypeName,jdbcType=VARCHAR}
       )
   </insert>
   <select id="getApplyList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QueryApplySupplyComReqVO" resultMap="ApplySupplyComListMap">
@@ -223,6 +226,9 @@
     SELECT
 	  a.apply_supply_company_code apply_code,
 	  a.form_no,
+	  a.pay_type_code,
+	  a.pay_type_name,
+	  a.property,
       CASE
       a.apply_type
       WHEN 1 THEN
@@ -428,6 +434,8 @@
     select
        a.id,
        a.apply_type as applyType,
+       a.pay_type_code as payTypeCode,
+       a.pay_type_name as payTypeName,
        a.apply_supply_company_code as applyCode,
        a.apply_status as status,
        '供应商' as modelType,

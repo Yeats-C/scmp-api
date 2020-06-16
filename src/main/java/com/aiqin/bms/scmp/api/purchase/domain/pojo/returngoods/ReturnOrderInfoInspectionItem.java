@@ -1,121 +1,138 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-import java.util.Date;
-
 @ApiModel("退货验货保存vo信息（参数有多要就传多少）")
 @Data
 public class ReturnOrderInfoInspectionItem {
-    @ApiModelProperty("商品主键")
+    @ApiModelProperty(value = "商品主键")
+    @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("退货订单主表编码")
+    @ApiModelProperty(value = "订单主表编码")
+    @JsonProperty("return_order_code")
     private String returnOrderCode;
 
-    @ApiModelProperty("sku编号")
+    @ApiModelProperty(value = "sku编号")
+    @JsonProperty("sku_code")
     private String skuCode;
 
-    @ApiModelProperty("sku名称")
+    @ApiModelProperty(value = "SKU名称")
+    @JsonProperty("sku_name")
     private String skuName;
 
-    @ApiModelProperty("图片地址")
+    @ApiModelProperty(value = "图片地址")
+    @JsonProperty("picture_url")
     private String pictureUrl;
 
-    @ApiModelProperty("规格")
+    @ApiModelProperty(value = "规格")
+    @JsonProperty("spec")
     private String spec;
 
-    @ApiModelProperty("规格编码")
-    private String specCode;
-
-    @ApiModelProperty("颜色名称")
+    @ApiModelProperty(value = "颜色名称")
+    @JsonProperty("color_name")
     private String colorName;
 
-    @ApiModelProperty("颜色编码")
+    @ApiModelProperty(value = "颜色编码")
+    @JsonProperty("color_code")
     private String colorCode;
 
-    @ApiModelProperty("型号")
+    @ApiModelProperty(value = "型号")
+    @JsonProperty("model")
     private String model;
 
-    @ApiModelProperty("型号编码")
-    private String modelCode;
-
-    @ApiModelProperty("基商品含量")
+    @ApiModelProperty(value = "基商品含量")
+    @JsonProperty("base_product_content")
     private Integer baseProductContent;
 
-    @ApiModelProperty("商品单位code")
+    @ApiModelProperty(value = "商品单位code")
+    @JsonProperty("unit_code")
     private String unitCode;
 
-    @ApiModelProperty("商品单位")
+    @ApiModelProperty(value = "商品单位")
+    @JsonProperty("unit_name")
     private String unitName;
 
-    @ApiModelProperty("拆零系数")
+    @ApiModelProperty(value = "拆零系数")
+    @JsonProperty("zero_disassembly_coefficient")
     private Integer zeroDisassemblyCoefficient;
 
-    @ApiModelProperty("是否是赠品(0否1是)")
-    private Integer givePromotion;
-
-    @ApiModelProperty("批次号")
-    private String batchCode;
-
-    @ApiModelProperty("数量")
-    private Long num;
-
-    @ApiModelProperty("活动编码(多个，隔开）")
-    private String activityCode;
-
-    @ApiModelProperty("商品行号")
-    private Long productLineNum;
-
-    @ApiModelProperty("赠品行号")
-    private Long promotionLineNum;
-
-    @ApiModelProperty("原sku的行号")
-    private Integer originalLineNum;
-
-    @ApiModelProperty("商品状态1新品2残品")
+    @ApiModelProperty(value = "商品状态1新品2残品")
+    @JsonProperty("product_status")
     private Integer productStatus;
 
-    @ApiModelProperty("实际入库数量")
-    private Integer actualInboundNum;
+    @ApiModelProperty(value = "是否是赠品(0否1是)")
+    @JsonProperty("give_promotion")
+    private Integer givePromotion;
 
-    @ApiModelProperty("公司名称")
-    private String companyName;
+    @ApiModelProperty(value = "行号")
+    @JsonProperty("line_code")
+    private Long lineCode;
 
-    @ApiModelProperty("公司编码")
-    private String companyCode;
-
-    @ApiModelProperty("物流中心名称")
-    private String transportCenterName;
-
-    @ApiModelProperty("物流中心编码")
+    @ApiModelProperty(value = "仓库编码")
+    @JsonProperty("transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("仓库名称")
-    private String warehouseName;
+    @ApiModelProperty(value = "仓库名称")
+    @JsonProperty("transport_center_name")
+    private String transportCenterName;
 
-    @ApiModelProperty("仓库编码")
+    @ApiModelProperty(value = "库房编码")
+    @JsonProperty("warehouse_code")
     private String warehouseCode;
 
-    @ApiModelProperty("供应商编码")
-    private String  supplierCode;
+    @ApiModelProperty(value = "库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
 
-    @ApiModelProperty("供应商名称")
-    private String  supplierName;
+    @ApiModelProperty(value = "供应商编码")
+    @JsonProperty("supplier_code")
+    private String supplierCode;
 
-    @ApiModelProperty("如果手动输入批次号，那么必须传入生产日期")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
-    private Date productDate;
+    @ApiModelProperty(value = "供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
 
-    @ApiModelProperty(value = "批次编码")
+    @ApiModelProperty(value = "数量")
+    @JsonProperty("product_count")
+    private Long productCount;
+
+    @ApiModelProperty(value = "实际入库数量")
+    @JsonProperty("actual_product_count")
+    private Long actualProductCount;
+
+    @ApiModelProperty(value = "批次号")
+    @JsonProperty("batch_code")
+    private String batchCode;
+
+    @ApiModelProperty(value = "批次编号")
+    @JsonProperty("batch_info_code")
     private String batchInfoCode;
 
-    @ApiModelProperty(value = "库位号")
-    private String locationCode;
+    @ApiModelProperty(value = "生产日期")
+    @JsonProperty("product_date")
+    private String productDate;
 
     @ApiModelProperty(value = "过期日期")
+    @JsonProperty("be_overdue_date")
     private String beOverdueDate;
+
+    @ApiModelProperty(value = "库位号")
+    @JsonProperty("location_code")
+    private String locationCode;
+
+    @ApiModelProperty(value = "可退数量")
+    @JsonProperty("return_product_count")
+    private Long returnProductCount;
+
+    @ApiModelProperty(value = "批次备注")
+    @JsonProperty("batch_remark")
+    private String batchRemark;
+
+    @ApiModelProperty(value = "锁定类型 1.下单锁定 2.分配锁定")
+    @JsonProperty("lock_type")
+    private Integer lockType;
 }

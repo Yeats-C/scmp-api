@@ -42,7 +42,7 @@ public class ReturnOrderDetailReq {
     @ApiModelProperty(value = "型号")
     private String modelCode;
 
-    @ApiModelProperty(value = "base_product_spec")
+    @ApiModelProperty(value = "规格")
     private Long baseProductSpec;
 
     @ApiModelProperty(value = "单位编码")
@@ -121,14 +121,4 @@ public class ReturnOrderDetailReq {
 
     @ApiModelProperty(value = "均摊后单价")
     private BigDecimal preferentialAmount;
-
-    @ApiModelProperty(value = "批次编码")
-    private String batchInfoCode;
-
-    @ApiModelProperty(value = "批次号时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
-    private Date batchDate;
-
-    @ApiModelProperty(value = "批次号")
-    private String batchCode;
 }

@@ -11,7 +11,6 @@ public class ReturnBatchDetailDLReq {
     @ApiModelProperty(value = "主键id")
     private Long id;
 
-
     @ApiModelProperty(value = "sku编号")
     private String skuCode;
 

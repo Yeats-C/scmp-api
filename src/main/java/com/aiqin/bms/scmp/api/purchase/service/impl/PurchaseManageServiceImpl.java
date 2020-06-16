@@ -521,7 +521,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             Integer num = singleCount - actualSingleCount;
             BigDecimal totalAmount = amount.multiply(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
             preTaxAmount = totalAmount.add(preTaxAmount);
-            BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, BigDecimal.valueOf(product.getTaxRate().longValue()));
+            BigDecimal noTax = Calculate.computeNoTaxPrice(totalAmount, product.getTaxRate());
             preNoTaxAmount = noTax.add(preNoTaxAmount);
             list.add(reqVo);
         }
@@ -617,7 +617,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
 
         // 减在途数
-        //this.wayNum(purchaseOrder, 8);
+        this.wayNum(purchaseOrder, 8);
 
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);

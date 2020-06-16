@@ -196,4 +196,9 @@ public class ApplySupplyCompanyReqDTO extends CommonBean {
 
     @ApiModelProperty("职位名称")
     private String positionName;
+
+    @ApiModelProperty("付款方式编号")
+    private String payTypeCode;
+    @ApiModelProperty("付款方式名称")
+    private String payTypeName;
 }

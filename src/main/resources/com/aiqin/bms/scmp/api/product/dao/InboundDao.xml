@@ -634,9 +634,6 @@
     from inbound
     where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
-  <select id="selectMaxPurchaseNumBySourceOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select max(purchase_num) from inbound where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
-  </select>
   <select id="selectTimeAndSatusBySourchAndNum" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from inbound where
@@ -674,8 +671,13 @@
     where source_oder_code = #{sourceOderCode}
     order by id desc limit 1
   </select>
-
   <update id="updateInboundSynchrSap">
     update inbound set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where source_oder_code = #{sourceOderCode}
   </update>
+  <select id="inboundBySource" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from inbound
+    where source_oder_code = #{sourceOderCode}
+    and inbound_type_code = #{inboundTypeCode}
+  </select>
 </mapper>

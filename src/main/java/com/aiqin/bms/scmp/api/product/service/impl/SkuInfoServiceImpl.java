@@ -1927,8 +1927,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 baseInfo.setStandard(productSkuInfo.getSpec());
                 sapProductSku.setBaseInfo(baseInfo);
                 sapProductSku.setBaseInfo1(SapSkuStorageFinancialMap.get(productSkuInfo.getSkuCode()));
-                productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
-                sapProductSku.setBaseInfo2(sapSkuSaleListHandler(productSkuCheckout, baseInfo2, priceChannels));
+//               productSkuCheckout = skuCheckoutMap.get(productSkuInfo.getProductCode());
+                sapProductSku.setBaseInfo2(sapSkuSaleListHandler(null, baseInfo2, priceChannels));
                 productSkuList.add(sapProductSku);
                 sapStorageAbutment(productSkuList);
 
@@ -2048,7 +2048,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/productInfoPush" );
+            url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/productInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(productSkuInfoWms).timeout(30000);
             HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){

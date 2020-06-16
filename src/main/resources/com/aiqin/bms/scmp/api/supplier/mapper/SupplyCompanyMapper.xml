@@ -54,7 +54,7 @@
     del_flag, supplier_code, supply_code, apply_supply_company_code, auditor_by, auditor_time, 
     apply_status, supplier_name, purchasing_group_code, zip_code,purchasing_group_name,tax_id,
     corporate_representative,registered_capital,enable,company_code,company_name,max_order_amount,min_order_amount,
-    business_license,star_score,supplier_abbreviation,property
+    business_license,star_score,supplier_abbreviation,property,pay_type_code,pay_type_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -107,7 +107,7 @@
       purchasing_group_code, zip_code,purchasing_group_name,tax_id,
       corporate_representative,registered_capital,enable,
       company_code,company_name,max_order_amount,min_order_amount,business_license,star_score,direct_supervisor_code,direct_supervisor_name,
-      payment_method,brand,delivery_area,remark,approval_name,supplier_abbreviation,property)
+      payment_method,brand,delivery_area,remark,approval_name,supplier_abbreviation,property,pay_type_code,pay_type_name)
     values (#{id,jdbcType=BIGINT}, #{supplyName,jdbcType=VARCHAR}, #{supplyType,jdbcType=VARCHAR}, 
       #{supplyAbbreviation,jdbcType=VARCHAR}, #{provinceId,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, 
       #{cityId,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, #{districtId,jdbcType=VARCHAR}, 
@@ -123,7 +123,8 @@
       #{enable,jdbcType=TINYINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{maxOrderAmount,jdbcType=BIGINT}, #{minOrderAmount,jdbcType=BIGINT},#{businessLicense, jdbcType=VARCHAR},
       #{starScore, jdbcType=DECIMAL}, #{directSupervisorCode,jdbcType=VARCHAR},#{directSupervisorName,jdbcType=VARCHAR},#{paymentMethod,jdbcType=VARCHAR},
-      #{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR},#{supplierAbbreviation,jdbcType=VARCHAR},#{property,jdbcType=VARCHAR})
+      #{brand,jdbcType=VARCHAR},#{deliveryArea,jdbcType=VARCHAR},#{remark,jdbcType=VARCHAR},#{approvalName,jdbcType=VARCHAR},#{supplierAbbreviation,jdbcType=VARCHAR}
+      ,#{property,jdbcType=VARCHAR},#{payTypeCode,jdbcType=VARCHAR},#{payTypeName,jdbcType=VARCHAR})
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany">
     insert into supply_company
@@ -556,6 +557,8 @@
       remark = #{remark,jdbcType=VARCHAR},
       supplier_abbreviation = #{supplierAbbreviation,jdbcType=VARCHAR},
       property = #{property,jdbcType=VARCHAR},
+      pay_type_code = #{payTypeCode,jdbcType=VARCHAR},
+      pay_type_name = #{payTypeName,jdbcType=VARCHAR},
       approval_name = #{approvalName,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

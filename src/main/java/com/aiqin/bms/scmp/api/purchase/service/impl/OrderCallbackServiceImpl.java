@@ -443,7 +443,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         //操作时间 签收时间 等于回单时间 退货的商品对应供应商信息取入库单据相关
         //查询退货单是否存在
         LOGGER.info("耘链开始调用退货单，入参{}" + request);
-        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode1(request.getReturnOrderCode());
+        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode(request.getReturnOrderCode());
         if (response != null) {
             LOGGER.info("耘链退货单单据已存在");
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
@@ -500,11 +500,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 }
                 //订单类型
                 if (dictionaryInfoMap.containsKey(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType())) {
-                    returnOrderInfo.setOrderTypeCode(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue()));
+                    returnOrderInfo.setOrderType(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue()));
                 }
                 //退货类型
                 if (dictionaryInfoMap.containsKey(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType())) {
-                    returnOrderInfo.setReturnOrderTypeCode(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType()).getValue()));
+                    returnOrderInfo.setReturnOrderType(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType()).getValue()));
                 }
                 if (priceChannel != null) {
                     returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
@@ -559,7 +559,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     detailList.add(returnOrderInfoItem);
                 }
                 //实际金额 数量
-                returnOrderInfo.setActualProductNum(request.getProductNum());
+                returnOrderInfo.setActualProductCount(request.getProductNum());
                 returnOrderInfo.setActualReturnOrderAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setProductChannelTotalAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setActualProductChannelTotalAmount(request.getReturnOrderAmount());
@@ -1564,7 +1564,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         this.updateAiqinOrder(request);
 
         // 调用sap 传送销售单的数据给sap
-        sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
+        //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
     }
 

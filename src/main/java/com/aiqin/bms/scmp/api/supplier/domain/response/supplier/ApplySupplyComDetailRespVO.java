@@ -22,6 +22,9 @@ public class ApplySupplyComDetailRespVO {
     @ApiModelProperty("申请信息")
     private ApplyInfoRespVO applyInfoRespVO;
 
+    @ApiModelProperty("属性")
+    private String property;
+
     @ApiModelProperty("供货单位申请信息")
     private ApplySupplyComInfoRespVO applySupplyComInfoRespVO;
 

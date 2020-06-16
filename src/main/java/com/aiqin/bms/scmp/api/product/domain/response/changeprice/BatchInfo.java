@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -16,7 +19,8 @@ import java.util.Date;
  * @time: 19:46
  */
 @Data
-public class BatchInfo {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class BatchInfo  implements Serializable {
     @ApiModelProperty("仓库批次号编码")
     @JsonProperty("warehouse_batch_number")
     private String warehouseBatchNumber;

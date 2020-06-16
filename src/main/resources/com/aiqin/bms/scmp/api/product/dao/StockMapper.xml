@@ -204,24 +204,6 @@
         where warehouse_type in (1, 2, 3)
         group by warehouse_type
     </select>
-    <select id="selectOneStockInfoByStockId" parameterType="java.lang.String"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo">
-        select
-        sf.id as id,
-        sf.lock_status as lockStatus,
-        SUM(sf.change_num) as changeNum,
-        sf.document_type as documentType,
-        sf.document_num as documentNum,
-        sf.source_document_type as sourceDocumentType,
-        sf.source_document_num as sourceDocumentNum,
-        sf.update_time,
-        sf.update_by as updateBy,
-        sf.remark as remark
-        from stock_flow as sf
-        where sf.stock_code = #{stockCode, jdbcType=VARCHAR}
-        GROUP BY sf.lock_status,sf.sku_code,sf.document_num
-        order by sf.update_time DESC
-    </select>
     <sql id="Query_Stock_Sku_Where">
         <where>
             1 = 1
@@ -472,13 +454,30 @@
         where stock_code = #{stockCode,jdbcType=VARCHAR}
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
-        insert into stock(
-        stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
-        warehouse_type,sku_code,sku_name,inventory_num,available_num,lock_num,purchase_way_num,allocation_way_num,total_way_num,
-        new_delivery,new_delivery_name,new_purchase_price,purchase_group_code,purchase_group_name,stock_unit_code,stock_unit_name,
-        tax_price,tax_rate,tax_cost,create_time,create_by,update_time,update_by, stockup_num
+        INSERT INTO stock (
+        stock_code,
+        company_code,
+        company_name,
+        transport_center_code,
+        transport_center_name,
+        warehouse_code,
+        warehouse_name,
+        warehouse_type,
+        sku_code,
+        sku_name,
+        new_delivery,
+        new_delivery_name,
+        new_purchase_price,
+         unit_code,
+        unit_name,
+        tax_rate,
+        tax_cost,
+        create_time,
+        create_by_name,
+        update_time,
+        update_by_name
         )
-        values
+        VALUES
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.stockCode},
@@ -491,27 +490,17 @@
             #{item.warehouseType},
             #{item.skuCode},
             #{item.skuName},
-            #{item.inventoryNum},
-            #{item.availableNum},
-            #{item.lockNum},
-            #{item.purchaseWayNum},
-            #{item.allocationWayNum},
-            #{item.totalWayNum},
             #{item.newDelivery},
             #{item.newDeliveryName},
             #{item.newPurchasePrice},
-            #{item.purchaseGroupCode},
-            #{item.purchaseGroupName},
-            #{item.stockUnitCode},
-            #{item.stockUnitName},
-            #{item.taxPrice},
+            #{item.unitCode},
+            #{item.unitName},
             #{item.taxRate},
             #{item.taxCost},
             NOW(),
             #{item.createBy},
             NOW(),
-            #{item.updateBy},
-            #{item.stockupNum}
+            #{item.updateBy}
             )
         </foreach>
     </insert>
@@ -702,20 +691,6 @@
             where id=#{item.id}
         </foreach>
     </update>
-    <select id="getLatestPurchasePriceBySkuCodes" parameterType="java.util.List" resultMap="BaseResultMap">
-        SELECT
-        <include refid="Base_Column_List"/>
-        FROM
-        stock
-        WHERE
-        del_flag = 0
-        <if test="list != null and list.size > 0">
-            AND sku_code IN
-            <foreach collection="list" item="item" open="(" separator="," close=")">
-                #{item,jdbcType=VARCHAR}
-            </foreach>
-        </if>
-    </select>
     <select id="selectStockLogs" resultMap="StockFlowMap">
         select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
     </select>
@@ -1054,14 +1029,14 @@
     </select>
     <select id="getBatch" resultType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo">
        select
-          a.stock_batch_code      as warehouseBatchNumber,
-          a.batch_code      as batchCode,
-          a.transport_center_code as transportCenterCode,
-          a.transport_center_name as transportCenterName,
-          a.warehouse_code        as warehouseCode,
-          a.warehouse_name        as warehouseName,
-          a.batch_remark          as batchRemark,
-          a.product_date       as productTime
+          a.stock_batch_code      as warehouse_batch_number,
+          a.batch_code      as batch_code,
+          a.transport_center_code as transport_center_code,
+          a.transport_center_name as transport_center_name,
+          a.warehouse_code        as warehouse_code,
+          a.warehouse_name        as warehouse_name,
+          a.batch_remark          as batch_remark,
+          a.product_date       as production_date
        from stock_batch a
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
     </select>
@@ -1156,27 +1131,6 @@
         from stock
         group by sku_code
     </select>
-    <select id="selectStockSum" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-        select
-        sku_code skuCode, sku_name skuName, sum(ifnull(inventory_count,0)) inventoryNum, sum(ifnull(available_count,0)) availableNum,
-        sum(ifnull(lock_count,0)) lockNum, sum(ifnull(purchase_way_count,0)) purchaseWayNum,
-        sum(ifnull(total_way_count,0)) totalWayNum
-        from stock
-        <where>
-            <if test="transportCenterCode!=null and transportCenterCode!=''">
-                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="skuCode!=null and skuCode!=''">
-                AND sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseType!=null and warehouseType!=''">
-                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
-            </if>
-            <if test="companyCode!=null and companyCode!=''">
-                AND company_code = #{companyCode,jdbcType=VARCHAR}
-            </if>
-        </where>
-    </select>
     <insert id="insertReplaceAll">
         replace into stock(
         stock_code,company_code,company_name,transport_center_code,transport_center_name,warehouse_code,warehouse_name,
@@ -1217,31 +1171,6 @@
             #{item.stockupNum})
         </foreach>
     </insert>
-    <select id="stockInfo" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Stock">
-        select
-        sku_code skuCode, sku_name skuName, ifnull(inventory_num,0) as inventoryNum, ifnull(available_num,0) as availableNum,
-        ifnull(total_way_num,0) as totalWayNum, ifnull(tax_cost,0) as taxCost, ifnull(new_purchase_price,0) as newPurchasePrice,
-        stock_code as stockCode
-        from stock
-        <where>
-            <if test="skuCode!=null and skuCode!=''">
-                AND sku_code = #{skuCode,jdbcType=VARCHAR}
-            </if>
-            <if test="transportCenterCode!=null and transportCenterCode!=''">
-                AND transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseCode!=null and warehouseCode!=''">
-                AND warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-            </if>
-            <if test="warehouseType!=null and warehouseType!=''">
-                AND warehouse_type = #{warehouseType,jdbcType=VARCHAR}
-            </if>
-            <if test="companyCode!=null and companyCode!=''">
-                AND company_code = #{companyCode,jdbcType=VARCHAR}
-            </if>
-        </where>
-        limit 1
-    </select>
     <resultMap id="SapProductStock" type="com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse">
         <result column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
         <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode"/>

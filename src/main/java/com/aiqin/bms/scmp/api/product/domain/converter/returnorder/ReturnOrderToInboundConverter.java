@@ -67,7 +67,7 @@ public class ReturnOrderToInboundConverter implements Converter<ReturnOrderInfoD
             save.setCountyCode(source.getDistrictCode());
             save.setCountyName(source.getDistrictName());
             save.setDetailedAddress(source.getDetailAddress());
-            save.setCreateBy(source.getOperator());
+            save.setCreateBy(source.getUpdateByName());
             save.setCreateTime(date);
             //todo 有些值需要单独设置
             save.setList(BeanCopyUtils.copyList(source.getItemList(), InboundProductReqVo.class));

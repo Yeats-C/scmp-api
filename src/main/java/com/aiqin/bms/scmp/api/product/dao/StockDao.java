@@ -41,8 +41,6 @@ public interface StockDao {
 
     Integer selectStockSumInfoByPageCount(StockRequest stockRequest);
 
-    List<StockFlowRespVo> selectOneStockInfoByStockId(@Param("stockCode") String stockCode);
-
     /** 功能描述: 查询库存商品(采购退供使用) list*/
     List<QueryStockSkuRespVo> selectStockSkuInfoByPage(QueryStockSkuReqVo vo);
 
@@ -53,8 +51,6 @@ public interface StockDao {
     List<Stock> stockByWarehouseAndSku(@Param("stockList") List<StockInfoRequest> stockList);
 
     void updateBatch(@Param("stocks") List<Stock> stocks);
-
-    List<Stock> getLatestPurchasePriceBySkuCodes(@Param("list") List<String> list);
 
     List<StockFlow> selectStockLogs(StockLogsRequest stockLogsRequest);
 
@@ -93,13 +89,9 @@ public interface StockDao {
 
     List<Stock> selectSkuCost();
 
-    Stock selectStockSum(Stock stock);
-
     List<StockResponse> listBySkuCodes(List<String> list);
 
     Integer insertReplaceAll(List<Stock> stockList);
-
-    Stock stockInfo(Stock stock);
 
     List<Stock> stockInfoList(@Param("skuList") List<String> skuList);
 

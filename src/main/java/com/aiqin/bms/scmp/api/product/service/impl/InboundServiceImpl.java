@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
+import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
@@ -31,10 +32,12 @@ import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderChildernSource;
-import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnOrderPrimarySource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildernSource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySource;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
@@ -51,8 +54,10 @@ import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
@@ -116,8 +121,6 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private SupplyCompanyDao supplyCompanyDao;
     @Autowired
-    private SupplierCommonService supplierCommonService;
-    @Autowired
     private PurchaseOrderProductDao purchaseOrderProductDao;
     @Autowired
     @Lazy(true)
@@ -128,6 +131,8 @@ public class InboundServiceImpl implements InboundService {
     private EncodingRuleDao encodingRuleDao;
     @Resource
     private WarehouseDao warehouseDao;
+    @Resource
+    private ReturnOrderInfoMapper returnOrderInfoDao;
 
     /**
      * 分页查询以及列表搜索
@@ -315,9 +320,14 @@ public class InboundServiceImpl implements InboundService {
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(),
                     ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(),
                     reqVo.getCreateBy(), reqVo.getRemark());
-
-            this.pushWms(inbound.getInboundOderCode());
-            // 跟新数据库状态
+            // 调用wms
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+                // 采购
+                this.pushWms(inbound.getInboundOderCode());
+            }else if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
+                // 退货
+                this.returnOrderWms(inbound);
+            }
             return inbound.getInboundOderCode();
         } catch (GroundRuntimeException e) {
             log.error("保存入库单接口错误:{}", e.getCause());
@@ -410,7 +420,7 @@ public class InboundServiceImpl implements InboundService {
         return saveInbound(convert);
     }
 
-    /** 入库单推送给wms */
+    /** 入库单采购推送给wms */
     @Override
     //@Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
@@ -466,7 +476,7 @@ public class InboundServiceImpl implements InboundService {
                 purchaseManageService.addLog(operationLog);
             }
 
-            log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundSource));
+            log.info("向wms发送入库单的参数是：{}",  JsonUtil.toJson(inboundSource));
             String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
@@ -475,9 +485,6 @@ public class InboundServiceImpl implements InboundService {
             } else {
                 log.error("入库单推送wms失败:{}", response.getMessage());
             }
-        } else {
-            //移库
-            // todo
         }
     }
 
@@ -573,7 +580,7 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setTransportCenterName(inbound.getLogisticsCenterName());
             stockInfo.setWarehouseCode(inbound.getWarehouseCode());
             stockInfo.setWarehouseName(inbound.getWarehouseName());
-            //stockInfo.setWarehouseType();
+            stockInfo.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
             stockInfo.setSkuCode(product.getSkuCode());
             stockInfo.setSkuName(product.getSkuName());
             stockInfo.setChangeCount(inboundProduct.getActualTotalCount());
@@ -616,7 +623,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 新增入库批次的信息
         List<InboundBatch> InboundBatchList = Lists.newArrayList();
-        InboundBatch productBatch ;
+        InboundBatch productBatch;
         if(warehouse.getBatchManage().equals(0)){
             for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
                 key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
@@ -841,27 +848,14 @@ public class InboundServiceImpl implements InboundService {
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传采购单失败失败");
             }
-        }//如果是退货
-        else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
-            try {
-                //回传给退货 回调接口
-                returnOrder(inbound.getSourceOderCode(), list , batchList);
-                // returnOder(returnOrderMain);
-//                inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-//                inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-//                inbound.setInboundTime(new Date());
-//                int k = inboundDao.updateByPrimaryKeySelective(inbound);
-            } catch (Exception e) {
-                log.error(Global.ERROR, e);
-            }
+        }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+            // 退货 - 调用退货回调
+            returnGoodsService.recordWMS(inbound.getInboundOderCode());
 
         }// 如果是调拨
         else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
             //  回传给调拨
             inBoundReturn(inbound.getSourceOderCode());
-            inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
-            inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-            int k = inboundDao.updateByPrimaryKeySelective(inbound);
         } else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
             //如果是移库
             inBoundReturnMovement(inbound.getSourceOderCode());
@@ -885,7 +879,7 @@ public class InboundServiceImpl implements InboundService {
      * @param batchList
      */
     @Async("myTaskAsyncPool")
-    public void returnOrder(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
+    public void returnGoods(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         SupplyReturnOrderMainReqVOReturn returnOrderMain = new SupplyReturnOrderMainReqVOReturn();
 
         Long productNum = 0L;
@@ -931,13 +925,12 @@ public class InboundServiceImpl implements InboundService {
         returnOrderMain.setOrderBatchItems(returnOrderProductBatchs);
         returnOrderMain.setOrderItems(returnOrderProducts);
         returnOrderMain.setMainOrderInfo(returnOrderInfo);
-        returnGoodsService.recordWMS(returnOrderMain);
+        //returnGoodsService.recordWMS(returnOrderMain);
     }
 
     /**
      * 回调采购接口
      */
-    //@Override
     @Async("myTaskAsyncPool")
     public void returnPurchase(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
@@ -971,7 +964,7 @@ public class InboundServiceImpl implements InboundService {
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
                 // 回传成功之后，调用sap
-                sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
+                //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
             }else {
                 log.error("入库单回传给采购接口失败");
             }
@@ -1007,29 +1000,6 @@ public class InboundServiceImpl implements InboundService {
             log.error(Global.ERROR, e);
             throw new GroundRuntimeException("调拨单更改入库状态失败");
         }
-    }
-
-    /**
-     * 回调采购接口
-     * @param storageResultItemReqVo
-     */
-    @Override
-    @Async("myTaskAsyncPool")
-    public void returnOder(SupplyReturnOrderMainReqVOReturn storageResultItemReqVo) {
-        log.error("异步回调采购接口");
-        log.error("调用采购回调接口:[{}]",JSON.toJSONString(storageResultItemReqVo));
-//        String url = urlConfig.PURCHASE_URL+"/purchase/returnorder/inBoundCallBack";
-//        try {
-//            HttpClient client = HttpClientHelper.getCurrentClient(HttpClient.post(url).json(storageResultItemReqVo));
-//            HttpResponse result = client.action().result(HttpResponse.class);
-//            if(!Objects.equals(result.getCode(), MsgStatus.SUCCESS)){
-//                log.error("入库单回传给退货接口失败+回传实体为：[{}]",storageResultItemReqVo);
-//                throw  new GroundRuntimeException("调用采购服务失败");
-//            }
-//        } catch (GroundRuntimeException e) {
-//            log.error(Global.ERROR, e);
-//            log.error("入库单回传给退货接口失败+回传实体为：[{}]",storageResultItemReqVo);
-//        }
     }
 
     /**
@@ -1086,52 +1056,77 @@ public class InboundServiceImpl implements InboundService {
         saveData(inboundList,productList,batchList);
         //存日志 todo
         //推送到wms
-        returnOrderWms(list);
+        //returnOrderWms(list);
         return Boolean.TRUE;
     }
 
-    private HttpResponse returnOrderWms(List<InboundReqSave> lists) {
-        for (InboundReqSave list : lists) {
-            // 主表
-            ReturnOrderPrimarySource rops = new ReturnOrderPrimarySource();
-            BeanUtils.copyProperties(rops,list);
-            rops.setTransportNumber(list.getWmsDocumentCode());
-            rops.setReturnOrderCode(list.getSourceOderCode());
+    private HttpResponse returnOrderWms(Inbound inbound) {
+        LOGGER.info("开始调用退货单的wms：{}", inbound);
+        // 查询退货单
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
 
-            // 商品表
-            List<ReturnOrderChildernSource> rocsLists = new ArrayList();
-            List<InboundProductReqVo> lprVoLists = list.getList();
-            for (InboundProductReqVo lprVoList : lprVoLists) {
-                ReturnOrderChildernSource rocs = new ReturnOrderChildernSource();
-                BeanUtils.copyProperties(rocs,lprVoList);
-                rocs.setTotalCount(lprVoList.getPreTaxAmount().toString());
-                rocs.setLineCode(lprVoList.getLinenum().toString());
-                rocsLists.add(rocs);
-            }
-            // 商品批次表
-            List<BatchWmsInfo> bwiLists = new ArrayList();
-            List<InboundBatchReqVo> inboundBatchReqVos = list.getInboundBatchReqVos();
-            for (InboundBatchReqVo inboundBatchReqVo : inboundBatchReqVos) {
-                BatchWmsInfo bwi = new BatchWmsInfo();
-                BeanUtils.copyProperties(bwi,inboundBatchReqVo);
-                bwi.setBatchCode(inboundBatchReqVo.getBatchCode());
-                bwi.setProdcutDate(inboundBatchReqVo.getProductDate());
-                bwi.setTotalCount(inboundBatchReqVo.getTotalCount());
-                bwi.setActualTotalCount(inboundBatchReqVo.getActualTotalCount());
-                bwi.setLineCode(inboundBatchReqVo.getLineCode().intValue());
-                bwiLists.add(bwi);
-            }
-            rops.setChildrenSourceList(rocsLists);
-            rops.setBatchInfo(bwiLists);
-            String url = urlConfig.WMS_API_URL+"/infoPushAndInquiry/source/returnOrderInfoPush";
-            HttpClient httpClient = HttpClient.post(url).json(rops).timeout(200000);
-            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                HttpResponse.failure(null, "退货入库调用wms失败,原因：" + orderDto.getMessage());
-                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-            }
+        ReturnOrderPrimarySource returnOder = BeanCopyUtils.copy(inbound, ReturnOrderPrimarySource.class);
+        returnOder.setCreateById(returnOrderInfo.getCreateById());
+        returnOder.setCreateByIdSH(returnOrderInfo.getCreateById());
+        returnOder.setCreateByNameSH(returnOrderInfo.getCreateByName());
+
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        returnOder.setCreateDate(sdf.format(inbound.getCreateTime()));
+        returnOder.setTransportCompanyCode(returnOrderInfo.getTransportCompanyCode());
+        returnOder.setTransportNumber(returnOrderInfo.getTransportNumber());
+        returnOder.setConsigneePhone(returnOrderInfo.getConsigneePhone());
+        returnOder.setDd2(returnOrderInfo.getConsignee());
+        returnOder.setRemake(returnOrderInfo.getRemake());
+        returnOder.setReturnOrderCode(returnOrderInfo.getReturnOrderCode());
+        returnOder.setOrderType("直营");
+        returnOder.setOrderCode(returnOrderInfo.getOrderCode());
+        returnOder.setCustomerCode(returnOrderInfo.getCustomerCode());
+        returnOder.setCustomerName(returnOrderInfo.getCustomerName());
+
+        List<ReturnOrderChildernSource> detailList = new ArrayList();
+        ReturnOrderChildernSource source;
+        // 查询退货单退货单商品信息
+        List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inbound.getInboundOderCode());
+        if(CollectionUtils.isEmpty(inboundProducts)){
+            LOGGER.info("入库单的商品信息未查询到：{}", JsonUtil.toJson(inboundProducts));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 400, "退货单- 入库单未查询商品信息。"));
         }
-        return HttpResponse.success();
+        for (InboundProduct product : inboundProducts) {
+            source= new ReturnOrderChildernSource();
+            source.setOrderCode(returnOrderInfo.getOrderCode());
+            source.setSkuCode(product.getSkuCode());
+            source.setLineNum(product.getLinenum().toString());
+            source.setNum(product.getPreInboundMainNum().toString());
+            source.setColorCode(product.getColorName());
+            source.setDd10(product.getNorms());
+            source.setDd11(product.getUnitName());
+            detailList.add(source);
+        }
+        returnOder.setChildrenSourceList(detailList);
+
+        // 商品批次信息
+        List<InboundBatch> batchList = inboundBatchDao.selectInboundBatchList(inbound.getInboundOderCode());
+        if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+            List<BatchInfo> batchInfoList = Lists.newArrayList();
+            BatchInfo batchInfo;
+            for (InboundBatch batch : batchList) {
+                batchInfo = BeanCopyUtils.copy(batch, BatchInfo.class);
+                batchInfo.setBatchId(IdUtil.uuid());
+                batchInfoList.add(batchInfo);
+            }
+            returnOder.setBatchInfo(batchInfoList);
+        }
+        LOGGER.info("退货单开始调用wms，参数：{}", JsonUtil.toJson(returnOder));
+        String url = urlConfig.WMS_API_URL2 + "/infoPushAndInquiry/source/returnOrderInfoPush";
+        HttpClient httpClient = HttpClient.post(url).json(returnOder).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("退货单调用wms成功");
+            return HttpResponse.success();
+        }else {
+            LOGGER.info("退货单调用wms失败：{}", response.getMessage());
+           return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单调用wms失败"));
+        }
     }
 
     @Override
