@@ -42,6 +42,9 @@ public class QueryPriceProjectRespVo {
     @ApiModelProperty("排序")
     private Integer priceProjectOrder;
 
+    @ApiModelProperty("是否禁用编码")
+    private int enable;
+
     @ApiModelProperty("是否禁用")
     private String priceProjectEnable;
 
