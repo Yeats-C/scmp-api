@@ -205,4 +205,12 @@ public class RejectApplyRecordDetail {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
+    @ApiModelProperty(value="供应商集团编码")
+    @JsonProperty("supplier_company_code")
+    private String supplierCompanyCode;
+
+    @ApiModelProperty(value="供应商集团名称")
+    @JsonProperty("supplier_company_name")
+    private String supplierCompanyName;
+
 }
