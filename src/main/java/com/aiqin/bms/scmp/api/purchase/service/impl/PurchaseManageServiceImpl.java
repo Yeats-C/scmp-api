@@ -163,7 +163,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }else {
             LOGGER.info("调用采购单入库成功：" + s);
             // 增加采购在途数
-            this.wayNum(purchaseOrder, 6);
+            this.wayNum(purchaseOrder, 7);
         }
         return HttpResponse.success();
     }
@@ -716,9 +716,9 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             for(PurchaseOrderProduct product:products){
                 long singleCount =  product.getSingleCount() == null ? 0 : product.getSingleCount().longValue();
                 long actualSingleCount =  product.getActualSingleCount() == null ? 0 : product.getActualSingleCount().longValue();
-                if(singleCount - actualSingleCount == 0){
-                    continue;
-                }
+//                if(singleCount - actualSingleCount == 0){
+//                    continue;
+//                }
                 stockInfo = new StockInfoRequest();
                 stockInfo.setCompanyCode(order.getCompanyCode());
                 stockInfo.setCompanyName(order.getCompanyName());

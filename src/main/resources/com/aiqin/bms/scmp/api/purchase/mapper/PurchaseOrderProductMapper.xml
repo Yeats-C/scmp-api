@@ -221,7 +221,7 @@
     and linnum = #{linnum, jdbcType=INTEGER}
   </select>
   <select id="orderProductByGroup" resultMap="BaseResultMap">
-    select sku_code, sku_name, sum(single_count), sum(actual_single_count), tax_rate
+    select sku_code, sku_name, sum(single_count) single_count, sum(actual_single_count) actual_single_count, tax_rate
     from purchase_order_product
     where purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY sku_code
   </select>
