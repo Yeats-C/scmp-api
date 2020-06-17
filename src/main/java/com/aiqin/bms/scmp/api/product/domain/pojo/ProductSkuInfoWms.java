@@ -29,6 +29,11 @@ public class ProductSkuInfoWms extends CommonBean {
     @JsonProperty("item_number")
     private String itemNumber; //TODO
 
+
+    @ApiModelProperty("sku条形码")
+    @JsonProperty("sku_bar_code")
+    private String skuBarCode; //TODO
+
     @ApiModelProperty("单位code")
     @JsonProperty("unit_code")
     private String unitCode;
@@ -47,9 +52,22 @@ public class ProductSkuInfoWms extends CommonBean {
     @JsonProperty("bar_code")
     private String barCode;
 
+    @ApiModelProperty("单位含量")
+    @JsonProperty("coutanis_number")
+    private String coutanisNumber;
+
+
+    @ApiModelProperty("商品状态")
+    @JsonProperty("flag")
+    private Integer flag;
+
     @ApiModelProperty("sku编号")
     @JsonProperty("sku_code")
     private String skuCode;
+
+    @ApiModelProperty("包装单位")
+    @JsonProperty("packge_unit")
+    private String packgeUnit;
 
     @ApiModelProperty("sku名称")
     @JsonProperty("sku_name")

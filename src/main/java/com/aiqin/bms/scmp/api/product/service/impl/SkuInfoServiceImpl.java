@@ -1791,15 +1791,20 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             boolean flag = applyProductSkus.get(i).getSelectionEffectiveTime() == 0;
             //判断不生效生效
             boolean beEffective = flag && applyProductSkus.get(i).getSelectionEffectiveStartTime().after(auditorTime);
+            //进行判断新增 还是修改
+            Integer flagNum=0;
+
             productSkuInfo.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
             if (!beEffective) {
                 if (null != oldSku) {
                     productSkuInfo.setId(oldSku.getId());
+                    flagNum=0;
                     handleTypeCoceStatus = HandleTypeCoce.UPDATE_SKU.getStatus();
                     handleTypeCoceName = HandleTypeCoce.UPDATE_SKU.getName();
                     productSkuInfoMapper.updateByPrimaryKeySelective(productSkuInfo);
                 } else {
                     productSkuInfo.setId(null);
+                    flagNum=1;
                     handleTypeCoceStatus = HandleTypeCoce.ADD_SKU.getStatus();
                     handleTypeCoceName = HandleTypeCoce.ADD_SKU.getName();
                     productSkuInfoMapper.insertSelective(productSkuInfo);
@@ -1900,7 +1905,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 applyProductSkuMapper.updateByPrimaryKeySelective(applyProductSku);
                 //审批通过之后传输给wms
                 try {
-                    sendWms(applyCode, skuCode, productSkuInfo);
+                    sendWms(applyCode, skuCode, productSkuInfo,flagNum);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1970,8 +1975,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         }
         return baseInfo2;
     }
-    private void sendWms(String applyCode, String skuCode, ProductSkuInfo productSkuInfo) throws Exception {
+    private void sendWms(String applyCode, String skuCode, ProductSkuInfo productSkuInfo, Integer flagNum) throws Exception {
         ProductSkuInfoWms productSkuInfoWms=new ProductSkuInfoWms();
+
+        //sku整箱商品包装信息
+         List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos= productSkuBoxPackingService.getApply(skuCode,applyCode);
+         if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
+             productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
+         }
+        productSkuInfoWms.setFlag(flagNum);
         productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());
         productSkuInfoWms.setSkuName(productSkuInfo.getSkuName());
         productSkuInfoWms.setProductBrandCode(productSkuInfo.getProductBrandCode());
@@ -1997,11 +2009,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 purchaseSaleStockRespVos) {
             if (purchaseSaleStockRespVo.getIsDefault().equals('1')){
                 productSkuInfoWms.setBarCode(purchaseSaleStockRespVo.getBarCode());
+                productSkuInfoWms.setCoutanisNumber(String.valueOf(purchaseSaleStockRespVo.getBaseProductContent()));
                 break;
             }
 
         }
-
+        productSkuInfoWms.setSkuBarCode(productSkuInfoWms.getBarCode());
 
         //分销设置
         ApplyProductSkuDisInfo applyProductSkuDisInfo = productSkuDisInfoDao.getApply(skuCode,applyCode);

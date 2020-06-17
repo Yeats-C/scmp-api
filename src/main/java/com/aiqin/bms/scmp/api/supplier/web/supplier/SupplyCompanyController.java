@@ -81,19 +81,19 @@ public class SupplyCompanyController {
         }
     }
 
-    @PostMapping("/add2")
-    @ApiOperation("新增供应商")
-    public HttpResponse addApplySupplyCompany2(@RequestBody  ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
-        try {
-            return  applySupplyComService.saveApply2(applySupplyCompanyReqVO);
-        } catch (GroundRuntimeException ex) {
-            return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
-        } catch (BizException ex) {
-            return HttpResponse.failure(ex.getMessageId());
-        } catch (Exception e) {
-            return HttpResponse.failure(ResultCode.ADD_ERROR);
-        }
-    }
+//    @PostMapping("/add2")
+//    @ApiOperation("新增供应商")
+//    public HttpResponse addApplySupplyCompany2(@RequestBody  ApplySupplyCompanyReqVO applySupplyCompanyReqVO){
+//        try {
+//            return  applySupplyComService.saveApply2(applySupplyCompanyReqVO);
+//        } catch (GroundRuntimeException ex) {
+//            return HttpResponse.failure(MessageId .create(Project.SUPPLIER_API,13,ex.getMessage()));
+//        } catch (BizException ex) {
+//            return HttpResponse.failure(ex.getMessageId());
+//        } catch (Exception e) {
+//            return HttpResponse.failure(ResultCode.ADD_ERROR);
+//        }
+//    }
 
     @PutMapping("/update")
     @ApiOperation("修改供应商")
