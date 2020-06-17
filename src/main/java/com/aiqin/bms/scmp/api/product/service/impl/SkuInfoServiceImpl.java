@@ -2355,30 +2355,31 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
     @Override
     public List<Long> getSkuListByQueryNoPageCount(QuerySkuInfoReqVO vo){
-        if(StringUtils.isBlank(vo.getChangePriceType())){
-            throw new BizException(ResultCode.NOT_HAVE_PARAM);
-        }
+        // 变价类型去掉了 不需要判断
+//        if(StringUtils.isBlank(vo.getChangePriceType())){
+//            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+//        }
         List<Long> list = Lists.newArrayList();
-        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
-            list = productSkuDao.selectSkuListForPurchasePriceCount(vo);
-        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
-            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
+//        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
+//            list = productSkuDao.selectSkuListForPurchasePriceCount(vo);
+//        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
+//            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
-            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
-                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
-            }
+//            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
+//                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
+//            }
             list = productSkuDao.selectSkuListForSalePriceCount(vo);
-        }else {
-            throw new BizException(ResultCode.NOT_HAVE_PARAM);
-        }
+//        }else {
+//            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+//        }
         return list;
     }
 
     @Override
     public List<QuerySkuInfoRespVO> getSkuListByQueryNoPage(QuerySkuInfoReqVO vo){
-        if(StringUtils.isBlank(vo.getChangePriceType())){
-            throw new BizException(ResultCode.NOT_HAVE_PARAM);
-        }
+//        if(StringUtils.isBlank(vo.getChangePriceType())){
+//            throw new BizException(ResultCode.NOT_HAVE_PARAM);
+//        }
         List<Long> ids = getSkuListByQueryNoPageCount(vo);
         List<QuerySkuInfoRespVO> list = Lists.newArrayList();
         if(CollectionUtils.isEmpty(ids)){

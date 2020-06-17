@@ -33,6 +33,7 @@
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
     <result column="return_product_count" jdbcType="BIGINT" property="returnProductCount" />
     <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="lock_type" jdbcType="INTEGER" property="lockType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, color_name, color_code,
@@ -40,14 +41,14 @@
     product_status, give_promotion, line_code, transport_center_code, transport_center_name,
     warehouse_code, warehouse_name, supplier_code, supplier_name, product_count, actual_product_count,
     batch_code, batch_info_code, product_date, be_overdue_date, location_code, return_product_count,
-    batch_remark
+    batch_remark, lock_type
   </sql>
   <insert id="insert">
     insert into return_order_info_inspection_item (return_order_code, sku_code, sku_name, picture_url, spec, color_name,
       color_code, model, base_product_content, unit_code, unit_name, zero_disassembly_coefficient, product_status, 
       give_promotion, line_code, transport_center_code, transport_center_name, warehouse_code, warehouse_name, 
       supplier_code, supplier_name, product_count, actual_product_count, batch_code, batch_info_code, 
-      product_date, be_overdue_date, location_code, return_product_count, batch_remark)
+      product_date, be_overdue_date, location_code, return_product_count, batch_remark, lock_type)
     values (#{returnOrderCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
       #{pictureUrl,jdbcType=VARCHAR}, #{spec,jdbcType=VARCHAR}, #{colorName,jdbcType=VARCHAR}, 
       #{colorCode,jdbcType=VARCHAR}, #{model,jdbcType=VARCHAR}, #{baseProductContent,jdbcType=INTEGER},
@@ -57,7 +58,8 @@
       #{warehouseName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR},
       #{productCount,jdbcType=BIGINT}, #{actualProductCount,jdbcType=BIGINT}, #{batchCode,jdbcType=VARCHAR},
       #{batchInfoCode,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR}, #{beOverdueDate,jdbcType=VARCHAR},
-      #{locationCode,jdbcType=VARCHAR}, #{returnProductCount,jdbcType=BIGINT}, #{batchRemark,jdbcType=VARCHAR})
+      #{locationCode,jdbcType=VARCHAR}, #{returnProductCount,jdbcType=BIGINT}, #{batchRemark,jdbcType=VARCHAR},
+      #{lockType,jdbcType=INTEGER})
   </insert>
   <update id="update">
     update return_order_info_inspection_item
@@ -152,6 +154,9 @@
       <if test="batchRemark != null">
         batch_remark = #{batchRemark,jdbcType=VARCHAR},
       </if>
+      <if test="lockType != null">
+        lock_type = #{lockType,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -160,9 +165,9 @@
       color_code, model, base_product_content, unit_code, unit_name, zero_disassembly_coefficient, product_status,
       give_promotion, line_code, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
       supplier_code, supplier_name, product_count, actual_product_count, batch_code, batch_info_code,
-      product_date, be_overdue_date, location_code, return_product_count, batch_remark)
+      product_date, be_overdue_date, location_code, return_product_count, batch_remark, lock_type)
     values
-    <foreach collection="list" item="item" separator="," close="" open="" >
+    <foreach collection="list" item="item"  separator=",">
       (#{item.returnOrderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
       #{item.pictureUrl,jdbcType=VARCHAR}, #{item.spec,jdbcType=VARCHAR}, #{item.colorName,jdbcType=VARCHAR},
       #{item.colorCode,jdbcType=VARCHAR}, #{item.model,jdbcType=VARCHAR}, #{item.baseProductContent,jdbcType=INTEGER},
@@ -172,7 +177,8 @@
       #{item.warehouseName,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR},
       #{item.productCount,jdbcType=BIGINT}, #{item.actualProductCount,jdbcType=BIGINT}, #{item.batchCode,jdbcType=VARCHAR},
       #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR},
-      #{item.locationCode,jdbcType=VARCHAR}, #{item.returnProductCount,jdbcType=BIGINT}, #{item.batchRemark,jdbcType=VARCHAR})
+      #{item.locationCode,jdbcType=VARCHAR}, #{item.returnProductCount,jdbcType=BIGINT}, #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.lockType,jdbcType=INTEGER})
     </foreach>
   </insert>
   <select id="returnBatchList" resultMap="BaseResultMap">
@@ -224,5 +230,18 @@
     INNER JOIN return_order_info_item b
     on a.sku_code = b.sku_code and a.line_code = b.product_line_num
     WHERE a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="returnOrderByWarehouse" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    group by warehouse_code
+    order by warehouse_code asc
+  </select>
+  <select id="returnOrderBatchListByWarehouse" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from return_order_info_inspection_item
+    where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
   </select>
 </mapper>

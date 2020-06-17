@@ -60,6 +60,8 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="stock_amount" jdbcType="DECIMAL" property="stockAmount" />
+    <result column="supplier_company_code" jdbcType="VARCHAR" property="supplierCompanyCode" />
+    <result column="supplier_company_name" jdbcType="VARCHAR" property="supplierCompanyName" />
   </resultMap>
   <sql id="Base_Column_List">
     apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
@@ -76,7 +78,7 @@
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
     factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName,
-    tax_rate as taxRate, stock_amount as stockAmount
+    tax_rate taxRate, stock_amount stockAmount, supplier_company_code supplierCompanyCode, supplier_company_name supplierCompanyName
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -251,6 +253,12 @@
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
+      <if test="supplierCompanyCode != null">
+        supplier_company_code = #{supplierCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCompanyName != null">
+        supplier_company_name = #{supplierCompanyName,jdbcType=VARCHAR},
+      </if>
     </set>
     where apply_product_id = #{applyProductId,jdbcType=VARCHAR}
   </update>
@@ -269,7 +277,8 @@
     purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
-    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName
+    factory_sku_code factorySkuCode, product_property_code productPropertyCode, product_property_name productPropertyName,
+    supplier_company_code supplierCompanyCode, supplier_company_name supplierCompanyName
     from purchase_apply_product
     <where>
       apply_product_status = 1
@@ -459,7 +468,8 @@
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
       shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code,
-      create_time, create_by_id, create_by_name, update_time, update_by_id, update_by_name, tax_rate, stock_amount)
+      create_time, create_by_id, create_by_name, update_time, update_by_id, update_by_name, tax_rate, stock_amount,
+      supplier_company_code, supplier_company_name)
     values
      <foreach collection="list" item="item" index="" separator=",">
       (#{item.applyProductId,jdbcType=VARCHAR},
@@ -488,7 +498,8 @@
        #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER},
        #{item.factorySkuCode,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR},
        #{item.createByName,jdbcType=VARCHAR}, now(), #{item.updateById,jdbcType=VARCHAR},
-       #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL}, #{item.stockAmount,jdbcType=DECIMAL})
+       #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL}, #{item.stockAmount,jdbcType=DECIMAL},
+       #{item.supplierCompanyCode,jdbcType=VARCHAR}, #{item.supplierCompanyName,jdbcType=VARCHAR})
      </foreach>
   </insert>
   <delete id="delete">
@@ -513,7 +524,8 @@
     product_spec as productSpec, color_name as colorName,product_property_code as productPropertyCode,
     product_property_name as productPropertyName, warehouse_code as warehouseCode,  warehouse_name as warehouseName,
     receipt_turnover as receiptTurnover, tax_rate as taxRate, stock_count as stockCount, stock_amount as stockAmount,
-    stock_turnover as stockTurnover, receipt_turnover as receiptTurnover
+    stock_turnover stockTurnover, receipt_turnover receiptTurnover, supplier_company_code supplierCompanyCode,
+    supplier_company_name supplierCompanyName
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}

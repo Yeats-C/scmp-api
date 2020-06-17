@@ -21,7 +21,7 @@ public interface ReturnOrderInfoInspectionItemMapper {
                                                         @Param("lineCode") Integer lineCode);
 
     ReturnOrderInfoInspectionItem returnOrderInfo(@Param("batchInfoCode") String batchInfoCode,
-                                                  @Param("returnOderCode") String returnOderCode,
+                                                  @Param("returnOrderCode") String returnOrderCode,
                                                   @Param("lineCode") Integer lineCode);
 
     List<ReturnOrderInfoInspectionItem> returnOrderBatchList(String returnOderCode);
@@ -33,4 +33,9 @@ public interface ReturnOrderInfoInspectionItemMapper {
     List<ReturnOrderInboundBatchResponse> inboundBatchByReturnOrderList(InboundBatchReqVo request);
 
     Integer inboundBatchByReturnOrderCount(InboundBatchReqVo request);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderByWarehouse(@Param("returnOrderCode") String returnOrderCode);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderBatchListByWarehouse(@Param("returnOrderCode") String returnOrderCode,
+                                                                        @Param("warehouseCode") String warehouseCode);
 }

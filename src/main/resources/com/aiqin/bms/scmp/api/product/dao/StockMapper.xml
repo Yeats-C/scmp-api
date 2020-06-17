@@ -751,12 +751,14 @@
         ps.product_sort_name productSortName, psc.Input_tax_rate taxRate, ps.bar_code barcode, s.inventory_count stockCount,
         ps.procurement_section_code purchaseGroupCode, ps.procurement_section_name purchaseGroupName,
         psc.settlement_method_code settlementMethodCode, psc.settlement_method_name settlementMethodName,
-        su.factory_sku_code factorySkuCode, ps.product_code spuCode, ps.product_name spuName, w.batch_manage batchManage
+        su.factory_sku_code factorySkuCode, ps.product_code spuCode, ps.product_name spuName, w.batch_manage batchManage,
+        com.supplier_code supplierCompanyCode, com.supplier_name supplierCompanyName
         from stock s inner join product_sku ps on s.sku_code = ps.sku_code
         inner join product_sku_supply_unit su on s.sku_code = su.product_sku_code
         inner join product_sku_checkout psc on s.sku_code = psc.sku_code
         inner join product_sku_stock_info psi on s.sku_code = psi.product_sku_code
         inner join warehouse w on w.warehouse_code = s.warehouse_code
+        inner join supply_company com on com.supply_code = su.supply_unit_code
         <include refid="REJECT_QUERY_SQL"></include>
         LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
     </select>
@@ -1065,7 +1067,7 @@
       on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
        left join tax_cost_log_stock h
       on g.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
-      where  f.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+      where  f.company_code = #{companyCode}
   </select>
     <resultMap id="queryStockBatchForAllo" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
         <result column="skuCode" property="skuCode"/>

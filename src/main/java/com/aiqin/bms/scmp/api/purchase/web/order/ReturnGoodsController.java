@@ -62,7 +62,7 @@ public class ReturnGoodsController {
         return returnGoodsService.returnOrderProductList(request);
     }
 
-    @ApiOperation("退货商品列表")
+    @ApiOperation("退货批次列表")
     @GetMapping("/batch/list")
     public HttpResponse<PageResData<ReturnOrderInfoInspectionItem>> returnOrderBatchList(
             @RequestParam("return_order_code") String returnOrderCode,
@@ -110,12 +110,11 @@ public class ReturnGoodsController {
         return returnGoodsService.returnReceipt(itemList);
     }
 
-    @ApiOperation("验货查询对应sku的销售批次信息")
-    @GetMapping("/order/batch")
-    public HttpResponse<List<OrderInfoItemProductBatch>> orderBatch(@RequestParam("order_code") String orderCode,
-                                                              @RequestParam(value = "sku_code") String skuCode,
-                                                              @RequestParam(value = "line_code") Integer lineCode){
-        return returnGoodsService.orderBatch(orderCode, skuCode, lineCode);
+    @ApiOperation("验货批次列表")
+    @GetMapping("/inspection/batch/list")
+    public HttpResponse<List<ReturnOrderInspectionResponse>> inspectionBatch(
+            @RequestParam("return_order_code") String returnOrderCode){
+        return returnGoodsService.inspectionBatch(returnOrderCode);
     }
 
 }

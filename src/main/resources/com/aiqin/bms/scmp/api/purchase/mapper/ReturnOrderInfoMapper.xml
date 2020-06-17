@@ -101,7 +101,7 @@
     actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount,
     synchr_time, synchr_status
   </sql>
-  <select id="selectByCode1" resultMap="BaseResultMap">
+  <select id="selectByCode" resultMap="BaseResultMap">
       select
       <include refid="Base_Column_List" />
       from return_order_info

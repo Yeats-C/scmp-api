@@ -16,13 +16,7 @@ public interface ReturnOrderInfoItemMapper {
 
     Integer update(ReturnOrderInfoItem record);
 
-    int updateByReturnOrderCodeSelective(ReturnOrderInfoItem record);
-
-    int insertBatch(List<ReturnOrderInfoItem> orderItems);
-
-    int updateActualInboundNumByIdAndReturnOrderCode(@Param("items") List<ReturnReceiptReqVO> reqVO);
-
-    Integer insertList(List<ReturnOrderInfoItem> list);
+    Integer insertList(@Param("list") List<ReturnOrderInfoItem> list);
 
     List<ReturnOrderInfoItem> listDetailForSap(SapOrderRequest sapOrderRequest);
 
@@ -33,4 +27,6 @@ public interface ReturnOrderInfoItemMapper {
     List<ReturnOrderInfoItem> list(ReturnGoodsRequest request);
 
     Integer listCount(ReturnGoodsRequest request);
+
+    Long returnOrderByLastLineCode(String returnOrderCode);
 }

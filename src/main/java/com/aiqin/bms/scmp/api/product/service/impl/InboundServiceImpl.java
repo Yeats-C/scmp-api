@@ -420,7 +420,7 @@ public class InboundServiceImpl implements InboundService {
         return saveInbound(convert);
     }
 
-    /** 入库单推送给wms */
+    /** 入库单采购推送给wms */
     @Override
     //@Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
@@ -476,7 +476,7 @@ public class InboundServiceImpl implements InboundService {
                 purchaseManageService.addLog(operationLog);
             }
 
-            log.info("向wms发送入库单的参数是：{}", JSON.toJSON(inboundSource));
+            log.info("向wms发送入库单的参数是：{}",  JsonUtil.toJson(inboundSource));
             String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
@@ -490,6 +490,7 @@ public class InboundServiceImpl implements InboundService {
 
     @Override
 //    @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class)
     public void workFlowCallBack(InboundCallBackRequest request) {
         log.info("wms入库单回调实体传入实体:[{}]",JSON.toJSONString(request));
         // 根据入库单号，查询入库单主体
@@ -553,7 +554,8 @@ public class InboundServiceImpl implements InboundService {
             InboundProduct product = products.get(key);
             Long actualTotalCount = inboundProduct.getActualTotalCount();
             product.setPraInboundMainNum(actualTotalCount);
-            product.setPraInboundNum(actualTotalCount / Long.valueOf(product.getInboundBaseContent()));
+            Long baseContent = product.getInboundBaseContent() == null ? 1L : Long.valueOf(product.getInboundBaseContent());
+            product.setPraInboundNum(actualTotalCount / baseContent);
             //实际含税进价
             product.setPraTaxPurchaseAmount(product.getPreTaxPurchaseAmount());
             //单个SKU的实际含税金额
@@ -612,9 +614,22 @@ public class InboundServiceImpl implements InboundService {
                     stockInfo.setNewPurchasePrice(product.getPraTaxPurchaseAmount());
                 }
                 // 判断是否为最后一次采购
+                Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
+                Integer actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount.intValue();
                 if(purchase.getInboundLine() == inbound.getPurchaseNum()){
-                    Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
-                    stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
+                    if(actualCount > 0){
+                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
+                    }else if(actualCount == 0){
+                        stockInfo.setPreWayCount(actualSingleCount);
+                    }else {
+                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                    }
+                }else {
+                    if(actualCount >= 0){
+                        stockInfo.setPreWayCount(actualSingleCount);
+                    }else {
+                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                    }
                 }
             }
             productList.add(stockInfo);
@@ -631,7 +646,8 @@ public class InboundServiceImpl implements InboundService {
                 String productDate = DateUtils.currentDate();
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
                 String batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                        batchCode + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
+                        batchCode + "_" + inbound.getSupplierCode() + "_" +
+                        product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -683,7 +699,8 @@ public class InboundServiceImpl implements InboundService {
                 InboundProduct product = products.get(key);
                 // 根据批次编号查询批次是否存在
                 String batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                        batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" + product.getPreTaxPurchaseAmount();
+                        batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" +
+                        product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
                 productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode(), batchInfo.getLineCode());
                 productBatch.setUpdateById(request.getOperatorId());
                 productBatch.setUpdateByName(request.getOperatorName());
@@ -964,7 +981,7 @@ public class InboundServiceImpl implements InboundService {
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
                 // 回传成功之后，调用sap
-                sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
+                //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
             }else {
                 log.error("入库单回传给采购接口失败");
             }
@@ -1063,13 +1080,15 @@ public class InboundServiceImpl implements InboundService {
     private HttpResponse returnOrderWms(Inbound inbound) {
         LOGGER.info("开始调用退货单的wms：{}", inbound);
         // 查询退货单
-        ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode1(inbound.getSourceOderCode());
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
 
         ReturnOrderPrimarySource returnOder = BeanCopyUtils.copy(inbound, ReturnOrderPrimarySource.class);
         returnOder.setCreateById(returnOrderInfo.getCreateById());
         returnOder.setCreateByIdSH(returnOrderInfo.getCreateById());
         returnOder.setCreateByNameSH(returnOrderInfo.getCreateByName());
-        returnOder.setCreateDate(inbound.getCreateTime().toString());
+
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        returnOder.setCreateDate(sdf.format(inbound.getCreateTime()));
         returnOder.setTransportCompanyCode(returnOrderInfo.getTransportCompanyCode());
         returnOder.setTransportNumber(returnOrderInfo.getTransportNumber());
         returnOder.setConsigneePhone(returnOrderInfo.getConsigneePhone());

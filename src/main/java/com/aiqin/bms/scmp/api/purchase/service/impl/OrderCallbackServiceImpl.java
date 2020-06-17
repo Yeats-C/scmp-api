@@ -443,7 +443,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         //操作时间 签收时间 等于回单时间 退货的商品对应供应商信息取入库单据相关
         //查询退货单是否存在
         LOGGER.info("耘链开始调用退货单，入参{}" + request);
-        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode1(request.getReturnOrderCode());
+        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode(request.getReturnOrderCode());
         if (response != null) {
             LOGGER.info("耘链退货单单据已存在");
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
@@ -1564,7 +1564,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         this.updateAiqinOrder(request);
 
         // 调用sap 传送销售单的数据给sap
-        sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
+        //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
     }
 

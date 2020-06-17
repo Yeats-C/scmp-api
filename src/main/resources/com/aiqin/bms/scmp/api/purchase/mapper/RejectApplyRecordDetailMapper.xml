@@ -50,6 +50,8 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="supplier_company_code" jdbcType="VARCHAR" property="supplierCompanyCode" />
+    <result column="supplier_company_name" jdbcType="VARCHAR" property="supplierCompanyName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, reject_apply_record_detail_id, reject_apply_record_code, purchase_group_code,
@@ -60,7 +62,7 @@
     factory_sku_code, product_count, total_count, product_amount, product_total_amount,
     tax_rate, line_code, batch_code, batch_remark, batch_info_code, product_date, be_overdue_date,
     batch_purchase_price, location_code, product_cost, create_by_id, create_by_name,
-    update_by_id, update_by_name, create_time, update_time
+    update_by_id, update_by_name, create_time, update_time, supplier_company_code, supplier_company_name
   </sql>
   <select id="rejectApplyRecordDetailList" resultMap="BaseResultMap">
     select
@@ -70,8 +72,8 @@
       sku_code, sku_name, brand_id, brand_name, category_id, category_name, product_type,
       barcode, product_spec, color_code, color_name, model_number, unit_code, unit_name,
       factory_sku_code, product_count, total_count, product_amount, product_total_amount,
-      tax_rate, line_code, product_cost, create_by_id, create_by_name,
-      update_by_id, update_by_name, create_time, update_time
+      tax_rate, line_code, product_cost, create_by_id, create_by_name, update_by_id,
+      update_by_name, create_time, update_time, supplier_company_code, supplier_company_name
     from reject_apply_record_detail
     where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
     group by sku_code, purchase_group_code, warehouse_code, settlement_method_code, supplier_code, product_type, product_amount
@@ -109,7 +111,8 @@
       r.product_total_amount productTotalAmount, psc.Input_tax_rate taxRate, r.batch_code batchCode,
       s.inventory_count stockCount, s.available_count availableCount, s.tax_cost productCost,
       s.new_purchase_price newPurchasePrice, ifnull(su.tax_included_price, 0) purchaseMax,
-      r.batch_purchase_price purchasePrice, r.location_code locationCode, r.batch_info_code batchInfoCode
+      r.batch_purchase_price purchasePrice, r.location_code locationCode, r.batch_info_code batchInfoCode,
+      r.supplier_company_code supplierCompanyCode, r.supplier_company_name supplierCompanyName
     from reject_apply_record_detail r
     inner join stock s on s.sku_code = r.sku_code and s.warehouse_code = r.warehouse_code
     inner join product_sku_checkout psc on s.sku_code = psc.sku_code
@@ -124,7 +127,7 @@
     color_name, model_number, unit_code, unit_name, factory_sku_code, product_count, total_count, product_amount,
     product_total_amount, tax_rate, line_code, batch_code, batch_remark, batch_info_code, product_date,
     be_overdue_date, batch_purchase_price, location_code, product_cost, create_by_id, create_by_name,
-    update_by_id, update_by_name, create_time, update_time)
+    update_by_id, update_by_name, create_time, update_time, supplier_company_code, supplier_company_name )
     values
     <foreach collection="list" separator="," item="item">
       ( #{item.rejectApplyRecordDetailId,jdbcType=VARCHAR}, #{item.rejectApplyRecordCode,jdbcType=VARCHAR},
@@ -142,7 +145,8 @@
       #{item.batchRemark,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
       #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.batchPurchasePrice,jdbcType=DECIMAL}, #{item.locationCode,jdbcType=VARCHAR},
       #{item.productCost,jdbcType=DECIMAL}, #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
-      #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, now(), now())
+      #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, now(), now(),
+      #{item.supplierCompanyCode,jdbcType=VARCHAR}, #{item.supplierCompanyName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <update id="update">
@@ -278,6 +282,12 @@
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
         update_time = now(),
+      <if test="supplierCompanyCode != null">
+        supplier_company_code = #{supplierCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCompanyName != null">
+        supplier_company_name = #{supplierCompanyName,jdbcType=VARCHAR},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
