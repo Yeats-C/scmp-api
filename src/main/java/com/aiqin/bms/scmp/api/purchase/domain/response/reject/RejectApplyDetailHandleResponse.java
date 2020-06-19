@@ -194,4 +194,12 @@ public class RejectApplyDetailHandleResponse {
     @ApiModelProperty(value = "批次编码")
     @JsonProperty("batch_info_code")
     private String batchInfoCode;
+
+    @ApiModelProperty(value="供应商集团编码")
+    @JsonProperty("supplier_company_code")
+    private String supplierCompanyCode;
+
+    @ApiModelProperty(value="供应商集团名称")
+    @JsonProperty("supplier_company_name")
+    private String supplierCompanyName;
 }

@@ -50,6 +50,8 @@
         <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+        <result column="supplier_company_code" jdbcType="VARCHAR" property="supplierCompanyCode" />
+        <result column="supplier_company_name" jdbcType="VARCHAR" property="supplierCompanyName" />
     </resultMap>
     <sql id="Base_Column_List">
         id, reject_apply_record_code, reject_apply_record_name, purchase_group_code, purchase_group_name,
@@ -60,7 +62,7 @@
         contract_name, charge_person, supplier_person, supplier_mobile, province_id, province_name,
         city_id, city_name, district_id, district_name, detail_address, remark, apply_record_status,
         apply_type, use_status, create_by_id, create_by_name, update_by_id, update_by_name,
-        create_time, update_time
+        create_time, update_time, supplier_company_code, supplier_company_name
     </sql>
     <sql id="LIST_QUERY">
         <where>
@@ -127,7 +129,8 @@
       account_code, account_name, contract_code, contract_name, charge_person, supplier_person, 
       supplier_mobile, province_id, province_name, city_id, city_name, district_id, 
       district_name, detail_address, remark, apply_record_status, apply_type,
-      create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time)
+      create_by_id, create_by_name, update_by_id, update_by_name, create_time, update_time,
+      supplier_company_code, supplier_company_name)
     values (#{rejectApplyRecordCode,jdbcType=VARCHAR}, #{rejectApplyRecordName,jdbcType=VARCHAR}, 
       #{purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseGroupName,jdbcType=VARCHAR}, #{supplierCode,jdbcType=VARCHAR}, 
       #{supplierName,jdbcType=VARCHAR}, #{settlementMethodCode,jdbcType=VARCHAR}, #{settlementMethodName,jdbcType=VARCHAR}, 
@@ -143,7 +146,7 @@
       #{districtName,jdbcType=VARCHAR}, #{detailAddress,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
       #{applyRecordStatus,jdbcType=INTEGER}, #{applyType,jdbcType=INTEGER},
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, 
-      #{updateByName,jdbcType=VARCHAR}, now(), now())
+      #{updateByName,jdbcType=VARCHAR}, now(), now(), #{supplierCompanyCode,jdbcType=VARCHAR}, #{supplierCompanyName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
       update reject_apply_record
@@ -275,6 +278,12 @@
               update_by_name = #{updateByName,jdbcType=VARCHAR},
           </if>
               update_time = now(),
+          <if test="supplierCompanyCode != null">
+              supplier_company_code = #{supplierCompanyCode,jdbcType=VARCHAR},
+          </if>
+          <if test="supplierCompanyName != null">
+              supplier_company_name = #{supplierCompanyName,jdbcType=VARCHAR},
+          </if>
       </set>
       where reject_apply_record_code = #{rejectApplyRecordCode,jdbcType=VARCHAR}
   </update>

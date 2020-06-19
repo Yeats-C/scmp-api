@@ -130,10 +130,10 @@ public class ReturnOrderInfoReq {
     @ApiModelProperty(value = "配送方式名称")
     private String distributionModeName;
 
-    @ApiModelProperty(value = "收货人")
+    @ApiModelProperty(value = "发货人")
     private String receivePerson;
 
-    @ApiModelProperty(value = "收货人电话")
+    @ApiModelProperty(value = "发货人电话")
     private String receiveMobile;
 
     @ApiModelProperty(value = "运费")

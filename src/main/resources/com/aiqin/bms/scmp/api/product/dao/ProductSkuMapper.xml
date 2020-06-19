@@ -2196,7 +2196,8 @@
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost,
     psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName, psc.Input_tax_rate as taxRate,
     com.contact_name as contactPerson, com.phone as mobile, ps.product_code as spuCode, ps.product_name as productName,
-    su.tax_included_price as productPurchaseAmount, ifnull(su.tax_included_price, 0) as purchaseMax
+    su.tax_included_price as productPurchaseAmount, ifnull(su.tax_included_price, 0) as purchaseMax,
+    com.supplier_code supplierCompanyCode, com.supplier_name supplierCompanyName
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join supply_company com on com.supply_code = su.supply_unit_code

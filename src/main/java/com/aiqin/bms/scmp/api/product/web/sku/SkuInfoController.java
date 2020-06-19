@@ -75,18 +75,18 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/add2")
-    @ApiOperation("新增sku信息")
-    public HttpResponse<Integer> addSkuInfo2(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
-        try {
-            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo2(addSkuInfoReqVO));
-        } catch (BizException bz){
-            return HttpResponse.failure(bz.getMessageId(),0);
-        }catch (Exception e) {
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
-        }
-    }
+//    @PostMapping("/add2")
+//    @ApiOperation("新增sku信息")
+//    public HttpResponse<Integer> addSkuInfo2(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
+//        try {
+//            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo2(addSkuInfoReqVO));
+//        } catch (BizException bz){
+//            return HttpResponse.failure(bz.getMessageId(),0);
+//        }catch (Exception e) {
+//            log.error(Global.ERROR, e);
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+//        }
+//    }
 
     @PostMapping("/sendSap")
     @ApiOperation("新增sku信息")
