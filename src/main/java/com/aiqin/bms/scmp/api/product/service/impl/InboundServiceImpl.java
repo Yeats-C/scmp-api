@@ -9,7 +9,6 @@ import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
@@ -34,7 +33,6 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildernSource;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySource;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
@@ -47,7 +45,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
@@ -92,8 +89,6 @@ import java.util.*;
 public class InboundServiceImpl implements InboundService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
-
-    private static final BigDecimal big = BigDecimal.valueOf(0);
 
     @Autowired
     private InboundDao inboundDao;
@@ -656,6 +651,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setBatchCode(batchCode);
                 stockBatchInfo.setChangeCount(inboundProduct.getActualTotalCount());
                 stockBatchInfo.setOperatorId(request.getOperatorId());
+                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 batchList.add(stockBatchInfo);
 
@@ -715,6 +711,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setOperatorId(request.getOperatorId());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 stockBatchInfo.setChangeCount(batchInfo.getActualTotalCount());
+                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 batchList.add(stockBatchInfo);
 
                 if(productBatch != null){
@@ -806,7 +803,6 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
-        //stockBatchInfo.setWarehouseType();
         stockBatchInfo.setSkuCode(product.getSkuCode());
         stockBatchInfo.setSkuName(product.getSkuName());
         stockBatchInfo.setCompanyCode(inbound.getCompanyCode());
@@ -815,7 +811,6 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
-        //stockBatchInfo.setWarehouseType();
         stockBatchInfo.setSkuCode(product.getSkuCode());
         stockBatchInfo.setSkuName(product.getSkuName());
         stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
