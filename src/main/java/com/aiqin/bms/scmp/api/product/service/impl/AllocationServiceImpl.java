@@ -874,12 +874,13 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     aWmsOutSource.setDetailList(aWmsOutProSource);
                     aWmsOutSource.setBatchInfo(aWmsOutProBatchSource);
                 System.out.println(JSON.toJSON(aWmsOutSource));
-//                    String url = urlConfig.WMS_API_URL2+"/allocation/source/outbound";
-//                    HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
-//                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-//                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    String url = urlConfig.WMS_API_URL2+"/allocation/source/outbound";
+                    HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
 //                        return "调用wms失败";
-//                    }
+                        return orderDto.getMessage();
+                    }
                 }
 
                 if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.MOVE.getType())) {
@@ -912,13 +913,14 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     }
                     movementWmsReqVo.setDetailList(movementWmsProductoLists);
                     movementWmsReqVo.setDetailBatchList(movementWmsProductBatchLists);
-//                    String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
-//                    HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
-//                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-//                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                        LOGGER.error("调用wms失败,wms返回信息:"+ orderDto.getMessage()+"参数：", JSON.toJSON(movementWmsReqVo));
+                    String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
+                    HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                        LOGGER.error("调用wms失败,wms返回信息:"+ orderDto.getMessage()+"参数：", JSON.toJSON(movementWmsReqVo));
 //                        return "调用wms失败";
-//                    }
+                        return orderDto.getMessage();
+                    }
             }
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
