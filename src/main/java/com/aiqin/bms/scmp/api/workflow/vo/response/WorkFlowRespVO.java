@@ -17,6 +17,10 @@ public class WorkFlowRespVO {
      */
     private Boolean success;
     /**
+     * 审批状态（2.审批中，3.审核通过）
+     */
+    private Integer status;
+    /**
      * 返回的消息（失败原因等等）
      */
     private String msg;
