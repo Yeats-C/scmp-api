@@ -9,7 +9,6 @@ import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
@@ -24,19 +23,20 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundSource;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
-import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildernSource;
-import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySource;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildSourceInit;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySourceInit;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
@@ -47,7 +47,6 @@ import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
-import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.DateUtils;
@@ -93,8 +92,6 @@ public class InboundServiceImpl implements InboundService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
-    private static final BigDecimal big = BigDecimal.valueOf(0);
-
     @Autowired
     private InboundDao inboundDao;
     @Autowired
@@ -133,6 +130,8 @@ public class InboundServiceImpl implements InboundService {
     private WarehouseDao warehouseDao;
     @Resource
     private ReturnOrderInfoMapper returnOrderInfoDao;
+    @Resource
+    private ProductSkuDistributionInfoMapper productSkuDistributionInfoMapper;
 
     /**
      * 分页查询以及列表搜索
@@ -656,6 +655,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setBatchCode(batchCode);
                 stockBatchInfo.setChangeCount(inboundProduct.getActualTotalCount());
                 stockBatchInfo.setOperatorId(request.getOperatorId());
+                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 batchList.add(stockBatchInfo);
 
@@ -715,6 +715,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setOperatorId(request.getOperatorId());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 stockBatchInfo.setChangeCount(batchInfo.getActualTotalCount());
+                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 batchList.add(stockBatchInfo);
 
                 if(productBatch != null){
@@ -806,7 +807,6 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
-        //stockBatchInfo.setWarehouseType();
         stockBatchInfo.setSkuCode(product.getSkuCode());
         stockBatchInfo.setSkuName(product.getSkuName());
         stockBatchInfo.setCompanyCode(inbound.getCompanyCode());
@@ -815,7 +815,6 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
-        //stockBatchInfo.setWarehouseType();
         stockBatchInfo.setSkuCode(product.getSkuCode());
         stockBatchInfo.setSkuName(product.getSkuName());
         stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
@@ -1082,44 +1081,57 @@ public class InboundServiceImpl implements InboundService {
         // 查询退货单
         ReturnOrderInfo returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
 
-        ReturnOrderPrimarySource returnOder = BeanCopyUtils.copy(inbound, ReturnOrderPrimarySource.class);
+        ReturnOrderPrimarySourceInit returnOder = BeanCopyUtils.copy(inbound, ReturnOrderPrimarySourceInit.class);
         returnOder.setCreateById(returnOrderInfo.getCreateById());
-        returnOder.setCreateByIdSH(returnOrderInfo.getCreateById());
-        returnOder.setCreateByNameSH(returnOrderInfo.getCreateByName());
-
-        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
-        returnOder.setCreateDate(sdf.format(inbound.getCreateTime()));
-        returnOder.setTransportCompanyCode(returnOrderInfo.getTransportCompanyCode());
+        returnOder.setCreateByName(returnOrderInfo.getCreateByName());
+        returnOder.setLogisticsCenterCode(returnOrderInfo.getTransportCompanyCode());
+        returnOder.setLogisticsCenterName(returnOrderInfo.getTransportCompany());
         returnOder.setTransportNumber(returnOrderInfo.getTransportNumber());
-        returnOder.setConsigneePhone(returnOrderInfo.getConsigneePhone());
-        returnOder.setDd2(returnOrderInfo.getConsignee());
-        returnOder.setRemake(returnOrderInfo.getRemake());
-        returnOder.setReturnOrderCode(returnOrderInfo.getReturnOrderCode());
-        returnOder.setOrderType("直营");
-        returnOder.setOrderCode(returnOrderInfo.getOrderCode());
         returnOder.setCustomerCode(returnOrderInfo.getCustomerCode());
         returnOder.setCustomerName(returnOrderInfo.getCustomerName());
+        returnOder.setShipper(returnOrderInfo.getConsignee());
+        returnOder.setShipperNumber(returnOrderInfo.getConsigneePhone());
+        returnOder.setRemake(returnOrderInfo.getRemake());
+        returnOder.setReturnOrderCode(returnOrderInfo.getReturnOrderCode());
+        returnOder.setOrderCode(returnOrderInfo.getOrderCode());
+        returnOder.setSupplierCode(returnOrderInfo.getSupplierCode());
+        returnOder.setSupplierName(returnOrderInfo.getSupplierName());
+        returnOder.setCountry("中国");
+        returnOder.setProvince(returnOrderInfo.getProvinceName());
+        returnOder.setCity(returnOrderInfo.getCityName());
+        returnOder.setCounty(returnOrderInfo.getDistrictName());
+        returnOder.setStreet(returnOrderInfo.getDetailAddress());
+        SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
+        returnOder.setCreateTime(sdf.format(inbound.getCreateTime()));
 
-        List<ReturnOrderChildernSource> detailList = new ArrayList();
-        ReturnOrderChildernSource source;
+        List<ReturnOrderChildSourceInit> detailList = new ArrayList();
+        ReturnOrderChildSourceInit source;
         // 查询退货单退货单商品信息
         List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inbound.getInboundOderCode());
         if(CollectionUtils.isEmpty(inboundProducts)){
             LOGGER.info("入库单的商品信息未查询到：{}", JsonUtil.toJson(inboundProducts));
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 400, "退货单- 入库单未查询商品信息。"));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 400, "退货单- 入库单未查询商品信息"));
         }
+        List<PurchaseSaleStockRespVo> distributionInfoList;
         for (InboundProduct product : inboundProducts) {
-            source= new ReturnOrderChildernSource();
-            source.setOrderCode(returnOrderInfo.getOrderCode());
+            source= new ReturnOrderChildSourceInit();
             source.setSkuCode(product.getSkuCode());
-            source.setLineNum(product.getLinenum().toString());
-            source.setNum(product.getPreInboundMainNum().toString());
+            source.setSkuName(product.getSkuName());
+            source.setLineCode(product.getLinenum().toString());
+            source.setTotalCount(product.getPreInboundMainNum().toString());
+            source.setUnitCode(product.getUnitCode());
+            source.setUnitName(product.getUnitName());
             source.setColorCode(product.getColorName());
-            source.setDd10(product.getNorms());
-            source.setDd11(product.getUnitName());
+            source.setModel(product.getModel());
+            // 查询分销单位  条形码
+            distributionInfoList = productSkuDistributionInfoMapper.getList(product.getSkuCode());
+            if(CollectionUtils.isNotEmpty(distributionInfoList) && distributionInfoList.size() > 0){
+                source.setSkuBarCode(distributionInfoList.get(0).getBarCode());
+                source.setPackgeUnit(distributionInfoList.get(0).getUnitName());
+            }
             detailList.add(source);
         }
-        returnOder.setChildrenSourceList(detailList);
+        returnOder.setDetails(detailList);
 
         // 商品批次信息
         List<InboundBatch> batchList = inboundBatchDao.selectInboundBatchList(inbound.getInboundOderCode());
@@ -1131,7 +1143,7 @@ public class InboundServiceImpl implements InboundService {
                 batchInfo.setBatchId(IdUtil.uuid());
                 batchInfoList.add(batchInfo);
             }
-            returnOder.setBatchInfo(batchInfoList);
+            returnOder.setBatchInfoList(batchInfoList);
         }
         LOGGER.info("退货单开始调用wms，参数：{}", JsonUtil.toJson(returnOder));
         String url = urlConfig.WMS_API_URL2 + "/infoPushAndInquiry/source/returnOrderInfoPush";
