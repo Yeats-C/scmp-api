@@ -97,6 +97,8 @@ public class BaseServiceImpl implements BaseService {
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
         if(Objects.equals(response.getCode(),"0")){
             workFlowRespVO.setSuccess(true);
+            Map<String,Integer> data = (Map<String,Integer>)response.getData();
+            workFlowRespVO.setStatus(data.get("status"));
         } else {
             workFlowRespVO.setSuccess(false);
             workFlowRespVO.setMsg(response.getMessage());
