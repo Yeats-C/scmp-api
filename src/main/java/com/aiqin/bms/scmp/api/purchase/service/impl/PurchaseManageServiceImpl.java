@@ -223,16 +223,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.REVOKE.getCode(),
                             PurchaseOrderLogEnum.REVOKE.getName(), type);
                     // 调用取消入库单
-                    if(order.getInfoStatus().equals(0)){
-                        this.cancelInbound(order);
-                        CancelSource cancelSource = new CancelSource();
-                        cancelSource.setOrderType("3");
-                        cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
-                        cancelSource.setWarehouseCode(order.getWarehouseCode());
-                        cancelSource.setWarehouseName(order.getWarehouseName());
-                        cancelSource.setRemark(purchaseOrder.getCancelReason());
-                        wmsCancelService.wmsCancel(cancelSource);
-                    }
+                    this.cancelInbound(order);
+                    CancelSource cancelSource = new CancelSource();
+                    cancelSource.setOrderType("3");
+                    cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
+                    cancelSource.setWarehouseCode(order.getWarehouseCode());
+                    cancelSource.setWarehouseName(order.getWarehouseName());
+                    cancelSource.setRemark(purchaseOrder.getCancelReason());
+                    wmsCancelService.wmsCancel(cancelSource);
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
