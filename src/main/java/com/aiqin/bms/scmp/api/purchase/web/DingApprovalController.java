@@ -1,10 +1,21 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.service.AllocationService;
+import com.aiqin.bms.scmp.api.product.service.MovementService;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
@@ -29,10 +40,7 @@ import com.aiqin.platform.flows.client.service.FormDetailService;
 import com.aiqin.platform.flows.client.service.FormFileService;
 import com.aiqin.platform.flows.client.service.FormMsgService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -77,6 +85,10 @@ public class DingApprovalController {
     private PurchaseManageService purchaseManageService;
     @Resource
     private ProductSkuChangePriceService productSkuChangePriceService;
+    @Resource
+    private AllocationService allocationService;
+    @Resource
+    private MovementService movementService;
 
     @PostMapping("/apply/detail")
     @ApiOperation("查看供应商申请详情")
@@ -336,5 +348,67 @@ public class DingApprovalController {
         request.setPageNo(pageNo);
         request.setPageSize(pageSize);
         return goodsRejectService.selectRejectApplyBatch(request);
+    }
+
+    /**
+     * 调拨单列表详情
+     * @return
+     */
+    @ApiOperation("调拨单列表")
+    @PostMapping("/product/allocation/list")
+    public HttpResponse<BasePage<QueryAllocationResVo>> getList(@RequestBody QueryAllocationReqVo vo) {
+        vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
+        try {
+            return HttpResponse.success(allocationService.getList(vo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 通过id返回调拨单详情
+     * @param id
+     * @return
+     */
+    @ApiOperation("通过id返回调拨单详情")
+    @GetMapping("/product/allocation/view")
+    public HttpResponse<AllocationResVo> allocationView(@RequestParam @ApiParam(value = "传入id",required = true)Long id) {
+        try {
+            return HttpResponse.success(allocationService. view(id));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 移库列表详情
+     * @return
+     */
+    @ApiOperation("移库列表")
+    @PostMapping("/product/movement/list")
+    public HttpResponse<BasePage<QueryMovementResVo>> getList(@RequestBody QueryMovementReqVo vo) {
+        try {
+            return HttpResponse.success(movementService.getList(vo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 查看移库单详情
+     * @return
+     */
+    @ApiOperation("通过id返回移库单详情")
+    @GetMapping("/product/movement/view")
+    public HttpResponse<MovementResVo> movementView(Long id) {
+        try {
+            return HttpResponse.success(movementService.view(id));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
     }
 }

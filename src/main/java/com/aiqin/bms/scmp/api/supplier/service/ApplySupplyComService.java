@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.ApplySupplyComListRespVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,7 +94,7 @@ public interface ApplySupplyComService {
      * 供货单位申请流程
      * @param applySupplyCompanyReqDTO
      */
-    void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO);
+    WorkFlowRespVO workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO);
 
     /**
      * 跟着供应商审批流程一起审批操作

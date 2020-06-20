@@ -46,6 +46,7 @@ import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.service.WorkFlowService;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -117,6 +118,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private StockBatchDao stockBatchDao;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WorkFlowService workFlowService;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -150,12 +153,17 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         // 更新编码库
         encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         String content = "";
+        // type 审批人和申请人是一人 直接调审批回调接口
+        Integer type;
         if(Objects.equals(vo.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())){
             content = HandleTypeCoce.ADD_ALLOCATION.getName();
+            type = 8;
         } else if (Objects.equals(vo.getAllocationType(),AllocationTypeEnum.MOVE.getType())) {
             content = HandleTypeCoce.ADD_MOVEMENT.getName();
+            type = 13;
         } else {
             content = HandleTypeCoce.ADD_SCRAP.getName();
+            type = 15;
         }
         //保存日志
         supplierCommonService.getInstance(allocation.getAllocationCode()+"", HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),content ,null,HandleTypeCoce.ADD.getName());
@@ -206,7 +214,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                  throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
              }
              //调用审批流
-             workFlow(k,form,vo.getPositionCode());
+             WorkFlowRespVO workFlowRespVO = workFlow(k, form, vo.getPositionCode());
+             // 当申请人和审批人是同一人的话直接调用审批回调接口
+             if(workFlowRespVO.getStatus()==3){
+                 AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+                 WorkFlowCallbackVO vo1 = new WorkFlowCallbackVO();
+                 vo1.setApprovalOpinion("自动通过");
+                 vo1.setApprovalUserCode(authToken.getPersonId());
+                 vo1.setApprovalUserName(authToken.getPersonName());
+                 vo1.setFormNo(form);
+                 vo1.setOptBtn("BTN-004");
+                 vo1.setUpdateFormStatus(15);
+                 workFlowService.workFlowCallBack(WorkFlow.getAll().get(type),vo1);
+             }
              return  k;
          }else {
              log.error("调拨单sku保存失败");
@@ -374,7 +394,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
 
 //    @Async("myTaskAsyncPool")
-    public void workFlow(Long id,String formNo,String positionCode) {
+    public WorkFlowRespVO workFlow(Long id,String formNo,String positionCode) {
         Allocation allocation1 = allocationMapper.selectByPrimaryKey(id);
         log.info("AllocationServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(id));
         try {
@@ -432,6 +452,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 log.error("失败原因是"+workFlowRespVO.getMsg());
                 throw new GroundRuntimeException(workFlowRespVO.getMsg());
             }
+            return workFlowRespVO;
         }catch (Exception e) {
             throw new GroundRuntimeException(e.getMessage());
         }
@@ -874,12 +895,14 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     aWmsOutSource.setDetailList(aWmsOutProSource);
                     aWmsOutSource.setBatchInfo(aWmsOutProBatchSource);
                 System.out.println(JSON.toJSON(aWmsOutSource));
-//                    String url = urlConfig.WMS_API_URL2+"/allocation/source/outbound";
-//                    HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
-//                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-//                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    String url = urlConfig.WMS_API_URL2+"/allocation/source/outbound";
+                    HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                        LOGGER.error("审批成功后：调拨调用wms失败,wms返回信息:"+ orderDto.getMessage()+"参数：", JSON.toJSON(aWmsOutSource));
 //                        return "调用wms失败";
-//                    }
+                        return orderDto.getMessage();
+                    }
                 }
 
                 if (Objects.equals(allocation1.getAllocationType(),AllocationTypeEnum.MOVE.getType())) {
@@ -912,13 +935,14 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     }
                     movementWmsReqVo.setDetailList(movementWmsProductoLists);
                     movementWmsReqVo.setDetailBatchList(movementWmsProductBatchLists);
-//                    String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
-//                    HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
-//                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
-//                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                        LOGGER.error("调用wms失败,wms返回信息:"+ orderDto.getMessage()+"参数：", JSON.toJSON(movementWmsReqVo));
+                    String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
+                    HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
+                    HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+                    if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                        LOGGER.error("审批成功后：移库调用wms失败,wms返回信息:"+ orderDto.getMessage()+"参数：", JSON.toJSON(movementWmsReqVo));
 //                        return "调用wms失败";
-//                    }
+                        return orderDto.getMessage();
+                    }
             }
             return "success";
         }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
