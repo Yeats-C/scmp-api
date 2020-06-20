@@ -226,7 +226,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     this.cancelInbound(order);
                     CancelSource cancelSource = new CancelSource();
                     cancelSource.setOrderType("3");
-                    cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
+                    cancelSource.setOrderCode(order.getPurchaseOrderCode());
                     cancelSource.setWarehouseCode(order.getWarehouseCode());
                     cancelSource.setWarehouseName(order.getWarehouseName());
                     cancelSource.setRemark(purchaseOrder.getCancelReason());
