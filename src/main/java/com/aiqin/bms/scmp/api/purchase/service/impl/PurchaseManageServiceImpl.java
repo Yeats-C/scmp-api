@@ -614,9 +614,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
         }
 
-        // 减在途数
-        //this.wayNum(purchaseOrder, 8);
-
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
         if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
@@ -667,8 +664,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 添加入库完成日志
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), purchaseOrder.getApplyTypeForm());
-            // 减在途数
-//            this.wayNum(purchaseOrder, 8);
         }
         return HttpResponse.success();
     }
