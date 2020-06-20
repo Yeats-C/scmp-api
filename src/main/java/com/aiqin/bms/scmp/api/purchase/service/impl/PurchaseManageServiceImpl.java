@@ -735,8 +735,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(type == 7){
                     stockInfo.setChangeCount(singleCount);
                 }else {
-                    // 减在途并加库存
-                    stockInfo.setChangeCount(singleCount - actualSingleCount);
+                    // 减在途并加库存  取消 ： 0
+                    stockInfo.setChangeCount(0L);
                     if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
                         stockInfo.setPreWayCount(singleCount - actualSingleCount);
                     }else {
