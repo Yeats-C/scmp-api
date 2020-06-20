@@ -366,6 +366,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setPartnerCode(returnOrderInfo.getCopartnerAreaId());
         returnOrder.setPartnerName(returnOrderInfo.getCopartnerAreaName());
         returnOrder.setBusinessForm(returnOrderInfo.getBusinessForm().toString());
+        //returnOrder.setOrderProductType();
         Integer count = returnOrderInfoMapper.insert(returnOrder);
         LOGGER.info("添加退货单条数：", count);
 

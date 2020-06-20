@@ -7,6 +7,7 @@
       <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
       <result column="create_date" jdbcType="TIMESTAMP" property="createDate" />
       <result column="order_type" jdbcType="INTEGER" property="orderType" />
+      <result column="order_product_type" jdbcType="INTEGER" property="orderProductType" />
       <result column="return_order_type" jdbcType="INTEGER" property="returnOrderType" />
       <result column="order_category" jdbcType="INTEGER" property="orderCategory" />
       <result column="business_form" jdbcType="VARCHAR" property="businessForm" />
@@ -99,7 +100,7 @@
     create_by_id, create_by_name, create_time, update_by_id, update_by_name, update_time,
     volume, actual_weight, actual_product_count, actual_volume, actual_product_total_amount,
     actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount,
-    synchr_time, synchr_status
+    synchr_time, synchr_status, order_product_type
   </sql>
   <select id="selectByCode" resultMap="BaseResultMap">
       select
@@ -121,7 +122,7 @@
       transport_number, return_reason_code, return_reason_content, remake, treatment_method, order_original_name, 
       order_original, create_by_id, create_by_name, create_time, update_by_id, update_by_name, 
       update_time, volume, actual_weight, actual_product_count, actual_volume, actual_product_total_amount, 
-      actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount)
+      actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount, order_product_type)
     values ( #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{orderType,jdbcType=INTEGER}, #{returnOrderType,jdbcType=INTEGER}, 
       #{orderCategory,jdbcType=INTEGER}, #{businessForm,jdbcType=VARCHAR}, #{platformType,jdbcType=INTEGER}, 
@@ -149,7 +150,7 @@
       NOW(), #{volume,jdbcType=VARCHAR}, #{actualWeight,jdbcType=BIGINT}, 
       #{actualProductCount,jdbcType=BIGINT}, #{actualVolume,jdbcType=BIGINT}, #{actualProductTotalAmount,jdbcType=DECIMAL}, 
       #{actualReturnOrderAmount,jdbcType=DECIMAL}, #{productChannelTotalAmount,jdbcType=DECIMAL}, 
-      #{actualProductChannelTotalAmount,jdbcType=DECIMAL})
+      #{actualProductChannelTotalAmount,jdbcType=DECIMAL}, #{orderProductType,jdbcType=INTEGER})
   </insert>
   <update id="update">
       update return_order_info
@@ -162,6 +163,9 @@
           </if>
           <if test="orderType != null">
               order_type = #{orderType,jdbcType=INTEGER},
+          </if>
+          <if test="orderProductType != null">
+              order_product_type = #{orderProductType,jdbcType=INTEGER},
           </if>
           <if test="returnOrderType != null">
               return_order_type = #{returnOrderType,jdbcType=INTEGER},
@@ -489,63 +493,6 @@
       )
      </foreach>
       </insert>
-    <insert id="insertBatch" parameterType="java.util.List">
-            insert into return_order_info (id, return_order_code, order_code,
-      create_date, order_type, order_type_code,
-      return_order_type, return_order_type_code, payment_status,
-      be_lock, lock_reason, be_exception,
-      exception_reason, be_delete, transport_center_name,
-      transport_center_code, warehouse_name, warehouse_code,
-      supplier_name, supplier_code, customer_name,
-      customer_code, consignee, consignee_phone,
-      address, province_code, province_name,
-      city_code, city_name, district_code,
-      district_name, detail_address, zip_code,
-      distribution_mode, distribution_mode_code,
-      order_status, payment_type, payment_type_code,
-      deliver_amount, product_num, product_total_amount,
-      return_order_amount, weight, delivery_time,
-      receiving_time, operator, operator_code,
-      operator_time, inspection_remark, company_code,
-      company_name, transport_company_code, transport_company,
-      transport_number, return_reason_code, return_reason_content,
-      remake, treatment_method, order_original_name,
-      order_original, create_by_id, create_by_name,
-      create_time, update_by_id, update_by_name,
-      update_time, volume, actual_weight,
-      actual_product_num, actual_volume, actual_product_total_amount,
-      actual_return_order_amount, product_channel_total_amount,
-      actual_product_channel_total_amount)
-    values
-      <foreach collection="list" open="" close="" item="item" separator=",">
-     (#{item.id,jdbcType=BIGINT}, #{item.returnOrderCode,jdbcType=VARCHAR}, #{item.orderCode,jdbcType=VARCHAR},
-      #{item.createDate,jdbcType=TIMESTAMP}, #{item.orderType,jdbcType=VARCHAR}, #{item.orderTypeCode,jdbcType=INTEGER},
-      #{item.returnOrderType,jdbcType=VARCHAR}, #{item.returnOrderTypeCode,jdbcType=INTEGER}, #{item.paymentStatus,jdbcType=INTEGER},
-      #{item.beLock,jdbcType=INTEGER}, #{item.lockReason,jdbcType=VARCHAR}, #{item.beException,jdbcType=INTEGER},
-      #{item.exceptionReason,jdbcType=VARCHAR}, #{item.beDelete,jdbcType=INTEGER}, #{item.transportCenterName,jdbcType=VARCHAR},
-      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR},
-      #{item.supplierName,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.customerName,jdbcType=VARCHAR},
-      #{item.customerCode,jdbcType=VARCHAR}, #{item.consignee,jdbcType=VARCHAR}, #{item.consigneePhone,jdbcType=VARCHAR},
-      #{item.address,jdbcType=VARCHAR}, #{item.provinceCode,jdbcType=VARCHAR}, #{item.provinceName,jdbcType=VARCHAR},
-      #{item.cityCode,jdbcType=VARCHAR}, #{item.cityName,jdbcType=VARCHAR}, #{item.districtCode,jdbcType=VARCHAR},
-      #{item.districtName,jdbcType=VARCHAR}, #{item.detailAddress,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR},
-      #{item.distributionMode,jdbcType=VARCHAR}, #{item.distributionModeCode,jdbcType=VARCHAR},
-      #{item.orderStatus,jdbcType=INTEGER}, #{item.paymentType,jdbcType=VARCHAR}, #{item.paymentTypeCode,jdbcType=VARCHAR},
-      #{item.deliverAmount,jdbcType=BIGINT}, #{item.productNum,jdbcType=BIGINT}, #{item.productTotalAmount,jdbcType=BIGINT},
-      #{item.returnOrderAmount,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.deliveryTime,jdbcType=TIMESTAMP},
-      #{item.receivingTime,jdbcType=TIMESTAMP}, #{item.operator,jdbcType=VARCHAR}, #{item.operatorCode,jdbcType=VARCHAR},
-      #{item.operatorTime,jdbcType=TIMESTAMP}, #{item.inspectionRemark,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR},
-      #{item.companyName,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportCompany,jdbcType=VARCHAR},
-      #{item.transportNumber,jdbcType=VARCHAR}, #{item.returnReasonCode,jdbcType=VARCHAR}, #{item.returnReasonContent,jdbcType=VARCHAR},
-      #{item.remake,jdbcType=VARCHAR}, #{item.treatmentMethod,jdbcType=INTEGER}, #{item.orderOriginalName,jdbcType=VARCHAR},
-      #{item.orderOriginal,jdbcType=VARCHAR}, #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
-      #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR},
-      #{item.updateTime,jdbcType=TIMESTAMP}, #{item.volume,jdbcType=VARCHAR}, #{item.actualWeight,jdbcType=BIGINT},
-      #{item.actualProductNum,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=BIGINT},
-      #{item.actualReturnOrderAmount,jdbcType=BIGINT}, #{item.productChannelTotalAmount,jdbcType=BIGINT},
-      #{item.actualProductChannelTotalAmount,jdbcType=BIGINT})
-      </foreach>
-    </insert>
     <select id="listForSap" resultMap="BaseResultMap">
         select
           <include refid="Base_Column_List" />
