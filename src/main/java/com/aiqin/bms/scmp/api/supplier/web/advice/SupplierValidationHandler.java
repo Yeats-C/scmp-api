@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.advice;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.ParameterCheckException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -75,6 +76,24 @@ public class SupplierValidationHandler {
     public HttpResponse handleMissingServletRequestParameterException(MissingServletRequestParameterException e){
         StringBuilder sb = new StringBuilder();
         sb.append(e.getParameterName());
+        sb.append("不能为空");
+        return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
+    }
+
+
+    /**
+     *
+     * 参数为空校验
+     * @param e
+     * @param
+     * @return
+     */
+    @ExceptionHandler(value= ParameterCheckException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public HttpResponse handleMissingServletRequestParameterException(ParameterCheckException e){
+        StringBuilder sb = new StringBuilder();
+        sb.append(e.getMessage());
         sb.append("不能为空");
         return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
     }

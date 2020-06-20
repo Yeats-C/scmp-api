@@ -1,14 +1,19 @@
 package com.aiqin.bms.scmp.api.wholesale;
 
 
+import com.aiqin.bms.scmp.api.common.BaseController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.scmp.wholesale.conts.PageResData;
 import com.aiqin.mgs.scmp.wholesale.wholesale.domain.pojo.WholesaleCustomers;
+import com.aiqin.mgs.scmp.wholesale.wholesale.domain.request.AccountBreakDownReq;
+import com.aiqin.mgs.scmp.wholesale.wholesale.domain.response.AccountBreakDownRespVo;
 import com.aiqin.mgs.scmp.wholesale.wholesale.service.WholesaleCustomersService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -17,7 +22,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/wholesaleCustomers")
 @Api(tags = "批发客户相关接口")
-public class WholesaleCustomersController {
+public class WholesaleCustomersController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WholesaleCustomersController.class);
     @Resource
@@ -82,6 +87,21 @@ public class WholesaleCustomersController {
     public HttpResponse checkAccountExists(String customerAccount) {
         return wholesaleCustomersService.checkAccountExists(customerAccount);
     }
+
+
+    /**
+     * 通过批发商户编码查询账户流水
+     *
+     * @param accountBreakDownReq
+     * @return
+     */
+    @GetMapping("/getAccountBreakdown")
+    @ApiOperation(value = "通过名称或者账户查询批发客户")
+    public HttpResponse<AccountBreakDownRespVo> getAccountBreakdown(@Validated AccountBreakDownReq accountBreakDownReq, BindingResult br) {
+        checkParameters(br);
+        return wholesaleCustomersService.getAccountBreakdown(accountBreakDownReq);
+    }
+
 
 
 }
