@@ -15,7 +15,12 @@ center:
     #http://39.106.215.2:9003
   #中控前端
     host: http://control.mgs.aiqin.com
+#结算服务
+settlement :
+  registerUrl: http://settlement.api.aiqin.com/merchant/account/register
+
 product:
+  noPage2: http://settlement.api.aiqin.com/search/spu/noPage2
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 #    url: http://127.0.0.1:9021
