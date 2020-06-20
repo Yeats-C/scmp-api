@@ -231,6 +231,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     cancelSource.setWarehouseName(order.getWarehouseName());
                     cancelSource.setRemark(purchaseOrder.getCancelReason());
                     wmsCancelService.wmsCancel(cancelSource);
+                    // 取消在途数
+                    this.wayNum(order, 8);
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
