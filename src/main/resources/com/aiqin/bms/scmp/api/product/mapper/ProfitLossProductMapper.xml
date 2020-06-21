@@ -74,7 +74,7 @@
       tax, tax_price, quantity,
       tax_amount, del_flag, create_time,
       create_by, update_time, update_by,
-      picture_url, line_num,reason)
+      picture_url, line_num,reason, loss_order_code)
     values
     <foreach collection="list" item="item" separator=",">
     (
@@ -100,7 +100,8 @@
       #{item.updateByName,jdbcType=VARCHAR},
       #{item.pictureUrl,jdbcType=VARCHAR},
       #{item.lineNum,jdbcType=BIGINT},
-      #{item.reason,jdbcType=VARCHAR}
+      #{item.reason,jdbcType=VARCHAR},
+      #{item.lossOrderCode,jdbcType=TINYINT}
       )
     </foreach>
   </insert>
