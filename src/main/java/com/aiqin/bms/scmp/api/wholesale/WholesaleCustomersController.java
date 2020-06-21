@@ -90,14 +90,14 @@ public class WholesaleCustomersController extends BaseController {
 
 
     /**
-     * 通过批发商户编码查询账户流水
+     * 通过批发商户账号查询账户流水
      *
      * @param accountBreakDownReq
      * @return
      */
-    @GetMapping("/getAccountBreakdown")
-    @ApiOperation(value = "通过名称或者账户查询批发客户")
-    public HttpResponse<AccountBreakDownRespVo> getAccountBreakdown(@Validated AccountBreakDownReq accountBreakDownReq, BindingResult br) {
+    @PostMapping("/getAccountBreakdown")
+    @ApiOperation(value = "查询批发账号流水")
+    public HttpResponse<AccountBreakDownRespVo> getAccountBreakdown(@RequestBody @Validated AccountBreakDownReq accountBreakDownReq, BindingResult br) {
         checkParameters(br);
         return wholesaleCustomersService.getAccountBreakdown(accountBreakDownReq);
     }

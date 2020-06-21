@@ -5,6 +5,8 @@ import com.aiqin.ground.util.protocol.Project;
 
 public interface ResultCode {
     MessageId SYSTEM_ERROR = MessageId.create(Project.SCMP_API, 500, "系统异常");
+
+
     MessageId REQUIRED_PARAMETER = MessageId.create(Project.SCMP_API, 400, "参数缺失");
     MessageId NOT_HAVE_PARAM = MessageId.create(Project.SCMP_API, 400, "参数信息错误");
     MessageId USER_NOT_FOUND = MessageId.create(Project.SCMP_API, 401, "获取登录用户失败！");

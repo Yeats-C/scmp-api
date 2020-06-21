@@ -18,9 +18,9 @@ center:
     host: http://control.mgs.aiqin.com
 #结算服务
 settlement :
-  registerUrl: http://settlement.api.aiqin.com/merchant/account/register
+  registerUrl: http://settlement.api.aiqin.com/
 product:
-  noPage2: http://settlement.api.aiqin.com/search/spu/noPage2
+  url: http://http://product.api.aiqin.com/
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 wms:

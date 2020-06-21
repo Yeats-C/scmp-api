@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -96,6 +97,16 @@ public class SupplierValidationHandler {
         sb.append(e.getMessage());
         sb.append("不能为空");
         return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
+    }
+
+
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    @ResponseBody
+    public HttpResponse defaultErrorHandler(HttpMessageNotReadableException ex) {
+        logger.error(ex.getMessage());
+        log.error(Global.ERROR, ex);
+        return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
     }
     /**
      * 系统异常自定义拦截
