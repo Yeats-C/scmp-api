@@ -119,6 +119,10 @@ public class WarehouseConfigReq  extends PageReq {
     @JsonProperty("counterpart_stock_name")
     private String counterpartStockName;
 
+    @ApiModelProperty("移库类型（0.wms发起移库 1.分别发起移库 2.同时发起移库）")
+    @JsonProperty("movement_type")
+    private Integer movementType;
+
     /**
      * 启用禁用状态
      * 表字段 : warhouse_config.enable
