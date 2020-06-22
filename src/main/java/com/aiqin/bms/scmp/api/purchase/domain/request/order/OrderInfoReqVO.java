@@ -240,6 +240,46 @@ public class OrderInfoReqVO {
     @ApiModelProperty("税号")
     private String taxId;
 
+    @ApiModelProperty(value = "门店编码")
+    @JsonProperty("store_code")
+    private String storeCode;
+
+    @ApiModelProperty(value = "门店名称")
+    @JsonProperty("store_name")
+    private String storeName;
+
+    @ApiModelProperty(value = "加盟商编码")
+    @JsonProperty("franchisee_code")
+    private String franchiseeCode;
+
+    @ApiModelProperty(value = "加盟商名称")
+    @JsonProperty("franchisee_name")
+    private String franchiseeName;
+
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "渠道订单金额")
+    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
     @ApiModelProperty("商品信息")
     private List<OrderInfoItemReqVO> productList;
 

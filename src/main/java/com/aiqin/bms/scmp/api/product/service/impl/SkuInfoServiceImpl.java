@@ -75,6 +75,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.metadata.Sheet;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -85,6 +86,8 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -113,6 +116,9 @@ import static com.aiqin.bms.scmp.api.util.GetChangeValueUtil.skuHeadMap;
 @Service
 @Slf4j
 public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SkuInfoServiceImpl.class);
+
     @Autowired
     private ProductSkuDraftMapper productSkuDraftMapper;
     @Autowired
@@ -2017,6 +2023,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setSeasonBand(productSkuInfo.getSeasonBand());
         //条形码,门店销售
         List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getDraftList(skuCode);
+        LOGGER.info("sku条形码,门店销售参数{}",  JSONObject.toJSONString(purchaseSaleStockRespVos));
         for (PurchaseSaleStockRespVo purchaseSaleStockRespVo:
                 purchaseSaleStockRespVos) {
             if (purchaseSaleStockRespVo.getIsDefault().equals('1')){
@@ -2071,6 +2078,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             skuConfigsWmsRepsVos.add(skuConfigsWmsRepsVo);
         }
         productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
+        LOGGER.info("新增修改商品审批通过后,传入wms数据参数信息:{}",  JSONObject.toJSONString(productSkuInfoWms));
         try {
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/productInfoPush" );
