@@ -430,6 +430,10 @@ public class ErpOrderInfo {
     @JsonProperty("product_channel_total_amount")
     private BigDecimal productChannelTotalAmount;
 
+    @ApiModelProperty(value = "收货人电话")
+    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;
