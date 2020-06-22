@@ -11,6 +11,7 @@ public interface ResultCode {
     MessageId NOT_HAVE_PARAM = MessageId.create(Project.SCMP_API, 400, "参数信息错误");
     MessageId USER_NOT_FOUND = MessageId.create(Project.SCMP_API, 401, "获取登录用户失败！");
     MessageId NAME_REPEAT = MessageId.create(Project.SCMP_API, 1, "名称重复");
+    MessageId REQUEST_MODE_ERROR = MessageId.create(Project.SCMP_API, 400, "请求方式错误");
 
     //系统相关异常
     MessageId COMPANY_CODE_EMPTY = MessageId.create(Project.SCMP_API, 2, "公司信息为空");

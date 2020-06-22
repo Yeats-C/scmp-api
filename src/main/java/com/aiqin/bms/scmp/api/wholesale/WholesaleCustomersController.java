@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.wholesale;
 
 
 import com.aiqin.bms.scmp.api.common.BaseController;
+import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.scmp.wholesale.conts.PageResData;
 import com.aiqin.mgs.scmp.wholesale.wholesale.domain.pojo.WholesaleCustomers;
@@ -12,6 +14,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -42,8 +45,12 @@ public class WholesaleCustomersController extends BaseController {
 
     @ApiOperation("新增批发客户")
     @PostMapping("/insert")
-    public synchronized HttpResponse insert(@RequestBody WholesaleCustomers wholesaleCustomers) {
-        return wholesaleCustomersService.insert(wholesaleCustomers);
+    public synchronized HttpResponse insert(@RequestBody @Validated WholesaleCustomers wholesaleCustomers, BindingResult br) {
+        checkParameters(br);
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        com.aiqin.mgs.scmp.wholesale.conts.AuthToken authToken = new com.aiqin.mgs.scmp.wholesale.conts.AuthToken();
+        BeanUtils.copyProperties(currentAuthToken, authToken);
+        return wholesaleCustomersService.insert(wholesaleCustomers, authToken);
     }
 
     /**
@@ -54,14 +61,18 @@ public class WholesaleCustomersController extends BaseController {
      */
     @GetMapping("/getCustomerByCode")
     @ApiOperation(value = "通过code查询批发客户")
-    public HttpResponse<WholesaleCustomers> getCustomerByCode(String customerCode) {
+    public HttpResponse<WholesaleCustomers> getCustomerByCode(@RequestParam("customerCode") String customerCode) {
+
         return wholesaleCustomersService.getCustomerByCode(customerCode);
     }
 
     @ApiOperation("修改批发客户")
     @PostMapping("/update")
     public synchronized HttpResponse update(@RequestBody WholesaleCustomers wholesaleCustomers) {
-        return wholesaleCustomersService.update(wholesaleCustomers);
+        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
+        com.aiqin.mgs.scmp.wholesale.conts.AuthToken authToken = new com.aiqin.mgs.scmp.wholesale.conts.AuthToken();
+        BeanUtils.copyProperties(currentAuthToken, authToken);
+        return wholesaleCustomersService.update(wholesaleCustomers, authToken);
     }
 
     /**
@@ -95,13 +106,12 @@ public class WholesaleCustomersController extends BaseController {
      * @param accountBreakDownReq
      * @return
      */
-    @PostMapping("/getAccountBreakdown")
+    @PostMapping("/getCustomerCodeBreakdown")
     @ApiOperation(value = "查询批发账号流水")
     public HttpResponse<AccountBreakDownRespVo> getAccountBreakdown(@RequestBody @Validated AccountBreakDownReq accountBreakDownReq, BindingResult br) {
         checkParameters(br);
         return wholesaleCustomersService.getAccountBreakdown(accountBreakDownReq);
     }
-
 
 
 }

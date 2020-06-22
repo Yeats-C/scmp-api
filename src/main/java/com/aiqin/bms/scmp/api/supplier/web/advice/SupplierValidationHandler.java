@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -107,6 +108,14 @@ public class SupplierValidationHandler {
         logger.error(ex.getMessage());
         log.error(Global.ERROR, ex);
         return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+    }
+
+    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+    @ResponseBody
+    public HttpResponse methodNotSupportedErrorHandler(HttpRequestMethodNotSupportedException ex) {
+        logger.error(ex.getMessage());
+        log.error(Global.ERROR, ex);
+        return HttpResponse.failure(ResultCode.REQUEST_MODE_ERROR);
     }
     /**
      * 系统异常自定义拦截
