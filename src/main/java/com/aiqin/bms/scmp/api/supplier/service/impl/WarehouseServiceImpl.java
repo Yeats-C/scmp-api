@@ -278,4 +278,11 @@ public class WarehouseServiceImpl implements WarehouseService {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseByLogisticsCenterCodeAndNotExistsType(logisticsCenterCode, warehouseTypeCode);
         return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
     }
+
+    /** 通过仓库编码查询启用库房信息 */
+    @Override
+    public List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(String transportCenterCode) {
+        List<WarehouseDTO> dtoList = warehouseDao.getWarehouseCodeByTransportCenterCode(transportCenterCode);
+        return dtoList;
+    }
 }

@@ -423,4 +423,10 @@
     from warehouse
     where del_flag=0 and enable=0 and batch_manage = 2
     </select>
+  <select id="getWarehouseCodeByTransportCenterCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and logistics_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

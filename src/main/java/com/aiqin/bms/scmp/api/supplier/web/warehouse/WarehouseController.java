@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.supplier.web.warehouse;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.UpdateWarehouseReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.WarehouseListReqVo;
@@ -148,6 +149,16 @@ public class WarehouseController {
     public HttpResponse<List<WarehouseResVo>> getWarehouseByLogisticsCenterCodeAndNotExistsType(@RequestParam  @ApiParam( value = "传入物流中心编码" ,required = true) String logisticsCenterCode,@RequestParam  @ApiParam( value = "仓库类型编码  1销售库 2特卖库 3残品库 4监管库" ,required = true) Byte warehouseTypeCode){
         try {
             return HttpResponse.success(warehouseService.getWarehouseByLogisticsCenterCodeAndNotExistsType(logisticsCenterCode,warehouseTypeCode));
+        }catch (Exception ex){
+            return HttpResponse.failure(ResultCode.SEARCH_ERROR);
+        }
+    }
+
+    @ApiOperation("通过仓库编码查询启用库房信息")
+    @GetMapping("/getWarehouseCodeByTransportCenterCode")
+    public HttpResponse<List<WarehouseDTO>> getWarehouseCodeByTransportCenterCode(@RequestParam  @ApiParam( value = "仓库编码" ,required = true) String transportCenterCode){
+        try {
+            return HttpResponse.success(warehouseService.getWarehouseCodeByTransportCenterCode(transportCenterCode));
         }catch (Exception ex){
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
         }

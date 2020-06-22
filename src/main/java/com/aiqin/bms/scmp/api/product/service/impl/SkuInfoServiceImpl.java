@@ -47,11 +47,13 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.FilePathEnum;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.tag.DetailTagUseRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.*;
@@ -217,6 +219,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private UrlConfig urlConfig;
     @Autowired
     ProductSkuDisInfoDao productSkuDisInfoDao;
+    @Autowired
+    WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1848,23 +1852,31 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     List<SkuConfigsRepsVo> configList = productSkuConfigMapper.getListBySkuCode(productSkuInfo.getSkuCode());
                     if (CollectionUtils.isNotEmpty(configList)) {
                         for (SkuConfigsRepsVo skuConfigsRepsVo : configList) {
-                            Stock stock = BeanCopyUtils.copy(productSkuInfo, Stock.class);
-                            stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
-                            stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
-                            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
-                            stock.setLockCount(0L);
-                            stock.setInventoryCount(0L);
-                            stock.setAvailableCount(0L);
-                            stock.setPurchaseWayCount(0L);
-                            stock.setAllocationWayCount(0L);
-                            stock.setTotalWayCount(0L);
+                            List<WarehouseDTO> warehouseDTO = warehouseDao.getWarehouseCodeByTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                            if (CollectionUtils.isNotEmpty(warehouseDTO)) {
+                                for (WarehouseDTO warehouse : warehouseDTO) {
+                                    Stock stock = BeanCopyUtils.copy(productSkuInfo, Stock.class);
+                                    stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                                    stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
+                                    stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+                                    stock.setWarehouseCode(warehouse.getWarehouseCode());
+                                    stock.setWarehouseName(warehouse.getWarehouseName());
+                                    stock.setWarehouseType(Integer.valueOf(warehouse.getWarehouseTypeCode()));
+                                    stock.setLockCount(0L);
+                                    stock.setInventoryCount(0L);
+                                    stock.setAvailableCount(0L);
+                                    stock.setPurchaseWayCount(0L);
+                                    stock.setAllocationWayCount(0L);
+                                    stock.setTotalWayCount(0L);
 //                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
 //                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
-                            stock.setNewPurchasePrice(new BigDecimal(0));
-                            stock.setTaxRate(new BigDecimal(0));
-                            stock.setTaxCost(new BigDecimal(0));
+                                    stock.setNewPurchasePrice(new BigDecimal(0));
+                                    stock.setTaxRate(new BigDecimal(0));
+                                    stock.setTaxCost(new BigDecimal(0));
 //                            stock.setTaxPrice(new BigDecimal(0));
-                            stockList.add(stock);
+                                    stockList.add(stock);
+                                }
+                            }
                         }
                     }
                     stockDao.insertBatch(stockList);
