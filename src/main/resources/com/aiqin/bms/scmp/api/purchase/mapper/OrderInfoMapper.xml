@@ -248,6 +248,9 @@ transport_number, platform_type, business_form, tax_id
       <result column="aactual_suit_coupon_money" jdbcType="DECIMAL" property="actualSuitCouponMoney" />
       <result column="atop_coupon_money" jdbcType="DECIMAL" property="topCouponMoney" />
       <result column="aactual_top_coupon_money" jdbcType="DECIMAL" property="actualTopCouponMoney" />
+      <result column="aconsignee_mobile" jdbcType="DECIMAL" property="consigneeMobile" />
+      <result column="aactual_logistics_remission_ratio" jdbcType="DECIMAL" property="actualLogisticsRemissionRatio" />
+      <result column="aactual_activity_discount" jdbcType="DECIMAL" property="actualActivityDiscount" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -391,6 +394,9 @@ transport_number, platform_type, business_form, tax_id
              a.actual_suit_coupon_money aactual_suit_coupon_money,
              a.top_coupon_money atop_coupon_money,
              a.actual_top_coupon_money aactual_top_coupon_money,
+             a.consignee_mobile aconsignee_mobile,
+             a.actual_logistics_remission_ratio aactual_logistics_remission_ratio,
+             a.actual_activity_discount aactual_activity_discount,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -1031,7 +1037,8 @@ transport_number, platform_type, business_form, tax_id
       actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
       invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id,
       store_code, store_name, franchisee_code, franchisee_name, partner_code, partner_name, channel_order_amount, actual_channel_order_amount,
-      actual_deliver_amount, suit_coupon_money, actual_suit_coupon_money, top_coupon_money, actual_top_coupon_money)
+      actual_deliver_amount, suit_coupon_money, actual_suit_coupon_money, top_coupon_money, actual_top_coupon_money, consignee_mobile,
+      actual_logistics_remission_ratio, actual_activity_discount)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},#{item.orderTypeCode,jdbcType=INTEGER},
@@ -1068,7 +1075,8 @@ transport_number, platform_type, business_form, tax_id
       #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
       #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
       #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
-      #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL}
+      #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
+        #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

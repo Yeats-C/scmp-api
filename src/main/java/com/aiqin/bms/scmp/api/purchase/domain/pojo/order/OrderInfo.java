@@ -345,6 +345,18 @@ public class OrderInfo {
 //    @JsonProperty("actual_channel_order_amount")
     private BigDecimal actualChannelOrderAmount;
 
+    @ApiModelProperty(value = "收货人电话")
+//    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
+    @ApiModelProperty(value = "实际减免比例")
+//    @JsonProperty("actual_logistics_remission_ratio")
+    private int actualLogisticsRemissionRatio;
+
+    @ApiModelProperty(value = "实际活动优惠")
+//    @JsonProperty("actual_activity_discount")
+    private BigDecimal actualActivityDiscount;
+
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
 
