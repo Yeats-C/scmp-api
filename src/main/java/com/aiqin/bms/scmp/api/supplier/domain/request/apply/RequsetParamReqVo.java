@@ -16,7 +16,7 @@ import javax.validation.constraints.NotEmpty;
 @Data
 public class RequsetParamReqVo {
 
-    @ApiModelProperty("功能项 1:供应商 2:供应商集团 3:账户")
+    @ApiModelProperty("功能项 1:供应商 2:供应商集团 3:账户 5:调拨移库")
     @NotEmpty(message = "功能项不能为空")
     private String itemCode;
 
