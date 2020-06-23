@@ -37,7 +37,7 @@ public class AuthUtil {
         authToken.setPersonName(request.getParameter("person_name"));
         authToken.setAccountId(request.getParameter("account_id"));
         authToken.setTicket(request.getParameter("ticket"));
-        authToken.setTicketPersonId(request.getParameter("ticket_person_id"));
+        //authToken.setTicketPersonId(request.getParameter("ticket_person_id"));
         return authToken;
     }
 
@@ -77,9 +77,9 @@ public class AuthUtil {
             if (StringUtils.isNotBlank(authToken.getAccountId())) {
                 client.addParameter("account_id", authToken.getAccountId());
             }
-            if (StringUtils.isNotBlank(authToken.getTicketPersonId())) {
-                client.addParameter("ticket_person_id", authToken.getTicketPersonId());
-            }
+//            if (StringUtils.isNotBlank(authToken.getTicketPersonId())) {
+//                client.addParameter("ticket_person_id", authToken.getTicketPersonId());
+//            }
         }
     }
 }
