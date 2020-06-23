@@ -100,8 +100,8 @@
         warehouse_name warehouseName,
         warehouse_code warehouseCode,
         warehouse_type_code warehouseType,
-        logistics_center_code stockName,
-        logistics_center_name stockCode
+        logistics_center_code stockCode,
+        logistics_center_name stockName
         from warehouse
         where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
 

@@ -64,6 +64,7 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         warehouseConfigReq.setCreateBy(currentAuthToken.getPersonName());
         try {
+            log.info("库房配置保存传入wmsa，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
            warehouseConfigDao.insert(warehouseConfigReq);
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/save" );
@@ -110,7 +111,7 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         req.setUpdateBy(currentAuthToken.getPersonName());
         try {
-
+            log.info("库房配置更新传入wmsa，传入参数是[{}]", JSON.toJSONString(req));
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/update" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
