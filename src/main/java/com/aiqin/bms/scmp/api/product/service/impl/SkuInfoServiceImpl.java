@@ -2006,7 +2006,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setSkuStatus(productSkuInfo.getSkuStatus());
         productSkuInfoWms.setSeasonBand(productSkuInfo.getSeasonBand());
         //条形码,门店销售
-        List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getDraftList(skuCode);
+        List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getList(skuCode);
         for (PurchaseSaleStockRespVo purchaseSaleStockRespVo:
                 purchaseSaleStockRespVos) {
             if (purchaseSaleStockRespVo.getIsDefault().equals('1')){
