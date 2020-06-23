@@ -83,7 +83,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 对接系统
      * 表字段 : warhouse_config.docking_system
      */
-    @ApiModelProperty("对接系统(0：DL系统 1：巨沃系统 2:富勒系统 3：德邦系统)")
+    @ApiModelProperty("对接系统(0：巨沃系统 1:富勒系统 2：德邦系统 3：DL系统 )")
     @JsonProperty("docking_system")
     private Integer dockingSystem;
 
@@ -118,6 +118,10 @@ public class WarehouseConfigReq  extends PageReq {
     @ApiModelProperty("对接仓库名称")
     @JsonProperty("counterpart_stock_name")
     private String counterpartStockName;
+
+    @ApiModelProperty("移库类型（0.wms发起移库 1.分别发起移库 2.同时发起移库）")
+    @JsonProperty("movement_type")
+    private Integer movementType;
 
     /**
      * 启用禁用状态

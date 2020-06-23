@@ -50,7 +50,6 @@ public class WarehouseConfigController {
     @PostMapping("/search/page")
     @ApiOperation(value = "库房管理列表")
     public HttpResponse<BasePage<WarehouseConfigResp>> getPage(@RequestBody WarehouseConfigReq warehouseConfigReq) {
-        log.info("进来咯");
         return HttpResponse.success(warehouseConfigService.getPage(warehouseConfigReq));
     }
 

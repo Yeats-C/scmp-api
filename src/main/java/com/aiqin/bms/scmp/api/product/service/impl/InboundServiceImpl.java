@@ -614,20 +614,18 @@ public class InboundServiceImpl implements InboundService {
                 }
                 // 判断是否为最后一次采购
                 Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
-                Integer actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount.intValue();
+                Integer actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount.intValue() - inboundProduct.getActualTotalCount().intValue();
                 if(purchase.getInboundLine() == inbound.getPurchaseNum()){
-                    if(actualCount > 0){
-                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
-                    }else if(actualCount == 0){
-                        stockInfo.setPreWayCount(actualSingleCount);
+                    if(actualCount == 0){
+                        stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
                     }else {
-                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
                     }
                 }else {
                     if(actualCount >= 0){
-                        stockInfo.setPreWayCount(actualSingleCount);
+                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount() - actualSingleCount);
                     }else {
-                        stockInfo.setPreWayCount(product.getPreInboundMainNum());
+                        stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
                     }
                 }
             }

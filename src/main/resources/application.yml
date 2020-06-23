@@ -154,7 +154,7 @@ mgs:
         link: '/basicData/promoteSku'
       - code: SCMP002010
         name: 库房配置管理
-        link: 'basicData/warehouseConfig'
+        link: '/basicData/warehouseConfig'
     - code: SCMP003
       name: 供应商管理
       link: ''
@@ -448,24 +448,27 @@ mgs:
         name: 订单管理
         link: '/sale/order'
       - code: SCMP007002
-        name: 辅采订单管理
+        name: 采购直送订单管理
         link: '/sale/auxiliaryOrder'
       - code: SCMP007003
+        name: 货架直送销售管理
+        link: '/sale/shelvesOrder'
+      - code: SCMP007004
         name: 直送订单管理
         link: '/sale/directOrder'
-      - code: SCMP007004
+      - code: SCMP007005
         name: 订单商品查询
         link: '/sale/orderProduct'
-      - code: SCMP007005
+      - code: SCMP007006
         name: 商品唯一码查询
         link: '/sale/uniqueCode'
-      - code: SCMP007006
+      - code: SCMP007007
         name: 退货管理
         link: '/sale/return'
-      - code: SCMP007007
+      - code: SCMP007008
         name: 直送退货管理
         link: '/sale/directReturn'
-      - code: SCMP007008
+      - code: SCMP007009
         name: 退货验货
         link: '/sale/returnInspection'
     - code: SCMP008
@@ -526,278 +529,286 @@ mgs:
         name: 运输管理
         link: '/transport/transport'
     - code: SCMP011
+      name: 客户管理
+      link: ''
+      icon: icon-aq-kehu
+      resources:
+      - code: SCMP011001
+        name: 批发客户管理
+        link: '/customer/batchCustomer'
+    - code: SCMP012
       name: 分析报表
       link: ''
       icon: icon-aq-fenxi
       resources:
-      - code: SCMP011001
+      - code: SCMP012001
         name: 销售分析
         link: '/analysis/sale'
-      - code: SCMP011002
+      - code: SCMP012002
         name: 月销售分析
         link: '/chart/monthSales'
-      - code: SCMP011003
+      - code: SCMP012003
         name: 月毛利分析
         link: '/chart/monthGross'
-      - code: SCMP011004
+      - code: SCMP012004
         name: 月销售达成率分析
         link: '/chart/monthSalesAchievement'
-      - code: SCMP011005
+      - code: SCMP012005
         name: 月累计品类销售分析
         link: '/chart/MTDCategorySales'
-      - code: SCMP011006
+      - code: SCMP012006
         name: 月累计品类毛利分析
         link: '/chart/MTDCategoryGross'
-    - code: SCMP012
+    - code: SCMP013
       name: 统计报表
       link: ''
       icon: icon-aq-tongji
       resources:
-      - code: SCMP012001
+      - code: SCMP013001
         name: 供应商到货率统计-品采
         link: '/statistics/supplierArrival/BPDept'
-      - code: SCMP012002
+      - code: SCMP013002
         name: 供应商到货率统计-辅采
         link: '/statistics/supplierArrival/APDept'
-      - code: SCMP012003
+      - code: SCMP013003
         name: 供应商到货率统计-服纺
         link: '/statistics/supplierArrival/CTDept'
-      - code: SCMP012004
+      - code: SCMP013004
         name: 供应商到货率统计-鞋品
         link: '/statistics/supplierArrival/FBDept'
-      - code: SCMP012005
+      - code: SCMP013005
         name: 供应商到货率统计-自有品牌
         link: '/statistics/supplierArrival/PBDept'
-      - code: SCMP012006
+      - code: SCMP013006
         name: 退供率统计-品采
         link: '/statistics/supplierReturn/BPDept'
-      - code: SCMP012007
+      - code: SCMP013007
         name: 退供率统计-辅采
         link: '/statistics/supplierReturn/APDept'
-      - code: SCMP012008
+      - code: SCMP013008
         name: 退供率统计-服纺
         link: '/statistics/supplierReturn/CTDept'
-      - code: SCMP012009
+      - code: SCMP013009
         name: 退供率统计-鞋品
         link: '/statistics/supplierReturn/FBDept'
-      - code: SCMP012010
+      - code: SCMP013010
         name: 退供率统计-自有品牌
         link: '/statistics/supplierReturn/PBDept'
-      - code: SCMP012011
+      - code: SCMP013011
         name: 新品动销率统计-公司
         link: '/statistics/newGoodsInvoicing'
-      - code: SCMP012012
+      - code: SCMP013012
         name: 新品动销率统计-品采
         link: '/statistics/newGoodsInvoicing/BPDept'
-      - code: SCMP012013
+      - code: SCMP013013
         name: 新品动销率统计-辅采
         link: '/statistics/newGoodsInvoicing/APDept'
-      - code: SCMP012014
+      - code: SCMP013014
         name: 新品动销率统计-服纺
         link: '/statistics/newGoodsInvoicing/CTDept'
-      - code: SCMP012015
+      - code: SCMP013015
         name: 新品动销率统计-鞋品
         link: '/statistics/newGoodsInvoicing/FBDept'
-      - code: SCMP012016
+      - code: SCMP013016
         name: 新品动销率统计-自有品牌
         link: '/statistics/newGoodsInvoicing/PBDept'
-      - code: SCMP012017
+      - code: SCMP013017
         name: 门店复购率统计-公司
         link: '/statistics/storeRepurchase'
-      - code: SCMP012018
+      - code: SCMP013018
         name: 门店复购率统计-品采
         link: '/statistics/storeRepurchase/BPDept'
-      - code: SCMP012019
+      - code: SCMP013019
         name: 门店复购率统计-辅采
         link: '/statistics/storeRepurchase/APDept'
-      - code: SCMP012020
+      - code: SCMP013020
         name: 门店复购率统计-服纺
         link: '/statistics/storeRepurchase/CTDept'
-      - code: SCMP012021
+      - code: SCMP013021
         name: 门店复购率统计-鞋品
         link: '/statistics/storeRepurchase/FBDept'
-      - code: SCMP012022
+      - code: SCMP013022
         name: 门店复购率统计-自有品牌
         link: '/statistics/storeRepurchase/PBDept'
-      - code: SCMP012023
+      - code: SCMP013023
         name: 负毛利统计-公司
         link: '/statistics/nagativeGross'
-      - code: SCMP012024
+      - code: SCMP013024
         name: 负毛利统计-品采
         link: '/statistics/nagativeGross/BPDept'
-      - code: SCMP012025
+      - code: SCMP013025
         name: 负毛利统计-辅采
         link: '/statistics/nagativeGross/APDept'
-      - code: SCMP012026
+      - code: SCMP013026
         name: 负毛利统计-服纺
         link: '/statistics/nagativeGross/CTDept'
-      - code: SCMP012027
+      - code: SCMP013027
         name: 负毛利统计-鞋品
         link: '/statistics/nagativeGross/FBDept'
-      - code: SCMP012028
+      - code: SCMP013028
         name: 负毛利统计-自有品牌
         link: '/statistics/nagativeGross/PBDept'
-      - code: SCMP012029
+      - code: SCMP013029
         name: 销售统计-公司
         link: '/statistics/sale'
-      - code: SCMP012030
+      - code: SCMP013030
         name: 销售统计-品采
         link: '/statistics/sale/BPDept'
-      - code: SCMP012031
+      - code: SCMP013031
         name: 销售统计-辅采
         link: '/statistics/sale/APDept'
-      - code: SCMP012032
+      - code: SCMP013032
         name: 销售统计-服纺
         link: '/statistics/sale/CTDept'
-      - code: SCMP012033
+      - code: SCMP013033
         name: 销售统计-鞋品
         link: '/statistics/sale/FBDept'
-      - code: SCMP012034
+      - code: SCMP013034
         name: 销售统计-自有品牌
         link: '/statistics/sale/PBDept'
-      - code: SCMP012035
+      - code: SCMP013035
         name: 月累计销售统计-公司
         link: '/statistics/MTDCategorySale'
-      - code: SCMP012036
+      - code: SCMP013036
         name: 月累计销售统计-品采
         link: '/statistics/MTDCategorySale/BPDept'
-      - code: SCMP012037
+      - code: SCMP013037
         name: 月累计销售统计-辅采
         link: '/statistics/MTDCategorySale/APDept'
-      - code: SCMP012038
+      - code: SCMP013038
         name: 月累计销售统计-服纺
         link: '/statistics/MTDCategorySale/CTDept'
-      - code: SCMP012039
+      - code: SCMP013039
         name: 月累计销售统计-鞋品
         link: '/statistics/MTDCategorySale/FBDept'
-      - code: SCMP012040
+      - code: SCMP013040
         name: 月累计销售统计-自有品牌
         link: '/statistics/MTDCategorySale/PBDept'
-      - code: SCMP012041
+      - code: SCMP013041
         name: 低库存统计-公司
         link: '/statistics/lowInventory'
-      - code: SCMP012042
+      - code: SCMP013042
         name: 低库存统计-品采
         link: '/statistics/lowInventory/BPDept'
-      - code: SCMP012043
+      - code: SCMP013043
         name: 低库存统计-辅采
         link: '/statistics/lowInventory/APDept'
-      - code: SCMP012044
+      - code: SCMP013044
         name: 低库存统计-服纺
         link: '/statistics/lowInventory/CTDept'
-      - code: SCMP012045
+      - code: SCMP013045
         name: 低库存统计-鞋品
         link: '/statistics/lowInventory/FBDept'
-      - code: SCMP012046
+      - code: SCMP013046
         name: 低库存统计-自有品牌
         link: '/statistics/lowInventory/PBDept'
-      - code: SCMP012047
+      - code: SCMP013047
         name: 高库存统计-公司
         link: '/statistics/highInventory'
-      - code: SCMP012048
+      - code: SCMP013048
         name: 高库存统计-品采
         link: '/statistics/highInventory/BPDept'
-      - code: SCMP012049
+      - code: SCMP013049
         name: 高库存统计-辅采
         link: '/statistics/highInventory/APDept'
-      - code: SCMP012050
+      - code: SCMP013050
         name: 高库存统计-服纺
         link: '/statistics/highInventory/CTDept'
-      - code: SCMP012051
+      - code: SCMP013051
         name: 高库存统计-鞋品
         link: '/statistics/highInventory/FBDept'
-      - code: SCMP012052
+      - code: SCMP013052
         name: 高库存统计-自有品牌
         link: '/statistics/highInventory/PBDept'
-      - code: SCMP012053
+      - code: SCMP013053
         name: 品类促销统计-公司
         link: '/statistics/categoryPromotion'
-      - code: SCMP012054
+      - code: SCMP013054
         name: 品类促销统计-品采
         link: '/statistics/categoryPromotion/BPDept'
-      - code: SCMP012055
+      - code: SCMP013055
         name: 品类促销统计-辅采
         link: '/statistics/categoryPromotion/APDept'
-      - code: SCMP012056
+      - code: SCMP013056
         name: 品类促销统计-服纺
         link: '/statistics/categoryPromotion/CTDept'
-      - code: SCMP012057
+      - code: SCMP013057
         name: 品类促销统计-鞋品
         link: '/statistics/categoryPromotion/FBDept'
-      - code: SCMP012058
+      - code: SCMP013058
         name: 品类促销统计-自有品牌
         link: '/statistics/categoryPromotion/PBDept'
-      - code: SCMP012059
+      - code: SCMP013059
         name: 缺货统计-公司
         link: '/statistics/stockout'
-      - code: SCMP012060
+      - code: SCMP013060
         name: 缺货统计-品采
         link: '/statistics/stockout/BPDept'
-      - code: SCMP012061
+      - code: SCMP013061
         name: 缺货统计-辅采
         link: '/statistics/stockout/APDept'
-      - code: SCMP012062
+      - code: SCMP013062
         name: 缺货统计-服纺
         link: '/statistics/stockout/CTDept'
-      - code: SCMP012063
+      - code: SCMP013063
         name: 缺货统计-鞋品
         link: '/statistics/stockout/FBDept'
-      - code: SCMP012064
+      - code: SCMP013064
         name: 缺货统计-自有品牌
         link: '/statistics/stockout/PBDept'
-      - code: SCMP012065
+      - code: SCMP013065
         name: 品类销售统计-OEM
         link: '/statistics/categorySale/PBDept'
-      - code: SCMP012066
+      - code: SCMP013066
         name: 品牌销售统计-OEM
         link: '/statistics/brandSale/PBDept'
-    - code: SCMP013
+    - code: SCMP014
       name: 查询报表
       link: ''
       icon: icon-aq-chaxun
       resources:
-      - code: SCMP013001
+      - code: SCMP014001
         name: 供应商到货率查询
         link: '/query/supplierArrival'
-      - code: SCMP013002
+      - code: SCMP014002
         name: 商品进销存查询
         link: '/query/goodsInvoicing'
-      - code: SCMP013003
+      - code: SCMP014003
         name: 赠品进销存查询
         link: '/query/presentInvoicing'
-      - code: SCMP013004
+      - code: SCMP014004
         name: 退供查询
         link: '/query/supplierReturn'
-      - code: SCMP013005
+      - code: SCMP014005
         name: 新品动销查询
         link: '/query/newGoodsPinRate'
-      - code: SCMP013006
+      - code: SCMP014006
         name: 门店复购率查询
         link: '/query/storeRepurchase'
-      - code: SCMP013007
+      - code: SCMP014007
         name: 负毛利查询
         link: '/query/nagativeGross'
-      - code: SCMP013008
+      - code: SCMP014008
         name: 建议补货查询
         link: '/query/suggestReplenish'
-      - code: SCMP013009
+      - code: SCMP014009
         name: 品牌促销查询
         link: '/query/brandPromotion'
-      - code: SCMP013010
+      - code: SCMP014010
         name: 品类促销查询
         link: '/query/categoryPromotion'
-      - code: SCMP013011
+      - code: SCMP014011
         name: 月销售查询
         link: '/query/monthSales'
-      - code: SCMP013012
+      - code: SCMP014012
         name: 月累计品类销售查询
         link: '/query/MTDCategorySales'
-      - code: SCMP013013
+      - code: SCMP014013
         name: 商品销售查询
         link: '/query/goodsSale'
-      - code: SCMP013014
+      - code: SCMP014014
         name: 库存周转查询
         link: '/query/inventoryTurnover'
-      - code: SCMP013015
+      - code: SCMP014015
         name: 库存在途周转查询
         link: '/query/inventoryTurnoverWay'

@@ -769,6 +769,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String insideWorkFlowCallback(ApplySupplyCompany applySupplyCompany, WorkFlowCallbackVO vo) {
+        log.info("供应商修改审批，传入参数是[{}]，vo[{}]", JSON.toJSONString(applySupplyCompany),JSON.toJSONString(vo));
         HandleTypeCoce applyHandleTypeCoce;
         ApplySupplyCompanyAccount applySupplyCompanyAccount = applySupplyCompanyAcctDao.getApplySupplyComAcct(applySupplyCompany.getApplySupplyCompanyCode());
         applySupplyCompany.setApplyStatus(vo.getApplyStatus());
@@ -1014,6 +1015,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         }
     }
     private void sendWms(ApplySupplyCompany applySupplyCompany) {
+        log.info("传wms供应商信息，传入参数是[{}]", JSON.toJSONString(applySupplyCompany));
         SupplierWms supplierWms=new SupplierWms();
         supplierWms.setAddress(applySupplyCompany.getAddress());
         supplierWms.setArea(applySupplyCompany.getArea());
@@ -1023,7 +1025,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         supplierWms.setMobilePhone(applySupplyCompany.getMobilePhone());
         supplierWms.setRemark(applySupplyCompany.getRemark());
         supplierWms.setSupplierAbbreviation(applySupplyCompany.getApplyAbbreviation());
-        supplierWms.setSupplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+        supplierWms.setSupplyCode(applySupplyCompany.getSupplyCompanyCode());
         supplierWms.setSupplyName(applySupplyCompany.getApplySupplyName());
         supplierWms.setSupplyType(applySupplyCompany.getApplySupplyType());
         supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());

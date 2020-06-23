@@ -130,7 +130,8 @@ transport_number, platform_type, business_form, tax_id
              create_by_name createByName,
              create_time createTime,
              update_by_name updateByName,
-             update_time updateTime
+             update_time updateTime,
+             order_product_type orderProductType
       from order_info
       where company_code = #{companyCode} and order_type_code = #{orderType}
       <if test="createDateStart != null">
@@ -233,6 +234,23 @@ transport_number, platform_type, business_form, tax_id
       <result column="abusiness_form" jdbcType="VARCHAR" property="businessForm" />
       <result column="aplatform_type" jdbcType="VARCHAR" property="platformType" />
       <result column="atax_id" jdbcType="VARCHAR" property="taxId" />
+      <result column="aorder_product_type" jdbcType="TINYINT" property="orderProductType" />
+      <result column="astore_code" jdbcType="VARCHAR" property="storeCode" />
+      <result column="astore_name" jdbcType="VARCHAR" property="storeName" />
+      <result column="afranchisee_code" jdbcType="VARCHAR" property="franchiseeCode" />
+      <result column="afranchisee_name" jdbcType="VARCHAR" property="franchiseeName" />
+      <result column="apartner_code" jdbcType="VARCHAR" property="partnerCode" />
+      <result column="apartner_name" jdbcType="VARCHAR" property="partnerName" />
+      <result column="achannel_order_amount" jdbcType="DECIMAL" property="channelOrderAmount" />
+      <result column="aactual_channel_order_amount" jdbcType="DECIMAL" property="actualChannelOrderAmount" />
+      <result column="aactual_deliver_amount" jdbcType="VARCHAR" property="actualDeliverAmount" />
+      <result column="asuit_coupon_money" jdbcType="DECIMAL" property="suitCouponMoney" />
+      <result column="aactual_suit_coupon_money" jdbcType="DECIMAL" property="actualSuitCouponMoney" />
+      <result column="atop_coupon_money" jdbcType="DECIMAL" property="topCouponMoney" />
+      <result column="aactual_top_coupon_money" jdbcType="DECIMAL" property="actualTopCouponMoney" />
+      <result column="aconsignee_mobile" jdbcType="DECIMAL" property="consigneeMobile" />
+      <result column="aactual_logistics_remission_ratio" jdbcType="DECIMAL" property="actualLogisticsRemissionRatio" />
+      <result column="aactual_activity_discount" jdbcType="DECIMAL" property="actualActivityDiscount" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -362,6 +380,23 @@ transport_number, platform_type, business_form, tax_id
              a.business_form abusiness_form,
              a.platform_type aplatform_type,
              a.tax_id atax_id,
+             a.order_product_type aorder_product_type,
+             a.store_code astore_code,
+             a.store_name astore_name,
+             a.franchisee_code afranchisee_code,
+             a.franchisee_name afranchisee_name,
+             a.partner_code apartner_code,
+             a.partner_name apartner_name,
+             a.channel_order_amount achannel_order_amount,
+             a.actual_channel_order_amount aactual_channel_order_amount,
+             a.actual_deliver_amount aactual_deliver_amount,
+             a.suit_coupon_money asuit_coupon_money,
+             a.actual_suit_coupon_money aactual_suit_coupon_money,
+             a.top_coupon_money atop_coupon_money,
+             a.actual_top_coupon_money aactual_top_coupon_money,
+             a.consignee_mobile aconsignee_mobile,
+             a.actual_logistics_remission_ratio aactual_logistics_remission_ratio,
+             a.actual_activity_discount aactual_activity_discount,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -989,7 +1024,7 @@ transport_number, platform_type, business_form, tax_id
       </trim>
   </insert>
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into order_info (order_code, order_type, order_type_code, customer_name, customer_code, create_date, order_status,
+    insert into order_info (order_code, order_type, order_type_code, order_product_type, customer_name, customer_code, create_date, order_status,
       be_lock, lock_reason, be_exception, exception_reason, be_delete, payment_status, transport_center_name, transport_center_code,
       warehouse_name, warehouse_code, supplier_name, supplier_code, distribution_mode, distribution_mode_code, consignee, consignee_phone,
       province_code, province_name, city_code, city_name, district_code, district_name, detail_address, zip_code, payment_type,
@@ -1000,11 +1035,14 @@ transport_number, platform_type, business_form, tax_id
       order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
       actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
       actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
-      invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id)
+      invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id,
+      store_code, store_name, franchisee_code, franchisee_name, partner_code, partner_name, channel_order_amount, actual_channel_order_amount,
+      actual_deliver_amount, suit_coupon_money, actual_suit_coupon_money, top_coupon_money, actual_top_coupon_money, consignee_mobile,
+      actual_logistics_remission_ratio, actual_activity_discount)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
-     (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},
-      #{item.orderTypeCode,jdbcType=INTEGER}, #{item.customerName,jdbcType=VARCHAR}, #{item.customerCode,jdbcType=VARCHAR},
+     (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},#{item.orderTypeCode,jdbcType=INTEGER},
+      #{item.orderProductType,jdbcType=INTEGER}, #{item.customerName,jdbcType=VARCHAR}, #{item.customerCode,jdbcType=VARCHAR},
       #{item.createDate,jdbcType=TIMESTAMP}, #{item.orderStatus,jdbcType=INTEGER}, #{item.beLock,jdbcType=INTEGER},
       #{item.lockReason,jdbcType=VARCHAR}, #{item.beException,jdbcType=INTEGER}, #{item.exceptionReason,jdbcType=VARCHAR},
       #{item.beDelete,jdbcType=INTEGER}, #{item.paymentStatus,jdbcType=INTEGER}, #{item.transportCenterName,jdbcType=VARCHAR},
@@ -1033,7 +1071,12 @@ transport_number, platform_type, business_form, tax_id
       #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
       #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
       #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT},
-      #{item.taxId,jdbcType=VARCHAR}
+      #{item.taxId,jdbcType=VARCHAR},#{item.storeCode,jdbcType=VARCHAR},#{item.storeName,jdbcType=VARCHAR},
+      #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
+      #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
+      #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
+      #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
+        #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>

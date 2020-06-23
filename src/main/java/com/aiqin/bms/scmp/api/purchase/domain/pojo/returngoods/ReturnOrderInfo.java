@@ -34,6 +34,10 @@ public class ReturnOrderInfo {
     @JsonProperty("order_type")
     private Integer orderType;
 
+    @ApiModelProperty(value="订单产品类型 0.B2B 1.B2C")
+    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
     @ApiModelProperty(value="退货类型 1.客户取消 2.缺货取消 3.划单取消 4.售后退货")
     @JsonProperty("return_order_type")
     private Integer returnOrderType;
@@ -42,7 +46,7 @@ public class ReturnOrderInfo {
     @JsonProperty("order_category")
     private Integer orderCategory;
 
-    @ApiModelProperty(value="业务形式")
+    @ApiModelProperty(value="业务形式 0门店退货 1批发退货")
     @JsonProperty("business_form")
     private String businessForm;
 
