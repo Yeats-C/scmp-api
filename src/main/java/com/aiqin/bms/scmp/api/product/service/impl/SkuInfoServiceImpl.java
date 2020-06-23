@@ -1982,6 +1982,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //sku整箱商品包装信息
          List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos= productSkuBoxPackingService.getApply(skuCode,applyCode);
+        log.info("sku条形码{}", JSON.toJSONString(productSkuBoxPackingRespVos));
          if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
              productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
          }
@@ -2061,6 +2062,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             skuConfigsWmsRepsVos.add(skuConfigsWmsRepsVo);
         }
         productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
+        log.info("传入wms的消息为{}", JSON.toJSONString(productSkuInfoWms));
         try {
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/productInfoPush" );
