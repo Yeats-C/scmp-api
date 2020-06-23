@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.supplier.web.advice;
 
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.common.ParameterCheckException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -12,8 +13,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -77,6 +80,42 @@ public class SupplierValidationHandler {
         sb.append(e.getParameterName());
         sb.append("不能为空");
         return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
+    }
+
+
+    /**
+     *
+     * 参数为空校验
+     * @param e
+     * @param
+     * @return
+     */
+    @ExceptionHandler(value= ParameterCheckException.class)
+    @ResponseBody
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public HttpResponse handleMissingServletRequestParameterException(ParameterCheckException e){
+        StringBuilder sb = new StringBuilder();
+        sb.append(e.getMessage());
+        sb.append("不能为空");
+        return HttpResponse.failure(MessageId.create(Project.SUPPLIER_API, 400, sb.toString()));
+    }
+
+
+
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    @ResponseBody
+    public HttpResponse defaultErrorHandler(HttpMessageNotReadableException ex) {
+        logger.error(ex.getMessage());
+        log.error(Global.ERROR, ex);
+        return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+    }
+
+    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+    @ResponseBody
+    public HttpResponse methodNotSupportedErrorHandler(HttpRequestMethodNotSupportedException ex) {
+        logger.error(ex.getMessage());
+        log.error(Global.ERROR, ex);
+        return HttpResponse.failure(ResultCode.REQUEST_MODE_ERROR);
     }
     /**
      * 系统异常自定义拦截

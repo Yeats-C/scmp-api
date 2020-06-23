@@ -30,7 +30,7 @@ control:
    # 主控增加人员等接口
     account: http://control.api.aiqin.com/external/account
 mybatis:
-  mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml
+  mapper-locations: classpath*:/com/aiqin/bms/scmp/api/*/dao/*.xml,classpath*:/com/aiqin/bms/scmp/api/*/mapper/*.xml,classpath:mapper/**/*.xml
   #实体扫描，多个package用逗号或者分号分隔
   type-aliases-package: com.aiqin.bms.scmp.api.*.domain
   configuration:
