@@ -18,6 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,13 +41,13 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
 //            return PageUtil.getPageList(warehouseConfigReq.getPageNo(),warehouseConfigRespPageInfo);
 
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/search/page" );
+            url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/search/page" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(warehouseConfigReq).timeout(30000);
             HttpResponse<BasePage<WarehouseConfigResp>> result = httpClient.action().result(new TypeReference<HttpResponse<BasePage<WarehouseConfigResp>>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
+                log.info("传入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
             }
             return result.getData();
         } catch (Exception e) {
@@ -63,15 +64,16 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         warehouseConfigReq.setCreateBy(currentAuthToken.getPersonName());
         try {
+            log.info("库房配置保存传入wmsa，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
            warehouseConfigDao.insert(warehouseConfigReq);
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/save" );
+            url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/save" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(warehouseConfigReq).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
+                log.info("传入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
             }
             return result.getData();
         } catch (Exception e) {
@@ -86,14 +88,14 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
     public WarehouseConfigResp load(Long id) {
         try {
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/load" );
+            url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/load" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.get(String.valueOf(url)).timeout(30000);
             httpClient.addParameter("id", String.valueOf(id));
             HttpResponse<WarehouseConfigResp> result = httpClient.action().result(new TypeReference<HttpResponse<WarehouseConfigResp>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wmsa失败，传入参数是[{}]", id);
+                log.info("传入wmsa失败，传入参数是[{}]", id);
             }
             return result.getData();
         } catch (Exception e) {
@@ -109,9 +111,9 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         req.setUpdateBy(currentAuthToken.getPersonName());
         try {
-
+            log.info("库房配置更新传入wmsa，传入参数是[{}]", JSON.toJSONString(req));
             StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/update" );
+            url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/update" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(req).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){

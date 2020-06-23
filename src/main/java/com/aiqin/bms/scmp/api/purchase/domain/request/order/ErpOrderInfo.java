@@ -402,6 +402,38 @@ public class ErpOrderInfo {
     @JsonProperty("tax_id")
     private String taxId;
 
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "渠道订单金额")
+    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
+    @ApiModelProperty(value = "商品渠道总金额")
+    @JsonProperty("product_channel_total_amount")
+    private BigDecimal productChannelTotalAmount;
+
+    @ApiModelProperty(value = "收货人电话")
+    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;

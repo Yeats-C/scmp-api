@@ -65,4 +65,7 @@ public interface WarehouseDao {
    List<WarehouseDTO> warehouseByBatchMange();
 
     List<WarehouseDTO>  findWarehouseListForBatch();
+
+    /** 通过仓库编码查询启用库房信息 */
+   List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(@Param("transportCenterCode") String transportCenterCode);
 }

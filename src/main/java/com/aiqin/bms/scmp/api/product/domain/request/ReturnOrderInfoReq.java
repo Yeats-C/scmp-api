@@ -280,4 +280,20 @@ public class ReturnOrderInfoReq {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     private Date reviewTime;
 
+    //新加加盟商和合伙人
+    @ApiModelProperty("加盟商编码")
+    private String franchiseeCode;
+
+    @ApiModelProperty("加盟商名称")
+    private String franchiseeName;
+
+    @ApiModelProperty("合伙人编码")
+    private String copartnerAreaId;
+
+    @ApiModelProperty("合伙人名称")
+    private String copartnerAreaName;
+
+    @ApiModelProperty("业务形式 0门店退货 1批发退货")
+    private Integer businessForm;
+
 }

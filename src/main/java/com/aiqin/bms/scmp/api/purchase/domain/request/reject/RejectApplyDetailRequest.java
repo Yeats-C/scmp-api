@@ -195,4 +195,12 @@ public class RejectApplyDetailRequest {
     @JsonProperty("location_code")
     private String locationCode;
 
+    @ApiModelProperty(value="供应商集团编码")
+    @JsonProperty("supplier_company_code")
+    private String supplierCompanyCode;
+
+    @ApiModelProperty(value="供应商集团名称")
+    @JsonProperty("supplier_company_name")
+    private String supplierCompanyName;
+
 }

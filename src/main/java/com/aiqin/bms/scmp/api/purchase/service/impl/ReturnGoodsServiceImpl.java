@@ -363,6 +363,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setVolume(returnOrderInfo.getTotalVolume());
         returnOrder.setCompanyCode(Global.COMPANY_09);
         returnOrder.setCompanyName(Global.COMPANY_09_NAME);
+        returnOrder.setPartnerCode(returnOrderInfo.getCopartnerAreaId());
+        returnOrder.setPartnerName(returnOrderInfo.getCopartnerAreaName());
+        returnOrder.setBusinessForm(returnOrderInfo.getBusinessForm().toString());
+        //returnOrder.setOrderProductType();
         Integer count = returnOrderInfoMapper.insert(returnOrder);
         LOGGER.info("添加退货单条数：", count);
 

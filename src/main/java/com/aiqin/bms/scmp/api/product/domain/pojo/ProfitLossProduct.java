@@ -67,4 +67,7 @@ public class ProfitLossProduct extends CommonBean {
 
     @ApiModelProperty("原因")
     private String reason;
+
+    @ApiModelProperty("损溢类型编号（1 增加库存-报溢，2 减少库存-报损）")
+    private String lossOrderCode;
 }

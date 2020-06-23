@@ -223,16 +223,16 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     log(purchaseOrderId, personId, personName, PurchaseOrderLogEnum.REVOKE.getCode(),
                             PurchaseOrderLogEnum.REVOKE.getName(), type);
                     // 调用取消入库单
-                    if(order.getInfoStatus().equals(0)){
-                        this.cancelInbound(order);
-                        CancelSource cancelSource = new CancelSource();
-                        cancelSource.setOrderType("3");
-                        cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
-                        cancelSource.setWarehouseCode(order.getWarehouseCode());
-                        cancelSource.setWarehouseName(order.getWarehouseName());
-                        cancelSource.setRemark(purchaseOrder.getCancelReason());
-                        wmsCancelService.wmsCancel(cancelSource);
-                    }
+                    this.cancelInbound(order);
+                    CancelSource cancelSource = new CancelSource();
+                    cancelSource.setOrderType("3");
+                    cancelSource.setOrderCode(order.getPurchaseOrderCode());
+                    cancelSource.setWarehouseCode(order.getWarehouseCode());
+                    cancelSource.setWarehouseName(order.getWarehouseName());
+                    cancelSource.setRemark(purchaseOrder.getCancelReason());
+                    wmsCancelService.wmsCancel(cancelSource);
+                    // 取消在途数
+                    this.wayNum(order, 8);
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
@@ -616,9 +616,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             }
         }
 
-        // 减在途数
-        //this.wayNum(purchaseOrder, 8);
-
         // 判断入库次数 、入库是否完成
         purchaseStorage.setPurchaseNum(purchaseStorage.getPurchaseNum() + 1);
         if (purchaseOrder.getInboundLine() > 1 && purchaseStorage.getPurchaseNum() <= purchaseOrder.getInboundLine() &&
@@ -669,8 +666,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 添加入库完成日志
             log(purchaseOrder.getPurchaseOrderId(), purchaseStorage.getCreateById(), purchaseStorage.getCreateByName(), PurchaseOrderLogEnum.PURCHASE_FINISH.getCode(),
                     PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), purchaseOrder.getApplyTypeForm());
-            // 减在途数
-//            this.wayNum(purchaseOrder, 8);
         }
         return HttpResponse.success();
     }
@@ -740,8 +735,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(type == 7){
                     stockInfo.setChangeCount(singleCount);
                 }else {
-                    // 减在途并加库存
-                    stockInfo.setChangeCount(singleCount - actualSingleCount);
+                    // 减在途并加库存  取消 ： 0
+                    stockInfo.setChangeCount(0L);
                     if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
                         stockInfo.setPreWayCount(singleCount - actualSingleCount);
                     }else {

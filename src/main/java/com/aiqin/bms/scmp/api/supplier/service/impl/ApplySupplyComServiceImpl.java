@@ -40,6 +40,7 @@ import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
+import com.aiqin.bms.scmp.api.workflow.service.WorkFlowService;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
@@ -137,10 +138,13 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private ApprovalFileInfoService approvalFileInfoService;
     @Autowired
     private  UrlConfig urlConfig;
+    @Autowired
+    private WorkFlowService workFlowService;
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public HttpResponse<Integer> saveApply(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
+        log.info("新增供应商参数,result={}", JSON.toJSON(applySupplyCompanyReqVO));
         int resultNum;
         String companyCode = "";
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
@@ -184,7 +188,18 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 //审批流程
                 applySupplyCompanyReqDTO.setFormNo("GYS"+IdSequenceUtils.getInstance().nextId());
                 approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompanyReqDTO.getApplyCode(),applySupplyCompanyReqDTO.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
-                workFlow(applySupplyCompanyReqDTO);
+                WorkFlowRespVO workFlowRespVO = workFlow(applySupplyCompanyReqDTO);
+                // 当申请人和审批人是同一人的话直接调用审批回调接口
+                if(workFlowRespVO.getStatus()==3){
+                    WorkFlowCallbackVO vo = new WorkFlowCallbackVO();
+                    vo.setApprovalOpinion("自动通过");
+                    vo.setApprovalUserCode(authToken.getPersonId());
+                    vo.setApprovalUserName(authToken.getPersonName());
+                    vo.setFormNo(applySupplyCompanyReqDTO.getFormNo());
+                    vo.setOptBtn("BTN-004");
+                    vo.setUpdateFormStatus(15);
+                    workFlowService.workFlowCallBack(WorkFlow.getAll().get(3),vo);
+                }
             }
             if(applySupplyCompanyCode != null){
                 resultNum=1;
@@ -314,7 +329,18 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //            }
             if(!Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 approvalFileInfoService.batchSave(applySupplyCompanyReqVO.getApprovalFileInfos(),applySupplyCompany.getApplyCode(),applySupplyCompany.getFormNo(),ApprovalFileTypeEnum.SUPPLIER.getType());
-                workFlow(applySupplyCompany);
+                WorkFlowRespVO workFlowRespVO = workFlow(applySupplyCompany);
+                // 当申请人和审批人是同一人的话直接调用审批回调接口
+                if(workFlowRespVO.getStatus()==3){
+                    WorkFlowCallbackVO vo = new WorkFlowCallbackVO();
+                    vo.setApprovalOpinion("自动通过");
+                    vo.setApprovalUserCode(authToken.getPersonId());
+                    vo.setApprovalUserName(authToken.getPersonName());
+                    vo.setFormNo(applySupplyCompany.getFormNo());
+                    vo.setOptBtn("BTN-004");
+                    vo.setUpdateFormStatus(15);
+                    workFlowService.workFlowCallBack(WorkFlow.getAll().get(18),vo);
+                }
             }
         } catch (Exception e){
             log.error(Global.ERROR, e);
@@ -465,7 +491,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
+    public WorkFlowRespVO workFlow(ApplySupplyCompanyReqDTO applySupplyCompanyReqDTO) {
         WorkFlowVO workFlowVO = new WorkFlowVO();
         workFlowVO.setPositionCode(applySupplyCompanyReqDTO.getPositionCode());
         workFlowVO.setFormUrl(workFlowBaseUrl.applySupplierUrl + "?applyType=" + applySupplyCompanyReqDTO.getApplyType() + "&applyCode=" + applySupplyCompanyReqDTO.getApplyCode() + "&id=" + applySupplyCompanyReqDTO.getId() + "&itemCode=1" + "&" + workFlowBaseUrl.authority);
@@ -532,7 +558,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             String msg = workFlowRespVO.getMsg();
             throw new GroundRuntimeException(msg);
         }
-
+        return workFlowRespVO;
     }
 
     @Override
@@ -743,6 +769,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String insideWorkFlowCallback(ApplySupplyCompany applySupplyCompany, WorkFlowCallbackVO vo) {
+        log.info("供应商修改审批，传入参数是[{}]，vo[{}]", JSON.toJSONString(applySupplyCompany),JSON.toJSONString(vo));
         HandleTypeCoce applyHandleTypeCoce;
         ApplySupplyCompanyAccount applySupplyCompanyAccount = applySupplyCompanyAcctDao.getApplySupplyComAcct(applySupplyCompany.getApplySupplyCompanyCode());
         applySupplyCompany.setApplyStatus(vo.getApplyStatus());
@@ -988,6 +1015,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         }
     }
     private void sendWms(ApplySupplyCompany applySupplyCompany) {
+        log.info("传wms供应商信息，传入参数是[{}]", JSON.toJSONString(applySupplyCompany));
         SupplierWms supplierWms=new SupplierWms();
         supplierWms.setAddress(applySupplyCompany.getAddress());
         supplierWms.setArea(applySupplyCompany.getArea());
@@ -997,7 +1025,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         supplierWms.setMobilePhone(applySupplyCompany.getMobilePhone());
         supplierWms.setRemark(applySupplyCompany.getRemark());
         supplierWms.setSupplierAbbreviation(applySupplyCompany.getApplyAbbreviation());
-        supplierWms.setSupplyCode(applySupplyCompany.getApplySupplyCompanyCode());
+        supplierWms.setSupplyCode(applySupplyCompany.getSupplyCompanyCode());
         supplierWms.setSupplyName(applySupplyCompany.getApplySupplyName());
         supplierWms.setSupplyType(applySupplyCompany.getApplySupplyType());
         supplierWms.setUpdateTime(applySupplyCompany.getUpdateTime());
