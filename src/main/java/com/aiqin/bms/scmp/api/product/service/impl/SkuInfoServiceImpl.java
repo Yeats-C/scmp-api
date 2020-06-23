@@ -146,6 +146,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Autowired
     private ProductSkuSalesInfoService productSkuSalesInfoService;
     @Autowired
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
+    @Autowired
     private ProductSkuManufacturerService productSkuManufacturerService;
     @Autowired
     private ProductSkuInspReportService productSkuInspReportService;
@@ -223,6 +225,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
+        log.info("新增或修改sku商品信息，传入参数是[{}]", JSON.toJSONString(addSkuInfoReqVO));
         if (null != addSkuInfoReqVO && null != addSkuInfoReqVO.getProductSkuDraft()){
             //SKU基本信息
             ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
@@ -1774,9 +1777,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         String applyCode = applyProductSkus.get(0).getApplyCode();
         Byte applyStatus = applyProductSkus.get(0).getApplyStatus();
         //判断查出来的是否是在审批中的数据
-        if (!ApplyStatus.APPROVAL.getNumber().equals(applyStatus)) {
-            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
-        }
+//        if (!ApplyStatus.APPROVAL.getNumber().equals(applyStatus)) {
+//            throw new BizException(MessageId.create(Project.PRODUCT_API, 98, "数据异常，不是在审批中的数据！"));
+//        }
         Date auditorTime = new Date();
         for (int i = 0; i < applyProductSkus.size(); i++) {
             Byte handleTypeCoceStatus;
@@ -1982,7 +1985,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //sku整箱商品包装信息
          List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos= productSkuBoxPackingService.getApply(skuCode,applyCode);
-        log.info("sku条形码{}", JSON.toJSONString(productSkuBoxPackingRespVos));
          if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
              productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
          }
@@ -2007,17 +2009,20 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setSkuStatus(productSkuInfo.getSkuStatus());
         productSkuInfoWms.setSeasonBand(productSkuInfo.getSeasonBand());
         //条形码,门店销售
-        List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getList(skuCode);
-        for (PurchaseSaleStockRespVo purchaseSaleStockRespVo:
-                purchaseSaleStockRespVos) {
-            if (purchaseSaleStockRespVo.getIsDefault().equals('1')){
-                productSkuInfoWms.setBarCode(purchaseSaleStockRespVo.getBarCode());
-                productSkuInfoWms.setCoutanisNumber(String.valueOf(purchaseSaleStockRespVo.getBaseProductContent()));
-                break;
-            }
-
-        }
-        productSkuInfoWms.setSkuBarCode(productSkuInfoWms.getBarCode());
+//        List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getList(skuCode);
+//        log.info("sku条形码{}", JSON.toJSONString(purchaseSaleStockRespVos));
+//        for (PurchaseSaleStockRespVo purchaseSaleStockRespVo:
+//                purchaseSaleStockRespVos) {
+//            if (purchaseSaleStockRespVo.getIsDefault().equals("1")){
+//                productSkuInfoWms.setBarCode(purchaseSaleStockRespVo.getBarCode());
+//                productSkuInfoWms.setCoutanisNumber(String.valueOf(purchaseSaleStockRespVo.getBaseProductContent()));
+//                break;
+//            }
+//
+//        }
+        PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(skuCode);
+        log.info("sku条形码{}", JSON.toJSONString(purchaseSaleStockRespVo));
+        productSkuInfoWms.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
 
         //分销设置
         ApplyProductSkuDisInfo applyProductSkuDisInfo = productSkuDisInfoDao.getApply(skuCode,applyCode);

@@ -83,7 +83,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 对接系统
      * 表字段 : warhouse_config.docking_system
      */
-    @ApiModelProperty("对接系统(0：巨沃系统 1:富勒系统 2：德邦系统 3：DL系统 )")
+    @ApiModelProperty("对接系统(0：巨沃系统 1:京东系统 2：德邦系统 3：DL系统 )")
     @JsonProperty("docking_system")
     private Integer dockingSystem;
 

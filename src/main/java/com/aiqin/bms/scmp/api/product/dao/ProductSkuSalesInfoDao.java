@@ -53,4 +53,6 @@ public interface ProductSkuSalesInfoDao {
     List<String> getApplySalesCodesApplyCode(String applyCode);
 
     List<String> getDraftSalesCodesApplyCode(String applyCode);
+
+    PurchaseSaleStockRespVo selectBarCodeBySkuCode(@Param("skuCode")  String skuCode);
 }
