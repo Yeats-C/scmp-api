@@ -1,8 +1,8 @@
 package com.aiqin.bms.scmp.api.util;
 
 import com.aiqin.ground.util.http.HttpClient;
-import com.aiqin.mgs.scmp.wholesale.conts.AuthToken;
-import com.aiqin.mgs.scmp.wholesale.exception.BusinessException;
+//import com.aiqin.mgs.scmp.wholesale.conts.AuthToken;
+//import com.aiqin.mgs.scmp.wholesale.exception.BusinessException;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -52,15 +52,15 @@ public class AuthUtil {
      */
     public static void loginCheck() {
         AuthToken auth = getCurrentAuth();
-        if (StringUtils.isEmpty(auth.getPersonId())) {
-            throw new BusinessException("请先登录");
-        }
-        if (StringUtils.isEmpty(auth.getPersonName())) {
-            throw new BusinessException("缺失公共参数person_name");
-        }
-        if (StringUtils.isEmpty(auth.getAccountId())) {
-            throw new BusinessException("缺失公共参数account_id");
-        }
+//        if (StringUtils.isEmpty(auth.getPersonId())) {
+//            throw new BusinessException("请先登录");
+//        }
+//        if (StringUtils.isEmpty(auth.getPersonName())) {
+//            throw new BusinessException("缺失公共参数person_name");
+//        }
+//        if (StringUtils.isEmpty(auth.getAccountId())) {
+//            throw new BusinessException("缺失公共参数account_id");
+//        }
     }
 
     public static void addParameter(HttpClient client, AuthToken authToken) {
