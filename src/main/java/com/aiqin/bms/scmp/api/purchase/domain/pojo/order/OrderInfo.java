@@ -289,6 +289,74 @@ public class OrderInfo {
     @JsonProperty("synchr_status")
     private Integer synchrStatus;
 
+    @ApiModelProperty(value = "门店编码")
+//    @JsonProperty("store_code")
+    private String storeCode;
+
+    @ApiModelProperty(value = "门店名称")
+//    @JsonProperty("store_name")
+    private String storeName;
+
+    @ApiModelProperty(value = "加盟商编码")
+//    @JsonProperty("franchisee_code")
+    private String franchiseeCode;
+
+    @ApiModelProperty(value = "加盟商名称")
+//    @JsonProperty("franchisee_name")
+    private String franchiseeName;
+
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+//    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+//    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+//    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+//    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "实际A品券优惠金额")
+//    @JsonProperty("actual_suit_coupon_money")
+    private BigDecimal actualSuitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+//    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "实际服纺券优惠金额")
+//    @JsonProperty("actual_top_coupon_money")
+    private BigDecimal actualTopCouponMoney;
+
+    @ApiModelProperty(value = "实际运费")
+//    @JsonProperty("actual_deliver_amount")
+    private BigDecimal actualDeliverAmount;
+
+    @ApiModelProperty(value = "渠道订单金额")
+//    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
+    @ApiModelProperty(value = "实际渠道订单金额")
+//    @JsonProperty("actual_channel_order_amount")
+    private BigDecimal actualChannelOrderAmount;
+
+    @ApiModelProperty(value = "收货人电话")
+//    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
+    @ApiModelProperty(value = "实际减免比例")
+//    @JsonProperty("actual_logistics_remission_ratio")
+    private int actualLogisticsRemissionRatio;
+
+    @ApiModelProperty(value = "实际活动优惠")
+//    @JsonProperty("actual_activity_discount")
+    private BigDecimal actualActivityDiscount;
+
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
 

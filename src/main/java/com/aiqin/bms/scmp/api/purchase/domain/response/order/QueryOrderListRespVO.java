@@ -24,8 +24,12 @@ public class QueryOrderListRespVO {
     @ApiModelProperty("订单编码(订单号)")
     private String orderCode;
 
-    @ApiModelProperty("类型：直送、配送、首单、首单赠送.辅采直送")
+    @ApiModelProperty("类型：直送、配送、首单、首单赠送.辅采直送（供货方式）")
     private String orderType;
+
+    @ApiModelProperty(value="订单产品类型 0.B2B 1.B2C")
+//    @JsonProperty("order_product_type")
+    private Integer orderProductType;
 
     @ApiModelProperty("客户名称")
     private String customerName;

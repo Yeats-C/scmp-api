@@ -106,4 +106,7 @@ public interface WarehouseService {
      * @date 2019/7/29 21:45
      */
     List<WarehouseResVo> getWarehouseByLogisticsCenterCodeAndNotExistsType(String logisticsCenterCode, Byte warehouseTypeCode);
+
+    /** 通过仓库编码查询启用库房信息 */
+    List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(String transportCenterCode);
 }

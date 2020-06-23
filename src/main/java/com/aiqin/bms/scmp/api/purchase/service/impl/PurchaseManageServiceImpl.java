@@ -231,6 +231,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     cancelSource.setWarehouseName(order.getWarehouseName());
                     cancelSource.setRemark(purchaseOrder.getCancelReason());
                     wmsCancelService.wmsCancel(cancelSource);
+                    // 取消在途数
+                    this.wayNum(order, 8);
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);
@@ -733,8 +735,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 if(type == 7){
                     stockInfo.setChangeCount(singleCount);
                 }else {
-                    // 减在途并加库存
-                    stockInfo.setChangeCount(singleCount - actualSingleCount);
+                    // 减在途并加库存  取消 ： 0
+                    stockInfo.setChangeCount(0L);
                     if(order.getInboundLine() == inbound.getPurchaseNum() || singleCount == actualSingleCount){
                         stockInfo.setPreWayCount(singleCount - actualSingleCount);
                     }else {
