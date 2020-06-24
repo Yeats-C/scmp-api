@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
@@ -33,6 +34,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -89,6 +91,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderCallbackService orderCallbackService;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WmsCancelService wmsCancelService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -922,6 +926,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             log.info("取消订单失败！！！");
             return HttpResponse.success(false);
         }
+        //        撤销wms销售单
+        CancelSource cancelSource = new CancelSource();
+        cancelSource.setOrderType("1");
+        cancelSource.setOrderCode(orderInfo.getOrderCode());
+        cancelSource.setWarehouseCode(orderInfo.getWarehouseCode());
+        cancelSource.setWarehouseName(orderInfo.getWarehouseName());
+        wmsCancelService.wmsCancel(cancelSource);
         return HttpResponse.success(true);
     }
 /*
