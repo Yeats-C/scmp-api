@@ -478,6 +478,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 调用销售单生成出库单信息
         String insertOutbound = this.insertOutbound(vo);
         LOGGER.info("调用销售单生成出库单信息{}",  JSONObject.toJSONString(insertOutbound));
+        // 保存订单和订单商品信息
+        //saveData(orderItems, orders);
+        saveDatas(orderItems, orders, orderBtachs);
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -494,8 +497,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                // 配送的情况下 调用wms
                 SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-                LOGGER.info("销售单生成wms参数信息{}",  JSONObject.toJSONString(saleSourcInfoSource));
-                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
+                LOGGER.info("销售单生成wms参数信息{}",  JsonUtil.toJson(saleSourcInfoSource));
+//                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
                 String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -505,9 +508,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
             logs.add(log);
         }
-        // 保存订单和订单商品信息
-        //saveData(orderItems, orders);
-        saveDatas(orderItems, orders, orderBtachs);
         //存日志
         saveLog(logs);
         return HttpResponse.success();

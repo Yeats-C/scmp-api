@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
@@ -154,7 +155,7 @@ public class OrderController {
     @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
     public HttpResponse insertSaleOrder(@RequestBody ErpOrderInfo vo) {
 //        log.info("爱亲供应链销售单参数", vo);
-        LOGGER.info("爱亲供应链销售单参数{}", JSON.toJSON(vo));
+        LOGGER.info("爱亲供应链销售单参数{}", JsonUtil.toJson(vo));
         return orderService.insertSaleOrder(vo);
     }
 

@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -18,6 +19,7 @@ import java.util.List;
  * @date 2019/12/9 9:49
  */
 @Data
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class ErpOrderInfo {
 
     @ApiModelProperty(value = "订单id")

@@ -243,7 +243,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             ChangeStockRequest stockRequest = new ChangeStockRequest();
             stockRequest.setOperationType(6);
             handleProfitLossStockData(addAllocation,stockRequest);
-            HttpResponse stockResponse = stockService.stockAndBatchChange(changeStockRequest);
+            HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
                 LOGGER.error("wms回调:移库加库存异常");
                 throw new GroundRuntimeException("wms回调:加库存异常");
@@ -265,13 +265,21 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         }
         LOGGER.info("wms回传成功，根据出库单信息，变更对应移库单的实际值：", JSON.toJSON(request));
         Allocation allocation1 = allocationMapper.selectByCode(request.getMovementCode());
+        OutboundTypeEnum outboundTypeEnum  = OutboundTypeEnum.MOVEMENT;
+        InboundTypeEnum inboundTypeEnum = InboundTypeEnum.MOVEMENT;
+        List<String> skuList = request.getDetailList().stream().map(MovementProductWmsReq::getSkuCode).collect(Collectors.toList());
+        List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
+        Map<String, OrderProductSkuResponse> productSkuMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
         // 标识 0出库单 1 入库单 2出入库单一起
         if(request.getFlag() == 0){
             // 状态0 要更新调拨单 出库单 出解锁库存 调用wms入库
             //设置移库待出库状态
             outbound(allocation1);
             // 出库单
-
+            //生成出库单
+            OutboundReqVo convert = handleTransferOutbound(allocation1, productSkuMap, outboundTypeEnum);
+            //调拨才有出库 出库单号
+            outboundService.save(convert);
             // 出解锁库存
 
             // 调用wms入库
@@ -284,18 +292,39 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 设置移库完成状态
             finished(allocation1);
             // 入库单
-
-            // 入直接加库存
-
+            //生成入库单
+            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
+            inboundService.saveInbound2(inboundReqSave);
+            // 完成直接加库存。
+            ChangeStockRequest stockRequest = new ChangeStockRequest();
+            stockRequest.setOperationType(6);
+            handleProfitLossStockData(allocation1,stockRequest);
+            HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
+            if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+                LOGGER.error("wms回调:移库加库存异常");
+                throw new GroundRuntimeException("wms回调:加库存异常");
+            }
         }else {
             // 状态1 要更新调拨单 出入库单 解锁库存  加库存
             finished(allocation1);
 
             // 出入库单
-
+            OutboundReqVo convert = handleTransferOutbound(allocation1, productSkuMap, outboundTypeEnum);
+            outboundService.save(convert);
+            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
+            inboundService.saveInbound2(inboundReqSave);
             // 解锁库存
 
             // 加库存
+            // 完成直接加库存。
+            ChangeStockRequest stockRequest = new ChangeStockRequest();
+            stockRequest.setOperationType(6);
+            handleProfitLossStockData(allocation1,stockRequest);
+            HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
+            if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+                LOGGER.error("wms回调:移库加库存异常");
+                throw new GroundRuntimeException("wms回调:加库存异常");
+            }
         }
         // 更新移库单状态
         int k = allocationMapper.updateByPrimaryKeySelective(allocation1);

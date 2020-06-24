@@ -409,7 +409,7 @@
       model, model_code, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, batch_number, price, num,
       amount, activity_apportionment, preferential_allocation, actual_deliver_num, activity_code, product_line_num,
       promotion_line_num, return_num, company_name, company_code, channel_unit_price, total_channel_price,
-      actual_channel_unit_price, actual_total_channel_price, actual_amount, actual_price, tax, supplier_code, supplier_name)
+      actual_channel_unit_price, actual_total_channel_price, actual_amount, actual_price, tax, supplier_code, supplier_name, unique_code)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -424,7 +424,7 @@
       #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=DECIMAL}, #{item.totalChannelPrice,jdbcType=DECIMAL},
       #{item.actualChannelUnitPrice,jdbcType=DECIMAL}, #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
       #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL},
-      #{item.supplierCode,jdbcType=VARCHAR},#{item.supplierName,jdbcType=VARCHAR})
+      #{item.supplierCode,jdbcType=VARCHAR},#{item.supplierName,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
