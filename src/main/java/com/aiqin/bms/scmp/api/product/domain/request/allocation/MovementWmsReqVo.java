@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
@@ -56,17 +57,57 @@ public class MovementWmsReqVo implements Serializable {
 
     @ApiModelProperty(value="创建人名称")
     @JsonProperty("create_by_name")
-    private double createByName;
+    private String createByName;
 
     @ApiModelProperty(value="备注")
     @JsonProperty("remark")
     private String remark;
 
+    @ApiModelProperty(value="标识 0出库单 1 入库单 2出入库单一起")
+    @JsonProperty("flag")
+    @NotEmpty(message = "标识必填")
+    private String flag;
+
+    /*********德邦新增***********/
+    @ApiModelProperty(value="下单联系人电话-入库单必填")
+    @JsonProperty("order_contact_phone")
+    private String orderContactPhone;
+
+    @ApiModelProperty(value="下单联系人")
+    @JsonProperty("order_contacts")
+    private String orderContacts;
+
+    @ApiModelProperty(value="收货人-德邦出库单必填")
+    @JsonProperty("receiver_name")
+    private String receiverName;
+
+    @ApiModelProperty(value="收货电话")
+    @JsonProperty("receiver_mobil")
+    private String receiverMobil;
+
+    @ApiModelProperty(value="收货省-德邦出库必填")
+    @JsonProperty("receiver_province")
+    private String receiverProvince;
+
+    @ApiModelProperty(value="收货市-德邦出库必填")
+    @JsonProperty("receiver_city")
+    private String receiverCity;
+
+
+    @ApiModelProperty(value="收货区/县-德邦出库必填")
+    @JsonProperty("receiver_county")
+    private String receiverCounty;
+
+    @ApiModelProperty(value="详细地址-德邦出库必填")
+    @JsonProperty("address")
+    private String address;
+    /*********德邦新增***********/
+
     @ApiModelProperty(value="移库子表商品明细")
-    @JsonProperty("detail_list")
+    @JsonProperty("details")
     private List<MovementWmsProductReqVo> detailList;
 
     @ApiModelProperty(value="移库子表商品批次明细")
-    @JsonProperty("detail_batch_list")
-    private List<BatchWmsInfo> detailBatchList;
+    @JsonProperty("batchInfo_list")
+    private List<BatchWmsInfo> batchInfoList;
 }

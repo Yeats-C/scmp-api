@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsOutReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
@@ -47,4 +48,6 @@ public interface MovementService {
      int  revocation(Long id);
 
     HttpResponse movementWmsEcho(MovementWmsReq request);
+
+    HttpResponse movementWmsOutEcho(MovementWmsOutReq request);
 }

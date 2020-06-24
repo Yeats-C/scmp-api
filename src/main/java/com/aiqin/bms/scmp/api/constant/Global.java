@@ -196,4 +196,11 @@ public final class Global {
     public static final Integer ORDER_TYPE_0 = 0;
     public static final Integer ORDER_TYPE_1 = 1;
     public static final Integer ORDER_TYPE_2 = 2;
+
+    /**
+     *  库房配置管理  移库类型  0.wms发起移库   1.分别发起移库   2.同时发起移库
+     */
+    public static final Integer MOVEMENT_TYPE_0 = 0;
+    public static final Integer MOVEMENT_TYPE_1 = 1;
+    public static final Integer MOVEMENT_TYPE_2 = 2;
 }

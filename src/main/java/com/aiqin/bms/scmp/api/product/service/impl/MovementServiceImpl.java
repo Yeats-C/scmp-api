@@ -3,10 +3,14 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.MovementWmsProductReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.MovementWmsReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -16,6 +20,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
@@ -23,6 +29,7 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl;
@@ -40,7 +47,10 @@ import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
@@ -106,6 +116,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     private StockService stockService;
     @Autowired
     private SupplierCommonService supplierCommonService;
+    @Autowired
+    private UrlConfig urlConfig;
 
     /**
      * 移库列表搜索
@@ -246,6 +258,62 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         }
     }
 
+    @Override
+    public HttpResponse movementWmsOutEcho(MovementWmsOutReq request) {
+        if(request.getFlag() == null){
+            return HttpResponse.failure(null,ResultCode.NOT_HAVE_PARAM);
+        }
+        LOGGER.info("wms回传成功，根据出库单信息，变更对应移库单的实际值：", JSON.toJSON(request));
+        Allocation allocation1 = allocationMapper.selectByCode(request.getMovementCode());
+        // 标识 0出库单 1 入库单 2出入库单一起
+        if(request.getFlag() == 0){
+            // 状态0 要更新调拨单 出库单 出解锁库存 调用wms入库
+            //设置移库待出库状态
+            outbound(allocation1);
+            // 出库单
+
+            // 出解锁库存
+
+            // 调用wms入库
+            AllocationDTO allocation  = allocationMapper.selectByFormNO1(allocation1.getFormNo());
+            List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
+            List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
+            allocationService.movementWms(allocation, allocation1, aProductLists, aProductBatchLists);
+        }else if (request.getFlag() == 1){
+            // 状态1 要更新调拨单 入库单  入直接加库存
+            // 设置移库完成状态
+            finished(allocation1);
+            // 入库单
+
+            // 入直接加库存
+
+        }else {
+            // 状态1 要更新调拨单 出入库单 解锁库存  加库存
+            finished(allocation1);
+
+            // 出入库单
+
+            // 解锁库存
+
+            // 加库存
+        }
+        // 更新移库单状态
+        int k = allocationMapper.updateByPrimaryKeySelective(allocation1);
+        return HttpResponse.success();
+    }
+
+    private void outbound(Allocation allocation) {
+        allocation.setOutStockTime(Calendar.getInstance().getTime());
+        allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getStatus());
+        allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
+    }
+
+    private void finished(Allocation allocation) {
+        allocation.setInStockTime(Calendar.getInstance().getTime());
+        allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+        allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+    }
+
     private void allocationInsert(Allocation allocation, byte type, String typeName) {
         // 获取编码
         String content = HandleTypeCoce.ADD_ALLOCATION.getName();
@@ -256,6 +324,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
         allocation.setAllocationType(type);
         allocation.setAllocationTypeName(typeName);
+        allocation.setPatternType(2);
+        allocation.setPatternName("wms方发起");
         allocationMapper.insertSelective(allocation);
         //添加详情
         allocationProductMapper.saveList(allocation.getDetailList());
