@@ -43,7 +43,7 @@
     model, unit_code, unit_name, outbound_norms, outbound_base_unit, outbound_base_content, pre_outbound_num,
     pre_outbound_main_num, pre_tax_purchase_amount, pre_tax_amount, pra_outbound_num, 
     pra_outbound_main_num, pra_tax_purchase_amount, pra_tax_amount, create_by, create_time, 
-    update_by, update_time,linenum,tax
+    update_by, update_time,linenum,ifnull(tax,0) tax
   </sql>
 
   <resultMap id="BaseResultReturnOutboundProductMap" type="com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundProduct">
