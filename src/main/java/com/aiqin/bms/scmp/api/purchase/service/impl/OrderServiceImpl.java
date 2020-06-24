@@ -728,6 +728,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         if (item.getBatchDate() != null) {
                             productBatch.setProductDate(sf.format(item.getBatchDate()));
                         }
+                        productBatch.setBeOverdueDate(item.getBeOverdueDate());
                         productBatch.setLockType(item.getLockType());
                         productBatch.setSupplierCode(item.getSupplierCode());
                         productBatch.setSupplierName(item.getSupplierName());
