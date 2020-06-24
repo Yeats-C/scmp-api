@@ -478,6 +478,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 调用销售单生成出库单信息
         String insertOutbound = this.insertOutbound(vo);
         LOGGER.info("调用销售单生成出库单信息{}",  JSONObject.toJSONString(insertOutbound));
+        // 保存订单和订单商品信息
+        //saveData(orderItems, orders);
+        saveDatas(orderItems, orders, orderBtachs);
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -505,9 +508,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
             logs.add(log);
         }
-        // 保存订单和订单商品信息
-        //saveData(orderItems, orders);
-        saveDatas(orderItems, orders, orderBtachs);
         //存日志
         saveLog(logs);
         return HttpResponse.success();

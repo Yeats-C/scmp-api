@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @ApiModel(value = "销售出库推送源数据（wms）")
 @Data
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class SaleSourcInfoSource implements Serializable {
 
     @ApiModelProperty(value = "销售单号")

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
+import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsOutReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
@@ -13,6 +14,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,6 +106,18 @@ public class OrderCallbackController {
     public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
         LOGGER.info("移库wms推送回调,request:{}", request.toString());
         return movementService.movementWmsEcho(request);
+    }
+
+    /**
+     *  移库wms出库回调
+     * @param request
+     * @return
+     */
+    @PostMapping("/wms/out/transfers")
+    @ApiOperation(value = "移库wms出库回调")
+    public HttpResponse movementWmsOutEcho(@RequestBody MovementWmsOutReq request) {
+        LOGGER.info("移库wms出库回调,request:{}", JSON.toJSON(request));
+        return movementService.movementWmsOutEcho(request);
     }
 
     @PostMapping("/outbound/aiqin")
