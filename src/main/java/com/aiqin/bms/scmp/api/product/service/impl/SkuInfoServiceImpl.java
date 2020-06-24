@@ -221,6 +221,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private UrlConfig urlConfig;
     @Autowired
     ProductSkuDisInfoDao productSkuDisInfoDao;
+    @Autowired
+    WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1853,23 +1855,31 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                     List<SkuConfigsRepsVo> configList = productSkuConfigMapper.getListBySkuCode(productSkuInfo.getSkuCode());
                     if (CollectionUtils.isNotEmpty(configList)) {
                         for (SkuConfigsRepsVo skuConfigsRepsVo : configList) {
-                            Stock stock = BeanCopyUtils.copy(productSkuInfo, Stock.class);
-                            stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
-                            stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
-                            stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
-                            stock.setLockCount(0L);
-                            stock.setInventoryCount(0L);
-                            stock.setAvailableCount(0L);
-                            stock.setPurchaseWayCount(0L);
-                            stock.setAllocationWayCount(0L);
-                            stock.setTotalWayCount(0L);
+                            List<WarehouseDTO> warehouseDTO = warehouseDao.getWarehouseCodeByTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                            if (CollectionUtils.isNotEmpty(warehouseDTO)) {
+                                for (WarehouseDTO warehouse : warehouseDTO) {
+                                    Stock stock = BeanCopyUtils.copy(productSkuInfo, Stock.class);
+                                    stock.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                                    stock.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
+                                    stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+                                    stock.setWarehouseCode(warehouse.getWarehouseCode());
+                                    stock.setWarehouseName(warehouse.getWarehouseName());
+                                    stock.setWarehouseType(Integer.valueOf(warehouse.getWarehouseTypeCode()));
+                                    stock.setLockCount(0L);
+                                    stock.setInventoryCount(0L);
+                                    stock.setAvailableCount(0L);
+                                    stock.setPurchaseWayCount(0L);
+                                    stock.setAllocationWayCount(0L);
+                                    stock.setTotalWayCount(0L);
 //                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
 //                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
-                            stock.setNewPurchasePrice(new BigDecimal(0));
-                            stock.setTaxRate(new BigDecimal(0));
-                            stock.setTaxCost(new BigDecimal(0));
+                                    stock.setNewPurchasePrice(new BigDecimal(0));
+                                    stock.setTaxRate(new BigDecimal(0));
+                                    stock.setTaxCost(new BigDecimal(0));
 //                            stock.setTaxPrice(new BigDecimal(0));
-                            stockList.add(stock);
+                                    stockList.add(stock);
+                                }
+                            }
                         }
                     }
                     stockDao.insertBatch(stockList);

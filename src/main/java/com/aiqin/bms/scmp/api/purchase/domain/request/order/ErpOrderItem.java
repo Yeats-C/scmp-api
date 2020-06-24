@@ -205,6 +205,10 @@ public class ErpOrderItem {
     @JsonProperty("batch_date")
     private Date batchDate;
 
+    @ApiModelProperty("过期日期")
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
+
     @ApiModelProperty(value = "批次号")
     @JsonProperty("batch_code")
     private String batchCode;
