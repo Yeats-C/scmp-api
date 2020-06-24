@@ -565,7 +565,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public HttpResponse workFlowCallBack(OutboundCallBackReqVo request) {
         LOGGER.info("出库单回调WMS开始，传入实体为：{}", JsonUtil.toJson(request));
         Outbound outbound;
-        if(request.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY) || request.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER)){
+        if(request.getOutboundTypeCode().equals(Integer.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode())) ||
+                request.getOutboundTypeCode().equals(Integer.valueOf(OutboundTypeEnum.ORDER.getCode()))){
             outbound = outboundDao.selectBySourceCode(request.getOutboundOderCode(), request.getOutboundTypeCode().toString());
         }else{
             outbound = outboundDao.selectByCode(request.getOutboundOderCode());
@@ -575,10 +576,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
         }
 
-        if (CollectionUtils.isEmpty(request.getDetailList())) {
-            LOGGER.info("WMS出库单回传，出库单商品信息为空：", JsonUtil.toJson(request.getDetailList()));
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "WMS出库单回传，出库单商品信息为空"));
-        }
         //设置已回传状态
         outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
         outbound.setOutboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
@@ -592,7 +589,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outbound.setCompanyCode(request.getCompanyCode());
         outbound.setCompanyName(request.getCompanyName());
         outbound.setOutboundTime(request.getFinishOutboundTime());
-
 
         // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
@@ -706,8 +702,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 // 正序查询sku的批次库存
                 List<StockBatch> batchList = stockBatchDao.stockBatchByReject(detail.getSkuCode(), outbound.getWarehouseCode(), null);
                 if (CollectionUtils.isEmpty(batchList)) {
-                    LOGGER.info("wms回传，未查询到sku的批次库存信息，无法操作库存:", detail.getSkuCode());
-                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，未查询到sku的批次库存信息，无法操作库存:" + detail.getSkuCode()));
+                    continue;
+//                    LOGGER.info("wms回传，未查询到sku的批次库存信息，无法操作库存:", detail.getSkuCode());
+//                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，未查询到sku的批次库存信息，无法操作库存:" + detail.getSkuCode()));
                 }
                 long sum = batchList.stream().mapToLong(StockBatch::getAvailableCount).sum();
                 // 查询相同sku的集合
@@ -775,7 +772,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockBatchVoRequestList.add(stockBatchInfoRequest);
             }
         }
-        changeStockRequest.setStockBatchList(stockBatchVoRequestList);
+        if(CollectionUtils.isNotEmpty(stockBatchVoRequestList) && stockBatchVoRequestList.size() > 0){
+            changeStockRequest.setStockBatchList(stockBatchVoRequestList);
+        }
 
         LOGGER.info("回传wms-操作库存、批次库存的参数:{}", JsonUtil.toJson(changeStockRequest));
         // 调用库存操作接口

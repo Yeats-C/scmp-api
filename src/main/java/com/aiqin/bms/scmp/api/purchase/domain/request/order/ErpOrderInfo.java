@@ -56,8 +56,8 @@ public class ErpOrderInfo {
     @JsonProperty("supplier_code")
     private String supplierCode;
 
-    @JsonProperty("supplier_name")
     @ApiModelProperty(value = "供应商名称")
+    @JsonProperty("supplier_name")
     private String supplierName;
 
     @ApiModelProperty(value = "仓库编码")
