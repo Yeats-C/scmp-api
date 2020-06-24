@@ -108,18 +108,6 @@ public class MovementController {
     }
 
     /**
-     *  移库wms推送回调
-     * @param request
-     * @return
-     */
-    @PostMapping("/wms/transfers")
-    @ApiOperation(value = "移库wms推送回调")
-    public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
-        LOGGER.info("移库wms推送回调,request:{}", request.toString());
-        return movementService.movementWmsEcho(request);
-    }
-
-    /**
      *  移库wms出库回调
      * @param request
      * @return

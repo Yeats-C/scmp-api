@@ -434,6 +434,10 @@ public class ErpOrderInfo {
     @JsonProperty("consignee_mobile")
     private String consigneeMobile;
 
+    @ApiModelProperty(value="运费减免比例")
+    @JsonProperty("logistics_remission_ratio")
+    private Integer logisticsRemissionRatio;
+
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")
     private List<ErpOrderItem> itemList;

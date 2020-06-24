@@ -62,10 +62,4 @@ public class ProfitLossController {
         }
     }
 
-    @PostMapping("/wms")
-    @ApiOperation(value = "wms报损报溢回传")
-    public HttpResponse profitLossWmsEcho(@RequestBody ProfitLossWmsReqVo request) {
-        LOGGER.info("报损报溢回传,request:{}", request.toString());
-        return profitLossService.profitLossWmsEcho(request);
-    }
 }

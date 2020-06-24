@@ -1,7 +1,11 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
+import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.profitloss.ProfitLossWmsReqVo;
+import com.aiqin.bms.scmp.api.product.service.MovementService;
+import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
@@ -50,6 +54,10 @@ public class OrderCallbackController {
 
     @Resource
     private OrderCallbackService orderCallbackService;
+    @Resource
+    private ProfitLossService profitLossService;
+    @Resource
+    private MovementService movementService;
 
     @PostMapping("/outbound")
     @ApiOperation(value = "销售出库单回调")
@@ -72,11 +80,30 @@ public class OrderCallbackController {
         return orderCallbackService.transfersOrder(request);
     }
 
-    @PostMapping("/profitloss")
-    @ApiOperation(value = "报损报溢回传")
-    public HttpResponse profitLossOrder(@RequestBody ProfitLossRequest request) {
+//    @PostMapping("/profitloss")
+//    @ApiOperation(value = "报损报溢回传")
+//    public HttpResponse profitLossOrder(@RequestBody ProfitLossRequest request) {
+//        LOGGER.info("报损报溢回传,request:{}", request.toString());
+//        return orderCallbackService.profitLossOrder(request);
+//    }
+
+    @PostMapping("/wms/profitloss")
+    @ApiOperation(value = "wms报损报溢回传")
+    public HttpResponse profitLossWmsEcho(@RequestBody ProfitLossWmsReqVo request) {
         LOGGER.info("报损报溢回传,request:{}", request.toString());
-        return orderCallbackService.profitLossOrder(request);
+        return profitLossService.profitLossWmsEcho(request);
+    }
+
+    /**
+     *  移库wms推送回调
+     * @param request
+     * @return
+     */
+    @PostMapping("/wms/transfers")
+    @ApiOperation(value = "移库wms推送回调")
+    public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
+        LOGGER.info("移库wms推送回调,request:{}", request.toString());
+        return movementService.movementWmsEcho(request);
     }
 
     @PostMapping("/outbound/aiqin")

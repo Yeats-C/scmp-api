@@ -494,6 +494,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                // 配送的情况下 调用wms
                 SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
+                LOGGER.info("销售单生成wms参数信息{}",  JSONObject.toJSONString(saleSourcInfoSource));
                 System.out.println(JsonUtil.toJson(saleSourcInfoSource));
                 String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
@@ -664,6 +665,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         vo.setCreateByName(request.getCreateByName());
         vo.setUpdateById(request.getCreateById());
         vo.setUpdateByName(request.getUpdateByName());
+        vo.setLogisticsRemissionRatio(request.getLogisticsRemissionRatio());
         List<OrderInfoItemReqVO> productList = Lists.newArrayList();
         OrderInfoItemReqVO product;
         List<OrderInfoItemProductBatch> productBatcheList = Lists.newArrayList();
