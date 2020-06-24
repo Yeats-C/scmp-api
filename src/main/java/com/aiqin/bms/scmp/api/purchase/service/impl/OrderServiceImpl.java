@@ -598,7 +598,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                sods.setModelNumber(list.getModelCode());
                sods.setUnitCode(list.getUnitCode());
                sods.setUnitName(list.getUnitName());
-              // sods.setSkuBarCode();  条形码 暂时没有
+               sods.setSkuBarCode(list.getBarCode());
                plists.add(sods);
            }
        }
@@ -711,6 +711,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     product.setTax(item.getTaxRate());
                     product.setCompanyCode(item.getCompanyCode());
                     product.setCompanyName(item.getCompanyName());
+                    product.setBarCode(item.getBarCode());
                     productNum += item.getProductCount();
                     productList.add(product);
 
@@ -764,6 +765,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 product.setTax(item.getTaxRate());
                 product.setCompanyCode(item.getCompanyCode());
                 product.setCompanyName(item.getCompanyName());
+                product.setBarCode(item.getBarCode());
                 productNum += item.getProductCount();
                 productList.add(product);
 

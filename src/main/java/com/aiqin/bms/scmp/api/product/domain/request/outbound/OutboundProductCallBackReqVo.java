@@ -32,4 +32,8 @@ public class OutboundProductCallBackReqVo {
     @JsonProperty(value = "remark")
     private String remark;
 
+    @ApiModelProperty(value="商品唯一码")
+    @JsonProperty(value = "unique_code")
+    private String uniqueCode;
+
 }

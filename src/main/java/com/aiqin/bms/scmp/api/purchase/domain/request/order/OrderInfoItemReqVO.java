@@ -119,4 +119,7 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty(value = "供应商名称")
     private String supplierName;
 
+    @ApiModelProperty(value = "条形码")
+    private String barCode;
+
 }

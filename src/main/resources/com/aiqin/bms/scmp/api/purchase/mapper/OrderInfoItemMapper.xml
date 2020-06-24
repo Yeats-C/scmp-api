@@ -657,6 +657,9 @@
         <if test="item.actualPrice != null and item.actualPrice != ''">
           actual_price = #{item.actualPrice,jdbcType=DECIMAL},
         </if>
+        <if test="item.uniqueCode != null and item.uniqueCode != ''">
+          unique_code = #{item.uniqueCode,jdbcType=VARCHAR},
+        </if>
       </set>
       where order_code = #{item.orderCode,jdbcType=VARCHAR}
       and product_line_num = #{item.productLineNum,jdbcType=BIGINT}
