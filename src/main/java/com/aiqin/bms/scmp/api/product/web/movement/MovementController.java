@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsOutReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
@@ -15,6 +16,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -106,14 +108,26 @@ public class MovementController {
     }
 
     /**
-     *
+     *  移库wms推送回调
      * @param request
      * @return
      */
     @PostMapping("/wms/transfers")
     @ApiOperation(value = "移库wms推送回调")
     public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
-        LOGGER.info("移库wms回调,request:{}", request.toString());
+        LOGGER.info("移库wms推送回调,request:{}", request.toString());
         return movementService.movementWmsEcho(request);
+    }
+
+    /**
+     *  移库wms出库回调
+     * @param request
+     * @return
+     */
+    @PostMapping("/wms/out/transfers")
+    @ApiOperation(value = "移库wms出库回调")
+    public HttpResponse movementWmsOutEcho(@RequestBody MovementWmsOutReq request) {
+        LOGGER.info("移库wms出库回调,request:{}", JSON.toJSON(request));
+        return movementService.movementWmsOutEcho(request);
     }
 }

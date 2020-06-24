@@ -272,8 +272,8 @@ public class OrderInfo {
     @ApiModelProperty("发票银行账号")
     private String invoiceBankAccount;
 
-    @ApiModelProperty("业务形式(熙云:批发业务  爱亲母婴:门店业务,批发业务,天猫业务,优选业务  爱亲科技:门店业务,批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
-    private String businessForm;
+    @ApiModelProperty("业务形式(熙云:1：批发业务  爱亲母婴:0：门店业务,1：批发业务,天猫业务,优选业务  爱亲科技:0：门店业务,1：批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    private Integer businessForm;
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
     private String platformType;

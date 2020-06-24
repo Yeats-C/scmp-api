@@ -84,7 +84,7 @@
       <result column="transport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="transport_number" jdbcType="VARCHAR" property="transportNumber" />
       <result column="platform_type" jdbcType="TIMESTAMP" property="platformType" />
-      <result column="business_form" jdbcType="VARCHAR" property="businessForm" />
+      <result column="business_form" jdbcType="TINYINT" property="businessForm" />
       <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
   </resultMap>
   <sql id="Base_Column_List">
@@ -231,7 +231,7 @@ transport_number, platform_type, business_form, tax_id
       <result column="ainvoice_mobile" jdbcType="VARCHAR" property="invoiceMobile" />
       <result column="ainvoice_bank" jdbcType="VARCHAR" property="invoiceBank" />
       <result column="ainvoice_bank_account" jdbcType="VARCHAR" property="invoiceBankAccount" />
-      <result column="abusiness_form" jdbcType="VARCHAR" property="businessForm" />
+      <result column="abusiness_form" jdbcType="TINYINT" property="businessForm" />
       <result column="aplatform_type" jdbcType="VARCHAR" property="platformType" />
       <result column="atax_id" jdbcType="VARCHAR" property="taxId" />
       <result column="aorder_product_type" jdbcType="TINYINT" property="orderProductType" />
@@ -1070,7 +1070,7 @@ transport_number, platform_type, business_form, tax_id
       #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
       #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
       #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
-      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=VARCHAR},#{item.platformType,jdbcType=TINYINT},
+      #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=TINYINT},#{item.platformType,jdbcType=TINYINT},
       #{item.taxId,jdbcType=VARCHAR},#{item.storeCode,jdbcType=VARCHAR},#{item.storeName,jdbcType=VARCHAR},
       #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
       #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},

@@ -22,13 +22,21 @@ public class AllocationWmsOutSource implements Serializable {
     @JsonProperty("allocation_code")
     private String allocationCode;
 
-    @ApiModelProperty(value = "库房编号")
+    @ApiModelProperty(value = "调拨出库方库房编号")
     @JsonProperty("call_out_warehouse_code")
     private String callOutWarehouseCode;
 
-    @ApiModelProperty(value = "库房名称")
+    @ApiModelProperty(value = "调拨出库方库房名称")
     @JsonProperty("call_out_warehouse_name")
     private String callOutWarehouseName;
+
+    @ApiModelProperty(value = "调拨入库方库房编号")
+    @JsonProperty("call_in_warehouse_code")
+    private String callInWarehouseCode;
+
+    @ApiModelProperty(value = "调拨入库方库房名称")
+    @JsonProperty("call_in_warehouse_name")
+    private String callInWarehouseName;
 
     @ApiModelProperty(value="调拨单创建时间(yyyy-MM-dd HH:mm:ss)", example = "2001-01-01 01:01:01")
     @JsonProperty("create_time")
