@@ -564,8 +564,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //    @Async("myTaskAsyncPool")
     public HttpResponse workFlowCallBack(OutboundCallBackReqVo request) {
         LOGGER.info("出库单回调WMS开始，传入实体为：{}", JsonUtil.toJson(request));
-        // 根据入库单编号查询出库单
-        Outbound outbound = outboundDao.selectByCode(request.getOutboundOderCode());
+        Outbound outbound;
+        if(request.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY) || request.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER)){
+            outbound = outboundDao.selectBySourceCode(request.getOutboundOderCode(), request.getOutboundTypeCode().toString());
+        }else{
+            outbound = outboundDao.selectByCode(request.getOutboundOderCode());
+        }
         if (outbound == null) {
             LOGGER.info("WMS出库单回传，出库单信息为空：", JsonUtil.toJson(request));
             return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
