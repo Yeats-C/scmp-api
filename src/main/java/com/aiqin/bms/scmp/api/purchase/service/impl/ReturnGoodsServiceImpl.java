@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
@@ -48,6 +49,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -84,6 +86,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private InboundBatchDao inboundBatchDao;
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
+    @Resource
+    private SapBaseDataService sapBaseDataService;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -237,6 +241,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 调用生成入库单 并传送wms
         getInboundReqSave(request.getReturnOrderCode());
 
+        // 推送结算
+        sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
+
         // 添加日志
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
         log.setCompanyCode(Global.COMPANY_09);
@@ -310,6 +317,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         // 退货收货完成- 直送订单 回传运营中台
         changeParameter(itemList.get(0).getReturnOrderCode());
+        // 推送结算
+        sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
         return HttpResponse.success();
     }
 

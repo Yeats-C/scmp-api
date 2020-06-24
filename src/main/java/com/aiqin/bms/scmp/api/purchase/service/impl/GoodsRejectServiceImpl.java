@@ -636,7 +636,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     cancelSource.setOrderCode(record.getRejectRecordCode());
                     cancelSource.setWarehouseCode(record.getWarehouseCode());
                     cancelSource.setWarehouseName(record.getWarehouseName());
-                    wmsCancelService.wmsCancel(cancelSource);
+                    HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+                    if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
+                        LOGGER.info("取消退供单失败：{}", response.getMessage());
+                        return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
+                    }
                 }
                 break;
         }
@@ -956,7 +960,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         LOGGER.info("wms回传-更新退供单的实际值：{}", count);
         if(count > 0){
             // 调用sap 传送退供单的数据给sap
-           // sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
+            sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
             LOGGER.info("退供wms回传成功");
         }
         return HttpResponse.success();
