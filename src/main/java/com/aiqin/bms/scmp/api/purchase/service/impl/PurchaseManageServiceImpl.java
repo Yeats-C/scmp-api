@@ -35,6 +35,8 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang.StringUtils;
@@ -230,7 +232,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     cancelSource.setWarehouseCode(order.getWarehouseCode());
                     cancelSource.setWarehouseName(order.getWarehouseName());
                     cancelSource.setRemark(purchaseOrder.getCancelReason());
-                    wmsCancelService.wmsCancel(cancelSource);
+                    HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+                    if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
+                        LOGGER.info("取消采购单失败：{}", response.getMessage());
+                        return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
+                    }
                     // 取消在途数
                     this.wayNum(order, 8);
                 }else {
@@ -277,7 +283,11 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 cancelSource.setWarehouseCode(purchaseOrder.getWarehouseCode());
                 cancelSource.setWarehouseName(purchaseOrder.getWarehouseName());
                 cancelSource.setRemark(purchaseOrder.getCancelReason());
-                wmsCancelService.wmsCancel(cancelSource);
+                HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+                if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
+                    LOGGER.info("取消采购单失败：{}", response.getMessage());
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
+                }
                 break;
 //            case 11:
 //                // 重发

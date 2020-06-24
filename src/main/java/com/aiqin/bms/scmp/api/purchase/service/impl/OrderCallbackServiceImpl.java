@@ -1565,7 +1565,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         this.updateAiqinOrder(request);
 
         // 调用sap 传送销售单的数据给sap
-        //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
+        sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
     }
 

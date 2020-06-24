@@ -41,7 +41,7 @@ public class WmsCancelServiceImpl implements WmsCancelService {
             return HttpResponse.success();
         } else {
             LOGGER.error("取消wms单据失败:{}", response.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, "取消wms单据失败："+ cancelSource.getOrderCode()));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getData().toString()));
         }
     }
 }
