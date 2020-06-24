@@ -325,7 +325,7 @@ public class Order {
      */
     @JsonProperty("business_form")
     @ApiModelProperty("业务形式")
-    private String businessForm;
+    private Integer businessForm;
 
     /**
      * 税号
