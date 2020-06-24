@@ -178,4 +178,10 @@
     from reject_record_detail
     where reject_record_id = #{rejectRecordId,jdbcType=VARCHAR}
   </select>
+  <select id="rejectRecordByLineCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"/>
+    from reject_record_detail
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=INTEGER}
+  </select>
 </mapper>
