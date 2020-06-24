@@ -27,4 +27,8 @@ public class OutboundCallBackDetailRequest {
     @ApiModelProperty("行号")
     @JsonProperty("line_code")
     private Long lineCode;
+
+    @ApiModelProperty(value="商品唯一码")
+    @JsonProperty(value = "unique_code")
+    private String uniqueCode;
 }

@@ -848,6 +848,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 orderItem.setLineCode(op.getLinenum());
                 orderItems.add(orderItem);
             }
+            List<OutboundProductCallBackReqVo> detailList = requestVo.getDetailList();
+            Map<String, OutboundProductCallBackReqVo> skuMap = detailList.stream().collect(Collectors.toMap(OutboundProductCallBackReqVo::getSkuCode, input -> input, (k1, k2) -> k1));
+            for (OutboundCallBackDetailRequest outboundCallBackDetailRequest : orderItems) {
+                if (skuMap.containsKey(outboundCallBackDetailRequest.getSkuCode())) {
+                    outboundCallBackDetailRequest.setUniqueCode(skuMap.get(outboundCallBackDetailRequest.getSkuCode()).getUniqueCode());
+                }
+            }
             request.setDetailList(orderItems);
             if(CollectionUtils.isNotEmpty(batchList)){
                 List<OutboundCallBackBatchRequest> infoBatch = BeanCopyUtils.copyList(batchList, OutboundCallBackBatchRequest.class);

@@ -1479,6 +1479,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         for (OutboundCallBackDetailRequest detail : detailList) {
             orderInfoItem = new OrderInfoItem();
             orderInfoItem.setActualDeliverNum(detail.getActualProductCount());
+            orderInfoItem.setUniqueCode(detail.getUniqueCode());
             // 根据单价计算总价
             key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
             OrderInfoItem item = product.get(key);
