@@ -106,16 +106,4 @@ public class MovementController {
             return HttpResponse.failure(ResultCode.MOVEMENT_RECOVER);
         }
     }
-
-    /**
-     *  移库wms出库回调
-     * @param request
-     * @return
-     */
-    @PostMapping("/wms/out/transfers")
-    @ApiOperation(value = "移库wms出库回调")
-    public HttpResponse movementWmsOutEcho(@RequestBody MovementWmsOutReq request) {
-        LOGGER.info("移库wms出库回调,request:{}", JSON.toJSON(request));
-        return movementService.movementWmsOutEcho(request);
-    }
 }

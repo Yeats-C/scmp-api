@@ -1035,6 +1035,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 //设置类型
                 stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockVoRequest.setDocumentCode(allocation.getAllocationCode());
+                stockVoRequest.setSourceDocumentCode(allocation.getAllocationCode());
+                stockVoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockVoRequest.setOperatorName(allocation.getUpdateBy());
                 stockVoRequest.setRemark(allocation.getRemark());
                 list1.add(stockVoRequest);
@@ -1058,10 +1060,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockBatchInfoRequest.setBatchRemark(allocationProduct.getBatchNumberRemark());
                 stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
+                stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
+                stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockBatchInfoRequest.setOperatorName(allocation.getUpdateBy());
             }
             stockChangeRequest.setStockList(list1);
             stockChangeRequest.setStockBatchList(batchList1);
+            LOGGER.error("wms调拨回调:调用库存加在途: 参数{}", JsonUtil.toJson(stockChangeRequest));
             HttpResponse httpResponse= stockService.stockAndBatchChange(stockChangeRequest);
 //            StockChangeRequest stockChangeRequest = new StockChangeRequest();
 //            stockChangeRequest.setOperationType(7);
@@ -1100,7 +1105,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
                 supplierCommonService.getInstance(allocation.getAllocationCode() + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.INBOUND_ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
             }else{
-                log.error(httpResponse.getMessage());
+                log.error("wms调拨回调:调用库存加在途,库存操作失败", httpResponse.getMessage());
                 throw  new GroundRuntimeException("库存操作失败");
             }
             allocation.setInboundOderCode(inboundOderCode);

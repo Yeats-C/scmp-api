@@ -40,6 +40,8 @@ import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.GoodsRejectServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
@@ -136,6 +138,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
     @Autowired
     private InboundService inboundService;
+;
+    @Autowired
+    private WmsCancelService wmsCancelService;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -293,11 +298,24 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             stockChangeRequest.setStockBatchList(batchList1);
             // 调用锁定库存数
             stockService.stockAndBatchChange(stockChangeRequest);
-            return 1;
         }else {
             throw  new GroundRuntimeException(workFlowRespVO.getMsg());
         }
+//        撤销wms调拨单
+        CancelSource cancelSource = new CancelSource();
+        if(Objects.equals(allocation.getAllocationType(),AllocationTypeEnum.ALLOCATION.getType())){
+            cancelSource.setOrderType("5");
+        } else if (Objects.equals(allocation.getAllocationType(),AllocationTypeEnum.MOVE.getType())) {
+            cancelSource.setOrderType("6");
+        } else {
+            return 0;
+        }
 
+        cancelSource.setOrderCode(allocation.getAllocationCode());
+        cancelSource.setWarehouseCode(allocation.getCallOutWarehouseCode());
+        cancelSource.setWarehouseName(allocation.getCallOutWarehouseName());
+        wmsCancelService.wmsCancel(cancelSource);
+        return 1;
     }
 
     /**
@@ -561,7 +579,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         aWmsInSource.setDetailList(aWmsInProSource);
         aWmsInSource.setBatchInfo(aWmsInProBatchSource);
-        System.out.println(JSON.toJSON(aWmsInSource));
+        LOGGER.info("调拨入单生成wms参数信息{}", JsonUtil.toJson(aWmsInSource));
         String url = urlConfig.WMS_API_URL2+"/allocation/source/inbound";
         HttpClient httpClient = HttpClient.post(url).json(aWmsInSource).timeout(200000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

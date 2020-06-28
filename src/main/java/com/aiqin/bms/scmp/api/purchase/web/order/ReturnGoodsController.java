@@ -92,9 +92,12 @@ public class ReturnGoodsController {
 
     @ApiOperation("退货异常终止")
     @GetMapping("/cancel")
-    public HttpResponse returnOrderCancel(@RequestParam("return_order_code") String returnOrderCode){
-        log.info("退货异常终止参数：{}", returnOrderCode);
-        return returnGoodsService.returnOrderCancel(returnOrderCode);
+    public HttpResponse returnOrderCancel(@RequestParam("return_order_code") String returnOrderCode,
+                                          @RequestParam(value = "operator_name", required = false) String operatorName,
+                                          @RequestParam(value = "remark",required = false) String remark){
+        ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo(returnOrderCode, remark, operatorName);
+        log.info("退货异常终止参数：{}", JsonUtil.toJson(returnOrderInfo));
+        return returnGoodsService.returnOrderCancel(returnOrderInfo);
     }
 
     @ApiOperation("验货保存")

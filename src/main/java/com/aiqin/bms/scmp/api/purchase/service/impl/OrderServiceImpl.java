@@ -23,6 +23,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
@@ -33,6 +34,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -89,6 +91,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderCallbackService orderCallbackService;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WmsCancelService wmsCancelService;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -478,6 +482,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 调用销售单生成出库单信息
         String insertOutbound = this.insertOutbound(vo);
         LOGGER.info("调用销售单生成出库单信息{}",  JSONObject.toJSONString(insertOutbound));
+        // 保存订单和订单商品信息
+        //saveData(orderItems, orders);
+        saveDatas(orderItems, orders, orderBtachs);
         // 拼装日志信息
         if(vo.getOrderType() != null){
             OrderInfoLog log;
@@ -494,8 +501,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                // 配送的情况下 调用wms
                 SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-                LOGGER.info("销售单生成wms参数信息{}",  JSONObject.toJSONString(saleSourcInfoSource));
-                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
+                LOGGER.info("销售单生成wms参数信息{}",  JsonUtil.toJson(saleSourcInfoSource));
+//                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
                 String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
@@ -505,9 +512,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
             logs.add(log);
         }
-        // 保存订单和订单商品信息
-        //saveData(orderItems, orders);
-        saveDatas(orderItems, orders, orderBtachs);
         //存日志
         saveLog(logs);
         return HttpResponse.success();
@@ -922,6 +926,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             log.info("取消订单失败！！！");
             return HttpResponse.success(false);
         }
+        //        撤销wms销售单
+        CancelSource cancelSource = new CancelSource();
+        cancelSource.setOrderType("1");
+        cancelSource.setOrderCode(orderInfo.getOrderCode());
+        cancelSource.setWarehouseCode(orderInfo.getWarehouseCode());
+        cancelSource.setWarehouseName(orderInfo.getWarehouseName());
+        wmsCancelService.wmsCancel(cancelSource);
         return HttpResponse.success(true);
     }
 /*
