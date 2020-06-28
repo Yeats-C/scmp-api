@@ -25,6 +25,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
@@ -471,6 +473,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         List<ReturnOrderDetailDLReq> orderItems = Lists.newArrayList();
         ReturnOrderDetailDLReq returnOrderItem;
+
+        List<ProductRequest> productList = Lists.newArrayList();
+        ProductRequest product;
         for (ReturnOrderInfoItem item : infoItems) {
             returnOrderItem = new ReturnOrderDetailDLReq();
             returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
@@ -478,6 +483,15 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderItem.setSkuCode(item.getSkuCode());
             returnOrderItem.setSkuName(item.getSkuName());
             orderItems.add(returnOrderItem);
+
+            if(){
+                
+            }
+            product = new ProductRequest();
+            product.setLineCode(item.getProductLineNum().intValue());
+            product.setSkuCode(item.getSkuCode());
+            product.setActualTotalCount(item.getActualInboundNum().longValue());
+            productList.add(product);
         }
         response.setReturnOrderDetailDLReqList(orderItems);
 
@@ -507,7 +521,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
             // 如果平台类型为dl 回传dl
             if (returnOrderInfo.getPlatformType().equals(1)) {
-
+                EchoOrderRequest request = new EchoOrderRequest();
+                request.setOrderCode(returnOrderInfo.getReturnOrderCode());
+                request.setOperationTime(returnOrderInfo.getDeliveryTime());
+                request.setOperationType(3);
+                request.setOperationCode(returnOrderInfo.getUpdateById());
+                request.setOperationName(returnOrderInfo.getCreateByName());
             }
             LOGGER.info("退货单回传运营中台成功");
             return HttpResponse.success();
