@@ -205,4 +205,10 @@ public final class Global {
     public static final Integer MOVEMENT_TYPE_0 = 0;
     public static final Integer MOVEMENT_TYPE_1 = 1;
     public static final Integer MOVEMENT_TYPE_2 = 2;
+
+    /**
+     *  平台类型 0.爱亲(新系统)，1.DL
+     */
+    public static final Integer PLATFORM_TYPE_0 = 0;
+    public static final Integer PLATFORM_TYPE_1 = 1;
 }

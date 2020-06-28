@@ -25,6 +25,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
@@ -476,6 +477,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         List<ProductRequest> productList = Lists.newArrayList();
         ProductRequest product;
+        List<BatchRequest> dlBatchList;
+        BatchRequest batchRequest;
         for (ReturnOrderInfoItem item : infoItems) {
             returnOrderItem = new ReturnOrderDetailDLReq();
             returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
@@ -484,12 +487,31 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderItem.setSkuName(item.getSkuName());
             orderItems.add(returnOrderItem);
 
-            if(returnOrderInfo.getPlatformType().equals(1)){
+            // 如果平台类型为Dl 赋值回传dl的参数
+            if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1)){
                 product = new ProductRequest();
                 product.setLineCode(item.getProductLineNum().intValue());
                 product.setSkuCode(item.getSkuCode());
                 product.setActualTotalCount(item.getActualInboundNum().longValue());
                 productList.add(product);
+
+                dlBatchList = Lists.newArrayList();
+                // 查询退货单对应的批次信息
+                List<ReturnOrderInfoInspectionItem> productBatchItems =
+                        returnOrderInfoInspectionItemMapper.returnBatchList(item.getSkuCode(), returnOrderInfo.getReturnOrderCode(), item.getProductLineNum().intValue());
+                if(CollectionUtils.isNotEmptyCollection(productBatchItems) && productBatchItems.size() > 0){
+                    for(ReturnOrderInfoInspectionItem batchItem : productBatchItems){
+                        batchRequest = new BatchRequest();
+                        batchRequest.setLineCode(batchItem.getLineCode().intValue());
+                        batchRequest.setSkuCode(batchItem.getSkuCode());
+                        batchRequest.setBatchCode(batchItem.getBatchCode());
+                        batchRequest.setProductDate(batchItem.getProductDate());
+                        batchRequest.setBeOverdueDate(batchItem.getBeOverdueDate());
+                        batchRequest.setActualTotalCount(batchItem.getActualProductCount());
+                        dlBatchList.add(batchRequest);
+                    }
+                    product.setBatchList(dlBatchList);
+                }
             }
         }
         response.setReturnOrderDetailDLReqList(orderItems);
@@ -499,6 +521,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         if (CollectionUtils.isNotEmptyCollection(inspectionItems) && inspectionItems.size() > 0) {
             List<ReturnBatchDetailDLReq> batchList = Lists.newArrayList();
             ReturnBatchDetailDLReq batchInfo;
+
             for (ReturnOrderInfoInspectionItem batch : inspectionItems) {
                 batchInfo = new ReturnBatchDetailDLReq();
                 batchInfo.setSkuCode(batch.getSkuCode());
@@ -519,18 +542,29 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         });
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
             // 如果平台类型为dl 回传dl
-            if (returnOrderInfo.getPlatformType().equals(1)) {
+            if (returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1)) {
                 EchoOrderRequest request = new EchoOrderRequest();
                 request.setOrderCode(returnOrderInfo.getReturnOrderCode());
                 request.setOperationTime(returnOrderInfo.getDeliveryTime());
                 request.setOperationType(3);
                 request.setOperationCode(returnOrderInfo.getUpdateById());
                 request.setOperationName(returnOrderInfo.getCreateByName());
+                request.setProductList(productList);
+                LOGGER.info("平台类型为DL，回传DL转换的参数：{}", JsonUtil.toJson(request));
+                sb.append(urlConfig.WMS_API_URL).append("/dl/order/echo");
+                HttpClient client = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
+                HttpResponse dlResponse = client.action().result(new TypeReference<HttpResponse<Boolean>>() {
+                });
+                if (dlResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    LOGGER.info("退货单回传DL成功");
+                }else {
+                    LOGGER.info("退货单回传DL失败：{}", httpResponse.getMessage());
+                }
             }
             LOGGER.info("退货单回传运营中台成功");
             return HttpResponse.success();
         } else {
-            LOGGER.info("退货单回传运营中台调用失败", httpResponse.getMessage());
+            LOGGER.info("退货单回传运营中台调用失败：{}", httpResponse.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回传运营中台调用失败"));
         }
     }
