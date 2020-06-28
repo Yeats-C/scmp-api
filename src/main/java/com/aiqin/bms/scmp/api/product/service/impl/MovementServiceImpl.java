@@ -281,7 +281,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //调拨才有出库 出库单号
             outboundService.save(convert);
             // 出解锁库存
-
+            ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+            changeStockRequest.setOperationType(2);
+            handleProfitLossStockData(allocation1,changeStockRequest);
+            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
+                throw new GroundRuntimeException("wms移库回调:减并解锁库存异常");
+            }
             // 调用wms入库
             AllocationDTO allocation  = allocationMapper.selectByFormNO1(allocation1.getFormNo());
             List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
@@ -301,8 +308,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-                LOGGER.error("wms回调:移库加库存异常");
-                throw new GroundRuntimeException("wms回调:加库存异常");
+                LOGGER.error("wms移库回调:移库加库存异常: 参数{}", stockRequest);
+                throw new GroundRuntimeException("wms移库回调:加库存异常");
             }
         }else {
             // 状态1 要更新调拨单 出入库单 解锁库存  加库存
@@ -314,6 +321,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
             inboundService.saveInbound2(inboundReqSave);
             // 解锁库存
+            ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+            changeStockRequest.setOperationType(2);
+            handleProfitLossStockData(allocation1,changeStockRequest);
+            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
+                throw new GroundRuntimeException("wms移库回调:减并解锁库存异常");
+            }
 
             // 加库存
             // 完成直接加库存。
@@ -322,8 +337,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-                LOGGER.error("wms回调:移库加库存异常");
-                throw new GroundRuntimeException("wms回调:加库存异常");
+                LOGGER.error("wms移库回调:移库加库存异常: 参数{}", stockRequest);
+                throw new GroundRuntimeException("wms移库回调:加库存异常");
             }
         }
         // 更新移库单状态

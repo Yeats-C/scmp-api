@@ -105,4 +105,11 @@ public class OutboundController {
         outboundService.pushRejectWms(code);
         return HttpResponse.success();
     }
+
+    @ApiOperation("出库回调根据类型回传给来源单号状态测试")
+    @PostMapping("/returnSource/test")
+    public HttpResponse returnSource(@RequestBody OutboundCallBackReqVo requestVo) {
+        outboundService.returnSource(5955L,requestVo);
+        return HttpResponse.success();
+    }
 }
