@@ -28,7 +28,7 @@ public interface ReturnGoodsService {
 
     HttpResponse inboundBatch(InboundBatchReqVo request);
 
-    HttpResponse returnOrderCancel(String returnOrderCode);
+    HttpResponse returnOrderCancel(ReturnOrderInfo returnOrderInfo);
 
     HttpResponse saveReturnInspection(ReturnInspectionRequest request);
 

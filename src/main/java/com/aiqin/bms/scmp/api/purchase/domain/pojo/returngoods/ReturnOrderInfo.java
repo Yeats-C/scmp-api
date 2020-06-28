@@ -346,4 +346,12 @@ public class ReturnOrderInfo {
     @JsonProperty("synchr_status")
     private Integer synchrStatus;
 
+    public ReturnOrderInfo() {
+    }
+
+    public ReturnOrderInfo(String returnOrderCode, String returnReasonContent, String updateByName) {
+        this.returnOrderCode = returnOrderCode;
+        this.returnReasonContent = returnReasonContent;
+        this.updateByName = updateByName;
+    }
 }

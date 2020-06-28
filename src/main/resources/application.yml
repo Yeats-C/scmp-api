@@ -469,6 +469,12 @@ mgs:
         name: 直送退货管理
         link: '/sale/directReturn'
       - code: SCMP007009
+        name: 采购直送退货管理
+        link: '/sale/purchaseReturn'
+      - code: SCMP007010
+        name: 货架直送退货管理
+        link: '/sale/shelvesReturn'
+      - code: SCMP007011
         name: 退货验货
         link: '/sale/returnInspection'
     - code: SCMP008
