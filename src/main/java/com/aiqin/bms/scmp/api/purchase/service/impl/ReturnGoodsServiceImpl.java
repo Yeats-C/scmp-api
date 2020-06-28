@@ -26,9 +26,11 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoIn
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -88,6 +90,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
     private SapBaseDataService sapBaseDataService;
+    @Resource
+    private WmsCancelService wmsCancelService;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -135,30 +139,49 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     }
 
     @Override
-    public HttpResponse returnOrderCancel(String returnOrderCode){
-       if(StringUtils.isBlank(returnOrderCode)){
-           return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-       }
-       ReturnOrderInfo returnOrderInfo = new ReturnOrderInfo();
-       returnOrderInfo.setUpdateByName(getUser().getPersonName());
-       returnOrderInfo.setUpdateById(getUser().getPersonId());
-       returnOrderInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
-       Integer count = returnOrderInfoMapper.update(returnOrderInfo);
-       LOGGER.info("更改退货单异常终止：{}", count);
+    public HttpResponse returnOrderCancel(ReturnOrderInfo returnOrderInfo) {
+        if (null == returnOrderInfo) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        ReturnOrderInfo returnInfo = new ReturnOrderInfo();
+        ReturnOrderInfoLog log = new ReturnOrderInfoLog();
+        if (StringUtils.isNotBlank(returnOrderInfo.getUpdateByName())) {
+            returnInfo.setUpdateByName(returnOrderInfo.getUpdateByName());
+            log.setOperator(returnOrderInfo.getUpdateByName());
+        } else {
+            returnInfo.setUpdateByName(getUser().getPersonName());
+            returnInfo.setUpdateById(getUser().getPersonId());
+            log.setOperator(getUser().getPersonName());
+        }
+        returnInfo.setReturnReasonContent(returnOrderInfo.getReturnReasonContent());
+        returnInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
+        Integer count = returnOrderInfoMapper.update(returnInfo);
+        LOGGER.info("更改退货单异常终止：{}", count);
 
         // 添加日志
-        ReturnOrderInfoLog log = new ReturnOrderInfoLog();
         log.setCompanyCode(Global.COMPANY_09);
         log.setCompanyName(Global.COMPANY_09_NAME);
-        log.setOperator(getUser().getPersonName());
-        log.setOrderCode(returnOrderCode);
+        log.setOrderCode(returnOrderInfo.getReturnOrderCode());
         log.setRemark(ReturnOrderStatus.cancelled.getStandardDescription());
         log.setStatus(ReturnOrderStatus.cancelled.getStatusCode());
         log.setStatusDesc(ReturnOrderStatus.cancelled.getExplain());
         log.setContent(ReturnOrderStatus.cancelled.getBackgroundOrderStatus());
         Integer logCount = returnOrderInfoLogMapper.insert(log);
         LOGGER.info("添加退货单异常终止日志：{}", logCount);
-       return HttpResponse.success();
+
+        // 调用wms取消接口
+        CancelSource cancelSource = new CancelSource();
+        cancelSource.setOrderType("2");
+        cancelSource.setOrderCode(returnOrderInfo.getReturnOrderCode());
+//        cancelSource.setWarehouseCode(order.getWarehouseCode());
+//        cancelSource.setWarehouseName(order.getWarehouseName());
+        cancelSource.setRemark(returnOrderInfo.getReturnReasonContent());
+        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+        if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("取消退货单失败：{}", response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, response.getMessage()));
+        }
+        return HttpResponse.success();
     }
 
     @Override
@@ -420,18 +443,18 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse changeParameter(String returnOrderCode) {
-        if(StringUtils.isBlank(returnOrderCode)){
-          return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        if (StringUtils.isBlank(returnOrderCode)) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         LOGGER.info("开始转换退货单参数传送运营中台：{}", returnOrderCode);
         // 查询退货单信息
         ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(returnOrderCode);
-        if(returnOrderInfo == null){
+        if (returnOrderInfo == null) {
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单的信息为空"));
         }
         // 查询退货单商品信息
         List<ReturnOrderInfoItem> infoItems = returnOrderInfoItemMapper.selectByReturnOrderCode(returnOrderCode);
-        if(CollectionUtils.isEmptyCollection(infoItems)){
+        if (CollectionUtils.isEmptyCollection(infoItems)) {
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单的商品信息为空"));
         }
 
@@ -446,7 +469,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         List<ReturnOrderDetailDLReq> orderItems = Lists.newArrayList();
         ReturnOrderDetailDLReq returnOrderItem;
-        for(ReturnOrderInfoItem item : infoItems){
+        for (ReturnOrderInfoItem item : infoItems) {
             returnOrderItem = new ReturnOrderDetailDLReq();
             returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
             returnOrderItem.setLineCode(item.getProductLineNum());
@@ -458,10 +481,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         // 查询退货单的批次信息
         List<ReturnOrderInfoInspectionItem> inspectionItems = returnOrderInfoInspectionItemMapper.returnOrderBatchList(returnOrderCode);
-        if(CollectionUtils.isNotEmptyCollection(inspectionItems) && inspectionItems.size() > 0){
+        if (CollectionUtils.isNotEmptyCollection(inspectionItems) && inspectionItems.size() > 0) {
             List<ReturnBatchDetailDLReq> batchList = Lists.newArrayList();
             ReturnBatchDetailDLReq batchInfo;
-            for(ReturnOrderInfoInspectionItem batch : inspectionItems){
+            for (ReturnOrderInfoInspectionItem batch : inspectionItems) {
                 batchInfo = new ReturnBatchDetailDLReq();
                 batchInfo.setSkuCode(batch.getSkuCode());
                 batchInfo.setSkuName(batch.getSkuName());
@@ -479,10 +502,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         HttpClient httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
         HttpResponse<Boolean> httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
         });
-        if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            // 如果平台类型为dl 回传dl
+            if (returnOrderInfo.getPlatformType().equals(1)) {
+
+            }
             LOGGER.info("退货单回传运营中台成功");
             return HttpResponse.success();
-        }else {
+        } else {
             LOGGER.info("退货单回传运营中台调用失败", httpResponse.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回传运营中台调用失败"));
         }
