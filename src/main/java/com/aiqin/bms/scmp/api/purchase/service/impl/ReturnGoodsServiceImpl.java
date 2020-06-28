@@ -397,6 +397,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setCompanyName(Global.COMPANY_09_NAME);
             returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getProductAmount());
             returnOrderInfoItem.setTax(returnOrderDetail.getTaxRate());
+            returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getChannelAmount());
+            returnOrderInfoItem.setTotalChannelPrice(returnOrderDetail.getChannelTotalAmount());
             details.add(returnOrderInfoItem);
         }
         Integer detailCount = returnOrderInfoItemMapper.insertList(details);
