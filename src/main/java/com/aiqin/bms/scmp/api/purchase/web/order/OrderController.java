@@ -15,6 +15,8 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
@@ -161,9 +163,13 @@ public class OrderController {
 
     @GetMapping("/cancel")
     @ApiOperation("订单的取消")
-    public HttpResponse orderCancel(@RequestParam("order_code") String orderCode,
-                                    @RequestParam("operator_id") String operatorId,
-                                    @RequestParam("operator_name") String operatorName) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "order_code", value = "订单编码", type = "String"),
+            @ApiImplicitParam(name = "operator_id", value = "操作人id", type = "String"),
+            @ApiImplicitParam(name = "operator_name", value = "操作人名称", type = "String") })
+    public HttpResponse orderCancel(@RequestParam(value="order_code",required = true) String orderCode,
+                                    @RequestParam(value="operator_id",required = false) String operatorId,
+                                    @RequestParam(value="operator_name",required = false) String operatorName) {
         log.info("订单的取消:", orderCode);
         return orderService.orderCancel(orderCode, operatorId, operatorName);
     }

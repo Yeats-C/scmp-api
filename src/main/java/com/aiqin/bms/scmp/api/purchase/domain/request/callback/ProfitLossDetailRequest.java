@@ -81,7 +81,7 @@ public class ProfitLossDetailRequest {
 
     @ApiModelProperty("损溢类型编号（1 增加库存，2 减少库存）")
     @JsonProperty("loss_order_code")
-    private String lossOrderCode;
+    private Integer lossOrderCode;
 
     @ApiModelProperty("损溢类型名称（1-报溢、2-报损）")
     @JsonProperty("loss_order_name")

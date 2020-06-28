@@ -570,8 +570,10 @@ public class InboundServiceImpl implements InboundService {
             praMainUnitNum = inbound.getPraMainUnitNum() + product.getPraInboundMainNum();
             //实际含税总金额
             praTaxAmount = inbound.getPraTaxAmount().add(product.getPraTaxAmount());
-            BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
-            praAmount = inbound.getPraAmount().add(amount);
+            if(product.getTax() != null){
+                BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
+                praAmount = inbound.getPraAmount().add(amount);
+            }
 
             // 设置修改在途数加库存参数
             stockInfo = new StockInfoRequest();
@@ -1007,11 +1009,11 @@ public class InboundServiceImpl implements InboundService {
                 int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
                 // 调用sap 传送调拨单的数据给sap
-                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
-                LOGGER.info("调拨wms回传成功");
+//                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
+//                LOGGER.info("调拨wms回传,调用sap成功：{}", JsonUtil.toJson(allocation));
             }
         } catch (Exception e) {
-            log.error(Global.ERROR, e);
+            log.error(Global.ERROR, JsonUtil.toJson(allocationCode));
             throw new GroundRuntimeException("调拨单更改入库状态失败");
         }
     }

@@ -192,8 +192,6 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             profitLossDetail.setQuantity(product.getQuantity());
             profitLossDetail.setReason(product.getReason());
             profitLossDetail.setSupplyCode(product.getSupplierCode());
-            profitLossDetail.setLossOrderCode(product.getLossOrderCode());
-            profitLossDetail.setLossOrderName(product.getLossOrderName());
             profitLossDetail.setSkuName(productSkuResponse.getProductName());
             profitLossDetail.setCategory(productSkuResponse.getCategoryName());
             profitLossDetail.setBrand(productSkuResponse.getBrandName());
@@ -211,10 +209,14 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             profitLossDetail.setUpdateTime(request.getUpdateTime());
             profitLossDetail.setUpdateById(request.getUpdateById());
             profitLossDetail.setUpdateByName(request.getUpdateByName());
-            if (product.getLossOrderCode().equals("1")) {
+            if (product.getType() == 1) {
                 profitQuantity += product.getQuantity();
+                profitLossDetail.setLossOrderCode(1);
+                profitLossDetail.setLossOrderName("报溢-增加库存");
             } else {
                 lossQuantity += product.getQuantity();
+                profitLossDetail.setLossOrderCode(2);
+                profitLossDetail.setLossOrderName("报损-减少库存");
             }
             profitLoss.setProfitQuantity(profitQuantity);
             profitLoss.setLossQuantity(lossQuantity);
@@ -255,7 +257,11 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         profitLoss.setProfitTotalCostRate(new BigDecimal(0));
         profitLoss.setLossTotalCostRate(new BigDecimal(0));
         profitLoss.setOrderCode(request.getOrderCode());
-        profitLoss.setOrderType(request.getOrderTypeCode());
+        if(request.getType() == 0){
+            profitLoss.setOrderType(1);
+        }else {
+            profitLoss.setOrderType(0);
+        }
         profitLoss.setWarehouseCode(request.getWarehouseCode());
         profitLoss.setWarehouseName(request.getWarehouseName());
         profitLoss.setRemark(request.getRemark());
