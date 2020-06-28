@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
@@ -111,6 +112,13 @@ public class InboundController {
     @GetMapping("/test/allocation")
     public HttpResponse allocationTest(@RequestParam(value = "allocation_code")String allocationCode){
         inboundService.inBoundReturn(allocationCode);
+        return HttpResponse.success();
+    }
+
+    @ApiOperation("入库回调根据类型回传给来源单号状态测试")
+    @PostMapping("/returnSource/test")
+    public HttpResponse returnSource() {
+        inboundService.returnSource(3304L);
         return HttpResponse.success();
     }
 }
