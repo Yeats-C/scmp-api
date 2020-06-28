@@ -579,7 +579,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         aWmsInSource.setDetailList(aWmsInProSource);
         aWmsInSource.setBatchInfo(aWmsInProBatchSource);
-        System.out.println(JSON.toJSON(aWmsInSource));
+        LOGGER.info("调拨入单生成wms参数信息{}", JsonUtil.toJson(aWmsInSource));
         String url = urlConfig.WMS_API_URL2+"/allocation/source/inbound";
         HttpClient httpClient = HttpClient.post(url).json(aWmsInSource).timeout(200000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

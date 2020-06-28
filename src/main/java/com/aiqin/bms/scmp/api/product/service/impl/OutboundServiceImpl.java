@@ -1059,6 +1059,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             stockChangeRequest.setStockList(list1);
             stockChangeRequest.setStockBatchList(batchList1);
+            LOGGER.error("wms调拨回调:调用库存加在途异常: 参数{}", stockChangeRequest);
             HttpResponse httpResponse= stockService.stockAndBatchChange(stockChangeRequest);
 //            StockChangeRequest stockChangeRequest = new StockChangeRequest();
 //            stockChangeRequest.setOperationType(7);
