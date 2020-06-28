@@ -191,11 +191,13 @@ public final class Global {
     public static final Integer INBOUND_TYPE = 1;
 
     /**
-     *  订单类型  0直送、1配送、2辅采
+     *  订单类型  1配送、2直送、3货架直送、4采购直送
      */
     public static final Integer ORDER_TYPE_0 = 0;
     public static final Integer ORDER_TYPE_1 = 1;
     public static final Integer ORDER_TYPE_2 = 2;
+    public static final Integer ORDER_TYPE_3 = 3;
+    public static final Integer ORDER_TYPE_4 = 4;
 
     /**
      *  库房配置管理  移库类型  0.wms发起移库   1.分别发起移库   2.同时发起移库
