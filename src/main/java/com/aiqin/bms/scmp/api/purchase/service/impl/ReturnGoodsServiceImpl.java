@@ -484,14 +484,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderItem.setSkuName(item.getSkuName());
             orderItems.add(returnOrderItem);
 
-            if(){
-                
+            if(returnOrderInfo.getPlatformType().equals(1)){
+                product = new ProductRequest();
+                product.setLineCode(item.getProductLineNum().intValue());
+                product.setSkuCode(item.getSkuCode());
+                product.setActualTotalCount(item.getActualInboundNum().longValue());
+                productList.add(product);
             }
-            product = new ProductRequest();
-            product.setLineCode(item.getProductLineNum().intValue());
-            product.setSkuCode(item.getSkuCode());
-            product.setActualTotalCount(item.getActualInboundNum().longValue());
-            productList.add(product);
         }
         response.setReturnOrderDetailDLReqList(orderItems);
 
