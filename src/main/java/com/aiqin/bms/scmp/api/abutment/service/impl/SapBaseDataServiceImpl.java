@@ -1045,7 +1045,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Purchase purchase = purchaseOrder(orderCode);
             sap.setPurchase(purchase);
             // 查询最后的入库单信息
-            Inbound inbound = inboundDao.inboundCodeOrderLast(purchase.getOrderCode());
+            Inbound inbound = inboundDao.inboundCodeOrderLast(purchase.getOrderCode(), String.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()));
             Storage storage = this.inboundPurchaseInfo(inbound);
             storage.setTransportCode1(purchase.getTransportCode());
             storage.setTransportName1(purchase.getTransportName());
@@ -1116,7 +1116,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
             Order order = returnOrder(orderCode);
             scmpImportSale.setOrder(order);
 
-            Inbound inbound = inboundDao.inboundCodeOrderLast(order.getOrderCode());
+            Inbound inbound = inboundDao.inboundCodeOrderLast(order.getOrderCode(), String.valueOf(InboundTypeEnum.ORDER.getCode()));
             PurchaseStorage purchaseStorage = new PurchaseStorage();
             purchaseStorage.setOrderId(inbound.getInboundOderCode());
             purchaseStorage.setOrderCode(inbound.getInboundOderCode());
@@ -1308,7 +1308,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      */
     private Storage inbound(String orderCode) {
         // 查询入库单信息
-        Inbound inbound = inboundDao.inboundCodeOrderLast(orderCode);
+        Inbound inbound = inboundDao.inboundCodeOrderLast(orderCode, String.valueOf(InboundTypeEnum.ALLOCATE.getCode()));
         // 查询入库单商品信息
         List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inbound.getInboundOderCode());
         List<String> skuCodes = inboundProducts.stream().map(InboundProduct::getSkuCode).collect(Collectors.toList());
