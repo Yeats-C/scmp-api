@@ -927,12 +927,17 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             return HttpResponse.success(false);
         }
         //        撤销wms销售单
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(orderInfo.getOrderCode());
         CancelSource cancelSource = new CancelSource();
         cancelSource.setOrderType("1");
         cancelSource.setOrderCode(orderInfo.getOrderCode());
-        cancelSource.setWarehouseCode(orderInfo.getWarehouseCode());
-        cancelSource.setWarehouseName(orderInfo.getWarehouseName());
-        wmsCancelService.wmsCancel(cancelSource);
+        cancelSource.setWarehouseCode(oi.getWarehouseCode());
+        cancelSource.setWarehouseName(oi.getWarehouseName());
+        log.info("取消订单传wms参数数据：{}", JsonUtil.toJson(cancelSource));
+        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+        }
         return HttpResponse.success(true);
     }
 /*

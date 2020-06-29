@@ -34,8 +34,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResp
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -118,6 +120,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     private SupplierCommonService supplierCommonService;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     /**
      * 移库列表搜索
@@ -203,12 +207,19 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     @Override
     public HttpResponse movementWmsEcho(MovementWmsReq request) {
         try {
+            WarehouseDTO warehouseByInCode = warehouseDao.getWarehouseByCode(request.getCallInWarehouseCode());
+            WarehouseDTO warehouseByOutCode = warehouseDao.getWarehouseByCode(request.getCallOutWarehouseCode());
+            request.setCallInLogisticsCenterCode(warehouseByInCode.getLogisticsCenterCode());
+            request.setCallInLogisticsCenterName(warehouseByInCode.getLogisticsCenterName());
+            request.setCallInWarehouseCode(warehouseByInCode.getWarehouseCode());
+            request.setCallInWarehouseName(warehouseByInCode.getWarehouseName());
+            request.setCallOutLogisticsCenterCode(warehouseByOutCode.getLogisticsCenterCode());
+            request.setCallOutLogisticsCenterName(warehouseByOutCode.getLogisticsCenterName());
+            request.setCallOutWarehouseCode(warehouseByOutCode.getWarehouseCode());
+            request.setCallOutWarehouseName(warehouseByOutCode.getWarehouseName());
             //移库
             byte type = AllocationTypeEnum.MOVE.getType();
             String typeName = AllocationTypeEnum.MOVE.getTypeName();
-            String inboundOderCode = "";
-            String outboundOderCode = "";
-            Integer boundRecordType  = (int) OutboundTypeEnum.MOVEMENT.getCode();
             OutboundTypeEnum outboundTypeEnum  = OutboundTypeEnum.MOVEMENT;
             InboundTypeEnum inboundTypeEnum = InboundTypeEnum.MOVEMENT;
             //查看单据是否重复
@@ -225,7 +236,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(addAllocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
-            outboundService.save(convert);
+            outboundService.saveOutbound(convert);
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(4);
@@ -263,6 +274,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         if(request.getFlag() == null){
             return HttpResponse.failure(null,ResultCode.NOT_HAVE_PARAM);
         }
+
         LOGGER.info("wms回传成功，根据出库单信息，变更对应移库单的实际值：", JSON.toJSON(request));
         Allocation allocation1 = allocationMapper.selectByCode(request.getMovementCode());
         OutboundTypeEnum outboundTypeEnum  = OutboundTypeEnum.MOVEMENT;
@@ -374,7 +386,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         //添加详情
         allocationProductMapper.saveList(allocation.getDetailList());
         //添加供应商和商品关系
-        allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
+        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(allocation.getDetailBatchList())){
+            allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
+        }
     }
 
     private void handleProfitLossStockData(Allocation addAllocation, ChangeStockRequest changeStockRequest) {
@@ -569,26 +583,24 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 outboundProduct.setColorName(orderProductSkuResponse.getColorName());
                 outboundProduct.setTax(orderProductSkuResponse.getTax());
                 outboundProduct.setModel(orderProductSkuResponse.getModel());
-                //预计出库数量
-                outboundProduct.setPreOutboundNum(item.getQuantity());
-                //预计出库主数量
-                outboundProduct.setPreOutboundMainNum(item.getQuantity());
-                //实际出库数量
-                outboundProduct.setPraOutboundNum(item.getQuantity());
-                //实际出库主数量
-                outboundProduct.setPraOutboundMainNum(item.getQuantity());
-                outboundProduct.setCreateBy(allocation.getCreateBy());
-                outboundProduct.setUpdateBy(allocation.getUpdateBy());
-                outboundProduct.setCreateTime(allocation.getCreateTime());
-                outboundProduct.setUpdateTime(allocation.getUpdateTime());
-                //行号
-                outboundProduct.setLinenum(item.getLineNum());
-                //基商品含量固定1
-                outboundProduct.setOutboundBaseContent("1");
-                outboundProduct.setOutboundBaseUnit("1");
-            } else {
-                throw new GroundRuntimeException(String.format("未查询到商品信息,skuCode:%s", item.getSkuCode()));
             }
+            //预计出库数量
+            outboundProduct.setPreOutboundNum(item.getQuantity());
+            //预计出库主数量
+            outboundProduct.setPreOutboundMainNum(item.getQuantity());
+            //实际出库数量
+            outboundProduct.setPraOutboundNum(item.getQuantity());
+            //实际出库主数量
+            outboundProduct.setPraOutboundMainNum(item.getQuantity());
+            outboundProduct.setCreateBy(allocation.getCreateBy());
+            outboundProduct.setUpdateBy(allocation.getUpdateBy());
+            outboundProduct.setCreateTime(allocation.getCreateTime());
+            outboundProduct.setUpdateTime(allocation.getUpdateTime());
+            //行号
+            outboundProduct.setLinenum(item.getLineNum());
+            //基商品含量固定1
+            outboundProduct.setOutboundBaseContent("1");
+            outboundProduct.setOutboundBaseUnit("1");
             //不计算不含税单价
             parts.add(outboundProduct);
         }
@@ -646,24 +658,16 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 
     private Allocation addAllocation(MovementWmsReq request, Map<String, OrderProductSkuResponse> productSkuMap) {
         OrderProductSkuResponse orderProductSku;
-        Allocation allocation = new Allocation();
-        BeanUtils.copyProperties(request, allocation);
-        allocation.setAllocationCode(request.getMovementCode());
-        allocation.setCompanyCode(COMPANY_CODE);
-        allocation.setCompanyName(COMPANY_NAME);
-        allocation.setCreateBy(request.getCreateByName());
-//        allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
-        allocation.setCreateTime(request.getCreateTime());
-        allocation.setUpdateBy(request.getUpdateByName());
-        allocation.setPrincipal(request.getUpdateByName());
-//        allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
-        allocation.setUpdateTime(request.getReceiptTime());
         List<AllocationProduct> detailList = new ArrayList<>();
+        Long quantity = 0L;
         for (MovementProductWmsReq movementProductWmsReq : request.getDetailList()) {
             AllocationProduct aProduct = new AllocationProduct();
             aProduct.setAllocationCode(request.getMovementCode());
+            aProduct.setSkuCode(movementProductWmsReq.getSkuCode());
             aProduct.setLineNum(movementProductWmsReq.getLineCode());
             aProduct.setQuantity(movementProductWmsReq.getQuantity());
+            aProduct.setActualTotalCount(movementProductWmsReq.getQuantity());
+            quantity += movementProductWmsReq.getQuantity();
             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
             aProduct.setCreateBy(request.getCreateByName());
             aProduct.setCreateTime(request.getCreateTime());
@@ -684,24 +688,41 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             detailList.add(aProduct);
         }
         List<AllocationProductBatch> detailBatchList = new ArrayList<>();
-        for (MovementBatchWmsReq batchList : request.getBatchList()) {
-            AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
-            allocationProductBatch.setAllocationCode(request.getMovementCode());
-            allocationProductBatch.setSkuCode(batchList.getSkuCode());
-            allocationProductBatch.setSkuName(batchList.getSkuName());
-            allocationProductBatch.setCallInBatchNumber(batchList.getCallInBatchCode());
-            allocationProductBatch.setCallOutBatchNumber(batchList.getCallOutBatchCode());
-            allocationProductBatch.setCallInBatchInfoCode(batchList.getCallInBatchInfoCode());
-            allocationProductBatch.setCallOutBatchInfoCode(batchList.getCallOutBatchInfoCode());
-            allocationProductBatch.setProductDate(batchList.getProductDate());
-            allocationProductBatch.setBeOverdueDate(batchList.getBeOverdueDate());
-            allocationProductBatch.setBatchNumberRemark(batchList.getBatchNumberRemark());
-            allocationProductBatch.setQuantity(batchList.getQuantity());
-            allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
-            allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
-            allocationProductBatch.setLineNum(batchList.getLineCode());
-            detailBatchList.add(allocationProductBatch);
+        if(request.getBatchList().size() > 0){
+            for (MovementBatchWmsReq batchList : request.getBatchList()) {
+                AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                allocationProductBatch.setAllocationCode(request.getMovementCode());
+                allocationProductBatch.setSkuCode(batchList.getSkuCode());
+                allocationProductBatch.setSkuName(batchList.getSkuName());
+                allocationProductBatch.setCallInBatchNumber(batchList.getCallInBatchCode());
+                allocationProductBatch.setCallOutBatchNumber(batchList.getCallOutBatchCode());
+                allocationProductBatch.setCallInBatchInfoCode(batchList.getCallInBatchInfoCode());
+                allocationProductBatch.setCallOutBatchInfoCode(batchList.getCallOutBatchInfoCode());
+                allocationProductBatch.setProductDate(batchList.getProductDate());
+                allocationProductBatch.setBeOverdueDate(batchList.getBeOverdueDate());
+                allocationProductBatch.setBatchNumberRemark(batchList.getBatchNumberRemark());
+                allocationProductBatch.setQuantity(batchList.getQuantity());
+                allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setLineNum(batchList.getLineCode());
+                detailBatchList.add(allocationProductBatch);
+            }
         }
+        Allocation allocation = new Allocation();
+        BeanUtils.copyProperties(request, allocation);
+        allocation.setAllocationCode(request.getMovementCode());
+        allocation.setCompanyCode(COMPANY_CODE);
+        allocation.setCompanyName(COMPANY_NAME);
+        allocation.setQuantity(quantity);
+        allocation.setCreateBy(request.getCreateByName());
+//        allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
+        allocation.setCreateTime(request.getCreateTime());
+        allocation.setUpdateBy(request.getUpdateByName());
+        allocation.setPrincipal(request.getUpdateByName());
+//        allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
+        allocation.setUpdateTime(request.getReceiptTime());
         allocation.setDetailList(detailList);
         allocation.setDetailBatchList(detailBatchList);
         return allocation;

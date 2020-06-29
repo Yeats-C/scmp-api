@@ -226,17 +226,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                             PurchaseOrderLogEnum.REVOKE.getName(), type);
                     // 调用取消入库单
                     this.cancelInbound(order);
-                    CancelSource cancelSource = new CancelSource();
-                    cancelSource.setOrderType("3");
-                    cancelSource.setOrderCode(order.getPurchaseOrderCode());
-                    cancelSource.setWarehouseCode(order.getWarehouseCode());
-                    cancelSource.setWarehouseName(order.getWarehouseName());
-                    cancelSource.setRemark(purchaseOrder.getCancelReason());
-                    HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
-                    if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
-                        LOGGER.info("取消采购单失败：{}", response.getMessage());
-                        return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
-                    }
                     // 取消在途数
                     this.wayNum(order, 8);
                 }else {
@@ -276,18 +265,6 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                         PurchaseOrderLogEnum.PURCHASE_FINISH.getName(), type);
                 // 调用入库单的取消
                 this.cancelInbound(order);
-                // 调用取消wms单据
-                CancelSource cancelSource = new CancelSource();
-                cancelSource.setOrderType("3");
-                cancelSource.setOrderCode(purchaseOrder.getPurchaseOrderCode());
-                cancelSource.setWarehouseCode(purchaseOrder.getWarehouseCode());
-                cancelSource.setWarehouseName(purchaseOrder.getWarehouseName());
-                cancelSource.setRemark(purchaseOrder.getCancelReason());
-                HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
-                if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
-                    LOGGER.info("取消采购单失败：{}", response.getMessage());
-                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
-                }
                 break;
 //            case 11:
 //                // 重发
@@ -312,17 +289,28 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     // 撤销未完成的入库单
     public HttpResponse cancelInbound(PurchaseOrder order) {
         // 查询入库单id
-        String id = inboundDao.cancelById(order.getPurchaseOrderCode());
-        if (StringUtils.isBlank(id)) {
+        Inbound inbound = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode(), String.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()));
+        if (inbound == null) {
             LOGGER.info("未查询到入库单");
             return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
         }
         // 将入库单状态修改为取消
-        Inbound inbound = new Inbound();
-        inbound.setId(Long.valueOf(id));
         inbound.setInboundStatusCode(InOutStatus.CALL_OFF.getCode());
         inbound.setInboundStatusName(InOutStatus.CALL_OFF.getName());
         inboundDao.updateByPrimaryKeySelective(inbound);
+
+        // 调用取消wms单据
+        CancelSource cancelSource = new CancelSource();
+        cancelSource.setOrderType("3");
+        cancelSource.setOrderCode(inbound.getInboundOderCode());
+        cancelSource.setWarehouseCode(order.getWarehouseCode());
+        cancelSource.setWarehouseName(order.getWarehouseName());
+        cancelSource.setRemark(order.getCancelReason());
+        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+        if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("取消采购单失败：{}", response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 200, response.getMessage()));
+        }
         return HttpResponse.success();
     }
 
@@ -714,7 +702,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfo;
         // 查询入库单号
-        Inbound inbound = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode());
+        Inbound inbound = inboundDao.inboundCodeOrderLast(order.getPurchaseOrderCode(), String.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()));
         // 查询该采购单的商品
         List<PurchaseOrderProduct> products = purchaseOrderProductDao.orderProductByGroup(order.getPurchaseOrderId());
         if(CollectionUtils.isNotEmptyCollection(products)){

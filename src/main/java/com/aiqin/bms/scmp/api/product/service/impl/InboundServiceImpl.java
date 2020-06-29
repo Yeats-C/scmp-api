@@ -928,7 +928,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 退货订单信息
         SupplyReturnOrderInfoReqVOReturn returnOrderInfo = new SupplyReturnOrderInfoReqVOReturn();
-        Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode);
+        Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode, String.valueOf(InboundTypeEnum.ORDER.getCode()));
         returnOrderInfo.setCompanyName(inbound.getCompanyName());
         returnOrderInfo.setCompanyCode(inbound.getCompanyCode());
         returnOrderInfo.setOperator(inbound.getCreateBy());
@@ -970,7 +970,7 @@ public class InboundServiceImpl implements InboundService {
             // 回传采购批次信息
             List<PurchaseBatch> orderItem = BeanCopyUtils.copyList(batchList, PurchaseBatch.class);
             purchaseStorage.setBatchList(orderItem);
-            Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode);
+            Inbound inbound = inboundDao.inboundCodeOrderLast(sourceOderCode, String.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()));
             purchaseStorage.setCompanyName(inbound.getCompanyName());
             purchaseStorage.setCompanyCode(inbound.getCompanyCode());
             purchaseStorage.setCreateByName(inbound.getCreateBy());

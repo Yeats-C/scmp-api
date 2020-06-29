@@ -38,8 +38,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResp
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
@@ -97,6 +99,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     private EncodingRuleDao encodingRuleDao;
     @Autowired
     private SapBaseDataService sapBaseDataService;
+    @Autowired
+    private WarehouseDao warehouseDao;
     /**
      * 分页查询
      *
@@ -154,6 +158,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         if(result!=null){
             throw new GroundRuntimeException("单据已存在");
         }
+        WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
         // 损溢主表
         ProfitLoss profitLoss = new ProfitLoss();
         List<ProfitLoss> profitLossList = Lists.newArrayList();
@@ -252,8 +257,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
               batchList.add(profitLossProductBatch);
           }
       }
-        profitLoss.setLogisticsCenterCode(request.getTransportCenterCode());
-        profitLoss.setLogisticsCenterName(request.getTransportCenterName());
+        profitLoss.setLogisticsCenterCode(warehouseByCode.getLogisticsCenterCode());
+        profitLoss.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
         profitLoss.setProfitTotalCostRate(new BigDecimal(0));
         profitLoss.setLossTotalCostRate(new BigDecimal(0));
         profitLoss.setOrderCode(request.getOrderCode());
@@ -262,8 +267,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         }else {
             profitLoss.setOrderType(0);
         }
-        profitLoss.setWarehouseCode(request.getWarehouseCode());
-        profitLoss.setWarehouseName(request.getWarehouseName());
+        profitLoss.setWarehouseCode(warehouseByCode.getWarehouseCode());
+        profitLoss.setWarehouseName(warehouseByCode.getWarehouseName());
         profitLoss.setRemark(request.getRemark());
         profitLoss.setCompanyName(COMPANY_NAME);
         profitLoss.setCompanyCode(COMPANY_CODE);
@@ -278,7 +283,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         //添加损溢记录
         profitLossMapper.insertList(profitLossList);
         productMapper.insertList(profitLossProductList);
-        if(batchList != null){
+        if(CollectionUtils.isNotEmptyCollection(batchList)){
             batchProductMapper.insertBatchList(batchList);
         }
         //库存变动操作
@@ -290,9 +295,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             }
         }));
         //正值减库存
-        if (groupByList.get(0) != null) {
+        if (groupByList.get(1) != null) {
             //操作类型 直接减库存 4
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(0), request.getOrderCode(), batchList);
+            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(1), request.getOrderCode(), batchList, warehouseByCode);
             changeStockRequest.setOperationType(4);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -303,9 +308,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
 //            OutboundReqVo outboundReqVo = outbount(profitLoss, profitLossProductList, batchList);
 //            outboundService.save(outboundReqVo);
         }
-        if (groupByList.get(1) != null) {
+        if (groupByList.get(0) != null) {
             //操作类型 直接加库存 6
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(1), request.getOrderCode(), batchList);
+            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(0), request.getOrderCode(), batchList, warehouseByCode);
             changeStockRequest.setOperationType(6);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -505,7 +510,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         return outboundReqVo;
     }
 
-    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode, List<ProfitLossProductBatch> batchLists) {
+    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode, List<ProfitLossProductBatch> batchLists, WarehouseDTO warehouseByCode) {
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfoRequest;
@@ -515,10 +520,10 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-            stockInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
-            stockInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
-            stockInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
-            stockInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockInfoRequest.setTransportCenterCode(warehouseByCode.getLogisticsCenterCode());
+            stockInfoRequest.setTransportCenterName(warehouseByCode.getLogisticsCenterName());
+            stockInfoRequest.setWarehouseCode(warehouseByCode.getWarehouseCode());
+            stockInfoRequest.setWarehouseName(warehouseByCode.getWarehouseName());
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockInfoRequest.setSkuName(itemReqVo.getSkuName());
