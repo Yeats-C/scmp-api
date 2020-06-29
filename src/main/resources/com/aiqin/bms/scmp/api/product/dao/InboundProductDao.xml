@@ -467,10 +467,10 @@
     select
     a.sku_code skuCode, a.sku_name skuName, a.color_name colorName, a.model modelNumber, a.unit_code inboundUnitCode,
     a.unit_name inboundUnitName, a.pre_inbound_num inboundNum, a.pre_inbound_main_num totalCount, a.linenum lineCode,
-    a.tax, b.sales_code skuBarCode
+    a.tax, b.sales_code skuBarCode, d.unit_code stockUnitCode, d.unit_name stockUnitName
     from inbound_product a
-    inner join product_sku_sales_info b
-    on a.sku_code = b.product_sku_code
+    inner join product_sku_sales_info b on a.sku_code = b.product_sku_code
+    inner join product_sku_stock_info d on a.sku_code = d.product_sku_code
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
 </mapper>
