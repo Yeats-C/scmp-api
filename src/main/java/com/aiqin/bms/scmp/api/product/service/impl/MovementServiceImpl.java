@@ -658,25 +658,16 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 
     private Allocation addAllocation(MovementWmsReq request, Map<String, OrderProductSkuResponse> productSkuMap) {
         OrderProductSkuResponse orderProductSku;
-        Allocation allocation = new Allocation();
-        BeanUtils.copyProperties(request, allocation);
-        allocation.setAllocationCode(request.getMovementCode());
-        allocation.setCompanyCode(COMPANY_CODE);
-        allocation.setCompanyName(COMPANY_NAME);
-        allocation.setCreateBy(request.getCreateByName());
-//        allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
-        allocation.setCreateTime(request.getCreateTime());
-        allocation.setUpdateBy(request.getUpdateByName());
-        allocation.setPrincipal(request.getUpdateByName());
-//        allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
-        allocation.setUpdateTime(request.getReceiptTime());
         List<AllocationProduct> detailList = new ArrayList<>();
+        Long quantity = 0L;
         for (MovementProductWmsReq movementProductWmsReq : request.getDetailList()) {
             AllocationProduct aProduct = new AllocationProduct();
             aProduct.setAllocationCode(request.getMovementCode());
             aProduct.setSkuCode(movementProductWmsReq.getSkuCode());
             aProduct.setLineNum(movementProductWmsReq.getLineCode());
             aProduct.setQuantity(movementProductWmsReq.getQuantity());
+            aProduct.setActualTotalCount(movementProductWmsReq.getQuantity());
+            quantity += movementProductWmsReq.getQuantity();
             orderProductSku = productSkuMap.get(movementProductWmsReq.getSkuCode());
             aProduct.setCreateBy(request.getCreateByName());
             aProduct.setCreateTime(request.getCreateTime());
@@ -697,24 +688,41 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             detailList.add(aProduct);
         }
         List<AllocationProductBatch> detailBatchList = new ArrayList<>();
-        for (MovementBatchWmsReq batchList : request.getBatchList()) {
-            AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
-            allocationProductBatch.setAllocationCode(request.getMovementCode());
-            allocationProductBatch.setSkuCode(batchList.getSkuCode());
-            allocationProductBatch.setSkuName(batchList.getSkuName());
-            allocationProductBatch.setCallInBatchNumber(batchList.getCallInBatchCode());
-            allocationProductBatch.setCallOutBatchNumber(batchList.getCallOutBatchCode());
-            allocationProductBatch.setCallInBatchInfoCode(batchList.getCallInBatchInfoCode());
-            allocationProductBatch.setCallOutBatchInfoCode(batchList.getCallOutBatchInfoCode());
-            allocationProductBatch.setProductDate(batchList.getProductDate());
-            allocationProductBatch.setBeOverdueDate(batchList.getBeOverdueDate());
-            allocationProductBatch.setBatchNumberRemark(batchList.getBatchNumberRemark());
-            allocationProductBatch.setQuantity(batchList.getQuantity());
-            allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
-            allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
-            allocationProductBatch.setLineNum(batchList.getLineCode());
-            detailBatchList.add(allocationProductBatch);
+        if(request.getBatchList().size() > 0){
+            for (MovementBatchWmsReq batchList : request.getBatchList()) {
+                AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                allocationProductBatch.setAllocationCode(request.getMovementCode());
+                allocationProductBatch.setSkuCode(batchList.getSkuCode());
+                allocationProductBatch.setSkuName(batchList.getSkuName());
+                allocationProductBatch.setCallInBatchNumber(batchList.getCallInBatchCode());
+                allocationProductBatch.setCallOutBatchNumber(batchList.getCallOutBatchCode());
+                allocationProductBatch.setCallInBatchInfoCode(batchList.getCallInBatchInfoCode());
+                allocationProductBatch.setCallOutBatchInfoCode(batchList.getCallOutBatchInfoCode());
+                allocationProductBatch.setProductDate(batchList.getProductDate());
+                allocationProductBatch.setBeOverdueDate(batchList.getBeOverdueDate());
+                allocationProductBatch.setBatchNumberRemark(batchList.getBatchNumberRemark());
+                allocationProductBatch.setQuantity(batchList.getQuantity());
+                allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallOutActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setCallInActualTotalCount(batchList.getQuantity());
+                allocationProductBatch.setLineNum(batchList.getLineCode());
+                detailBatchList.add(allocationProductBatch);
+            }
         }
+        Allocation allocation = new Allocation();
+        BeanUtils.copyProperties(request, allocation);
+        allocation.setAllocationCode(request.getMovementCode());
+        allocation.setCompanyCode(COMPANY_CODE);
+        allocation.setCompanyName(COMPANY_NAME);
+        allocation.setQuantity(quantity);
+        allocation.setCreateBy(request.getCreateByName());
+//        allocation.setCreateTime(new DateTime(new Long(request.getCreateTime())).toDate());
+        allocation.setCreateTime(request.getCreateTime());
+        allocation.setUpdateBy(request.getUpdateByName());
+        allocation.setPrincipal(request.getUpdateByName());
+//        allocation.setUpdateTime(new DateTime(new Long(request.getReceiptTime())).toDate());
+        allocation.setUpdateTime(request.getReceiptTime());
         allocation.setDetailList(detailList);
         allocation.setDetailBatchList(detailBatchList);
         return allocation;
