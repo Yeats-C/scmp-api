@@ -669,6 +669,7 @@
     select <include refid="Base_Column_List"></include>
     from inbound
     where source_oder_code = #{sourceOderCode}
+    and inbound_type_code = #{inboundTypeCode}
     order by id desc limit 1
   </select>
   <update id="updateInboundSynchrSap">

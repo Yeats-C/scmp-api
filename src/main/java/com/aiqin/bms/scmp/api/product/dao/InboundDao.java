@@ -38,9 +38,10 @@ public interface InboundDao {
 
     void updateByOrderCodes(List<String> list);
 
-    String cancelById(String code);
+    ///String cancelById(String code);
 
-    Inbound inboundCodeOrderLast(String sourceOderCode);
+    Inbound inboundCodeOrderLast(@Param("sourceOderCode")String sourceOderCode,
+                                 @Param("inboundTypeCode")String inboundTypeCode);
 
     /** 调拨/损溢入库同步sap **/
     void updateInboundSynchrSap(Inbound inbound);
