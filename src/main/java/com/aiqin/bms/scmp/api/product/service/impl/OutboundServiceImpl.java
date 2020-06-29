@@ -599,7 +599,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
         // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-        changeStockRequest.setOperationType(10);
+        if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode())){
+            changeStockRequest.setOperationType(11);
+        }else {
+            changeStockRequest.setOperationType(10);
+        }
 
         List<StockInfoRequest> stockInfoRequestList = Lists.newArrayList();
         OutboundProduct outboundProduct;
