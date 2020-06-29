@@ -465,12 +465,15 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         // 赋值传送运营中台的参数
         ReturnDLReq response = new ReturnDLReq();
-        ReturnOrderInfoDLReq orderInfo = new ReturnOrderInfoDLReq();
-        orderInfo.setReturnOrderCode(returnOrderCode);
-        orderInfo.setActualProductCount(returnOrderInfo.getActualProductCount());
-        orderInfo.setReturnById(returnOrderInfo.getUpdateById());
-        orderInfo.setReturnTime(returnOrderInfo.getUpdateTime());
-        response.setReturnOrderInfoDLReq(orderInfo);
+        if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_0)){
+            ReturnOrderInfoDLReq orderInfo = new ReturnOrderInfoDLReq();
+            orderInfo.setReturnOrderCode(returnOrderCode);
+            orderInfo.setActualProductCount(returnOrderInfo.getActualProductCount());
+            orderInfo.setReturnById(returnOrderInfo.getUpdateById());
+            orderInfo.setReturnTime(returnOrderInfo.getUpdateTime());
+            response.setReturnOrderInfoDLReq(orderInfo);
+        }
+
 
         List<ReturnOrderDetailDLReq> orderItems = Lists.newArrayList();
         ReturnOrderDetailDLReq returnOrderItem;
