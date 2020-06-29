@@ -1995,10 +1995,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //sku整箱商品包装信息
          List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos= productSkuBoxPackingService.getApply(skuCode,applyCode);
-         if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
-             productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
-             productSkuInfoWms.setUnitName(productSkuBoxPackingRespVos.get(0).getLargeUnit());
-             productSkuInfoWms.setUnitCode(productSkuBoxPackingRespVos.get(0).getUnitCode());
+        if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
+            productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
+        }
+        List<PurchaseSaleStockRespVo> applyList = productSkuStockInfoService.getApplyList(skuCode, applyCode);
+        if(CollectionUtils.isNotEmpty(applyList)){
+             productSkuInfoWms.setUnitName(applyList.get(0).getUnitName());
+             productSkuInfoWms.setUnitCode(applyList.get(0).getUnitCode());
          }
         productSkuInfoWms.setFlag(flagNum);
         productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());
