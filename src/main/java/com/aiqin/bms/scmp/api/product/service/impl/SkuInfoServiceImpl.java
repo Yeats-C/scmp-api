@@ -1997,6 +1997,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
          List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos= productSkuBoxPackingService.getApply(skuCode,applyCode);
          if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
              productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
+             productSkuInfoWms.setUnitName(productSkuBoxPackingRespVos.get(0).getLargeUnit());
+             productSkuInfoWms.setUnitCode(productSkuBoxPackingRespVos.get(0).getUnitCode());
          }
         productSkuInfoWms.setFlag(flagNum);
         productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());
@@ -2036,8 +2038,6 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //分销设置
         ApplyProductSkuDisInfo applyProductSkuDisInfo = productSkuDisInfoDao.getApply(skuCode,applyCode);
-        productSkuInfoWms.setUnitName(applyProductSkuDisInfo.getUnitName());
-        productSkuInfoWms.setUnitCode(applyProductSkuDisInfo.getUnitCode());
         productSkuInfoWms.setSpec(applyProductSkuDisInfo.getSpec());
         //经销商信息
         List<ApplyProductSkuSupplyUnit> applyProductSkuSupplyUnits = productSkuSupplyUnitDao.getApply(skuCode,applyCode);
