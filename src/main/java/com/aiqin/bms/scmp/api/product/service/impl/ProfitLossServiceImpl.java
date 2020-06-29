@@ -158,6 +158,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         if(result!=null){
             throw new GroundRuntimeException("单据已存在");
         }
+        WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
         // 损溢主表
         ProfitLoss profitLoss = new ProfitLoss();
         List<ProfitLoss> profitLossList = Lists.newArrayList();
@@ -256,8 +257,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
               batchList.add(profitLossProductBatch);
           }
       }
-        profitLoss.setLogisticsCenterCode(request.getTransportCenterCode());
-        profitLoss.setLogisticsCenterName(request.getTransportCenterName());
+        profitLoss.setLogisticsCenterCode(warehouseByCode.getLogisticsCenterCode());
+        profitLoss.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
         profitLoss.setProfitTotalCostRate(new BigDecimal(0));
         profitLoss.setLossTotalCostRate(new BigDecimal(0));
         profitLoss.setOrderCode(request.getOrderCode());
@@ -266,8 +267,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         }else {
             profitLoss.setOrderType(0);
         }
-        profitLoss.setWarehouseCode(request.getWarehouseCode());
-        profitLoss.setWarehouseName(request.getWarehouseName());
+        profitLoss.setWarehouseCode(warehouseByCode.getWarehouseCode());
+        profitLoss.setWarehouseName(warehouseByCode.getWarehouseName());
         profitLoss.setRemark(request.getRemark());
         profitLoss.setCompanyName(COMPANY_NAME);
         profitLoss.setCompanyCode(COMPANY_CODE);
@@ -282,7 +283,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         //添加损溢记录
         profitLossMapper.insertList(profitLossList);
         productMapper.insertList(profitLossProductList);
-        if(batchList.size() > 0){
+        if(CollectionUtils.isNotEmptyCollection(batchList)){
             batchProductMapper.insertBatchList(batchList);
         }
         //库存变动操作
@@ -296,7 +297,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         //正值减库存
         if (groupByList.get(1) != null) {
             //操作类型 直接减库存 4
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(1), request.getOrderCode(), batchList);
+            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(1), request.getOrderCode(), batchList, warehouseByCode);
             changeStockRequest.setOperationType(4);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -309,7 +310,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         }
         if (groupByList.get(0) != null) {
             //操作类型 直接加库存 6
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(0), request.getOrderCode(), batchList);
+            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(0), request.getOrderCode(), batchList, warehouseByCode);
             changeStockRequest.setOperationType(6);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -509,14 +510,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         return outboundReqVo;
     }
 
-    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode, List<ProfitLossProductBatch> batchLists) {
+    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode, List<ProfitLossProductBatch> batchLists, WarehouseDTO warehouseByCode) {
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfoRequest;
         List<StockBatchInfoRequest> batchList = Lists.newArrayList();
         StockBatchInfoRequest stockBatchInfoRequest;
         for (ProfitLossDetailRequest itemReqVo : profitLossProductList) {
-            WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(itemReqVo.getWarehouseCode());
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
