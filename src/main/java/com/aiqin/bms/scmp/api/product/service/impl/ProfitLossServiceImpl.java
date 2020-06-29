@@ -287,35 +287,44 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             batchProductMapper.insertBatchList(batchList);
         }
         //库存变动操作
-        Map<Integer, List<ProfitLossDetailRequest>> groupByList = profitLossProductList.stream().collect(Collectors.groupingBy(baseOrder -> {
-            if (baseOrder.getLossOrderCode().equals("1")) {
-                return 1;
-            } else {
-                return 0;
-            }
-        }));
-        //正值减库存
-        if (groupByList.get(1) != null) {
-            //操作类型 直接减库存 4
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(1), request.getOrderCode(), batchList, warehouseByCode);
-            changeStockRequest.setOperationType(4);
-            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
-            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                LOGGER.error("wms回调:减库存异常");
-                throw new GroundRuntimeException("wms回调:减库存异常");
-            }
-            // 减库存 保存出库 损溢不进行出入库记录
+//        Map<Integer, List<ProfitLossDetailRequest>> groupByList = profitLossProductList.stream().collect(Collectors.groupingBy(baseOrder -> {
+//            if (baseOrder.getLossOrderCode().equals("1")) {
+//                return 1;
+//            } else {
+//                return 0;
+//            }
+//        }));
+        List<ProfitLossDetailRequest> profit = new ArrayList<>();
+        List<ProfitLossDetailRequest> loss = new ArrayList<>();
+        for (ProfitLossDetailRequest p:  profitLossProductList) {
+            //正值减库存
+            if (p.getLossOrderCode() == 2) {
+                loss.add(p);
+                // 减库存 保存出库 损溢不进行出入库记录
 //            OutboundReqVo outboundReqVo = outbount(profitLoss, profitLossProductList, batchList);
 //            outboundService.save(outboundReqVo);
-        }
-        if (groupByList.get(0) != null) {
-            //操作类型 直接加库存 6
-            ChangeStockRequest changeStockRequest = handleProfitLossStockData(groupByList.get(0), request.getOrderCode(), batchList, warehouseByCode);
-            changeStockRequest.setOperationType(6);
-            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
-            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-                LOGGER.error("wms回调:加库存异常");
-                throw new GroundRuntimeException("wms回调:加库存异常");
+            }else if (p.getLossOrderCode() == 1){
+                profit.add(p);
+            }
+            if(CollectionUtils.isNotEmptyCollection(loss)){
+                //操作类型 直接减库存 4
+                ChangeStockRequest changeStockRequest = handleProfitLossStockData(loss, request.getOrderCode(), batchList, warehouseByCode);
+                changeStockRequest.setOperationType(4);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+                if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                    LOGGER.error("wms回调:减库存异常");
+                    throw new GroundRuntimeException("wms回调:减库存异常");
+                }
+            }
+            if(CollectionUtils.isNotEmptyCollection(profit)){
+                //操作类型 直接加库存 6
+                ChangeStockRequest changeStockRequest = handleProfitLossStockData(profit, request.getOrderCode(), batchList, warehouseByCode);
+                changeStockRequest.setOperationType(6);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+                if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                    LOGGER.error("wms回调:加库存异常");
+                    throw new GroundRuntimeException("wms回调:加库存异常");
+                }
             }
             // 加库存 保存入库 损溢不进行出入库记录
 //            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);
