@@ -32,6 +32,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailR
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
@@ -57,6 +60,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.ibatis.javassist.expr.NewArray;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1560,13 +1564,79 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         // 更新出库单
         this.updateOutbound(request);
-        // 调用爱亲供应链的接口 回传销售单的发货等信息
-        LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
-        this.updateAiqinOrder(request);
+
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
+        if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
+            // 调用爱亲供应链的接口 回传销售单的发货等信息
+            LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
+            this.updateAiqinOrder(request);
+        }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 调用dl的接口 回传销售单的发货等信息
+            LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + request);
+            this.updateDlOrder(request);
+        }else {
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
+        }
+
 
         // 调用sap 传送销售单的数据给sap
         sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
+    }
+
+    @Async
+    public void updateDlOrder(OutboundCallBackRequest request) {
+        // dl主表信息
+        EchoOrderRequest echoOrderRequest = new EchoOrderRequest();
+        echoOrderRequest.setOrderCode(request.getOderCode());
+        echoOrderRequest.setOperationTime(request.getDeliveryTime());
+        echoOrderRequest.setOperationType(3);
+        echoOrderRequest.setOperationCode(request.getPersonId());
+        echoOrderRequest.setOperationName(request.getPersonName());
+        // dl商品表信息
+        List<ProductRequest> productList = new ArrayList<>();
+        List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            OrderInfoItem orderInfoItem = orderInfoItemMapper.selectOrderByLine(request.getOderCode(), detail.getLineCode());
+            ProductRequest productRequest = new ProductRequest();
+            // 商品信息传输
+            productRequest.setLineCode(detail.getLineCode().intValue());
+            productRequest.setSkuCode(detail.getSkuCode());
+            productRequest.setSkuName(detail.getSkuName());
+            productRequest.setTotalCount(detail.getActualProductCount());
+            productRequest.setUnitCode(orderInfoItem.getUnitCode());
+            productRequest.setUnitName(orderInfoItem.getUnitName());
+            productRequest.setColorName(orderInfoItem.getColorName());
+            productRequest.setModelNumber(orderInfoItem.getModelCode());
+            productRequest.setProductType(orderInfoItem.getGivePromotion());
+            productRequest.setProductAmount(orderInfoItem.getAmount());
+            productRequest.setTaxRate(orderInfoItem.getTax());
+            productRequest.setChannelAmount(orderInfoItem.getChannelUnitPrice());
+            productRequest.setActivityApportionment(new BigDecimal(orderInfoItem.getActivityApportionment()));
+            productRequest.setPreferentialAllocation(new BigDecimal(orderInfoItem.getPreferentialAllocation()));
+            // dl批次表信息
+            List<BatchRequest> batchList = new ArrayList<>();
+            List<OutboundCallBackBatchRequest> batchOrderList = request.getBatchList();
+            if(batchOrderList != null){
+                for (OutboundCallBackBatchRequest batchDetail: batchOrderList) {
+                    BatchRequest batchRequest = new BatchRequest();
+                    // 批次信息传输
+                    if(Objects.equals(detail.getSkuCode()+detail.getLineCode(),batchDetail.getSkuCode()+batchDetail.getLineCode())){
+                        batchRequest.setLineCode(batchDetail.getLineCode().intValue());
+                        batchRequest.setSkuCode(batchDetail.getSkuCode());
+                        batchRequest.setBatchCode(batchDetail.getBatchCode());
+                        batchRequest.setProductDate(batchDetail.getProductDate());
+                        batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
+                        batchRequest.setTotalCount(batchDetail.getTotalCount());
+                    }
+                    batchList.add(batchRequest);
+                }
+            }
+            productRequest.setBatchList(batchList);
+            productList.add(productRequest);
+        }
+        echoOrderRequest.setProductList(productList);
+        LOGGER.info("调用dl开始,echoOrderRequest={}", JsonUtil.toJson(echoOrderRequest));
     }
 
     private void updateOutbound(OutboundCallBackRequest request){
