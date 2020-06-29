@@ -465,9 +465,12 @@
   </select>
   <select id="wmsByInboundProduct" resultType="com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource">
     select
-    sku_code skuCode, sku_name skuName, color_name colorName, model modelNumber, unit_code inboundUnitCode, unit_name inboundUnitName,
-    pre_inbound_num inboundNum, pre_inbound_main_num totalCount, linenum lineCode, tax
-    from inbound_product
-    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+    a.sku_code skuCode, a.sku_name skuName, a.color_name colorName, a.model modelNumber, a.unit_code inboundUnitCode,
+    a.unit_name inboundUnitName, a.pre_inbound_num inboundNum, a.pre_inbound_main_num totalCount, a.linenum lineCode,
+    a.tax, b.sales_code skuBarCode
+    from inbound_product a
+    inner join product_sku_sales_info b
+    on a.sku_code = b.product_sku_code
+    where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
 </mapper>

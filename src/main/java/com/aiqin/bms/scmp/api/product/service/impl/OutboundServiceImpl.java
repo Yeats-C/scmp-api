@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundSource;
@@ -144,6 +145,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private WarehouseDao warehouseDao;
     @Autowired
     private StockBatchDao stockBatchDao;
+    @Autowired
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -293,7 +296,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             detailSource.setStockUnitCode(product.getUnitCode());
             detailSource.setStockUnitName(product.getUnitName());
             detailSource.setModelNumber(product.getModel());
-            detailSource.setSkuBarCode(product.getBarCode());
+            // 查询门店条码
+            PurchaseSaleStockRespVo saleInfo = productSkuSalesInfoDao.selectBarCodeBySkuCode(product.getSkuCode());
+            if(saleInfo != null){
+                detailSource.setSkuBarCode(saleInfo.getBarCode());
+            }
             detailSourceList.add(detailSource);
         }
         outboundSource.setDetailList(detailSourceList);
