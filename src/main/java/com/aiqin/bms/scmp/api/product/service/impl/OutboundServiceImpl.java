@@ -613,15 +613,17 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //设置实际数量，实际数量/实际含税单价，实际含税总价
             Long actualTotalCount = detail.getActualTotalCount();
-            outboundProduct.setPraOutboundNum(actualTotalCount / Long.valueOf(outboundProduct.getOutboundBaseContent()));
-            outboundProduct.setPraOutboundMainNum(actualTotalCount);
-            outboundProduct.setPraTaxPurchaseAmount(outboundProduct.getPreTaxPurchaseAmount());
-            outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).
-                    setScale(4, BigDecimal.ROUND_HALF_UP));
+            if(outboundProduct != null){
+                outboundProduct.setPraOutboundNum(actualTotalCount / Long.valueOf(outboundProduct.getOutboundBaseContent()));
+                outboundProduct.setPraOutboundMainNum(actualTotalCount);
+                outboundProduct.setPraTaxPurchaseAmount(outboundProduct.getPreTaxPurchaseAmount());
+                outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).multiply(outboundProduct.getPraTaxPurchaseAmount()).
+                        setScale(4, BigDecimal.ROUND_HALF_UP));
 
-            // 修改出库单对应的回传数据
-            Integer count = outboundProductDao.update(outboundProduct);
-            log.info("更新出库单商品信息：" + outboundProduct, count);
+                // 修改出库单对应的回传数据
+                Integer count = outboundProductDao.update(outboundProduct);
+                log.info("更新出库单商品信息：" + outboundProduct, count);
+            }
 
             // 计算出库单总的出库数量、主数量/总的含税总金额、税额、不含税总金额
             praOutboundCount += outbound.getPraOutboundNum();
