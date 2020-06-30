@@ -5,6 +5,8 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportLog;
@@ -16,6 +18,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest
 import com.aiqin.bms.scmp.api.purchase.mapper.TransportLogMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.TransportMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.TransportOrdersMapper;
+import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.util.*;
@@ -28,7 +31,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -41,6 +46,8 @@ public class TransportServiceImpl implements TransportService {
     private TransportLogMapper transportLogMapper;
     @Autowired
     private OrderService orderService;
+    @Autowired
+    private OrderCallbackService orderCallbackService;
 
     @Override
     public BasePage<Transport> selectPage(TransportRequest transportRequest) {
@@ -82,7 +89,7 @@ public class TransportServiceImpl implements TransportService {
             transportOrder.setTransportCode(code);
             transportOrder.setCreateBy(currentAuthToken.getPersonName());
             transportOrder.setUpdateBy(currentAuthToken.getPersonName());
-            transportAmount+=transportOrder.getOrderAmount();
+            transportAmount+=transportOrder.getOrderAmount().longValue();
 //            orderCommodityNum+=transportOrder.getProductNum();
         }
         //查询一次收货信息设置值
@@ -120,6 +127,37 @@ public class TransportServiceImpl implements TransportService {
         }
         List<TransportLog> logs = Lists.newArrayList();
         for (Transport transport1 : transport) {
+            // 传发运参数
+            DeliveryCallBackRequest request = new DeliveryCallBackRequest();
+            request.setDeliveryCode(transport1.getTransportCode());
+            request.setCustomerCode(transport1.getCustomerCode());
+            request.setCustomerName(transport1.getCustomerName());
+            request.setTransportDate(transport1.getTransportTime());
+//            request.setTransportPerson(); // 发运人
+            request.setTransportAmount(transport1.getTransportAmount());
+            request.setStandardLogisticsFee(transport1.getStandardLogisticsFee());
+            request.setAdditionalLogisticsFee(transport1.getAdditionalLogisticsFee());
+            request.setTransportCode(transport1.getLogisticsCompany());
+            request.setTransportCompanyCode(transport1.getLogisticsCompany());
+            request.setTransportCompanyName(transport1.getLogisticsCompanyName());
+            request.setTransportCenterCode(transport1.getTransportCenterCode());
+            request.setTransportCenterName(transport1.getTransportCenterName());
+            request.setDeliverTo(transport1.getDeliverTo());
+            request.setPackingNum(transport1.getPackingNum());
+            request.setOrderCommodityNum(transport1.getOrderCommodityNum());
+            request.setTotalVolume(transport1.getTotalVolume());
+            request.setTotalWeight(transport1.getTotalWeight());
+            List<DeliveryDetailRequest> detailList = new ArrayList<>();
+            List<TransportOrders> transportOrders = transportOrdersMapper.selectOrderCodeByTransportCode(transport1.getTransportCode());
+            for (TransportOrders t : transportOrders) {
+                DeliveryDetailRequest detail = new DeliveryDetailRequest();
+                detail.setOrderCode(t.getOrderCode());
+                detail.setTransportAmount(t.getOrderAmount());
+                detailList.add(detail);
+            }
+            request.setDetailList(detailList);
+//            调用发运接口
+            orderCallbackService.deliveryCallBack(request);
             //写入发运单创建日志
             if (transport1.getStatus() != 1) {
                 transportCode.remove(transport1.getTransportCode());
