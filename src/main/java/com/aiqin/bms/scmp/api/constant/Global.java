@@ -193,7 +193,6 @@ public final class Global {
     /**
      *  订单类型  1配送、2直送、3货架直送、4采购直送
      */
-    public static final Integer ORDER_TYPE_0 = 0;
     public static final Integer ORDER_TYPE_1 = 1;
     public static final Integer ORDER_TYPE_2 = 2;
     public static final Integer ORDER_TYPE_3 = 3;

@@ -138,7 +138,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         ReturnOrderInfo orderInfo = returnOrderInfoMapper.selectByCode(returnOrderInfo.getReturnOrderCode());
-        if(orderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
+        if(orderInfo.getOrderType().equals(Global.ORDER_TYPE_2)) {
             if (!orderInfo.getOrderStatus().equals(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode()) &&
                     !orderInfo.getOrderStatus().equals(ReturnOrderStatus.PENDING_REVIEW.getStatusCode()) &&
                     !orderInfo.getOrderStatus().equals(ReturnOrderStatus.EXAMINATION_PASSED.getStatusCode()) &&
@@ -375,7 +375,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setConsigneePhone(returnOrderInfo.getReceivePerson());
         returnOrder.setDistributionMode(returnOrderInfo.getDistributionModeName());
         // 退货单状态
-        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_0)) {
+        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_2)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
         } else if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode());
