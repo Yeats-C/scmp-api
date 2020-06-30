@@ -1742,18 +1742,19 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Transport transport=new Transport();
         transport.setLogisticsFee(request.getTransportAmount());
         transport.setTransportCode(request.getDeliveryCode());
-        //查询一次收货信息设置值
-        transport.setConsigneeName(orderInfo.getConsignee());
-        transport.setCustomerCode(orderInfo.getCustomerCode());
-        transport.setCustomerName(orderInfo.getCustomerName());
-        transport.setConsigneePhone(orderInfo.getConsigneePhone());
-        transport.setDetailedAddress(orderInfo.getDetailAddress());
-        transport.setStatus(2);//设已发运状态
-//        transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
-//        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
-        transport.setZip(orderInfo.getZipCode());
+        transport.setCustomerCode(request.getCustomerCode());
+        transport.setCustomerName(request.getCustomerName());
         transport.setTransportCenterCode(request.getTransportCenterCode());
         transport.setTransportCenterName(request.getTransportCenterName());
+        transport.setStatus(2);//设已发运状态
+        //查询一次收货信息设置值
+        transport.setConsigneeName(orderInfo.getConsignee());
+        transport.setConsigneePhone(orderInfo.getConsigneePhone());
+        transport.setDetailedAddress(orderInfo.getDetailAddress());
+        transport.setZip(orderInfo.getZipCode());
+//        transport.setConsigneeAddress(orderInfo.getDetailAddress());
+//        transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
+//        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
         List<TransportOrders> transportOrders = new ArrayList<>();
         transportMapper.insertOne(transport);
 //        transportOrdersMapper.insertBatch(transportOrders);
