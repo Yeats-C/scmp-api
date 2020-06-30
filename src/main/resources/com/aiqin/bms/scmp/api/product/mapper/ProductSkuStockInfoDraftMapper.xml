@@ -41,6 +41,8 @@
     <result column="max_order_num" jdbcType="BIGINT" property="maxOrderNum" />
     <result column="type" jdbcType="TINYINT" property="type"/>
     <result column="is_default" jdbcType="TINYINT" property="isDefault"/>
+    <result column="stock_unit_code" jdbcType="VARCHAR" property="stockUnitCode"/>
+    <result column="stock_unit_name" jdbcType="VARCHAR" property="stockUnitName"/>
   </resultMap>
   <sql id="Base_Column_List">
     id, product_code, spec, product_name, unit_code, unit_name, bar_code, base_product_content, 

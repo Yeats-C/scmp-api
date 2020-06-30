@@ -293,13 +293,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             detailSource= BeanCopyUtils.copy(product, PurchaseOutboundDetailSource.class);
             detailSource.setLineCode(product.getLinenum().toString());
             detailSource.setTotalCount(product.getPreOutboundMainNum().intValue());
-            detailSource.setStockUnitCode(product.getUnitCode());
-            detailSource.setStockUnitName(product.getUnitName());
             detailSource.setModelNumber(product.getModel());
             // 查询门店条码
             PurchaseSaleStockRespVo saleInfo = productSkuSalesInfoDao.selectBarCodeBySkuCode(product.getSkuCode());
             if(saleInfo != null){
                 detailSource.setSkuBarCode(saleInfo.getBarCode());
+                detailSource.setStockUnitCode(saleInfo.getStockUnitCode());
+                detailSource.setStockUnitName(saleInfo.getStockUnitName());
             }
             detailSourceList.add(detailSource);
         }
