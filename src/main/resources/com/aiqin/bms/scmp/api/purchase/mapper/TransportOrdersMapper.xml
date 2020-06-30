@@ -40,7 +40,7 @@
     <select id="selectListByTransportCode" resultMap="TransportOrdersMap">
         select <include refid="Transport_Orders_sql"></include> from transport_orders where transport_code=#{transportCode}
     </select>
-    <select id="selectOrderCodeByTransportCode">
+    <select id="selectOrderCodeByTransportCode" resultMap="TransportOrdersMap">
         select <include refid="Transport_Orders_sql"></include>
         from transport_orders
         where transport_code=#{transportCode}

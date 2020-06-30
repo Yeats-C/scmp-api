@@ -276,7 +276,7 @@ public class OrderInfo {
     private Integer businessForm;
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
-    private String platformType;
+    private Integer platformType;
 
     @ApiModelProperty("税号")
     private String taxId;

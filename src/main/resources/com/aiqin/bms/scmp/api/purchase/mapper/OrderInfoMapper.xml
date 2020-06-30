@@ -83,7 +83,7 @@
       <result column="transport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="transport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
       <result column="transport_number" jdbcType="VARCHAR" property="transportNumber" />
-      <result column="platform_type" jdbcType="TIMESTAMP" property="platformType" />
+      <result column="platform_type" jdbcType="TINYINT" property="platformType" />
       <result column="business_form" jdbcType="TINYINT" property="businessForm" />
       <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
   </resultMap>
