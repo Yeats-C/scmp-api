@@ -755,7 +755,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             //锁定库存 - 库存不变，锁定库存增加，可用库存减少
             case 1:
                 // 验证可用库存在操作前后都不能为负。实际操作为：加锁定库存、减可用库存。
-                if(availableCount < changeCount){
+                if (availableCount < changeCount) {
                     LOGGER.error("锁定库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
                     throw new BizException("锁定库存: 可用库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
@@ -766,7 +766,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 减库存并解锁 - 库存减少，锁定库存减少，可用库存不变
             case 2:
                 // 验证锁定库存在操作前后都不能为负。实际操作为：减总库存、减锁定库存。
-                if(lockCount < changeCount || inventoryCount < changeCount){
+                if (lockCount < changeCount || inventoryCount < changeCount) {
                     LOGGER.error("减库存并解锁: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
                     throw new BizException("减库存并解锁: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
@@ -777,7 +777,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 解锁库存 - 库存不变，锁定库存减少，可用库存增加
             case 3:
                 // 验证锁定库存在操作前后都不能为负。实际操作为：减锁定库存、加可用库存。
-                if(lockCount < changeCount){
+                if (lockCount < changeCount) {
                     LOGGER.error("解锁库存: 锁定库存在操作前后都不能为负,sku:" + request.getSkuCode());
                     throw new BizException("解锁库存: 锁定库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
@@ -788,7 +788,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 减库存 - 库存减少，锁定库存不变，可用库存减少
             case 4:
                 // 验证总库存、可用库存在操作前后都不能为负。实际操作为：减总库存、减可用库存。
-                if(availableCount < changeCount || inventoryCount < changeCount ){
+                if (availableCount < changeCount || inventoryCount < changeCount) {
                     LOGGER.error("减库存: 可用库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
                     throw new BizException("减库存:可用库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
@@ -812,11 +812,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
             // 加在途(采购、调拨) - 不验证在途数。实际操作为：加在途数。
             case 7:
-                if(request.getSourceDocumentType() == 3){
+                if (request.getSourceDocumentType() == 3) {
                     // 采购加在途
                     stock.setPurchaseWayCount(purchaseWayCount + changeCount);
                     stock.setTotalWayCount(totalWayCount + changeCount);
-                }else if(request.getSourceDocumentType() == 4){
+                } else if (request.getSourceDocumentType() == 4) {
                     // 加调拨加在途
                     stock.setAllocationWayCount(allocationWayCount + changeCount);
                     stock.setTotalWayCount(totalWayCount + changeCount);
@@ -827,9 +827,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             case 8:
                 // 预计在途数
                 Long preWayCount = request.getPreWayCount() == null ? 0L : request.getPreWayCount();
-                if(request.getSourceDocumentType() == 3){
+                if (request.getSourceDocumentType() == 3) {
                     // 采购减在途
-                    if(purchaseWayCount < preWayCount){
+                    if (purchaseWayCount < preWayCount) {
                         LOGGER.error("采购减在途: 采购在途数不能为负,sku:" + request.getSkuCode());
                         throw new BizException("采购减在途: 采购在途数不能为负，sku:" + request.getSkuCode());
                     }
@@ -838,9 +838,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stock.setInventoryCount(inventoryCount + changeCount);
                     stock.setAvailableCount(availableCount + changeCount);
 
-                }else if(request.getSourceDocumentType() == 4){
+                } else if (request.getSourceDocumentType() == 4) {
                     // 调拨减在途
-                    if(allocationWayCount < preWayCount){
+                    if (allocationWayCount < preWayCount) {
                         LOGGER.error("调拨减在途: 采购在途数不能为负,sku:" + request.getSkuCode());
                         throw new BizException("调拨减在途: 采购在途数不能为负，sku:" + request.getSkuCode());
                     }
@@ -859,30 +859,27 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 出库减并解锁库存逻辑
             case 10:
                 Long preLockCount = request.getPreLockCount() == null ? 0L : request.getPreLockCount();
-                if(lockCount < preLockCount || inventoryCount < changeCount){
+                if (lockCount < preLockCount || inventoryCount < changeCount) {
                     LOGGER.error("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
                     throw new BizException("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
                 }
                 stock.setInventoryCount(inventoryCount - changeCount);
                 stock.setLockCount(lockCount - preLockCount);
-                if(changeCount > preLockCount){
-                    if(availableCount < (changeCount - preLockCount)){
-                        LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
-                        throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
-                    }
-                    stock.setAvailableCount(availableCount - (changeCount - preLockCount));
-                }else {
-                    stock.setAvailableCount(availableCount + (changeCount - preLockCount));
+                if (availableCount < (changeCount - preLockCount)) {
+                    LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
                 }
+                stock.setAvailableCount(availableCount - changeCount);
+
                 break;
-             case 11:
-                 if(inventoryCount < changeCount || availableCount < changeCount){
-                     LOGGER.error("wms回传出库减并解锁库存: 可用库存/总库存在操作前后都不能为负,sku:" + request.getSkuCode());
-                     throw new BizException("wms回传出库减并解锁库存: 可用库存/总库存在操作前后都不能为负，sku:" + request.getSkuCode());
-                 }
-                 stock.setInventoryCount(inventoryCount - changeCount);
-                 stock.setAvailableCount(availableCount - changeCount);
-                 break;
+            case 11:
+                if (inventoryCount < changeCount || availableCount < changeCount) {
+                    LOGGER.error("wms回传出库减并解锁库存: 可用库存/总库存在操作前后都不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("wms回传出库减并解锁库存: 可用库存/总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setInventoryCount(inventoryCount - changeCount);
+                stock.setAvailableCount(availableCount - changeCount);
+                break;
             default:
                 return null;
         }

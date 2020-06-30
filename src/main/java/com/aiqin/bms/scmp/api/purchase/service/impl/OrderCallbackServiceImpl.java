@@ -74,7 +74,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -189,11 +188,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private InboundService inboundService;
     @Resource
     private TransportMapper transportMapper;
-    @Resource
-    private TransportOrdersMapper transportOrdersMapper;
     @Autowired
     @Lazy(true)
     private SapBaseDataService sapBaseDataService;
+    @Autowired
+    private UrlConfig urlConfig;
 
     /**
      * 销售出库接口
@@ -1567,13 +1566,92 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         // 更新出库单
         this.updateOutbound(request);
-        // 调用爱亲供应链的接口 回传销售单的发货等信息
-        LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
-        this.updateAiqinOrder(request);
+
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
+        if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
+            // 调用爱亲供应链的接口 回传销售单的发货等信息
+            LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
+            this.updateAiqinOrder(request);
+        }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 调用dl的接口 回传销售单的发货等信息
+            LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + request);
+            this.updateDlOrder(request);
+        }else {
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
+        }
+
 
         // 调用sap 传送销售单的数据给sap
         sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
+    }
+
+    @Async
+    public void updateDlOrder(OutboundCallBackRequest request) {
+        // dl主表信息
+        EchoOrderRequest echoOrderRequest = new EchoOrderRequest();
+        echoOrderRequest.setOrderCode(request.getOderCode());
+        echoOrderRequest.setOperationTime(request.getDeliveryTime());
+        echoOrderRequest.setOperationType(3);
+        echoOrderRequest.setOperationCode(request.getPersonId());
+        echoOrderRequest.setOperationName(request.getPersonName());
+        // dl商品表信息
+        List<ProductRequest> productList = new ArrayList<>();
+        List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        ProductRequest productRequest;
+        List<BatchRequest> batchList;
+        BatchRequest batchRequest;
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            OrderInfoItem orderInfoItem = orderInfoItemMapper.selectOrderByLine(request.getOderCode(), detail.getLineCode());
+            productRequest = new ProductRequest();
+            // 商品信息传输
+            productRequest.setLineCode(detail.getLineCode().intValue());
+            productRequest.setSkuCode(detail.getSkuCode());
+            productRequest.setSkuName(detail.getSkuName());
+            productRequest.setTotalCount(detail.getActualProductCount());
+            productRequest.setUnitCode(orderInfoItem.getUnitCode());
+            productRequest.setUnitName(orderInfoItem.getUnitName());
+            productRequest.setColorName(orderInfoItem.getColorName());
+            productRequest.setModelNumber(orderInfoItem.getModelCode());
+            productRequest.setProductType(orderInfoItem.getGivePromotion());
+            productRequest.setProductAmount(orderInfoItem.getAmount());
+            productRequest.setTaxRate(orderInfoItem.getTax());
+            productRequest.setChannelAmount(orderInfoItem.getChannelUnitPrice());
+            productRequest.setActivityApportionment(new BigDecimal(orderInfoItem.getActivityApportionment()));
+            productRequest.setPreferentialAllocation(new BigDecimal(orderInfoItem.getPreferentialAllocation()));
+
+            // dl批次表信息
+            batchList = new ArrayList<>();
+            List<OutboundCallBackBatchRequest> batchOrderList = request.getBatchList();
+            if(CollectionUtils.isNotEmpty(batchOrderList) && batchOrderList.size() > 0){
+                for (OutboundCallBackBatchRequest batchDetail: batchOrderList) {
+                    batchRequest = new BatchRequest();
+                    // 批次信息传输
+                    if(Objects.equals(detail.getSkuCode() + detail.getLineCode().toString(),
+                            batchDetail.getSkuCode() + batchDetail.getLineCode().toString())){
+                        batchRequest.setLineCode(batchDetail.getLineCode().intValue());
+                        batchRequest.setSkuCode(batchDetail.getSkuCode());
+                        batchRequest.setBatchCode(batchDetail.getBatchCode());
+                        batchRequest.setProductDate(batchDetail.getProductDate());
+                        batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
+                        batchRequest.setTotalCount(batchDetail.getTotalCount());
+                        batchList.add(batchRequest);
+                    }
+                }
+                productRequest.setBatchList(batchList);
+            }
+            productList.add(productRequest);
+        }
+        echoOrderRequest.setProductList(productList);
+        LOGGER.info("熙耘->DL,转化退货单回调参数：{}", JsonUtil.toJson(echoOrderRequest));
+        String url = urlConfig.WMS_API_URL + "/dl/order/echo";
+        HttpClient httpClient = HttpClient.post(url).json(echoOrderRequest).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("熙耘->DL，调用abutment-api退货单成功");
+        }else {
+            LOGGER.info("熙耘->DL，调用abutment-api退货单失败:{}", response.getMessage());
+        }
     }
 
     private void updateOutbound(OutboundCallBackRequest request){
@@ -1720,20 +1798,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             throw new GroundRuntimeException(String.format("更新耘链的订单的发运信息失败:%s", count));
         }
         // 回传爱亲的销售单的发运信息
-        DeliveryInfoVo info =  new DeliveryInfoVo();
-        BeanUtils.copyProperties(request, info);
-        info.setTransportStatus(0);
-        List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
-        info.setDeliveryDetail(infoList);
-        String url = orderUrl + "/purchase/delivery/info";
-        LOGGER.info("打印发运单回传爱亲数据："  + JsonUtil.toJson(info));
-        HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
-        HttpResponse response = httpClient.action().result(HttpResponse.class);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("回传爱亲供应链的发运单成功");
+        if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
+            DeliveryInfoVo info =  new DeliveryInfoVo();
+            BeanUtils.copyProperties(request, info);
+            info.setTransportStatus(0);
+            List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
+            info.setDeliveryDetail(infoList);
+            String url = orderUrl + "/purchase/delivery/info";
+            LOGGER.info("打印发运单回传爱亲数据："  + JsonUtil.toJson(info));
+            HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
+            HttpResponse response = httpClient.action().result(HttpResponse.class);
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("回传爱亲供应链的发运单成功");
+            }else {
+                LOGGER.error("回传爱亲供应链的发运单失败:{}", response.getMessage());
+                throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
+            }
+        }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
+
         }else {
-            LOGGER.error("回传爱亲供应链的发运单失败:{}", response.getMessage());
-            throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
         return HttpResponse.success();
     }
