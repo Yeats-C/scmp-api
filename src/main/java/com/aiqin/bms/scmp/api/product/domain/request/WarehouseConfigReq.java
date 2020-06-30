@@ -139,6 +139,10 @@ public class WarehouseConfigReq  extends PageReq {
     @JsonProperty("create_by")
     private String createBy;
 
+    @ApiModelProperty("创建人id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
     /**
      * 创建时间
      * 表字段 : warhouse_config.create_time
@@ -154,6 +158,10 @@ public class WarehouseConfigReq  extends PageReq {
     @ApiModelProperty("创建人")
     @JsonProperty("update_by")
     private String updateBy;
+
+    @ApiModelProperty("创建人id")
+    @JsonProperty("update_by_id")
+    private String updateById;
 
     @ApiModelProperty(value = "修改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

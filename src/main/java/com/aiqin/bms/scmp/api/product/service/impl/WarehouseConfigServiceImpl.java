@@ -63,6 +63,9 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
 
        AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         warehouseConfigReq.setCreateBy(currentAuthToken.getPersonName());
+        warehouseConfigReq.setCreateById(currentAuthToken.getPersonId());
+        warehouseConfigReq.setUpdateBy(currentAuthToken.getPersonName());
+        warehouseConfigReq.setUpdateById(currentAuthToken.getPersonId());
         try {
             log.info("库房配置保存传入wmsa，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
            warehouseConfigDao.insert(warehouseConfigReq);
