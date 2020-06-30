@@ -735,6 +735,7 @@ public class InboundServiceImpl implements InboundService {
                     continue;
                 }
                 // 查询对应订单的sku
+                productBatch = new InboundBatch();
                 productBatch.setInboundOderCode(product.getInboundOderCode());
                 productBatch.setBatchCode(batchInfo.getBatchCode());
                 productBatch.setBatchInfoCode(batchInfoCode);
