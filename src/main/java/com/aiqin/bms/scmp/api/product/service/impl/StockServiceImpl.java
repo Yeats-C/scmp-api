@@ -23,7 +23,6 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRe
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.stock.StockFlowRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockSumResponse;
 import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSkuReqVo;
@@ -31,7 +30,6 @@ import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
-import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -39,7 +37,9 @@ import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -80,8 +80,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     @Autowired
     private StockFlowDao stockFlowDao;
     @Autowired
-    private ProductSkuDao productSkuDao;
-    @Autowired
     private PurchaseGroupService purchaseGroupService;
     @Autowired
     private RedisLockService redisLockService;
@@ -92,9 +90,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     @Autowired
     private ProductSkuStockInfoMapper productSkuStockInfoDao;
     @Autowired
-    private WarehouseDao warehouseDao;
-    @Autowired
     private ProductCategoryDao productCategoryDao;
+    @Autowired
+    private UrlConfig urlConfig;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -696,15 +694,29 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
             LOGGER.info("库存操作结束");
             // 调用批次库存操作
-            if(!request.getOperationType().equals(7) && CollectionUtils.isNotEmpty(request.getStockBatchList())){
+            if(!request.getOperationType().equals(7) && CollectionUtils.isNotEmpty(request.getStockBatchList())
+                    && request.getStockBatchList().size() > 0){
                 this.changeStockBatch(request);
             }
+            // 调用DL 推送库存变更信息
+           // this.dlStockChange(request);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("操作库存失败", e.getMessage());
             throw new BizException("操作库存失败");
         }
         return HttpResponse.success();
+    }
+
+    private void dlStockChange(ChangeStockRequest request){
+        String url = urlConfig.WMS_API_URL + "/dl/stock/change";
+        HttpClient httpClient = HttpClient.post(url).json(request).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("熙耘->DL，推送库存变更信息成功");
+        }else {
+            LOGGER.info("熙耘->DL，推送库存变更信息失败:{}", response.getMessage());
+        }
     }
 
     /** 参数转换成库存数据*/
