@@ -611,6 +611,21 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(outbound.getWarehouseCode());
         LOGGER.info("wms出库回传，查询对应的库房批次管理信息：{}", JsonUtil.toJson(warehouse));
 
+        Integer typeCode;
+        if(outbound.getOutboundTypeCode().intValue() == 1){
+            typeCode = 2;
+        }else if(outbound.getOutboundTypeCode().intValue() == 2){
+            typeCode = 4;
+        }else if(outbound.getOutboundTypeCode().intValue() == 3){
+            typeCode = 9;
+        }else if(outbound.getOutboundTypeCode().intValue() == 4){
+            typeCode = 6;
+        }else if(outbound.getOutboundTypeCode().intValue() == 5){
+            typeCode = 10;
+        }else {
+            typeCode = 8;
+        }
+
         // 更新出库商品信息
         OutboundBatch outboundBatch;
         List<OutboundBatch> outboundBatches = Lists.newArrayList();
@@ -657,19 +672,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
             stockInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
             stockInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-            if(outbound.getOutboundTypeCode().intValue() == 1){
-                stockInfoRequest.setSourceDocumentType(2);
-            }else if(outbound.getOutboundTypeCode().intValue() == 2){
-                stockInfoRequest.setSourceDocumentType(4);
-            }else if(outbound.getOutboundTypeCode().intValue() == 3){
-                stockInfoRequest.setSourceDocumentType(9);
-            }else if(outbound.getOutboundTypeCode().intValue() == 4){
-                stockInfoRequest.setSourceDocumentType(6);
-            }else if(outbound.getOutboundTypeCode().intValue() == 5){
-                stockInfoRequest.setSourceDocumentType(10);
-            }else {
-                stockInfoRequest.setSourceDocumentType(8);
-            }
+            stockInfoRequest.setSourceDocumentType(typeCode);
             stockInfoRequest.setOperatorId(request.getOperatorId());
             stockInfoRequest.setOperatorName(request.getOperatorName());
             // 调拨设置减在途数
@@ -745,19 +748,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
                         stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
                         stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-                        if(outbound.getOutboundTypeCode().intValue() == 1){
-                            stockBatchInfoRequest.setSourceDocumentType(2);
-                        }else if(outbound.getOutboundTypeCode().intValue() == 2){
-                            stockBatchInfoRequest.setSourceDocumentType(4);
-                        }else if(outbound.getOutboundTypeCode().intValue() == 3){
-                            stockBatchInfoRequest.setSourceDocumentType(9);
-                        }else if(outbound.getOutboundTypeCode().intValue() == 4){
-                            stockBatchInfoRequest.setSourceDocumentType(6);
-                        }else if(outbound.getOutboundTypeCode().intValue() == 5){
-                            stockBatchInfoRequest.setSourceDocumentType(10);
-                        }else {
-                            stockBatchInfoRequest.setSourceDocumentType(8);
-                        }
+                        stockBatchInfoRequest.setSourceDocumentType(typeCode);
                         stockBatchInfoRequest.setOperatorId(request.getOperatorId());
                         stockBatchInfoRequest.setOperatorName(request.getOperatorName());
                         stockBatchInfoRequest.setBatchCode(batchList.get(i).getBatchCode());
