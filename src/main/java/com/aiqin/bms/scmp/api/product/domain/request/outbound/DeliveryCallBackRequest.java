@@ -20,7 +20,6 @@ import java.util.List;
 public class DeliveryCallBackRequest {
 
     @ApiModelProperty("发运单号(物流单号)")
-    @NotEmpty(message = "发运单号不能为空")
     @JsonProperty("delivery_code")
     private String deliveryCode;
 
