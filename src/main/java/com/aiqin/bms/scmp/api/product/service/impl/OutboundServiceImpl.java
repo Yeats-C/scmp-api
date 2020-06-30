@@ -599,11 +599,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
         // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-        if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode())){
-            changeStockRequest.setOperationType(11);
-        }else {
-            changeStockRequest.setOperationType(10);
-        }
+        changeStockRequest.setOperationType(10);
 
         List<StockInfoRequest> stockInfoRequestList = Lists.newArrayList();
         OutboundProduct outboundProduct;
@@ -661,7 +657,19 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
             stockInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
             stockInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-            stockInfoRequest.setSourceDocumentType(outbound.getOutboundTypeCode().intValue());
+            if(outbound.getOutboundTypeCode().intValue() == 1){
+                stockInfoRequest.setSourceDocumentType(2);
+            }else if(outbound.getOutboundTypeCode().intValue() == 2){
+                stockInfoRequest.setSourceDocumentType(4);
+            }else if(outbound.getOutboundTypeCode().intValue() == 3){
+                stockInfoRequest.setSourceDocumentType(9);
+            }else if(outbound.getOutboundTypeCode().intValue() == 4){
+                stockInfoRequest.setSourceDocumentType(6);
+            }else if(outbound.getOutboundTypeCode().intValue() == 5){
+                stockInfoRequest.setSourceDocumentType(10);
+            }else {
+                stockInfoRequest.setSourceDocumentType(8);
+            }
             stockInfoRequest.setOperatorId(request.getOperatorId());
             stockInfoRequest.setOperatorName(request.getOperatorName());
             // 调拨设置减在途数
@@ -737,7 +745,19 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
                         stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
                         stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-                        stockBatchInfoRequest.setSourceDocumentType(outbound.getOutboundTypeCode().intValue());
+                        if(outbound.getOutboundTypeCode().intValue() == 1){
+                            stockBatchInfoRequest.setSourceDocumentType(2);
+                        }else if(outbound.getOutboundTypeCode().intValue() == 2){
+                            stockBatchInfoRequest.setSourceDocumentType(4);
+                        }else if(outbound.getOutboundTypeCode().intValue() == 3){
+                            stockBatchInfoRequest.setSourceDocumentType(9);
+                        }else if(outbound.getOutboundTypeCode().intValue() == 4){
+                            stockBatchInfoRequest.setSourceDocumentType(6);
+                        }else if(outbound.getOutboundTypeCode().intValue() == 5){
+                            stockBatchInfoRequest.setSourceDocumentType(10);
+                        }else {
+                            stockBatchInfoRequest.setSourceDocumentType(8);
+                        }
                         stockBatchInfoRequest.setOperatorId(request.getOperatorId());
                         stockBatchInfoRequest.setOperatorName(request.getOperatorName());
                         stockBatchInfoRequest.setBatchCode(batchList.get(i).getBatchCode());
@@ -836,24 +856,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
             LOGGER.info("wms回传成功，根据出库单信息，变更对应销售单的实际值：", outbound.getSourceOderCode());
-//            SupplyOrderInfoReqVO supplyOrderInfoReqVO = new SupplyOrderInfoReqVO();
-//            supplyOrderInfoReqVO.setOrderCode(outbound.getSourceOderCode());
-//            supplyOrderInfoReqVO.setOutStockTime(outbound.getOutboundTime());
-//            List<SupplyOrderProductItemReqVO> orderItems = BeanCopyUtils.copyList(list,SupplyOrderProductItemReqVO.class);
-//            supplyOrderInfoReqVO.setOrderItems(orderItems);
-//            if(CollectionUtils.isNotEmpty(batchList)){
-//                List<SupplyOrderProductBatchItemReqVO> infoBatch = BeanCopyUtils.copyList(batchList, SupplyOrderProductBatchItemReqVO.class);
-//                supplyOrderInfoReqVO.setOrderBatchLists(infoBatch);
-//            }
-            // 调用订单接口 发货接口
-            //returnOder(supplyOrderInfoReqVO);
             OutboundCallBackRequest request = new OutboundCallBackRequest();
             request.setOderCode(outbound.getSourceOderCode());
             request.setDeliveryTime(outbound.getOutboundTime());
             request.setDeliveryPerson(requestVo.getOperatorName());
             request.setPersonId(requestVo.getOperatorId());
             request.setPersonName(outbound.getUpdateBy());
-       //     request.setReceiveTime();
             request.setActualTotalCount(outbound.getPraMainUnitNum());
             List<OutboundCallBackDetailRequest> orderItems = new ArrayList<>();
             for (OutboundProduct op : list) {
@@ -878,15 +886,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
 
             HttpResponse httpResponse = orderCallbackService.outboundOrderCallBack(request);
-//            if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
-//                LOGGER.info("调用发货单成功");
-//                // 调用sap 传送销售单的数据给sap
-//                sapBaseDataService.saleAndReturn(outbound.getSourceOderCode(), 0);
-//                LOGGER.info("销售wms回传成功");
-//            }else {
-//                LOGGER.error("调用发货单失败:{}", httpResponse.getMessage());
-//                throw new GroundRuntimeException(String.format("调用发货单失败:%s", httpResponse.getMessage()));
-//            }
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
             LOGGER.info("wms回传成功，根据出库单信息，变更对应退供单的实际值：", outbound.getSourceOderCode());
             RejectStockRequest rejectStockRequest = new RejectStockRequest();
