@@ -74,11 +74,11 @@ public class DeliveryCallBackRequest {
     private String transportCenterCode;
 
     @ApiModelProperty("发货至（传中文-1.收货人地址 2.货运站）")
-    //@JsonProperty("deliver_to")
+    @JsonProperty("deliver_to")
     private String deliverTo;
 
     @ApiModelProperty("发货至（传状态-1.收货人地址 2.货运站）")
-    //@JsonProperty("deliver_to_code")
+    @JsonProperty("deliver_to_code")
     private String deliverToCode;
 
     @ApiModelProperty("包装数")
