@@ -109,7 +109,7 @@ public class OutboundController {
     @ApiOperation("出库回调根据类型回传给来源单号状态测试")
     @PostMapping("/returnSource/test")
     public HttpResponse returnSource(@RequestBody OutboundCallBackReqVo requestVo) {
-        outboundService.returnSource(5955L,requestVo);
+        outboundService.returnSource(5980L,requestVo);
         return HttpResponse.success();
     }
 }

@@ -189,10 +189,13 @@
   </select>
   <select id="selectBarCodeBySkuCode" resultMap="com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoDraftMapper.StockRespMap">
     select
-     id, product_code, spec, product_name, unit_code, small_unit as unit_name, sales_code as bar_code, base_product_content,description,
-     is_default,del_flag, create_time, create_by, update_time, update_by, product_sku_code, product_sku_name,zero_removal_coefficient,3 as `type`
-    from product_sku_sales_info
-    where usage_status = 1 and product_sku_code = #{skuCode,jdbcType=VARCHAR}
+     a.product_code, a.spec, a.product_name, a.unit_code, a.small_unit as unit_name, a.sales_code as bar_code,
+     a.base_product_content,description, a.is_default, a.del_flag,  a.product_sku_code, a.product_sku_name,
+     a.zero_removal_coefficient, b.unit_code stock_unit_code, b.unit_name stockUnitName
+    from product_sku_sales_info a
+    inner join product_sku_stock_info b
+    on a.product_sku_code = b.product_sku_code
+    where a.usage_status = 1 and a.product_sku_code = #{skuCode,jdbcType=VARCHAR}
     limit 1
   </select>
 </mapper>

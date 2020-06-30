@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundSource;
@@ -144,6 +145,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private WarehouseDao warehouseDao;
     @Autowired
     private StockBatchDao stockBatchDao;
+    @Autowired
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -290,10 +293,14 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             detailSource= BeanCopyUtils.copy(product, PurchaseOutboundDetailSource.class);
             detailSource.setLineCode(product.getLinenum().toString());
             detailSource.setTotalCount(product.getPreOutboundMainNum().intValue());
-            detailSource.setStockUnitCode(product.getUnitCode());
-            detailSource.setStockUnitName(product.getUnitName());
             detailSource.setModelNumber(product.getModel());
-            detailSource.setSkuBarCode(product.getBarCode());
+            // 查询门店条码
+            PurchaseSaleStockRespVo saleInfo = productSkuSalesInfoDao.selectBarCodeBySkuCode(product.getSkuCode());
+            if(saleInfo != null){
+                detailSource.setSkuBarCode(saleInfo.getBarCode());
+                detailSource.setStockUnitCode(saleInfo.getStockUnitCode());
+                detailSource.setStockUnitName(saleInfo.getStockUnitName());
+            }
             detailSourceList.add(detailSource);
         }
         outboundSource.setDetailList(detailSourceList);
@@ -592,7 +599,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
         // 操作库存、批次库存    1.退供 2.调拨 3.订单 4.移库
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-        changeStockRequest.setOperationType(10);
+        if (Objects.equals(outbound.getOutboundTypeCode(), OutboundTypeEnum.ORDER.getCode())){
+            changeStockRequest.setOperationType(11);
+        }else {
+            changeStockRequest.setOperationType(10);
+        }
 
         List<StockInfoRequest> stockInfoRequestList = Lists.newArrayList();
         OutboundProduct outboundProduct;

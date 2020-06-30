@@ -60,4 +60,8 @@ public class PurchaseInboundDetailSource{
     @ApiModelProperty(value="入库数量")
     @JsonProperty("inbound_num")
     private String inboundNum;
+
+    @ApiModelProperty(value="门店条形码")
+    @JsonProperty("sku_bar_code")
+    private String skuBarCode;
 }
