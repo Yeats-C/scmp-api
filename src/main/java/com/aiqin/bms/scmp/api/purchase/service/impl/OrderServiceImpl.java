@@ -16,6 +16,9 @@ import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDe
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -24,10 +27,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBat
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoLogMapper;
@@ -36,6 +36,7 @@ import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -50,7 +51,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -499,6 +499,17 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                        OrderStatus.WAITING_FOR_PICKING.getExplain(), OrderStatus.WAITING_FOR_PICKING.getStandardDescription(),
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
+               // 进行锁库存操作
+                ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
+                stockChangeRequest.setOperationType(1);
+                handleProfitLossStockData(vo,stockChangeRequest);
+                LOGGER.error("订单同步耘链锁库存：参数{}", JsonUtil.toJson(stockChangeRequest));
+                HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
+                if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+                    LOGGER.error("订单同步耘链锁库存异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
+                    throw new GroundRuntimeException("wms回调:加库存异常");
+                }
+
                // 配送的情况下 调用wms
                 SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
                 LOGGER.info("销售单生成wms参数信息{}",  JsonUtil.toJson(saleSourcInfoSource));
@@ -515,6 +526,58 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         //存日志
         saveLog(logs);
         return HttpResponse.success();
+    }
+
+    private void handleProfitLossStockData(OrderInfoReqVO orderInfoReqVO, ChangeStockRequest changeStockRequest) {
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfoRequest;
+        List<StockBatchInfoRequest> batchList = Lists.newArrayList();
+        StockBatchInfoRequest stockBatchInfoRequest;
+        for (OrderInfoItemReqVO itemReqVo : orderInfoReqVO.getProductList()) {
+            stockInfoRequest = new StockInfoRequest();
+            stockInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
+            stockInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
+            stockInfoRequest.setTransportCenterCode(orderInfoReqVO.getTransportCenterCode());
+            stockInfoRequest.setTransportCenterName(orderInfoReqVO.getTransportCenterName());
+            stockInfoRequest.setWarehouseCode(orderInfoReqVO.getWarehouseCode());
+            stockInfoRequest.setWarehouseName(orderInfoReqVO.getWarehouseName());
+            stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getNum()));
+            stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockInfoRequest.setDocumentType(9);
+            stockInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
+            stockInfoRequest.setSourceDocumentType(9);
+            stockInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
+            stockInfoRequest.setOperatorName(orderInfoReqVO.getCreateByName());
+            list.add(stockInfoRequest);
+
+            if(orderInfoReqVO.getItemBatchList() != null){
+                for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
+                    if(itemReqVo.getSkuCode().equals(itemBatchReqVo.getSkuCode())){
+                        stockBatchInfoRequest = new StockBatchInfoRequest();
+                        stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
+                        stockBatchInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
+                        stockBatchInfoRequest.setSkuCode(itemBatchReqVo.getSkuCode());
+                        stockBatchInfoRequest.setSkuName(itemBatchReqVo.getSkuName());
+                        stockBatchInfoRequest.setBatchCode(itemBatchReqVo.getBatchCode());
+                        stockBatchInfoRequest.setBatchInfoCode(itemBatchReqVo.getBatchInfoCode());
+                        stockBatchInfoRequest.setProductDate(itemBatchReqVo.getProductDate());
+                        stockBatchInfoRequest.setBeOverdueDate(itemBatchReqVo.getBeOverdueDate());
+                        stockBatchInfoRequest.setBatchRemark(itemBatchReqVo.getBatchRemark());
+                        stockBatchInfoRequest.setSupplierCode(itemBatchReqVo.getSupplierCode());
+                        stockBatchInfoRequest.setDocumentType(9);
+                        stockBatchInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
+                        stockBatchInfoRequest.setSourceDocumentType(9);
+                        stockBatchInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
+                        stockBatchInfoRequest.setChangeCount(itemBatchReqVo.getTotalCount());
+                        stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
+                        batchList.add(stockBatchInfoRequest);
+                    }
+                }
+            }
+        }
+        changeStockRequest.setStockList(list);
+        changeStockRequest.setStockBatchList(batchList);
     }
 
     private void saveDatas(List<OrderInfoItem> infoItems, List<OrderInfo> info, List<OrderInfoItemProductBatch> orderBtachs) {
@@ -926,8 +989,27 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             log.info("取消订单失败！！！");
             return HttpResponse.success(false);
         }
-        //        撤销wms销售单
+       // 获取订单信息
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(orderInfo.getOrderCode());
+        List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
+        List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
+       //  参数转换
+        OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
+        List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
+        List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
+        info.setProductList(infoItem);
+        info.setItemBatchList(infoItemBatch);
+        // 进行解锁库存操作
+        ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
+        stockChangeRequest.setOperationType(3);
+        handleProfitLossStockData(info,stockChangeRequest);
+        LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
+        HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
+        if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+            LOGGER.error("订单取消进行解锁库存操作异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
+            throw new GroundRuntimeException("wms回调:加库存异常");
+        }
+        //        撤销wms销售单
         CancelSource cancelSource = new CancelSource();
         cancelSource.setOrderType("1");
         cancelSource.setOrderCode(orderInfo.getOrderCode());

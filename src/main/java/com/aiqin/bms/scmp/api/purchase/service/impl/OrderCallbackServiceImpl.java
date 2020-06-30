@@ -1801,8 +1801,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             LOGGER.error("更新耘链的订单的发运信息失败！！！");
             throw new GroundRuntimeException(String.format("更新耘链的订单的发运信息失败:%s", count));
         }
+        // 回传爱亲的销售单的发运信息
         if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
-            // 回传爱亲的销售单的发运信息
             DeliveryInfoVo info =  new DeliveryInfoVo();
             BeanUtils.copyProperties(request, info);
             info.setTransportStatus(0);
@@ -1819,6 +1819,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
             }
         }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 回传DL的销售单的发运信息
             OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
             orderTransportRequest.setTransportCode(request.getDeliveryCode());
             orderTransportRequest.setTransportCompanyCode(request.getTransportCompanyCode());
@@ -1836,8 +1837,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderTransportRequest.setCreateTime(request.getTransportDate());
             List<String> orderCodes = request.getDetailList().stream().map(DeliveryDetailRequest::getOrderCode).collect(Collectors.toList());
             orderTransportRequest.setOrderCodes(orderCodes);
-            // 回传DL的销售单的发运信息
-
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
