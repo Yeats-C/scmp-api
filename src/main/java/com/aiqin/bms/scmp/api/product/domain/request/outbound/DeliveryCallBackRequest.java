@@ -81,6 +81,22 @@ public class DeliveryCallBackRequest {
     //@JsonProperty("deliver_to_code")
     private String deliverToCode;
 
+    @ApiModelProperty("包装数")
+    @JsonProperty("packing_num")
+    private Long packingNum;
+
+    @ApiModelProperty("订单商品总件数")
+    @JsonProperty("order_commodity_num")
+    private Long orderCommodityNum;
+
+    @ApiModelProperty("总体积")
+    @JsonProperty("total_volume")
+    private BigDecimal totalVolume;
+
+    @ApiModelProperty("总重量")
+    @JsonProperty("total_weight")
+    private BigDecimal totalWeight;
+
     @ApiModelProperty("发运单明细")
     @JsonProperty("detail_list")
     private List<DeliveryDetailRequest> detailList;
