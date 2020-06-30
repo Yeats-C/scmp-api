@@ -90,6 +90,7 @@ public class TransportServiceImpl implements TransportService {
             transportOrder.setCreateBy(currentAuthToken.getPersonName());
             transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             transportAmount+=transportOrder.getOrderAmount().longValue();
+            transport.setTransportCenterCode(transportOrder.getTransportCenterCode());
 //            orderCommodityNum+=transportOrder.getProductNum();
         }
         //查询一次收货信息设置值
