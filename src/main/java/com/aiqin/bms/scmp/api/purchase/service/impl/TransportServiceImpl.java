@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -70,7 +71,7 @@ public class TransportServiceImpl implements TransportService {
         //获取一个运输单号
         String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
-        transport.setLogisticsFee(transport.getAdditionalLogisticsFee()+transport.getStandardLogisticsFee());
+        transport.setLogisticsFee(transport.getAdditionalLogisticsFee().add(transport.getStandardLogisticsFee()));
         transport.setTransportCode(code);
         transport.setCreateBy(currentAuthToken.getPersonName());
         transport.setUpdateBy(currentAuthToken.getPersonName());
@@ -92,7 +93,7 @@ public class TransportServiceImpl implements TransportService {
         transport.setConsigneePhone(orderInfo.getConsigneePhone());
         transport.setDetailedAddress(orderInfo.getDetailAddress());
         transport.setStatus(1);//设置未发运状态
-        transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
+        transport.setTransportAmount(new BigDecimal(transportAmount).add(transport.getLogisticsFee()));
         transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
         transport.setZip(orderInfo.getZipCode());
         transportMapper.insertOne(transport);

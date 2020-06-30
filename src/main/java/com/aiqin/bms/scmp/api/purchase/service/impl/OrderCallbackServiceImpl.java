@@ -27,6 +27,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBat
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
@@ -49,6 +51,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -184,6 +187,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private OutboundService outboundService;
     @Resource
     private InboundService inboundService;
+    @Resource
+    private TransportMapper transportMapper;
+    @Resource
+    private TransportOrdersMapper transportOrdersMapper;
     @Autowired
     @Lazy(true)
     private SapBaseDataService sapBaseDataService;
@@ -1677,6 +1684,14 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if(request == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
+        String code = IdSequenceUtils.getInstance().nextId()+"";
+        request.setDeliveryCode(code);
+        request.setCustomerCode(oi.getCustomerCode());
+        request.setCustomerName(oi.getCustomerName());
+        request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
+        // 保存运输管理表
+        saveTransport(request, oi);
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
@@ -1721,6 +1736,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
         }
         return HttpResponse.success();
+    }
+
+    private void saveTransport(DeliveryCallBackRequest request, OrderInfo orderInfo) {
+        Transport transport=new Transport();
+        transport.setLogisticsFee(request.getTransportAmount());
+        transport.setTransportCode(request.getDeliveryCode());
+        //查询一次收货信息设置值
+        transport.setConsigneeName(orderInfo.getConsignee());
+        transport.setCustomerCode(orderInfo.getCustomerCode());
+        transport.setCustomerName(orderInfo.getCustomerName());
+        transport.setConsigneePhone(orderInfo.getConsigneePhone());
+        transport.setDetailedAddress(orderInfo.getDetailAddress());
+        transport.setStatus(2);//设已发运状态
+//        transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
+//        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
+        transport.setZip(orderInfo.getZipCode());
+        transport.setTransportCenterCode(request.getTransportCenterCode());
+        transport.setTransportCenterName(request.getTransportCenterName());
+        List<TransportOrders> transportOrders = new ArrayList<>();
+        transportMapper.insertOne(transport);
+//        transportOrdersMapper.insertBatch(transportOrders);
     }
 
 }
