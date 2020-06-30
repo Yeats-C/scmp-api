@@ -63,7 +63,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.apache.ibatis.javassist.expr.NewArray;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -78,7 +77,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -193,11 +191,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private InboundService inboundService;
     @Resource
     private TransportMapper transportMapper;
-    @Resource
-    private TransportOrdersMapper transportOrdersMapper;
     @Autowired
     @Lazy(true)
     private SapBaseDataService sapBaseDataService;
+    @Autowired
+    private UrlConfig urlConfig;
 
     /**
      * 销售出库接口
@@ -1603,9 +1601,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // dl商品表信息
         List<ProductRequest> productList = new ArrayList<>();
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        ProductRequest productRequest;
+        List<BatchRequest> batchList;
+        BatchRequest batchRequest;
         for (OutboundCallBackDetailRequest detail : detailList) {
             OrderInfoItem orderInfoItem = orderInfoItemMapper.selectOrderByLine(request.getOderCode(), detail.getLineCode());
-            ProductRequest productRequest = new ProductRequest();
+            productRequest = new ProductRequest();
             // 商品信息传输
             productRequest.setLineCode(detail.getLineCode().intValue());
             productRequest.setSkuCode(detail.getSkuCode());
@@ -1621,29 +1622,39 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             productRequest.setChannelAmount(orderInfoItem.getChannelUnitPrice());
             productRequest.setActivityApportionment(new BigDecimal(orderInfoItem.getActivityApportionment()));
             productRequest.setPreferentialAllocation(new BigDecimal(orderInfoItem.getPreferentialAllocation()));
+
             // dl批次表信息
-            List<BatchRequest> batchList = new ArrayList<>();
+            batchList = new ArrayList<>();
             List<OutboundCallBackBatchRequest> batchOrderList = request.getBatchList();
-            if(batchOrderList != null){
+            if(CollectionUtils.isNotEmpty(batchOrderList) && batchOrderList.size() > 0){
                 for (OutboundCallBackBatchRequest batchDetail: batchOrderList) {
-                    BatchRequest batchRequest = new BatchRequest();
+                    batchRequest = new BatchRequest();
                     // 批次信息传输
-                    if(Objects.equals(detail.getSkuCode()+detail.getLineCode(),batchDetail.getSkuCode()+batchDetail.getLineCode())){
+                    if(Objects.equals(detail.getSkuCode() + detail.getLineCode().toString(),
+                            batchDetail.getSkuCode() + batchDetail.getLineCode().toString())){
                         batchRequest.setLineCode(batchDetail.getLineCode().intValue());
                         batchRequest.setSkuCode(batchDetail.getSkuCode());
                         batchRequest.setBatchCode(batchDetail.getBatchCode());
                         batchRequest.setProductDate(batchDetail.getProductDate());
                         batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
                         batchRequest.setTotalCount(batchDetail.getTotalCount());
+                        batchList.add(batchRequest);
                     }
-                    batchList.add(batchRequest);
                 }
+                productRequest.setBatchList(batchList);
             }
-            productRequest.setBatchList(batchList);
             productList.add(productRequest);
         }
         echoOrderRequest.setProductList(productList);
-        LOGGER.info("调用dl开始,echoOrderRequest={}", JsonUtil.toJson(echoOrderRequest));
+        LOGGER.info("熙耘->DL,转化退货单回调参数：{}", JsonUtil.toJson(echoOrderRequest));
+        String url = urlConfig.WMS_API_URL + "/dl/order/echo";
+        HttpClient httpClient = HttpClient.post(url).json(echoOrderRequest).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("熙耘->DL，调用abutment-api退货单成功");
+        }else {
+            LOGGER.info("熙耘->DL，调用abutment-api退货单失败:{}", response.getMessage());
+        }
     }
 
     private void updateOutbound(OutboundCallBackRequest request){
