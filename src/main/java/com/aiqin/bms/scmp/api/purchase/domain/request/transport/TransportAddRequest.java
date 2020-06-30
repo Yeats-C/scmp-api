@@ -52,11 +52,11 @@ public class TransportAddRequest {
 
     @ApiModelProperty("标准物流费")
     //@JsonProperty("standard_logistics_fee")
-    private Long standardLogisticsFee;
+    private BigDecimal standardLogisticsFee;
 
     @ApiModelProperty("选加物流费")
     //@JsonProperty("additional_logistics_fee")
-    private Long additionalLogisticsFee;
+    private BigDecimal additionalLogisticsFee;
 
     @ApiModelProperty("总体积")
     //@JsonProperty("total_volume")
