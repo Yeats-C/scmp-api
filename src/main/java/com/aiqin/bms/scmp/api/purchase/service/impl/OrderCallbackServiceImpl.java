@@ -36,6 +36,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.OrderTransportRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
