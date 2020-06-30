@@ -1038,6 +1038,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
     /**
       * 采购/退供调用sap
      */
+    @Transactional(rollbackFor = Exception.class)
     public void purchaseAndReject(String orderCode, Integer dataType) {
         // 数据类型 dataType 0.采购 1.退供
         ScmpImportPurchase sap = new ScmpImportPurchase();
@@ -1573,6 +1574,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      * @param orderCode
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     private Order returnOrder(String orderCode) {
         // 查询退货单信息
         ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(orderCode);
@@ -1728,6 +1730,7 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
      * @param orderCode
      * @return
      */
+    @Transactional(rollbackFor = Exception.class)
     private Order saleOrder(String orderCode) {
         // 查询销售单信息
         OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(orderCode);

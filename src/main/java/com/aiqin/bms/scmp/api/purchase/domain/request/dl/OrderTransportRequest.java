@@ -51,15 +51,15 @@ public class OrderTransportRequest {
 
     @ApiModelProperty(value="物流包装数")
     @JsonProperty("transport_total_count")
-    private String transportTotalCount;
+    private Long transportTotalCount;
 
     @ApiModelProperty(value="总体积")
     @JsonProperty("total_volume")
-    private String totalVolume;
+    private Long totalVolume;
 
     @ApiModelProperty(value="总重量")
     @JsonProperty("total_weight")
-    private String totalWeight;
+    private Long totalWeight;
 
     @ApiModelProperty(value="备注")
     @JsonProperty("remake")

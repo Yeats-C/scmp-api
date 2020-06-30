@@ -1819,8 +1819,24 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
             }
         }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 回传DL的销售单的发运信息
             OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
-
+            orderTransportRequest.setTransportCode(request.getDeliveryCode());
+            orderTransportRequest.setTransportCompanyCode(request.getTransportCompanyCode());
+            orderTransportRequest.setTransportCompanyName(request.getTransportCompanyName());
+            orderTransportRequest.setTransportCompanyNumber(request.getTransportCode());
+            orderTransportRequest.setDistributionModeCode(request.getDeliverToCode());
+            orderTransportRequest.setDistributionModeName(request.getDeliverTo());
+            orderTransportRequest.setStandardTransportAmount(request.getStandardLogisticsFee());
+            orderTransportRequest.setChooseTransportAmount(request.getAdditionalLogisticsFee());
+            orderTransportRequest.setTotalCount(request.getOrderCommodityNum());
+            orderTransportRequest.setTransportTotalCount(request.getPackingNum());
+            orderTransportRequest.setTotalVolume(request.getTotalVolume().longValue());
+            orderTransportRequest.setTotalWeight(request.getTotalWeight().longValue());
+            orderTransportRequest.setTransportCenterCode(request.getTransportCenterCode());
+            orderTransportRequest.setCreateTime(request.getTransportDate());
+            List<String> orderCodes = request.getDetailList().stream().map(DeliveryDetailRequest::getOrderCode).collect(Collectors.toList());
+            orderTransportRequest.setOrderCodes(orderCodes);
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }

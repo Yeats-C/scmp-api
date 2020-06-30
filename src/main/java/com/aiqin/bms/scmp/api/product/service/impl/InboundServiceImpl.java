@@ -63,6 +63,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -591,7 +592,7 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setNewDelivery(inbound.getSupplierCode());
             stockInfo.setNewDeliveryName(inbound.getSupplierName());
             stockInfo.setDocumentCode(inbound.getInboundOderCode());
-            stockInfo.setDocumentType(1);//0出库 1入库
+            stockInfo.setDocumentType(Global.INBOUND_TYPE); //0出库 1入库
             stockInfo.setSourceDocumentCode(inbound.getSourceOderCode());
             // 1.采购 2.调拨 3.退货  4.移库
             Integer sourceDocumentType;
@@ -606,6 +607,7 @@ public class InboundServiceImpl implements InboundService {
             }
             stockInfo.setSourceDocumentType(sourceDocumentType);
             stockInfo.setOperatorId(request.getOperatorId());
+
             stockInfo.setOperatorName(request.getOperatorName());
             if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
                 // 查询对应的采购商品
@@ -702,8 +704,12 @@ public class InboundServiceImpl implements InboundService {
                         batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" +
                         product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
                 productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfoCode, inbound.getInboundOderCode(), batchInfo.getLineCode());
-                productBatch.setUpdateById(request.getOperatorId());
-                productBatch.setUpdateByName(request.getOperatorName());
+                if(StringUtils.isNotBlank(request.getOperatorId())){
+                    productBatch.setUpdateById(request.getOperatorId());
+                }
+                if(StringUtils.isNotBlank(request.getOperatorName())){
+                    productBatch.setUpdateByName(request.getOperatorName());
+                }
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -712,8 +718,12 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
                 stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
                 stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
-                stockBatchInfo.setOperatorId(request.getOperatorId());
-                stockBatchInfo.setOperatorName(request.getOperatorName());
+                if(StringUtils.isNotBlank(request.getOperatorId())){
+                    stockBatchInfo.setOperatorId(request.getOperatorId());
+                }
+                if(StringUtils.isNotBlank(request.getOperatorName())){
+                    stockBatchInfo.setOperatorName(request.getOperatorName());
+                }
                 stockBatchInfo.setChangeCount(batchInfo.getActualTotalCount());
                 stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 batchList.add(stockBatchInfo);
@@ -738,8 +748,12 @@ public class InboundServiceImpl implements InboundService {
                 productBatch.setActualTotalCount(batchInfo.getActualTotalCount());
                 productBatch.setLineCode(batchInfo.getLineCode().intValue());
                 productBatch.setLocationCode(batchInfo.getLocationCode());
-                productBatch.setCreateById(request.getOperatorId());
-                productBatch.setCreateByName(request.getOperatorName());
+                if(StringUtils.isNotBlank(request.getOperatorId())){
+                    productBatch.setCreateById(request.getOperatorId());
+                }
+                if(StringUtils.isNotBlank(request.getOperatorName())){
+                    productBatch.setCreateByName(request.getOperatorName());
+                }
                 InboundBatchList.add(productBatch);
             }
             if(CollectionUtils.isNotEmpty(InboundBatchList)){
@@ -757,10 +771,13 @@ public class InboundServiceImpl implements InboundService {
         inbound.setPraAmount(praAmount);
         //实际税额
         inbound.setPraTax(praTaxAmount.subtract(praAmount));
-        inbound.setUpdateBy(request.getOperatorName());
+        if(StringUtils.isNotBlank(request.getOperatorName())){
+            inbound.setUpdateBy(request.getOperatorName());
+        }
         // 保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.RETURN_INBOUND_ODER.getStatus(),
-                ObjectTypeCode.INBOUND_ODER.getStatus(), request, HandleTypeCoce.RETURN_INBOUND_ODER.getName(), new Date(), request.getOperatorName(), request.getRemark());
+                ObjectTypeCode.INBOUND_ODER.getStatus(), request, HandleTypeCoce.RETURN_INBOUND_ODER.getName(), new Date(),
+                request.getOperatorName() == null ? "" : request.getOperatorName(), request.getRemark());
 
         // 如果是采购添加采购日志
         if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode() )){
