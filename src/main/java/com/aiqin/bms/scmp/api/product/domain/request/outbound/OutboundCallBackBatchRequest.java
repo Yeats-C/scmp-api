@@ -36,6 +36,10 @@ public class OutboundCallBackBatchRequest {
  //   @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private String productDate;
 
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
+
     @ApiModelProperty("销售数量")
     @JsonProperty("total_count")
     private Long totalCount;

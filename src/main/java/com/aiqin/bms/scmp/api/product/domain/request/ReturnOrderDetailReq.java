@@ -121,4 +121,12 @@ public class ReturnOrderDetailReq {
 
     @ApiModelProperty(value = "均摊后单价")
     private BigDecimal preferentialAmount;
+
+    @ApiModelProperty(value="渠道单价")
+    //@JsonProperty("channel_amount")
+    private BigDecimal channelAmount;
+
+    @ApiModelProperty(value="渠道总价")
+    //@JsonProperty("channel_total_amount")
+    private BigDecimal channelTotalAmount;
 }

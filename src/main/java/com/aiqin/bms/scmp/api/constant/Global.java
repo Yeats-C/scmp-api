@@ -193,7 +193,6 @@ public final class Global {
     /**
      *  订单类型  1配送、2直送、3货架直送、4采购直送
      */
-    public static final Integer ORDER_TYPE_0 = 0;
     public static final Integer ORDER_TYPE_1 = 1;
     public static final Integer ORDER_TYPE_2 = 2;
     public static final Integer ORDER_TYPE_3 = 3;
@@ -205,4 +204,10 @@ public final class Global {
     public static final Integer MOVEMENT_TYPE_0 = 0;
     public static final Integer MOVEMENT_TYPE_1 = 1;
     public static final Integer MOVEMENT_TYPE_2 = 2;
+
+    /**
+     *  平台类型 0.爱亲(新系统)，1.DL
+     */
+    public static final Integer PLATFORM_TYPE_0 = 0;
+    public static final Integer PLATFORM_TYPE_1 = 1;
 }

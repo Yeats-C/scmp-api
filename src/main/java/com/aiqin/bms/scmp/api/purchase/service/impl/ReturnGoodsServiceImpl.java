@@ -3,18 +3,14 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
-import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.InboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
-import com.aiqin.bms.scmp.api.product.domain.converter.returnorder.ReturnOrderToInboundConverter;
-import com.aiqin.bms.scmp.api.product.domain.dto.returnorder.ReturnOrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -25,12 +21,13 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
-import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
-import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -43,7 +40,6 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +86,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
     private SapBaseDataService sapBaseDataService;
-    @Resource
-    private WmsCancelService wmsCancelService;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -140,23 +134,35 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
     @Override
     public HttpResponse returnOrderCancel(ReturnOrderInfo returnOrderInfo) {
-        if (null == returnOrderInfo) {
+        if (null == returnOrderInfo && StringUtils.isNotBlank(returnOrderInfo.getReturnOrderCode())) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        ReturnOrderInfo returnInfo = new ReturnOrderInfo();
-        ReturnOrderInfoLog log = new ReturnOrderInfoLog();
-        if (StringUtils.isNotBlank(returnOrderInfo.getUpdateByName())) {
-            returnInfo.setUpdateByName(returnOrderInfo.getUpdateByName());
-            log.setOperator(returnOrderInfo.getUpdateByName());
-        } else {
-            returnInfo.setUpdateByName(getUser().getPersonName());
-            returnInfo.setUpdateById(getUser().getPersonId());
-            log.setOperator(getUser().getPersonName());
+        ReturnOrderInfo orderInfo = returnOrderInfoMapper.selectByCode(returnOrderInfo.getReturnOrderCode());
+        if(orderInfo.getOrderType().equals(Global.ORDER_TYPE_2)) {
+            if (!orderInfo.getOrderStatus().equals(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.PENDING_REVIEW.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.EXAMINATION_PASSED.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.RETURN_ORDER_SYNCHRONIZATION.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode())) {
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单非取消状态，取消失败"));
+            }
+        }else {
+            if (!orderInfo.getOrderStatus().equals(ReturnOrderStatus.PENDING_REVIEW.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.EXAMINATION_PASSED.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.RETURN_ORDER_SYNCHRONIZATION.getStatusCode()) &&
+                    !orderInfo.getOrderStatus().equals(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode())) {
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单非取消状态，取消失败"));
+            }
         }
-        returnInfo.setReturnReasonContent(returnOrderInfo.getReturnReasonContent());
-        returnInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
-        Integer count = returnOrderInfoMapper.update(returnInfo);
-        LOGGER.info("更改退货单异常终止：{}", count);
+
+        ReturnOrderInfoLog log = new ReturnOrderInfoLog();
+        orderInfo.setUpdateByName(getUser().getPersonName());
+        orderInfo.setUpdateById(getUser().getPersonId());
+        log.setOperator(getUser().getPersonName());
+        orderInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
+        orderInfo.setReturnReasonContent(returnOrderInfo.getReturnReasonContent());
+        Integer count = returnOrderInfoMapper.update(orderInfo);
+        LOGGER.info("更改退货单异取消状态：{}", count);
 
         // 添加日志
         log.setCompanyCode(Global.COMPANY_09);
@@ -167,20 +173,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         log.setStatusDesc(ReturnOrderStatus.cancelled.getExplain());
         log.setContent(ReturnOrderStatus.cancelled.getBackgroundOrderStatus());
         Integer logCount = returnOrderInfoLogMapper.insert(log);
-        LOGGER.info("添加退货单异常终止日志：{}", logCount);
-
-        // 调用wms取消接口
-        CancelSource cancelSource = new CancelSource();
-        cancelSource.setOrderType("2");
-        cancelSource.setOrderCode(returnOrderInfo.getReturnOrderCode());
-//        cancelSource.setWarehouseCode(order.getWarehouseCode());
-//        cancelSource.setWarehouseName(order.getWarehouseName());
-        cancelSource.setRemark(returnOrderInfo.getReturnReasonContent());
-        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
-        if(!response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("取消退货单失败：{}", response.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, response.getMessage()));
-        }
+        LOGGER.info("添加退货单取消日志：{}", logCount);
         return HttpResponse.success();
     }
 
@@ -382,7 +375,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setConsigneePhone(returnOrderInfo.getReceivePerson());
         returnOrder.setDistributionMode(returnOrderInfo.getDistributionModeName());
         // 退货单状态
-        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_0)) {
+        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_2)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
         } else if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode());
@@ -420,6 +413,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setCompanyName(Global.COMPANY_09_NAME);
             returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getProductAmount());
             returnOrderInfoItem.setTax(returnOrderDetail.getTaxRate());
+            returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getChannelAmount());
+            returnOrderInfoItem.setTotalChannelPrice(returnOrderDetail.getChannelTotalAmount());
             details.add(returnOrderInfoItem);
         }
         Integer detailCount = returnOrderInfoItemMapper.insertList(details);
@@ -460,58 +455,114 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         // 赋值传送运营中台的参数
         ReturnDLReq response = new ReturnDLReq();
-        ReturnOrderInfoDLReq orderInfo = new ReturnOrderInfoDLReq();
-        orderInfo.setReturnOrderCode(returnOrderCode);
-        orderInfo.setActualProductCount(returnOrderInfo.getActualProductCount());
-        orderInfo.setReturnById(returnOrderInfo.getUpdateById());
-        orderInfo.setReturnTime(returnOrderInfo.getUpdateTime());
-        response.setReturnOrderInfoDLReq(orderInfo);
+        EchoOrderRequest request = new EchoOrderRequest();
+        if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_0)){
+            // 封装回调爱亲供应链的参数
+            ReturnOrderInfoDLReq orderInfo = new ReturnOrderInfoDLReq();
+            orderInfo.setReturnOrderCode(returnOrderCode);
+            orderInfo.setActualProductCount(returnOrderInfo.getActualProductCount());
+            orderInfo.setReturnById(returnOrderInfo.getUpdateById());
+            orderInfo.setReturnTime(returnOrderInfo.getUpdateTime());
+            response.setReturnOrderInfoDLReq(orderInfo);
+        }else {
+            // 封装回调dl的参数
+            request.setOrderCode(returnOrderInfo.getReturnOrderCode());
+            request.setOperationTime(returnOrderInfo.getDeliveryTime());
+            request.setOperationType(3);
+            request.setOperationCode(returnOrderInfo.getUpdateById());
+            request.setOperationName(returnOrderInfo.getCreateByName());
+        }
 
+        // 爱亲供应链的商品
         List<ReturnOrderDetailDLReq> orderItems = Lists.newArrayList();
         ReturnOrderDetailDLReq returnOrderItem;
+
+        // DL的商品
+        List<ProductRequest> productList = Lists.newArrayList();
+        ProductRequest product;
+        List<BatchRequest> dlBatchList;
+        BatchRequest batchRequest;
+
         for (ReturnOrderInfoItem item : infoItems) {
-            returnOrderItem = new ReturnOrderDetailDLReq();
-            returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
-            returnOrderItem.setLineCode(item.getProductLineNum());
-            returnOrderItem.setSkuCode(item.getSkuCode());
-            returnOrderItem.setSkuName(item.getSkuName());
-            orderItems.add(returnOrderItem);
-        }
-        response.setReturnOrderDetailDLReqList(orderItems);
+            if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1)){
+                returnOrderItem = new ReturnOrderDetailDLReq();
+                returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
+                returnOrderItem.setLineCode(item.getProductLineNum());
+                returnOrderItem.setSkuCode(item.getSkuCode());
+                returnOrderItem.setSkuName(item.getSkuName());
+                orderItems.add(returnOrderItem);
+            }else {
+                // 如果平台类型为Dl 赋值回传dl的参数
+                product = new ProductRequest();
+                product.setLineCode(item.getProductLineNum().intValue());
+                product.setSkuCode(item.getSkuCode());
+                product.setActualTotalCount(item.getActualInboundNum().longValue());
+                productList.add(product);
 
-        // 查询退货单的批次信息
-        List<ReturnOrderInfoInspectionItem> inspectionItems = returnOrderInfoInspectionItemMapper.returnOrderBatchList(returnOrderCode);
-        if (CollectionUtils.isNotEmptyCollection(inspectionItems) && inspectionItems.size() > 0) {
-            List<ReturnBatchDetailDLReq> batchList = Lists.newArrayList();
-            ReturnBatchDetailDLReq batchInfo;
-            for (ReturnOrderInfoInspectionItem batch : inspectionItems) {
-                batchInfo = new ReturnBatchDetailDLReq();
-                batchInfo.setSkuCode(batch.getSkuCode());
-                batchInfo.setSkuName(batch.getSkuName());
-                batchInfo.setLineCode(batch.getLineCode());
-                batchInfo.setBatchNum(batch.getProductCount().intValue());
-                batchInfo.setActualReturnProductCount(batch.getActualProductCount());
-                batchList.add(batchInfo);
+                dlBatchList = Lists.newArrayList();
+                // 查询退货单对应的批次信息
+                List<ReturnOrderInfoInspectionItem> productBatchItems =
+                        returnOrderInfoInspectionItemMapper.returnBatchList(item.getSkuCode(), returnOrderInfo.getReturnOrderCode(), item.getProductLineNum().intValue());
+                if(CollectionUtils.isNotEmptyCollection(productBatchItems) && productBatchItems.size() > 0){
+                    for(ReturnOrderInfoInspectionItem batchItem : productBatchItems){
+                        batchRequest = new BatchRequest();
+                        batchRequest.setLineCode(batchItem.getLineCode().intValue());
+                        batchRequest.setSkuCode(batchItem.getSkuCode());
+                        batchRequest.setBatchCode(batchItem.getBatchCode());
+                        batchRequest.setProductDate(batchItem.getProductDate());
+                        batchRequest.setBeOverdueDate(batchItem.getBeOverdueDate());
+                        batchRequest.setActualTotalCount(batchItem.getActualProductCount());
+                        dlBatchList.add(batchRequest);
+                    }
+                    product.setBatchList(dlBatchList);
+                }
             }
-            response.setReturnBatchDetailDLReqList(batchList);
         }
-        LOGGER.info("退货单调用运营中台参数：{}", JsonUtil.toJson(response));
 
+        HttpClient httpClient;
+        HttpResponse httpResponse;
         StringBuilder sb = new StringBuilder();
-        sb.append(urlConfig.Order_URL).append("/reject/info");
-        HttpClient httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
-        HttpResponse<Boolean> httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
-        });
-        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-            // 如果平台类型为dl 回传dl
-            if (returnOrderInfo.getPlatformType().equals(1)) {
+        if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1) && CollectionUtils.isNotEmptyCollection(orderItems)){
+            response.setReturnOrderDetailDLReqList(orderItems);
 
+            // 封装回调爱亲供应链的批次信息
+            List<ReturnOrderInfoInspectionItem> inspectionItems = returnOrderInfoInspectionItemMapper.returnOrderBatchList(returnOrderCode);
+            if (CollectionUtils.isNotEmptyCollection(inspectionItems) && inspectionItems.size() > 0) {
+                List<ReturnBatchDetailDLReq> batchList = Lists.newArrayList();
+                ReturnBatchDetailDLReq batchInfo;
+
+                for (ReturnOrderInfoInspectionItem batch : inspectionItems) {
+                    batchInfo = new ReturnBatchDetailDLReq();
+                    batchInfo.setSkuCode(batch.getSkuCode());
+                    batchInfo.setSkuName(batch.getSkuName());
+                    batchInfo.setLineCode(batch.getLineCode());
+                    batchInfo.setBatchNum(batch.getProductCount().intValue());
+                    batchInfo.setActualReturnProductCount(batch.getActualProductCount());
+                    batchList.add(batchInfo);
+                }
+                response.setReturnBatchDetailDLReqList(batchList);
             }
-            LOGGER.info("退货单回传运营中台成功");
+            LOGGER.info("退货单回调爱亲供应链参数：{}", JsonUtil.toJson(response));
+            sb.append(urlConfig.Order_URL).append("/reject/info");
+            httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
+            httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
+            });
+        }else {
+            request.setProductList(productList);
+            LOGGER.info("退货单回调DL参数：{}", JsonUtil.toJson(request));
+            sb.append(urlConfig.WMS_API_URL).append("/dl/order/echo");
+            httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
+            httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
+            });
+        }
+
+        // 判断回调是否成功
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("退货单回调成功");
             return HttpResponse.success();
         } else {
-            LOGGER.info("退货单回传运营中台调用失败", httpResponse.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回传运营中台调用失败"));
+            LOGGER.info("退货单回调失败：{}", httpResponse.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回调失败"));
         }
     }
 
