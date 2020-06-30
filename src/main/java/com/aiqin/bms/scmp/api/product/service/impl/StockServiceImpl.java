@@ -877,11 +877,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
                 stock.setInventoryCount(inventoryCount - changeCount);
                 stock.setLockCount(lockCount - preLockCount);
-                if (availableCount < (changeCount - preLockCount)) {
-                    LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
-                    throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
-                }
-                stock.setAvailableCount(availableCount - changeCount);
+//                if (availableCount < (changeCount - preLockCount)) {
+//                    LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
+//                    throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
+//                }
+                //stock.setAvailableCount(availableCount - changeCount);
 
                 break;
             default:
