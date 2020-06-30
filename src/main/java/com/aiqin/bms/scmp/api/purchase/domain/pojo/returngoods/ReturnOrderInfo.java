@@ -349,9 +349,8 @@ public class ReturnOrderInfo {
     public ReturnOrderInfo() {
     }
 
-    public ReturnOrderInfo(String returnOrderCode, String returnReasonContent, String updateByName) {
+    public ReturnOrderInfo(String returnOrderCode, String returnReasonContent) {
         this.returnOrderCode = returnOrderCode;
         this.returnReasonContent = returnReasonContent;
-        this.updateByName = updateByName;
     }
 }
