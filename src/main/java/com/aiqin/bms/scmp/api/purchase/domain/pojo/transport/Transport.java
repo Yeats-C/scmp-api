@@ -15,15 +15,15 @@ public class Transport extends CommonBean {
     @JsonProperty("id")
     private Long id;
 
-    @ApiModelProperty("运输单号")
+    @ApiModelProperty("运输单号(发运单号)")
 //    @JsonProperty("transport_code")
     private String transportCode;
 
-    @ApiModelProperty("运输单号")
+    @ApiModelProperty("仓库code")
 //    @JsonProperty("transport_center_code")
     private String transportCenterCode;
 
-    @ApiModelProperty("运输单号")
+    @ApiModelProperty("仓库名称")
 //    @JsonProperty("transport_center_name")
     private String transportCenterName;
 
@@ -37,7 +37,7 @@ public class Transport extends CommonBean {
 
     @ApiModelProperty("运输单金额")
 //    @JsonProperty("transport_amount")
-    private Long transportAmount;
+    private BigDecimal transportAmount;
 
     @ApiModelProperty("包装数")
 //    @JsonProperty("packing_num")
@@ -65,15 +65,15 @@ public class Transport extends CommonBean {
 
     @ApiModelProperty("物流费用")
 //    @JsonProperty("logistics_fee")
-    private Long logisticsFee;
+    private BigDecimal logisticsFee;
 
     @ApiModelProperty("标准物流费用")
 //    @JsonProperty("standard_logistics_fee")
-    private Long standardLogisticsFee;
+    private BigDecimal standardLogisticsFee;
 
     @ApiModelProperty("选加物流费用")
 //    @JsonProperty("additional_logistics_fee")
-    private Long additionalLogisticsFee;
+    private BigDecimal additionalLogisticsFee;
 
     @ApiModelProperty("总体积")
 //    @JsonProperty("total_volume")
