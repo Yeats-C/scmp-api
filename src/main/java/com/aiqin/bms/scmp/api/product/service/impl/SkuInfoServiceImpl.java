@@ -515,10 +515,10 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 if (CollectionUtils.isNotEmpty(addSkuInfoReqVO.getProductSkuSupplyUnitDrafts())){
                     List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts = addSkuInfoReqVO.getProductSkuSupplyUnitDrafts();
                     //获取采购价格项目
-                    QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
-                    if(null == purchasePriceProject){
-                        throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
-                    }
+//                    QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
+//                    if(null == purchasePriceProject){
+//                        throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
+//                    }
                     final BigDecimal finalInputTaxRate = inputTaxRate;
                     final BigDecimal finalInputTaxRateL = inputTaxRateL;
 
@@ -559,12 +559,12 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         skuPriceDraftReqVO.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
                         skuPriceDraftReqVO.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
                         //价格项目信息
-                        skuPriceDraftReqVO.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
-                        skuPriceDraftReqVO.setPriceItemName(purchasePriceProject.getPriceProjectName());
-                        skuPriceDraftReqVO.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
-                        skuPriceDraftReqVO.setPriceTypeName(purchasePriceProject.getPriceTypeName());
-                        skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
-                        skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
+//                        skuPriceDraftReqVO.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
+//                        skuPriceDraftReqVO.setPriceItemName(purchasePriceProject.getPriceProjectName());
+//                        skuPriceDraftReqVO.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
+//                        skuPriceDraftReqVO.setPriceTypeName(purchasePriceProject.getPriceTypeName());
+//                        skuPriceDraftReqVO.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
+//                        skuPriceDraftReqVO.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
                         //税率
                         skuPriceDraftReqVO.setTax(finalInputTaxRateL);
                         //未税价
@@ -583,7 +583,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                         skuPriceDraftReqVO.setUpdateBy(productSkuDraft.getUpdateBy());
                         skuPriceDraftReqVO.setCreateTime(productSkuDraft.getCreateTime());
                         skuPriceDraftReqVO.setUpdateTime(productSkuDraft.getUpdateTime());
-                        productSkuPrices.add(skuPriceDraftReqVO);
+//                        productSkuPrices.add(skuPriceDraftReqVO);
                     });
                     productSkuSupplyUnitService.insertDraftList(productSkuSupplyUnitDrafts);
                     //供应商产能
