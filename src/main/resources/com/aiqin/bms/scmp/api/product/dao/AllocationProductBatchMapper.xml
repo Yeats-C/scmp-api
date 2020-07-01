@@ -95,6 +95,7 @@
     <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
     <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="line_num" jdbcType="VARCHAR" property="lineNum" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
     <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="location_code" jdbcType="VARCHAR" property="locationCode" />

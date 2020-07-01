@@ -904,17 +904,21 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //                aWmsOutSource.setAddress();
                     // 调拨商品数据
                     for (AllocationProductResVo aProductList : aProductLists) {
+                        PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(aProductList.getSkuCode());
+                        log.info("sku条形码{}", JSON.toJSONString(purchaseSaleStockRespVo));
                         AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
                        // BeanUtils.copyProperties(aWmsProductList,aProductList);
                         aWmsProductList.setLineCode(String.valueOf(aProductList.getLineNum()));
                         aWmsProductList.setSkuCode(aProductList.getSkuCode());
                         aWmsProductList.setSkuName(aProductList.getSkuName());
                         aWmsProductList.setTotalCount(String.valueOf(aProductList.getQuantity()));
-                     //   aWmsProductList.setUnitCode(aProductList.getUnit());
-//                        aWmsProductList.setSkuBarCode();
                         aWmsProductList.setUnitName(aProductList.getUnit());
                         aWmsProductList.setColorName(aProductList.getColor());
                         aWmsProductList.setModelNumber(aProductList.getModel());
+                        if(purchaseSaleStockRespVo != null){
+                            aWmsProductList.setUnitCode(purchaseSaleStockRespVo.getUnitCode());
+                            aWmsProductList.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+                        }
                         aWmsOutProSource.add(aWmsProductList);
                     }
                     // 调拨商品批次数据
@@ -932,12 +936,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     }
                     aWmsOutSource.setDetailList(aWmsOutProSource);
                     aWmsOutSource.setBatchInfo(aWmsOutProBatchSource);
-                    LOGGER.error("审批成功后：调拨调用wms,参数：{}", JSON.toJSON(aWmsOutSource));
+                    LOGGER.error("审批成功后：调拨调用wms,参数：{}", JsonUtil.toJson(aWmsOutSource));
                     String url = urlConfig.WMS_API_URL2+"/allocation/source/outbound";
                     HttpClient httpClient = HttpClient.post(url).json(aWmsOutSource).timeout(200000);
                     HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
                     if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
-                        LOGGER.error("审批成功后：调拨调用wms失败,wms返回信息参数：", orderDto.getMessage());
+                        LOGGER.error("审批成功后：调拨调用wms失败,wms返回信息参数：{}", String.valueOf(orderDto.getMessage()));
 //                        return "调用wms失败";
                         return orderDto.getMessage();
                     }
@@ -1100,6 +1104,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
             aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
             aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+            aWmsProductBatchList.setSkuCode(aProductBatchList.getSkuCode());
+            aWmsProductBatchList.setSkuName(aProductBatchList.getSkuName());
         }
         movementWmsReqVo.setDetailList(movementWmsProductoLists);
         movementWmsReqVo.setBatchInfoList(movementWmsProductBatchLists);
