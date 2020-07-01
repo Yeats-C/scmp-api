@@ -912,11 +912,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         aWmsProductList.setSkuCode(aProductList.getSkuCode());
                         aWmsProductList.setSkuName(aProductList.getSkuName());
                         aWmsProductList.setTotalCount(String.valueOf(aProductList.getQuantity()));
-                        aWmsProductList.setUnitName(aProductList.getUnit());
                         aWmsProductList.setColorName(aProductList.getColor());
                         aWmsProductList.setModelNumber(aProductList.getModel());
                         if(purchaseSaleStockRespVo != null){
                             aWmsProductList.setUnitCode(purchaseSaleStockRespVo.getStockUnitCode());
+                            aWmsProductList.setUnitName(purchaseSaleStockRespVo.getStockUnitName());
                             aWmsProductList.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
                         }
                         aWmsOutProSource.add(aWmsProductList);
