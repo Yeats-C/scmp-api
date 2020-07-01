@@ -544,6 +544,18 @@ public class InboundServiceImpl implements InboundService {
             purchase = purchaseOrderDao.purchaseOrderInfo(purchase);
         }
 
+        // 1.采购 2.调拨 3.退货  4.移库
+        Integer sourceDocumentType;
+        if(inbound.getInboundTypeCode().intValue() == 1){
+            sourceDocumentType = 3;
+        }else if(inbound.getInboundTypeCode().intValue() == 2){
+            sourceDocumentType = 4;
+        }else if(inbound.getInboundTypeCode().intValue() == 3){
+            sourceDocumentType = 5;
+        }else {
+            sourceDocumentType = 6;
+        }
+
         // 更新入库商品的信息
         StockInfoRequest stockInfo;
         Long praInboundNum = 0L, praMainUnitNum = 0L;
@@ -594,17 +606,6 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setDocumentCode(inbound.getInboundOderCode());
             stockInfo.setDocumentType(Global.INBOUND_TYPE); //0出库 1入库
             stockInfo.setSourceDocumentCode(inbound.getSourceOderCode());
-            // 1.采购 2.调拨 3.退货  4.移库
-            Integer sourceDocumentType;
-            if(inbound.getInboundTypeCode().intValue() == 1){
-                sourceDocumentType = 3;
-            }else if(inbound.getInboundTypeCode().intValue() == 2){
-                sourceDocumentType = 4;
-            }else if(inbound.getInboundTypeCode().intValue() == 3){
-                sourceDocumentType = 5;
-            }else {
-                sourceDocumentType = 6;
-            }
             stockInfo.setSourceDocumentType(sourceDocumentType);
             stockInfo.setOperatorId(request.getOperatorId());
 
@@ -659,6 +660,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setOperatorId(request.getOperatorId());
                 stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
+                stockBatchInfo.setSourceDocumentType(sourceDocumentType);
                 batchList.add(stockBatchInfo);
 
                 // 根据批次编号查询批次是否存在
@@ -718,6 +720,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
                 stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
                 stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
+                stockBatchInfo.setSourceDocumentType(sourceDocumentType);
                 if(StringUtils.isNotBlank(request.getOperatorId())){
                     stockBatchInfo.setOperatorId(request.getOperatorId());
                 }
@@ -836,6 +839,10 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setSkuCode(product.getSkuCode());
         stockBatchInfo.setSkuName(product.getSkuName());
         stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+        stockBatchInfo.setSupplierCode(inbound.getSupplierCode());
+        stockBatchInfo.setDocumentCode(inbound.getInboundOderCode());
+        stockBatchInfo.setDocumentType(Global.INBOUND_TYPE);
+        stockBatchInfo.setSourceDocumentCode(inbound.getSourceOderCode());
         return stockBatchInfo;
     }
 
@@ -879,6 +886,7 @@ public class InboundServiceImpl implements InboundService {
                     purchaseManageService.addLog(operationLog);
                 }
             } catch (Exception e) {
+                e.printStackTrace();
                 log.error(e.getMessage());
                 throw new GroundRuntimeException("回传采购单失败失败");
             }
@@ -998,7 +1006,7 @@ public class InboundServiceImpl implements InboundService {
             if(httpResponse.getCode().equals("0")){
                 log.info("入库单回传给采购接口成功");
                 // 回传成功之后，调用sap
-                sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
+                //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
             }else {
                 log.error("入库单回传给采购接口失败");
             }

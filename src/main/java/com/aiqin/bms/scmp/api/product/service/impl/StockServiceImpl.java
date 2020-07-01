@@ -1190,6 +1190,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
             // 加库存 - 库存增加，锁定库存不变，可用库存增加
             case 6:
+            case 8:
                 // 不验证任何库存。实际操作为：加总库存、加可用库存
                 stockBatch.setInventoryCount(inventoryCount + changeCount);
                 stockBatch.setAvailableCount(availableCount + changeCount);
