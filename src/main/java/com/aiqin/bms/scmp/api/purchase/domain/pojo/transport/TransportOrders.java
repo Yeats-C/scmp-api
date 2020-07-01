@@ -73,7 +73,7 @@ public class TransportOrders extends CommonBean {
 //    @JsonProperty("customer_name")
     private String customerName;
 
-    public void setOrderStatus(Integer orderStatus) {
-        this.status = OrderStatus.getAllStatus().get(orderStatus).getBackgroundOrderStatus();
+    public void setStatus(Integer status) {
+        this.status = OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus();
     }
 }
