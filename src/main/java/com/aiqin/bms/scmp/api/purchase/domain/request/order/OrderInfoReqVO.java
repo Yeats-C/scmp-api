@@ -24,7 +24,7 @@ public class OrderInfoReqVO {
     @ApiModelProperty("订单编码(订单号)")
     private String orderCode;
 
-    @ApiModelProperty("类型：直送、配送、首单、首单赠送.辅采直送")
+    @ApiModelProperty("类型：配送、直送、采购直送、（货架）直送")
     private String orderType;
 
     @ApiModelProperty("类型编码")
