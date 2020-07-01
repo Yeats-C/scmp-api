@@ -309,26 +309,11 @@
   <select id="stockBatchAndSku" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from stock_batch
-    where sku_code in
-    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.skuCode}
-    </foreach>
-    and warehouse_code in
-    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.warehouseCode}
-    </foreach>
-    and batch_code in
-    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.batchCode}
-    </foreach>
-    and supplier_code in
-    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.supplierCode}
-    </foreach>
-    and tax_cost in
-    <foreach collection="list" item="item" open="(" close=")" index="index" separator=",">
-      #{item.taxCost}
-    </foreach>
+    where sku_code = {skuCode}
+    and warehouse_code = #{warehouseCode}
+    and batch_code = #{batchCode}
+    and supplier_code = #{supplierCode}
+    and tax_cost = #{taxCost}
   </select>
   <update id="updateBatchAll">
     <foreach collection="list" item="item" separator=";">

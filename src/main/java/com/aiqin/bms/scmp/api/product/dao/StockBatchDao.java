@@ -21,7 +21,7 @@ public interface StockBatchDao {
 
     StockBatchResponse stockBatchDetail(String stockBatchCode);
 
-    List<StockBatch> stockBatchAndSku(@Param("list") List<StockBatchInfoRequest> stockBatchList);
+    StockBatch stockBatchAndSku(@Param("list") List<StockBatchInfoRequest> stockBatchList);
 
     Integer updateBatchAll(@Param("list") List<StockBatch> stockList);
 

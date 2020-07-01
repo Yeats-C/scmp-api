@@ -11,7 +11,7 @@ public interface ReturnOrderInfoMapper {
 
     Integer insert(ReturnOrderInfo record);
 
-    ReturnOrderInfo selectByPrimaryKey(Long id);
+    //ReturnOrderInfo selectByPrimaryKey(Long id);
 
     Integer update(ReturnOrderInfo record);
 

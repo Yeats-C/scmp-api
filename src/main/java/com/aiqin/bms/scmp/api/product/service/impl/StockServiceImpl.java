@@ -1000,17 +1000,16 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
 
         //查询需要做修改的库存数据
-        List<StockBatch> stockBatches = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
         Map<String, StockBatch> stockBatchMap = new HashMap<>();
-        stockBatches.forEach(s -> {
-            if(StringUtils.isNotBlank(s.getBatchInfoCode())){
-                stockBatchMap.put(s.getBatchInfoCode(), s);
-            }else {
-                stockBatchMap.put(s.getSkuCode() + "_" + s.getWarehouseCode() + "_" +
-                        s.getBatchCode() + "_" + s.getSupplierCode() + "_"
-                        + s.getTaxCost().stripTrailingZeros().toPlainString(), s);
+        for (StockBatchInfoRequest batch : request.getStockBatchList()) {
+            if (StringUtils.isNotBlank(batch.getBatchInfoCode())) {
+                stockBatchMap.put(batch.getBatchInfoCode(), stockBatchDao.stockBatchInfoOne(batch.getBatchInfoCode()));
+            } else {
+                stockBatchMap.put(batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
+                        batch.getBatchCode() + "_" + batch.getSupplierCode() + "_"
+                        + batch.getTaxCost().stripTrailingZeros().toPlainString(), stockBatchDao.stockBatchAndSku(request.getStockBatchList()));
             }
-        });
+        }
 
         StockBatch stockBatch;
         List<StockBatch> updates = new ArrayList<>();
@@ -1019,11 +1018,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
         //将需要修改的库存进行逻辑计算
         List<StockBatchFlow> flows = new ArrayList<>();
-        for (StockBatchInfoRequest stockBatchInfo: request.getStockBatchList()) {
+        for (StockBatchInfoRequest stockBatchInfo : request.getStockBatchList()) {
 
             String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
             String redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
-                        stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
+                    stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
             if (!redisLockService.lock(redisKey, String.valueOf(time))) {
