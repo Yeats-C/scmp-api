@@ -79,6 +79,9 @@ public class QuerySkuListReqVO extends PageReq {
     @ApiModelProperty(value = "当前登录人",hidden = true)
     private String personId;
 
+    @ApiModelProperty(value = "销售条形码")
+    private String barCode;
+
     @ApiModelProperty(value = "监管仓开单类型")
     private String orderType;
 
