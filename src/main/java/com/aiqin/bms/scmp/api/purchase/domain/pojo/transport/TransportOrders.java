@@ -34,7 +34,7 @@ public class TransportOrders extends CommonBean {
 
     @ApiModelProperty("订单状态")
 //    @JsonProperty("status")
-    private String status;
+    private Integer status;
 
     @ApiModelProperty("类型")
 //    @JsonProperty("type")
@@ -73,7 +73,7 @@ public class TransportOrders extends CommonBean {
 //    @JsonProperty("customer_name")
     private String customerName;
 
-    public void setStatus(Integer status) {
-        this.status = OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus();
-    }
+//    public void setStatus(Integer status) {
+//        this.status = OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus();
+//    }
 }
