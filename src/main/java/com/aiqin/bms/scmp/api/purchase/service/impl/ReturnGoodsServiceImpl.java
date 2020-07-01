@@ -393,9 +393,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setPartnerCode(returnOrderInfo.getCopartnerAreaId());
         returnOrder.setPartnerName(returnOrderInfo.getCopartnerAreaName());
         returnOrder.setBusinessForm(returnOrderInfo.getBusinessForm());
-        //returnOrder.setOrderProductType();
         Integer count = returnOrderInfoMapper.insert(returnOrder);
-        LOGGER.info("添加退货单条数：", count);
+        LOGGER.info("添加退货单条数：{}", count);
 
         List<ReturnOrderDetailReq> detailList = request.getReturnOrderDetailReqList();
         List<ReturnOrderInfoItem> details = Lists.newArrayList();
@@ -421,7 +420,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             details.add(returnOrderInfoItem);
         }
         Integer detailCount = returnOrderInfoItemMapper.insertList(details);
-        LOGGER.info("添加退货单详情条数：", detailCount);
+        LOGGER.info("添加退货单详情条数：{}", detailCount);
 
         // 添加退货单日志
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
