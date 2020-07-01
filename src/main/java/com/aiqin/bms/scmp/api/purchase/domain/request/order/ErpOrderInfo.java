@@ -398,7 +398,7 @@ public class ErpOrderInfo {
 
     @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
     @JsonProperty("platform_type")
-    private String platformType;
+    private Integer platformType;
 
     @ApiModelProperty("税号")
     @JsonProperty("tax_id")
