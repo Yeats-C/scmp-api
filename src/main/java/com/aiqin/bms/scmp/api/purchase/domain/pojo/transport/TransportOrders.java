@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.transport;
 
+import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -33,7 +34,7 @@ public class TransportOrders extends CommonBean {
 
     @ApiModelProperty("订单状态")
 //    @JsonProperty("status")
-    private Integer status;
+    private String status;
 
     @ApiModelProperty("类型")
 //    @JsonProperty("type")
@@ -71,4 +72,8 @@ public class TransportOrders extends CommonBean {
     @ApiModelProperty("客户名称")
 //    @JsonProperty("customer_name")
     private String customerName;
+
+    public void setStatus(Integer status) {
+        this.status = OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus();
+    }
 }
