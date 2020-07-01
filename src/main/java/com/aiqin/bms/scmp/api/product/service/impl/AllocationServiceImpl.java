@@ -916,7 +916,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         aWmsProductList.setColorName(aProductList.getColor());
                         aWmsProductList.setModelNumber(aProductList.getModel());
                         if(purchaseSaleStockRespVo != null){
-                            aWmsProductList.setUnitCode(purchaseSaleStockRespVo.getUnitCode());
+                            aWmsProductList.setUnitCode(purchaseSaleStockRespVo.getStockUnitCode());
                             aWmsProductList.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
                         }
                         aWmsOutProSource.add(aWmsProductList);
@@ -1092,7 +1092,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             movementWmsProductReqVo.setSkuCode(aProductList.getSkuCode());
             movementWmsProductReqVo.setSkuName(aProductList.getSkuName());
             if(purchaseSaleStockRespVo != null){
-                movementWmsProductReqVo.setPackageName(purchaseSaleStockRespVo.getUnitName());
+                movementWmsProductReqVo.setPackageName(purchaseSaleStockRespVo.getStockUnitName());
                 movementWmsProductReqVo.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
             }
         }
