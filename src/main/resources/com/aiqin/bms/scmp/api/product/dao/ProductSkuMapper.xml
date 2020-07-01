@@ -880,6 +880,15 @@
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
       LEFT JOIN product_sku_sales_info d on a.sku_code = d.product_sku_code
+      <if test="inspectionStatus!=null">
+        INNER JOIN product_sku_inspection_report e on
+        <if test="inspectionStatus=0">
+          a.sku_code = e.sku_code
+        </if>
+        <if test="inspectionStatus=1">
+          a.sku_code != e.sku_code
+        </if>
+      </if>
     WHERE a.del_flag=0
       <if test="skuCode!=null and skuCode!=''">
         AND a.sku_code = #{skuCode,jdbcType=VARCHAR}

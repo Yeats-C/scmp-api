@@ -82,6 +82,9 @@ public class QuerySkuListReqVO extends PageReq {
     @ApiModelProperty(value = "销售条形码")
     private String barCode;
 
+    @ApiModelProperty(value = "质检报告（0.有 1.无）")
+    private Integer inspectionStatus;
+
     @ApiModelProperty(value = "监管仓开单类型")
     private String orderType;
 
