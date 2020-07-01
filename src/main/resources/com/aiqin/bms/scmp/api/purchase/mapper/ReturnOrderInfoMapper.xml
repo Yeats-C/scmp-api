@@ -10,7 +10,7 @@
       <result column="order_product_type" jdbcType="INTEGER" property="orderProductType" />
       <result column="return_order_type" jdbcType="INTEGER" property="returnOrderType" />
       <result column="order_category" jdbcType="INTEGER" property="orderCategory" />
-      <result column="business_form" jdbcType="VARCHAR" property="businessForm" />
+      <result column="business_form" jdbcType="INTEGER" property="businessForm" />
       <result column="platform_type" jdbcType="INTEGER" property="platformType" />
       <result column="store_code" jdbcType="VARCHAR" property="storeCode" />
       <result column="store_name" jdbcType="VARCHAR" property="storeName" />
@@ -125,7 +125,7 @@
       actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount, order_product_type)
     values ( #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{orderType,jdbcType=INTEGER}, #{returnOrderType,jdbcType=INTEGER}, 
-      #{orderCategory,jdbcType=INTEGER}, #{businessForm,jdbcType=VARCHAR}, #{platformType,jdbcType=INTEGER}, 
+      #{orderCategory,jdbcType=INTEGER}, #{businessForm,jdbcType=INTEGER}, #{platformType,jdbcType=INTEGER},
       #{storeCode,jdbcType=VARCHAR}, #{storeName,jdbcType=VARCHAR}, #{franchiseeCode,jdbcType=VARCHAR}, 
       #{franchiseeName,jdbcType=VARCHAR}, #{partnerCode,jdbcType=VARCHAR}, #{partnerName,jdbcType=VARCHAR}, 
       #{paymentStatus,jdbcType=INTEGER}, #{beLock,jdbcType=INTEGER}, #{lockReason,jdbcType=VARCHAR}, 
@@ -174,7 +174,7 @@
               order_category = #{orderCategory,jdbcType=INTEGER},
           </if>
           <if test="businessForm != null">
-              business_form = #{businessForm,jdbcType=VARCHAR},
+              business_form = #{businessForm,jdbcType=INTEGER},
           </if>
           <if test="platformType != null">
               platform_type = #{platformType,jdbcType=INTEGER},
