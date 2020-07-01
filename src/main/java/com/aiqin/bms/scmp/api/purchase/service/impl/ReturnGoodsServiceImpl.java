@@ -248,8 +248,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
 
         // 添加验货之后根据库房新增的商品
-        Integer detailCount = returnOrderInfoItemMapper.insertList(itemList);
-        LOGGER.info("验货之后根据库房新增的商品条数：", detailCount);
+        if(CollectionUtils.isNotEmptyCollection(itemList) && itemList.size() > 0){
+            Integer detailCount = returnOrderInfoItemMapper.insertList(itemList);
+            LOGGER.info("验货之后根据库房新增的商品条数：", detailCount);
+        }
 
         Integer batchCount = returnOrderInfoInspectionItemMapper.insertBatch(request.getItemList());
         LOGGER.info("保存退货单验货商品信息：", batchCount);
@@ -258,7 +260,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         getInboundReqSave(request.getReturnOrderCode());
 
         // 推送结算
-        sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
+        //sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
 
         // 添加日志
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
@@ -415,6 +417,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setTax(returnOrderDetail.getTaxRate());
             returnOrderInfoItem.setChannelUnitPrice(returnOrderDetail.getChannelAmount());
             returnOrderInfoItem.setTotalChannelPrice(returnOrderDetail.getChannelTotalAmount());
+            returnOrderInfoItem.setInsertType(1);
             details.add(returnOrderInfoItem);
         }
         Integer detailCount = returnOrderInfoItemMapper.insertList(details);
