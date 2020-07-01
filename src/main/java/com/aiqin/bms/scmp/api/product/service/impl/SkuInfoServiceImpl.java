@@ -223,6 +223,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     ProductSkuDisInfoDao productSkuDisInfoDao;
     @Autowired
     WarehouseDao warehouseDao;
+    @Autowired
+    ProductSkuInspReportDao productSkuInspReportDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1559,6 +1561,18 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             List<QueryProductSkuListResp> queryProductSkuListResps = productSkuDao.querySkuList(querySkuListReqVO);
             if (CollectionUtils.isNotEmpty(queryProductSkuListResps)) {
                 for(QueryProductSkuListResp sku:queryProductSkuListResps){
+                    if(querySkuListReqVO.getInspectionStatus() == null){
+                        List<ProductSkuInspReport> info = productSkuInspReportDao.getInfo(sku.getSkuCode());
+                        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isEmptyCollection(info)){
+                            sku.setInspectionStatus("无");
+                        }else {
+                            sku.setInspectionStatus("有");
+                        }
+                    }else if (querySkuListReqVO.getInspectionStatus() == 0){
+                        sku.setInspectionStatus("有");
+                    }else if (querySkuListReqVO.getInspectionStatus() == 1) {
+                        sku.setInspectionStatus("无");
+                    }
                     //SKU渠道信息
                     List<ProductSkuChannelRespVo> skuChannelRespVos = productSkuChannelService.getList(sku.getSkuCode());
                     sku.setProductSkuChannels(skuChannelRespVos);

@@ -84,6 +84,12 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("货号")
     private String itemNumber;
 
+    @ApiModelProperty("销售条形码")
+    private String barCode;
+
+    @ApiModelProperty("质检报告（0.有 1.无）")
+    private String inspectionStatus;
+
     @ApiModelProperty(value = "sku渠道信息")
     private List<ProductSkuChannelRespVo> productSkuChannels;
 
