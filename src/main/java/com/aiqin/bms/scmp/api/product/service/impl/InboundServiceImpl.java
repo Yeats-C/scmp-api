@@ -843,6 +843,7 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setDocumentCode(inbound.getInboundOderCode());
         stockBatchInfo.setDocumentType(Global.INBOUND_TYPE);
         stockBatchInfo.setSourceDocumentCode(inbound.getSourceOderCode());
+        stockBatchInfo.setTaxRate(product.getTax());
         return stockBatchInfo;
     }
 
