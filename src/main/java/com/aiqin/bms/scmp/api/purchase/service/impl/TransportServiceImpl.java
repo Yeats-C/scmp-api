@@ -138,7 +138,7 @@ public class TransportServiceImpl implements TransportService {
             request.setTransportAmount(transport1.getTransportAmount());
             request.setStandardLogisticsFee(transport1.getStandardLogisticsFee());
             request.setAdditionalLogisticsFee(transport1.getAdditionalLogisticsFee());
-            request.setTransportCode(transport1.getLogisticsCompany());
+            request.setTransportCode(transport1.getLogisticsNumber());
             request.setTransportCompanyCode(transport1.getLogisticsCompany());
             request.setTransportCompanyName(transport1.getLogisticsCompanyName());
             request.setTransportCenterCode(transport1.getTransportCenterCode());
