@@ -99,23 +99,23 @@ public class QuerySkuInfoRespVO {
     @ApiModelProperty("供应商集合")
     private List<supplierInfoVO> supplierInfoVOS;
 
-    public String getWarehouseBatchName() {
-        if(Objects.isNull(transportCenterCode)){
-            return "";
-        }
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return Optional.ofNullable(this.transportCenterName).orElse("")+ "-"+
-                Optional.ofNullable(this.warehouseName).orElse("")+"-"+
-                Optional.ofNullable(this.warehouseBatchNumber).orElse("")+"-"+ (
-                Objects.isNull(productTime)?"":sdf.format(this.productTime));
-    }
-
-    public List<BatchInfo> getBatchList() {
-        if (CollectionUtils.isEmptyCollection(batchList)) {
-            return Lists.newArrayList();
-        }
-        return batchList;
-    }
+//    public String getWarehouseBatchName() {
+//        if(Objects.isNull(transportCenterCode)){
+//            return "";
+//        }
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        return Optional.ofNullable(this.transportCenterName).orElse("")+ "-"+
+//                Optional.ofNullable(this.warehouseName).orElse("")+"-"+
+//                Optional.ofNullable(this.warehouseBatchNumber).orElse("")+"-"+ (
+//                Objects.isNull(productTime)?"":sdf.format(this.productTime));
+//    }
+//
+//    public List<BatchInfo> getBatchList() {
+//        if (CollectionUtils.isEmptyCollection(batchList)) {
+//            return Lists.newArrayList();
+//        }
+//        return batchList;
+//    }
 
 
 }

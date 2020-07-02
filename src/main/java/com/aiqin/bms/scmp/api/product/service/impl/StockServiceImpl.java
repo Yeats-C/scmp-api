@@ -19,6 +19,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
@@ -1320,7 +1321,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     @Override
     public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
-        return PageUtil.getPageList(reqVO.getPageNo(), stockDao.getSkuBatchForChangePrice(reqVO));
+        List<QuerySkuInfoRespVO> skuBatchForChangePrice = stockDao.getSkuBatchForChangePrice(reqVO);
+        for (QuerySkuInfoRespVO querySkuInfoRespVO: skuBatchForChangePrice) {
+            List<BatchInfo> batch = stockDao.getBatch(reqVO.getCompanyCode(), querySkuInfoRespVO.getSkuCode());
+            querySkuInfoRespVO.setBatchList(batch);
+        }
+        BasePage pageList = PageUtil.getPageList(reqVO.getPageNo(), skuBatchForChangePrice);
+        return pageList;
     }
 
     @Override

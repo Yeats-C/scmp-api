@@ -30,6 +30,7 @@ public class BatchInfo  implements Serializable {
     private String batchCode;
 
     @ApiModelProperty(value = "仓库批次号名称",hidden = true)
+    @JsonProperty("warehouse_batch_name")
     private String warehouseBatchName;
 
     @ApiModelProperty("仓库编码")
@@ -57,8 +58,8 @@ public class BatchInfo  implements Serializable {
     @JsonProperty("production_date")
     private Date productTime;
 
-    public String getWarehouseBatchName() {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        return this.transportCenterName +"-"+ this.warehouseName +"-"+ this.warehouseBatchNumber +"-"+ sdf.format(this.productTime);
-    }
+//    public String getWarehouseBatchName() {
+//        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+//        return this.transportCenterName +"-"+ this.warehouseName +"-"+ this.warehouseBatchNumber +"-"+ sdf.format(this.productTime);
+//    }
 }

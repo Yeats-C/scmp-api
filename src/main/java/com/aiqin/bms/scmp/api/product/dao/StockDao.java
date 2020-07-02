@@ -73,7 +73,7 @@ public interface StockDao {
 
     List<QuerySkuInfoRespVO> getSkuBatchForChangePrice(QuerySkuInfoReqVO reqVO);
 
-    List<BatchInfo> getBatch();
+    List<BatchInfo> getBatch(@Param("companyCode") String companyCode, @Param("skuCode") String skuCode);
 
     List<PriceChannelForChangePrice> getSaleChannelList();
 
