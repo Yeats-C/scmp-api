@@ -427,6 +427,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     }
                 }
             }
+            List<OutboundBatch> batchList = outboundBatchDao.selectByOutboundBatchOderCode(outbound.getOutboundOderCode());
+            outboundResVo.setBatchList(batchList);
             if (null != outboundResVo) {
                 //获取操作日志
                 OperationLogVo operationLogVo = new OperationLogVo();

@@ -256,6 +256,8 @@ public class InboundServiceImpl implements InboundService {
                     }
                 }
             }
+            List<InboundBatch> batchList = inboundBatchDao.selectInboundBatchList(inboundResVo.getInboundOderCode());
+            inboundResVo.setBatchList(batchList);
             if (null != inboundResVo) {
                 //获取操作日志
                 OperationLogVo operationLogVo = new OperationLogVo();
