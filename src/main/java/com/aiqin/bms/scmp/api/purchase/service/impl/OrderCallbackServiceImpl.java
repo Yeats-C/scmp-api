@@ -1773,7 +1773,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
         // 保存运输管理表
-        saveTransport(request, oi);
+//        saveTransport(request, oi);
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
