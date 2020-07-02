@@ -685,10 +685,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBtachList.setSkuCode(itemBatchList.getSkuCode());
                 pBtachList.setSkuName(itemBatchList.getSkuName());
                 pBtachList.setBatchCode(itemBatchList.getBatchCode());
-                if(itemBatchList.getProductDate() != null){
-                    String format = sf.format(itemBatchList.getBatchCode());
-                    pBtachList.setProdcutDate(format);
-                }
+                pBtachList.setProdcutDate(itemBatchList.getBatchCode());
                 pBtachList.setBeOverdueData(itemBatchList.getBeOverdueDate());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
                 pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
