@@ -593,7 +593,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setActualInboundNum(product.getPraInboundMainNum().intValue());
             returnOrderInfoItem.setActualChannelUnitPrice(returnOrderInfoItem.getChannelUnitPrice());
             BigDecimal count = BigDecimal.valueOf(product.getPraInboundMainNum());
-            returnOrderInfoItem.setActualTotalChannelPrice(count.multiply(returnOrderInfoItem.getChannelUnitPrice()).setScale(4, BigDecimal.ROUND_HALF_UP));
+            returnOrderInfoItem.setActualTotalChannelPrice(count.multiply(
+                    returnOrderInfoItem.getChannelUnitPrice() == null ? BigDecimal.ZERO : returnOrderInfoItem.getChannelUnitPrice()
+                    ).setScale(4, BigDecimal.ROUND_HALF_UP));
             returnOrderInfoItem.setActualAmount(returnOrderInfoItem.getPrice());
             returnOrderInfoItem.setActualPrice(count.multiply(returnOrderInfoItem.getPrice()).setScale(4, BigDecimal.ROUND_HALF_UP));
             Integer returnInfoProduct = returnOrderInfoItemMapper.update(returnOrderInfoItem);
@@ -621,9 +623,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfoInspectionItem returnBatch;
         for (InboundBatch batch : inboundBatches) {
             // 根据批次号、sku、行号查询对应的批次
-            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
+            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchCode(),
                     inbound.getSourceOderCode(), batch.getLineCode());
-            returnBatchItem.setActualProductCount(batch.getActualTotalCount());
+            if(returnBatchItem == null){
+                returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(null,
+                        inbound.getSourceOderCode(), batch.getLineCode());
+            }
 
             if(returnBatchItem == null){
                 // 根据sku  行号查询对应的批次
@@ -645,10 +650,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                     returnBatch.setBatchRemark(batch.getBatchRemark());
                     batchList.add(returnBatch);
                 }
+            }else {
+                returnBatchItem.setActualProductCount(batch.getActualTotalCount());
+                Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
+                LOGGER.info("更新退货单批次：", i);
             }
-
-           Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
-            LOGGER.info("更新退货单批次：", i);
         }
         if(CollectionUtils.isNotEmptyCollection(batchList)){
             Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);

@@ -20,7 +20,7 @@ public interface ReturnOrderInfoInspectionItemMapper {
                                                         @Param("returnOrderCode") String returnOrderCode,
                                                         @Param("lineCode") Integer lineCode);
 
-    ReturnOrderInfoInspectionItem returnOrderInfo(@Param("batchInfoCode") String batchInfoCode,
+    ReturnOrderInfoInspectionItem returnOrderInfo(@Param("batchCode") String batchCode,
                                                   @Param("returnOrderCode") String returnOrderCode,
                                                   @Param("lineCode") Integer lineCode);
 
