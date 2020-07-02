@@ -189,6 +189,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setInspectionRemark(request.getInspectionRemark());
         returnOrder.setUpdateById(getUser().getPersonId());
         returnOrder.setUpdateByName(getUser().getPersonName());
+        returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
         Integer orderCount = returnOrderInfoMapper.update(returnOrder);
         LOGGER.info("更新退货单保存验货备注信息：", orderCount);
 
