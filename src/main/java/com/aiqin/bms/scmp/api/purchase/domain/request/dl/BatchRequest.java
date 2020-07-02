@@ -41,7 +41,12 @@ public class BatchRequest {
     @JsonProperty("actual_total_count")
     private Long actualTotalCount;
 
-    @ApiModelProperty(value="操作类型：库存变动用到")
-    @JsonProperty("operation_type")
-    private Integer operationType;
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty("库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
+
 }
