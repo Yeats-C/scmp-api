@@ -1055,12 +1055,19 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         //查询需要做修改的库存数据
         Map<String, StockBatch> stockBatchMap = new HashMap<>();
         for (StockBatchInfoRequest batch : request.getStockBatchList()) {
+            StockBatch stockBatch;
             if (StringUtils.isNotBlank(batch.getBatchInfoCode())) {
-                stockBatchMap.put(batch.getBatchInfoCode(), stockBatchDao.stockBatchInfoOne(batch.getBatchInfoCode()));
+                stockBatch = stockBatchDao.stockBatchInfoOne(batch.getBatchInfoCode());
+                if(stockBatch != null){
+                    stockBatchMap.put(batch.getBatchInfoCode(), stockBatch);
+                }
             } else {
-                stockBatchMap.put(batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
-                        batch.getBatchCode() + "_" + batch.getSupplierCode() + "_"
-                        + batch.getTaxCost().stripTrailingZeros().toPlainString(), stockBatchDao.stockBatchAndSku(request.getStockBatchList()));
+                stockBatch = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
+                if(stockBatch != null){
+                    stockBatchMap.put(batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
+                            batch.getBatchCode() + "_" + batch.getSupplierCode() + "_"
+                            + batch.getTaxCost().stripTrailingZeros().toPlainString(), stockBatch);
+                }
             }
         }
 
@@ -1073,9 +1080,14 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         List<StockBatchFlow> flows = new ArrayList<>();
         for (StockBatchInfoRequest stockBatchInfo : request.getStockBatchList()) {
 
-            String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
-            String redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
-                    stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
+            String redisKey;
+            if(StringUtils.isNotBlank(stockBatchInfo.getBatchInfoCode())){
+                redisKey = stockBatchInfo.getBatchInfoCode();
+            }else {
+                String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
+                redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+                        stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
+            }
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
             if (!redisLockService.lock(redisKey, String.valueOf(time))) {
@@ -1099,10 +1111,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             stockBatchFlow.setUpdateById(stockBatchInfo.getOperatorId());
             stockBatchFlow.setUpdateByName(stockBatchInfo.getOperatorName());
 
-            String key = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
-                    stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + stockBatchInfo.getTaxCost();
-            if (stockBatchMap.containsKey(key)) {
-                stockBatch = stockBatchMap.get(key);
+            if (stockBatchMap.containsKey(redisKey) && stockBatchMap.size() > 0) {
+                stockBatch = stockBatchMap.get(redisKey);
 
                 //设置库存流水变化前值
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
