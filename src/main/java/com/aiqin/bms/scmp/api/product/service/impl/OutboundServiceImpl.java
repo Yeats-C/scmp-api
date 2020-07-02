@@ -745,6 +745,18 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     Long changeCount;
                     for (int i = 0; i <= batchList.size(); i++) {
                         stockBatchInfoRequest = new StockBatchInfoRequest();
+                        stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
+                        stockBatchInfoRequest.setTransportCenterName(batchList.get(i).getTransportCenterName());
+                        stockBatchInfoRequest.setBatchInfoCode(batchList.get(i).getBatchInfoCode());
+                        stockBatchInfoRequest.setBatchCode(batchList.get(i).getBatchCode());
+                        stockBatchInfoRequest.setTaxRate(batchList.get(i).getTaxRate());
+                        stockBatchInfoRequest.setProductDate(batchList.get(i).getProductDate());
+                        stockBatchInfoRequest.setBeOverdueDate(batchList.get(i).getBeOverdueDate());
+                        stockBatchInfoRequest.setBatchRemark(batchList.get(i).getBatchRemark());
+                        stockBatchInfoRequest.setCompanyCode(batchList.get(i).getCompanyCode());
+                        stockBatchInfoRequest.setCompanyName(batchList.get(i).getCompanyName());
+                        stockBatchInfoRequest.setWarehouseCode(batchList.get(i).getWarehouseCode());
+                        stockBatchInfoRequest.setWarehouseName(batchList.get(i).getWarehouseName());
                         stockBatchInfoRequest.setSkuCode(product.getSkuCode());
                         stockBatchInfoRequest.setSkuName(product.getSkuName());
                         stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
@@ -776,7 +788,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             StockBatch stockBatch;
             for (OutboundBatchCallBackReqVo batch : request.getBatchList()) {
-                outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchInfoCode());
+                outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchCode());
+//                if(){
+//
+//                }
                 //设置实际数量
                 outboundBatch.setActualTotalCount(batch.getActualTotalCount());
                 // 修改单条 批次

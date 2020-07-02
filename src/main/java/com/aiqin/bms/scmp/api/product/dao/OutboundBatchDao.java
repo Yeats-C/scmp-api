@@ -27,4 +27,5 @@ public interface OutboundBatchDao {
                                            @Param("outboundOderCode") String outboundOderCode,
                                            @Param("lineCode") Long lineCode);
 
+
 }
