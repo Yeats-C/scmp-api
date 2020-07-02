@@ -6,11 +6,13 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
+import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
@@ -81,6 +83,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoLogMapper orderInfoLogMapper;
     @Autowired
     private OutboundService outboundService;
+    @Autowired
+    private OutboundDao outboundDao;
     @Autowired
     private StockService stockService;
     @Autowired
@@ -502,7 +506,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                // 进行锁库存操作
                 ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
                 stockChangeRequest.setOperationType(1);
-                handleProfitLossStockData(vo,stockChangeRequest);
+                handleProfitLossStockData(vo,stockChangeRequest,insertOutbound);
                 LOGGER.error("订单同步耘链锁库存：参数{}", JsonUtil.toJson(stockChangeRequest));
                 HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
                 if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -528,7 +532,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         return HttpResponse.success();
     }
 
-    private void handleProfitLossStockData(OrderInfoReqVO orderInfoReqVO, ChangeStockRequest changeStockRequest) {
+    private void handleProfitLossStockData(OrderInfoReqVO orderInfoReqVO, ChangeStockRequest changeStockRequest, String insertOutbound) {
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfoRequest;
         List<StockBatchInfoRequest> batchList = Lists.newArrayList();
@@ -544,8 +548,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getNum()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockInfoRequest.setSkuName(itemReqVo.getSkuName());
-            stockInfoRequest.setDocumentType(9);
-            stockInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
+            stockInfoRequest.setDocumentType(0);
+            stockInfoRequest.setDocumentCode(insertOutbound);
             stockInfoRequest.setSourceDocumentType(9);
             stockInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
             stockInfoRequest.setOperatorName(orderInfoReqVO.getCreateByName());
@@ -993,7 +997,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(orderInfo.getOrderCode());
         List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
         List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
-       //  参数转换
+        // 查询出库单编码
+        Outbound outbound = outboundDao.selectOutbouondBySourceCode(oi.getOrderCode());
+        //  参数转换
         OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
         List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
         List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
@@ -1002,7 +1008,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 进行解锁库存操作
         ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
         stockChangeRequest.setOperationType(3);
-        handleProfitLossStockData(info,stockChangeRequest);
+        handleProfitLossStockData(info,stockChangeRequest,outbound.getOutboundOderCode());
         LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
         HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
         if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
