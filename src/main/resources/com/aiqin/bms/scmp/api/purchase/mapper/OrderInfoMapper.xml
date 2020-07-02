@@ -133,7 +133,10 @@ transport_number, platform_type, business_form, tax_id
              update_time updateTime,
              order_product_type orderProductType
       from order_info
-      where company_code = #{companyCode} and order_type_code = #{orderType}
+      where company_code = #{companyCode}
+      <if test="orderType != null">
+          and order_type_code = #{orderType}
+      </if>
       <if test="createDateStart != null">
         and create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}
       </if>
@@ -164,7 +167,7 @@ transport_number, platform_type, business_form, tax_id
        <if test="orderCode != null and orderCode != ''">
         and order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
-      order by create_date desc
+      order by update_time desc
   </select>
   <resultMap id="selectByOrderCode" type="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO">
     <result column="aorder_code" jdbcType="VARCHAR" property="orderCode" />
