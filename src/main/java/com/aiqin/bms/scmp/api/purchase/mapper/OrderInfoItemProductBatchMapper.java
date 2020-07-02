@@ -35,7 +35,7 @@ public interface OrderInfoItemProductBatchMapper {
 
     List<QueryOrderInfoItemBatchRespVO> selectList(String orderCode);
 
-    List<OrderInfoItemProductBatch> orderBatchList(@Param("skuCode") String skuCode, @Param("orderCode") String orderCode, @Param("productLineNum") Integer productLineNum);
+    List<OrderInfoItemProductBatch> orderBatchList(@Param("skuCode") String skuCode, @Param("orderCode") String orderCode, @Param("lineCode") Integer lineCode);
 
     Integer updateBatch(List<OrderInfoItemProductBatch> batchList);
 }
