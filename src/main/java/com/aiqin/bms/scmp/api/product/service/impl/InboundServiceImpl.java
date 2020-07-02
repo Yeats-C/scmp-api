@@ -647,9 +647,15 @@ public class InboundServiceImpl implements InboundService {
                 InboundProduct product = products.get(key);
                 String productDate = DateUtils.currentDate();
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
-                String batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                        batchCode + "_" + inbound.getSupplierCode() + "_" +
-                        product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                String batchInfoCode;
+                if(StringUtils.isBlank(inbound.getSupplierCode())){
+                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                            batchCode  + "_" + product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                }else {
+                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                            batchCode + "_" + inbound.getSupplierCode() + "_" +
+                            product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                }
 
                 // 添加批次库存
                 stockBatchInfo = new StockBatchInfoRequest();
@@ -661,6 +667,7 @@ public class InboundServiceImpl implements InboundService {
                 stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
                 stockBatchInfo.setOperatorName(request.getOperatorName());
                 stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                stockBatchInfo.setBatchInfoCode(batchInfoCode);
                 batchList.add(stockBatchInfo);
 
                 // 根据批次编号查询批次是否存在
@@ -1119,7 +1126,7 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setShipper(returnOrderInfo.getConsignee());
         returnOder.setShipperNumber(returnOrderInfo.getConsigneePhone());
         returnOder.setRemake(returnOrderInfo.getRemake());
-        returnOder.setReturnOrderCode(returnOrderInfo.getReturnOrderCode());
+        returnOder.setReturnOrderCode(inbound.getInboundOderCode());
         returnOder.setOrderCode(returnOrderInfo.getOrderCode());
         returnOder.setSupplierCode(returnOrderInfo.getSupplierCode());
         returnOder.setSupplierName(returnOrderInfo.getSupplierName());

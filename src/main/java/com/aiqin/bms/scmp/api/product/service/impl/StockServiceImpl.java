@@ -29,6 +29,9 @@ import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSk
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
@@ -709,8 +712,58 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     }
 
     private void dlStockChange(ChangeStockRequest request){
+        LOGGER.info("开始转换库存变更参数并调用dl");
+        StockChangeDlRequest dlRequest = new StockChangeDlRequest();
+        dlRequest.setOrderCode(request.getStockList().get(0).getSourceDocumentCode());
+        Integer documentType = request.getStockList().get(0).getSourceDocumentType();
+        if(documentType.equals(Global.DOCUMENT_TYPE_3)){
+            dlRequest.setOrderType(1);
+        }else if(documentType.equals(Global.DOCUMENT_TYPE_2)){
+            dlRequest.setOrderType(2);
+        }else if(documentType.equals(Global.DOCUMENT_TYPE_4)){
+            dlRequest.setOrderType(3);
+        }else if(documentType.equals(Global.DOCUMENT_TYPE_6)){
+            dlRequest.setOrderType(4);
+        }else if(documentType.equals(Global.DOCUMENT_TYPE_11)){
+            dlRequest.setOrderType(5);
+        }else {
+            return;
+        }
+
+        if(request.getOperationType() == 1 || request.getOperationType() == 4 ||  request.getOperationType() == 10){
+            dlRequest.setOperationType(2);
+        }else if(request.getOperationType() == 3 || request.getOperationType() == 6 ||  request.getOperationType() == 8){
+            dlRequest.setOperationType(1);
+        }
+        List<ProductRequest> productRequestList = Lists.newArrayList();
+        ProductRequest product;
+        for(StockInfoRequest stock : request.getStockList()){
+            product = new ProductRequest();
+            //product.setLineCode(stock.ge);
+            product.setSkuCode(stock.getSkuCode());
+            product.setSkuName(stock.getSkuName());
+            product.setTotalCount(stock.getChangeCount());
+            product.setWarehouseCode(stock.getWarehouseCode());
+            product.setWarehouseName(stock.getWarehouseName());
+            productRequestList.add(product);
+        }
+
+        if(CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
+            List<BatchRequest> batchRequestList = Lists.newArrayList();
+            BatchRequest batchRequest;
+            for(StockBatchInfoRequest batch:request.getStockBatchList()){
+                batchRequest = new BatchRequest();
+                batchRequest.setSkuCode(batch.getSkuCode());
+                batchRequest.setTotalCount(batch.getChangeCount());
+                batchRequest.setBatchCode(batch.getBatchCode());
+                batchRequest.setProductDate(batch.getProductDate());
+                batchRequest.setWarehouseCode(batch.getWarehouseCode());
+                batchRequest.setWarehouseName(batch.getWarehouseName());
+                batchRequestList.add(batchRequest);
+            }
+        }
         String url = urlConfig.WMS_API_URL + "/dl/stock/change";
-        HttpClient httpClient = HttpClient.post(url).json(request).timeout(20000);
+        HttpClient httpClient = HttpClient.post(url).json(dlRequest).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){
             LOGGER.info("熙耘->DL，推送库存变更信息成功");

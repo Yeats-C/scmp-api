@@ -64,10 +64,6 @@ public class ProductRequest {
     @JsonProperty("channel_amount")
     private BigDecimal channelAmount;
 
-    @ApiModelProperty(value="操作类型：只有库存变动用")
-    @JsonProperty("operation_type")
-    private Integer operationType;
-
     @ApiModelProperty(value="渠道分摊：只有销售用")
     @JsonProperty("activity_apportionment")
     private BigDecimal activityApportionment;
@@ -83,6 +79,14 @@ public class ProductRequest {
     @ApiModelProperty(value="分销总价：只有退货用")
     @JsonProperty("product_total_amount")
     private BigDecimal productTotalAmount;
+
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty("库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
 
     @ApiModelProperty(value="批次信息")
     @JsonProperty("batch_list")

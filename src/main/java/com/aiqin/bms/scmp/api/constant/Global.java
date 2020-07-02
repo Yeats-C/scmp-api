@@ -210,4 +210,20 @@ public final class Global {
      */
     public static final Integer PLATFORM_TYPE_0 = 0;
     public static final Integer PLATFORM_TYPE_1 = 1;
+
+    /**
+     *  库存单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库 11损溢
+     */
+    public static final Integer DOCUMENT_TYPE_0 = 0;
+    public static final Integer DOCUMENT_TYPE_1 = 1;
+    public static final Integer DOCUMENT_TYPE_2 = 2;
+    public static final Integer DOCUMENT_TYPE_3 = 3;
+    public static final Integer DOCUMENT_TYPE_4 = 4;
+    public static final Integer DOCUMENT_TYPE_5 = 5;
+    public static final Integer DOCUMENT_TYPE_6 = 6;
+    public static final Integer DOCUMENT_TYPE_7 = 7;
+    public static final Integer DOCUMENT_TYPE_8 = 8;
+    public static final Integer DOCUMENT_TYPE_9 = 9;
+    public static final Integer DOCUMENT_TYPE_10 = 10;
+    public static final Integer DOCUMENT_TYPE_11 = 11;
 }
