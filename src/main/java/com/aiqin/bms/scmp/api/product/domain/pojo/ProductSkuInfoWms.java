@@ -165,6 +165,10 @@ public class ProductSkuInfoWms extends CommonBean {
     @JsonProperty("season_band")
     private String seasonBand;
 
+    @ApiModelProperty("唯一码管理(0:是 1:否)")
+    @JsonProperty("unique_code")
+    private Byte uniqueCode;
+
     @ApiModelProperty("改sku下仓库配置")
     @JsonProperty("sku_configs_wms_reps_vos")
     private List<SkuConfigsWmsRepsVo> skuConfigsWmsRepsVos;
