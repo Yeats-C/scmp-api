@@ -728,26 +728,25 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         // 自动批次管理，由批次管理按入库顺序（先入先出）扣减批次库存。
         StockBatchInfoRequest stockBatchInfoRequest;
         List<StockBatchInfoRequest> stockBatchVoRequestList = Lists.newArrayList();
+        List<OutboundProductCallBackReqVo> productList;
         if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
             // 根据sku分组
             List<OutboundProductCallBackReqVo> details = request.getDetailList().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                     new TreeSet<>(Comparator.comparing(o -> o.getSkuCode()))), ArrayList::new));
-            List<OutboundProductCallBackReqVo> productList;
             for (OutboundProductCallBackReqVo detail : details) {
                 // 正序查询sku的批次库存
                 List<StockBatch> batchList = stockBatchDao.stockBatchByReject(detail.getSkuCode(), outbound.getWarehouseCode(), null);
                 if (CollectionUtils.isEmpty(batchList)) {
-                    continue;
-//                    LOGGER.info("wms回传，未查询到sku的批次库存信息，无法操作库存:", detail.getSkuCode());
-//                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，未查询到sku的批次库存信息，无法操作库存:" + detail.getSkuCode()));
+                    LOGGER.info("wms回传，未查询到sku的批次库存信息，无法操作库存:{}", detail.getSkuCode());
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，未查询到sku的批次库存信息，无法操作库存:{}" + detail.getSkuCode()));
                 }
                 long sum = batchList.stream().mapToLong(StockBatch::getAvailableCount).sum();
                 // 查询相同sku的集合
                 productList = request.getDetailList().stream().filter(s -> s.getSkuCode().equals(detail.getSkuCode())).collect(Collectors.toList());
                 long skuSum = productList.stream().mapToLong(OutboundProductCallBackReqVo::getActualTotalCount).sum();
                 if (sum < skuSum) {
-                    LOGGER.info("wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:", detail.getSkuCode());
-                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:" + detail.getSkuCode()));
+                    LOGGER.info("wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:{}", detail.getSkuCode());
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:{}" + detail.getSkuCode()));
                 }
 
                 for (OutboundProductCallBackReqVo product : productList) {
@@ -812,36 +811,74 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
                 log.info("更新出库单批次信息：", k);
 
-                //查询退货商品
-                OutboundProduct product = outboundProductDao.selectByProductAmount(outbound.getOutboundOderCode(), batch.getLineCode());
-                //设置sku编码名称 批次号
-                stockBatchInfoRequest = new StockBatchInfoRequest();
-                stockBatchInfoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
-                stockBatchInfoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
-                stockBatchInfoRequest.setWarehouseCode(outbound.getWarehouseCode());
-                stockBatchInfoRequest.setWarehouseName(outbound.getWarehouseName());
-                stockBatchInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
-                stockBatchInfoRequest.setSkuCode(batch.getSkuCode());
-                stockBatchInfoRequest.setSkuName(batch.getSkuName());
-                stockBatchInfoRequest.setCompanyCode(outbound.getCompanyCode());
-                stockBatchInfoRequest.setCompanyName(outbound.getCompanyName());
-                stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
-                stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
-                stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-                stockBatchInfoRequest.setSourceDocumentType(typeCode);
-                stockBatchInfoRequest.setOperatorId(request.getOperatorId());
-                stockBatchInfoRequest.setOperatorName(request.getOperatorName());
-                stockBatchInfoRequest.setChangeCount(batch.getActualTotalCount());
-                stockBatchInfoRequest.setBatchInfoCode(outboundBatch.getBatchInfoCode());
-                stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
-                stockBatchInfoRequest.setBeOverdueDate(outboundBatch.getBeOverdueDate());
-                stockBatchInfoRequest.setBatchRemark(outboundBatch.getBatchRemark());
-                if (product != null) {
-                    stockBatchInfoRequest.setTaxRate(product.getTax());
-                    stockBatchInfoRequest.setPurchasePrice(product.getPreTaxPurchaseAmount());
+                // 查询批次数据
+                List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), outbound.getWarehouseCode(), batch.getBatchCode());
+                if (CollectionUtils.isEmpty(batchList)) {
+                    LOGGER.info("wms回传，未查询到sku的批次库存信息，无法操作库存:{}", batch.getSkuCode());
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，未查询到sku的批次库存信息，无法操作库存:{}" + batch.getSkuCode()));
                 }
-                stockBatchInfoRequest.setPreLockCount(outboundBatch.getActualTotalCount());
-                stockBatchVoRequestList.add(stockBatchInfoRequest);
+                long sum = batchList.stream().mapToLong(StockBatch::getInventoryCount).sum();
+                // 查询相同sku的集合
+                if (sum < batch.getActualTotalCount()) {
+                    LOGGER.info("wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:{}", batch.getSkuCode());
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，sku的锁定批次库存总数大于所有sku批次的总库存，无法操作库存:{}" + batch.getSkuCode()));
+                }
+                Integer exist = 0;
+                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+                    exist = productSkuBatchMapper.productSkuBatchExist(batch.getSkuCode(), outbound.getWarehouseCode());
+                    if(exist <= 0){
+                        long availableSum = batchList.stream().mapToLong(StockBatch::getAvailableCount).sum();
+                        // 查询相同sku的集合
+                        if (availableSum < batch.getActualTotalCount()) {
+                            LOGGER.info("wms回传，sku的锁定批次库存总数大于所有sku批次的可用库存，无法操作库存:{}", batch.getSkuCode());
+                            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，sku的锁定批次库存总数大于所有sku批次的可用库存，无法操作库存:{}" + batch.getSkuCode()));
+                        }
+                    }
+                }
+
+                Long changeCount;
+                for (int i = 0; i <= batchList.size(); i++) {
+                    stockBatchInfoRequest = new StockBatchInfoRequest();
+                    if(exist <= 0){
+                        stockBatchInfoRequest.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
+                    }else {
+                        stockBatchInfoRequest.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
+                    }
+                    stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
+                    stockBatchInfoRequest.setTransportCenterName(batchList.get(i).getTransportCenterName());
+                    stockBatchInfoRequest.setBatchInfoCode(batchList.get(i).getBatchInfoCode());
+                    stockBatchInfoRequest.setBatchCode(batchList.get(i).getBatchCode());
+                    stockBatchInfoRequest.setTaxRate(batchList.get(i).getTaxRate());
+                    stockBatchInfoRequest.setProductDate(batchList.get(i).getProductDate());
+                    stockBatchInfoRequest.setBeOverdueDate(batchList.get(i).getBeOverdueDate());
+                    stockBatchInfoRequest.setBatchRemark(batchList.get(i).getBatchRemark());
+                    stockBatchInfoRequest.setCompanyCode(batchList.get(i).getCompanyCode());
+                    stockBatchInfoRequest.setCompanyName(batchList.get(i).getCompanyName());
+                    stockBatchInfoRequest.setWarehouseCode(batchList.get(i).getWarehouseCode());
+                    stockBatchInfoRequest.setWarehouseName(batchList.get(i).getWarehouseName());
+                    stockBatchInfoRequest.setSkuCode(batch.getSkuCode());
+                    stockBatchInfoRequest.setSkuName(batch.getSkuName());
+                    stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
+                    stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
+                    stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
+                    stockBatchInfoRequest.setSourceDocumentType(typeCode);
+                    stockBatchInfoRequest.setOperatorId(request.getOperatorId());
+                    stockBatchInfoRequest.setOperatorName(request.getOperatorName());
+                    stockBatchInfoRequest.setBatchCode(batchList.get(i).getBatchCode());
+                    stockBatchInfoRequest.setSupplierCode(batchList.get(i).getSupplierCode());
+                    stockBatchInfoRequest.setTaxCost(batchList.get(i).getTaxCost());
+                    if (batchList.get(i).getInventoryCount() >= batch.getActualTotalCount() &&
+                            batchList.get(i).getAvailableCount() >= batch.getActualTotalCount() ) {
+                        changeCount = batch.getActualTotalCount();
+                        stockBatchInfoRequest.setChangeCount(changeCount);
+                        stockBatchVoRequestList.add(stockBatchInfoRequest);
+                        break;
+                    } else {
+                        changeCount = batch.getActualTotalCount() - batchList.get(i).getAvailableCount();
+                        stockBatchInfoRequest.setChangeCount(changeCount);
+                        stockBatchVoRequestList.add(stockBatchInfoRequest);
+                    }
+                }
             }
         }
         if(CollectionUtils.isNotEmpty(stockBatchVoRequestList) && stockBatchVoRequestList.size() > 0){

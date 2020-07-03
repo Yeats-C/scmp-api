@@ -931,12 +931,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
                 stock.setInventoryCount(inventoryCount - changeCount);
                 stock.setLockCount(lockCount - preLockCount);
-//                if (availableCount < (changeCount - preLockCount)) {
-//                    LOGGER.error("wms回传出库减并解锁库存: 可用库存在操作前后不能为负,sku:" + request.getSkuCode());
-//                    throw new BizException("wms回传出库减并解锁库存: 可用库存在操作前后不能为负，sku:" + request.getSkuCode());
-//                }
-                //stock.setAvailableCount(availableCount - changeCount);
-
                 break;
             default:
                 return null;
@@ -1063,7 +1057,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stockBatchMap.put(batch.getBatchInfoCode(), stockBatch);
                 }
             } else {
-                stockBatch = stockBatchDao.stockBatchAndSku(request.getStockBatchList());
+                stockBatch = stockBatchDao.stockBatchAndSku(batch);
                 if(stockBatch != null){
                     stockBatchMap.put(batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
                             batch.getBatchCode() + "_" + batch.getSupplierCode() + "_"
@@ -1086,8 +1080,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 redisKey = stockBatchInfo.getBatchInfoCode();
             }else {
                 String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
-                redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
-                        stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
+                if(StringUtils.isNotBlank(stockBatchInfo.getSupplierCode() )){
+                    redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+                            stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
+                }else {
+                    redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
+                            stockBatchInfo.getBatchCode()  + "_" + taxCost;
+                }
             }
             // 给条批次加锁
             long time = System.currentTimeMillis() + 30;
@@ -1149,10 +1148,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
 
                 //设置库存流水修改后的值
-                String cost = stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
-                String batchInfoCode = stockBatch.getSkuCode() + "_" + stockBatch.getWarehouseCode() + "_" +
-                        stockBatch.getBatchCode() + "_" + stockBatch.getSupplierCode() + "_" + cost;
-                stockBatch.setBatchInfoCode(batchInfoCode);
+                stockBatch.setBatchInfoCode(redisKey);
                 stockBatchFlow.setBatchCode(stockBatch.getBatchCode());
                 stockBatchFlow.setStockBatchCode(stockBatch.getStockBatchCode());
                 stockBatchFlow.setAfterInventoryCount(stockBatch.getInventoryCount());
@@ -1272,15 +1268,24 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     throw new BizException("wms回传出库减并批次库存: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setInventoryCount(inventoryCount - changeCount);
-                stockBatch.setLockCount(lockCount - preLockCount);
-                if(changeCount > preLockCount){
-                    if(availableCount < (changeCount - preLockCount)){
+                if(stockBatchInfo.getSkuBatchManage() != null && stockBatchInfo.getSkuBatchManage().equals(Global.WAREHOUSE_BATCH_MANAGE_SKU_0)){
+                    stockBatch.setLockCount(lockCount - preLockCount);
+                }else {
+                    if(changeCount > availableCount) {
                         LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
                         throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+                    }else {
+                        stockBatch.setAvailableCount(availableCount - changeCount);
                     }
-                    stockBatch.setAvailableCount(availableCount - (changeCount - preLockCount));
-                }else {
-                    stockBatch.setAvailableCount(availableCount + (changeCount - preLockCount));
+//                    if(changeCount > preLockCount){
+//                        if(availableCount < (changeCount - preLockCount)){
+//                            LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
+//                            throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+//                        }
+//                        stockBatch.setAvailableCount(availableCount - (changeCount - preLockCount));
+//                    }else {
+//                        stockBatch.setAvailableCount(availableCount + (changeCount - preLockCount));
+//                    }
                 }
                 break;
             default:

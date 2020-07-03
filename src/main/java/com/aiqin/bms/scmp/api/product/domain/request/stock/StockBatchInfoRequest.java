@@ -116,4 +116,8 @@ public class StockBatchInfoRequest {
     @ApiModelProperty("预计锁定数")
     @JsonProperty(value = "pre_lock_count")
     private Long preLockCount;
+
+    @ApiModelProperty("批次管理 2：部分指定批次模式 商品sku是否指定批次 (0:指定 1:不指定)")
+    @JsonProperty("sku_batch_manage")
+    private Integer skuBatchManage;
 }

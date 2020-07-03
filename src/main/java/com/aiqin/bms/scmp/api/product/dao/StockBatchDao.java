@@ -21,7 +21,7 @@ public interface StockBatchDao {
 
     StockBatchResponse stockBatchDetail(String stockBatchCode);
 
-    StockBatch stockBatchAndSku(@Param("list") List<StockBatchInfoRequest> stockBatchList);
+    StockBatch stockBatchAndSku(StockBatchInfoRequest stockBatchList);
 
     Integer updateBatchAll(@Param("list") List<StockBatch> stockList);
 
@@ -31,6 +31,9 @@ public interface StockBatchDao {
 
     List<StockBatch> stockBatchByReject(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode,
                                         @Param("supplierCode") String supplierCode);
+
+    List<StockBatch> stockBatchByOutbound(@Param("skuCode") String skuCode, @Param("warehouseCode") String warehouseCode,
+                                        @Param("batchCode") String batchCode);
 
     StockBatch stockBatchInfoOne(String batchInfoCode);
 }
