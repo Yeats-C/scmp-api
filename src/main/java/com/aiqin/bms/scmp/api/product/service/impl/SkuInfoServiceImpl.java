@@ -2037,6 +2037,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setColorName(productSkuInfo.getColorName());
         productSkuInfoWms.setSkuStatus(productSkuInfo.getSkuStatus());
         productSkuInfoWms.setSeasonBand(productSkuInfo.getSeasonBand());
+        productSkuInfoWms.setUniqueCode(productSkuInfo.getUniqueCode());
         //条形码,门店销售
 //        List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos=  productSkuSalesInfoService.getList(skuCode);
 //        log.info("sku条形码{}", JSON.toJSONString(purchaseSaleStockRespVos));
