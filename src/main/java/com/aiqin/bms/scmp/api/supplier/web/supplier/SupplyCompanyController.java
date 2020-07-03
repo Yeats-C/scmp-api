@@ -17,9 +17,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -57,9 +55,11 @@ public class SupplyCompanyController {
 
     @GetMapping("/all")
     @ApiOperation("查询所有供应商")
-    public HttpResponse<List<SupplyComListRespVO>> getAllSupplyComList(String name){
-        try {
-            List<SupplyComListRespVO> respVOList = supplyComService.getAllSupplyComList(name);
+    public HttpResponse<List<SupplyComListRespVO>> getAllSupplyComList(@RequestParam(value = "编码", required = false) String code,
+                                                                       @RequestParam(value = "名称", required = false) String name){
+
+            try {
+            List<SupplyComListRespVO> respVOList = supplyComService.getAllSupplyComList(code,name);
             return HttpResponse.success(respVOList);
         } catch (Exception e) {
             return HttpResponse.failure(ResultCode.SEARCH_ERROR);
