@@ -1252,7 +1252,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), mBtachLists.getTransportCenterCode(), mBtachLists.getWarehouseCode());
             mBtachLists.setSkuBatchRespVOS(skuBatchRespVOS);
 //            批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
-            if(Objects.equals(Global.WAREHOUSE_BATCH_MANAGE_2,mBtachLists.getBatchManage())){
+            if(Objects.equals(Global.BATCH_MANAGE_2,mBtachLists.getBatchManage())){
                 Integer count = productSkuBatchMapper.productSkuBatchExist(mBtachLists.getSkuCode(), mBtachLists.getWarehouseCode());
                 if(count > 0){
                     mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
