@@ -233,4 +233,10 @@ public final class Global {
     public static final Integer BATCH_MANAGE_0 = 0;
     public static final Integer BATCH_MANAGE_1 = 1;
     public static final Integer BATCH_MANAGE_2 = 2;
+
+    /**
+     *  批次管理 2：部分指定批次模式  商品sku是否指定批次 (0:指定 1:不指定)
+     */
+    public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_0 = 0;
+    public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_1 = 1;
 }

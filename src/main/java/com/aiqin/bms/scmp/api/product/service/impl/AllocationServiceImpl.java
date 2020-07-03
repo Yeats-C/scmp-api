@@ -35,6 +35,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespV
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
@@ -138,9 +139,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
     @Autowired
     private InboundService inboundService;
-;
     @Autowired
     private WmsCancelService wmsCancelService;
+    @Autowired
+    private ProductSkuBatchMapper productSkuBatchMapper;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -1249,6 +1251,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         for (ManualChoseProductRespVo mBtachLists : mLists) {
             List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), mBtachLists.getTransportCenterCode(), mBtachLists.getWarehouseCode());
             mBtachLists.setSkuBatchRespVOS(skuBatchRespVOS);
+//            批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
+            if(Objects.equals(Global.WAREHOUSE_BATCH_MANAGE_2,mBtachLists.getBatchManage())){
+                Integer count = productSkuBatchMapper.productSkuBatchExist(mBtachLists.getSkuCode(), mBtachLists.getWarehouseCode());
+                if(count > 0){
+                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
+                }else {
+                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
+                }
+            }
         }
         BasePage basePage = new BasePage();
         basePage.setDataList(mLists);

@@ -101,6 +101,11 @@ public class ManualChoseProductRespVo {
     @JsonProperty("batch_manage")
     private Integer batchManage;
 
+
+    @ApiModelProperty("批次管理 2：部分指定批次模式 商品sku是否指定批次 (0:指定 1:不指定)")
+    @JsonProperty("sku_batch_manage")
+    private Integer skuBatchManage;
+
     @ApiModelProperty("批次列表")
     @JsonProperty("sku_batch")
     private List<SkuBatchRespVO> skuBatchRespVOS;
