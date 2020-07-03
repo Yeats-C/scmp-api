@@ -162,8 +162,4 @@ public class ReturnOrderInfoItem {
     @JsonProperty("insert_type")
     private Integer insertType;
 
-    @ApiModelProperty(value = "批次信息")
-    @JsonProperty("batch_list")
-    private List<OrderInfoItemProductBatch> batchList;
-
 }
