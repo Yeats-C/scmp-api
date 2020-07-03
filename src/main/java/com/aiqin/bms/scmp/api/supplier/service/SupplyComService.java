@@ -32,7 +32,7 @@ public interface SupplyComService {
      * 供货单位列表查询
      * @return
      */
-    List<SupplyComListRespVO> getAllSupplyComList(String name);
+    List<SupplyComListRespVO> getAllSupplyComList(String code, String name);
     /**
      * 逻辑删除
      * @param id
