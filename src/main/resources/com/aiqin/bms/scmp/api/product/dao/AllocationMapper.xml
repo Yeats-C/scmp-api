@@ -1288,7 +1288,7 @@
   <select id="getManualChoseProduct" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq"
           resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo">
         select
-         <include refid="Allocation_Chose_Product_List"/>
+         <include refid="Allocation_Chose_Product_List"/>,w.batch_manage batchManage
         from stock s
         left join warehouse w on s.warehouse_code = w.warehouse_code
         left join product_sku ps on s.sku_code = ps.sku_code
