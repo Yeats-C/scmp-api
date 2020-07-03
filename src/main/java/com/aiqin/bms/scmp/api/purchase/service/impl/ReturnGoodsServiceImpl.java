@@ -406,6 +406,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setPartnerCode(returnOrderInfo.getCopartnerAreaId());
         returnOrder.setPartnerName(returnOrderInfo.getCopartnerAreaName());
         returnOrder.setBusinessForm(returnOrderInfo.getBusinessForm());
+        if(null == returnOrderInfo.getPlatformType()){
+            returnOrder.setPlatformType(Global.PLATFORM_TYPE_0);
+        }else {
+            returnOrder.setPlatformType(Global.PLATFORM_TYPE_1);
+        }
         Integer count = returnOrderInfoMapper.insert(returnOrder);
         LOGGER.info("添加退货单条数：{}", count);
 
@@ -537,7 +542,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         HttpClient httpClient;
         HttpResponse httpResponse;
         StringBuilder sb = new StringBuilder();
-        if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1) && CollectionUtils.isNotEmptyCollection(orderItems)){
+        if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_0)){
             response.setReturnOrderDetailDLReqList(orderItems);
 
             // 封装回调爱亲供应链的批次信息
@@ -590,6 +595,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
         }
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
+        returnOrder.setReturnOrderCode(inbound.getSourceOderCode());
         returnOrder.setActualProductCount(inbound.getPraMainUnitNum());
         returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
         returnOrder.setUpdateByName(inbound.getUpdateBy());
@@ -674,7 +680,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
 
         Integer returnInfo = returnOrderInfoMapper.update(returnOrder);
-        log.info("更新退货单主信息：", returnInfo);
+        log.info("更新退货单主信息：{}", returnInfo);
 
         // 回传运营中台信息
         changeParameter(returnOrder.getReturnOrderCode());

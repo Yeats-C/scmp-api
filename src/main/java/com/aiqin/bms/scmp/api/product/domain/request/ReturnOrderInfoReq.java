@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.domain.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -295,5 +296,8 @@ public class ReturnOrderInfoReq {
 
     @ApiModelProperty("业务形式 0门店退货 1批发退货")
     private Integer businessForm;
+
+    @ApiModelProperty(value="平台类型 0.爱亲(新系统)，1.DL")
+    private Integer platformType;
 
 }
