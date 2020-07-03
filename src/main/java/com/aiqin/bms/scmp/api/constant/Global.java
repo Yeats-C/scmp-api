@@ -226,4 +226,11 @@ public final class Global {
     public static final Integer DOCUMENT_TYPE_9 = 9;
     public static final Integer DOCUMENT_TYPE_10 = 10;
     public static final Integer DOCUMENT_TYPE_11 = 11;
+
+    /**
+     *  平台类型 批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
+     */
+    public static final Integer BATCH_MANAGE_0 = 0;
+    public static final Integer BATCH_MANAGE_1 = 1;
+    public static final Integer BATCH_MANAGE_2 = 2;
 }

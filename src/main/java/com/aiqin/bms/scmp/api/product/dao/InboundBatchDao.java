@@ -23,7 +23,7 @@ public interface InboundBatchDao {
 
     Integer update(InboundBatch inboundBatch);
 
-    InboundBatch inboundBatchByInfoCode(@Param("batchInfoCode") String batchInfoCode,
+    InboundBatch inboundBatchByInfoCode(@Param("batchCode") String batchCode,
                                         @Param("inboundOderCode") String inboundOderCode,
                                         @Param("lineCode") Long lineCode);
 

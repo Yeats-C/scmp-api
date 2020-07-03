@@ -145,9 +145,11 @@
   <select id="inboundBatchByInfoCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from inbound_batch
-    where batch_info_code = #{batchInfoCode, jdbcType=VARCHAR}
-    and inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
+    where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
+    <if test="batchCode != null">
+      and batch_code = #{batchCode, jdbcType=VARCHAR}
+    </if>
   </select>
   <select id="selectInboundBatchList" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />

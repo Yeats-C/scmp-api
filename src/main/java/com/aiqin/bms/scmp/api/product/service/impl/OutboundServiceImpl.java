@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.converter.OrderVo2OutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.ReturnSupply2outboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.converter.allocation.AllocationOrderToInboundConverter;
@@ -33,10 +34,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespV
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseOutboundSource;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
@@ -148,6 +146,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private StockBatchDao stockBatchDao;
     @Autowired
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
+    @Autowired
+    private ProductSkuBatchMapper productSkuBatchMapper;
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -728,7 +728,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         // 自动批次管理，由批次管理按入库顺序（先入先出）扣减批次库存。
         StockBatchInfoRequest stockBatchInfoRequest;
         List<StockBatchInfoRequest> stockBatchVoRequestList = Lists.newArrayList();
-        if (warehouse.getBatchManage().equals(0)) {
+        if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
             // 根据sku分组
             List<OutboundProductCallBackReqVo> details = request.getDetailList().stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() ->
                     new TreeSet<>(Comparator.comparing(o -> o.getSkuCode()))), ArrayList::new));
@@ -795,47 +795,22 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 LOGGER.info("wms回传，非自动批次管理，未回传批次信息:", JsonUtil.toJson(request));
                 return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "wms回传，非自动批次管理，未回传批次信息"));
             }
-            StockBatch stockBatch;
             for (OutboundBatchCallBackReqVo batch : request.getBatchList()) {
                 // 先根据退货单号，批次号，sku查询批次信息
                 outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchCode(), batch.getLineCode());
-                if(outboundBatch == null){
+                if (outboundBatch == null) {
                     // 以上为空时，根据sku，退货单去查询
                     outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), null, batch.getLineCode());
                 }
-                if(outboundBatch != null){
-                    //设置实际数量
-                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
-                    int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
-                    log.info("更新出库单批次信息：", k);
-                }else {
-                    String batchInfoCode;
-                    outboundBatch = new OutboundBatch();
-                    String batchCode = DateUtils.currentDate().replaceAll("-","");
-                    outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
-                    outboundBatch.setBatchCode(batchCode);
-                    if(StringUtils.isNotBlank(outbound.getSupplierCode())){
-                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                batchCode + "_" + outbound.getSupplierCode() + "_0";
-                    }else {
-                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                batchCode + "_0";
-                    }
-                    outboundBatch.setBatchInfoCode(batchInfoCode);
-                    outboundBatch.setSkuCode(batch.getSkuCode());
-                    outboundBatch.setSkuName(batch.getSkuName());
-                    outboundBatch.setSupplierCode(outbound.getSupplierCode());
-                    outboundBatch.setSupplierName(outbound.getSupplierName());
-                    outboundBatch.setProductDate(DateUtils.currentDate());
-                    outboundBatch.setTotalCount(batch.getTotalCount());
-                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
-                    outboundBatch.setLineCode(batch.getLineCode());
-                    outboundBatch.setCreateById(request.getOperatorId());
-                    outboundBatch.setCreateByName(request.getOperatorName());
-                    outboundBatch.setUpdateById(request.getOperatorId());
-                    outboundBatch.setUpdateByName(request.getOperatorName());
-                    outboundBatches.add(outboundBatch);
+
+                if (outboundBatch == null) {
+                    LOGGER.info("未查询到对应的批次信息：{}", JsonUtil.toJson(outboundBatch));
+                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "未查询到对应的单据批次信息"));
                 }
+                //设置实际数量
+                outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+                log.info("更新出库单批次信息：", k);
 
                 //查询退货商品
                 OutboundProduct product = outboundProductDao.selectByProductAmount(outbound.getOutboundOderCode(), batch.getLineCode());
@@ -861,11 +836,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
                 stockBatchInfoRequest.setBeOverdueDate(outboundBatch.getBeOverdueDate());
                 stockBatchInfoRequest.setBatchRemark(outboundBatch.getBatchRemark());
-                if(product != null){
+                if (product != null) {
                     stockBatchInfoRequest.setTaxRate(product.getTax());
                     stockBatchInfoRequest.setPurchasePrice(product.getPreTaxPurchaseAmount());
                 }
-                stockBatchInfoRequest.setPreLockCount(outboundBatch.getTotalCount());
+                stockBatchInfoRequest.setPreLockCount(outboundBatch.getActualTotalCount());
                 stockBatchVoRequestList.add(stockBatchInfoRequest);
             }
         }
