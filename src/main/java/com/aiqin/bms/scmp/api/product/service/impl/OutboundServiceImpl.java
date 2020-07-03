@@ -64,6 +64,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -687,12 +688,20 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             // 自动批次管理，新增批次信息
             if(warehouse.getBatchManage().equals(0)){
+                BigDecimal amount = outboundProduct.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : outboundProduct.getPreTaxPurchaseAmount();
                 outboundBatch = new OutboundBatch();
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
                 outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                 outboundBatch.setBatchCode(batchCode);
-                String batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                        batchCode + "_" + outbound.getSupplierCode() + "_" + outboundProduct.getPreTaxPurchaseAmount();
+                String batchInfoCode;
+                if(StringUtils.isNotBlank(outbound.getSupplierCode())){
+                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                            batchCode + "_" + outbound.getSupplierCode() + "_" +
+                            amount.stripTrailingZeros().toPlainString();
+                }else {
+                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                            batchCode + "_" + amount.stripTrailingZeros().toPlainString();
+                }
                 outboundBatch.setBatchInfoCode(batchInfoCode);
                 outboundBatch.setSkuCode(outboundProduct.getSkuCode());
                 outboundBatch.setSkuName(outboundProduct.getSkuName());
@@ -788,27 +797,74 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             }
             StockBatch stockBatch;
             for (OutboundBatchCallBackReqVo batch : request.getBatchList()) {
-                outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchCode());
-//                if(){
-//
-//                }
-                //设置实际数量
-                outboundBatch.setActualTotalCount(batch.getActualTotalCount());
-                // 修改单条 批次
-                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
-                log.info("更新出库单批次信息：", k);
+                // 先根据退货单号，批次号，sku查询批次信息
+                outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), batch.getBatchCode(), batch.getLineCode());
+                if(outboundBatch == null){
+                    // 以上为空时，根据sku，退货单去查询
+                    outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), null, batch.getLineCode());
+                }
+                if(outboundBatch != null){
+                    //设置实际数量
+                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                    int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
+                    log.info("更新出库单批次信息：", k);
+                }else {
+                    String batchInfoCode;
+                    outboundBatch = new OutboundBatch();
+                    String batchCode = DateUtils.currentDate().replaceAll("-","");
+                    outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+                    outboundBatch.setBatchCode(batchCode);
+                    if(StringUtils.isNotBlank(outbound.getSupplierCode())){
+                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                                batchCode + "_" + outbound.getSupplierCode() + "_0";
+                    }else {
+                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                                batchCode + "_0";
+                    }
+                    outboundBatch.setBatchInfoCode(batchInfoCode);
+                    outboundBatch.setSkuCode(batch.getSkuCode());
+                    outboundBatch.setSkuName(batch.getSkuName());
+                    outboundBatch.setSupplierCode(outbound.getSupplierCode());
+                    outboundBatch.setSupplierName(outbound.getSupplierName());
+                    outboundBatch.setProductDate(DateUtils.currentDate());
+                    outboundBatch.setTotalCount(batch.getTotalCount());
+                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                    outboundBatch.setLineCode(batch.getLineCode());
+                    outboundBatch.setCreateById(request.getOperatorId());
+                    outboundBatch.setCreateByName(request.getOperatorName());
+                    outboundBatch.setUpdateById(request.getOperatorId());
+                    outboundBatch.setUpdateByName(request.getOperatorName());
+                    outboundBatches.add(outboundBatch);
+                }
 
-                // 查询对应的批次库存
-                stockBatch = stockBatchDao.stockBatchInfoOne(batch.getBatchInfoCode());
+                //查询退货商品
+                OutboundProduct product = outboundProductDao.selectByProductAmount(outbound.getOutboundOderCode(), batch.getLineCode());
                 //设置sku编码名称 批次号
-                stockBatchInfoRequest = BeanCopyUtils.copy(stockBatch, StockBatchInfoRequest.class);
+                stockBatchInfoRequest = new StockBatchInfoRequest();
+                stockBatchInfoRequest.setTransportCenterCode(outbound.getLogisticsCenterCode());
+                stockBatchInfoRequest.setTransportCenterName(outbound.getLogisticsCenterName());
+                stockBatchInfoRequest.setWarehouseCode(outbound.getWarehouseCode());
+                stockBatchInfoRequest.setWarehouseName(outbound.getWarehouseName());
+                stockBatchInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                stockBatchInfoRequest.setSkuCode(batch.getSkuCode());
+                stockBatchInfoRequest.setSkuName(batch.getSkuName());
+                stockBatchInfoRequest.setCompanyCode(outbound.getCompanyCode());
+                stockBatchInfoRequest.setCompanyName(outbound.getCompanyName());
                 stockBatchInfoRequest.setDocumentCode(outbound.getOutboundOderCode());
                 stockBatchInfoRequest.setDocumentType(Global.OUTBOUND_TYPE);
                 stockBatchInfoRequest.setSourceDocumentCode(outbound.getSourceOderCode());
-                stockBatchInfoRequest.setSourceDocumentType(outbound.getOutboundTypeCode().intValue());
+                stockBatchInfoRequest.setSourceDocumentType(typeCode);
                 stockBatchInfoRequest.setOperatorId(request.getOperatorId());
                 stockBatchInfoRequest.setOperatorName(request.getOperatorName());
                 stockBatchInfoRequest.setChangeCount(batch.getActualTotalCount());
+                stockBatchInfoRequest.setBatchInfoCode(outboundBatch.getBatchInfoCode());
+                stockBatchInfoRequest.setBatchCode(outboundBatch.getBatchCode());
+                stockBatchInfoRequest.setBeOverdueDate(outboundBatch.getBeOverdueDate());
+                stockBatchInfoRequest.setBatchRemark(outboundBatch.getBatchRemark());
+                if(product != null){
+                    stockBatchInfoRequest.setTaxRate(product.getTax());
+                    stockBatchInfoRequest.setPurchasePrice(product.getPreTaxPurchaseAmount());
+                }
                 stockBatchInfoRequest.setPreLockCount(outboundBatch.getTotalCount());
                 stockBatchVoRequestList.add(stockBatchInfoRequest);
             }

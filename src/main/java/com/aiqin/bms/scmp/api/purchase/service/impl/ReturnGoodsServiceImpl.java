@@ -121,6 +121,18 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     public HttpResponse<PageResData<ReturnOrderInfoItem>> returnOrderProductList(ReturnGoodsRequest request){
         List<ReturnOrderInfoItem> list = returnOrderInfoItemMapper.list(request);
+        if(CollectionUtils.isNotEmptyCollection(list) && list.size() > 0){
+            // 查询退货单的信息
+            ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(list.get(0).getReturnOrderCode());
+            List<OrderInfoItemProductBatch> batchList;
+            for(ReturnOrderInfoItem item : list) {
+                // 查询对应退货单的批次信息
+                batchList = orderInfoItemProductBatchMapper.orderBatchList(item.getSkuCode(), returnOrderInfo.getOrderCode(), item.getProductLineNum().intValue());
+                if(CollectionUtils.isNotEmptyCollection(batchList)){
+                    item.setBatchList(batchList);
+                }
+            }
+        }
         Integer count = returnOrderInfoItemMapper.listCount(request);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
     }
@@ -767,4 +779,5 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         LOGGER.info("退货单根据库房生成多个入库单：{}", JsonUtil.toJson(inbounds));
         return inbounds;
     }
+
 }

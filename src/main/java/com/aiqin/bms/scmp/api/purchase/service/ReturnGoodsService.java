@@ -39,4 +39,5 @@ public interface ReturnGoodsService {
     HttpResponse recordWMS(String inboundOderCode);
 
     HttpResponse changeParameter(String returnOrderCode);
+
 }

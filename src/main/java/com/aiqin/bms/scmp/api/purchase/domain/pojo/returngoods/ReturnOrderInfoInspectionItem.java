@@ -1,9 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.util.List;
 
 @ApiModel("退货验货保存vo信息（参数有多要就传多少）")
 @Data
@@ -135,4 +138,5 @@ public class ReturnOrderInfoInspectionItem {
     @ApiModelProperty(value = "锁定类型 1.下单锁定 2.分配锁定")
     @JsonProperty("lock_type")
     private Integer lockType;
+
 }

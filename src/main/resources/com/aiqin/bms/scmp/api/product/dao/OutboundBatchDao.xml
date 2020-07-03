@@ -72,7 +72,10 @@
     select <include refid="Base_Column_List" />
     from outbound_batch
     where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
-    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    <if test="batchCode != null">
+    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    </if>
+    and line_code = #{lineCode,jdbcType=BIGINT}
   </select>
 
   <update id="updateBatchInfoByOutboundOderCodeAndLineNum" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">

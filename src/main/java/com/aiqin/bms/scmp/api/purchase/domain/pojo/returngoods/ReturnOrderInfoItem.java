@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @ApiModel("订单商品信息")
 @Data
@@ -159,5 +161,9 @@ public class ReturnOrderInfoItem {
     @ApiModelProperty("是否为验货之后新增商品 0 是 1 否")
     @JsonProperty("insert_type")
     private Integer insertType;
+
+    @ApiModelProperty(value = "批次信息")
+    @JsonProperty("batch_list")
+    private List<OrderInfoItemProductBatch> batchList;
 
 }
