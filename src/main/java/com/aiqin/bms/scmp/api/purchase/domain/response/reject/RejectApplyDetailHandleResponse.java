@@ -179,6 +179,10 @@ public class RejectApplyDetailHandleResponse {
     @JsonProperty("batch_manage")
     private Integer batchManage;
 
+    @ApiModelProperty(value = "部分指定批次模式 0：指定 1：非指定 ")
+    @JsonProperty("sku_batch_manage")
+    private Integer skuBatchManage;
+
     @ApiModelProperty(value="最小单位数量数量")
     @JsonProperty("total_count")
     private Long totalCount;
