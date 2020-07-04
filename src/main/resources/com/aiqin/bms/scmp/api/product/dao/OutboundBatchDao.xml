@@ -78,23 +78,32 @@
     and line_code = #{lineCode,jdbcType=BIGINT}
   </select>
 
-  <update id="update" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+  <update id="update">
     update outbound_batch
     <set>
-      <if test="skuCode != null">
-        sku_code = #{skuCode,jdbcType=VARCHAR},
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
       </if>
       <if test="skuName != null">
         sku_name = #{skuName,jdbcType=VARCHAR},
       </if>
-      <if test="batchCode != null">
-        batch_code = #{batchCode,jdbcType=VARCHAR},
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
       </if>
       <if test="productDate != null">
         product_date = #{productDate,jdbcType=VARCHAR},
       </if>
-      <if test="batchRemark != null">
-        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
       </if>
       <if test="totalCount != null">
         total_count = #{totalCount,jdbcType=BIGINT},
@@ -105,27 +114,17 @@
       <if test="locationCode != null">
         location_code = #{locationCode,jdbcType=VARCHAR},
       </if>
-      <if test="createById != null">
-        create_by_id = #{createById,jdbcType=VARCHAR},
-      </if>
-      <if test="createByName != null">
-        create_by_name = #{createByName,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
+      update_time = now(),
       <if test="updateById != null">
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
     </set>
-    where line_code = #{lineCode,jdbcType=BIGINT}
-    and  outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=BIGINT}
   </update>
 
   <select id="selectByOutboundBatchOderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
