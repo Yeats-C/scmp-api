@@ -735,18 +735,51 @@ public class InboundServiceImpl implements InboundService {
 
                     if(productBatch == null){
                         LOGGER.info("未查询到指定批次的信息：{}", JsonUtil.toJson(request));
-                        throw new GroundRuntimeException("未查询到指定批次的信息");
+                        // 新增退货单的批次信息
+                        productBatch = new InboundBatch();
+                        productBatch.setInboundOderCode(inbound.getInboundOderCode());
+                        productBatch.setBatchCode(batchInfo.getBatchCode());
+                        String batchInfoCode;
+                        BigDecimal amount = product.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : product.getPreTaxPurchaseAmount();
+                        if(StringUtils.isBlank(inbound.getSupplierCode())){
+                            batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                    batchInfo.getBatchCode()  + "_" + amount.stripTrailingZeros().toPlainString();
+                        }else {
+                            batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                    batchInfo.getBatchCode() + "_" + inbound.getSupplierCode() + "_" +
+                                    amount.stripTrailingZeros().toPlainString();
+                        }
+                        productBatch.setBatchInfoCode(batchInfoCode);
+                        productBatch.setSupplierCode(inbound.getSupplierCode());
+                        productBatch.setSupplierName(inbound.getSupplierName());
+                        productBatch.setSkuCode(batchInfo.getSkuCode());
+                        productBatch.setSkuName(batchInfo.getSkuName());
+                        productBatch.setProductDate(batchInfo.getProductDate());
+                        productBatch.setBeOverdueDate(batchInfo.getBeOverdueDate());
+                        productBatch.setTotalCount(batchInfo.getActualTotalCount());
+                        productBatch.setActualTotalCount(batchInfo.getActualTotalCount());
+                        productBatch.setLineCode(batchInfo.getLineCode().intValue());
+                        productBatch.setLocationCode(batchInfo.getLocationCode());
+                        if(StringUtils.isNotBlank(request.getOperatorId())){
+                            productBatch.setCreateById(request.getOperatorId());
+                        }
+                        if(StringUtils.isNotBlank(request.getOperatorName())){
+                            productBatch.setCreateByName(request.getOperatorName());
+                        }
+                        InboundBatchList.add(productBatch);
+                    }else {
+                        if(StringUtils.isNotBlank(request.getOperatorId())){
+                            productBatch.setUpdateById(request.getOperatorId());
+                        }
+                        if(StringUtils.isNotBlank(request.getOperatorName())){
+                            productBatch.setUpdateByName(request.getOperatorName());
+                        }
+                        productBatch.setActualTotalCount(productBatch.getActualTotalCount() + batchInfo.getActualTotalCount());
+                        Integer count = inboundBatchDao.update(productBatch);
+                        LOGGER.info("更新批次库存实际数量:{}", count);
+                        continue;
                     }
-                    if(StringUtils.isNotBlank(request.getOperatorId())){
-                        productBatch.setUpdateById(request.getOperatorId());
-                    }
-                    if(StringUtils.isNotBlank(request.getOperatorName())){
-                        productBatch.setUpdateByName(request.getOperatorName());
-                    }
-                    productBatch.setActualTotalCount(productBatch.getActualTotalCount() + batchInfo.getActualTotalCount());
-                    Integer count = inboundBatchDao.update(productBatch);
-                    LOGGER.info("更新批次库存实际数量:{}", count);
-                    continue;
+
                 }else {
                     // 查询对应订单的sku
                     productBatch = new InboundBatch();

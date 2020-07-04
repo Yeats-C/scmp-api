@@ -58,7 +58,7 @@ public class ReturnOrderInfoReq {
     @ApiModelProperty(value = "1-待审核，2-审核通过，3-订单同步中，4-等待退货验收，5-等待退货入库，6-等待审批，11-退货完成，12-退款完成，97-退货终止，98-审核不通过，99-已取消")
     private Integer returnOrderStatus;
 
-    @ApiModelProperty(value = "订单类型 0直送、1配送、2辅采")
+    @ApiModelProperty(value = "送货方式 1配送、2直送、3货架直送、4采购直送")
     private Integer orderType;
 
     @ApiModelProperty(value = "退货类型  0客户退货、1缺货退货、2售后退货、3冲减单")
@@ -294,10 +294,13 @@ public class ReturnOrderInfoReq {
     @ApiModelProperty("合伙人名称")
     private String copartnerAreaName;
 
-    @ApiModelProperty("业务形式 0门店退货 1批发退货")
+    @ApiModelProperty("业务形式 1门店、2批发、3线上业务、4线下业务、5优选业务、6天猫业务")
     private Integer businessForm;
 
     @ApiModelProperty(value="平台类型 0.爱亲(新系统)，1.DL")
     private Integer platformType;
+
+    @ApiModelProperty(value="订单类型 1.B2B 2.B2C")
+    private Integer orderProductType;
 
 }
