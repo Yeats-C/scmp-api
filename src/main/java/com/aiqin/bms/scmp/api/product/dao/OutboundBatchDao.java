@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.ReturnOutboundBatch;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public interface OutboundBatchDao {
                                             @Param("batchCode") String batchCode,
                                             @Param("lineCode") Long lineCode);
 
-    Integer updateBatchInfoByOutboundOderCodeAndLineNum(OutboundBatch outboundBatch);
+    Integer update(OutboundBatch outboundBatch);
 
     List<OutboundBatch> selectByOutboundBatchOderCode(String outboundOderCode);
 

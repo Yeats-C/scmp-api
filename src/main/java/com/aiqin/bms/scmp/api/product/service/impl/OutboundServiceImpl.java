@@ -802,14 +802,49 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     outboundBatch = outboundBatchDao.selectBatchInfoByLineCode(outbound.getOutboundOderCode(), null, batch.getLineCode());
                 }
 
-                if (outboundBatch == null) {
-                    LOGGER.info("未查询到对应的批次信息：{}", JsonUtil.toJson(outboundBatch));
-                    return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "未查询到对应的单据批次信息"));
+                if (outboundBatch != null) {
+                    //设置实际数量
+                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                    int k = outboundBatchDao.update(outboundBatch);
+                    LOGGER.info("更新出库单批次信息：", k);
+                }else if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1) && outboundBatch == null){
+                    LOGGER.info("未查询到对应的批次信息：{}", JsonUtil.toJson(request));
+                    //return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "未查询到对应的单据批次信息"));
+                }else {
+                    // 查询对应的批次价格
+                    List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
+                    BigDecimal amount = BigDecimal.ZERO;
+                    if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
+                        amount = batches.get(0).getPurchasePrice() == null ? BigDecimal.ZERO : batches.get(0).getPurchasePrice();
+                    }
+                    // 新增出库单的批次信息
+                    outboundBatch = new OutboundBatch();
+                    outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+                    outboundBatch.setBatchCode(batch.getBatchCode());
+                    String batchInfoCode;
+                    if(StringUtils.isNotBlank(outbound.getSupplierCode())){
+                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                                batch.getBatchCode() + "_" + outbound.getSupplierCode() + "_" +
+                                amount.stripTrailingZeros().toPlainString();
+                    }else {
+                        batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+                                batch.getBatchCode() + "_" + amount.stripTrailingZeros().toPlainString();
+                    }
+                    outboundBatch.setBatchInfoCode(batchInfoCode);
+                    outboundBatch.setSkuCode(batch.getSkuCode());
+                    outboundBatch.setSkuName(batch.getSkuName());
+                    outboundBatch.setSupplierCode(outbound.getSupplierCode());
+                    outboundBatch.setSupplierName(outbound.getSupplierName());
+                    outboundBatch.setProductDate(batch.getProductDate());
+                    outboundBatch.setTotalCount(batch.getActualTotalCount());
+                    outboundBatch.setActualTotalCount(batch.getActualTotalCount());
+                    outboundBatch.setLineCode(batch.getLineCode());
+                    outboundBatch.setCreateById(request.getOperatorId());
+                    outboundBatch.setCreateByName(request.getOperatorName());
+                    outboundBatch.setUpdateById(request.getOperatorId());
+                    outboundBatch.setUpdateByName(request.getOperatorName());
+                    outboundBatches.add(outboundBatch);
                 }
-                //设置实际数量
-                outboundBatch.setActualTotalCount(batch.getActualTotalCount());
-                int k = outboundBatchDao.updateBatchInfoByOutboundOderCodeAndLineNum(outboundBatch);
-                log.info("更新出库单批次信息：", k);
 
                 // 查询批次数据
                 List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), outbound.getWarehouseCode(), batch.getBatchCode());
@@ -975,7 +1010,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 rejectDetailStockRequests.add(rejectDetailStockRequest);
             }
             rejectStockRequest.setDetailList(rejectDetailStockRequests);
-            if(CollectionUtils.isNotEmpty(batchList) && !requestVo.getBatchManage().equals(0)){
+            if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
                 List<RejectRecordBatch> infoBatch = BeanCopyUtils.copyList(batchList, RejectRecordBatch.class);
                 rejectStockRequest.setBatchList(infoBatch);
             }

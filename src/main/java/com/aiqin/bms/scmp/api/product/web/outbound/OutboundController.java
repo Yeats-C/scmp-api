@@ -87,8 +87,7 @@ public class OutboundController {
     @ApiOperation("出库单回调接口")
      @PostMapping("/workFlowCallBack")
     public HttpResponse workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo) {
-        outboundService.workFlowCallBack(reqVo);
-        return HttpResponse.success();
+        return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
     }
 
     @ApiOperation("根据出库单号查询出库商品批次详情")
