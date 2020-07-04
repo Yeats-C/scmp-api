@@ -87,38 +87,44 @@
       <if test="skuName != null">
         sku_name = #{skuName,jdbcType=VARCHAR},
       </if>
-      <if test="outboundBatchCode != null">
-        outbound_batch_code = #{outboundBatchCode,jdbcType=VARCHAR},
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
       </if>
-      <if test="manufactureTime != null">
-        manufacture_time = #{manufactureTime,jdbcType=VARCHAR},
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
       </if>
       <if test="batchRemark != null">
         batch_remark = #{batchRemark,jdbcType=VARCHAR},
       </if>
-      <if test="preQty != null">
-        pre_qty = #{preQty,jdbcType=BIGINT},
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
       </if>
-      <if test="praQty != null">
-        pra_qty = #{praQty,jdbcType=BIGINT},
+      <if test="actualTotalCount != null">
+        actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
       </if>
-      <if test="storeHouseCode != null">
-        store_house_code = #{storeHouseCode,jdbcType=VARCHAR},
+      <if test="locationCode != null">
+        location_code = #{locationCode,jdbcType=VARCHAR},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        create_by_name = #{createByName,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null">
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="updateBy != null">
-        update_by = #{updateBy,jdbcType=VARCHAR},
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </set>
-    where line_num = #{lineCode,jdbcType=BIGINT}
+    where line_code = #{lineCode,jdbcType=BIGINT}
     and  outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </update>
 

@@ -1569,7 +1569,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfoItemProductBatchDao.updateBatch(batchList);
         }
         // 更新出库单
-        this.updateOutbound(request);
+//        this.updateOutbound(request);
 
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
         if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){

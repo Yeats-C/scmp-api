@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemProductBatchDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackDetailRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
@@ -953,11 +954,41 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             noTaxTotalAmount = noTaxTotalPrice;
             outboundProductList.add(outboundProduct);
         }
+
+        // 商品批次
+        List<OrderInfoItemProductBatch> itemBatchList = vo.getItemBatchList();
+        List<OutboundBatch> outboundBatches = new ArrayList<>();
+        if(CollectionUtils.isNotEmptyCollection(itemBatchList)){
+            for (OrderInfoItemProductBatch batchProduct: itemBatchList) {
+                OutboundBatch outboundBatche = new OutboundBatch();
+                outboundBatche.setBatchCode(batchProduct.getBatchCode());
+                outboundBatche.setBatchInfoCode(batchProduct.getBatchInfoCode());
+                outboundBatche.setSkuCode(batchProduct.getSkuCode());
+                outboundBatche.setSkuName(batchProduct.getSkuName());
+                outboundBatche.setSupplierCode(batchProduct.getSupplierCode());
+                outboundBatche.setSupplierName(batchProduct.getSupplierName());
+                outboundBatche.setBatchRemark(batchProduct.getBatchRemark());
+                outboundBatche.setProductDate(batchProduct.getProductDate());
+                outboundBatche.setBeOverdueDate(batchProduct.getBeOverdueDate());
+                outboundBatche.setTotalCount(batchProduct.getTotalCount());
+                outboundBatche.setActualTotalCount(batchProduct.getActualTotalCount());
+                outboundBatche.setLineCode(batchProduct.getLineCode());
+                outboundBatche.setLocationCode(String.valueOf(batchProduct.getLocationCode()));
+                outboundBatche.setCreateTime(batchProduct.getCreateTime());
+                outboundBatche.setUpdateTime(batchProduct.getUpdateTime());
+                outboundBatche.setCreateById(batchProduct.getCreateById());
+                outboundBatche.setCreateByName(batchProduct.getCreateByName());
+                outboundBatche.setUpdateById(batchProduct.getUpdateById());
+                outboundBatche.setUpdateByName(batchProduct.getUpdateByName());
+                outboundBatches.add(outboundBatche);
+            }
+        }
         //预计无税总金额
         outboundReqVo.setPreAmount(noTaxTotalAmount);
         // 税额
         outboundReqVo.setPreTax(outboundReqVo.getPreTaxAmount().subtract(noTaxTotalAmount));
         outboundReqVo.setList(outboundProductList);
+        outboundReqVo.setOutboundBatches(outboundBatches);
         String outboundOderCode = outboundService.saveOutbound(outboundReqVo);
         return outboundOderCode;
     }

@@ -892,7 +892,16 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 aWmsOutSource.setCallInWarehouseName(allocation1.getCallInWarehouseName());
                 aWmsOutSource.setCreateById(allocation1.getCreateById());
                 aWmsOutSource.setCreateByName(allocation1.getCreateByName());
-                aWmsOutSource.setReceiverCounty(allocation1.getRemark());
+                // 获取调入方地址
+                WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(allocation1.getCallInWarehouseCode());
+                if(warehouseByCode != null){
+                    aWmsOutSource.setReceiverName(warehouseByCode.getContact());
+                    aWmsOutSource.setReceiverMobil(warehouseByCode.getPhone());
+                    aWmsOutSource.setReceiverProvince(warehouseByCode.getProvinceName());
+                    aWmsOutSource.setReceiverCity(warehouseByCode.getCityName());
+                    aWmsOutSource.setReceiverCounty(warehouseByCode.getCountyName());
+                    aWmsOutSource.setAddress(warehouseByCode.getProvinceName()+warehouseByCode.getCityName()+warehouseByCode.getCountyName()+warehouseByCode.getDetailedAddress());
+                }
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 if(allocation1.getCreateTime() != null){
                     String format = sdf.format(allocation1.getCreateTime());
