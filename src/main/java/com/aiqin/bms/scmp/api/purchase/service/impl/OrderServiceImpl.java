@@ -702,8 +702,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         BeanUtils.copyProperties(request, vo);
         vo.setCompanyCode(Global.COMPANY_09);
         vo.setCompanyName(Global.COMPANY_09_NAME);
-        vo.setOrderOriginal(request.getCompanyName());
-        vo.setOrderCategoryCode(request.getCompanyCode());
+        vo.setOrderOriginal(request.getSourceCode());
+        vo.setOrderOriginalName(request.getSourceName());
+        vo.setChannelCode(request.getChannelCode());
+        vo.setChannelName(request.getChannelName());
+        vo.setOrderCategoryCode(request.getOrderCategoryCode());
         vo.setOrderCode(request.getOrderStoreCode());
         vo.setOrderType(request.getOrderTypeName());
         vo.setOrderTypeCode(Integer.valueOf(request.getOrderTypeCode()));

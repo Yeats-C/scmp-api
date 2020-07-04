@@ -170,8 +170,17 @@ public class OrderInfoReqVO {
     @ApiModelProperty("父订单号")
     private String masterOrderCode;
 
+    @ApiModelProperty(value = "渠道编码")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    private String channelName;
+
     @ApiModelProperty("订单来源")
     private String orderOriginal;
+
+    @ApiModelProperty("订单来源名称")
+    private String orderOriginalName;
 
     @ApiModelProperty("备注")
     private String remake;

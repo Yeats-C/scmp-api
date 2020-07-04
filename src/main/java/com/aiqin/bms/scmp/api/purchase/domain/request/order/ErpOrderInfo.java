@@ -330,6 +330,14 @@ public class ErpOrderInfo {
     @JsonProperty("franchisee_name")
     private String franchiseeName;
 
+    @ApiModelProperty(value = "渠道编码")
+    @JsonProperty("channel_code")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    @JsonProperty("channel_name")
+    private String channelName;
+
     @ApiModelProperty(value = "来源单号")
     @JsonProperty("source_code")
     private String sourceCode;

@@ -1041,7 +1041,7 @@ transport_number, platform_type, business_form, tax_id
       invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id,
       store_code, store_name, franchisee_code, franchisee_name, partner_code, partner_name, channel_order_amount, actual_channel_order_amount,
       actual_deliver_amount, suit_coupon_money, actual_suit_coupon_money, top_coupon_money, actual_top_coupon_money, consignee_mobile,
-      actual_logistics_remission_ratio, actual_activity_discount)
+      actual_logistics_remission_ratio, actual_activity_discount,channel_code,channel_name)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},#{item.orderTypeCode,jdbcType=INTEGER},
@@ -1079,7 +1079,7 @@ transport_number, platform_type, business_form, tax_id
       #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
       #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
       #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
-        #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR}
+        #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR},#{item.channelCode,jdbcType=VARCHAR},#{item.channelName,jdbcType=VARCHAR}
       )
     </foreach>
     </insert>
