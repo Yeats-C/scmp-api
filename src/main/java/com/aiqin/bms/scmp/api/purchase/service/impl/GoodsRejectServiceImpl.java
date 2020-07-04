@@ -149,19 +149,21 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 赋值四级品类名称
             response.setCategoryName(selectCategoryName(response.getCategoryId()));
             if(response.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+                response.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
                 continue;
-            }
-            // 查询对应的批次信息
-            String key = this.rejectBatch(response, rejectApply);
-            response.setBatchList(rejectApply.get(key));
-            if(response.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+            }else if(response.getBatchManage().equals(Global.BATCH_MANAGE_2)){
                 Integer exist = productSkuBatchDao.productSkuBatchExist(response.getSkuCode(), response.getWarehouseCode());
                 if(exist > 0){
                     response.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
                 }else {
                     response.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
                 }
+            }else {
+                response.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
             }
+            // 查询对应的批次信息
+            String key = this.rejectBatch(response, rejectApply);
+            response.setBatchList(rejectApply.get(key));
         }
         Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
