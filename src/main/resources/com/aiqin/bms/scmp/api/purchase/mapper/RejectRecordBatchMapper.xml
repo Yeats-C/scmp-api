@@ -119,7 +119,6 @@
     where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
   </select>
   <update id="updateAll">
-    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
       update reject_record_batch
       <set>
         <if test="batchCode != null">
@@ -150,6 +149,5 @@
       </set>
       where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
       and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
-    </foreach>
   </update>
 </mapper>
