@@ -78,7 +78,7 @@
     and line_code = #{lineCode,jdbcType=BIGINT}
   </select>
 
-  <update id="updateBatchInfoByOutboundOderCodeAndLineNum" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
+  <update id="update" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch">
     update outbound_batch
     <set>
       <if test="skuCode != null">
