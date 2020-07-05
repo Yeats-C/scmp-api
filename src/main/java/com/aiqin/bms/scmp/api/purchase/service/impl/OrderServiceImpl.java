@@ -475,6 +475,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
+        WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
+        if(warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+            vo.setItemBatchList(null);
+        }
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
         Date date = Calendar.getInstance().getTime();
         // 数据处理
