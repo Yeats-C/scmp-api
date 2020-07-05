@@ -700,7 +700,8 @@ public class InboundServiceImpl implements InboundService {
                 if(productBatch != null){
                     productBatch.setUpdateById(request.getOperatorId());
                     productBatch.setUpdateByName(request.getOperatorName());
-                    productBatch.setActualTotalCount(product.getPraInboundMainNum() + productBatch.getActualTotalCount());
+                    Long actualCount = productBatch.getActualTotalCount() == null ? 0L : productBatch.getActualTotalCount();
+                    productBatch.setActualTotalCount(actualCount + inboundProduct.getActualTotalCount());
                     Integer count = inboundBatchDao.update(productBatch);
                     log.info("更新批次库存实际数量:{}", count);
                     continue;
