@@ -1053,15 +1053,22 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             StockBatch stockBatch;
             if (StringUtils.isNotBlank(batch.getBatchInfoCode())) {
                 stockBatch = stockBatchDao.stockBatchInfoOne(batch.getBatchInfoCode());
-                if(stockBatch != null){
+                if(stockBatchMap.get(batch.getBatchInfoCode()) == null && stockBatch != null){
                     stockBatchMap.put(batch.getBatchInfoCode(), stockBatch);
                 }
             } else {
                 stockBatch = stockBatchDao.stockBatchAndSku(batch);
-                if(stockBatch != null){
-                    stockBatchMap.put(batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
-                            batch.getBatchCode() + "_" + batch.getSupplierCode() + "_"
-                            + batch.getTaxCost().stripTrailingZeros().toPlainString(), stockBatch);
+                String batchInfoCode;
+                if(StringUtils.isNotBlank(batch.getSupplierCode() )){
+                    batchInfoCode = batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
+                            batch.getBatchCode() + "_" + batch.getSupplierCode() + "_" +
+                            batch.getTaxCost().stripTrailingZeros().toPlainString();
+                }else {
+                    batchInfoCode = batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
+                            batch.getBatchCode() + "_" +  batch.getTaxCost().stripTrailingZeros().toPlainString();
+                }
+                if(stockBatchMap.get(batchInfoCode) == null && stockBatch != null){
+                    stockBatchMap.put(batchInfoCode, stockBatch);
                 }
             }
         }

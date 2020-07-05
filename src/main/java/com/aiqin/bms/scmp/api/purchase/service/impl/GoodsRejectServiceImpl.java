@@ -799,9 +799,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 LOGGER.info("调用退供出库单:{}", JsonUtil.toJson(reqVo));
                 outboundService.returnSupplySave(reqVo);
                 // 指定批次的sku锁定库存、批次库存
-                if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
-                    this.rejectStock(1, rejectRecord);
-                }
+                this.rejectStock(1, rejectRecord);
             }
         }
         return HttpResponse.success();
@@ -851,7 +849,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
         // 查询退供单的批次信息
         List<RejectRecordBatch> recordBatches = rejectRecordBatchDao.rejectBatchInfoList(rejectRecord.getRejectRecordCode());
-        if(CollectionUtils.isNotEmpty(recordBatches)){
+        if(CollectionUtils.isNotEmpty(recordBatches) && recordBatches.size() > 0 &&
+                !warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+            
             for (RejectRecordBatch batch : recordBatches){
                 // 判断sku是否为指定批次，退供为指定批次时减批次可用库存并锁定批次库存
                 Integer exist = productSkuBatchDao.productSkuBatchExist(batch.getSkuCode(), warehouse.getWarehouseCode());
