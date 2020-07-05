@@ -38,6 +38,8 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
@@ -98,6 +100,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private UrlConfig urlConfig;
     @Autowired
     private WmsCancelService wmsCancelService;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -700,6 +704,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
+        if(request.getPlatformType().equals(Global.PLATFORM_TYPE_1)){
+            // 替换耘链库房信息
+            WarehouseDTO warehouseDTO = warehouseDao.selectWarehouseByWms(request.getWarehouseCode(), request.getWmsWarehouseType());
+            if(warehouseDTO != null){
+                vo.setWarehouseCode(warehouseDTO.getWarehouseCode());
+                vo.setWarehouseName(warehouseDTO.getWarehouseName());
+            }
+        }
         vo.setCompanyCode(Global.COMPANY_09);
         vo.setCompanyName(Global.COMPANY_09_NAME);
         vo.setOrderOriginal(request.getSourceCode());

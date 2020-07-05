@@ -41,6 +41,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -1469,6 +1470,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setActualProductNum(request.getActualTotalCount());
         request.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
         request.setOrderTypeCode(response.getOrderTypeCode());
+        request.setOrderId(response.getOrderOriginal());
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
         if (CollectionUtils.isEmpty(detailList)) {
             LOGGER.info("销售单回传的详情信息缺失");
@@ -1546,30 +1548,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setBatchInfoCode(batch.getBatchInfoCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
                 batchList.add(productBatch);
-//                productBatch.setTotalCount(batch.getTotalCount());
-//                productBatch.setSupplierCode(response.getSupplierCode());
-//                productBatch.setSupplierName(response.getSupplierName());
-//                productBatch.setLineCode(batch.getLineCode());
-//                productBatch.setProductDate(batch.getProductDate());
-//                Date parse;
-//                try{
-//                    parse = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(batch.getProductDate());
-//                    productBatch.setProductDate(parse);
-//                }catch (Exception e){
-//                    e.printStackTrace();
-//                }
-          //      productBatch.setTransportCenterCode(response.getTransportCenterCode());
-          //      productBatch.setTransportCenterName(response.getTransportCenterName());
-          //      productBatch.setWarehouseCode(response.getWarehouseCode());
-          //      productBatch.setWarehouseName(response.getWarehouseName());
-          //      productBatch.setCompanyCode(response.getCompanyCode());
-          //      productBatch.setCompanyName(response.getCompanyName());
             }
-//            orderInfoItemProductBatchDao.insertBatch(batchList);
             orderInfoItemProductBatchDao.updateBatch(batchList);
         }
-        // 更新出库单
-//        this.updateOutbound(request);
 
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
         if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
@@ -1583,7 +1564,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
-
 
         // 调用sap 传送销售单的数据给sap
         sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
@@ -1599,6 +1579,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         echoOrderRequest.setOperationType(3);
         echoOrderRequest.setOperationCode(request.getPersonId());
         echoOrderRequest.setOperationName(request.getPersonName());
+        echoOrderRequest.setOrderId(request.getOrderId());
         // dl商品表信息
         List<ProductRequest> productList = new ArrayList<>();
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
@@ -1606,23 +1587,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         List<BatchRequest> batchList;
         BatchRequest batchRequest;
         for (OutboundCallBackDetailRequest detail : detailList) {
-            OrderInfoItem orderInfoItem = orderInfoItemMapper.selectOrderByLine(request.getOderCode(), detail.getLineCode());
             productRequest = new ProductRequest();
             // 商品信息传输
             productRequest.setLineCode(detail.getLineCode().intValue());
             productRequest.setSkuCode(detail.getSkuCode());
             productRequest.setSkuName(detail.getSkuName());
             productRequest.setTotalCount(detail.getActualProductCount());
-            productRequest.setUnitCode(orderInfoItem.getUnitCode());
-            productRequest.setUnitName(orderInfoItem.getUnitName());
-            productRequest.setColorName(orderInfoItem.getColorName());
-            productRequest.setModelNumber(orderInfoItem.getModelCode());
-            productRequest.setProductType(orderInfoItem.getGivePromotion());
-            productRequest.setProductAmount(orderInfoItem.getAmount());
-            productRequest.setTaxRate(orderInfoItem.getTax());
-            productRequest.setChannelAmount(orderInfoItem.getChannelUnitPrice());
-            productRequest.setActivityApportionment(new BigDecimal(orderInfoItem.getActivityApportionment()));
-            productRequest.setPreferentialAllocation(new BigDecimal(orderInfoItem.getPreferentialAllocation()));
 
             // dl批次表信息
             batchList = new ArrayList<>();
@@ -1835,7 +1805,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderTransportRequest.setTotalWeight(request.getTotalWeight().longValue());
             orderTransportRequest.setTransportCenterCode(request.getTransportCenterCode());
             orderTransportRequest.setCreateTime(request.getTransportDate());
-            List<String> orderCodes = request.getDetailList().stream().map(DeliveryDetailRequest::getOrderCode).collect(Collectors.toList());
+            //List<String> orderCodes = request.getDetailList().stream().map(DeliveryDetailRequest::getOrderCode).collect(Collectors.toList());
+            List<String> orderCodes = Lists.newArrayList();
+            for (DeliveryDetailRequest order : request.getDetailList()){
+                // 查询dl的来源单号，用来匹配dl的唯一标识
+                OrderInfo info = orderInfoMapper.selectByOrderCode2(order.getOrderCode());
+                orderCodes.add(info.getOrderOriginal());
+            }
             orderTransportRequest.setOrderCodes(orderCodes);
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());

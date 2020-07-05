@@ -16,6 +16,10 @@ public class EchoOrderRequest {
     @JsonProperty("order_code")
     private String orderCode;
 
+    @ApiModelProperty(value="单据单id")
+    @JsonProperty("order_id")
+    private String orderId;
+
     @ApiModelProperty(value="操作时间")
     @JsonProperty("operation_time")
     private Date operationTime;

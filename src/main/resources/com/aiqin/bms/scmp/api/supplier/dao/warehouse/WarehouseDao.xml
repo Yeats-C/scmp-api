@@ -35,7 +35,8 @@
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
     warehouse_type_name, warehouse_type_code, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, contact, phone, enable, del_flag, 
-    create_by, create_time, update_by, update_time, warehouse_order, batch_manage, is_purchase
+    create_by, create_time, update_by, update_time, warehouse_order, batch_manage, is_purchase,
+    wms_warehouse_code, wms_warehouse_name, wms_warehouse_type
   </sql>
   <select id="findWarehouseList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo" resultMap="BaseResultMap">
   select
@@ -428,5 +429,12 @@
     <include refid="Base_Column_List" />
     from warehouse
     where enable = 0 and logistics_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectWarehouseByWms" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and wms_warehouse_code = #{wmsWarehouseCode,jdbcType=VARCHAR}
+    and wms_warehouse_type = #{wmsWarehouseType,jdbcType=TINYINT}
   </select>
 </mapper>

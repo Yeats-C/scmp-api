@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -447,6 +446,10 @@ public class ErpOrderInfo {
     @ApiModelProperty(value="运费减免比例")
     @JsonProperty("logistics_remission_ratio")
     private Integer logisticsRemissionRatio;
+
+    @ApiModelProperty(value="wms库房类型")
+    @JsonProperty("wms_warehouse_type")
+    private Integer wmsWarehouseType;
 
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")

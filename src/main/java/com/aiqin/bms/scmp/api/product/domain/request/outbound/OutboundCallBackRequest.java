@@ -23,6 +23,10 @@ public class OutboundCallBackRequest {
     @JsonProperty("oder_code")
     private String oderCode;
 
+    @ApiModelProperty("订单id")
+    @JsonProperty("order_id")
+    private String orderId;
+
     @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
     @NotEmpty(message = "订单类型")
     @JsonProperty("order_type_code")

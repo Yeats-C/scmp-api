@@ -82,4 +82,14 @@ public class WarehouseDTO extends CommonBean {
 
     @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
     private Integer batchManage;
+
+    @ApiModelProperty("wms库房编码")
+    private String wmsWarehouseCode;
+
+    @ApiModelProperty("wms库房名称")
+    private String wmsWarehouseName;
+
+    @ApiModelProperty("wms库房类型")
+    private Integer wmsWarehouseType;
+
 }
