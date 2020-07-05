@@ -20,6 +20,10 @@ public interface RejectRecordBatchDao {
     List<ScmpPurchaseBatch> rejectBatchListBySap(@Param("skuCode") String skuCode,
                                             @Param("rejectRecordCode") String rejectRecordCode,
                                             @Param("lineCode") Integer lineCode);
+    
+    RejectRecordBatch rejectBatchListOne(@Param("batchCode") String skuCode,
+                                         @Param("rejectRecordCode") String rejectRecordCode,
+                                         @Param("lineCode") Integer lineCode);
 
     List<RejectRecordBatch> rejectBatchInfoList(String rejectRecordCode);
 

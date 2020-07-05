@@ -150,4 +150,14 @@
       where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
       and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
   </update>
+  <select id="rejectBatchListOne" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List"></include>
+    from reject_record_batch
+    where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=INTEGER}
+    <if test="batchCode != null">
+        and batch_code = #{batchCode,jdbcType=VARCHAR},
+    </if>
+  </select>
 </mapper>
