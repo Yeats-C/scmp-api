@@ -1592,7 +1592,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             productRequest.setLineCode(detail.getLineCode().intValue());
             productRequest.setSkuCode(detail.getSkuCode());
             productRequest.setSkuName(detail.getSkuName());
-            productRequest.setTotalCount(detail.getActualProductCount());
+            productRequest.setActualTotalCount(detail.getActualProductCount());
 
             // dl批次表信息
             batchList = new ArrayList<>();
@@ -1608,7 +1608,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                         batchRequest.setBatchCode(batchDetail.getBatchCode());
                         batchRequest.setProductDate(batchDetail.getProductDate());
                         batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
-                        batchRequest.setTotalCount(batchDetail.getTotalCount());
+                        batchRequest.setActualTotalCount(batchDetail.getTotalCount());
                         batchList.add(batchRequest);
                     }
                 }
@@ -1742,8 +1742,6 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setCustomerCode(oi.getCustomerCode());
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
-        // 保存运输管理表
-//        saveTransport(request, oi);
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
@@ -1803,9 +1801,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderTransportRequest.setTransportTotalCount(request.getPackingNum());
             orderTransportRequest.setTotalVolume(request.getTotalVolume().longValue());
             orderTransportRequest.setTotalWeight(request.getTotalWeight().longValue());
-            orderTransportRequest.setTransportCenterCode(request.getTransportCenterCode());
+            orderTransportRequest.setTransportCenterCode(oi.getWarehouseCode());
             orderTransportRequest.setCreateTime(request.getTransportDate());
-            //List<String> orderCodes = request.getDetailList().stream().map(DeliveryDetailRequest::getOrderCode).collect(Collectors.toList());
             List<String> orderCodes = Lists.newArrayList();
             for (DeliveryDetailRequest order : request.getDetailList()){
                 // 查询dl的来源单号，用来匹配dl的唯一标识
@@ -1813,32 +1810,20 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderCodes.add(info.getOrderOriginal());
             }
             orderTransportRequest.setOrderCodes(orderCodes);
+            String url = urlConfig.WMS_API_URL + "/dl/order/transport";
+            LOGGER.info("发运物流单回传DL数据："  + JsonUtil.toJson(orderTransportRequest));
+            HttpClient httpClient = HttpClient.post(url).json(orderTransportRequest).timeout(20000);
+            HttpResponse response = httpClient.action().result(HttpResponse.class);
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("回传DL的物流单成功");
+            }else {
+                LOGGER.error("回传DL的物流单失败:{}", response.getMessage());
+                throw new GroundRuntimeException(String.format("回传DL的物流单失败:%s",response.getMessage()));
+            }
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
         return HttpResponse.success();
-    }
-
-    private void saveTransport(DeliveryCallBackRequest request, OrderInfo orderInfo) {
-        Transport transport=new Transport();
-        transport.setLogisticsFee(request.getTransportAmount());
-        transport.setTransportCode(request.getDeliveryCode());
-        transport.setCustomerCode(request.getCustomerCode());
-        transport.setCustomerName(request.getCustomerName());
-        transport.setTransportCenterCode(request.getTransportCenterCode());
-        transport.setTransportCenterName(request.getTransportCenterName());
-        transport.setStatus(2);//设已发运状态
-        //查询一次收货信息设置值
-        transport.setConsigneeName(orderInfo.getConsignee());
-        transport.setConsigneePhone(orderInfo.getConsigneePhone());
-        transport.setDetailedAddress(orderInfo.getDetailAddress());
-        transport.setZip(orderInfo.getZipCode());
-//        transport.setConsigneeAddress(orderInfo.getDetailAddress());
-//        transport.setTransportAmount(transportAmount+transport.getLogisticsFee());
-//        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
-        List<TransportOrders> transportOrders = new ArrayList<>();
-        transportMapper.insertOne(transport);
-//        transportOrdersMapper.insertBatch(transportOrders);
     }
 
 }

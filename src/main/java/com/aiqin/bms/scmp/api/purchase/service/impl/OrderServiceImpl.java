@@ -708,14 +708,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
-        if(request.getPlatformType().equals(Global.PLATFORM_TYPE_1)){
-            // 替换耘链库房信息
-            WarehouseDTO warehouseDTO = warehouseDao.selectWarehouseByWms(request.getWarehouseCode(), request.getWmsWarehouseType());
-            if(warehouseDTO != null){
-                vo.setWarehouseCode(warehouseDTO.getWarehouseCode());
-                vo.setWarehouseName(warehouseDTO.getWarehouseName());
-            }
-        }
         vo.setCompanyCode(Global.COMPANY_09);
         vo.setCompanyName(Global.COMPANY_09_NAME);
         vo.setOrderOriginal(request.getSourceCode());

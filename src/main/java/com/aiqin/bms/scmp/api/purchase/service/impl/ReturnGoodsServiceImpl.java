@@ -378,11 +378,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrder.setPlatformType(Global.PLATFORM_TYPE_0);
         }else {
             returnOrder.setPlatformType(Global.PLATFORM_TYPE_1);
-            WarehouseDTO warehouseDTO = warehouseDao.selectWarehouseByWms(returnOrderInfo.getWarehouseCode(), returnOrderInfo.getWmsWarehouseType());
-            if(null != warehouseDTO){
-                returnOrder.setWarehouseCode(warehouseDTO.getWarehouseCode());
-                returnOrder.setWarehouseName(warehouseDTO.getWarehouseName());
-            }
         }
         returnOrder.setOrderOriginal(returnOrderInfo.getReturnOrderId());
         returnOrder.setOrderCode(returnOrderInfo.getOrderStoreCode());
@@ -420,7 +415,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem = BeanCopyUtils.copy(returnOrderDetail, ReturnOrderInfoItem.class);
             returnOrderInfoItem.setSpec(returnOrderDetail.getProductSpec());
             returnOrderInfoItem.setModel(returnOrderDetail.getModelCode());
-            returnOrderInfoItem.setBaseProductContent(returnOrderDetail.getBaseProductSpec().intValue());
+            //returnOrderInfoItem.setBaseProductContent();
             returnOrderInfoItem.setGivePromotion(returnOrderDetail.getProductType());
             returnOrderInfoItem.setPrice(returnOrderDetail.getProductAmount());
             returnOrderInfoItem.setNum(returnOrderDetail.getReturnProductCount());
@@ -518,16 +513,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 product.setLineCode(item.getProductLineNum().intValue());
                 product.setSkuCode(item.getSkuCode());
                 product.setActualTotalCount(item.getActualInboundNum().longValue());
-                // 查询对应的wms库存
-                WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(returnOrderInfo.getWarehouseCode());
-                product.setWarehouseCode(warehouse.getWmsWarehouseCode());
-                product.setWarehouseName(warehouse.getWarehouseName());
-                product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-                if(warehouse.getWarehouseTypeCode().equals(3)){
-                    product.setReturnType(2);
-                }else {
-                    product.setReturnType(1);
-                }
+                product.setWarehouseCode(returnOrderInfo.getWarehouseCode());
                 productList.add(product);
 
                 dlBatchList = Lists.newArrayList();

@@ -749,12 +749,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             product.setSkuCode(stock.getSkuCode());
             product.setSkuName(stock.getSkuName());
             product.setTotalCount(stock.getChangeCount());
-            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(stock.getWarehouseCode());
-            if(warehouse != null){
-                product.setWarehouseCode(warehouse.getWmsWarehouseCode());
-                product.setWarehouseName(warehouse.getWmsWarehouseName());
-                product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-            }
+            product.setWarehouseCode(stock.getWarehouseCode());
             if(CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
                 List<BatchRequest> batchRequestList = Lists.newArrayList();
                 BatchRequest batchRequest;
@@ -766,11 +761,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     batchRequest.setTotalCount(batch.getChangeCount());
                     batchRequest.setBatchCode(batch.getBatchCode());
                     batchRequest.setProductDate(batch.getProductDate());
-                    if(warehouse != null){
-                        batchRequest.setWarehouseCode(warehouse.getWmsWarehouseCode());
-                        batchRequest.setWarehouseName(warehouse.getWmsWarehouseName());
-                        batchRequest.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-                    }
                     batchRequestList.add(batchRequest);
                 }
             }
