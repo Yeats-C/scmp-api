@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.info.SaveSkuInfoReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
@@ -416,6 +417,13 @@ public class SkuInfoController {
             log.error(e.getMessage(),e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
+    }
+
+    @PostMapping("/save/import/skuInfo")
+    @ApiOperation(value = "保存导入商品信息（真实表）")
+    public HttpResponse saveImportSkuInfo(@RequestBody List<SaveSkuInfoReqVo> saveSkuInfoReqVo){
+        log.info("SkuInfoController---saveImportSkuInfo---导入入参：[{}]",saveSkuInfoReqVo);
+        return productService.saveImportSkuInfo(saveSkuInfoReqVo);
     }
 
 }
