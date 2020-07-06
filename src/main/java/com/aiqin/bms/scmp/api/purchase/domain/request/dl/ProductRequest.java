@@ -92,6 +92,10 @@ public class ProductRequest {
     @JsonProperty("wms_warehouse_type")
     private Integer wmsWarehouseType;
 
+    @ApiModelProperty(value="退货回传类型 1.正品 2.次品")
+    @JsonProperty("return_type")
+    private Integer returnType;
+
     @ApiModelProperty(value="批次信息")
     @JsonProperty("batch_list")
     private List<BatchRequest> batchList;
