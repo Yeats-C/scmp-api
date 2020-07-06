@@ -49,4 +49,8 @@ public class BatchRequest {
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
+    @ApiModelProperty(value="wms库房类型")
+    @JsonProperty("wms_warehouse_type")
+    private Integer wmsWarehouseType;
+
 }

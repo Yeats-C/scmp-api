@@ -28,6 +28,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -86,6 +88,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
     private SapBaseDataService sapBaseDataService;
+    @Resource
+    private WarehouseDao warehouseDao;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -370,6 +374,17 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         ReturnOrderInfoReq returnOrderInfo = request.getReturnOrderInfo();
         ReturnOrderInfo returnOrder = BeanCopyUtils.copy(request.getReturnOrderInfo(), ReturnOrderInfo.class);
+        if(null == returnOrderInfo.getPlatformType()){
+            returnOrder.setPlatformType(Global.PLATFORM_TYPE_0);
+        }else {
+            returnOrder.setPlatformType(Global.PLATFORM_TYPE_1);
+            WarehouseDTO warehouseDTO = warehouseDao.selectWarehouseByWms(returnOrderInfo.getWarehouseCode(), returnOrderInfo.getWmsWarehouseType());
+            if(null != warehouseDTO){
+                returnOrder.setWarehouseCode(warehouseDTO.getWarehouseCode());
+                returnOrder.setWarehouseName(warehouseDTO.getWarehouseName());
+            }
+        }
+        returnOrder.setOrderOriginal(returnOrderInfo.getReturnOrderId());
         returnOrder.setOrderCode(returnOrderInfo.getOrderStoreCode());
         returnOrder.setCreateDate(returnOrderInfo.getCreateTime());
         returnOrder.setBeLock(returnOrderInfo.getReturnLock());
@@ -395,11 +410,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setPartnerCode(returnOrderInfo.getCopartnerAreaId());
         returnOrder.setPartnerName(returnOrderInfo.getCopartnerAreaName());
         returnOrder.setBusinessForm(returnOrderInfo.getBusinessForm());
-        if(null == returnOrderInfo.getPlatformType()){
-            returnOrder.setPlatformType(Global.PLATFORM_TYPE_0);
-        }else {
-            returnOrder.setPlatformType(Global.PLATFORM_TYPE_1);
-        }
         Integer count = returnOrderInfoMapper.insert(returnOrder);
         LOGGER.info("添加退货单条数：{}", count);
 
@@ -480,6 +490,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             request.setOperationType(3);
             request.setOperationCode(returnOrderInfo.getUpdateById());
             request.setOperationName(returnOrderInfo.getCreateByName());
+            request.setOrderId(returnOrderInfo.getOrderOriginal());
+            request.setBusinessForm(returnOrderInfo.getBusinessForm());
         }
 
         // 爱亲供应链的商品
@@ -493,7 +505,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         BatchRequest batchRequest;
 
         for (ReturnOrderInfoItem item : infoItems) {
-            if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_1)){
+            if(returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_0)){
                 returnOrderItem = new ReturnOrderDetailDLReq();
                 returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
                 returnOrderItem.setLineCode(item.getProductLineNum());
@@ -501,11 +513,16 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 returnOrderItem.setSkuName(item.getSkuName());
                 orderItems.add(returnOrderItem);
             }else {
-                // 如果平台类型为Dl 赋值回传dl的参数
+                // 如果平台类型为l 赋值回传dl的参数
                 product = new ProductRequest();
                 product.setLineCode(item.getProductLineNum().intValue());
                 product.setSkuCode(item.getSkuCode());
                 product.setActualTotalCount(item.getActualInboundNum().longValue());
+                // 查询对应的wms库存
+                WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(returnOrderInfo.getWarehouseCode());
+                product.setWarehouseCode(warehouse.getWmsWarehouseCode());
+                product.setWarehouseName(warehouse.getWarehouseName());
+                product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
                 productList.add(product);
 
                 dlBatchList = Lists.newArrayList();

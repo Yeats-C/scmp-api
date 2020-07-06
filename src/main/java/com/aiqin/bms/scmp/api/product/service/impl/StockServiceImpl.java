@@ -34,6 +34,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -97,6 +99,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private ProductCategoryDao productCategoryDao;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -738,31 +742,41 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
         List<ProductRequest> productRequestList = Lists.newArrayList();
         ProductRequest product;
+        List<StockBatchInfoRequest> batchList;
         for(StockInfoRequest stock : request.getStockList()){
             product = new ProductRequest();
             //product.setLineCode(stock.ge);
             product.setSkuCode(stock.getSkuCode());
             product.setSkuName(stock.getSkuName());
             product.setTotalCount(stock.getChangeCount());
-            product.setWarehouseCode(stock.getWarehouseCode());
-            product.setWarehouseName(stock.getWarehouseName());
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(stock.getWarehouseCode());
+            if(warehouse != null){
+                product.setWarehouseCode(warehouse.getWmsWarehouseCode());
+                product.setWarehouseName(warehouse.getWmsWarehouseName());
+                product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
+            }
+            if(CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
+                List<BatchRequest> batchRequestList = Lists.newArrayList();
+                BatchRequest batchRequest;
+                batchList = request.getStockBatchList().stream().filter(s->s.getSkuCode().equals(stock.getSkuCode())
+                        ).collect(Collectors.toList());
+                for(StockBatchInfoRequest batch:batchList){
+                    batchRequest = new BatchRequest();
+                    batchRequest.setSkuCode(batch.getSkuCode());
+                    batchRequest.setTotalCount(batch.getChangeCount());
+                    batchRequest.setBatchCode(batch.getBatchCode());
+                    batchRequest.setProductDate(batch.getProductDate());
+                    if(warehouse != null){
+                        batchRequest.setWarehouseCode(warehouse.getWmsWarehouseCode());
+                        batchRequest.setWarehouseName(warehouse.getWmsWarehouseName());
+                        batchRequest.setWmsWarehouseType(warehouse.getWmsWarehouseType());
+                    }
+                    batchRequestList.add(batchRequest);
+                }
+            }
             productRequestList.add(product);
         }
 
-        if(CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
-            List<BatchRequest> batchRequestList = Lists.newArrayList();
-            BatchRequest batchRequest;
-            for(StockBatchInfoRequest batch:request.getStockBatchList()){
-                batchRequest = new BatchRequest();
-                batchRequest.setSkuCode(batch.getSkuCode());
-                batchRequest.setTotalCount(batch.getChangeCount());
-                batchRequest.setBatchCode(batch.getBatchCode());
-                batchRequest.setProductDate(batch.getProductDate());
-                batchRequest.setWarehouseCode(batch.getWarehouseCode());
-                batchRequest.setWarehouseName(batch.getWarehouseName());
-                batchRequestList.add(batchRequest);
-            }
-        }
         String url = urlConfig.WMS_API_URL + "/dl/stock/change";
         HttpClient httpClient = HttpClient.post(url).json(dlRequest).timeout(20000);
         HttpResponse response = httpClient.action().result(HttpResponse.class);

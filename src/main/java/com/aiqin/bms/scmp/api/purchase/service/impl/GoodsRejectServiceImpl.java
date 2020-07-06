@@ -977,7 +977,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 }
                 if(rejectBatchListOne != null){
                     Integer update = rejectRecordBatchDao.update(batch);
-                    LOGGER.info("更新退供的批次信息");
+                    LOGGER.info("更新退供的批次信息:{}", update);
                 }else {
                     // 查询批次价
                     List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), rejectRecord.getWarehouseCode(), batch.getBatchCode());

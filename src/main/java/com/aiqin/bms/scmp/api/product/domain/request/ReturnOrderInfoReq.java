@@ -303,4 +303,7 @@ public class ReturnOrderInfoReq {
     @ApiModelProperty(value="订单类型 1.B2B 2.B2C")
     private Integer orderProductType;
 
+    @ApiModelProperty(value="wms库房类型")
+    private Integer wmsWarehouseType;
+
 }

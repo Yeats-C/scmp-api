@@ -88,6 +88,10 @@ public class ProductRequest {
     @JsonProperty("warehouse_name")
     private String warehouseName;
 
+    @ApiModelProperty(value="wms库房类型")
+    @JsonProperty("wms_warehouse_type")
+    private Integer wmsWarehouseType;
+
     @ApiModelProperty(value="批次信息")
     @JsonProperty("batch_list")
     private List<BatchRequest> batchList;
