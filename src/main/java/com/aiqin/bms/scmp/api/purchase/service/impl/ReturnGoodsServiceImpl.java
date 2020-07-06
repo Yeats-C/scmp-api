@@ -523,6 +523,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 product.setWarehouseCode(warehouse.getWmsWarehouseCode());
                 product.setWarehouseName(warehouse.getWarehouseName());
                 product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
+                if(warehouse.getWarehouseTypeCode().equals(3)){
+                    product.setReturnType(2);
+                }else {
+                    product.setReturnType(1);
+                }
                 productList.add(product);
 
                 dlBatchList = Lists.newArrayList();
