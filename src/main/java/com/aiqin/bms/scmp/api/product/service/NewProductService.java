@@ -6,8 +6,10 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.info.SaveSkuInfoReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +40,7 @@ public interface NewProductService {
     Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode);
 
     NewProductResponseVO getDetail(String productCode);
+
+    /** 保存导入商品信息（真实表） */
+    HttpResponse saveImportSkuInfo(List<SaveSkuInfoReqVo> saveSkuInfoReqVo);
 }
