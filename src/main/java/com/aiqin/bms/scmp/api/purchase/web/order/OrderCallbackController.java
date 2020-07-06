@@ -13,6 +13,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +105,7 @@ public class OrderCallbackController {
     @PostMapping("/wms/transfers")
     @ApiOperation(value = "移库wms推送回调")
     public HttpResponse movementWmsEcho(@RequestBody MovementWmsReq request) {
-        LOGGER.info("移库wms推送回调,request:{}", request.toString());
+        LOGGER.info("移库wms推送回调,request:{}", JsonUtil.toJson(request));
         return movementService.movementWmsEcho(request);
     }
 

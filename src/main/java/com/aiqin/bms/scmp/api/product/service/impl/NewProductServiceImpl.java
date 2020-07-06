@@ -870,6 +870,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             throw new BizException(ResultCode.IMPORT_DATA_EMPTY);
         }
         String  head = SkuInfoImportNewReally.HEAD;
+        String s = skuInfoImports.get(1).toString();
+        System.out.println(head);
+        System.out.println(s);
         boolean equals = StringUtils.equals(head,skuInfoImports.get(1).toString());
         if(!equals){
             throw new BizException(ResultCode.IMPORT_HEDE_ERROR);
