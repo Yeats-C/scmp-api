@@ -50,9 +50,9 @@
         <result column="deliver_time" jdbcType="DATE" property="deliverTime" />
         <result column="product_num" jdbcType="BIGINT" property="productNum" />
         <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-        <result column="update_time" jdbcType="DATE" property="updateTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="customer_code"  property="customerCode"/>
         <result column="customer_name"  property="customerName"/>
     </resultMap>
@@ -61,7 +61,7 @@
     </sql>
     <sql id="Transport_orders_without_code">
         id,order_code,product_total_amount as commodity_amount,order_amount,order_status as status,order_type_code as type,
-	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_date as createTime,product_num,
+	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_time as create_time,product_num,
 	customer_code,customer_name
     </sql>
 

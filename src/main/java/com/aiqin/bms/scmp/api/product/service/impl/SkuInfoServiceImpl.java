@@ -2356,11 +2356,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             respVos = dealPurchasePriceSkuData(respVos);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
             if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
-                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+//                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+                List<String> list = new ArrayList<>();
+                list.add(CommonConstant.SALE_CHANGE_PRICE);
+                list.add(CommonConstant.SALE_WHOLE_PRICE);
+                vo.setChangePriceTypes(list);
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType());
+            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType(), vo.getChangePriceTypes());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }
@@ -2401,7 +2405,11 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 //            list = productSkuDao.selectSkuListForPurchasePriceCount(vo);
 //        } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
 //            if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
-                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+//                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+                List<String> lists = new ArrayList<>();
+                lists.add(CommonConstant.SALE_CHANGE_PRICE);
+                lists.add(CommonConstant.SALE_WHOLE_PRICE);
+                vo.setChangePriceTypes(lists);
 //            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
 //                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
 //            }
@@ -2426,11 +2434,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             list = productSkuDao.selectSkuListForPurchasePrice(ids);
         } else if(CommonConstant.SALE_PRICE.contains(vo.getChangePriceType())){
             if(CommonConstant.FOREVER_PRICE.contains(vo.getChangePriceType())){
-                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+//                vo.setChangePriceType(CommonConstant.SALE_CHANGE_PRICE);
+                List<String> lists = new ArrayList<>();
+                lists.add(CommonConstant.SALE_CHANGE_PRICE);
+                lists.add(CommonConstant.SALE_WHOLE_PRICE);
+                vo.setChangePriceTypes(lists);
             }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
                 vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
             }
-            list = productSkuDao.selectSkuListForSalePrice(ids,vo.getChangePriceType());
+            list = productSkuDao.selectSkuListForSalePrice(ids,vo.getChangePriceType(),vo.getChangePriceTypes());
         }else {
             throw new BizException(ResultCode.NOT_HAVE_PARAM);
         }

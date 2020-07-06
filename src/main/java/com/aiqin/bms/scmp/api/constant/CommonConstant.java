@@ -19,8 +19,10 @@ public interface CommonConstant {
     String SALE_CHANGE_PRICE = "2";
     //临时变价
     String TEMPORARY_CHANGE_PRICE = "3";
+    //批发价
+    String SALE_WHOLE_PRICE = "4";
     //销售区域变价
-    String SALE_AREA_CHANGE_PRICE = "4";
+//    String SALE_AREA_CHANGE_PRICE = "4";
     //临时区域变价
     String TEMPORARY_AREA_CHANGE_PRICE = "5";
     //销售价

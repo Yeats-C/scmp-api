@@ -20,8 +20,10 @@ import java.util.List;
 public class QuerySkuInfoReqVO extends PageReq {
 
     @ApiModelProperty("变价类型")
-    @NotNull(message = "变价类型必传")
     private String changePriceType;
+
+    @ApiModelProperty("变价类型多个")
+    private List<String> changePriceTypes;
 
     @ApiModelProperty("采购组")
     @NotNull(message = "采购组编码必传")

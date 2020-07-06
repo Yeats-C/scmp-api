@@ -1777,7 +1777,16 @@
       left join product_sku_purchase_info c
       on a.sku_code = c.product_sku_code
       left join price_project f
-      on  f.del_flag = 0 and f.price_project_enable = 0 and f.price_category_code = #{changePriceType}
+      on  f.del_flag = 0 and f.price_project_enable = 0
+      <if test="changePriceType != null and  changePriceType != ''">
+        and f.price_category_code = #{changePriceType}
+      </if>
+      <if test="changePriceTypes != null and changePriceTypes.size()>0">
+        and f.price_category_code in
+        <foreach collection="changePriceTypes" open="(" close=")" item="item" separator=",">
+          #{item}
+        </foreach>
+      </if>
       left join product_sku_price_info g
       on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
       left join tax_cost_log_stock h
@@ -1817,7 +1826,16 @@
     <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' and productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
       LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
     </if>
-    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode}
+    <if test="changePriceType != null and  changePriceType != ''">
+      and f.price_category_code = #{changePriceType}
+    </if>
+    <if test="changePriceTypes != null and changePriceTypes.size()>0">
+      and f.price_category_code in
+      <foreach collection="changePriceTypes" open="(" close=")" item="item" separator=",">
+        #{item}
+      </foreach>
+    </if>
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
