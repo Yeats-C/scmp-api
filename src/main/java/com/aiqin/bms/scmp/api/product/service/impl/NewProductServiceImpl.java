@@ -852,7 +852,13 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 spuMap = checkSku.getSpuMap();
             }
 //            return new SkuImportMain(skuInfoList,importList);
-            return new SkuInfoImportMain(skuInfoList,importList);
+            Map<String, SkuInfoImportReally> skuMap = importList.stream().collect(Collectors.toMap(SkuInfoImportReally::getSkuCode, input -> input, (k1, k2) -> k1));
+            for (AddSkuInfoReqVO addSkuInfoReqVO : skuInfoList) {
+                if (skuMap.containsKey(addSkuInfoReqVO.getProductSkuDraft().getSkuCode())) {
+                    addSkuInfoReqVO.setError(skuMap.get(addSkuInfoReqVO.getProductSkuDraft().getSkuCode()).getError());
+                }
+            }
+            return new SkuInfoImportMain(skuInfoList,null);
         } catch (ExcelException e) {
             throw new BizException(ResultCode.IMPORT_DATA_ERROR);
         }
