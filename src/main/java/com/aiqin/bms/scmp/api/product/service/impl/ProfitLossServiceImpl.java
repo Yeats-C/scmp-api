@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss;
@@ -44,8 +45,10 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -158,7 +161,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         if(result!=null){
             throw new GroundRuntimeException("单据已存在");
         }
+        // 查询对应的批次管理
         WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
+        LOGGER.info("wms出库回传，查询对应的库房批次管理信息：{}", JsonUtil.toJson(warehouseByCode));
         // 损溢主表
         ProfitLoss profitLoss = new ProfitLoss();
         List<ProfitLoss> profitLossList = Lists.newArrayList();
@@ -226,9 +231,33 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             profitLoss.setProfitQuantity(profitQuantity);
             profitLoss.setLossQuantity(lossQuantity);
             profitLossProductList.add(profitLossDetail);
+            if(warehouseByCode.getBatchManage().equals(0)){
+                ProfitLossProductBatch profitLossProductBatch = new ProfitLossProductBatch();
+                profitLossProductBatch.setOrderCode(request.getOrderCode());
+                String batchCode = DateUtils.currentDate().replaceAll("-","");
+                profitLossProductBatch.setBatchCode(batchCode);
+                String batchInfoCode = profitLossDetail.getSkuCode() + "_" + request.getWarehouseCode() + "_" +
+                        batchCode + "_" + profitLossDetail.getTaxPrice().stripTrailingZeros().toPlainString();
+                profitLossProductBatch.setBatchInfoCode(batchInfoCode);
+                profitLossProductBatch.setLineCode(profitLossDetail.getLineNum());
+                profitLossProductBatch.setSkuCode(profitLossDetail.getSkuCode());
+                profitLossProductBatch.setSkuName(productSkuResponse.getProductName());
+                profitLossProductBatch.setTotalCount(profitLossDetail.getQuantity());
+                profitLossProductBatch.setProductDate(DateUtils.currentDate());
+                profitLossProductBatch.setBatchRemark(profitLossDetail.getReason());
+//                profitLossProductBatch.setSupplierCode();
+//                profitLossProductBatch.setSupplierName();
+                profitLossProductBatch.setCreateById(request.getCreateById());
+                profitLossProductBatch.setCreateByName(request.getCreateByName());
+                profitLossProductBatch.setUpdateById(request.getUpdateById());
+                profitLossProductBatch.setUpdateByName(request.getUpdateByName());
+                profitLossProductBatch.setCreateTime(request.getCreateTime());
+                profitLossProductBatch.setUpdateTime(request.getUpdateTime());
+                batchList.add(profitLossProductBatch);
+            }
         }
         // 批次商品
-      if(request.getBatchList() != null){
+      if(org.apache.commons.collections.CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0 && !warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)){
           for (ProfitLossBatchWmsReqVo productBatch : request.getBatchList()) {
               productSkuResponse = productSkuResponseMap.get(productBatch.getSkuCode());
               if (productSkuResponse == null) {

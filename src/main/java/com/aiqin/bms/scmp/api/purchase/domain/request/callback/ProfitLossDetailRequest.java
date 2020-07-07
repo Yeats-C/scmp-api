@@ -130,7 +130,7 @@ public class ProfitLossDetailRequest {
 
     @ApiModelProperty("含税成本")
     @JsonProperty("tax_price")
-    private Long taxPrice;
+    private BigDecimal taxPrice;
 
     @ApiModelProperty("含税总成本")
     @JsonProperty("tax_amount")
