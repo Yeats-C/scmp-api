@@ -1516,12 +1516,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderBatch.setOrderCode(response.getOrderCode());
                 String batchCode = DateUtils.currentDate().replaceAll("-","");
                 orderBatch.setBatchCode(batchCode);
-                String batchInfoCode = detail.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
+                String batchInfoCode = item.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
                         batchCode + "_" + response.getSupplierCode() + "_" +
                         item.getPrice().stripTrailingZeros().toPlainString();
                 orderBatch.setBatchInfoCode(batchInfoCode);
-                orderBatch.setSkuCode(detail.getSkuCode());
-                orderBatch.setSkuName(detail.getSkuName());
+                orderBatch.setSkuCode(item.getSkuCode());
+                orderBatch.setSkuName(item.getSkuName());
                 orderBatch.setSupplierCode(response.getSupplierCode());
                 orderBatch.setSupplierName(response.getSupplierName());
                 orderBatch.setProductDate(DateUtils.currentDate());
