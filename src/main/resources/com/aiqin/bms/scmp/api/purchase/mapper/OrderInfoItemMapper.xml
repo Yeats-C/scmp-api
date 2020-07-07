@@ -111,19 +111,20 @@
              b.order_original_name orderOriginal,
              b.customer_name customerName,
              b.customer_code customerCode,
-             1 as uniqueCode,
+      a.unique_code as uniqueCode,
              a.sku_name skuName,
              a.sku_code skuCode,
              a.spec spec,
              a.unit_name unitName,
              a.price price,
              a.amount amount,
+             a.num num,
              b.order_code orderCode,
              b.transport_center_name transportCenterName,
              b.warehouse_name warehouseName,
              a.give_promotion givePromotion,
              b.create_date createDate,
-             '1' as status,
+      b.order_status as status,
              b.create_by_name createByName,
              b.create_time createTime,
              b.update_by_name updateByName,
@@ -145,10 +146,10 @@
         and b.warehouse_code = #{warehouseCode}
       </if>
       <if test="storeName != null and storeName != ''">
-        and b.customer_name like concat('%',#{storeName},'%')
+        and b.store_name like concat('%',#{storeName},'%')
       </if>
       <if test="storeCode != null and storeCode != ''">
-        and b.customer_code like concat('%',#{storeCode},'%')
+        and b.store_code like concat('%',#{storeCode},'%')
       </if>
       <if test="skuName != null and skuName != ''">
         and a.sku_name like concat('%',#{skuName},'%')
@@ -159,9 +160,10 @@
       <if test="orderCode != null and orderCode != ''">
         and b.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
-<!--      <if test="uniqueCode != null and uniqueCode != ''">-->
-<!--        and a.unique_code = #{uniqueCode}-->
-<!--      </if>-->
+      <if test="uniqueCode != null and uniqueCode != ''">
+        and a.unique_code = #{uniqueCode}
+      </if>
+      and a.unique_code != ''
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from order_info_item
