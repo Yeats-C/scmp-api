@@ -29,11 +29,15 @@ import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNewReally;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
+import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.PurchaseGroupDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplyUseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
@@ -129,6 +133,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     private ApplyUseTagRecordMapper applyUseTagRecordMapper;
     @Autowired
     private ProductSkuChannelMapper productSkuChannelMapper;
+    @Autowired
+    private PurchaseGroupDao purchaseGroupDao;
 
 
     @Override
@@ -261,6 +267,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
      * 保存导入商品信息（真实表）
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse saveImportSkuInfo(SkuImportReq saveSkuInfoReqVo) {
         HashMap<String, String> spuMap = Maps.newHashMap();
         for (AddSkuInfoReqVO reqVO : saveSkuInfoReqVo.getAddSkuList()) {
@@ -290,12 +297,13 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 }
             }
             reqVO.setBoxFlag(false);
-            reqVO.getProductSkuDraft().setProcurementSectionCode(saveSkuInfoReqVo.getPurchaseGroupCode());
-            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
+//            reqVO.getProductSkuDraft().setProcurementSectionCode(saveSkuInfoReqVo.getPurchaseGroupCode());
+//            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
+            Date date = new Date();
         // spu商品是否存在  不存在新增
-        savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft());
+        savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date);
         // 保存商品信息
-        saveSkuInfo(reqVO.getProductSkuDraft());
+        saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date);
         // 保存标签信息
         saveSkuInfTag(reqVO.getTagInfoList(),reqVO.getProductSkuDraft());
         // 保存渠道信息
@@ -303,17 +311,17 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         // 保存进销存及包装信息
         saveSkuInfoPurchaseSaleBox(reqVO.getProductSkuDraft(),reqVO.getPurchaseSaleStockReqVos(),reqVO.getProductSkuBoxPackingDrafts());
         // 保存商品配置信息
-        saveSkuInfoConfig(reqVO.getProductSkuConfigs());
+        saveSkuInfoConfig(reqVO.getProductSkuConfigs(),reqVO.getProductSkuDraft());
         // 保存商品库存信息
         saveSkuInfoStock(reqVO.getProductSkuDraft());
         // 保存结算信息
         saveSkuInfoCheckout(reqVO.getProductSkuCheckoutDraft());
         // 保存供应商信息
-        saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts());
+        saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date);
         // 保存生产厂家
-        saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts());
+        saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts(), reqVO.getProductSkuDraft());
         // 保存价格信息
-        saveSkuInfoPrice(reqVO.getProductSkuPrices());
+        saveSkuInfoPrice(reqVO.getProductSkuPrices(),reqVO.getProductSkuDraft(), date);
     }
         return HttpResponse.success();
     }
@@ -336,19 +344,36 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 
     /** 保存商品标签信息 */
     private void saveSkuInfTag(List<SaveUseTagRecordItemReqVo> tagInfoList,ProductSkuDraft productSkuDraft) {
-        //SKU标签信息
-        List<SaveUseTagRecordReqVo> records = Lists.newArrayList();
-        SaveUseTagRecordReqVo saveUseTagRecordReqVo = new SaveUseTagRecordReqVo();
-        saveUseTagRecordReqVo.setUseObjectCode(productSkuDraft.getSkuCode());
-        saveUseTagRecordReqVo.setUseObjectName(productSkuDraft.getSkuName());
-        saveUseTagRecordReqVo.setTagTypeCode(TagTypeCode.SKU.getStatus());
-        saveUseTagRecordReqVo.setTagTypeName(TagTypeCode.SKU.getName());
+        if(CollectionUtils.isNotEmpty(tagInfoList)){
+            List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
+            tagInfoList.forEach(item->{
+                ApplyUseTagRecord applyUseTagRecord = new ApplyUseTagRecord();
+                applyUseTagRecord.setApplyUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setTagCode(item.getTagCode());
+                applyUseTagRecord.setTagName(item.getTagName());
+                applyUseTagRecord.setUseObjectCode(productSkuDraft.getSkuCode());
+                applyUseTagRecord.setUseObjectName(productSkuDraft.getSkuName());
+                applyUseTagRecord.setTagTypeCode(TagTypeCode.SKU.getStatus());
+                applyUseTagRecord.setTagTypeName(TagTypeCode.SKU.getName());
+                applyUseTagRecord.setCreateBy(productSkuDraft.getCreateBy());
+                applyUseTagRecord.setUpdateBy(productSkuDraft.getUpdateBy());
+                applyUseTagRecord.setCreateTime(productSkuDraft.getCreateTime());
+                applyUseTagRecord.setUpdateTime(productSkuDraft.getUpdateTime());
+                applyUseTagRecords.add(applyUseTagRecord);
+            });
+//            applyUseTagRecordService.saveBatch(applyUseTagRecords);
+            List<SaveUseTagRecordReqVo> records = Lists.newArrayList();
+            SaveUseTagRecordReqVo saveUseTagRecordReqVo = new SaveUseTagRecordReqVo();
+            saveUseTagRecordReqVo.setUseObjectCode(productSkuDraft.getSkuCode());
+            saveUseTagRecordReqVo.setUseObjectName(productSkuDraft.getSkuName());
+            saveUseTagRecordReqVo.setTagTypeCode(TagTypeCode.SKU.getStatus());
+            saveUseTagRecordReqVo.setTagTypeName(TagTypeCode.SKU.getName());
 //        saveUseTagRecordReqVo.setSourceCode(applyCode);
-//        List<SaveUseTagRecordItemReqVo> tagRecordItemReqVos = BeanCopyUtils.copyList(applyUseTagRecords, SaveUseTagRecordItemReqVo.class);
-//        saveUseTagRecordReqVo.setItemReqVos(tagRecordItemReqVos);
-        records.add(saveUseTagRecordReqVo);
-        tagInfoService.saveRecordList(records);
-        tagInfoService.saveRecordList(records);
+            List<SaveUseTagRecordItemReqVo> tagRecordItemReqVos = BeanCopyUtils.copyList(applyUseTagRecords, SaveUseTagRecordItemReqVo.class);
+            saveUseTagRecordReqVo.setItemReqVos(tagRecordItemReqVos);
+            records.add(saveUseTagRecordReqVo);
+            tagInfoService.saveRecordList(records);
+        }
 //        if(CollectionUtils.isNotEmpty(tagInfoList)){
 //            List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
 //            tagInfoList.forEach(item->{
@@ -387,8 +412,6 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             productSkuStockInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
             productSkuStockInfoDraft.setProductCode(productSkuDraft.getProductCode());
             productSkuStockInfoDraft.setProductName(productSkuDraft.getProductName());
-            productSkuStockInfoDraft.setBaseProductContent(1);
-            productSkuStockInfoDraft.setZeroRemovalCoefficient(1L);
             productSkuStockInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
             productSkuStockInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
             productSkuStockInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
@@ -462,8 +485,31 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             log.error(Global.ERROR, e);
             throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
         }
-        // 分销
-//        productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
+        //获取分销信息
+        List<PurchaseSaleStockReqVo> saleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.SALE.getStatus(),item.getType())).collect(Collectors.toList());
+        if(CollectionUtils.isEmpty(saleList)){
+            throw new BizException(ResultCode.SALE_EMPTY);
+        }
+        if (saleList.size() != 1) {
+            throw new BizException(ResultCode.SALE_ONE);
+        }
+        try {
+            ProductSkuDisInfoDraft productSkuDisInfoDraft = BeanCopyUtils.copy(saleList.get(0), ProductSkuDisInfoDraft.class);
+            productSkuDisInfoDraft.setProductSkuCode(productSkuDraft.getSkuCode());
+            productSkuDisInfoDraft.setProductSkuName(productSkuDraft.getSkuName());
+            productSkuDisInfoDraft.setProductCode(productSkuDraft.getProductCode());
+            productSkuDisInfoDraft.setProductName(productSkuDraft.getProductName());
+            productSkuDisInfoDraft.setCreateBy(productSkuDraft.getCreateBy());
+            productSkuDisInfoDraft.setUpdateBy(productSkuDraft.getUpdateBy());
+            productSkuDisInfoDraft.setCreateTime(productSkuDraft.getCreateTime());
+            productSkuDisInfoDraft.setUpdateTime(productSkuDraft.getUpdateTime());
+            ProductSkuDistributionInfo productSkuDistributionInfo = new ProductSkuDistributionInfo();
+            BeanUtils.copyProperties(productSkuDisInfoDraft, productSkuDistributionInfo);
+            productSkuDistributionInfoMapper.insertSelective(productSkuDistributionInfo);
+        }catch (Exception e) {
+            log.error(Global.ERROR, e);
+            throw new BizException(ResultCode.OBJECT_CONVERSION_FAILED);
+        }
         if (CollectionUtils.isEmpty(productSkuBoxPackingDrafts)){
             throw new BizException(ResultCode.BOX_PACKING_EMPTY);
         }
@@ -483,8 +529,18 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku生产厂家 */
-    private void saveSkuInfoManufacturer(List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts) {
+    private void saveSkuInfoManufacturer(List<ProductSkuManufacturerDraft> productSkuManufacturerDrafts, ProductSkuDraft productSkuDraft) {
         List<ProductSkuManufacturer> productSkuManufacturers = BeanCopyUtils.copyList(productSkuManufacturerDrafts, ProductSkuManufacturer.class);
+        if(CollectionUtils.isNotEmpty(productSkuManufacturers)){
+            productSkuManufacturers.forEach(item->{
+                item.setProductSkuCode(productSkuDraft.getSkuCode());
+                item.setProductSkuName(productSkuDraft.getSkuName());
+                item.setCreateBy(productSkuDraft.getCreateBy());
+                item.setUpdateBy(productSkuDraft.getUpdateBy());
+                item.setCreateTime(productSkuDraft.getCreateTime());
+                item.setUpdateTime(productSkuDraft.getUpdateTime());
+            });
+        }
         productSkuManufacturerDao.insertList(productSkuManufacturers);
     }
 
@@ -496,13 +552,14 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         productSkuCheckout.setOutputTaxRate(skuInfo.getOutputTaxRate());
         productSkuCheckout.setInputTaxRate(skuInfo.getInputTaxRate());
         productSkuCheckout.setIntegralCoefficient(skuInfo.getIntegralCoefficient());
-        if("经销".equals(skuInfo.getSettlementMethodName())){
-            productSkuCheckout.setSettlementMethodCode("1");
-        } else if ("联营".equals(skuInfo.getSettlementMethodName())) {
-            productSkuCheckout.setSettlementMethodCode("2");
-        }else if ("代销".equals(skuInfo.getSettlementMethodName())){
-            productSkuCheckout.setSettlementMethodCode("3");
-        }
+        productSkuCheckout.setSettlementMethodCode(skuInfo.getSettlementMethodCode());
+//        if("经销".equals(skuInfo.getSettlementMethodName())){
+//            productSkuCheckout.setSettlementMethodCode("1");
+//        } else if ("联营".equals(skuInfo.getSettlementMethodName())) {
+//            productSkuCheckout.setSettlementMethodCode("2");
+//        }else if ("代销".equals(skuInfo.getSettlementMethodName())){
+//            productSkuCheckout.setSettlementMethodCode("3");
+//        }
         productSkuCheckout.setSettlementMethodName(skuInfo.getSettlementMethodName());
         productSkuCheckout.setLogisticsFeeAwardRatio(skuInfo.getLogisticsFeeAwardRatio());
         productSkuCheckout.setSkuCode(skuInfo.getSkuCode());
@@ -515,8 +572,17 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku供应商信息 */
-    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts) {
+    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts, Date date) {
         List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ProductSkuSupplyUnit.class);
+        if(CollectionUtils.isNotEmpty(productSkuSupplyUnits)){
+            productSkuSupplyUnits.forEach(item->{
+                item.setCreateBy(getUser().getPersonName());
+                item.setUpdateBy(getUser().getPersonName());
+                item.setCreateTime(date);
+                item.setUpdateTime(date);
+                item.setUsageStatus((byte)1);
+            });
+        }
         productSkuSupplyUnitDao.insertList(productSkuSupplyUnits);
 //        //供应商产能
 //        if (CollectionUtils.isNotEmpty(productSkuSupplyUnitCapacities)){
@@ -525,8 +591,23 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku价格信息 */
-    private void saveSkuInfoPrice(List<SkuPriceDraftReqVO> skuInfos) {
+    private void saveSkuInfoPrice(List<SkuPriceDraftReqVO> skuInfos, ProductSkuDraft productSkuDraft,Date date) {
         List<ProductSkuPriceInfo> productSkuConfigs = BeanCopyUtils.copyList(skuInfos, ProductSkuPriceInfo.class);
+        if(CollectionUtils.isNotEmpty(productSkuConfigs)){
+            productSkuConfigs.forEach(item->{
+                item.setSkuCode(productSkuDraft.getSkuCode());
+                item.setSkuName(productSkuDraft.getSkuName());
+                item.setCompanyCode(getUser().getCompanyCode());
+                item.setCompanyName(getUser().getCompanyName());
+                item.setCreateBy(getUser().getPersonName());
+                item.setUpdateBy(getUser().getPersonName());
+                item.setCreateTime(date);
+                item.setUpdateTime(date);
+                item.setBeContainArea(0);
+                item.setPurchaseGroupCode(productSkuDraft.getProcurementSectionCode());
+                item.setPurchaseGroupName(productSkuDraft.getProcurementSectionName());
+            });
+        }
         productSkuPriceInfoMapper.insertBatch(productSkuConfigs);
 //        List<ProductSkuPriceInfo> productSkuConfigs = new ArrayList<>();
 //        ProductSkuPriceInfo productSkuConfig1 = new ProductSkuPriceInfo();
@@ -585,8 +666,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         productSkuConfig.setTax(finalOutputTaxRateL);
         BigDecimal taxIncludedPrice = productSkuConfig.getPriceTax().divide(BigDecimal.ONE.add(finalOutputTaxRate),4,BigDecimal.ROUND_HALF_UP);
         productSkuConfig.setPriceNoTax(taxIncludedPrice);
-        productSkuConfig.setCreateBy("系统导入");
-        productSkuConfig.setUpdateBy("系统导入");
+        productSkuConfig.setCreateBy(getUser().getPersonName());
+        productSkuConfig.setUpdateBy(getUser().getPersonName());
         productSkuConfig.setCode("pp"+ IdUtil.uuid());
         productSkuConfig.setBeContainArea(0);
         Date date = new Date();
@@ -600,42 +681,53 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--spu信息 */
-    private void savespuInfo(NewProduct skuInfo,ProductSkuDraft productSkuDraft) {
+    private NewProduct savespuInfo(NewProduct skuInfo,ProductSkuDraft productSkuDraft, Date date) {
         // spu编码
-        String productCode = skuInfo.getProductCode();
-        // 判断商品编码是否为空
-        ExceptionId(productCode);
+        String productName = skuInfo.getProductName();
+        // 判断商品名称是否为空
+        ExceptionId(productName);
         // 查询该spu商品是否存在
-        NewProduct newProduct = newProductMapper.getProductCode(productCode);
+        NewProduct newProduct = newProductMapper.getProductName(productName);
+        if(null != newProduct){
+            productSkuDraft.setProductCode(newProduct.getProductCode());
+        }
         if(null == newProduct){
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
+            long code = encodingRule.getNumberingValue();
+            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
             // 等于null  不存在 新增
             NewProduct insetProduct = new NewProduct();
-            insetProduct.setProductCode(productCode);
+            insetProduct.setProductCode(String.valueOf(code));
+            insetProduct.setProductName(skuInfo.getProductName());
             insetProduct.setCompanyCode(getUser().getCompanyCode());
             insetProduct.setCompanyName(getUser().getCompanyName());
             insetProduct.setBarCode(skuInfo.getBarCode());
-            insetProduct.setProductName(skuInfo.getProductName());
             insetProduct.setPurchasingGroupCode(productSkuDraft.getProcurementSectionCode());
             insetProduct.setPurchasingGroupName(productSkuDraft.getProcurementSectionName());
             insetProduct.setStyleNumber(skuInfo.getStyleNumber());
             insetProduct.setAbbreviation(skuInfo.getProductName());
+            insetProduct.setCreateBy(getUser().getPersonName());
+            insetProduct.setCreateTime(date);
+            insetProduct.setUpdateBy(getUser().getPersonName());
+            insetProduct.setUpdateTime(date);
             newProductMapper.insertSelective(insetProduct);
+            productSkuDraft.setProductCode(String.valueOf(code));
+            return insetProduct;
         }
+        return newProduct;
     }
     /** 保存导入商品信息--sku信息/配置信息 */
-    private void saveSkuInfo(ProductSkuDraft skuInfo) {
+    private void saveSkuInfo(ProductSkuDraft skuInfo, List<SaveSkuConfigReqVo> productSkuConfigs, Date date) {
         ProductSkuInfo productSkuInfo = new ProductSkuInfo();
         BeanCopyUtils.copy(skuInfo, productSkuInfo);
 
-        List<SkuConfigsRepsVo> skuConfigsRepsVos = new ArrayList<>();
-        Map<String, SaveSkuConfigReqVo> warehouse = PriceAndWarehouseMap.warehouse;
+        //        Map<String, SaveSkuConfigReqVo> warehouse = PriceAndWarehouseMap.warehouse;
         // 保存仓库信息
 //        saveSkuInfoStock(skuInfo);
+        List<SkuConfigsRepsVo> skuConfigsRepsVos = BeanCopyUtils.copyList(productSkuConfigs,SkuConfigsRepsVo.class);
         SkuStatusRespVo skuStatusRespVo = productSkuConfigService.calculationSkuStatus(skuConfigsRepsVos);
         productSkuInfo.setSkuStatus(skuStatusRespVo.getSkuStatus());
         productSkuInfo.setOnSale(Optional.ofNullable(skuStatusRespVo.getOnSale()).orElse(SkuSaleStatusEnum.NOT_IN_STOCK.getStatus()));
-        productSkuInfo.setInventoryAllocation(Optional.ofNullable(productSkuInfo.getInventoryAllocation()).orElse(Global.BYTE_ZERO));
-        productSkuInfo.setPriceModel(Optional.ofNullable(productSkuInfo.getPriceModel()).orElse(Global.BYTE_ZERO));
         productSkuInfo.setDelFlag(skuStatusRespVo.getOnSale());
         //拆分品类信息
         String productCategoryCode = productSkuInfo.getProductCategoryCode();
@@ -644,15 +736,26 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             productCategoryCode = split[split.length-1];
             productSkuInfo.setProductCategoryCode(productCategoryCode);
         }
+        productSkuInfo.setInventoryAllocation(Optional.ofNullable(productSkuInfo.getInventoryAllocation()).orElse(Global.BYTE_ZERO));
+        productSkuInfo.setPriceModel(Optional.ofNullable(productSkuInfo.getPriceModel()).orElse(Global.BYTE_ZERO));
         productSkuInfo.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
-        productSkuInfo.setDelFlag((byte)0);
         productSkuInfo.setGoodsGifts(skuInfo.getGoodsGifts());
-//        if(Objects.equals(Global.PRODUCT_TYPE_0,skuInfo.getGoodsGifts())){
-//            productSkuInfo.setGoodsGifts((byte)0);
-//        }else {
-//            productSkuInfo.setGoodsGifts((byte)1);
-//        }
+        productSkuInfo.setCompanyCode(getUser().getCompanyCode());
+        productSkuInfo.setCompanyName(getUser().getCompanyName());
+        PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(skuInfo.getProcurementSectionName());
+        productSkuInfo.setProcurementSectionCode(purchaseGroupVo.getPurchaseGroupCode());
+        productSkuInfo.setProcurementSectionName(skuInfo.getProcurementSectionName());
+        productSkuInfo.setCreateBy(getUser().getPersonName());
+        productSkuInfo.setCreateTime(date);
+        productSkuInfo.setUpdateBy(getUser().getPersonName());
+        productSkuInfo.setUpdateTime(date);
         productSkuInfoMapper.insertSelective(productSkuInfo);
+        skuInfo.setCreateBy(productSkuInfo.getCreateBy());
+        skuInfo.setCreateTime(productSkuInfo.getCreateTime());
+        skuInfo.setCompanyCode(getUser().getCompanyCode());
+        skuInfo.setCompanyName(getUser().getCompanyName());
+        skuInfo.setProcurementSectionCode(purchaseGroupVo.getPurchaseGroupCode());
+        skuInfo.setProcurementSectionName(purchaseGroupVo.getPurchaseGroupName());
     }
 
     /** 保存导入商品信息--sku仓库信息 */
@@ -693,7 +796,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku配置信息 */
-    private SkuConfigsRepsVo saveSkuInfoConfig(List<SaveSkuConfigReqVo> configs) {
+    private void saveSkuInfoConfig(List<SaveSkuConfigReqVo> configs, ProductSkuDraft productSkuDraft) {
         for (SaveSkuConfigReqVo config : configs) {
             SkuStatusEnum statusEnum = SkuStatusEnum.getAllStatus().get(config.getConfigStatusName());
             if (Objects.isNull(statusEnum)) {
@@ -708,20 +811,18 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 // 更新数据库编码
                 encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                 productSkuConfig.setConfigCode(String.valueOf(encodingRule.getNumberingValue()));
-                productSkuConfig.setProductCode(config.getProductCode());
-                productSkuConfig.setProductName(config.getProductName());
-                productSkuConfig.setSkuCode(config.getSkuCode());
-                productSkuConfig.setSkuName(config.getSkuName());
-                productSkuConfig.setConfigStatus(statusEnum.getStatus());
+                productSkuConfig.setProductCode(productSkuDraft.getProductCode());
+                productSkuConfig.setProductName(productSkuDraft.getProductName());
+                productSkuConfig.setSkuCode(productSkuDraft.getSkuCode());
+                productSkuConfig.setSkuName(productSkuDraft.getSkuName());
+//                productSkuConfig.setConfigStatus(statusEnum.getStatus());
                 productSkuConfig.setCompanyCode(getUser().getCompanyCode());
                 productSkuConfig.setCompanyName(getUser().getCompanyName());
-                productSkuConfig.setCreateBy("系统导入");
-                productSkuConfig.setUpdateBy("系统导入");
+                productSkuConfig.setCreateBy(getUser().getPersonName());
+                productSkuConfig.setUpdateBy(getUser().getPersonName());
                 productSkuConfigMapper.insertSelective(productSkuConfig);
-                return saveSkuConfig;
              }
         }
-        return null;
     }
 
     @Override

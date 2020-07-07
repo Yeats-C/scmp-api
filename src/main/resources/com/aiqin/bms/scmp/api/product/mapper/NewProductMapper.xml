@@ -564,4 +564,10 @@
         FROM product pro
         WHERE pro.del_flag=0 and pro.product_code=#{productCode}
     </select>
+    <select id="getProductName" parameterType="java.lang.String" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where product_name = #{productName,jdbcType=VARCHAR}
+    </select>
 </mapper>

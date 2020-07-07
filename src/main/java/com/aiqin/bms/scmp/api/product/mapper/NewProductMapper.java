@@ -28,7 +28,7 @@ public interface NewProductMapper {
     @MapKey("productName")
     Map<String,NewProduct> selectBySpuName(@Param("list") Set<String> list, @Param("companyCode") String companyCode);
 
-    NewProduct getProductCode(@Param("productCode") String productCode);
+    NewProduct getProductName(@Param("productName") String productName);
 
     int updateByPrimaryKeySelective(NewProduct record);
 
@@ -41,5 +41,7 @@ public interface NewProductMapper {
     int checkName(@Param("name")String name, @Param("companyCode")String companyCode, @Param("code") String code);
 
     NewProductResponseVO selectByProdutCode(@Param("productCode") String productCode);
+
+    NewProduct getProductCode(@Param("productCode") String productCode);
 
 }

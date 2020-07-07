@@ -4,6 +4,8 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * Description:
  * sku号 采购组 类型	所属部门	品类编码	SKU名称	SKU简称	SKU助记码	所属SPU	SPU简称	SPU助记码	款号	货号	品牌	商品属性	颜色	型号	保质天数	供货渠道类别	适用起始月龄	是否季节商品	仓位类型	结构性商品	使用时长	季节波段	唯一码管理	等级	特征	通货等级	覆盖渠道	商品标签	商品备注	商品介绍	厂商指导价	爱亲渠道价	萌贝树渠道价	小红马渠道价	爱亲分销价	萌贝树分销价	小红马分销价	售价	会员价	供应商	联营扣点	返点	供应商SKU编号	供货渠道类别	库存规格	库存单位	库存长(MM)	库存宽(MM)	库存高(MM)	库存毛重(KG)	库存净重(KG)	采购规格	采购单位	采购长(MM)	采购宽(MM)	采购高(MM)	采购毛重(KG)	采购净重(KG)	采购单位含量	采购条形码	分销交易倍数	最大订购数量	销售条形码	销售描述	结算方式	进项税率	销项税率	积分系数	物流费奖励比例	华北仓状态	华东仓状态	华南仓状态	西南仓状态	华中仓状态	生产厂家	生产厂家SKU编号	保修地址
@@ -196,7 +198,7 @@ public class SkuInfoImportReally {
 
     @ApiModelProperty("含税采购价")
     @ExcelProperty(index = 46, value = "含税采购价")
-    private String taxIncludedPrice;
+    private BigDecimal taxIncludedPrice;
 
     @ApiModelProperty(value ="供应商供货渠道类别")
     @ExcelProperty(index = 47, value = "供应商供货渠道类别")

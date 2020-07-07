@@ -975,6 +975,10 @@ public class CheckSkuNewReally {
         if (Objects.nonNull(importVo.getFactorySkuCode())) {
             supplyUnitDraft.setFactorySkuCode(importVo.getFactorySkuCode().trim());
         }
+        //厂商SKU编码
+        if (Objects.nonNull(importVo.getFactorySkuCode())) {
+            supplyUnitDraft.setTaxIncludedPrice(importVo.getTaxIncludedPrice());
+        }
         //供应商供货渠道类别
         if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
             error.add("供应商供货渠道类别不能为空");
