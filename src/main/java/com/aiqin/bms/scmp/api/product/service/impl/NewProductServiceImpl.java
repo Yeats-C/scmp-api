@@ -576,7 +576,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ProductSkuSupplyUnit.class);
         if(CollectionUtils.isNotEmpty(productSkuSupplyUnits)){
             productSkuSupplyUnits.forEach(item->{
-                Calculate.computeNoTaxPrice(item.getTaxIncludedPrice(),productSkuCheckoutDraft.getInputTaxRate());
+                BigDecimal noTaxPurchasePrice = Calculate.computeNoTaxPrice(item.getTaxIncludedPrice(), productSkuCheckoutDraft.getInputTaxRate());
+                item.setNoTaxPurchasePrice(noTaxPurchasePrice);
                 item.setCreateBy(getUser().getPersonName());
                 item.setUpdateBy(getUser().getPersonName());
                 item.setCreateTime(date);
