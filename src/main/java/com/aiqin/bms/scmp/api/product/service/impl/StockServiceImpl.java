@@ -1438,6 +1438,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         if(request.getOperationType().equals(2)){
             Long changeCount;
             for (StockMonthBatch monthBatch : request.getStockList()){
+                changeCount = monthBatch.getBatchCount();
                 // 查询京东的日期库存
                 List<StockDayBatch> batchList = stockDayBatchDao.stockDayBatchList(monthBatch);
                 if (CollectionUtils.isEmpty(batchList) && batchList.size() > 0) {
@@ -1460,7 +1461,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     batchFlow.setDayType(2);
                     batchFlow.setBeforeBatchCount(batchList.get(i).getBatchCount());
 
-                    if(batchList.get(i).getBatchCount() >= monthBatch.getBatchCount()){
+                    if(batchList.get(i).getBatchCount() >= changeCount){
                         changeCount = batchList.get(i).getBatchCount() - monthBatch.getBatchCount();
                         batchList.get(i).setBatchCount(changeCount);
                         Integer count = stockDayBatchDao.update(batchList.get(i));
