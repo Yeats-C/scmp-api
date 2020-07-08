@@ -475,10 +475,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
-        WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
-        if(warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)){
-            vo.setItemBatchList(null);
-        }
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
         Date date = Calendar.getInstance().getTime();
         // 数据处理
@@ -706,6 +702,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
+        WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
         vo.setCompanyCode(Global.COMPANY_09);
@@ -795,29 +792,36 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productNum += item.getProductCount();
                     productList.add(product);
 
-                    // 批次商品的
-                    if(item.getBatchCode() != null) {
-                        productBatch = new OrderInfoItemProductBatch();
-                        productBatch.setOrderCode(item.getOrderStoreCode());
-                        productBatch.setLineCode(item.getLineCode());
-                        productBatch.setBatchCode(item.getBatchCode());
-                        productBatch.setBatchInfoCode(item.getBatchInfoCode());
-                        productBatch.setSkuCode(item.getSkuCode());
-                        productBatch.setSkuName(item.getSkuName());
-                        productBatch.setTotalCount(item.getProductCount());
-                        productBatch.setActualTotalCount(item.getActualProductCount());
-                        if (item.getBatchDate() != null) {
-                            productBatch.setProductDate(sf.format(item.getBatchDate()));
+                    // 批次商品的 自动批次下不传批次 其他传批次
+                    if(item.getBatchCode() != null && !warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
+                        if(warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_4)){
+                            // 在 3和4要获取月份的数据进行保存
+
+                        }else if (warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_6)){
+                            // 在 5和6需要调用 库存接口转成日期接口
+                        }else {
+                            productBatch = new OrderInfoItemProductBatch();
+                            productBatch.setOrderCode(item.getOrderStoreCode());
+                            productBatch.setLineCode(item.getLineCode());
+                            productBatch.setBatchCode(item.getBatchCode());
+                            productBatch.setBatchInfoCode(item.getBatchInfoCode());
+                            productBatch.setSkuCode(item.getSkuCode());
+                            productBatch.setSkuName(item.getSkuName());
+                            productBatch.setTotalCount(item.getProductCount());
+                            productBatch.setActualTotalCount(item.getActualProductCount());
+                            if (item.getBatchDate() != null) {
+                                productBatch.setProductDate(sf.format(item.getBatchDate()));
+                            }
+                            productBatch.setBeOverdueDate(item.getBeOverdueDate());
+                            productBatch.setLockType(item.getLockType());
+                            productBatch.setSupplierCode(item.getSupplierCode());
+                            productBatch.setSupplierName(item.getSupplierName());
+                            productBatch.setCreateById(item.getCreateById());
+                            productBatch.setCreateByName(item.getCreateByName());
+                            productBatch.setUpdateById(item.getUpdateById());
+                            productBatch.setUpdateByName(item.getUpdateByName());
+                            productBatcheList.add(productBatch);
                         }
-                        productBatch.setBeOverdueDate(item.getBeOverdueDate());
-                        productBatch.setLockType(item.getLockType());
-                        productBatch.setSupplierCode(item.getSupplierCode());
-                        productBatch.setSupplierName(item.getSupplierName());
-                        productBatch.setCreateById(item.getCreateById());
-                        productBatch.setCreateByName(item.getCreateByName());
-                        productBatch.setUpdateById(item.getUpdateById());
-                        productBatch.setUpdateByName(item.getUpdateByName());
-                        productBatcheList.add(productBatch);
                     }
                 }
             }else {
@@ -850,7 +854,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 productList.add(product);
 
                 // 批次商品的  有批次加批次  没有批次不处理
-                if(item.getBatchCode() != null){
+                if(item.getBatchCode() != null && !warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)){
                     productBatch = new OrderInfoItemProductBatch();
                     productBatch.setOrderCode(item.getOrderStoreCode());
                     productBatch.setLineCode(item.getLineCode());
