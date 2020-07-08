@@ -39,7 +39,7 @@
     id, return_order_code, sku_code, sku_name, picture_url, spec, color_name, color_code,
     model, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
     product_status, give_promotion, line_code, transport_center_code, transport_center_name,
-    warehouse_code, warehouse_name, supplier_code, supplier_name, product_count, actual_product_count,
+    warehouse_code, warehouse_name, supplier_code, supplier_name,  ifnull(product_count, 0), ifnull(actual_product_count, 0),
     batch_code, batch_info_code, product_date, be_overdue_date, location_code, return_product_count,
     batch_remark, lock_type
   </sql>
@@ -198,6 +198,7 @@
     <if test="lineCode != null">
         and line_code = #{lineCode,jdbcType=BIGINT}
     </if>
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
   <select id="returnOrderBatchList" resultMap="BaseResultMap">
       select <include refid="Base_Column_List"></include>
