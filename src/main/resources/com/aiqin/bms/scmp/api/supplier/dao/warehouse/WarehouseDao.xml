@@ -396,4 +396,10 @@
     </if>
     order by warehouse_order asc
   </select>
+  <select id="getWarehouseCodeByTransportCenterCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and logistics_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

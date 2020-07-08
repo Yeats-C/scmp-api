@@ -74,4 +74,6 @@ public interface PurchaseGroupDao {
 
     int enable(EnabledSave enabledSave);
 
+    PurchaseGroupDTO selectByPurchaseName(@Param("purchaseGroupName") String purchaseGroupName);
+
 }

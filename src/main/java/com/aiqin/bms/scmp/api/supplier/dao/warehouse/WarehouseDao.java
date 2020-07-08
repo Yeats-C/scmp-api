@@ -38,6 +38,8 @@ public interface WarehouseDao {
     */
     WarehouseDTO selectByPrimaryKey(Long id);
 
+   List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(@Param("transportCenterCode") String transportCenterCode);
+
    /**
     * 有选择的更新实体
     * @param record

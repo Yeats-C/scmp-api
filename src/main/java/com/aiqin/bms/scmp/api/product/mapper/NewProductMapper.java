@@ -30,6 +30,8 @@ public interface NewProductMapper {
 
     NewProduct getProductCode(@Param("productCode") String productCode);
 
+    NewProduct getProductName(@Param("productName") String productName);
+
     int updateByPrimaryKeySelective(NewProduct record);
 
     int updateByPrimaryKey(NewProduct record);
