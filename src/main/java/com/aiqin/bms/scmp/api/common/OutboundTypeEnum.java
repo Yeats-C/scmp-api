@@ -12,7 +12,7 @@ public enum OutboundTypeEnum {
     ALLOCATE((byte)2,"调拨"),
     ORDER((byte)3,"订单"),
     MOVEMENT((byte)4,"移库") ,
-//    SUPERVISORY__WAREHOUSE_OUTBOUND((byte)5,"监管仓出库"),
+    SUPERVISORY__WAREHOUSE_OUTBOUND((byte)5,"监管仓出库"),
     scrap((byte)6,"报废");
 //    PROFIT_LOSS((byte)7,"报损");    // 损溢没有出入库
 
