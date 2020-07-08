@@ -188,7 +188,7 @@
                 purchasing_group_name,
             </if>
             <if test="styleNumber != null">
-                style_number
+                style_number,
             </if>
             <if test="abbreviation != null">
                 abbreviation
