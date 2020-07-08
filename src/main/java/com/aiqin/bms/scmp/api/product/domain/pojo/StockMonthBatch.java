@@ -38,4 +38,8 @@ public class StockMonthBatch {
     @JsonProperty("update_time")
     private Date updateTime;
 
+    @ApiModelProperty(value="同步时间戳")
+    @JsonProperty("synchr_time")
+    private Long synchrTime;
+
 }

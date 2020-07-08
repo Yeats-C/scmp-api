@@ -17,6 +17,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
@@ -35,7 +36,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -101,6 +101,12 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private UrlConfig urlConfig;
     @Autowired
     private WarehouseDao warehouseDao;
+    @Autowired
+    private StockMonthBatchDao stockMonthBatchDao;
+    @Autowired
+    private StockMonthBatchFlowDao stockMonthBatchFlowDao;
+    @Autowired
+    private StockDayBatchDao stockDayBatchDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -1392,4 +1398,114 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
         return stockBatchRespVOList;
     }
+
+    @Override
+    public List<StockDayBatch> monthBatch(StockMonthRequest request){
+        if (request == null || CollectionUtils.isEmpty(request.getStockList())){
+            return null;
+        }
+        // 减月份库存并加月份流水
+        List<StockMonthBatch> months = Lists.newArrayList();
+        List<StockMonthBatchFlow> monthFlows = Lists.newArrayList();
+        StockMonthBatchFlow batchFlow;
+        List<StockDayBatch> days = Lists.newArrayList();
+
+        for (StockMonthBatch monthBatch : request.getStockList()){
+
+            batchFlow = new StockMonthBatchFlow();
+
+            // 查询对应的月份批次
+            StockMonthBatch batch = stockMonthBatchDao.stockMonthBatchOne(monthBatch);
+            batchFlow.setBeforeBatchCount(batch.getBatchCount());
+            if(batch == null || batch.getBatchCount() < monthBatch.getBatchCount()){
+                months.add(batch);
+            }else {
+                batch.setBatchCount(batch.getBatchCount() - monthBatch.getBatchCount());
+                Integer count = stockMonthBatchDao.update(batch);
+                LOGGER.info("减月份批次数量：{}", count);
+
+                // 添加流水
+                batchFlow.setSkuCode(monthBatch.getSkuCode());
+                batchFlow.setBatchCode(monthBatch.getBatchCode());
+                batchFlow.setWarehouseCode(monthBatch.getWarehouseCode());
+                batchFlow.setDayType(1);
+                batchFlow.setAfterBatchCount(batch.getBatchCount());
+                monthFlows.add(batchFlow);
+            }
+        }
+
+        // wms为京东是 转为日期批次库存
+        if(request.getOperationType().equals(2)){
+            Long changeCount;
+            for (StockMonthBatch monthBatch : request.getStockList()){
+                // 查询京东的日期库存
+                List<StockDayBatch> batchList = stockDayBatchDao.stockDayBatchList(monthBatch);
+                if (CollectionUtils.isEmpty(batchList) && batchList.size() > 0) {
+                    LOGGER.info("京东月份转日期库存未查询到日期批次库存信息：{}", JsonUtil.toJson(monthBatch));
+                    months.add(monthBatch);
+                    continue;
+                }
+                long sum = batchList.stream().mapToLong(StockDayBatch::getBatchCount).sum();
+                if (sum < monthBatch.getBatchCount()) {
+                    LOGGER.info("京东月份转日期批次库存，所对应的月份批次总和小于要实际减批次库存信息:{}", JsonUtil.toJson(monthBatch));
+                    months.add(monthBatch);
+                    continue;
+                }
+                for (int i = 0; i <= batchList.size(); i++) {
+                    batchFlow = new StockMonthBatchFlow();
+                    // 添加日期批次库存流水
+                    batchFlow.setSkuCode(monthBatch.getSkuCode());
+                    batchFlow.setBatchCode(monthBatch.getBatchCode());
+                    batchFlow.setWarehouseCode(monthBatch.getWarehouseCode());
+                    batchFlow.setDayType(2);
+                    batchFlow.setBeforeBatchCount(batchList.get(i).getBatchCount());
+
+                    if(batchList.get(i).getBatchCount() >= monthBatch.getBatchCount()){
+                        changeCount = batchList.get(i).getBatchCount() - monthBatch.getBatchCount();
+                        batchList.get(i).setBatchCount(changeCount);
+                        Integer count = stockDayBatchDao.update(batchList.get(i));
+                        LOGGER.info("更新京东日期批次库存：{}", count);
+
+                        batchFlow.setAfterBatchCount(changeCount);
+                        monthFlows.add(batchFlow);
+
+                        batchList.get(i).setBatchCount(monthBatch.getBatchCount());
+                        days.add(batchList.get(i));
+                        break;
+                    }else {
+                        changeCount =  monthBatch.getBatchCount() - batchList.get(i).getBatchCount();
+                        batchList.get(i).setBatchCount(0L);
+                        Integer count = stockDayBatchDao.update(batchList.get(i));
+                        LOGGER.info("更新京东日期批次库存：{}", count);
+
+                        batchFlow.setAfterBatchCount(0L);
+                        monthFlows.add(batchFlow);
+
+                        batchList.get(i).setBatchCount(batchList.get(i).getBatchCount());
+                        days.add(batchList.get(i));
+                    }
+                }
+            }
+        }
+
+        if(CollectionUtils.isNotEmpty(months) && months.size() > 0){
+            LOGGER.info("无法减月份批次与匹配月份批次的信息：{}", JsonUtil.toJson(months));
+        }
+
+        if(CollectionUtils.isNotEmpty(monthFlows) && monthFlows.size() > 0){
+            Integer count = stockMonthBatchFlowDao.insertAll(monthFlows);
+            LOGGER.info("添加月份批次与日期批次的流水记录：{}", count);
+        }
+        return days;
+    }
+
+    @Override
+    public HttpResponse synchroBatch(StockMonthRequest request){
+        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+        if(request.getOperationType().equals(1)){
+
+        }
+        return HttpResponse.success();
+    }
+
 }

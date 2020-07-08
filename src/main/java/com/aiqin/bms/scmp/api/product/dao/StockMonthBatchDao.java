@@ -8,7 +8,7 @@ public interface StockMonthBatchDao {
 
     Integer insert(StockMonthBatch record);
 
-    StockMonthBatch stockMonthBatchOne(Long id);
+    StockMonthBatch stockMonthBatchOne(StockMonthBatch batch);
 
     Integer update(StockMonthBatch record);
 

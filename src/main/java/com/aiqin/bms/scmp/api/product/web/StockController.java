@@ -3,10 +3,13 @@ package com.aiqin.bms.scmp.api.product.web;
 import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockDayBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuListRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.QueryStockSkuRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO;
@@ -228,5 +231,17 @@ public class StockController {
     public HttpResponse<List<ApplyUseTagRecord>> getTagRecordList(@RequestParam String skuCode) {
         log.info("ProductSkuPriceInfoController---view---入参：[{}]", skuCode);
         return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
+    }
+
+    @GetMapping("/month/batch")
+    @ApiOperation("月份批次转换")
+    public HttpResponse<List<StockDayBatch>> monthBatch(@RequestBody StockMonthRequest request) {
+        return HttpResponse.success(stockService.monthBatch(request));
+    }
+
+    @GetMapping("/synchro/batch")
+    @ApiOperation("同步德邦与京东的批次数据")
+    public HttpResponse synchroBatch(@RequestBody StockMonthRequest request) {
+        return stockService.synchroBatch(request);
     }
 }

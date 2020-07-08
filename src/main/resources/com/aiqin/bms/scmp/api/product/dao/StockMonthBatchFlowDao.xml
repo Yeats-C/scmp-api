@@ -26,12 +26,14 @@
     delete from stock_month_batch_flow
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <insert id="insert">
+  <insert id="insertAll">
     insert into stock_month_batch_flow (sku_code, warehouse_code, batch_code, day_type,
-      before_batch_count, after_batch_count, create_time, update_time)
-    values (#{skuCode,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},
-      #{batchCode,jdbcType=VARCHAR}, #{dayType,jdbcType=BIT}, #{beforeBatchCount,jdbcType=BIGINT}, 
-      #{afterBatchCount,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
+      before_batch_count, after_batch_count, create_time, update_time) values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.skuCode,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.dayType,jdbcType=BIT}, #{item.beforeBatchCount,jdbcType=BIGINT},
+      #{item.afterBatchCount,jdbcType=BIGINT}, now(), now())
+    </foreach>
   </insert>
   <update id="update">
     update stock_month_batch_flow

@@ -9,25 +9,28 @@
     <result column="batch_count" jdbcType="BIGINT" property="batchCount" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="synchr_time" jdbcType="BIGINT" property="synchrTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time
+    id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time
   </sql>
   <select id="stockDayBatchOne" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from stock_day_batch
-    where id = #{id,jdbcType=BIGINT}
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    order by synchr_time desc limit 1
   </select>
   <delete id="delete">
     delete from stock_day_batch
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert">
-    insert into stock_day_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time)
-    values (#{skuCode,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR},
-      #{batchCode,jdbcType=VARCHAR}, #{batchCount,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+    insert into stock_day_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time)
+    values (#{skuCode,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{batchCode,jdbcType=VARCHAR},
+      #{batchCount,jdbcType=BIGINT}, now(), now(), #{synchrTime,jdbcType=BIGINT})
   </insert>
   <update id="update">
     update stock_day_batch
@@ -53,4 +56,13 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="stockDayBatchList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from stock_day_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and batch_code like concat(#{batchCode,jdbcType=VARCHAR}, '%')
+    order by synchr_time desc, batch_code asc
+  </select>
 </mapper>

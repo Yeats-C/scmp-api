@@ -28,7 +28,7 @@ public class StockMonthBatchFlow {
 
     @ApiModelProperty(value="日期类型 1.月份 2.日期")
     @JsonProperty("day_type")
-    private Boolean dayType;
+    private Integer dayType;
 
     @ApiModelProperty(value="修改前的批次数量")
     @JsonProperty("before_batch_count")
