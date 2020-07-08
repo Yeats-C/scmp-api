@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemBatchMonth;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -296,7 +297,11 @@ public class OrderInfoReqVO {
     @ApiModelProperty("商品信息")
     private List<OrderInfoItemReqVO> productList;
 
-    @ApiModelProperty(value = "订单商品明细行")
+    @ApiModelProperty(value = "订单商品明细行（按日）")
     @JsonProperty("item_batch_list")
     private List<OrderInfoItemProductBatch> itemBatchList;
+
+    @ApiModelProperty(value = "订单商品批次（按月）")
+    @JsonProperty("item_batch_month_list")
+    private List<OrderInfoItemBatchMonth> itemBatchMonthList;
 }

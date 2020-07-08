@@ -24,10 +24,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.*;
@@ -747,6 +744,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         OrderInfoItemReqVO product;
         List<OrderInfoItemProductBatch> productBatcheList = Lists.newArrayList();
         OrderInfoItemProductBatch productBatch;
+        List<OrderInfoItemBatchMonth> productBatcheMonthList = Lists.newArrayList();
+        OrderInfoItemBatchMonth orderBatchMonth;
         Long productNum = 0L;
         BigDecimal totalChannelAmount = BigDecimal.ZERO;
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
@@ -796,7 +795,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     if(item.getBatchCode() != null && !warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
                         if(warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_4)){
                             // 在 3和4要获取月份的数据进行保存
-
+                            orderBatchMonth = new OrderInfoItemBatchMonth();
+                            orderBatchMonth.setSkuCode(item.getSkuCode());
+                            orderBatchMonth.setSkuName(item.getSkuName());
+                            orderBatchMonth.setWarehouseCode(request.getWarehouseCode());
+                            orderBatchMonth.setBatchCode(item.getBatchCode());
+                            orderBatchMonth.setTotalCount(item.getProductCount());
+                            productBatcheMonthList.add(orderBatchMonth);
                         }else if (warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_6)){
                             // 在 5和6需要调用 库存接口转成日期接口
                         }else {
@@ -855,26 +860,39 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                 // 批次商品的  有批次加批次  没有批次不处理
                 if(item.getBatchCode() != null && !warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_0)){
-                    productBatch = new OrderInfoItemProductBatch();
-                    productBatch.setOrderCode(item.getOrderStoreCode());
-                    productBatch.setLineCode(item.getLineCode());
-                    productBatch.setBatchCode(item.getBatchCode());
-                    productBatch.setBatchInfoCode(item.getBatchInfoCode());
-                    productBatch.setSkuCode(item.getSkuCode());
-                    productBatch.setSkuName(item.getSkuName());
-                    productBatch.setTotalCount(item.getProductCount());
-                    productBatch.setActualTotalCount(item.getActualProductCount());
-                    if(item.getBatchDate() != null){
-                        productBatch.setProductDate(sf.format(item.getBatchDate()));
+                    if(warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_4)){
+                        // 在 3和4要获取月份的数据进行保存
+                        orderBatchMonth = new OrderInfoItemBatchMonth();
+                        orderBatchMonth.setSkuCode(item.getSkuCode());
+                        orderBatchMonth.setSkuName(item.getSkuName());
+                        orderBatchMonth.setWarehouseCode(request.getWarehouseCode());
+                        orderBatchMonth.setBatchCode(item.getBatchCode());
+                        orderBatchMonth.setTotalCount(item.getProductCount());
+                        productBatcheMonthList.add(orderBatchMonth);
+                    }else if (warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouseByCode.getBatchManage().equals(Global.BATCH_MANAGE_6)){
+                        // 在 5和6需要调用 库存接口转成日期接口
+                    }else {
+                        productBatch = new OrderInfoItemProductBatch();
+                        productBatch.setOrderCode(item.getOrderStoreCode());
+                        productBatch.setLineCode(item.getLineCode());
+                        productBatch.setBatchCode(item.getBatchCode());
+                        productBatch.setBatchInfoCode(item.getBatchInfoCode());
+                        productBatch.setSkuCode(item.getSkuCode());
+                        productBatch.setSkuName(item.getSkuName());
+                        productBatch.setTotalCount(item.getProductCount());
+                        productBatch.setActualTotalCount(item.getActualProductCount());
+                        if(item.getBatchDate() != null){
+                            productBatch.setProductDate(sf.format(item.getBatchDate()));
+                        }
+                        productBatch.setLockType(item.getLockType());
+                        productBatch.setSupplierCode(item.getSupplierCode());
+                        productBatch.setSupplierName(item.getSupplierName());
+                        productBatch.setCreateById(item.getCreateById());
+                        productBatch.setCreateByName(item.getCreateByName());
+                        productBatch.setUpdateById(item.getUpdateById());
+                        productBatch.setUpdateByName(item.getUpdateByName());
+                        productBatcheList.add(productBatch);
                     }
-                    productBatch.setLockType(item.getLockType());
-                    productBatch.setSupplierCode(item.getSupplierCode());
-                    productBatch.setSupplierName(item.getSupplierName());
-                    productBatch.setCreateById(item.getCreateById());
-                    productBatch.setCreateByName(item.getCreateByName());
-                    productBatch.setUpdateById(item.getUpdateById());
-                    productBatch.setUpdateByName(item.getUpdateByName());
-                    productBatcheList.add(productBatch);
                 }
             }
             erpOrderItemMap.put(item.getSkuCode()+item.getBatchInfoCode()+item.getProductType(), item);
@@ -883,6 +901,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         vo.setProductChannelTotalAmount(totalChannelAmount);
         vo.setProductList(productList);
         vo.setItemBatchList(productBatcheList);
+        vo.setItemBatchMonthList(productBatcheMonthList);
         return vo;
     }
 
