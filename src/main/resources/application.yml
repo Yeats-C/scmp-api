@@ -337,6 +337,9 @@ mgs:
           name: 编辑
         - code: SCMP004012002
           name: 导入
+      - code: SCMP004013
+        name: 历史数据导入
+        link: '/product/historySkuImport'
     - code: SCMP005
       name: 价格管理
       link: ''
