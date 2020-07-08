@@ -588,11 +588,18 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 查询入库单的信息
         Inbound inbound = inboundDao.selectByCode(inboundOderCode);
         if(inbound == null){
-            LOGGER.info("退货单wms回传入库单的信息为空：{}", JsonUtil.toJson(inbound));
+            LOGGER.info("退货单wms回传入库单的信息为空:{}", JsonUtil.toJson(inbound));
             return HttpResponse.failure(ResultCode.INBOUND_INFO_NULL);
+        }
+        // 查询退货单的信息
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(inbound.getSourceOderCode());
+        if(returnOrderInfo == null){
+            LOGGER.info("退货单数据查询失败:{}", inbound.getSourceOderCode());
+            return HttpResponse.failure(ResultCode.CAN_NOT_FIND_RETURN_ORDER);
         }
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
         returnOrder.setReturnOrderCode(inbound.getSourceOderCode());
+
         returnOrder.setActualProductCount(inbound.getPraMainUnitNum());
         returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
         returnOrder.setUpdateByName(inbound.getUpdateBy());

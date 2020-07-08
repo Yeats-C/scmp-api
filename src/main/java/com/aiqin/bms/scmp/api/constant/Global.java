@@ -228,11 +228,32 @@ public final class Global {
     public static final Integer DOCUMENT_TYPE_11 = 11;
 
     /**
+     *  库存操作类型  1.锁定库存 2.减库存并解锁 3.解锁库存. 4.减库存 5.加并锁定库存 6.加库存
+     *             7.加在途 8.减在途 9.锁转移(锁定库存移入/移出) 10.只减锁库存、总库存、可用库存
+     */
+    public static final Integer STOCK_OPERATION_1 = 1;
+    public static final Integer STOCK_OPERATION_2 = 2;
+    public static final Integer STOCK_OPERATION_3 = 3;
+    public static final Integer STOCK_OPERATION_4 = 4;
+    public static final Integer STOCK_OPERATION_5 = 5;
+    public static final Integer STOCK_OPERATION_6 = 6;
+    public static final Integer STOCK_OPERATION_7 = 7;
+    public static final Integer STOCK_OPERATION_8 = 8;
+    public static final Integer STOCK_OPERATION_9 = 9;
+    public static final Integer STOCK_OPERATION_10 = 10;
+
+
+    /**
      *  平台类型 批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
+     *   3:全部指定月份模式 4:部分指定月份模式  5:全部指定月份转换日期模式 6:部分指定月份转换日期模式
      */
     public static final Integer BATCH_MANAGE_0 = 0;
     public static final Integer BATCH_MANAGE_1 = 1;
     public static final Integer BATCH_MANAGE_2 = 2;
+    public static final Integer BATCH_MANAGE_3 = 3;
+    public static final Integer BATCH_MANAGE_4 = 4;
+    public static final Integer BATCH_MANAGE_5 = 5;
+    public static final Integer BATCH_MANAGE_6 = 6;
 
     /**
      *  批次管理 2：部分指定批次模式  商品sku是否指定批次 (0:指定 1:不指定)

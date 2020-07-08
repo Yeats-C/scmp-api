@@ -590,27 +590,27 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         order.setPurchaseOrderId(purchaseOrder.getPurchaseOrderId());
 
         // 更新采购的批次信息
-        if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList())){
+        if(CollectionUtils.isNotEmptyCollection(purchaseStorage.getBatchList()) && purchaseStorage.getBatchList().size() > 0){
             List<PurchaseBatch> purchaseBatches = Lists.newArrayList();
             for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
                 // 根据批次编号 采购单号确认批次是否存在
-                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(),
-                        purchaseOrder.getPurchaseOrderCode(), purchaseBatch.getLineCode());
-                if(batchInfo != null){
-                    batchInfo.setActualTotalCount(batchInfo.getActualTotalCount() + purchaseBatch.getActualTotalCount());
-                    batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());
-                    batchInfo.setUpdateById(purchaseBatch.getUpdateById());
-                    Integer count = purchaseBatchDao.update(batchInfo);
-                    LOGGER.info("变更采购单批次参数：" + JsonUtil.toJson(batchInfo)+ "，-条数：", count);
-                    continue;
-                }
+//                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(),
+//                        purchaseOrder.getPurchaseOrderCode(), purchaseBatch.getLineCode());
+//                if(batchInfo != null){
+//                    batchInfo.setActualTotalCount(batchInfo.getActualTotalCount() + purchaseBatch.getActualTotalCount());
+//                    batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());
+//                    batchInfo.setUpdateById(purchaseBatch.getUpdateById());
+//                    Integer count = purchaseBatchDao.update(batchInfo);
+//                    LOGGER.info("变更采购单批次参数：" + JsonUtil.toJson(batchInfo)+ "，-条数：", count);
+//                    continue;
+//                }
                 PurchaseBatch info = BeanCopyUtils.copy(purchaseBatch, PurchaseBatch.class);
-                info.setPurchaseOderCode(purchaseStorage.getPurchaseOrderCode());
+                info.setPurchaseOderCode(purchaseOrder.getPurchaseOrderCode());
                 purchaseBatches.add(info);
             }
             if(CollectionUtils.isNotEmptyCollection(purchaseBatches)){
                 Integer count = purchaseBatchDao.insertAll(purchaseBatches);
-                LOGGER.info("添加采购单批次参数：" + JsonUtil.toJson(purchaseBatches) + "，-条数：", count);
+                LOGGER.info("添加采购单批次信息:{}", count);
             }
         }
 
