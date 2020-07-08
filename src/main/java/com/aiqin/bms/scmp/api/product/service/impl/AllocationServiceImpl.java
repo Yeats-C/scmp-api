@@ -557,6 +557,12 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         aWmsInSource.setRemark(allocation.getRemark());
         for (AllocationProductResVo aProductList : aProductLists) {
             AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
+            PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(aProductList.getSkuCode());
+            if(purchaseSaleStockRespVo != null){
+                aWmsProductList.setUnitCode(purchaseSaleStockRespVo.getStockUnitCode());
+                aWmsProductList.setUnitName(purchaseSaleStockRespVo.getStockUnitName());
+                aWmsProductList.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+            }
             aWmsProductList.setSkuCode(aProductList.getSkuCode());
             aWmsProductList.setSkuName(aProductList.getSkuName());
             aWmsProductList.setTotalCount(aProductList.getQuantity().toString());
