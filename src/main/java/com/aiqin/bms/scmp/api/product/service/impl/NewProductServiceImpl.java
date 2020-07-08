@@ -41,10 +41,7 @@ import com.aiqin.bms.scmp.api.supplier.mapper.ApplyUseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.ManufacturerService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -302,10 +299,11 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 //            reqVO.getProductSkuDraft().setProcurementSectionCode(saveSkuInfoReqVo.getPurchaseGroupCode());
 //            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
             Date date = new Date();
+            PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(reqVO.getProductSkuDraft().getProcurementSectionName());
             // spu商品是否存在  不存在新增
-            savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date);
+            savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date, purchaseGroupVo);
             // 保存商品信息
-            saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date);
+            saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date, purchaseGroupVo);
             // 保存标签信息
             saveSkuInfTag(reqVO.getTagInfoList(),reqVO.getProductSkuDraft());
             // 保存渠道信息
@@ -319,7 +317,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             // 保存结算信息
             saveSkuInfoCheckout(reqVO.getProductSkuCheckoutDraft());
             // 保存供应商信息
-            saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date);
+            saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date, reqVO.getProductSkuCheckoutDraft());
             // 保存生产厂家
             saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts(), reqVO.getProductSkuDraft());
             // 保存价格信息
@@ -574,10 +572,11 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku供应商信息 */
-    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts, Date date) {
+    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts, Date date, ProductSkuCheckoutDraft productSkuCheckoutDraft) {
         List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ProductSkuSupplyUnit.class);
         if(CollectionUtils.isNotEmpty(productSkuSupplyUnits)){
             productSkuSupplyUnits.forEach(item->{
+                Calculate.computeNoTaxPrice(item.getTaxIncludedPrice(),productSkuCheckoutDraft.getInputTaxRate());
                 item.setCreateBy(getUser().getPersonName());
                 item.setUpdateBy(getUser().getPersonName());
                 item.setCreateTime(date);
@@ -683,7 +682,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--spu信息 */
-    private NewProduct savespuInfo(NewProduct skuInfo, ProductSkuDraft productSkuDraft, Date date) {
+    private NewProduct savespuInfo(NewProduct skuInfo, ProductSkuDraft productSkuDraft, Date date, PurchaseGroupDTO purchaseGroupVo) {
         // spu编码
         String productName = skuInfo.getProductName();
         // 判断商品名称是否为空
@@ -704,8 +703,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             insetProduct.setCompanyCode(getUser().getCompanyCode());
             insetProduct.setCompanyName(getUser().getCompanyName());
             insetProduct.setBarCode(skuInfo.getBarCode());
-            insetProduct.setPurchasingGroupCode(productSkuDraft.getProcurementSectionCode());
-            insetProduct.setPurchasingGroupName(productSkuDraft.getProcurementSectionName());
+            insetProduct.setPurchasingGroupCode(purchaseGroupVo.getPurchaseGroupCode());
+            insetProduct.setPurchasingGroupName(purchaseGroupVo.getPurchaseGroupName());
             insetProduct.setStyleNumber(skuInfo.getStyleNumber());
             insetProduct.setAbbreviation(skuInfo.getProductName());
             insetProduct.setCreateBy(getUser().getPersonName());
@@ -719,7 +718,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         return newProduct;
     }
     /** 保存导入商品信息--sku信息/配置信息 */
-    private void saveSkuInfo(ProductSkuDraft skuInfo, List<SaveSkuConfigReqVo> productSkuConfigs, Date date) {
+    private void saveSkuInfo(ProductSkuDraft skuInfo, List<SaveSkuConfigReqVo> productSkuConfigs, Date date,PurchaseGroupDTO purchaseGroupVo) {
         ProductSkuInfo productSkuInfo = new ProductSkuInfo();
         BeanCopyUtils.copy(skuInfo, productSkuInfo);
 
@@ -744,9 +743,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         productSkuInfo.setGoodsGifts(skuInfo.getGoodsGifts());
         productSkuInfo.setCompanyCode(getUser().getCompanyCode());
         productSkuInfo.setCompanyName(getUser().getCompanyName());
-        PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(skuInfo.getProcurementSectionName());
+
         productSkuInfo.setProcurementSectionCode(purchaseGroupVo.getPurchaseGroupCode());
-        productSkuInfo.setProcurementSectionName(skuInfo.getProcurementSectionName());
+        productSkuInfo.setProcurementSectionName(purchaseGroupVo.getPurchaseGroupName());
         productSkuInfo.setCreateBy(getUser().getPersonName());
         productSkuInfo.setCreateTime(date);
         productSkuInfo.setUpdateBy(getUser().getPersonName());
