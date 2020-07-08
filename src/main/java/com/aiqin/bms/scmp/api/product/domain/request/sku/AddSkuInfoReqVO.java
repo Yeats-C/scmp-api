@@ -89,4 +89,7 @@ public class AddSkuInfoReqVO {
 
     @ApiModelProperty(value = "标志位,判断是否需要校验包装信息（导入不是必填项）",hidden = true)
     private Boolean boxFlag = true;
+
+    @ApiModelProperty("错误原因")
+    private String error;
 }

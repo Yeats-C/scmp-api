@@ -279,4 +279,10 @@
            #{item}
       </foreach>
     </select>
+  <select id="selectByPurchaseName" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from purchase_group
+    where purchase_group_name = #{purchaseGroupName,jdbcType=VARCHAR}
+  </select>
 </mapper>

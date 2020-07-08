@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
+import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportMain;
 import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -19,6 +20,7 @@ import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -404,5 +406,17 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/save/import/skuInfo/really")
+    @ApiOperation(value = "保存导入商品信息（上传校验）")
+    public HttpResponse<SkuInfoImportMain> saveImportSkuInfoCheck(MultipartFile file){
+        log.info("SkuInfoController---saveImportSkuInfoCheck---入参：[{}]", JSON.toJSONString(file.getOriginalFilename()));
+        return HttpResponse.successGenerics(productService.saveImportSkuInfoCheck(file));
+    }
 
+    @PostMapping("/save/import/skuInfo")
+    @ApiOperation(value = "保存导入商品信息（真实表）")
+    public HttpResponse saveImportSkuInfo(@RequestBody SkuImportReq reqVO){
+        log.info("SkuInfoController---saveImportSkuInfo---导入入参：[{}]", JsonUtil.toJson(reqVO));
+        return productService.saveImportSkuInfo(reqVO);
+    }
 }
