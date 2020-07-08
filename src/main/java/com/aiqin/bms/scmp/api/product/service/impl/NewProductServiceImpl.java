@@ -270,6 +270,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public HttpResponse saveImportSkuInfo(SkuImportReq saveSkuInfoReqVo) {
         HashMap<String, String> spuMap = Maps.newHashMap();
         for (AddSkuInfoReqVO reqVO : saveSkuInfoReqVo.getAddSkuList()) {
+            PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(reqVO.getProductSkuDraft().getProcurementSectionName());
             if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
                 //判断是否新增了
                 String s1 = spuMap.get(reqVO.getProductSkuDraft().getProductName());
@@ -284,8 +285,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                         } else {
                             NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
                             saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
-                            saveReqVO.setPurchasingGroupCode(saveSkuInfoReqVo.getPurchaseGroupCode());
-                            saveReqVO.setPurchasingGroupName(saveSkuInfoReqVo.getPurchaseGroupName());
+                            saveReqVO.setPurchasingGroupCode(purchaseGroupVo.getPurchaseGroupCode());
+                            saveReqVO.setPurchasingGroupName(purchaseGroupVo.getPurchaseGroupName());
                             saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
                             saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
                             productCode = newProductService.insertProduct(saveReqVO);
@@ -299,7 +300,6 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 //            reqVO.getProductSkuDraft().setProcurementSectionCode(saveSkuInfoReqVo.getPurchaseGroupCode());
 //            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
             Date date = new Date();
-            PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(reqVO.getProductSkuDraft().getProcurementSectionName());
             // spu商品是否存在  不存在新增
             savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date, purchaseGroupVo);
             // 保存商品信息
