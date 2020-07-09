@@ -1501,10 +1501,66 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     }
 
     @Override
-    public HttpResponse synchroBatch(StockMonthRequest request){
-        long timeInMillis = Calendar.getInstance().getTimeInMillis();
-        if(request.getOperationType().equals(1)){
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse synchroBatch(StockMonthRequest request) {
+        if (request == null || CollectionUtils.isEmpty(request.getStockList())) {
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
 
+        final Integer DEBANG = 1;
+        final Integer JINGDONG = 2;
+        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+
+        // 德邦
+        if(request.getOperationType().equals(DEBANG)){
+            for (StockMonthBatch monthBatch : request.getStockList()) {
+                monthBatch.setWmsType(DEBANG);
+                monthBatch.setSynchrTime(timeInMillis);
+            }
+            Integer monthCount = stockMonthBatchDao.insertAll(request.getStockList());
+            LOGGER.info("添加德邦同步月份批次数据信息：{}", monthCount);
+            if(monthCount > 0) {
+                // 同步成功删除之前的德邦批次信息
+                StockMonthBatch deleteBatch = new StockMonthBatch();
+                deleteBatch.setSynchrTime(timeInMillis);
+                deleteBatch.setWmsType(DEBANG);
+                Integer deleteCount = stockMonthBatchDao.delete(deleteBatch);
+                LOGGER.info("删除同步成功之后之前的德邦历史数据：{}", deleteCount);
+            }else {
+                LOGGER.info("同步德邦月份批次库存数据失败：{}", JsonUtil.toJson(request));
+            }
+        }else {
+            // 京东 - 同步日期批次库存数据
+            request.getStockList().stream().forEach(o-> o.setSynchrTime(timeInMillis));
+            Integer insertCount = stockDayBatchDao.insertAll(request.getStockList());
+            LOGGER.info("添加京东同步日期批次库存数据信息：{}", insertCount);
+            if(insertCount > 0){
+                List<StockMonthBatch> monthBatches = stockDayBatchDao.dayBatchByGroup(timeInMillis);
+                LOGGER.info("京东日期库存根据月份分组之后的信息：{}", JsonUtil.toJson(monthBatches));
+                if(CollectionUtils.isNotEmpty(monthBatches) && monthBatches.size() > 0){
+                    for(StockMonthBatch monthBatch : monthBatches){
+                        monthBatch.setWmsType(JINGDONG);
+                        monthBatch.setSynchrTime(timeInMillis);
+                    }
+                    Integer monthCount = stockMonthBatchDao.insertAll(request.getStockList());
+                    LOGGER.info("添加京东同步月份批次数据信息：{}", monthCount);
+                    if(monthCount > 0) {
+                        // 同步成功删除之前的京东批次信息
+                        StockMonthBatch deleteBatch = new StockMonthBatch();
+                        deleteBatch.setSynchrTime(timeInMillis);
+                        deleteBatch.setWmsType(JINGDONG);
+                        Integer deleteCount = stockMonthBatchDao.delete(deleteBatch);
+                        LOGGER.info("删除同步成功之后之前的京东历史数据：{}", deleteCount);
+                    }else {
+                        LOGGER.info("同步京东月份批次库存数据失败：{}", JsonUtil.toJson(request));
+                    }
+                }
+                // 同步日期批次成功，删除京东之前的同步数据
+                Integer deleteCount = stockDayBatchDao.delete(timeInMillis);
+                LOGGER.info("删除同步成功之后, 京东之前的日期批次库存数据：{}", deleteCount);
+            }else {
+                LOGGER.info("添加京东同步日期批次库存数据失败：{}", JsonUtil.toJson(request));
+            }
         }
         return HttpResponse.success();
     }

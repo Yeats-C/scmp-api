@@ -42,4 +42,8 @@ public class StockMonthBatch {
     @JsonProperty("synchr_time")
     private Long synchrTime;
 
+    @ApiModelProperty(value="wms类型")
+    @JsonProperty("wms_type")
+    private Integer wmsType;
+
 }

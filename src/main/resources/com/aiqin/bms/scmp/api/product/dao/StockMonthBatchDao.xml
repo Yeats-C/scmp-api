@@ -10,6 +10,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="synchr_time" jdbcType="BIGINT" property="synchrTime" />
+    <result column="wms_type" jdbcType="INTEGER" property="wmsType" />
   </resultMap>
   <sql id="Base_Column_List">
     id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time
@@ -24,12 +25,16 @@
   </select>
   <delete id="delete">
     delete from stock_month_batch
-    where id = #{id,jdbcType=BIGINT}
+    where wms_type = #{wmsType,jdbcType=INTEGER}
+    and synchr_time != #{synchrTime,jdbcType=BIGINT}
   </delete>
-  <insert id="insert">
-    insert into stock_month_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time)
-    values (#{skuCode,jdbcType=VARCHAR}, #{warehouseCode,jdbcType=VARCHAR}, #{batchCode,jdbcType=VARCHAR},
-      #{batchCount,jdbcType=BIGINT}, now(), now(), #{synchrTime,jdbcType=BIGINT})
+  <insert id="insertAll">
+    insert into stock_month_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time,
+        wms_type) values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (#{item.skuCode,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
+       #{item.batchCount,jdbcType=BIGINT}, now(), now(), #{item.synchrTime,jdbcType=BIGINT}, #{item.wmsType,jdbcType=INTEGER})
+    </foreach>
   </insert>
   <update id="update">
     update stock_month_batch
