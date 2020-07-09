@@ -1015,7 +1015,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                             rejectRecord.getWarehouseCode(), batch.getBatchCode());
                     BigDecimal amount = BigDecimal.ZERO;
                     if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
-                        amount = batchList.get(0).getPurchasePrice();
+                        amount = batchList.get(0).getPurchasePrice() == null ? BigDecimal.ZERO : batchList.get(0).getPurchasePrice();
                     }
                     recordBatch = new RejectRecordBatch();
                     recordBatch.setRejectRecordCode(rejectRecord.getRejectRecordCode());
