@@ -714,6 +714,17 @@ public class InboundServiceImpl implements InboundService {
                 inboundBatchList.add(productBatch);
             }
         }else {
+            Map<String, StockBatchInfoRequest> stockMap = new HashMap<>();
+            Map<String, Long> actualCountMap = new HashMap<>();
+            for (InboundBatchCallBackRequest batchInfo : request.getBatchList()) {
+                key = String.format("%s,%s", batchInfo.getBatchCode(), batchInfo.getSkuCode());
+                if(actualCountMap.get(key) == null){
+                    actualCountMap.put(key, batchInfo.getActualTotalCount());
+                }else {
+                    actualCountMap.put(key, batchInfo.getActualTotalCount() + actualCountMap.get(key));
+                }
+            }
+
             // 非自动批次，更新入库批次的信息
             for (InboundBatchCallBackRequest batchInfo : request.getBatchList()) {
                 // 查询入库商品的信息
@@ -775,26 +786,32 @@ public class InboundServiceImpl implements InboundService {
                 }
 
                 // 添加批次库存
-                stockBatchInfo = new StockBatchInfoRequest();
-                this.addStockBatch(stockBatchInfo, inbound);
-                stockBatchInfo.setProductDate(batchInfo.getProductDate());
-                stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
-                stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
-                stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
-                stockBatchInfo.setSourceDocumentType(sourceDocumentType);
-                stockBatchInfo.setSkuCode(batchInfo.getSkuCode());
-                stockBatchInfo.setSkuName(batchInfo.getSkuName());
-                stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
-                stockBatchInfo.setTaxRate(product.getTax());
-                if (StringUtils.isNotBlank(request.getOperatorId())) {
-                    stockBatchInfo.setOperatorId(request.getOperatorId());
+                key = String.format("%s,%s", batchInfo.getBatchCode(), batchInfo.getSkuCode());
+
+                if(stockMap.get(key) == null) {
+                    stockBatchInfo = new StockBatchInfoRequest();
+                    this.addStockBatch(stockBatchInfo, inbound);
+                    stockBatchInfo.setProductDate(batchInfo.getProductDate());
+                    stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
+                    stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
+                    stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
+                    stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                    stockBatchInfo.setSkuCode(batchInfo.getSkuCode());
+                    stockBatchInfo.setSkuName(batchInfo.getSkuName());
+                    stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+                    stockBatchInfo.setTaxRate(product.getTax());
+                    if (StringUtils.isNotBlank(request.getOperatorId())) {
+                        stockBatchInfo.setOperatorId(request.getOperatorId());
+                    }
+                    if (StringUtils.isNotBlank(request.getOperatorName())) {
+                        stockBatchInfo.setOperatorName(request.getOperatorName());
+                    }
+                    stockBatchInfo.setChangeCount(actualCountMap.get(key));
+                    stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                    batchList.add(stockBatchInfo);
+
+                    stockMap.put(key, stockBatchInfo);
                 }
-                if (StringUtils.isNotBlank(request.getOperatorName())) {
-                    stockBatchInfo.setOperatorName(request.getOperatorName());
-                }
-                stockBatchInfo.setChangeCount(batchInfo.getActualTotalCount());
-                stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
-                batchList.add(stockBatchInfo);
             }
         }
         changeStockRequest.setStockBatchList(batchList);

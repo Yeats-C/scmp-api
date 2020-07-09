@@ -708,8 +708,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
             LOGGER.info("库存操作结束");
             // 调用批次库存操作
-            if(!request.getOperationType().equals(7) && CollectionUtils.isNotEmpty(request.getStockBatchList())
-                    && request.getStockBatchList().size() > 0){
+            if(!request.getOperationType().equals(Global.STOCK_OPERATION_7) &&
+                    CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
                 this.changeStockBatch(request);
             }
             // 调用DL 推送库存变更信息
