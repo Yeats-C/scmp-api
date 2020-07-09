@@ -682,11 +682,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockInfoRequest.setNewPurchasePrice(outbound.getPraTaxAmount());
 
             // 调拨设置减在途数
-            if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())) {
-                AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(outbound.getSourceOderCode(), outboundProduct.getSkuCode(), outboundProduct.getLinenum().intValue());
-                stockInfoRequest.setPreWayCount(allocationProductResVo.getQuantity());
-            }
-            stockInfoRequestList.add(stockInfoRequest);
+//            if (outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ALLOCATE.getCode())) {
+//                AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(outbound.getSourceOderCode(), outboundProduct.getSkuCode(), outboundProduct.getLinenum().intValue());
+//                stockInfoRequest.setPreWayCount(allocationProductResVo.getQuantity());
+//            }
+//            stockInfoRequestList.add(stockInfoRequest);
 
             // 自动批次管理，新增批次信息
             if(warehouse.getBatchManage().equals(0)){
