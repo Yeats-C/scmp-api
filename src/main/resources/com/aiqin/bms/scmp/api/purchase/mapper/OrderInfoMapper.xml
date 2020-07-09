@@ -317,6 +317,13 @@ transport_number, platform_type, business_form, tax_id
           <result column="dcreate_by_name" jdbcType="VARCHAR" property="createByName" />
           <result column="dupdate_by_name" jdbcType="VARCHAR" property="updateByName" />
       </collection>
+      <collection property="batchMonthList" ofType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemBatchMonth">
+         <result column="esku_code" jdbcType="VARCHAR" property="skuCode" />
+         <result column="esku_name" jdbcType="VARCHAR" property="skuName" />
+         <result column="ewarehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+         <result column="ebatch_code" jdbcType="VARCHAR" property="batchCode" />
+         <result column="etotal_count" jdbcType="BIGINT" property="totalCount" />
+      </collection>
   </resultMap>
   <select id="selectByOrderCode" resultMap="selectByOrderCode">
         select a.order_code aorder_code,
@@ -456,11 +463,17 @@ transport_number, platform_type, business_form, tax_id
              d.create_by_id dcreate_by_id,
              d.update_by_id dupdate_by_id,
              d.create_by_name dcreate_by_name,
-             d.update_by_name dupdate_by_name
+             d.update_by_name dupdate_by_name,
+             e.sku_code esku_code,
+             e.sku_name esku_name,
+             e.warehouse_code ewarehouse_code,
+             e.batch_code ebatch_code,
+             e.total_count etotal_count
       from order_info a
       left join order_info_item b on a.order_code = b.order_code
       left join order_info_log c on c.order_code = a.order_code
       left join order_info_item_product_batch d on d.order_code = a.order_code
+      left join order_info_item_batch_month e on e.order_code = a.order_code
       where a.order_code = #{orderCode}
   </select>
     <select id="selectByOrderCode2" resultMap="BaseResultMap">
