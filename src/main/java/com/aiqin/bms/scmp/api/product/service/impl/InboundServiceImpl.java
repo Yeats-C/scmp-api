@@ -22,12 +22,14 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundSource;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
+import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
@@ -138,6 +140,8 @@ public class InboundServiceImpl implements InboundService {
     private ProductSkuDistributionInfoMapper productSkuDistributionInfoMapper;
     @Resource
     private ProductSkuBatchMapper productSkuBatchDao;
+    @Autowired
+    private AllocationProductMapper allocationProductMapper;
 
     /**
      * 分页查询以及列表搜索
@@ -641,6 +645,9 @@ public class InboundServiceImpl implements InboundService {
                         stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
                     }
                 }
+            }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
+                AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(inbound.getSourceOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode().intValue());
+                stockInfo.setPreWayCount(allocationProductResVo.getQuantity());
             }
             productList.add(stockInfo);
         }
