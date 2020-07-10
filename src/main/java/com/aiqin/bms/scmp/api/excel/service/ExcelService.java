@@ -118,7 +118,6 @@ public class ExcelService {
                     p.setPurchaseOrderId(IdUtil.purchaseId());
                     //因为状态都一样所以写死了
                     p.setPurchaseOrderStatus(1);
-                    String preArrivalDate = p.getPreArrivalDate();
                     Date date = DateUtils.getDate(p.getPreArrivalDate());
                     p.setPreArrivalTime(date);
                 });
