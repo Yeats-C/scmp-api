@@ -76,6 +76,7 @@
     and batch_code = #{batchCode,jdbcType=VARCHAR}
     </if>
     and line_code = #{lineCode,jdbcType=BIGINT}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
 
   <update id="update">

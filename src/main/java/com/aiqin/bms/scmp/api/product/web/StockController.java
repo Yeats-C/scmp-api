@@ -233,13 +233,13 @@ public class StockController {
         return HttpResponse.success(applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCode(skuCode, TagTypeCode.SKU.getStatus()));
     }
 
-    @GetMapping("/month/batch")
+    @PostMapping("/month/batch")
     @ApiOperation("月份批次转换")
     public HttpResponse<List<StockDayBatch>> monthBatch(@RequestBody StockMonthRequest request) {
         return HttpResponse.success(stockService.monthBatch(request));
     }
 
-    @GetMapping("/synchro/batch")
+    @PostMapping("/synchro/batch")
     @ApiOperation("同步德邦与京东的批次数据")
     public HttpResponse synchroBatch(@RequestBody StockMonthRequest request) {
         return stockService.synchroBatch(request);

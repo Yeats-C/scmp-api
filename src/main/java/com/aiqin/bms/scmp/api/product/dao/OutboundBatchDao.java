@@ -18,7 +18,8 @@ public interface OutboundBatchDao {
 
     OutboundBatch selectBatchInfoByLineCode(@Param("outboundOderCode") String outboundOderCode,
                                             @Param("batchCode") String batchCode,
-                                            @Param("lineCode") Long lineCode);
+                                            @Param("lineCode") Long lineCode,
+                                            @Param("skuCode") String skuCode);
 
     Integer update(OutboundBatch outboundBatch);
 
