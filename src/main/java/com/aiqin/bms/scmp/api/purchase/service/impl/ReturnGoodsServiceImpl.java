@@ -528,6 +528,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                         batchRequest.setProductDate(batchItem.getProductDate());
                         batchRequest.setBeOverdueDate(batchItem.getBeOverdueDate());
                         batchRequest.setActualTotalCount(batchItem.getActualProductCount());
+                        product.setWarehouseCode(batchItem.getWarehouseCode());
                         dlBatchList.add(batchRequest);
                     }
                     product.setBatchList(dlBatchList);
