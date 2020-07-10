@@ -574,9 +574,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                     stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
                     stockList.add(stockMonthBatch);
-                    // 数据传完删除
-                    itemBatchList.remove(itemBatch);
                 }
+                vo.setItemBatchList(null);
             }
         }else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)){
             stockMonthRequest.setOperationType(2);
@@ -589,10 +588,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                 stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
                 stockList.add(stockMonthBatch);
-
-                // 数据传完删除
-                itemBatchList.remove(itemBatch);
             }
+            vo.setItemBatchList(null);
         }
         //  调用月份日期转换  京东情况下转日期传日期
         if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockList) && stockList.size() > 0){
@@ -612,7 +609,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
             vo.setItemBatchList(itemBatchLists);
         }
-        vo.setItemBatchMonthList(itemBatchMonthList);
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0){
+            vo.setItemBatchMonthList(itemBatchMonthList);
+        }
     }
 
     private void handleProfitLossStockData(OrderInfoReqVO orderInfoReqVO, ChangeStockRequest changeStockRequest, String insertOutbound) {
