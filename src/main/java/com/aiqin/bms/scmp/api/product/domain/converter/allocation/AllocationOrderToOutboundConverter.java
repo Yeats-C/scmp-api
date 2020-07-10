@@ -57,8 +57,8 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
         outboundReqVo.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
         outboundReqVo.setWarehouseCode(warehouseByCode.getWarehouseCode());
         outboundReqVo.setWarehouseName(warehouseByCode.getWarehouseName());
-        outboundReqVo.setSupplierCode(null);
-        outboundReqVo.setSupplierName(null);
+//        outboundReqVo.setSupplierCode(null);
+//        outboundReqVo.setSupplierName(null);
         outboundReqVo.setConsignee(warehouseByCode.getContact());
         outboundReqVo.setConsigneeNumber(warehouseByCode.getPhone());
         outboundReqVo.setConsigneeRate(null);
@@ -137,6 +137,9 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             batch.setUpdateTime(batch1.getUpdateTime());
             batch.setLineCode(batch1.getLineNum().longValue());
             outboundBatchReqVos.add(batch);
+            if(batch1.getSupplierCode() != null){
+                outboundReqVo.setSupplierCode(batch1.getSupplierCode());
+            }
         }
         outboundReqVo.setPreOutboundNum(preInboundNum);
         outboundReqVo.setPreMainUnitNum(preInboundMainNum);
