@@ -60,8 +60,8 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
         inboundReqSave.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
         inboundReqSave.setWarehouseCode(warehouseByCode.getWarehouseCode());
         inboundReqSave.setWarehouseName(warehouseByCode.getWarehouseName());
-        inboundReqSave.setSupplierCode(null);
-        inboundReqSave.setSupplierName(null);
+//        inboundReqSave.setSupplierCode(null);
+//        inboundReqSave.setSupplierName(null);
         inboundReqSave.setShipper(warehouseByCode.getContact());
         inboundReqSave.setShipperNumber(warehouseByCode.getPhone());
         inboundReqSave.setShipperRate(null);
@@ -141,6 +141,9 @@ public class AllocationOrderToInboundConverter implements Converter<AllocationDT
                 batch.setLineCode(batch1.getLineNum().longValue());
             }
             inboundBatchReqVos.add(batch);
+            if(batch1.getSupplierCode() != null){
+                inboundReqSave.setSupplierCode(batch1.getSupplierCode());
+            }
         }
         inboundReqSave.setPreInboundNum(preInboundNum);
         inboundReqSave.setPreMainUnitNum(preInboundMainNum);
