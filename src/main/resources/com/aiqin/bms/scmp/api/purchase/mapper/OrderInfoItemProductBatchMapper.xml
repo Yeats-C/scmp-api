@@ -387,6 +387,7 @@
         <if test="item.actualTotalCount != null">
           actual_total_count = #{item.actualTotalCount,jdbcType=BIGINT},
         </if>
+        update_time = now()
       </set>
       where order_code = #{item.orderCode,jdbcType=VARCHAR}
       and sku_code = #{item.skuCode,jdbcType=VARCHAR}

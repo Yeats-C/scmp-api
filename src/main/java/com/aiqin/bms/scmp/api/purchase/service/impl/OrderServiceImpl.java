@@ -472,7 +472,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
         // 进行批次库存处理
-        batchProce(vo);
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(vo.getWarehouseCode());
+        batchProce(vo, warehouse);
         Date date = Calendar.getInstance().getTime();
         // 数据处理
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
@@ -513,6 +514,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 stockChangeRequest.setOperationType(1);
                 handleProfitLossStockData(vo,stockChangeRequest,insertOutbound);
                 LOGGER.error("订单同步耘链锁库存：参数{}", JsonUtil.toJson(stockChangeRequest));
+                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+                    stockChangeRequest.setStockBatchList(null);
+                }
                 HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
                 if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
                     LOGGER.error("订单同步耘链锁库存异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
@@ -537,13 +541,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         return HttpResponse.success();
     }
 
-    private void batchProce(OrderInfoReqVO vo) {
+    private void batchProce(OrderInfoReqVO vo, WarehouseDTO warehouse) {
         List<OrderInfoItemBatchMonth> itemBatchMonthList = new ArrayList<>();
         OrderInfoItemBatchMonth orderInfoItemBatchMonth;
         StockMonthRequest stockMonthRequest = new StockMonthRequest();
         List<StockMonthBatch> stockList = new ArrayList<>();
         StockMonthBatch stockMonthBatch;
-        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(vo.getWarehouseCode());
         List<OrderInfoItemProductBatch> itemBatchList = vo.getItemBatchList();
         // 批次管理编码 为0 不传批次 为1，2 正常传批次处理
         if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){

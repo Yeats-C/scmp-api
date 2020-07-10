@@ -1568,7 +1568,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setActualTotalCount(batch.getActualTotalCount());
+                if(batch.getActualTotalCount() != null){
+                    productBatch.setActualTotalCount(batch.getActualTotalCount());
+                }else {
+                    productBatch.setActualTotalCount(0L);
+                }
                 productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchInfoCode(batch.getBatchInfoCode());
                 productBatch.setLineCode(batch.getLineCode());
