@@ -441,7 +441,7 @@
     <if test="supplierCode != null">
        and supplier_code = #{supplierCode,jdbcType=VARCHAR}
     </if>
-    order by id asc
+    order by batch_code asc
   </select>
   <select id="stockBatchByOutbound" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
@@ -449,7 +449,7 @@
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     and batch_code = #{batchCode,jdbcType=VARCHAR}
-    order by id asc
+    order by batch_code asc
   </select>
   <select id="stockBatchInfoOne" resultMap="BaseResultMap">
       select <include refid="Base_Column_List"></include>
