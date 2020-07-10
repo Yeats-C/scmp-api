@@ -389,8 +389,15 @@
         </if>
       </set>
       where order_code = #{item.orderCode,jdbcType=VARCHAR}
-      and sku_code = #{item.skuCode,jdbcType=BIGINT}
-      and batch_info_code = #{item.batchInfoCode,jdbcType=BIGINT}
+      and sku_code = #{item.skuCode,jdbcType=VARCHAR}
+      and batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <select id="selectBatchList" resultType="java.lang.Integer">
+    select count(1)
+    from order_info_item_product_batch
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+  </select>
 </mapper>

@@ -1510,27 +1510,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             actualTotalChannelAmount = actualTotalChannelAmount.add(item.getChannelUnitPrice());
             actualTotalProductAmount = actualTotalProductAmount.add(item.getPrice());
             // 自动批次管理，wms回传添加销售单的批次
-            if(request.getBatchManage().equals(0)){
-                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
-                OrderInfoItemProductBatch orderBatch = new OrderInfoItemProductBatch();
-                orderBatch.setOrderCode(response.getOrderCode());
-                String batchCode = DateUtils.currentDate().replaceAll("-","");
-                orderBatch.setBatchCode(batchCode);
-                String batchInfoCode = item.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
-                        batchCode + "_" + response.getSupplierCode() + "_" +
-                        item.getPrice().stripTrailingZeros().toPlainString();
-                orderBatch.setBatchInfoCode(batchInfoCode);
-                orderBatch.setSkuCode(item.getSkuCode());
-                orderBatch.setSkuName(item.getSkuName());
-                orderBatch.setSupplierCode(response.getSupplierCode());
-                orderBatch.setSupplierName(response.getSupplierName());
-                orderBatch.setProductDate(DateUtils.currentDate());
-                orderBatch.setTotalCount(item.getNum());
-                orderBatch.setActualTotalCount(detail.getActualProductCount());
-                orderBatch.setLineCode(detail.getLineCode());
-                batchList.add(orderBatch);
-                orderInfoItemProductBatchDao.insertBatch(batchList);
-            }
+//            if(request.getBatchManage().equals(0)){
+//                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
+//                OrderInfoItemProductBatch orderBatch = new OrderInfoItemProductBatch();
+//                orderBatch.setOrderCode(response.getOrderCode());
+//                String batchCode = DateUtils.currentDate().replaceAll("-","");
+//                orderBatch.setBatchCode(batchCode);
+//                String batchInfoCode = item.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
+//                        batchCode + "_" + response.getSupplierCode() + "_" +
+//                        item.getPrice().stripTrailingZeros().toPlainString();
+//                orderBatch.setBatchInfoCode(batchInfoCode);
+//                orderBatch.setSkuCode(item.getSkuCode());
+//                orderBatch.setSkuName(item.getSkuName());
+//                orderBatch.setSupplierCode(response.getSupplierCode());
+//                orderBatch.setSupplierName(response.getSupplierName());
+//                orderBatch.setProductDate(DateUtils.currentDate());
+//                orderBatch.setTotalCount(item.getNum());
+//                orderBatch.setActualTotalCount(detail.getActualProductCount());
+//                orderBatch.setLineCode(detail.getLineCode());
+//                batchList.add(orderBatch);
+//                orderInfoItemProductBatchDao.insertBatch(batchList);
+//            }
         }
         // 更新订单信息
         orderInfo.setActualProductChannelTotalAmount(actualTotalChannelAmount);
@@ -1562,6 +1562,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 .getBatchManage().equals(Global.BATCH_MANAGE_0)){
             List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
             OrderInfoItemProductBatch productBatch;
+            List<OrderInfoItemProductBatch> batchListUpdate = Lists.newArrayList();
             for (OutboundCallBackBatchRequest batch : request.getBatchList()){
                 productBatch = new OrderInfoItemProductBatch();
                 productBatch.setOrderCode(request.getOderCode());
@@ -1570,10 +1571,26 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setActualTotalCount(batch.getActualTotalCount());
                 productBatch.setBatchCode(batch.getBatchCode());
                 productBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                productBatch.setLineCode(batch.getLineCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
-                batchList.add(productBatch);
+
+                Integer i = orderInfoItemProductBatchDao.selectBatchList(batch.getSkuCode(), request.getOderCode(), batch.getBatchInfoCode());
+                if(i > 0){
+                    batchListUpdate.add(productBatch);
+                }else {
+                    productBatch.setTotalCount(0L);
+                    productBatch.setCreateTime(new Date());
+                    productBatch.setCreateById(request.getPersonId());
+                    productBatch.setCreateByName(request.getPersonName());
+                    batchList.add(productBatch);
+                }
             }
-            orderInfoItemProductBatchDao.updateBatch(batchList);
+            if(CollectionUtils.isNotEmpty(batchListUpdate) && batchListUpdate.size() > 0){
+                orderInfoItemProductBatchDao.updateBatch(batchListUpdate);
+            }
+            if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+                orderInfoItemProductBatchDao.insertBatch(batchList);
+            }
         }
 
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());

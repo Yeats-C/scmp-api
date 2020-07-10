@@ -971,6 +971,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             request.setPersonId(requestVo.getOperatorId());
             request.setPersonName(outbound.getUpdateBy());
             request.setActualTotalCount(outbound.getPraMainUnitNum());
+            request.setBatchManage(requestVo.getBatchManage());
             List<OutboundCallBackDetailRequest> orderItems = new ArrayList<>();
             for (OutboundProduct op : list) {
                 OutboundCallBackDetailRequest orderItem = new OutboundCallBackDetailRequest();

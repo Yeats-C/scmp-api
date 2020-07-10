@@ -1059,6 +1059,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             BigDecimal noTaxTotalPrice = noTaxPrice.multiply(BigDecimal.valueOf(product.getNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
             noTaxTotalAmount = noTaxTotalPrice;
             outboundProductList.add(outboundProduct);
+
+            outboundReqVo.setSupplierCode(product.getSupplierCode());
+            outboundReqVo.setSupplierName(product.getSupplierName());
         }
 
         // 商品批次
