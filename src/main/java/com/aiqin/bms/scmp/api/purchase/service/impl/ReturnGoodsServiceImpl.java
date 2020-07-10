@@ -482,7 +482,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             // 封装回调dl的参数
             request.setOrderCode(returnOrderInfo.getReturnOrderCode());
             request.setOperationTime(returnOrderInfo.getDeliveryTime());
-            request.setOperationType(3);
+            request.setOperationType(4);
             request.setOperationCode(returnOrderInfo.getUpdateById());
             request.setOperationName(returnOrderInfo.getCreateByName());
             request.setOrderId(returnOrderInfo.getOrderOriginal());
@@ -514,7 +514,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 product.setSkuCode(item.getSkuCode());
                 product.setActualTotalCount(item.getActualInboundNum().longValue());
                 product.setWarehouseCode(returnOrderInfo.getWarehouseCode());
-                productList.add(product);
 
                 dlBatchList = Lists.newArrayList();
                 // 查询退货单对应的批次信息
@@ -533,6 +532,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                     }
                     product.setBatchList(dlBatchList);
                 }
+                productList.add(product);
             }
         }
 
