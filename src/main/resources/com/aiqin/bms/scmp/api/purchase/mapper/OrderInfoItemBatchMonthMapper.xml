@@ -72,6 +72,7 @@
     values
      <foreach collection="list" item="item"  separator=",">
        (
+       #{item.id,jdbcType=BIGINT},
        #{item.orderCode,jdbcType=VARCHAR},
        #{item.locationCode,jdbcType=VARCHAR},
        #{item.lineCode,jdbcType=BIGINT},
@@ -84,6 +85,7 @@
        #{item.returnTotalCount,jdbcType=BIGINT},
        #{item.productDate,jdbcType=VARCHAR},
        #{item.batchRemark,jdbcType=VARCHAR},
+       #{item.batchId,jdbcType=VARCHAR},
        #{item.batchCode,jdbcType=VARCHAR},
        #{item.lockType,jdbcType=INTEGER},
        #{item.supplierCode,jdbcType=VARCHAR},
