@@ -196,6 +196,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         //获取FormNo
         String form = allocationTypeEnum.getGenerateCode() + IdSequenceUtils.getInstance().nextId();
         allocation.setFormNo(form);
+        LOGGER.info("保存调拨单主表数据参数{}", JsonUtil.toJson(allocation));
         Long k  = ((AllocationService) AopContext.currentProxy()).insertSelective(allocation);
         if(k <= 0){
             throw new GroundRuntimeException("调拨单保存失败");
@@ -208,9 +209,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice()?allocationProduct.getTaxPrice():BigDecimal.ZERO);
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
         });
+        LOGGER.info("保存调拨单商品批次表数据参数{}", JsonUtil.toJson(list));
          int kp =  ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
          if(kp>0){
              List<AllocationProduct> products = productbatchTransProduct(list);
+             LOGGER.info("保存调拨单商品表数据参数{}", JsonUtil.toJson(products));
              ((AllocationService) AopContext.currentProxy()).saveList(products);
              //TODO 库存锁定
              // StockChangeRequest stockChangeRequest = new StockChangeRequest();
@@ -565,7 +568,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             aWmsProductList.setSkuCode(aProductList.getSkuCode());
             aWmsProductList.setSkuName(aProductList.getSkuName());
-            aWmsProductList.setTotalCount(aProductList.getQuantity().toString());
+            aWmsProductList.setTotalCount(String.valueOf(aProductList.getCallOutQuantity()));
             aWmsProductList.setColorName(aProductList.getColor());
             aWmsProductList.setModelNumber(aProductList.getModel());
             aWmsProductList.setLineCode(aProductList.getLineNum().toString());
@@ -580,7 +583,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
             aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
             aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
-            aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+            aWmsProductBatchList.setTotalCount(aProductBatchList.getCalloutActualTotalCount());
             aWmsInProBatchSource.add(aWmsProductBatchList);
         }
         aWmsInSource.setDetailList(aWmsInProSource);
@@ -614,6 +617,23 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getStatus());
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
         int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+        // 查看调拨单批次商品信息
+//        List<AllocationBatchRequest> batchList = request.getBatchList();
+//        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+//            for (AllocationBatchRequest detail: batchList) {
+//                Integer count1 = allocationProductBatchMapper.selectCountByCode(request.getAllocationCode(), detail.getSkuCode(), detail.getBatchCode());
+//                if(count1 > 0){
+//                    // 更新
+//                    allocationProductBatchMapper.updateByBatch(detail);
+//                }else {
+//                    // 保存
+//                    AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+//                    allocationProductBatchMapper.insertSelective(allocationProductBatch);
+//                }
+//            }
+//        }
+
+
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
         return HttpResponse.success();
 //        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
@@ -837,7 +857,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             String outboundCode = null;
 //            String inboundCode = null;
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
+            LOGGER.info("调拨单数据转出库单前数据参数{}", JsonUtil.toJson(allocation));
             OutboundReqVo convert = new AllocationOrderToOutboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+            LOGGER.info("保存出库单数据参数{}", JsonUtil.toJson(convert));
             outboundCode =outboundService.save(convert);
 //            if(!AllocationTypeEnum.SCRAP.getType().equals(allocation.getAllocationType())){
 //                InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);

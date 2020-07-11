@@ -81,15 +81,15 @@ public class AllocationProductBatchResVo {
     private String locationCode;
 
     @ApiModelProperty("实际出库最小单位数量")
-    private Integer calloutActualTotalCount;
+    private Long calloutActualTotalCount;
 
     @ApiModelProperty("实际入库最小单位数量")
-    private String callinActualTotalCount;
+    private Long callinActualTotalCount;
 
     @ApiModelProperty("出库批次编码")
-    private Integer calloutBatchInfoCode;
+    private String calloutBatchInfoCode;
 
     @ApiModelProperty("入库批次编码")
-    private Integer callinBatchInfoCode;
+    private String callinBatchInfoCode;
 
 }
