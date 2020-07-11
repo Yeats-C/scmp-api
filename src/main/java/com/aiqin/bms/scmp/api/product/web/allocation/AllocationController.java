@@ -14,6 +14,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocation
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -73,6 +74,7 @@ public class AllocationController {
         try {
             vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
             vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
+            log.info("新增调拨单参数参数{}", JsonUtil.toJson(vo));
             return HttpResponse.success(allocationService.save(vo));
         }catch (BizException ex){
             return HttpResponse.failure(ex.getMessageId());

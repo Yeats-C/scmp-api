@@ -1105,7 +1105,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 转化成出库单
 //            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
+            LOGGER.info("调拨单数据转入库单参数{}", JsonUtil.toJson(allocation));
             InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+            LOGGER.info("保存入库单数据参数{}", JsonUtil.toJson(convert1));
             String inboundOderCode = inboundService.saveInbound(convert1);
             //更改调拨在途数
 
@@ -1138,29 +1140,33 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 stockVoRequest.setRemark(allocation.getRemark());
                 list1.add(stockVoRequest);
             }
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(convert1.getWarehouseCode());
             List<StockBatchInfoRequest> batchList1 = new ArrayList<>();
-            for (AllocationProductToOutboundVo allocationProduct : list) {
-                StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
-                stockBatchInfoRequest.setCompanyCode(allocation.getCompanyCode());
-                stockBatchInfoRequest.setCompanyName(allocation.getCompanyName());
-                stockBatchInfoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
-                stockBatchInfoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
-                stockBatchInfoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
-                stockBatchInfoRequest.setWarehouseName(allocation.getCallInWarehouseName());
-                stockBatchInfoRequest.setSkuCode(allocationProduct.getSkuCode());
-                stockBatchInfoRequest.setSkuName(allocationProduct.getSkuName());
-                stockBatchInfoRequest.setChangeCount(allocationProduct.getQuantity());
-                stockBatchInfoRequest.setBatchCode(allocationProduct.getCallinBatchNumber());
-                stockBatchInfoRequest.setBatchInfoCode(allocationProduct.getCallinBatchInfoCode());
-                stockBatchInfoRequest.setProductDate(allocationProduct.getProductDate());
-                stockBatchInfoRequest.setBeOverdueDate(allocationProduct.getBeOverdueDate());
-                stockBatchInfoRequest.setBatchRemark(allocationProduct.getBatchNumberRemark());
-                stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
-                stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
-                stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
-                stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
-                stockBatchInfoRequest.setOperatorName(allocation.getUpdateBy());
+            if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)){
+                for (AllocationProductToOutboundVo allocationProduct : list) {
+                    StockBatchInfoRequest stockBatchInfoRequest = new StockBatchInfoRequest();
+                    stockBatchInfoRequest.setCompanyCode(allocation.getCompanyCode());
+                    stockBatchInfoRequest.setCompanyName(allocation.getCompanyName());
+                    stockBatchInfoRequest.setTransportCenterCode(allocation.getCallInLogisticsCenterCode());
+                    stockBatchInfoRequest.setTransportCenterName(allocation.getCallInLogisticsCenterName());
+                    stockBatchInfoRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
+                    stockBatchInfoRequest.setWarehouseName(allocation.getCallInWarehouseName());
+                    stockBatchInfoRequest.setSkuCode(allocationProduct.getSkuCode());
+                    stockBatchInfoRequest.setSkuName(allocationProduct.getSkuName());
+                    stockBatchInfoRequest.setChangeCount(allocationProduct.getQuantity());
+                    stockBatchInfoRequest.setBatchCode(allocationProduct.getCallinBatchNumber());
+                    stockBatchInfoRequest.setBatchInfoCode(allocationProduct.getCallinBatchInfoCode());
+                    stockBatchInfoRequest.setProductDate(allocationProduct.getProductDate());
+                    stockBatchInfoRequest.setBeOverdueDate(allocationProduct.getBeOverdueDate());
+                    stockBatchInfoRequest.setBatchRemark(allocationProduct.getBatchNumberRemark());
+                    stockBatchInfoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                    stockBatchInfoRequest.setDocumentCode(allocation.getAllocationCode());
+                    stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
+                    stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                    stockBatchInfoRequest.setOperatorName(allocation.getUpdateBy());
+                }
             }
+
             stockChangeRequest.setStockList(list1);
             stockChangeRequest.setStockBatchList(batchList1);
             LOGGER.error("wms调拨回调:调用库存加在途: 参数{}", JsonUtil.toJson(stockChangeRequest));
