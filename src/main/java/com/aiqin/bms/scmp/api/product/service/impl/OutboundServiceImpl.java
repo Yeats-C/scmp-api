@@ -857,7 +857,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                                         batch.getBatchCode() + "_" + amount.stripTrailingZeros().toPlainString();
                             }
                             outboundBatch.setBatchInfoCode(batchInfoCode);
-                            outboundBatch.setSupplierCode(outbound.getSupplierCode());
+                            outboundBatch.setSupplierCode(supplierCode);
                             outboundBatch.setSupplierName(outbound.getSupplierName());
                             outboundBatch.setTotalCount(batch.getActualTotalCount());
                             outboundBatch.setCreateById(request.getOperatorId());
