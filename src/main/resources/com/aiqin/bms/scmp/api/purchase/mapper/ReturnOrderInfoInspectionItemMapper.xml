@@ -39,7 +39,8 @@
     id, return_order_code, sku_code, sku_name, picture_url, spec, color_name, color_code,
     model, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
     product_status, give_promotion, line_code, transport_center_code, transport_center_name,
-    warehouse_code, warehouse_name, supplier_code, supplier_name,  ifnull(product_count, 0), ifnull(actual_product_count, 0),
+    warehouse_code, warehouse_name, supplier_code, supplier_name,  ifnull(product_count, 0) product_count,
+    ifnull(actual_product_count, 0) actual_product_count,
     batch_code, batch_info_code, product_date, be_overdue_date, location_code, return_product_count,
     batch_remark, lock_type
   </sql>

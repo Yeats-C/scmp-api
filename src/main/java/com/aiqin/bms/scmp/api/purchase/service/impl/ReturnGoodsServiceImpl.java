@@ -600,7 +600,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
         returnOrder.setReturnOrderCode(inbound.getSourceOderCode());
-        returnOrder.setActualProductCount(returnOrderInfo.getActualProductCount() + inbound.getPraMainUnitNum());
+
+        Long inboundCount = inbound.getPraMainUnitNum() == null ? 0L : inbound.getPraMainUnitNum();
+        Long returnCount = returnOrderInfo.getActualProductCount() == null ? 0L : returnOrderInfo.getActualProductCount();
+        returnOrder.setActualProductCount(inboundCount + returnCount);
         returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
         returnOrder.setUpdateByName(inbound.getUpdateBy());
 
@@ -612,7 +615,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         for (InboundProduct product : inboundProducts) {
             // 查询对应的退货单商品信息
             returnOrderInfoItem = returnOrderInfoItemMapper.returnOrderOne(inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum());
-            returnOrderInfoItem.setActualInboundNum(returnOrderInfoItem.getActualInboundNum() + product.getPraInboundMainNum().intValue());
+            Integer productCount = returnOrderInfoItem.getActualInboundNum() == null ? 0 : returnOrderInfoItem.getActualInboundNum();
+            returnOrderInfoItem.setActualInboundNum(productCount + product.getPraInboundMainNum().intValue());
             returnOrderInfoItem.setActualChannelUnitPrice(returnOrderInfoItem.getChannelUnitPrice());
             BigDecimal channelAmount = BigDecimal.valueOf(product.getPraInboundMainNum()).multiply(
                     returnOrderInfoItem.getChannelUnitPrice()).setScale(4, BigDecimal.ROUND_HALF_UP);
@@ -687,7 +691,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                     notBatchList.add(returnBatch);
                     LOGGER.info("wms回传退货单，非自动批次未找到的退货批次信息：{}", JsonUtil.toJson(notBatchList));
                 }else {
-                    returnBatchItem.setActualProductCount(batch.getActualTotalCount() + returnBatchItem.getActualProductCount());
+                    Long batchCount = returnBatchItem.getActualProductCount() == null ? 0L : returnBatchItem.getActualProductCount();
+                    returnBatchItem.setActualProductCount(batch.getActualTotalCount() + batchCount);
                     Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
                     LOGGER.info("更新退货单批次：", i);
                 }
