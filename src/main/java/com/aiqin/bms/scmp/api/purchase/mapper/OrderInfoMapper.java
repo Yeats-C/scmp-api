@@ -52,4 +52,6 @@ public interface OrderInfoMapper {
 
     /** 销售订单同步sap **/
     void updateOrderSynchrSap(OrderInfo order);
+
+    List<OrderInfo> selectByOrderCodes(@Param("list") List<String> orderCodeList);
 }

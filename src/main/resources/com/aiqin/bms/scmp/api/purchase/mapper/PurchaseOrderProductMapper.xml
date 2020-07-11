@@ -169,7 +169,7 @@
       purchase_order_code, sku_code, sku_name, brand_id, brand_name, category_id,
       category_name, product_spec, color_name, model_number, product_type, purchase_whole,
       purchase_single, base_product_content, box_gauge, single_count, tax_rate, product_amount,
-      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name,
+      product_total_amount, stock_count,actual_single_count, factory_sku_code, create_time, create_by_id, create_by_name,
       stock_amount, stock_turnover, receipt_turnover, linnum)
     values
     <foreach collection="list" item="item" index="" separator=",">
@@ -180,7 +180,7 @@
       #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
       #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=DECIMAL}, #{item.productAmount,jdbcType=DECIMAL},
-      #{item.productTotalAmount,jdbcType=DECIMAL}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
+      #{item.productTotalAmount,jdbcType=DECIMAL}, #{item.stockCount,jdbcType=INTEGER}, #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
       now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=DECIMAL},
       #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})
     </foreach>

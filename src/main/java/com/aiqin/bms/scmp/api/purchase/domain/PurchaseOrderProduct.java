@@ -1,10 +1,12 @@
 package com.aiqin.bms.scmp.api.purchase.domain;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.persistence.Transient;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -149,5 +151,16 @@ public class PurchaseOrderProduct {
     @ApiModelProperty(value="行号")
     @JsonProperty("linnum")
     private Integer linnum;
+
+
+//==========导入Excel数据使用======
+    @Transient
+    private String productCount;
+
+    @Transient
+    private String danwei;
+
+    @Transient
+    private String liebie;
 
 }

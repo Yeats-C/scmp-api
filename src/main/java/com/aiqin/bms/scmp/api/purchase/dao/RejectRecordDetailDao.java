@@ -14,11 +14,12 @@ public interface RejectRecordDetailDao {
 
     Integer update(RejectRecordDetail record);
 
-    Integer insertAll(@Param("list")List<RejectRecordDetail> detailList);
+    Integer insertAll(@Param("list") List<RejectRecordDetail> detailList);
 
     List<RejectRecordDetail> selectByRejectId(@Param("rejectRecordId") String rejectRecordId);
 
     RejectRecordDetail rejectRecordByLineCode(@Param("rejectRecordCode") String rejectRecordCode,
                                               @Param("lineCode") Integer lineCode);
 
+    List<RejectRecordDetail> selectByRejectCodeList(@Param("list") List<String> purchaseOrderCodeList);
 }

@@ -364,4 +364,52 @@
       where reject_record_code like concat(#{code,jdbcType=VARCHAR},'%')
       order by id desc limit 1
   </select>
+    <select id="selectByRejectCodeList" resultMap="BaseResultMap">
+       select
+         <include refid="Base_Column_List"/>
+      from reject_record
+        where reject_record_code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <insert id="insertMany">
+
+        INSERT INTO reject_record (reject_apply_record_code, reject_record_id, reject_record_code, reject_record_name, company_code,
+        company_name, supplier_code, supplier_name, settlement_method_code, settlement_method_name, purchase_group_code,
+        purchase_group_name, transport_center_code, transport_center_name, warehouse_code, warehouse_name, product_count,
+        return_count, gift_count, total_count, product_tax_amount, return_tax_amount, gift_tax_amount, actual_product_count,
+        actual_return_count, actual_gift_count, actual_total_count, actual_product_tax_amount, actual_return_tax_amount,
+        actual_gift_tax_amount, valid_time, pre_deliver_time, charge_person, account_code, account_name, contract_code,
+        contract_name, supplier_person, supplier_mobile, province_id, province_name, city_id, city_name, district_id,
+        district_name, detail_address, score_code, confirm_time, out_stock_time, source_type, source_code, remark,
+        approval_code, reject_status, create_by_id, create_by_name, update_by_id, update_by_name,
+        create_time, update_time, supplier_company_code, supplier_company_name) VALUES
+        <foreach collection="list" item="rejectRecord" index="index" separator=",">
+            (#{rejectRecord.rejectApplyRecordCode,jdbcType=VARCHAR}, #{rejectRecord.rejectRecordId,jdbcType=VARCHAR},
+            #{rejectRecord.rejectRecordCode,jdbcType=VARCHAR}, #{rejectRecord.rejectRecordName,jdbcType=VARCHAR}, #{rejectRecord.companyCode,jdbcType=VARCHAR},
+            #{rejectRecord.companyName,jdbcType=VARCHAR}, #{rejectRecord.supplierCode,jdbcType=VARCHAR}, #{rejectRecord.supplierName,jdbcType=VARCHAR},
+            #{rejectRecord.settlementMethodCode,jdbcType=VARCHAR}, #{rejectRecord.settlementMethodName,jdbcType=VARCHAR},
+            #{rejectRecord.purchaseGroupCode,jdbcType=VARCHAR}, #{rejectRecord.purchaseGroupName,jdbcType=VARCHAR}, #{rejectRecord.transportCenterCode,jdbcType=VARCHAR},
+            #{rejectRecord.transportCenterName,jdbcType=VARCHAR}, #{rejectRecord.warehouseCode,jdbcType=VARCHAR}, #{rejectRecord.warehouseName,jdbcType=VARCHAR},
+            #{rejectRecord.productCount,jdbcType=BIGINT}, #{rejectRecord.returnCount,jdbcType=BIGINT}, #{rejectRecord.giftCount,jdbcType=BIGINT},
+            #{rejectRecord.totalCount,jdbcType=BIGINT}, #{rejectRecord.productTaxAmount,jdbcType=DECIMAL}, #{rejectRecord.returnTaxAmount,jdbcType=DECIMAL},
+            #{rejectRecord.giftTaxAmount,jdbcType=DECIMAL}, #{rejectRecord.actualProductCount,jdbcType=BIGINT}, #{rejectRecord.actualReturnCount,jdbcType=BIGINT},
+            #{rejectRecord.actualGiftCount,jdbcType=BIGINT}, #{rejectRecord.actualTotalCount,jdbcType=BIGINT}, #{rejectRecord.actualProductTaxAmount,jdbcType=DECIMAL},
+            #{rejectRecord.actualReturnTaxAmount,jdbcType=DECIMAL}, #{rejectRecord.actualGiftTaxAmount,jdbcType=DECIMAL},
+            #{rejectRecord.validTime,jdbcType=TIMESTAMP}, #{rejectRecord.preDeliverTime,jdbcType=TIMESTAMP}, #{rejectRecord.chargePerson,jdbcType=VARCHAR},
+            #{rejectRecord.accountCode,jdbcType=VARCHAR}, #{rejectRecord.accountName,jdbcType=VARCHAR}, #{rejectRecord.contractCode,jdbcType=VARCHAR},
+            #{rejectRecord.contractName,jdbcType=VARCHAR}, #{rejectRecord.supplierPerson,jdbcType=VARCHAR}, #{rejectRecord.supplierMobile,jdbcType=VARCHAR},
+            #{rejectRecord.provinceId,jdbcType=VARCHAR}, #{rejectRecord.provinceName,jdbcType=VARCHAR}, #{rejectRecord.cityId,jdbcType=VARCHAR},
+            #{rejectRecord.cityName,jdbcType=VARCHAR}, #{rejectRecord.districtId,jdbcType=VARCHAR}, #{rejectRecord.districtName,jdbcType=VARCHAR},
+            #{rejectRecord.detailAddress,jdbcType=VARCHAR}, #{rejectRecord.scoreCode,jdbcType=VARCHAR}, #{rejectRecord.confirmTime,jdbcType=TIMESTAMP},
+            #{rejectRecord.outStockTime,jdbcType=TIMESTAMP}, #{rejectRecord.sourceType,jdbcType=INTEGER}, #{rejectRecord.sourceCode,jdbcType=VARCHAR},
+            #{rejectRecord.remark,jdbcType=VARCHAR}, #{rejectRecord.approvalCode,jdbcType=VARCHAR}, #{rejectRecord.rejectStatus,jdbcType=INTEGER},
+            #{rejectRecord.createById,jdbcType=VARCHAR}, #{rejectRecord.createByName,jdbcType=VARCHAR}, #{rejectRecord.updateById,jdbcType=VARCHAR},
+            #{rejectRecord.updateByName,jdbcType=VARCHAR}, now(), now(), #{rejectRecord.supplierCompanyCode,jdbcType=VARCHAR},
+            #{rejectRecord.supplierCompanyName,jdbcType=VARCHAR})
+        </foreach>
+
+
+    </insert>
 </mapper>
