@@ -12,8 +12,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
@@ -68,6 +70,9 @@ public class ExcelService {
     @Resource
     private OrderInfoItemMapper orderInfoItemMapper;
 
+    @Resource
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
+
     /**
      * 导入单据到线上数据库
      *
@@ -112,8 +117,9 @@ public class ExcelService {
                 } else if ("销售单明细表".equals(sheetAt.getSheetName())) {
 //                    List<OrderInfoItemExcel> oft = ExcelUtil.readExcel(multipartFile, OrderInfoItemExcel.class, i + 1);
 //                    saveOrderInfoItem(oft);
-                }else  if("退货单主表".equals(sheetAt.getSheetName())){
-
+                } else if ("退货单主表".equals(sheetAt.getSheetName())) {
+                    List<ReturnOrderInfoExcel> returnOrderInfoExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoExcel.class, i + 1);
+                    saveReturnOrderInfo(returnOrderInfoExcels);
 
                 }
 
@@ -406,6 +412,57 @@ public class ExcelService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * 保存退货主表数据
+     *
+     * @param returnOrderInfoExcels
+     */
+    public void saveReturnOrderInfo(List<ReturnOrderInfoExcel> returnOrderInfoExcels) {
+
+
+        if (CollectionUtils.isNotEmptyCollection(returnOrderInfoExcels)) {
+            List<String> retrunOrderCodeList = returnOrderInfoExcels.stream().map(ReturnOrderInfoExcel::getReturnOrderCode).collect(Collectors.toList());
+
+            //查询出已经在存在的退货信息
+//            List<ReturnOrderInfo> existOrderCodeeList = this.returnOrderInfoItemMapper.selectByReturnOrderCodeList(retrunOrderCodeList);
+//            if (CollectionUtils.isNotEmptyCollection(existOrderCodeeList)) {
+//                //已经存在退货信息删除
+//                List<String> existOrderCodes = existOrderCodeeList.stream().map(ReturnOrderInfo::getReturnOrderCode).collect(Collectors.toList());
+//
+//                Iterator<ReturnOrderInfoExcel> iterator = returnOrderInfoExcels.iterator();
+//                while (iterator.hasNext()) {
+//                    ReturnOrderInfoExcel next = iterator.next();
+//                    if (existOrderCodes.contains(next.getReturnOrderCode())) {
+//                        //删除已经存在的
+//                        iterator.remove();
+//                    }
+//                }
+//
+//            }
+
+            String s = JsonUtil.toJson(returnOrderInfoExcels);
+            List<OrderInfo> saves = JSONObject.parseArray(s, OrderInfo.class);
+            returnOrderInfoExcels.clear();
+            if (CollectionUtils.isNotEmptyCollection(saves)) {
+                //数据量太多会mysql报错 分批次插入
+                Map<Integer, List<OrderInfo>> itemMap = new ListUtils<OrderInfo>().batchList(saves, 3000);
+
+                for (Integer i : itemMap.keySet()) {
+                    List<OrderInfo> orderInfos1 = itemMap.get(i);
+                    orderInfoMapper.insertBatch(orderInfos1);
+                }
+            }
+            saves.clear();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
         }
     }
 
