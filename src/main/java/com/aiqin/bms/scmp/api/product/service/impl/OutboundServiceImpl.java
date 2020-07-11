@@ -833,14 +833,22 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             // 出库单非指定批次
                             List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
                             BigDecimal amount = BigDecimal.ZERO;
+                            String supplierCode = null;
                             if (CollectionUtils.isNotEmpty(batches) && batches.size() > 0) {
-                                amount = batches.get(0).getPurchasePrice() == null ? BigDecimal.ZERO : batches.get(0).getPurchasePrice();
+                                amount = batches.get(0).getTaxCost() == null ? BigDecimal.ZERO : batches.get(0).getTaxCost();
+                                if(StringUtils.isNotBlank(batches.get(0).getSupplierCode())){
+                                    supplierCode = batches.get(0).getSupplierCode();
+                                }
                             }
                             // 新增出库单的批次信息
                             outboundBatch = BeanCopyUtils.copy(batch, OutboundBatch.class);
                             outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                             String batchInfoCode;
-                            if (StringUtils.isNotBlank(outbound.getSupplierCode())) {
+                            if(StringUtils.isBlank(supplierCode)){
+                                supplierCode = outbound.getSupplierCode();
+                            }
+
+                            if (StringUtils.isNotBlank(supplierCode)) {
                                 batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
                                         batch.getBatchCode() + "_" + outbound.getSupplierCode() + "_" +
                                         amount.stripTrailingZeros().toPlainString();
