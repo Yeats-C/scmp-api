@@ -109,13 +109,6 @@ public class StockController {
         return HttpResponse.success(stockService.save(reqVo));
     }
 
-    // 暂时保留
-//    @PostMapping("change1")
-//    @ApiOperation(value = "库存修改")
-//    public HttpResponse changeStock(@RequestBody StockChangeRequest stockChangeRequest) throws Exception {
-//        return stockService.changeStock(stockChangeRequest);
-//    }
-
     @PostMapping("/change")
     @ApiOperation(value = "库存修改")
     public HttpResponse stockAndBatchChange(@RequestBody ChangeStockRequest request) {

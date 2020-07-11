@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -12,10 +13,12 @@ import java.util.List;
 @ApiModel("对接DL供应商主表")
 public class ProductRequest {
 
+    @NotNull(message = "行号不能为空")
     @ApiModelProperty(value="行号")
     @JsonProperty("line_code")
     private Integer lineCode;
 
+    @NotNull(message = "SKU不能为空")
     @ApiModelProperty(value="sku编码")
     @JsonProperty("sku_code")
     private String skuCode;
@@ -24,6 +27,7 @@ public class ProductRequest {
     @JsonProperty("sku_name")
     private String skuName;
 
+    @NotNull(message = "商品数量不能为空")
     @ApiModelProperty(value="最小单位数量")
     @JsonProperty("total_count")
     private Long totalCount;
@@ -48,9 +52,14 @@ public class ProductRequest {
     @JsonProperty("product_type")
     private Integer productType;
 
+    @NotNull(message = "分销单价不能为空")
     @ApiModelProperty(value="含税单价/分销单价")
     @JsonProperty("product_amount")
     private BigDecimal productAmount;
+
+    @ApiModelProperty(value="未税金额")
+    @JsonProperty("not_product_amount")
+    private BigDecimal notProductAmount;
 
     @ApiModelProperty(value="税率")
     @JsonProperty("tax_rate")
@@ -59,6 +68,14 @@ public class ProductRequest {
     @ApiModelProperty(value="实际最小单位数量：回传用到")
     @JsonProperty("actual_total_count")
     private Long actualTotalCount;
+
+    @ApiModelProperty(value="库房编码")
+    @JsonProperty("warehouse_code")
+    private String warehouseCode;
+
+    @ApiModelProperty("库房名称")
+    @JsonProperty("warehouse_name")
+    private String warehouseName;
 
     @ApiModelProperty(value="渠道单价：只有销售、退货用")
     @JsonProperty("channel_amount")
@@ -80,13 +97,9 @@ public class ProductRequest {
     @JsonProperty("product_total_amount")
     private BigDecimal productTotalAmount;
 
-    @ApiModelProperty(value="库房编码")
-    @JsonProperty("warehouse_code")
-    private String warehouseCode;
-
-    @ApiModelProperty("库房名称")
-    @JsonProperty("warehouse_name")
-    private String warehouseName;
+    @ApiModelProperty(value="仓库发货的日期")
+    @JsonProperty("product_date")
+    private String productDate;
 
     @ApiModelProperty(value="wms库房类型")
     @JsonProperty("wms_warehouse_type")

@@ -46,6 +46,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -712,75 +713,12 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
                 this.changeStockBatch(request);
             }
-            // 调用DL 推送库存变更信息
-           // this.dlStockChange(request);
         } catch (Exception e) {
             e.printStackTrace();
             LOGGER.error("操作库存失败", e.getMessage());
             throw new BizException("操作库存失败");
         }
         return HttpResponse.success();
-    }
-
-    private void dlStockChange(ChangeStockRequest request){
-        LOGGER.info("开始转换库存变更参数并调用dl");
-        StockChangeDlRequest dlRequest = new StockChangeDlRequest();
-        dlRequest.setOrderCode(request.getStockList().get(0).getSourceDocumentCode());
-        Integer documentType = request.getStockList().get(0).getSourceDocumentType();
-        if(documentType.equals(Global.DOCUMENT_TYPE_3)){
-            dlRequest.setOrderType(1);
-        }else if(documentType.equals(Global.DOCUMENT_TYPE_2)){
-            dlRequest.setOrderType(2);
-        }else if(documentType.equals(Global.DOCUMENT_TYPE_4)){
-            dlRequest.setOrderType(3);
-        }else if(documentType.equals(Global.DOCUMENT_TYPE_6)){
-            dlRequest.setOrderType(4);
-        }else if(documentType.equals(Global.DOCUMENT_TYPE_11)){
-            dlRequest.setOrderType(5);
-        }else {
-            return;
-        }
-
-        if(request.getOperationType() == 1 || request.getOperationType() == 4 ||  request.getOperationType() == 10){
-            dlRequest.setOperationType(2);
-        }else if(request.getOperationType() == 3 || request.getOperationType() == 6 ||  request.getOperationType() == 8){
-            dlRequest.setOperationType(1);
-        }
-        List<ProductRequest> productRequestList = Lists.newArrayList();
-        ProductRequest product;
-        List<StockBatchInfoRequest> batchList;
-        for(StockInfoRequest stock : request.getStockList()){
-            product = new ProductRequest();
-            //product.setLineCode(stock.ge);
-            product.setSkuCode(stock.getSkuCode());
-            product.setSkuName(stock.getSkuName());
-            product.setTotalCount(stock.getChangeCount());
-            product.setWarehouseCode(stock.getWarehouseCode());
-            if(CollectionUtils.isNotEmpty(request.getStockBatchList()) && request.getStockBatchList().size() > 0){
-                List<BatchRequest> batchRequestList = Lists.newArrayList();
-                BatchRequest batchRequest;
-                batchList = request.getStockBatchList().stream().filter(s->s.getSkuCode().equals(stock.getSkuCode())
-                        ).collect(Collectors.toList());
-                for(StockBatchInfoRequest batch:batchList){
-                    batchRequest = new BatchRequest();
-                    batchRequest.setSkuCode(batch.getSkuCode());
-                    batchRequest.setTotalCount(batch.getChangeCount());
-                    batchRequest.setBatchCode(batch.getBatchCode());
-                    batchRequest.setProductDate(batch.getProductDate());
-                    batchRequestList.add(batchRequest);
-                }
-            }
-            productRequestList.add(product);
-        }
-
-        String url = urlConfig.WMS_API_URL + "/dl/stock/change";
-        HttpClient httpClient = HttpClient.post(url).json(dlRequest).timeout(20000);
-        HttpResponse response = httpClient.action().result(HttpResponse.class);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("熙耘->DL，推送库存变更信息成功");
-        }else {
-            LOGGER.info("熙耘->DL，推送库存变更信息失败:{}", response.getMessage());
-        }
     }
 
     /** 参数转换成库存数据*/
@@ -1563,6 +1501,20 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
         }
         return HttpResponse.success();
+    }
+
+    public HttpResponse dlStockChange(StockChangeDlRequest request) {
+        LOGGER.info("开始调用DL库存变动,参数：{}", JsonUtil.toJson(request));
+        String url = urlConfig.WMS_API_URL + "/dl/stock/change";
+        HttpClient httpClient = HttpClient.post(url).json(request).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("熙耘->DL，推送库存变更信息成功");
+            return HttpResponse.success();
+        } else {
+            LOGGER.info("熙耘->DL，推送库存变更信息失败:{}", response.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "熙耘->DL，推送库存变更信息失败"));
+        }
     }
 
 }
