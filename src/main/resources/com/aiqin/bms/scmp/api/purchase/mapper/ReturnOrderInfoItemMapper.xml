@@ -40,10 +40,11 @@
   <sql id="Base_Column_List">
     id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
     color_code, model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
-    give_promotion, ifnull(price, 0), ifnull(num, 0), ifnull(amount, 0), activity_code, product_line_num,
-    promotion_line_num, product_status, actual_inbound_num, company_name, company_code, ifnull(channel_unit_price, 0),
-    ifnull(total_channel_price, 0), ifnull(actual_channel_unit_price, 0), ifnull(actual_total_channel_price, 0),
-    ifnull(actual_amount, 0), ifnull(actual_price, 0), tax, insert_type
+    give_promotion, ifnull(price, 0) price, ifnull(num, 0) num, ifnull(amount, 0) amount, activity_code, product_line_num,
+    promotion_line_num, product_status, actual_inbound_num, company_name, company_code, ifnull(channel_unit_price, 0) channel_unit_price,
+    ifnull(total_channel_price, 0) total_channel_price, ifnull(actual_channel_unit_price, 0) actual_channel_unit_price,
+    ifnull(actual_total_channel_price, 0) actual_total_channel_price,
+    ifnull(actual_amount, 0) actual_amount, ifnull(actual_price, 0) actual_price, tax, insert_type
   </sql>
   <select id="selectByReturnOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
       select
