@@ -559,7 +559,6 @@
   </sql>
   <select id="list" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
- fid="Bm return_order_info
     <include refid="LIST_QUERY"/>
     order by id desc
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
