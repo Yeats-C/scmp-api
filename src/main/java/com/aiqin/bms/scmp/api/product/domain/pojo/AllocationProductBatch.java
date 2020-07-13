@@ -135,4 +135,8 @@ public class AllocationProductBatch extends CommonBean {
     @JsonProperty(value = "call_in_actual_total_count")
     private Long callInActualTotalCount;
 
+    @ApiModelProperty("库位号")
+    @JsonProperty(value = "location_code")
+    private String locationCode;
+
 }

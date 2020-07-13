@@ -10,10 +10,7 @@ import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.*;
@@ -29,10 +26,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespV
 import com.aiqin.bms.scmp.api.product.domain.response.wms.BatchInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundDetailSource;
 import com.aiqin.bms.scmp.api.product.domain.response.wms.PurchaseInboundSource;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
-import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
-import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
+import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
@@ -144,6 +138,8 @@ public class InboundServiceImpl implements InboundService {
     private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private AllocationProductMapper allocationProductMapper;
+    @Autowired
+    private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
 
@@ -741,6 +737,9 @@ public class InboundServiceImpl implements InboundService {
                 // 查询入库商品的信息
                 InboundProduct product = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode());
 
+                // 调拨下  供应商 成本从出库中获取
+                AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode().intValue());
+
                 // 退货的更新入库单的批次信息
                 if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
                     productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
@@ -767,7 +766,13 @@ public class InboundServiceImpl implements InboundService {
                     productBatch.setInboundOderCode(inbound.getInboundOderCode());
                     productBatch.setBatchCode(batchInfo.getBatchCode());
                     String batchInfoCode;
-                    BigDecimal amount = product.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : product.getPreTaxPurchaseAmount();
+                    BigDecimal amount;
+                    if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode()) || inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())){
+                        amount = allocationProductBatch.getTaxPrice();
+                        inbound.setSupplierCode(allocationProductBatch.getSupplierCode());
+                    }else {
+                        amount = product.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : product.getPreTaxPurchaseAmount();
+                    }
                     if (StringUtils.isBlank(inbound.getSupplierCode())) {
                         batchInfoCode = batchInfo.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
                                 batchInfo.getBatchCode() + "_" + amount.stripTrailingZeros().toPlainString();
@@ -813,8 +818,8 @@ public class InboundServiceImpl implements InboundService {
                         }
                     }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
 
-                        stockBatchInfo.setSupplierCode("");
-                        stockBatchInfo.setTaxCost(BigDecimal.ZERO);
+                        stockBatchInfo.setSupplierCode(allocationProductBatch.getSupplierCode());
+                        stockBatchInfo.setTaxCost(allocationProductBatch.getTaxPrice());
                     }
                     stockBatchInfo.setProductDate(batchInfo.getProductDate());
                     stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());

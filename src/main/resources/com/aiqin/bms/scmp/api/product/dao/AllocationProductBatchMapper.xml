@@ -242,9 +242,6 @@
       <if test="pictureUrl != null">
         picture_url,
       </if>
-      <if test="lineNum != null">
-        line_num,
-      </if>
       <if test="callOutBatchNumber != null">
         callout_batch_number,
       </if>
@@ -256,6 +253,33 @@
       </if>
       <if test="productDate != null">
         product_date,
+      </if>
+      <if test="beOverdueDate != null">
+        be_overdue_date,
+      </if>
+      <if test="lineNum != null">
+        line_num,
+      </if>
+      <if test="supplierName != null">
+        supplier_name,
+      </if>
+      <if test="supplierCode != null">
+        supplier_code,
+      </if>
+      <if test="locationCode != null">
+        location_code,
+      </if>
+      <if test="callOutActualTotalCount != null">
+        callout_actual_total_count,
+      </if>
+      <if test="callInActualTotalCount != null">
+        callin_actual_total_count,
+      </if>
+      <if test="callOutBatchInfoCode != null">
+        callout_batch_info_code,
+      </if>
+      <if test="callInBatchInfoCode != null">
+        callin_batch_info_code,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -331,23 +355,44 @@
       <if test="pictureUrl != null">
         #{pictureUrl,jdbcType=VARCHAR},
       </if>
-      <if test="lineNum != null">
-        #{lineNum,jdbcType=BIGINT},
-      </if>
       <if test="callOutBatchNumber != null">
         #{callOutBatchNumber,jdbcType=VARCHAR},
       </if>
       <if test="callInBatchNumber != null">
         #{callInBatchNumber,jdbcType=VARCHAR},
       </if>
-      <if test="batchProduct != null">
-        #{batchProduct,jdbcType=TINYINT},
-      </if>
       <if test="batchNumberRemark != null">
         #{batchNumberRemark,jdbcType=VARCHAR},
       </if>
       <if test="productDate != null">
         #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="beOverdueDate != null">
+        #{beOverdueDate,jdbcType=VARCHAR},
+      </if>
+      <if test="lineNum != null">
+        #{lineNum,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="locationCode != null">
+        #{locationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callOutActualTotalCount != null">
+        #{callOutActualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="callInActualTotalCount != null">
+        #{callInActualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="callOutBatchInfoCode != null">
+        #{callOutBatchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="callInBatchInfoCode != null">
+        #{callInBatchInfoCode,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -502,4 +547,14 @@
     </set>
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </update>
+  <select id="selectAllocationOutByCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
+    select
+     b.allocation_code allocationCode,c.supplier_code supplierCode,c.tax_price taxPrice, c.tax tax,c.sku_code skuCode
+    from inbound a
+    left join allocation b on a.source_oder_code=b.allocation_code
+    left join allocation_product_batch c on c.allocation_code =b.allocation_code
+    where a.inbound_oder_code= #{inboundOderCode,jdbcType=VARCHAR}
+    and c.sku_code = #{skuCode,jdbcType=VARCHAR}
+    and c.line_num = #{lineCode,jdbcType=BIGINT}
+  </select>
 </mapper>

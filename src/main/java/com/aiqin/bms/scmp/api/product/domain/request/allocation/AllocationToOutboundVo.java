@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.allocation;
 
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -103,6 +104,9 @@ public class AllocationToOutboundVo {
 
     @ApiModelProperty("sku")
     private List<AllocationProductToOutboundVo> skuList;
+
+    @ApiModelProperty("skuListBatch")
+    private List<AllocationProductBatchResVo> skuListBatch;
 
 
     @ApiModelProperty("审批流程id")

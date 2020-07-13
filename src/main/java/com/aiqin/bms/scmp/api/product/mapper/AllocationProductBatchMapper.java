@@ -47,5 +47,9 @@ public interface AllocationProductBatchMapper {
     Integer selectCountByCode(@Param("allocationCode") String allocationCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
 
     void updateByBatch(AllocationBatchRequest detail);
+
+    AllocationProductBatch selectAllocationOutByCode(@Param("inboundOderCode") String inboundOderCode,
+                                   @Param("skuCode") String skuCode,
+                                   @Param("lineCode") int lineCode);
 }
 

@@ -164,7 +164,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Long save(AllocationReqVo vo) {
-
+        log.info("新增调拨移库损溢单保存的参数：[{}]", JsonUtil.toJson(vo));
         Allocation  allocation = new Allocation();
         BeanCopyUtils.copy(vo,allocation);
         allocation.setPatternType(1);
@@ -209,55 +209,64 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             allocationProduct.setTaxPrice(null != allocationProduct.getTaxPrice()?allocationProduct.getTaxPrice():BigDecimal.ZERO);
             allocationProduct.setAllocationCode(allocation.getAllocationCode());
         });
+        ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
+        stockChangeRequest.setOperationType(1);
         LOGGER.info("保存调拨单商品批次表数据参数{}", JsonUtil.toJson(list));
-         int kp =  ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
-         if(kp>0){
-             List<AllocationProduct> products = productbatchTransProduct(list);
-             LOGGER.info("保存调拨单商品表数据参数{}", JsonUtil.toJson(products));
-             ((AllocationService) AopContext.currentProxy()).saveList(products);
-             //TODO 库存锁定
-             // StockChangeRequest stockChangeRequest = new StockChangeRequest();
-             // stockChangeRequest.setOperationType(1);
-             // stockChangeRequest.setOrderCode(allocation.getAllocationCode());
-             // allocation.setUpdateBy(getUser().getPersonName());
-             // List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
-             // stockChangeRequest.setStockVoRequests(list1);
-             // // 调用锁定库存数
-             // HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
-             ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
-             stockChangeRequest.setOperationType(1);
-             allocation.setUpdateBy(getUser().getPersonName());
-             List<StockInfoRequest> list1 = allocationProductTransStock(allocation,products);
-             stockChangeRequest.setStockList(list1);
-             List<StockBatchInfoRequest> batchList1 = allocationBatchTransStock(allocation,list);
-             stockChangeRequest.setStockBatchList(batchList1);
-             // 调用锁定库存数
-             HttpResponse httpResponse= stockService.stockAndBatchChange(stockChangeRequest);
-             if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation.getCallOutWarehouseCode());
+        if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)){
+            int kp =  ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
+            if(kp<=0) {
+                log.error("调拨单sku批次数据保存失败");
+                throw new GroundRuntimeException("调拨单sku批次数据保存失败");
+            }
 
-             }else{
-                 log.error(httpResponse.getMessage());
-                 throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
-             }
-             //调用审批流
-             WorkFlowRespVO workFlowRespVO = workFlow(k, form, vo.getPositionCode());
-             // 当申请人和审批人是同一人的话直接调用审批回调接口
-             if(workFlowRespVO.getStatus()==3){
-                 AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-                 WorkFlowCallbackVO vo1 = new WorkFlowCallbackVO();
-                 vo1.setApprovalOpinion("自动通过");
-                 vo1.setApprovalUserCode(authToken.getPersonId());
-                 vo1.setApprovalUserName(authToken.getPersonName());
-                 vo1.setFormNo(form);
-                 vo1.setOptBtn("BTN-004");
-                 vo1.setUpdateFormStatus(15);
-                 workFlowService.workFlowCallBack(WorkFlow.getAll().get(type),vo1);
-             }
-             return  k;
-         }else {
-             log.error("调拨单sku保存失败");
-             throw new GroundRuntimeException("调拨单sku保存失败");
+            List<StockBatchInfoRequest> batchList1 = allocationBatchTransStock(allocation,list);
+            stockChangeRequest.setStockBatchList(batchList1);
+        }
+         List<AllocationProduct> products = productbatchTransProduct(list);
+         LOGGER.info("保存调拨单商品表数据参数{}", JsonUtil.toJson(products));
+         ((AllocationService) AopContext.currentProxy()).saveList(products);
+
+        allocation.setUpdateBy(getUser().getPersonName());
+        List<StockInfoRequest> list1 = allocationProductTransStock(allocation,products);
+        stockChangeRequest.setStockList(list1);
+
+         //TODO 库存锁定
+         // StockChangeRequest stockChangeRequest = new StockChangeRequest();
+         // stockChangeRequest.setOperationType(1);
+         // stockChangeRequest.setOrderCode(allocation.getAllocationCode());
+         // allocation.setUpdateBy(getUser().getPersonName());
+         // List<StockVoRequest> list1 = allocationProductTransStock(allocation,products);
+         // stockChangeRequest.setStockVoRequests(list1);
+         // // 调用锁定库存数
+         // HttpResponse httpResponse= stockService.changeStock(stockChangeRequest);
+         // 调用锁定库存数
+         HttpResponse httpResponse= stockService.stockAndBatchChange(stockChangeRequest);
+         if(httpResponse.getCode().equals(MsgStatus.SUCCESS)){
+
+         }else{
+             log.error(httpResponse.getMessage());
+             throw  new BizException(ResultCode.STOCK_LOCK_ERROR);
          }
+         //调用审批流
+         WorkFlowRespVO workFlowRespVO = workFlow(k, form, vo.getPositionCode());
+         // 当申请人和审批人是同一人的话直接调用审批回调接口
+         if(workFlowRespVO.getStatus()==3){
+             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
+             WorkFlowCallbackVO vo1 = new WorkFlowCallbackVO();
+             vo1.setApprovalOpinion("自动通过");
+             vo1.setApprovalUserCode(authToken.getPersonId());
+             vo1.setApprovalUserName(authToken.getPersonName());
+             vo1.setFormNo(form);
+             vo1.setOptBtn("BTN-004");
+             vo1.setUpdateFormStatus(15);
+             workFlowService.workFlowCallBack(WorkFlow.getAll().get(type),vo1);
+         }
+         return  k;
+//         }else {
+//             log.error("调拨单sku保存失败");
+//             throw new GroundRuntimeException("调拨单sku保存失败");
+//         }
     }
 
     /**
@@ -618,20 +627,33 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_OUTBOUND.getName());
         int count = allocationMapper.updateByPrimaryKeySelective(allocation);
         // 查看调拨单批次商品信息
-//        List<AllocationBatchRequest> batchList = request.getBatchList();
-//        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
-//            for (AllocationBatchRequest detail: batchList) {
-//                Integer count1 = allocationProductBatchMapper.selectCountByCode(request.getAllocationCode(), detail.getSkuCode(), detail.getBatchCode());
-//                if(count1 > 0){
-//                    // 更新
-//                    allocationProductBatchMapper.updateByBatch(detail);
-//                }else {
-//                    // 保存
-//                    AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
-//                    allocationProductBatchMapper.insertSelective(allocationProductBatch);
-//                }
-//            }
-//        }
+        List<AllocationBatchRequest> batchList = request.getBatchList();
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+            for (AllocationBatchRequest detail: batchList) {
+                Integer count1 = allocationProductBatchMapper.selectCountByCode(request.getAllocationCode(), detail.getSkuCode(), detail.getBatchCode());
+                if(count1 > 0){
+                    // 更新
+                    allocationProductBatchMapper.updateByBatch(detail);
+                }else {
+                    // 保存
+                    List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), detail.getBatchCode());
+                    AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                    allocationProductBatch.setAllocationCode(request.getAllocationCode());
+                    allocationProductBatch.setCallOutBatchNumber(detail.getBatchCode());
+                    allocationProductBatch.setCallOutBatchInfoCode(detail.getBatchInfoCode());
+                    allocationProductBatch.setSupplierCode(detail.getSupplierCode());
+                    allocationProductBatch.setSkuCode(detail.getSkuCode());
+                    allocationProductBatch.setSkuName(detail.getSkuName());
+                    allocationProductBatch.setProductDate(detail.getProductDate());
+                    allocationProductBatch.setCallOutActualTotalCount(detail.getActualTotalCount());
+                    allocationProductBatch.setQuantity(detail.getTotalCount());
+                    allocationProductBatch.setLineNum(Long.valueOf(detail.getLineCode()));
+                    allocationProductBatch.setTaxPrice(stockBatches.get(0).getTaxCost() == null ? BigDecimal.ZERO : stockBatches.get(0).getTaxCost());
+                    allocationProductBatch.setTax(stockBatches.get(0).getTaxRate() == null ? BigDecimal.ZERO : stockBatches.get(0).getTaxRate());
+                    allocationProductBatchMapper.insertSelective(allocationProductBatch);
+                }
+            }
+        }
 
 
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
@@ -959,9 +981,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         aWmsOutProSource.add(aWmsProductList);
                     }
                     // 调拨商品批次数据
+                if(org.apache.commons.collections.CollectionUtils.isNotEmpty(aProductBatchLists) && aProductBatchLists.size() > 0){
                     for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
                         BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
-                      //  BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
+                        //  BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
                         aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
                         aWmsProductBatchList.setSkuCode(aProductBatchList.getSkuCode());
                         aWmsProductBatchList.setSkuName(aProductBatchList.getSkuName());
@@ -971,6 +994,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                         aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
                         aWmsOutProBatchSource.add(aWmsProductBatchList);
                     }
+                }
                     aWmsOutSource.setDetailList(aWmsOutProSource);
                     aWmsOutSource.setBatchInfo(aWmsOutProBatchSource);
                     LOGGER.error("审批成功后：调拨调用wms,参数：{}", JsonUtil.toJson(aWmsOutSource));

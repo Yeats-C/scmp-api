@@ -27,6 +27,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.outbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuRespVo;
@@ -850,7 +851,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                             if (StringUtils.isNotBlank(supplierCode)) {
                                 batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                        batch.getBatchCode() + "_" + outbound.getSupplierCode() + "_" +
+                                        batch.getBatchCode() + "_" + supplierCode + "_" +
                                         amount.stripTrailingZeros().toPlainString();
                             } else {
                                 batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
@@ -1113,8 +1114,23 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             // 转化成出库单
 //            InboundReqSave convert =  new AllocationResVo2InboundReqVoConverter(warehouseService).convert(allocationResVo);
             AllocationTypeEnum enumByType = AllocationTypeEnum.getAllocationTypeEnumByType(allocation.getAllocationType());
-            LOGGER.info("调拨单数据转入库单参数{}", JsonUtil.toJson(allocation));
+            LOGGER.info("调拨单数据转入库单参数{}", JsonUtil.toJson(allocationResVo));
             InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByType,productSkuPicturesDao).convert(allocation);
+            List<AllocationProductBatchResVo> allocationProductBatchResVos = allocationProductBatchMapper.selectByAllocationCode(allocation.getAllocationCode());
+//            List<InboundBatch> inboundBatches = new ArrayList<>();
+//            for (AllocationProductBatchResVo allocationProductBatchResVo : allocationProductBatchResVos) {
+//                InboundBatch inboundBatch = new InboundBatch();
+//                inboundBatch.setBatchCode(allocationProductBatchResVo.getBatchNumber());
+//                inboundBatch.setBatchInfoCode(allocationProductBatchResVo.getCalloutBatchInfoCode());
+//            }
+//            convert1.setInboundBatchList(inboundBatches);
+            List<String> codes = allocationProductBatchResVos.stream().map(AllocationProductBatchResVo::getSupplierCode).distinct().collect(Collectors.toList());
+            for (String code : codes) {
+                if(code != null){
+                    convert1.setSupplierCode(code);
+                }
+            }
+
             LOGGER.info("保存入库单数据参数{}", JsonUtil.toJson(convert1));
             String inboundOderCode = inboundService.saveInbound(convert1);
             //更改调拨在途数
