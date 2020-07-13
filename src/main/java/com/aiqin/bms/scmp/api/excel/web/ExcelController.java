@@ -52,7 +52,7 @@ public class ExcelController {
     @Resource
     private ExcelService excelService;
 
-    @PostMapping("/apply/import")
+    @PostMapping("/import")
     @ApiOperation(value = "批量导入申请单")
     public HttpResponse rejectApplyImport(@RequestParam("file") MultipartFile multipartFile) throws Exception {
         if (Objects.nonNull(multipartFile)) {
