@@ -1058,7 +1058,22 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 }
                 request.setDetailList(detailList);
                 if(CollectionUtils.isNotEmpty(batchList)){
-                    List<AllocationBatchRequest> infoBatch = BeanCopyUtils.copyList(batchList, AllocationBatchRequest.class);
+                    List<AllocationBatchRequest> infoBatch = new ArrayList<>();
+                    for (OutboundBatch outboundBatch : batchList) {
+                        AllocationBatchRequest allocationBatchRequest = new AllocationBatchRequest();
+                        allocationBatchRequest.setBatchCode(outboundBatch.getBatchCode());
+                        allocationBatchRequest.setBatchInfoCode(outboundBatch.getBatchInfoCode());
+                        allocationBatchRequest.setSkuCode(outboundBatch.getSkuCode());
+                        allocationBatchRequest.setSkuName(outboundBatch.getSkuName());
+                        allocationBatchRequest.setSupplierCode(outboundBatch.getSupplierCode());
+                        allocationBatchRequest.setProductDate(outboundBatch.getProductDate());
+                        allocationBatchRequest.setLineCode(outboundBatch.getLineCode().intValue());
+                        allocationBatchRequest.setTotalCount(outboundBatch.getTotalCount());
+                        allocationBatchRequest.setActualTotalCount(outboundBatch.getActualTotalCount());
+                        allocationBatchRequest.setCreateTime(outboundBatch.getCreateTime());
+                        allocationBatchRequest.setUpdateTime(outboundBatch.getUpdateTime());
+                        infoBatch.add(allocationBatchRequest);
+                    }
                     request.setBatchList(infoBatch);
                 }
                 // 回传给调拨
