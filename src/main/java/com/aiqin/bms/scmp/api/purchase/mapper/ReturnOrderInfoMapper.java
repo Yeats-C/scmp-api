@@ -29,4 +29,8 @@ public interface ReturnOrderInfoMapper {
     List<ReturnOrderInfo> list(ReturnGoodsRequest request);
 
     Integer listCount(ReturnGoodsRequest request);
+
+    List<String> selectByReturnOrderCodeList(@Param("list") List<String> retrunOrderCodeList);
+
+    int insertMany(@Param("list") List<ReturnOrderInfo> returnOrderInfos);
 }

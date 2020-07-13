@@ -13,8 +13,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
@@ -73,6 +75,9 @@ public class ExcelService {
     @Resource
     private ReturnOrderInfoMapper returnOrderInfoMapper;
 
+    @Resource
+    private ReturnOrderInfoItemMapper returnOrderInfoItemMapper;
+
     /**
      * 导入单据到线上数据库
      *
@@ -95,15 +100,14 @@ public class ExcelService {
                 if ("采购单主表".equals(sheetAt.getSheetName())) {
 //                    List<PurchaseOrderExcel> purchaseOrderExcels = ExcelUtil.readExcel(multipartFile, PurchaseOrderExcel.class, i + 1);
 //                    System.out.println(purchaseOrderExcels);
-//                    this.saveDb(purchaseOrderExcels);
-//                    purchaseOrderExcels.clear();
+//                    this.this.saveDb(purchaseOrderExcels);
                 } else if ("采购单明细表".equals(sheetAt.getSheetName())) {
-//                    List<PurchaseOrderProductExcel> pus = ExcelUtil.readExcel(multipartFile, PurchaseOrderProductExcel.class, i + 1);
-//                    savepurchaseOrderProductDb(pus);
+                    List<PurchaseOrderProductExcel> pus = ExcelUtil.readExcel(multipartFile, PurchaseOrderProductExcel.class, i + 1);
+                    this.savepurchaseOrderProductDb(pus);
 
                 } else if ("退供单主表".equals(sheetAt.getSheetName())) {
 //                    List<RejectRecordExcel> rrs = ExcelUtil.readExcel(multipartFile, RejectRecordExcel.class, i + 1);
-//                    saveRejectRecord(rrs);
+//                    this.saveRejectRecord(rrs);
 
 
                 } else if ("退供单明细表".equals(sheetAt.getSheetName())) {
@@ -112,14 +116,19 @@ public class ExcelService {
 
                 } else if ("销售单主表".equals(sheetAt.getSheetName())) {
 //                    List<OrderInfoExcel> of = ExcelUtil.readExcel(multipartFile, OrderInfoExcel.class, i + 1);
-//                    saveOrderInfo(of);
+//                    this.saveOrderInfo(of);
 
                 } else if ("销售单明细表".equals(sheetAt.getSheetName())) {
 //                    List<OrderInfoItemExcel> oft = ExcelUtil.readExcel(multipartFile, OrderInfoItemExcel.class, i + 1);
-//                    saveOrderInfoItem(oft);
+//                    this.saveOrderInfoItem(oft);
                 } else if ("退货单主表".equals(sheetAt.getSheetName())) {
-                    List<ReturnOrderInfoExcel> returnOrderInfoExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoExcel.class, i + 1);
-                    saveReturnOrderInfo(returnOrderInfoExcels);
+//                    List<ReturnOrderInfoExcel> returnOrderInfoExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoExcel.class, i + 1);
+//                    this.saveReturnOrderInfo(returnOrderInfoExcels);
+
+                } else if ("退货单明细表".equals(sheetAt.getSheetName())) {
+//                    List<ReturnOrderInfoItemExcel> ReturnOrderInfoItemExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoItemExcel.class, i + 1);
+//                    this.saveReturnOrderInfoItem(ReturnOrderInfoItemExcels);
+
 
                 }
 
@@ -195,14 +204,18 @@ public class ExcelService {
 
     }
 
-
+    /**
+     * 保存采购单明细
+     *
+     * @param pus
+     * @throws Exception
+     */
     @Transactional(rollbackFor = Exception.class)
     public void savepurchaseOrderProductDb(List<PurchaseOrderProductExcel> pus) throws Exception {
         if (CollectionUtils.isNotEmptyCollection(pus)) {
             String s = JsonUtil.toJson(pus);
             List<PurchaseOrderProduct> saves = JSONObject.parseArray(s, PurchaseOrderProduct.class);
             pus.clear();
-            System.gc();
             //通过采购单号获取采购id
             List<String> purchaseOrderCode = saves.stream().map(PurchaseOrderProduct::getPurchaseOrderCode).distinct().collect(Collectors.toList());
             List<PurchaseOrder> purchaseOrders = this.purchaseOrderDao.selectByPurchaseOrderCode(purchaseOrderCode);
@@ -212,22 +225,43 @@ public class ExcelService {
                 purchaseOrderIdMap = purchaseOrders.stream().collect(Collectors.toMap(PurchaseOrder::getPurchaseOrderCode, PurchaseOrder::getPurchaseOrderId));
                 purchaseOrders.clear();
             }
-            for (PurchaseOrderProduct save : saves) {
-                save.setBoxGauge(save.getProductCount() + "/" + save.getDanwei());
-                if ("普通商品".equals(save.getLiebie())) {
-                    save.setProductType(0);
-                } else if ("实物返".equals(save.getLiebie())) {
-                    save.setProductType(2);
-                } else if ("赠品".equals(save.getLiebie())) {
-                    save.setProductType(1);
+            List<String> existPurchaseOrders = this.purchaseOrderProductDao.selectByPurchaseOrderList(purchaseOrderCode);
+
+            Iterator<PurchaseOrderProduct> iterator = saves.iterator();
+            while (iterator.hasNext()) {
+                PurchaseOrderProduct save = iterator.next();
+                if (CollectionUtils.isNotEmptyCollection(existPurchaseOrders)) {
+                    if (existPurchaseOrders.contains(save.getPurchaseOrderCode())) {
+                        iterator.remove();
+                    }
+                } else {
+                    save.setBoxGauge(save.getProductCount() + "/" + save.getDanwei());
+                    if ("普通商品".equals(save.getLiebie())) {
+                        save.setProductType(0);
+                    } else if ("实物返".equals(save.getLiebie())) {
+                        save.setProductType(2);
+                    } else if ("赠品".equals(save.getLiebie())) {
+                        save.setProductType(1);
+                    }
+                    //设置采购单id
+                    String purchaseOrderId = purchaseOrderIdMap.get(save.getPurchaseOrderCode());
+                    save.setPurchaseOrderId(purchaseOrderId);
+                    save.setOrderProductId(UUID.randomUUID().toString().replaceAll("-", ""));
                 }
-                //设置采购单id
-                String purchaseOrderId = purchaseOrderIdMap.get(save.getPurchaseOrderCode());
-                save.setPurchaseOrderId(purchaseOrderId);
-                save.setOrderProductId(UUID.randomUUID().toString().replaceAll("-", ""));
+
             }
             purchaseOrderIdMap.clear();
-            this.purchaseOrderProductDao.insertAll(saves);
+            if (CollectionUtils.isNotEmptyCollection(saves)) {
+
+                Map<Integer, List<PurchaseOrderProduct>> itemMap = new ListUtils<PurchaseOrderProduct>().batchList(saves, 3000);
+                for (Integer i : itemMap.keySet()) {
+                    //数据量太多会mysql报错 分批次插入
+                    List<PurchaseOrderProduct> orderInfosItems = itemMap.get(i);
+                    this.purchaseOrderProductDao.insertAll(orderInfosItems);
+                }
+
+            }
+
             saves.clear();
             try {
                 Thread.sleep(3000);
@@ -420,6 +454,7 @@ public class ExcelService {
      *
      * @param returnOrderInfoExcels
      */
+    @Transactional(rollbackFor = Exception.class)
     public void saveReturnOrderInfo(List<ReturnOrderInfoExcel> returnOrderInfoExcels) {
 
 
@@ -427,32 +462,28 @@ public class ExcelService {
             List<String> retrunOrderCodeList = returnOrderInfoExcels.stream().map(ReturnOrderInfoExcel::getReturnOrderCode).collect(Collectors.toList());
 
             //查询出已经在存在的退货信息
-//            List<ReturnOrderInfo> existOrderCodeeList = this.returnOrderInfoItemMapper.selectByReturnOrderCodeList(retrunOrderCodeList);
-//            if (CollectionUtils.isNotEmptyCollection(existOrderCodeeList)) {
-//                //已经存在退货信息删除
-//                List<String> existOrderCodes = existOrderCodeeList.stream().map(ReturnOrderInfo::getReturnOrderCode).collect(Collectors.toList());
-//
-//                Iterator<ReturnOrderInfoExcel> iterator = returnOrderInfoExcels.iterator();
-//                while (iterator.hasNext()) {
-//                    ReturnOrderInfoExcel next = iterator.next();
-//                    if (existOrderCodes.contains(next.getReturnOrderCode())) {
-//                        //删除已经存在的
-//                        iterator.remove();
-//                    }
-//                }
-//
-//            }
-
+            List<String> existReturnOrderCodeeList = this.returnOrderInfoMapper.selectByReturnOrderCodeList(retrunOrderCodeList);
+            if (CollectionUtils.isNotEmptyCollection(existReturnOrderCodeeList)) {
+                //已经存在退货信息删除
+                Iterator<ReturnOrderInfoExcel> iterator = returnOrderInfoExcels.iterator();
+                while (iterator.hasNext()) {
+                    ReturnOrderInfoExcel next = iterator.next();
+                    if (existReturnOrderCodeeList.contains(next.getReturnOrderCode())) {
+                        //删除已经存在的
+                        iterator.remove();
+                    }
+                }
+            }
+            existReturnOrderCodeeList.clear();
             String s = JsonUtil.toJson(returnOrderInfoExcels);
-            List<OrderInfo> saves = JSONObject.parseArray(s, OrderInfo.class);
+            List<ReturnOrderInfo> saves = JSONObject.parseArray(s, ReturnOrderInfo.class);
             returnOrderInfoExcels.clear();
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 //数据量太多会mysql报错 分批次插入
-                Map<Integer, List<OrderInfo>> itemMap = new ListUtils<OrderInfo>().batchList(saves, 3000);
-
+                Map<Integer, List<ReturnOrderInfo>> itemMap = new ListUtils<ReturnOrderInfo>().batchList(saves, 3000);
                 for (Integer i : itemMap.keySet()) {
-                    List<OrderInfo> orderInfos1 = itemMap.get(i);
-                    orderInfoMapper.insertBatch(orderInfos1);
+                    List<ReturnOrderInfo> returnOrderInfos = itemMap.get(i);
+                    this.returnOrderInfoMapper.insertMany(returnOrderInfos);
                 }
             }
             saves.clear();
@@ -463,6 +494,50 @@ public class ExcelService {
             }
 
 
+        }
+    }
+
+    /**
+     * 保存退货单明细数据
+     *
+     * @param returnOrderInfoItemExcels
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveReturnOrderInfoItem(List<ReturnOrderInfoItemExcel> returnOrderInfoItemExcels) {
+
+        if (CollectionUtils.isNotEmptyCollection(returnOrderInfoItemExcels)) {
+            String s = JsonUtil.toJson(returnOrderInfoItemExcels);
+            List<ReturnOrderInfoItem> saves = JSONObject.parseArray(s, ReturnOrderInfoItem.class);
+            returnOrderInfoItemExcels.clear();
+            //查询出已经存在的明细删除掉
+            List<String> returnOrderList = saves.stream().map(ReturnOrderInfoItem::getReturnOrderCode).distinct().collect(Collectors.toList());
+            List<String> existReturnOrderCodeList = this.returnOrderInfoItemMapper.selectByReturnOrderList(returnOrderList);
+            if (CollectionUtils.isNotEmptyCollection(existReturnOrderCodeList)) {
+                Iterator<ReturnOrderInfoItem> iterator = saves.iterator();
+                while (iterator.hasNext()) {
+                    ReturnOrderInfoItem next = iterator.next();
+                    if (existReturnOrderCodeList.contains(next.getReturnOrderCode())) {
+                        //删除已经存在的
+                        iterator.remove();
+                    }
+                }
+
+            }
+            if (CollectionUtils.isNotEmptyCollection(saves)) {
+                Map<Integer, List<ReturnOrderInfoItem>> itemMap = new ListUtils<ReturnOrderInfoItem>().batchList(saves, 3000);
+                for (Integer i : itemMap.keySet()) {
+                    //数据量太多会mysql报错 分批次插入
+                    List<ReturnOrderInfoItem> orderInfosItems = itemMap.get(i);
+                    returnOrderInfoItemMapper.insertList(orderInfosItems);
+                }
+            }
+
+            saves.clear();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

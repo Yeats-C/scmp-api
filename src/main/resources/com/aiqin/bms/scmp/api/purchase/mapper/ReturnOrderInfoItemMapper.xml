@@ -212,4 +212,13 @@
         where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
         order by product_line_num desc limit 1
     </select>
+    <select id="selectByReturnOrderList" resultType="java.lang.String">
+        select return_order_code
+        from return_order_info_item
+        where
+        return_order_code in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item,jdbcType=VARCHAR}
+        </foreach>
+    </select>
 </mapper>

@@ -249,4 +249,16 @@
     </foreach>
     )
   </select>
+    <select id="selectByPurchaseOrderList" resultType="java.lang.String">
+      select
+      purchase_order_code
+      from
+      purchase_order_product
+      where
+      purchase_order_code in
+      <foreach collection="list" item="item" open="(" close=")" separator=",">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+
+    </select>
 </mapper>
