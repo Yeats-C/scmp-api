@@ -1138,7 +1138,6 @@ public class SapBaseDataServiceImpl implements SapBaseDataService {
         if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
             if(dataType == 0){
                 LOGGER.info("调用结算sap销售单据成功:{}", httpResponse.getMessage());
-               // PurchaseOrder order = new PurchaseOrder();
                 OrderInfo order = new OrderInfo();
                 order.setOrderCode(orderCode);
                 order.setSynchrStatus(1);

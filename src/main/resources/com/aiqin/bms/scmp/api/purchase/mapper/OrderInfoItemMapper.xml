@@ -667,4 +667,16 @@
       and product_line_num = #{item.productLineNum,jdbcType=BIGINT}
     </foreach>
   </update>
+    <select id="selectByOrderCodes" resultType="java.lang.String">
+      select
+      order_code
+      from
+      order_info_item
+      where
+      order_code in
+      <foreach collection="list" item="item" open="(" close=")" separator=",">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+
+    </select>
 </mapper>

@@ -1739,4 +1739,13 @@ transport_number, platform_type, business_form, tax_id
     <update id="updateOrderSynchrSap">
         update order_info set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where order_code = #{orderCode}
     </update>
+    <select id="selectByOrderCodes" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from order_info
+        where order_code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
