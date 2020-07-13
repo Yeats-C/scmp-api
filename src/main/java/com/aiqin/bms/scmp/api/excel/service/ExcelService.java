@@ -21,7 +21,6 @@ import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
-import com.aiqin.bms.scmp.api.util.excel.utils.WDWUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -29,10 +28,6 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -47,14 +42,6 @@ import java.util.stream.Collectors;
 @Service
 public class ExcelService {
 
-    private static com.alibaba.excel.metadata.Sheet initSheet;
-
-    //自定义设置初始化sheet相关参数，可根据实际情形调整
-    static {
-        initSheet = new com.alibaba.excel.metadata.Sheet(1, 0);
-        initSheet.setSheetName("sheet");
-        initSheet.setAutoWidth(Boolean.TRUE);
-    }
 
     @Resource
     private PurchaseOrderDao purchaseOrderDao;
@@ -88,7 +75,7 @@ public class ExcelService {
     public HttpResponse importExcel(MultipartFile multipartFile) throws Exception {
         FileInputStream inputStream = (FileInputStream) multipartFile.getInputStream();
         //String originalFilename = multipartFile.getOriginalFilename();
-       // Workbook wb = null;
+        // Workbook wb = null;
         try {
 //            log.info("============开始创建Workbook对象============================");
 //            if (WDWUtil.isExcel2007(originalFilename)) {
@@ -99,44 +86,40 @@ public class ExcelService {
 //            log.info("============创建Workbook对象成功============================");
 //            int numberOfSheets = wb.getNumberOfSheets();
             for (int i = 1; i < 9; i++) {
-                if (i==1) {
+                if (i == 1) {
+                    //采购单主表
                     List<PurchaseOrderExcel> purchaseOrderExcels = ExcelUtil.readExcel(multipartFile, PurchaseOrderExcel.class, i + 1);
                     this.saveDb(purchaseOrderExcels);
-                    log.info("执行完成采购单主表数据========================================");
-                } else if (i==2) {
+                } else if (i == 2) {
+                    //采购单明细
                     List<PurchaseOrderProductExcel> pus = ExcelUtil.readExcel(multipartFile, PurchaseOrderProductExcel.class, i + 1);
                     this.savepurchaseOrderProductDb(pus);
-                    log.info("执行完成采购单明细表数据========================================");
-
-                } else if (i==3) {
+                } else if (i == 3) {
+                    //退供主表
                     List<RejectRecordExcel> rrs = ExcelUtil.readExcel(multipartFile, RejectRecordExcel.class, i + 1);
                     this.saveRejectRecord(rrs);
-
-                    log.info("执行完成退供单主表========================================");
-
-                } else if (i==4) {
+                } else if (i == 4) {
+                    //退供表明细
                     List<RejectRecordDetailExcel> rrd = ExcelUtil.readExcel(multipartFile, RejectRecordDetailExcel.class, i + 1);
                     saveRejectRecordDetail(rrd);
-                    log.info("执行完成退供单明细表========================================");
 
-                } else if (i==5) {
+                } else if (i == 5) {
+                    //销售主表
                     List<OrderInfoExcel> of = ExcelUtil.readExcel(multipartFile, OrderInfoExcel.class, i + 1);
                     this.saveOrderInfo(of);
-                    log.info("执行完成销售单主表========================================");
 
-                } else if (i==6) {
+                } else if (i == 6) {
+                    //销售明细
                     List<OrderInfoItemExcel> oft = ExcelUtil.readExcel(multipartFile, OrderInfoItemExcel.class, i + 1);
                     this.saveOrderInfoItem(oft);
-
-                } else if (i==7) {
+                } else if (i == 7) {
+                    //退货主表
                     List<ReturnOrderInfoExcel> returnOrderInfoExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoExcel.class, i + 1);
                     this.saveReturnOrderInfo(returnOrderInfoExcels);
-                    log.info("执行完成退货单主表========================================");
-
-                } else if (i==8) {
+                } else if (i == 8) {
+                    //退货明细
                     List<ReturnOrderInfoItemExcel> ReturnOrderInfoItemExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoItemExcel.class, i + 1);
                     this.saveReturnOrderInfoItem(ReturnOrderInfoItemExcels);
-                    log.info("执行完成退货单明细表========================================");
                 }
 
             }
@@ -206,7 +189,8 @@ public class ExcelService {
                 if (CollectionUtils.isNotEmptyCollection(saves)) {
                     this.purchaseOrderDao.insertMany(saves);
                 }
-                saves.clear();
+                log.info("执行完成采购单主表数据插入条数===================={}", saves.size());
+                saves=null;
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -277,8 +261,8 @@ public class ExcelService {
                 }
 
             }
-
-            saves.clear();
+            log.info("执行完成采购单明细表数据插入条数==============================={}", saves.size());
+            saves=null;
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -329,6 +313,8 @@ public class ExcelService {
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 this.rejectRecordDao.insertMany(saves);
             }
+
+            log.info("执行完成退供单主表插入条数================================{}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -390,6 +376,7 @@ public class ExcelService {
                     this.rejectRecordDetailDao.insertAll(orderInfosItems);
                 }
             }
+            log.info("执行完成退供单明细表插入条数=================================={}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -440,6 +427,7 @@ public class ExcelService {
                     orderInfoMapper.insertBatch(orderInfos1);
                 }
             }
+            log.info("执行完成销售主表插入条数=================================={}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -485,8 +473,7 @@ public class ExcelService {
                     orderInfoItemMapper.insertBatch(orderInfosItems);
                 }
             }
-            log.info("执行完成售单明细表插入条数============={}", saves.size());
-
+            log.info("执行完成售单明细表插入条数====================={}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -534,6 +521,7 @@ public class ExcelService {
                     this.returnOrderInfoMapper.insertMany(returnOrderInfos);
                 }
             }
+            log.info("执行完成退货单主表插入条数=================================={}",saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -579,7 +567,7 @@ public class ExcelService {
                     returnOrderInfoItemMapper.insertList(orderInfosItems);
                 }
             }
-
+            log.info("执行完成退货单明细表插入条数==================================={}",saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
