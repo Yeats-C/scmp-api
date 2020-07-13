@@ -592,23 +592,23 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             vo.setItemBatchList(null);
         }
         //  调用月份日期转换  京东情况下转日期传日期
-//        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockList) && stockList.size() > 0){
-//            stockMonthRequest.setStockList(stockList);
-//            List<StockDayBatch> stockDayBatches = stockService.monthBatch(stockMonthRequest);
-//            List<OrderInfoItemProductBatch> itemBatchLists = new ArrayList<>();
-//            OrderInfoItemProductBatch orderInfoItemProductBatch;
-//            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0){
-//                for (StockDayBatch stockDayBatch : stockDayBatches) {
-//                    orderInfoItemProductBatch = new OrderInfoItemProductBatch();
-//                    orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
-//                    orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
-//                    orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
-//                    orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
-//                    itemBatchLists.add(orderInfoItemProductBatch);
-//                }
-//            }
-//            vo.setItemBatchList(itemBatchLists);
-//        }
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockList) && stockList.size() > 0){
+            stockMonthRequest.setStockList(stockList);
+            List<StockDayBatch> stockDayBatches = stockService.monthBatch(stockMonthRequest);
+            List<OrderInfoItemProductBatch> itemBatchLists = new ArrayList<>();
+            OrderInfoItemProductBatch orderInfoItemProductBatch;
+            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0){
+                for (StockDayBatch stockDayBatch : stockDayBatches) {
+                    orderInfoItemProductBatch = new OrderInfoItemProductBatch();
+                    orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
+                    orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
+                    orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
+                    orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
+                    itemBatchLists.add(orderInfoItemProductBatch);
+                }
+            }
+            vo.setItemBatchList(itemBatchLists);
+        }
         if(org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0){
             vo.setItemBatchMonthList(itemBatchMonthList);
         }
@@ -849,6 +849,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         BigDecimal totalChannelAmount = BigDecimal.ZERO;
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
         for(ErpOrderItem item : request.getItemList()){
+            item.setBatchCode("2020-07");
             product = new OrderInfoItemReqVO();
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // map中有数据判断 没有新增
