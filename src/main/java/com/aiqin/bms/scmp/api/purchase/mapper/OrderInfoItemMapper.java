@@ -68,4 +68,6 @@ public interface OrderInfoItemMapper {
     Integer updateBatch(List<OrderInfoItem> itemList);
 
     List<OrderInfoItem> selectByIds(List<Long> itemIds);
+
+    List<String> selectByOrderCodes(@Param("list") List<String> orderCodeList);
 }

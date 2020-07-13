@@ -196,9 +196,9 @@
         where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
         and line_code = #{lineCode,jdbcType=INTEGER}
     </select>
-    <select id="selectByRejectCodeList" resultMap="BaseResultMap">
+    <select id="selectByRejectCodeList" resultType="string">
         select
-        <include refid="Base_Column_List"/>
+        reject_record_code
         from reject_record_detail
         where reject_record_code in
         <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
