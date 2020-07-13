@@ -214,4 +214,6 @@ public interface ResultCode {
     MessageId REPEAT_DATA2 = MessageId.create(Project.SCMP_API, 10007, "修改仓库地址存在重复,请检查后重新提交");
     MessageId REUPDATE_ERROR = MessageId.create(Project.SCMP_API, 10007, "只有审批驳回或者撤销的数据才能重新编辑");
 
+    MessageId EXCEL_IS_NULL_ERROR = MessageId.create(Project.SCMP_API, 10008, "未获取到要导入的Excel文件");
+
 }

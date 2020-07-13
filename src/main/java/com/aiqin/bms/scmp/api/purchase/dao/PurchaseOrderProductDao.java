@@ -33,4 +33,6 @@ public interface PurchaseOrderProductDao {
     List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
 
     List<PurchaseOrderProduct> listForSap(SapOrderRequest sapOrderRequest);
+
+    List<String> selectByPurchaseOrderList(@Param("list") List<String> list);
 }

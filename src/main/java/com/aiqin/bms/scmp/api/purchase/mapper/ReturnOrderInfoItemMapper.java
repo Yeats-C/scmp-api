@@ -29,4 +29,6 @@ public interface ReturnOrderInfoItemMapper {
     Integer listCount(ReturnGoodsRequest request);
 
     Long returnOrderByLastLineCode(String returnOrderCode);
+
+    List<String> selectByReturnOrderList(@Param("list") List<String> returnOrderList);
 }
