@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.excel.service;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.excel.domain.*;
 import com.aiqin.bms.scmp.api.excel.utils.ListUtils;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
@@ -24,6 +25,8 @@ import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.util.excel.utils.WDWUtil;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
@@ -88,12 +91,13 @@ public class ExcelService {
         String originalFilename = multipartFile.getOriginalFilename();
         Workbook wb = null;
         try {
+            log.info("============开始创建Workbook对象============================");
             if (WDWUtil.isExcel2007(originalFilename)) {
                 wb = new XSSFWorkbook(inputStream);
             } else {
                 wb = new HSSFWorkbook(inputStream);
             }
-
+            log.info("============创建Workbook对象成功============================");
             int numberOfSheets = wb.getNumberOfSheets();
             for (int i = 1; i < numberOfSheets; i++) {
                 Sheet sheetAt = wb.getSheetAt(i);
@@ -141,19 +145,22 @@ public class ExcelService {
 
         } catch (Exception e) {
             log.error("异常=={}", e.toString());
+            HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
         } finally {
             try {
                 if (wb != null) {
                     wb.close();
                 }
             } catch (IOException ignore) {
-                log.error(ignore.toString());
+                log.error("Workbook关闭异常=={}",ignore);
+                HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, ignore.getMessage()));
             }
 
             try {
                 inputStream.close();
             } catch (IOException e) {
-                log.error("关闭文件流失败=={}", e.toString());
+                log.error("FileInputStream关闭异常=={}",e);
+                HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
             }
         }
         return HttpResponse.success();
