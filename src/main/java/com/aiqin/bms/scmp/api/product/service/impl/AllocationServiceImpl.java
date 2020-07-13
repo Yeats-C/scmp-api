@@ -1092,7 +1092,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         warehouseConfigReq.setWarehouseCode(allocation1.getCallOutWarehouseCode());
         LOGGER.error("审批成功后：移库调用wms获取库房配置信息参数:{}", JSON.toJSON(warehouseConfigReq));
         String movementUrl = urlConfig.WMS_API_URL2+"/storehouseConfig/search/info";
-        HttpClient movementUrlHttpClient = HttpClient.post(movementUrl).json(warehouseConfigReq).timeout(200000);
+        HttpClient movementUrlHttpClient = HttpClient.get(movementUrl).timeout(200000);
+        movementUrlHttpClient.addParameter("storehouse_code", allocation1.getCallOutWarehouseCode());
         HttpResponse<WarehouseConfigResp> movementUrlResult = movementUrlHttpClient.action().result(new TypeReference<HttpResponse<WarehouseConfigResp>>(){
         });
         if (!movementUrlResult.getCode().equals(MessageId.SUCCESS_CODE)) {

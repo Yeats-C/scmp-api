@@ -567,9 +567,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outboundCallBackReqVo.setDetailList(list);
         //保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.PULL_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),outbound,HandleTypeCoce.PULL_OUTBOUND_ODER.getName(),new Date(),outbound.getCreateBy(), null);
-        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
-            workFlowCallBack(outboundCallBackReqVo);
-        }
+//        if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.MOVEMENT.getCode())){
+//            workFlowCallBack(outboundCallBackReqVo);
+//        }
     }
 
     @Override
