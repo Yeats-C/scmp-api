@@ -260,4 +260,23 @@ public final class Global {
      */
     public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_0 = 0;
     public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_1 = 1;
+
+    /**
+     *  调用DL 单据类型 1.采购 2.退供 3.调拨出 7调拨入 4.移库出 8移库入 5.报损 9报溢 6.预定订单
+     */
+    public static final Integer DL_ORDER_TYPE_1 = 1;
+    public static final Integer DL_ORDER_TYPE_2 = 2;
+    public static final Integer DL_ORDER_TYPE_3 = 3;
+    public static final Integer DL_ORDER_TYPE_4 = 4;
+    public static final Integer DL_ORDER_TYPE_5 = 5;
+    public static final Integer DL_ORDER_TYPE_6 = 6;
+    public static final Integer DL_ORDER_TYPE_7 = 7;
+    public static final Integer DL_ORDER_TYPE_8 = 8;
+    public static final Integer DL_ORDER_TYPE_9 = 9;
+
+    /**
+     *  调用DL 操作类型类型 1. 加库存  2.减库存
+     */
+    public static final Integer DL_OPERATION_TYPE_1 = 1;
+    public static final Integer DL_OPERATION_TYPE_2 = 2;
 }
