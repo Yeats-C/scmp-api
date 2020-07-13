@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -142,6 +143,9 @@ public class InboundServiceImpl implements InboundService {
     private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
+    @Autowired
+    private StockBatchDao stockBatchDao;
+
 
     /**
      * 分页查询以及列表搜索
@@ -655,7 +659,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 变更入库单批次的信息
         List<InboundBatch> inboundBatchList = Lists.newArrayList();
-        InboundBatch productBatch;
+        InboundBatch productBatch = null;
         List<InboundBatchCallBackRequest> notBatchList = Lists.newArrayList();
         if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
             Map<String, Long> actualTotalCountMap = new HashMap<>();
@@ -738,14 +742,18 @@ public class InboundServiceImpl implements InboundService {
                 InboundProduct product = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode());
 
                 // 调拨下  供应商 成本从出库中获取
-                AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode().intValue());
-
-                // 退货的更新入库单的批次信息
-                if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+                AllocationProductBatch allocationProductBatch = null;
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
+                    allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode().intValue());
+                }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
                     productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
                     if (productBatch == null) {
                         productBatch = inboundBatchDao.inboundBatchByInfoCode(null, inbound.getInboundOderCode(), batchInfo.getLineCode());
                     }
+                }
+
+                // 退货的更新入库单的批次信息
+                if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
                     if (productBatch == null) {
                         notBatchList.add(batchInfo);
                         LOGGER.info("wms回传退货单未查询到的退货单批次信息 ：{}", notBatchList);
@@ -809,15 +817,16 @@ public class InboundServiceImpl implements InboundService {
                     this.addStockBatch(stockBatchInfo, inbound);
                     stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
                     if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
-                        productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
-                        if (productBatch == null) {
-                            productBatch = inboundBatchDao.inboundBatchByInfoCode(null, inbound.getInboundOderCode(), batchInfo.getLineCode());
-                        }
-                        if(productBatch != null){
+                        // 查询批次信息
+                        if(batchInfo.getBatchCode().equals(productBatch.getBatchCode())){
                             stockBatchInfo.setBatchInfoCode(productBatch.getBatchInfoCode());
+                        }else {
+                            List<StockBatch> list = stockBatchDao.stockBatchByOutbound(batchInfo.getSkuCode(), warehouse.getWarehouseCode(), batchInfo.getBatchCode());
+                            if(CollectionUtils.isNotEmpty(list) && list.size() > 0){
+                                stockBatchInfo.setBatchInfoCode(list.get(0).getBatchInfoCode());
+                            }
                         }
                     }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
-
                         stockBatchInfo.setSupplierCode(allocationProductBatch.getSupplierCode());
                         stockBatchInfo.setTaxCost(allocationProductBatch.getTaxPrice());
                     }
