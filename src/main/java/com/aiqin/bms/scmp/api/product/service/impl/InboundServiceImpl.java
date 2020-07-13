@@ -802,6 +802,7 @@ public class InboundServiceImpl implements InboundService {
                 if(stockMap.get(key) == null) {
                     stockBatchInfo = new StockBatchInfoRequest();
                     this.addStockBatch(stockBatchInfo, inbound);
+                    stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
                     if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
                         productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
                         if (productBatch == null) {
@@ -810,6 +811,10 @@ public class InboundServiceImpl implements InboundService {
                         if(productBatch != null){
                             stockBatchInfo.setBatchInfoCode(productBatch.getBatchInfoCode());
                         }
+                    }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
+
+                        stockBatchInfo.setSupplierCode("");
+                        stockBatchInfo.setTaxCost(BigDecimal.ZERO);
                     }
                     stockBatchInfo.setProductDate(batchInfo.getProductDate());
                     stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
@@ -818,7 +823,6 @@ public class InboundServiceImpl implements InboundService {
                     stockBatchInfo.setSourceDocumentType(sourceDocumentType);
                     stockBatchInfo.setSkuCode(batchInfo.getSkuCode());
                     stockBatchInfo.setSkuName(batchInfo.getSkuName());
-                    stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
                     stockBatchInfo.setTaxRate(product.getTax());
                     if (StringUtils.isNotBlank(request.getOperatorId())) {
                         stockBatchInfo.setOperatorId(request.getOperatorId());
