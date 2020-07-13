@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
@@ -33,12 +34,15 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuDistributionInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildSourceInit;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySourceInit;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
@@ -71,7 +75,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
@@ -82,7 +85,6 @@ import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @Classname: InboundServiceImpl
@@ -142,6 +144,8 @@ public class InboundServiceImpl implements InboundService {
     private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private AllocationProductMapper allocationProductMapper;
+    @Autowired
+    private PurchaseBatchDao purchaseBatchDao;
 
     /**
      * 分页查询以及列表搜索
@@ -798,6 +802,15 @@ public class InboundServiceImpl implements InboundService {
                 if(stockMap.get(key) == null) {
                     stockBatchInfo = new StockBatchInfoRequest();
                     this.addStockBatch(stockBatchInfo, inbound);
+                    if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+                        productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
+                        if (productBatch == null) {
+                            productBatch = inboundBatchDao.inboundBatchByInfoCode(null, inbound.getInboundOderCode(), batchInfo.getLineCode());
+                        }
+                        if(productBatch != null){
+                            stockBatchInfo.setBatchInfoCode(productBatch.getBatchInfoCode());
+                        }
+                    }
                     stockBatchInfo.setProductDate(batchInfo.getProductDate());
                     stockBatchInfo.setBeOverdueDate(batchInfo.getBeOverdueDate());
                     stockBatchInfo.setBatchRemark(batchInfo.getBatchRemark());
@@ -928,6 +941,7 @@ public class InboundServiceImpl implements InboundService {
                     operationLog.setRemark(resultPurchaseOrder.getApplyTypeForm());
                     purchaseManageService.addLog(operationLog);
                 }
+
             } catch (Exception e) {
                 LOGGER.error("入库单回传采购失败：{}", e.getMessage());
                 throw new GroundRuntimeException("入库单回传采购失败");
@@ -1010,6 +1024,58 @@ public class InboundServiceImpl implements InboundService {
             LOGGER.info("入库单回传给采购接口成功");
             // 回传成功之后，调用sap
             //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
+
+            // 采购入库生成回传dl
+            StockChangeDlRequest dlRequest = new StockChangeDlRequest();
+            dlRequest.setOrderCode(inbound.getInboundOderCode());
+            dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
+            dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
+            dlRequest.setSupplierCode(order.getSupplierCode());
+            dlRequest.setWarehouseCode(order.getWarehouseCode());
+            dlRequest.setWarehouseName(order.getWarehouseName());
+            dlRequest.setOperationCode(order.getUpdateById());
+            dlRequest.setOperationName(order.getUpdateByName());
+            dlRequest.setPreArrivalTime(order.getPreArrivalTime());
+            dlRequest.setTotalCount(inbound.getPraMainUnitNum());
+
+            List<ProductRequest> dlProductList = Lists.newArrayList();
+            List<BatchRequest> dlBatchList;
+            ProductRequest dlProduct;
+            PurchaseOrderProduct orderProduct;
+            BatchRequest dlBatch;
+
+            for (InboundProduct product : list){
+                orderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource(purchaseOrder.getPurchaseOrderCode(), product.getSkuCode(), product.getLinenum().intValue());
+                dlProduct = new ProductRequest();
+                dlProduct.setLineCode(product.getLinenum().intValue());
+                dlProduct.setSkuCode(product.getSkuCode());
+                dlProduct.setTotalCount(product.getPraInboundMainNum());
+                dlProduct.setProductAmount(orderProduct.getProductAmount());
+                dlProduct.setTaxRate(orderProduct.getTaxRate());
+                dlProduct.setProductType(orderProduct.getProductType());
+                BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(orderProduct.getProductAmount(), orderProduct.getTaxRate());
+                dlProduct.setNotProductAmount(noTaxPrice);
+                dlProductList.add(dlProduct);
+                // 查询批次信息
+                List<ScmpPurchaseBatch> batches = purchaseBatchDao.purchaseBatchListBySap(product.getSkuCode(), purchaseOrder.getPurchaseOrderCode(), product.getLinenum().intValue());
+                if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
+                    dlBatchList = Lists.newArrayList();
+                    for (ScmpPurchaseBatch batch : batches){
+                        dlBatch = new BatchRequest();
+                        dlBatch.setLineCode(product.getLinenum().intValue());
+                        dlBatch.setSkuCode(product.getSkuCode());
+                        dlBatch.setBatchCode(batch.getBatchNo());
+                        dlBatch.setProductDate(batch.getProductDate());
+                        dlBatch.setTotalCount(batch.getActualTotalCount());
+                        dlBatchList.add(dlBatch);
+                    }
+                    dlProduct.setBatchList(dlBatchList);
+                }
+            }
+            dlRequest.setProductList(dlProductList);
+            LOGGER.info("采购完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
+            stockService.dlStockChange(dlRequest);
+
         } else {
             LOGGER.error("入库单回传给采购失败:{}", httpResponse.getMessage());
             throw new GroundRuntimeException("入库单回传给采购失败");
