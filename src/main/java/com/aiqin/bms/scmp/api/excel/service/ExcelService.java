@@ -87,54 +87,53 @@ public class ExcelService {
      */
     public HttpResponse importExcel(MultipartFile multipartFile) throws Exception {
         FileInputStream inputStream = (FileInputStream) multipartFile.getInputStream();
-        String originalFilename = multipartFile.getOriginalFilename();
-        Workbook wb = null;
+        //String originalFilename = multipartFile.getOriginalFilename();
+       // Workbook wb = null;
         try {
-            log.info("============开始创建Workbook对象============================");
-            if (WDWUtil.isExcel2007(originalFilename)) {
-                wb = new XSSFWorkbook(inputStream);
-            } else {
-                wb = new HSSFWorkbook(inputStream);
-            }
-            log.info("============创建Workbook对象成功============================");
-            int numberOfSheets = wb.getNumberOfSheets();
-            for (int i = 1; i < numberOfSheets; i++) {
-                Sheet sheetAt = wb.getSheetAt(i);
-                if ("采购单主表".equals(sheetAt.getSheetName())) {
+//            log.info("============开始创建Workbook对象============================");
+//            if (WDWUtil.isExcel2007(originalFilename)) {
+//                wb = new XSSFWorkbook(inputStream);
+//            } else {
+//                wb = new HSSFWorkbook(inputStream);
+//            }
+//            log.info("============创建Workbook对象成功============================");
+//            int numberOfSheets = wb.getNumberOfSheets();
+            for (int i = 1; i < 9; i++) {
+                if (i==1) {
                     List<PurchaseOrderExcel> purchaseOrderExcels = ExcelUtil.readExcel(multipartFile, PurchaseOrderExcel.class, i + 1);
                     this.saveDb(purchaseOrderExcels);
                     log.info("执行完成采购单主表数据========================================");
-                } else if ("采购单明细表".equals(sheetAt.getSheetName())) {
+                } else if (i==2) {
                     List<PurchaseOrderProductExcel> pus = ExcelUtil.readExcel(multipartFile, PurchaseOrderProductExcel.class, i + 1);
                     this.savepurchaseOrderProductDb(pus);
                     log.info("执行完成采购单明细表数据========================================");
 
-                } else if ("退供单主表".equals(sheetAt.getSheetName())) {
+                } else if (i==3) {
                     List<RejectRecordExcel> rrs = ExcelUtil.readExcel(multipartFile, RejectRecordExcel.class, i + 1);
                     this.saveRejectRecord(rrs);
 
                     log.info("执行完成退供单主表========================================");
 
-                } else if ("退供单明细表".equals(sheetAt.getSheetName())) {
+                } else if (i==4) {
                     List<RejectRecordDetailExcel> rrd = ExcelUtil.readExcel(multipartFile, RejectRecordDetailExcel.class, i + 1);
                     saveRejectRecordDetail(rrd);
                     log.info("执行完成退供单明细表========================================");
 
-                } else if ("销售单主表".equals(sheetAt.getSheetName())) {
+                } else if (i==5) {
                     List<OrderInfoExcel> of = ExcelUtil.readExcel(multipartFile, OrderInfoExcel.class, i + 1);
                     this.saveOrderInfo(of);
                     log.info("执行完成销售单主表========================================");
 
-                } else if ("销售单明细表".equals(sheetAt.getSheetName())) {
+                } else if (i==6) {
                     List<OrderInfoItemExcel> oft = ExcelUtil.readExcel(multipartFile, OrderInfoItemExcel.class, i + 1);
                     this.saveOrderInfoItem(oft);
 
-                } else if ("退货单主表".equals(sheetAt.getSheetName())) {
+                } else if (i==7) {
                     List<ReturnOrderInfoExcel> returnOrderInfoExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoExcel.class, i + 1);
                     this.saveReturnOrderInfo(returnOrderInfoExcels);
                     log.info("执行完成退货单主表========================================");
 
-                } else if ("退货单明细表".equals(sheetAt.getSheetName())) {
+                } else if (i==8) {
                     List<ReturnOrderInfoItemExcel> ReturnOrderInfoItemExcels = ExcelUtil.readExcel(multipartFile, ReturnOrderInfoItemExcel.class, i + 1);
                     this.saveReturnOrderInfoItem(ReturnOrderInfoItemExcels);
                     log.info("执行完成退货单明细表========================================");
@@ -146,14 +145,14 @@ public class ExcelService {
             log.error("异常=={}", e.toString());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
         } finally {
-            try {
-                if (wb != null) {
-                    wb.close();
-                }
-            } catch (IOException ignore) {
-                log.error("Workbook关闭异常=={}", ignore);
-                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, ignore.getMessage()));
-            }
+//            try {
+//                if (wb != null) {
+//                    wb.close();
+//                }
+//            } catch (IOException ignore) {
+//                log.error("Workbook关闭异常=={}", ignore);
+//                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, ignore.getMessage()));
+//            }
 
             try {
                 inputStream.close();
