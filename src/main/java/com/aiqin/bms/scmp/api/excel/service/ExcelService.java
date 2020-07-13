@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.excel.service;
 
-import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.excel.domain.*;
 import com.aiqin.bms.scmp.api.excel.utils.ListUtils;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
@@ -145,22 +144,22 @@ public class ExcelService {
 
         } catch (Exception e) {
             log.error("异常=={}", e.toString());
-            HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
         } finally {
             try {
                 if (wb != null) {
                     wb.close();
                 }
             } catch (IOException ignore) {
-                log.error("Workbook关闭异常=={}",ignore);
-                HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, ignore.getMessage()));
+                log.error("Workbook关闭异常=={}", ignore);
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, ignore.getMessage()));
             }
 
             try {
                 inputStream.close();
             } catch (IOException e) {
-                log.error("FileInputStream关闭异常=={}",e);
-                HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
+                log.error("FileInputStream关闭异常=={}", e);
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 10008, e.getMessage()));
             }
         }
         return HttpResponse.success();
@@ -487,7 +486,7 @@ public class ExcelService {
                     orderInfoItemMapper.insertBatch(orderInfosItems);
                 }
             }
-            log.info("执行完成售单明细表插入条数============={}",saves.size());
+            log.info("执行完成售单明细表插入条数============={}", saves.size());
 
             saves = null;
             try {
