@@ -101,24 +101,26 @@ public class PurchaseOrderExcel extends BaseRowModel {
 
 
 
-    @ApiModelProperty(value = "库房编号")
-    @ExcelProperty(index = 20, value = "仓库编号")
-    private String warehouseCode;
-
-
-    @ApiModelProperty(value = "库房名称")
-    @ExcelProperty(index = 21, value = "仓库名称")
-    private String warehouseName;
-
-
     @ApiModelProperty(value = "仓库编号")
-    @ExcelProperty(index = 22, value = "库房编号")
+    @ExcelProperty(index = 20, value = "库房编号")
     private String transportCenterCode;
 
 
     @ApiModelProperty(value = "仓库名称")
-    @ExcelProperty(index = 23, value = "库房名称")
+    @ExcelProperty(index = 21, value = "库房名称")
     private String transportCenterName;
+
+    @ApiModelProperty(value = "库房编号")
+    @ExcelProperty(index = 22, value = "仓库编号")
+    private String warehouseCode;
+
+
+    @ApiModelProperty(value = "库房名称")
+    @ExcelProperty(index = 23, value = "仓库名称")
+    private String warehouseName;
+
+
+
 
 
 
