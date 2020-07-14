@@ -274,6 +274,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 
     public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest) {
         // 主表数据
+        Long totalCount = 0L;
         stockChangeDlRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
         stockChangeDlRequest.setWarehouseName(allocation.getCallOutWarehouseName());
         stockChangeDlRequest.setOperationCode(allocation.getCreateById());
@@ -286,6 +287,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productRequest.setSkuCode(product.getSkuCode());
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
+            totalCount+=product.getQuantity();
             productRequest.setUnitName(product.getUnit());
             productRequest.setColorName(product.getColor());
             productRequest.setModelNumber(product.getModel());
@@ -315,6 +317,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
             productList.add(productRequest);
         }
+        stockChangeDlRequest.setTotalCount(totalCount);
     }
 
     /**

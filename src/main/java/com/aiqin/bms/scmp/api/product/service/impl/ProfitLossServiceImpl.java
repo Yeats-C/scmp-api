@@ -351,7 +351,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
                 stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_5);
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
-                profitSynchrdlStockChange(profitLoss, profitLossProductList, batchList, stockChangeDlRequest);
+                profitSynchrdlStockChange(profitLoss, loss, batchList, stockChangeDlRequest);
                 HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
                 if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
                     LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
@@ -373,7 +373,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
                 stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_9);
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
-                profitSynchrdlStockChange(profitLoss, profitLossProductList, batchList, stockChangeDlRequest);
+                profitSynchrdlStockChange(profitLoss, profit, batchList, stockChangeDlRequest);
                 HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
                 if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
                     LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
@@ -392,6 +392,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
 
     private void profitSynchrdlStockChange(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchLists, StockChangeDlRequest stockChangeDlRequest) {
         // 主表数据
+        Long totalCount = 0L;
         stockChangeDlRequest.setWarehouseCode(profitLoss.getWarehouseCode());
         stockChangeDlRequest.setWarehouseName(profitLoss.getWarehouseName());
         stockChangeDlRequest.setOperationName(profitLoss.getCreateBy());
@@ -403,6 +404,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             productRequest.setSkuCode(product.getSkuCode());
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
+            totalCount+=product.getQuantity();
             productRequest.setUnitName(product.getUnit());
             productRequest.setColorName(product.getColor());
             productRequest.setModelNumber(product.getModel());
@@ -432,6 +434,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             }
             productList.add(productRequest);
         }
+        stockChangeDlRequest.setTotalCount(totalCount);
     }
 
     private InboundReqSave inbouont(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchList) {
