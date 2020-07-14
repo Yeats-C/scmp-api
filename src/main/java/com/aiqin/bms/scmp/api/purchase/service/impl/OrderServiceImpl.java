@@ -854,11 +854,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // map中有数据判断 没有新增
             if (productList != null && productList.size() > 0){
-                String key = item.getSkuCode()+item.getBatchInfoCode()+item.getProductType();
+                String key = item.getSkuCode()+item.getLineCode();
                 // map中有商品合并商品 没有新增
                 if (erpOrderItemMap.containsKey(key)) {
                     for (OrderInfoItemReqVO p : productList) {
-                        String pKey = p.getSkuCode()+p.getBatchInfoCode()+p.getGivePromotion();
+                        String pKey = p.getSkuCode()+p.getProductLineNum();
                         if(key.equals(pKey)){
                             p.setNum(item.getProductCount()+p.getNum());
                             p.setAmount(item.getTotalProductAmount().add(p.getAmount()));
@@ -971,7 +971,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productBatcheList.add(productBatch);
                 }
             }
-            erpOrderItemMap.put(item.getSkuCode()+item.getBatchInfoCode()+item.getProductType(), item);
+            erpOrderItemMap.put(item.getSkuCode()+item.getLineCode(), item);
         }
         vo.setProductNum(productNum);
         vo.setProductChannelTotalAmount(totalChannelAmount);
