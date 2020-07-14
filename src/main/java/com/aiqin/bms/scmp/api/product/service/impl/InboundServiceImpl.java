@@ -1097,7 +1097,7 @@ public class InboundServiceImpl implements InboundService {
             }
             dlRequest.setProductList(dlProductList);
             LOGGER.info("采购完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
-            stockService.dlStockChange(dlRequest);
+            //stockService.dlStockChange(dlRequest);
 
         } else {
             LOGGER.error("入库单回传给采购失败:{}", httpResponse.getMessage());
