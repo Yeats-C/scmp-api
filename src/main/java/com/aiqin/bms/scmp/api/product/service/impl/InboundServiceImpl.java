@@ -1070,7 +1070,8 @@ public class InboundServiceImpl implements InboundService {
                 dlProduct.setTotalCount(product.getPraInboundMainNum());
                 dlProduct.setProductAmount(orderProduct.getProductAmount());
                 dlProduct.setTaxRate(orderProduct.getTaxRate());
-                dlProduct.setProductType(orderProduct.getProductType());
+                Integer productType = orderProduct.getProductType() == 3 ? 1 : (orderProduct.getProductType() == 2 ? 2 : 1);
+                dlProduct.setProductType(productType);
                 BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(orderProduct.getProductAmount(), orderProduct.getTaxRate());
                 dlProduct.setNotProductAmount(noTaxPrice);
                 dlProductList.add(dlProduct);
