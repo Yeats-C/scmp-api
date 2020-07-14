@@ -28,6 +28,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -441,6 +442,10 @@ public class ExcelService {
                 o.setActualProductTotalAmount(o.getProductTotalAmount());
                 o.setCompanyCode("09");
                 o.setCompanyName("宁波熙耘科技有限公司");
+                o.setStoreName(o.getCustomerName());
+                if(StringUtils.isNotBlank(o.getCustomerCode())){
+                    o.setStoreCode(o.getCustomerCode());
+                }
             });
             of = null;
             if (CollectionUtils.isNotEmptyCollection(saves)) {

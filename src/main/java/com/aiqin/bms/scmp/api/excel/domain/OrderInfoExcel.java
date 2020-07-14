@@ -28,9 +28,6 @@ public class OrderInfoExcel extends BaseRowModel {
     private String customerName;
 
 
-//    @ApiModelProperty("物流中心编码")
-//    @ExcelProperty(index = 5, value = "配送中心")
-//    private String transportCenterCode;
 
 
     @ApiModelProperty("创建时间")
@@ -51,6 +48,10 @@ public class OrderInfoExcel extends BaseRowModel {
     @ExcelProperty(index = 12, value = "审核人")
     private String updateByName;
 
+
+    @ApiModelProperty(value = "商品数量")
+    @ExcelProperty(index = 14, value = "订货总数量")
+    private BigDecimal productNum;
 
     @ApiModelProperty(value = "商品分销价总金额")
     @ExcelProperty(index = 15, value = "商品总金额")
@@ -99,6 +100,17 @@ public class OrderInfoExcel extends BaseRowModel {
     @ApiModelProperty(value = "仓库名称")
     @ExcelProperty(index = 24, value = "仓库名称")
     private String transportCenterName;
+
+
+    @ApiModelProperty("物流中心编码")
+    @ExcelProperty(index = 25, value = "库房名称")
+    private String warehouseName;
+
+
+    @ApiModelProperty("物流中心编码")
+    @ExcelProperty(index = 26, value = "库房编码")
+    private String warehouseCode;
+
 
 
 
