@@ -40,6 +40,9 @@ import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
@@ -267,6 +270,51 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //             log.error("调拨单sku保存失败");
 //             throw new GroundRuntimeException("调拨单sku保存失败");
 //         }
+    }
+
+    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest) {
+        // 主表数据
+        stockChangeDlRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+        stockChangeDlRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+        stockChangeDlRequest.setOperationCode(allocation.getCreateById());
+        stockChangeDlRequest.setOperationName(allocation.getCreateBy());
+        // 商品数据
+        List<ProductRequest> productList = new ArrayList<>();
+        for (AllocationProductResVo product : products) {
+            ProductRequest productRequest = new ProductRequest();
+            productRequest.setLineCode(product.getLineNum().intValue());
+            productRequest.setSkuCode(product.getSkuCode());
+            productRequest.setSkuName(product.getSkuName());
+            productRequest.setTotalCount(product.getQuantity());
+            productRequest.setUnitName(product.getUnit());
+            productRequest.setColorName(product.getColor());
+            productRequest.setModelNumber(product.getModel());
+            productRequest.setProductType(0);
+            productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
+            productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
+            BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
+            productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
+            productRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+            productRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+            // 批次数据
+            List<BatchRequest> batchList = new ArrayList<>();
+            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+                for (AllocationProductBatchResVo productBatch : list) {
+                    if(Objects.equals(product.getSkuCode() + product.getLineNum().toString(),
+                            productBatch.getSkuCode() + productBatch.getLineNum().toString())){
+                        BatchRequest batchRequest = new BatchRequest();
+                        batchRequest.setLineCode(productBatch.getLineNum().intValue());
+                        batchRequest.setSkuCode(productBatch.getSkuCode());
+                        batchRequest.setBatchCode(productBatch.getBatchNumber());
+                        batchRequest.setProductDate(productBatch.getProductDate());
+                        batchRequest.setTotalCount(productBatch.getQuantity());
+                        batchList.add(batchRequest);
+                    }
+                }
+                productRequest.setBatchList(batchList);
+            }
+            productList.add(productRequest);
+        }
     }
 
     /**
@@ -611,6 +659,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation1.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
         allocation1.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
+
+        // 调用完库存锁定调用同步dl库存数据
+        StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+        stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
+        stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
+        stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
+        synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+        LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+            return 0;
+        }
         return i;
     }
 

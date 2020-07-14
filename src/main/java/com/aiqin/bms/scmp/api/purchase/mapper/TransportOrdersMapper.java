@@ -13,4 +13,6 @@ public interface TransportOrdersMapper {
     List<TransportOrders> selectListByTransportCode(TransportRequest transportRequest);
 
     List<TransportOrders> selectOrderCodeByTransportCode(@Param("transportCode") String transportCode);
+
+    TransportOrders selectTransportOrdersByTransportCode(@Param("transportCode") String transportCode);
 }

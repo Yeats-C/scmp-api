@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
@@ -111,6 +112,8 @@ public class InboundServiceImpl implements InboundService {
     private ProductOperationLogService productOperationLogService;
     @Autowired
     private AllocationMapper allocationMapper;
+    @Autowired
+    private AllocationService allocationService;
     @Autowired
     private InboundBatchDao inboundBatchDao;
     @Autowired
@@ -1119,6 +1122,21 @@ public class InboundServiceImpl implements InboundService {
                 //跟新调拨单状态
                 int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
+                // 调用完库存锁定调用同步dl库存数据
+                StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+                List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
+                List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocationCode);
+                stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
+                stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_7);
+                stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
+                allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+                LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+                    log.error(Global.ERROR, response.getMessage());
+                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
+                }
                 // 调用sap 传送调拨单的数据给sap
 //                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
 //                LOGGER.info("调拨wms回传,调用sap成功：{}", JsonUtil.toJson(allocation));
