@@ -49,16 +49,16 @@ public class RejectRecordDetailExcel extends BaseRowModel {
     private BigDecimal productAmount;
 
 
-    @ApiModelProperty(value = "最小单位数量")
+    @ApiModelProperty(value = "商品数量")
     @ExcelProperty(index = 11, value = "单品数量")
-    private Long totalCount;
+    private Long productCount;
 
     @ApiModelProperty(value = "含税总价")
     @ExcelProperty(index = 12, value = "订货含税金额")
     private BigDecimal productTotalAmount;
 
 
-    @ApiModelProperty(value = "实际单品数量")
+    @ApiModelProperty(value = "实际最小单位数量")
     @ExcelProperty(index = 14, value = "实际单品数量")
     private Integer actualTotalCount;
 

@@ -28,9 +28,9 @@ public class OrderInfoExcel extends BaseRowModel {
     private String customerName;
 
 
-    @ApiModelProperty("物流中心编码")
-    @ExcelProperty(index = 5, value = "配送中心")
-    private String transportCenterCode;
+//    @ApiModelProperty("物流中心编码")
+//    @ExcelProperty(index = 5, value = "配送中心")
+//    private String transportCenterCode;
 
 
     @ApiModelProperty("创建时间")
@@ -43,18 +43,24 @@ public class OrderInfoExcel extends BaseRowModel {
     private String createByName;
 
 
-    @ApiModelProperty("修改时间")
+    @ApiModelProperty("支付日期")
     @ExcelProperty(index = 11, value = "审核时间")
-    private Date updateTime;
+    private Date paymentTime;
 
     @ApiModelProperty("修改人")
     @ExcelProperty(index = 12, value = "审核人")
     private String updateByName;
 
 
-    @ApiModelProperty(value = "实际运费")
+    @ApiModelProperty(value = "商品分销价总金额")
+    @ExcelProperty(index = 15, value = "商品总金额")
+    private BigDecimal productTotalAmount;
+
+
+
+    @ApiModelProperty(value = "运费")
     @ExcelProperty(index = 16, value = "实付物流费")
-    private BigDecimal actualDeliverAmount;
+    private BigDecimal deliverAmount;
 
 
     @ApiModelProperty("实际发货数量")
@@ -68,7 +74,7 @@ public class OrderInfoExcel extends BaseRowModel {
 
     @ApiModelProperty("操作时间")
     @ExcelProperty(index = 19, value = "操作时间")
-    private Date operatorTime;
+    private Date updateTime;
 
 
     @ApiModelProperty("操作人")
@@ -80,9 +86,23 @@ public class OrderInfoExcel extends BaseRowModel {
     private Date deliveryTime;
 
 
-    @ApiModelProperty("收货时间")
+    @ApiModelProperty("操作时间")
     @ExcelProperty(index = 22, value = "回单确认时间")
-    private Date receivingTime;
+    private Date operatorTime;
+
+
+    @ApiModelProperty(value = "仓库编号")
+    @ExcelProperty(index = 23, value = "仓库编号")
+    private String transportCenterCode;
+
+
+    @ApiModelProperty(value = "仓库名称")
+    @ExcelProperty(index = 24, value = "仓库名称")
+    private String transportCenterName;
+
+
+
+
 
 
 }

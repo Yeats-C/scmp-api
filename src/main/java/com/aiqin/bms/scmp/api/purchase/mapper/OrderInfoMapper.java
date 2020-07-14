@@ -54,4 +54,6 @@ public interface OrderInfoMapper {
     void updateOrderSynchrSap(OrderInfo order);
 
     List<OrderInfo> selectByOrderCodes(@Param("list") List<String> orderCodeList);
+
+    int insertMany(@Param("list") List<OrderInfo> orderInfos1);
 }

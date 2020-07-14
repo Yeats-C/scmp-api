@@ -26,9 +26,9 @@ public class PurchaseOrderExcel extends BaseRowModel {
     private String purchaseOrderId;
 
 
-    @ApiModelProperty(value = "库房编码")
-    @ExcelProperty(index = 1, value = "配送中心编号")
-    private String warehouseCode;
+//    @ApiModelProperty(value = "库房编码")
+//    @ExcelProperty(index = 1, value = "配送中心编号")
+//    private String warehouseCode;
 
     @ApiModelProperty(value = "供应商编码")
     @ExcelProperty(index = 2, value = "供应商编码")
@@ -72,7 +72,6 @@ public class PurchaseOrderExcel extends BaseRowModel {
     private BigDecimal actualGiftAmount;
 
     @ApiModelProperty(value = "创建时间")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     @ExcelProperty(index = 12, value = "订货时间")
     private Date createTime;
 
@@ -91,8 +90,6 @@ public class PurchaseOrderExcel extends BaseRowModel {
     private String preArrivalDate;
 
 
-
-
     @ApiModelProperty(value = "更新时间")
     @ExcelProperty(index = 18, value = "操作时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
@@ -102,5 +99,35 @@ public class PurchaseOrderExcel extends BaseRowModel {
     @ExcelProperty(index = 19, value = "操作人")
     private String updateByName;
 
+
+    @ApiModelProperty(value = "仓库编号")
+    @ExcelProperty(index = 20, value = "仓库编号")
+    private String transportCenterCode;
+
+
+    @ApiModelProperty(value = "仓库名称")
+    @ExcelProperty(index = 21, value = "仓库名称")
+    private String transportCenterName;
+
+
+    @ApiModelProperty(value = "库房编号")
+    @ExcelProperty(index = 22, value = "库房编号")
+    private String warehouseCode;
+
+
+    @ApiModelProperty(value = "库房名称")
+    @ExcelProperty(index = 23, value = "库房名称")
+    private String warehouseName;
+
+
+
+    @ApiModelProperty(value = "采购组编码")
+    @ExcelProperty(index = 24, value = "采购组 编码")
+    private String purchaseGroupCode;
+
+
+    @ApiModelProperty(value = "采购组名称")
+    @ExcelProperty(index = 25, value = "采购组名称")
+    private String purchaseGroupName;
 
 }

@@ -1096,6 +1096,67 @@ transport_number, platform_type, business_form, tax_id
       )
     </foreach>
     </insert>
+
+
+
+
+    <insert id="insertMany" parameterType="java.util.List">
+        insert into order_info (order_code, order_type, order_type_code, order_product_type, customer_name, customer_code, create_date, order_status,
+        be_lock, lock_reason, be_exception, exception_reason, be_delete, payment_status, transport_center_name, transport_center_code,
+        warehouse_name, warehouse_code, supplier_name, supplier_code, distribution_mode, distribution_mode_code, consignee, consignee_phone,
+        province_code, province_name, city_code, city_name, district_code, district_name, detail_address, zip_code, payment_type,
+        payment_type_code, deliver_amount, product_total_amount, product_channel_total_amount, discount_amount, order_amount,
+        payment_time, delivery_time, transport_time, receiving_time, invoice_type, invoice_type_code, invoice_title, operator,
+        operator_code, operator_time, activity_discount, volume, weight, be_master_order, master_order_code, order_original, remake,
+        logistics_remission_ratio, transport_status, store_type, store_type_code, company_name, company_code, product_num, order_category,
+        order_category_code, create_by_name, create_by_id, create_time, update_by_name, update_by_id, update_time,
+        actual_product_channel_total_amount, actual_order_amount, actual_product_num, order_original_name,
+        actual_weight, actual_volume, actual_product_total_amount, transport_company, transport_company_code, transport_number,
+        invoice_address, invoice_mobile, invoice_bank, invoice_bank_account, business_form, platform_type, tax_id,
+        store_code, store_name, franchisee_code, franchisee_name, partner_code, partner_name, channel_order_amount, actual_channel_order_amount,
+        actual_deliver_amount, suit_coupon_money, actual_suit_coupon_money, top_coupon_money, actual_top_coupon_money, consignee_mobile,
+        actual_logistics_remission_ratio, actual_activity_discount,channel_code,channel_name)
+        values
+        <foreach collection="list" open="" close="" item="item" separator=",">
+            (#{item.orderCode,jdbcType=VARCHAR}, #{item.orderType,jdbcType=VARCHAR},#{item.orderTypeCode,jdbcType=INTEGER},
+            #{item.orderProductType,jdbcType=INTEGER}, #{item.customerName,jdbcType=VARCHAR}, #{item.customerCode,jdbcType=VARCHAR},
+            #{item.createDate,jdbcType=TIMESTAMP}, #{item.orderStatus,jdbcType=INTEGER}, #{item.beLock,jdbcType=INTEGER},
+            #{item.lockReason,jdbcType=VARCHAR}, #{item.beException,jdbcType=INTEGER}, #{item.exceptionReason,jdbcType=VARCHAR},
+            #{item.beDelete,jdbcType=INTEGER}, #{item.paymentStatus,jdbcType=INTEGER}, #{item.transportCenterName,jdbcType=VARCHAR},
+            #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR},
+            #{item.supplierName,jdbcType=VARCHAR}, #{item.supplierCode,jdbcType=VARCHAR}, #{item.distributionMode,jdbcType=VARCHAR},
+            #{item.distributionModeCode,jdbcType=VARCHAR}, #{item.consignee,jdbcType=VARCHAR}, #{item.consigneePhone,jdbcType=VARCHAR},
+            #{item.provinceCode,jdbcType=VARCHAR}, #{item.provinceName,jdbcType=VARCHAR}, #{item.cityCode,jdbcType=VARCHAR},
+            #{item.cityName,jdbcType=VARCHAR}, #{item.districtCode,jdbcType=VARCHAR}, #{item.districtName,jdbcType=VARCHAR},
+            #{item.detailAddress,jdbcType=VARCHAR}, #{item.zipCode,jdbcType=VARCHAR}, #{item.paymentType,jdbcType=VARCHAR},
+            #{item.paymentTypeCode,jdbcType=VARCHAR}, #{item.deliverAmount,jdbcType=DECIMAL}, #{item.productTotalAmount,jdbcType=DECIMAL},
+            #{item.productChannelTotalAmount,jdbcType=DECIMAL}, #{item.discountAmount,jdbcType=DECIMAL},
+            #{item.orderAmount,jdbcType=DECIMAL}, #{item.paymentTime,jdbcType=TIMESTAMP}, #{item.deliveryTime,jdbcType=TIMESTAMP},
+            #{item.transportTime,jdbcType=TIMESTAMP}, #{item.receivingTime,jdbcType=TIMESTAMP}, #{item.invoiceType,jdbcType=VARCHAR},
+            #{item.invoiceTypeCode,jdbcType=VARCHAR}, #{item.invoiceTitle,jdbcType=VARCHAR}, #{item.operator,jdbcType=VARCHAR},
+            #{item.operatorCode,jdbcType=VARCHAR}, #{item.operatorTime,jdbcType=TIMESTAMP}, #{item.activityDiscount,jdbcType=DECIMAL},
+            #{item.volume,jdbcType=BIGINT}, #{item.weight,jdbcType=BIGINT}, #{item.beMasterOrder,jdbcType=INTEGER},
+            #{item.masterOrderCode,jdbcType=VARCHAR}, #{item.orderOriginal,jdbcType=VARCHAR}, #{item.remake,jdbcType=VARCHAR},
+            #{item.logisticsRemissionRatio,jdbcType=INTEGER}, #{item.transportStatus,jdbcType=INTEGER},
+            #{item.storeType,jdbcType=VARCHAR}, #{item.storeTypeCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+            #{item.companyCode,jdbcType=VARCHAR}, #{item.productNum,jdbcType=BIGINT}, #{item.orderCategory,jdbcType=VARCHAR},
+            #{item.orderCategoryCode,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR}, #{item.createById,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP}, #{item.updateByName,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=TIMESTAMP}, #{item.actualProductChannelTotalAmount,jdbcType=DECIMAL},
+            #{item.actualOrderAmount,jdbcType=DECIMAL}, #{item.actualProductNum,jdbcType=BIGINT}, #{item.orderOriginalName,jdbcType=VARCHAR},
+            #{item.actualWeight,jdbcType=BIGINT}, #{item.actualVolume,jdbcType=BIGINT}, #{item.actualProductTotalAmount,jdbcType=DECIMAL},
+            #{item.transportCompany,jdbcType=VARCHAR}, #{item.transportCompanyCode,jdbcType=VARCHAR}, #{item.transportNumber,jdbcType=VARCHAR},
+            #{item.invoiceAddress,jdbcType=VARCHAR},#{item.invoiceMobile,jdbcType=VARCHAR},#{item.invoiceBank,jdbcType=VARCHAR},
+            #{item.invoiceBankAccount,jdbcType=VARCHAR},#{item.businessForm,jdbcType=TINYINT},#{item.platformType,jdbcType=TINYINT},
+            #{item.taxId,jdbcType=VARCHAR},#{item.storeCode,jdbcType=VARCHAR},#{item.storeName,jdbcType=VARCHAR},
+            #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
+            #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
+            #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
+            #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
+            #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR},#{item.channelCode,jdbcType=VARCHAR},#{item.channelName,jdbcType=VARCHAR}
+            )
+        </foreach>
+    </insert>
     <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo">
         update order_info
         <set>

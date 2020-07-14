@@ -406,7 +406,7 @@
             #{rejectRecord.outStockTime,jdbcType=TIMESTAMP}, #{rejectRecord.sourceType,jdbcType=INTEGER}, #{rejectRecord.sourceCode,jdbcType=VARCHAR},
             #{rejectRecord.remark,jdbcType=VARCHAR}, #{rejectRecord.approvalCode,jdbcType=VARCHAR}, #{rejectRecord.rejectStatus,jdbcType=INTEGER},
             #{rejectRecord.createById,jdbcType=VARCHAR}, #{rejectRecord.createByName,jdbcType=VARCHAR}, #{rejectRecord.updateById,jdbcType=VARCHAR},
-            #{rejectRecord.updateByName,jdbcType=VARCHAR}, now(), now(), #{rejectRecord.supplierCompanyCode,jdbcType=VARCHAR},
+            #{rejectRecord.updateByName,jdbcType=VARCHAR},  #{rejectRecord.createTime ,jdbcType=TIMESTAMP }, #{rejectRecord.updateTime ,jdbcType=TIMESTAMP}, #{rejectRecord.supplierCompanyCode,jdbcType=VARCHAR},
             #{rejectRecord.supplierCompanyName,jdbcType=VARCHAR})
         </foreach>
 

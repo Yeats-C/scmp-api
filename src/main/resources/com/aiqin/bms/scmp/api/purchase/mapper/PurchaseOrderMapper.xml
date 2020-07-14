@@ -476,7 +476,7 @@
       #{purchaseOrder.paymentMode,jdbcType=INTEGER}, #{purchaseOrder.paymentTime,jdbcType=INTEGER}, #{purchaseOrder.remark,jdbcType=VARCHAR},
       #{purchaseOrder.inboundLine,jdbcType=INTEGER}, #{purchaseOrder.prePaymentAmount,jdbcType=DECIMAL}, #{purchaseOrder.accountCode,jdbcType=VARCHAR},
       #{purchaseOrder.accountName,jdbcType=VARCHAR}, #{purchaseOrder.contractCode,jdbcType=VARCHAR}, #{purchaseOrder.contractName,jdbcType=VARCHAR},
-      now(), now(), #{purchaseOrder.createById,jdbcType=VARCHAR}, #{purchaseOrder.updateById,jdbcType=VARCHAR}, #{purchaseOrder.createByName,jdbcType=VARCHAR},
+      #{purchaseOrder.createTime ,jdbcType=TIMESTAMP},  #{purchaseOrder.updateTime,jdbcType=TIMESTAMP}, #{purchaseOrder.createById,jdbcType=VARCHAR}, #{purchaseOrder.updateById,jdbcType=VARCHAR}, #{purchaseOrder.createByName,jdbcType=VARCHAR},
       #{purchaseOrder.updateByName,jdbcType=VARCHAR}, #{purchaseOrder.supplierCompanyCode,jdbcType=VARCHAR}, #{purchaseOrder.supplierCompanyName,jdbcType=VARCHAR})
     </foreach>
 

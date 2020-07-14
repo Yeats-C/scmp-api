@@ -20,14 +20,24 @@ public class ReturnOrderInfoExcel extends BaseRowModel {
     private String returnOrderCode;
 
 
+    @ApiModelProperty(value = "订单编码")
+    @ExcelProperty(index = 1, value = "订单号")
+    private String orderCode;
+
+
+    @ApiModelProperty(value = "客户编码")
+    @ExcelProperty(index = 2, value = "客户编号")
+    private String customerCode;
+
+
     @ApiModelProperty(value = "客户名称")
     @ExcelProperty(index = 3, value = "客户名称")
     private String customerName;
 
 
-    @ApiModelProperty(value = "物流中心名称")
-    @ExcelProperty(index = 6, value = "配送中心")
-    private String transportCenterName;
+//    @ApiModelProperty(value = "物流中心名称")
+//    @ExcelProperty(index = 6, value = "配送中心")
+//    private String transportCenterName;
 
 
     @ApiModelProperty(value = "商品数量")
@@ -66,16 +76,25 @@ public class ReturnOrderInfoExcel extends BaseRowModel {
     private String updateByName;
 
 
-    @ApiModelProperty(value = "发货时间")
+    @ApiModelProperty(value = "收货时间")
     @ExcelProperty(index = 15, value = "验收时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date deliveryTime;
+    private Date receivingTime;
 
 
     @ApiModelProperty(value = "收货时间")
     @ExcelProperty(index = 16, value = "回单确认时间")
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date receivingTime;
+    private Date updateTime;
+
+    @ApiModelProperty(value = "仓库编号")
+    @ExcelProperty(index = 17, value = "仓库编号")
+    private String transportCenterCode;
+
+
+    @ApiModelProperty(value = "仓库名称")
+    @ExcelProperty(index = 18, value = "仓库名称")
+    private String transportCenterName;
 
 
 }

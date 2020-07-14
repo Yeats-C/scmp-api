@@ -182,15 +182,17 @@ public class ExcelService {
                 saves.forEach(p -> {
                     p.setPurchaseOrderId(IdUtil.purchaseId());
                     //因为状态都一样所以写死了
-                    p.setPurchaseOrderStatus(1);
+                    p.setPurchaseOrderStatus(8);
                     Date date = DateUtils.getDate(p.getPreArrivalDate());
                     p.setPreArrivalTime(date);
+                    p.setCompanyCode("09");
+                    p.setCompanyName("宁波熙耘科技有限公司");
                 });
                 if (CollectionUtils.isNotEmptyCollection(saves)) {
                     this.purchaseOrderDao.insertMany(saves);
                 }
                 log.info("执行完成采购单主表数据插入条数===================={}", saves.size());
-                saves=null;
+                saves = null;
                 try {
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
@@ -247,6 +249,7 @@ public class ExcelService {
                     String purchaseOrderId = purchaseOrderIdMap.get(save.getPurchaseOrderCode());
                     save.setPurchaseOrderId(purchaseOrderId);
                     save.setOrderProductId(UUID.randomUUID().toString().replaceAll("-", ""));
+
                 }
 
             }
@@ -262,7 +265,7 @@ public class ExcelService {
 
             }
             log.info("执行完成采购单明细表数据插入条数==============================={}", saves.size());
-            saves=null;
+            saves = null;
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -309,6 +312,9 @@ public class ExcelService {
             //遍历设置reject_record_id的值
             saves.forEach(p -> {
                 p.setRejectRecordId(IdUtil.rejectRecordId());
+                p.setRejectStatus(3);
+                p.setCompanyCode("09");
+                p.setCompanyName("宁波熙耘科技有限公司");
             });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 this.rejectRecordDao.insertMany(saves);
@@ -417,6 +423,25 @@ public class ExcelService {
 
             String s = JsonUtil.toJson(of);
             List<OrderInfo> saves = JSONObject.parseArray(s, OrderInfo.class);
+            saves.forEach(o -> {
+                o.setPaymentStatus(1);
+                o.setOrderStatus(12);
+                o.setBeException(0);
+                o.setBeLock(0);
+                o.setBeDelete(0);
+                o.setPaymentType("转账");
+                o.setOrderType("配送");
+                o.setOrderTypeCode(1);
+                o.setChannelCode("1");
+                o.setChannelName("爱亲科技");
+                o.setBusinessForm(1);
+                o.setPlatformType(1);
+                o.setOrderProductType(0);
+                o.setBeMasterOrder(1);
+                o.setActualProductTotalAmount(o.getProductTotalAmount());
+                o.setCompanyCode("09");
+                o.setCompanyName("宁波熙耘科技有限公司");
+            });
             of = null;
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 //数据量太多会mysql报错 分批次插入
@@ -424,7 +449,7 @@ public class ExcelService {
 
                 for (Integer i : itemMap.keySet()) {
                     List<OrderInfo> orderInfos1 = itemMap.get(i);
-                    orderInfoMapper.insertBatch(orderInfos1);
+                    orderInfoMapper.insertMany(orderInfos1);
                 }
             }
             log.info("执行完成销售主表插入条数=================================={}", saves.size());
@@ -465,6 +490,15 @@ public class ExcelService {
 //                }
 //            }
 //            existRejectRecordCodes=null;
+
+            saves.forEach(o -> {
+                o.setPrice(o.getActualPrice());
+                o.setNum(o.getActualDeliverNum());
+                o.setAmount(o.getActualAmount());
+                o.setCompanyCode("09");
+                o.setCompanyName("宁波熙耘科技有限公司");
+
+            });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 Map<Integer, List<OrderInfoItem>> itemMap = new ListUtils<OrderInfoItem>().batchList(saves, 3000);
                 for (Integer i : itemMap.keySet()) {
@@ -512,6 +546,21 @@ public class ExcelService {
             existReturnOrderCodeeList.clear();
             String s = JsonUtil.toJson(returnOrderInfoExcels);
             List<ReturnOrderInfo> saves = JSONObject.parseArray(s, ReturnOrderInfo.class);
+            saves.forEach(r -> {
+                r.setOrderStatus(11);
+                r.setReturnOrderType(4);
+                r.setOrderType(1);
+                r.setPaymentStatus(0);
+                r.setBeLock(0);
+                r.setBeDelete(0);
+                r.setBeException(0);
+                r.setPaymentType("转账");
+                r.setBusinessForm(1);
+                r.setPlatformType(0);
+                r.setOrderProductType(1);
+                r.setCompanyCode("09");
+                r.setCompanyName("宁波熙耘科技有限公司");
+            });
             returnOrderInfoExcels = null;
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 //数据量太多会mysql报错 分批次插入
@@ -521,7 +570,7 @@ public class ExcelService {
                     this.returnOrderInfoMapper.insertMany(returnOrderInfos);
                 }
             }
-            log.info("执行完成退货单主表插入条数=================================={}",saves.size());
+            log.info("执行完成退货单主表插入条数=================================={}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);
@@ -559,6 +608,10 @@ public class ExcelService {
                 }
 
             }
+            saves.forEach(r -> {
+                r.setCompanyCode("09");
+                r.setCompanyName("宁波熙耘科技有限公司");
+            });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 Map<Integer, List<ReturnOrderInfoItem>> itemMap = new ListUtils<ReturnOrderInfoItem>().batchList(saves, 3000);
                 for (Integer i : itemMap.keySet()) {
@@ -567,7 +620,7 @@ public class ExcelService {
                     returnOrderInfoItemMapper.insertList(orderInfosItems);
                 }
             }
-            log.info("执行完成退货单明细表插入条数==================================={}",saves.size());
+            log.info("执行完成退货单明细表插入条数==================================={}", saves.size());
             saves = null;
             try {
                 Thread.sleep(3000);

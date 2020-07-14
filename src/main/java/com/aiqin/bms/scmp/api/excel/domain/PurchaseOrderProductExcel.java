@@ -82,4 +82,14 @@ public class PurchaseOrderProductExcel extends BaseRowModel {
     private Integer actualSingleCount;
 
 
+
+
+    @ApiModelProperty(value = "采购组 编码")
+    @ExcelProperty(index = 24, value = "采购组 编码")
+    private String purchaseGroupCode;
+
+
+
+
+
 }

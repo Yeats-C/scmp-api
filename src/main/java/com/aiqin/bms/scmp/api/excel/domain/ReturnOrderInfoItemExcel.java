@@ -59,4 +59,7 @@ public class ReturnOrderInfoItemExcel  extends BaseRowModel {
     @ExcelProperty(index = 10, value = "实退金额")
     private BigDecimal actualPrice;
 
+
+
+
 }
