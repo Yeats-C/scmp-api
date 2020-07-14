@@ -113,6 +113,7 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private AllocationMapper allocationMapper;
     @Autowired
+    @Lazy(true)
     private AllocationService allocationService;
     @Autowired
     private InboundBatchDao inboundBatchDao;
