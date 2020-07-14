@@ -279,4 +279,10 @@ public final class Global {
      */
     public static final Integer DL_OPERATION_TYPE_1 = 1;
     public static final Integer DL_OPERATION_TYPE_2 = 2;
+
+    /**
+     *  运输管理:送货至 1. 加库存  2.减库存
+     */
+    public static final String DELIVERTO_1 = "收货人地址";
+    public static final String DELIVERTO_2 = "货运站";
 }

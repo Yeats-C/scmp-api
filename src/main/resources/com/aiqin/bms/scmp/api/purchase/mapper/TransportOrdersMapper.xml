@@ -45,4 +45,10 @@
         from transport_orders
         where transport_code=#{transportCode}
     </select>
+    <select id="selectTransportOrdersByTransportCode" resultMap="TransportOrdersMap">
+        select <include refid="Transport_Orders_sql"></include>
+        from transport_orders
+        where transport_code=#{transportCode}
+        limit 1
+    </select>
 </mapper>

@@ -204,11 +204,19 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
 
         // 查询商品信息
         Map<String, ReturnOrderInfoItem> returnMap = new HashMap<>();
+        Map<String, ReturnOrderInfoInspectionItem> notMap = new HashMap<>();
         String key;
+        String notKey;
         for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
             key = String.format("%s,%s", item.getSkuCode(), item.getLineCode());
+            notKey = String.format("%s,%s,%s", item.getSkuCode(), item.getBatchCode(), item.getWarehouseCode());
             if (returnMap.get(key) == null) {
                 returnMap.put(key, returnOrderInfoItemMapper.returnOrderOne(request.getReturnOrderCode(), item.getSkuCode(), item.getLineCode()));
+            }
+            if(notMap.get(notKey) == null){
+                notMap.put(notKey, item);
+            }else {
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "数据重复不可提交"));
             }
         }
 

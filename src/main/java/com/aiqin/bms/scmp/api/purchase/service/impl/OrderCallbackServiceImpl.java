@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.E8OrderCreate;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -48,8 +49,10 @@ import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -194,6 +197,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private InboundService inboundService;
     @Resource
     private TransportMapper transportMapper;
+    @Resource
+    private TransportOrdersMapper transportOrdersMapper;
+    @Resource
+    private WarehouseDao warehouseDao;
     @Autowired
     @Lazy(true)
     private SapBaseDataService sapBaseDataService;
@@ -1870,5 +1877,4 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         return HttpResponse.success();
     }
-
 }

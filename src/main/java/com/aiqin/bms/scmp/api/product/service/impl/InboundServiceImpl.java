@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -20,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.aiqin.bms.scmp.api.product.domain.response.ResponseWms;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
@@ -111,6 +113,9 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private AllocationMapper allocationMapper;
     @Autowired
+    @Lazy(true)
+    private AllocationService allocationService;
+    @Autowired
     private InboundBatchDao inboundBatchDao;
     @Autowired
     @Lazy(true)
@@ -142,6 +147,9 @@ public class InboundServiceImpl implements InboundService {
     private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
+    @Autowired
+    private StockBatchDao stockBatchDao;
+
 
     /**
      * 分页查询以及列表搜索
@@ -655,7 +663,7 @@ public class InboundServiceImpl implements InboundService {
 
         // 变更入库单批次的信息
         List<InboundBatch> inboundBatchList = Lists.newArrayList();
-        InboundBatch productBatch;
+        InboundBatch productBatch = null;
         List<InboundBatchCallBackRequest> notBatchList = Lists.newArrayList();
         if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
             Map<String, Long> actualTotalCountMap = new HashMap<>();
@@ -738,14 +746,18 @@ public class InboundServiceImpl implements InboundService {
                 InboundProduct product = inboundProductDao.inboundByLineCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode());
 
                 // 调拨下  供应商 成本从出库中获取
-                AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode().intValue());
-
-                // 退货的更新入库单的批次信息
-                if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+                AllocationProductBatch allocationProductBatch = null;
+                if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
+                    allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(inbound.getInboundOderCode(), batchInfo.getSkuCode(), batchInfo.getLineCode().intValue());
+                }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
                     productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
                     if (productBatch == null) {
                         productBatch = inboundBatchDao.inboundBatchByInfoCode(null, inbound.getInboundOderCode(), batchInfo.getLineCode());
                     }
+                }
+
+                // 退货的更新入库单的批次信息
+                if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
                     if (productBatch == null) {
                         notBatchList.add(batchInfo);
                         LOGGER.info("wms回传退货单未查询到的退货单批次信息 ：{}", notBatchList);
@@ -809,15 +821,16 @@ public class InboundServiceImpl implements InboundService {
                     this.addStockBatch(stockBatchInfo, inbound);
                     stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
                     if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
-                        productBatch = inboundBatchDao.inboundBatchByInfoCode(batchInfo.getBatchCode(), inbound.getInboundOderCode(), batchInfo.getLineCode());
-                        if (productBatch == null) {
-                            productBatch = inboundBatchDao.inboundBatchByInfoCode(null, inbound.getInboundOderCode(), batchInfo.getLineCode());
-                        }
-                        if(productBatch != null){
+                        // 查询批次信息
+                        if(batchInfo.getBatchCode().equals(productBatch.getBatchCode())){
                             stockBatchInfo.setBatchInfoCode(productBatch.getBatchInfoCode());
+                        }else {
+                            List<StockBatch> list = stockBatchDao.stockBatchByOutbound(batchInfo.getSkuCode(), warehouse.getWarehouseCode(), batchInfo.getBatchCode());
+                            if(CollectionUtils.isNotEmpty(list) && list.size() > 0){
+                                stockBatchInfo.setBatchInfoCode(list.get(0).getBatchInfoCode());
+                            }
                         }
                     }else if(inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
-
                         stockBatchInfo.setSupplierCode(allocationProductBatch.getSupplierCode());
                         stockBatchInfo.setTaxCost(allocationProductBatch.getTaxPrice());
                     }
@@ -1061,7 +1074,8 @@ public class InboundServiceImpl implements InboundService {
                 dlProduct.setTotalCount(product.getPraInboundMainNum());
                 dlProduct.setProductAmount(orderProduct.getProductAmount());
                 dlProduct.setTaxRate(orderProduct.getTaxRate());
-                dlProduct.setProductType(orderProduct.getProductType());
+                Integer productType = orderProduct.getProductType() == 3 ? 1 : (orderProduct.getProductType() == 2 ? 2 : 1);
+                dlProduct.setProductType(productType);
                 BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(orderProduct.getProductAmount(), orderProduct.getTaxRate());
                 dlProduct.setNotProductAmount(noTaxPrice);
                 dlProductList.add(dlProduct);
@@ -1109,6 +1123,21 @@ public class InboundServiceImpl implements InboundService {
                 //跟新调拨单状态
                 int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
+                // 调用完库存锁定调用同步dl库存数据
+                StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+                List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
+                List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocationCode);
+                stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
+                stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_7);
+                stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
+                allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+                LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+                    log.error(Global.ERROR, response.getMessage());
+                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
+                }
                 // 调用sap 传送调拨单的数据给sap
 //                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
 //                LOGGER.info("调拨wms回传,调用sap成功：{}", JsonUtil.toJson(allocation));

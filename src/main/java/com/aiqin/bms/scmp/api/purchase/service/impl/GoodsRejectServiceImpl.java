@@ -27,6 +27,9 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -45,10 +48,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.DateUtils;
-import com.aiqin.bms.scmp.api.util.FileReaderUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -1051,6 +1051,57 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         if(count > 0){
             // 调用sap 传送退供单的数据给sap
             //sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
+
+            // 调用DL，把退供的库存变更推送给DL
+            StockChangeDlRequest dlRequest = new StockChangeDlRequest();
+            dlRequest.setOrderCode(rejectRecord.getRejectRecordCode());
+            dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
+            dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
+            dlRequest.setSupplierCode(rejectRecord.getSupplierCode());
+            dlRequest.setWarehouseCode(rejectRecord.getWarehouseCode());
+            dlRequest.setWarehouseName(rejectRecord.getWarehouseName());
+            dlRequest.setOperationCode(rejectRecord.getUpdateById());
+            dlRequest.setOperationName(rejectRecord.getUpdateByName());
+            dlRequest.setPreArrivalTime(rejectRecord.getPreDeliverTime());
+            dlRequest.setTotalCount(rejectRecord.getActualTotalCount());
+
+            List<ProductRequest> dlProductList = Lists.newArrayList();
+            List<BatchRequest> dlBatchList;
+            ProductRequest dlProduct;
+            BatchRequest dlBatch;
+
+            for(RejectDetailStockRequest detail:request.getDetailList()){
+                rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(), detail.getLineCode());
+                dlProduct = new ProductRequest();
+                dlProduct.setLineCode(detail.getLineCode());
+                dlProduct.setSkuCode(rejectRecordDetail.getSkuCode());
+                dlProduct.setTotalCount(rejectRecordDetail.getTotalCount());
+                dlProduct.setProductAmount(rejectRecordDetail.getActualProductTotalAmount());
+                dlProduct.setTaxRate(rejectRecordDetail.getTaxRate());
+                Integer productType = rejectRecordDetail.getProductType() == 3 ? 1 : (rejectRecordDetail.getProductType() == 2 ? 2 : 1);
+                dlProduct.setProductType(productType);
+                BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(rejectRecordDetail.getProductAmount(), rejectRecordDetail.getTaxRate());
+                dlProduct.setNotProductAmount(noTaxPrice);
+                dlProductList.add(dlProduct);
+                // 查询批次信息
+                List<ScmpPurchaseBatch> batches = rejectRecordBatchDao.rejectBatchListBySap(rejectRecordDetail.getSkuCode(), rejectRecordDetail.getRejectRecordCode(), rejectRecordDetail.getLineCode());
+                if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
+                    dlBatchList = Lists.newArrayList();
+                    for (ScmpPurchaseBatch batch : batches){
+                        dlBatch = new BatchRequest();
+                        dlBatch.setLineCode(rejectRecordDetail.getLineCode());
+                        dlBatch.setSkuCode(rejectRecordDetail.getSkuCode());
+                        dlBatch.setBatchCode(batch.getBatchNo());
+                        dlBatch.setProductDate(batch.getProductDate());
+                        dlBatch.setTotalCount(batch.getActualTotalCount());
+                        dlBatchList.add(dlBatch);
+                    }
+                    dlProduct.setBatchList(dlBatchList);
+                }
+            }
+            dlRequest.setProductList(dlProductList);
+            LOGGER.info("退供完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
+            stockService.dlStockChange(dlRequest);
         }
         return HttpResponse.success();
     }

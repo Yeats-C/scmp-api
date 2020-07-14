@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -42,6 +43,8 @@ public interface AllocationService extends BaseService {
      * @return
      */
     Long save(AllocationReqVo vo);
+
+    void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest);
 
     /**
      * 撤销调拨单转化实体

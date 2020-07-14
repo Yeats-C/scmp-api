@@ -40,6 +40,9 @@ import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
@@ -213,7 +216,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         stockChangeRequest.setOperationType(1);
         LOGGER.info("保存调拨单商品批次表数据参数{}", JsonUtil.toJson(list));
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation.getCallOutWarehouseCode());
-        if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)){
+        if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)){
             int kp =  ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
             if(kp<=0) {
                 log.error("调拨单sku批次数据保存失败");
@@ -267,6 +270,54 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //             log.error("调拨单sku保存失败");
 //             throw new GroundRuntimeException("调拨单sku保存失败");
 //         }
+    }
+
+    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest) {
+        // 主表数据
+        Long totalCount = 0L;
+        stockChangeDlRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+        stockChangeDlRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+        stockChangeDlRequest.setOperationCode(allocation.getCreateById());
+        stockChangeDlRequest.setOperationName(allocation.getCreateBy());
+        // 商品数据
+        List<ProductRequest> productList = new ArrayList<>();
+        for (AllocationProductResVo product : products) {
+            ProductRequest productRequest = new ProductRequest();
+            productRequest.setLineCode(product.getLineNum().intValue());
+            productRequest.setSkuCode(product.getSkuCode());
+            productRequest.setSkuName(product.getSkuName());
+            productRequest.setTotalCount(product.getQuantity());
+            totalCount+=product.getQuantity();
+            productRequest.setUnitName(product.getUnit());
+            productRequest.setColorName(product.getColor());
+            productRequest.setModelNumber(product.getModel());
+            productRequest.setProductType(0);
+            productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
+            productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
+            BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
+            productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
+            productRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
+            productRequest.setWarehouseName(allocation.getCallOutWarehouseName());
+            // 批次数据
+            List<BatchRequest> batchList = new ArrayList<>();
+            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+                for (AllocationProductBatchResVo productBatch : list) {
+                    if(Objects.equals(product.getSkuCode() + product.getLineNum().toString(),
+                            productBatch.getSkuCode() + productBatch.getLineNum().toString())){
+                        BatchRequest batchRequest = new BatchRequest();
+                        batchRequest.setLineCode(productBatch.getLineNum().intValue());
+                        batchRequest.setSkuCode(productBatch.getSkuCode());
+                        batchRequest.setBatchCode(productBatch.getBatchNumber());
+                        batchRequest.setProductDate(productBatch.getProductDate());
+                        batchRequest.setTotalCount(productBatch.getQuantity());
+                        batchList.add(batchRequest);
+                    }
+                }
+                productRequest.setBatchList(batchList);
+            }
+            productList.add(productRequest);
+        }
+        stockChangeDlRequest.setTotalCount(totalCount);
     }
 
     /**
@@ -611,6 +662,19 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation1.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
         allocation1.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
+
+        // 调用完库存锁定调用同步dl库存数据
+        StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+        stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
+        stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
+        stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
+        synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+        LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+            return 0;
+        }
         return i;
     }
 
@@ -1090,9 +1154,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         // 需要调用库房配置管理 判断移库类型  0.wms发起移库   1.分别发起移库   2.同时发起移库
         WarehouseConfigReq warehouseConfigReq = new WarehouseConfigReq();
         warehouseConfigReq.setWarehouseCode(allocation1.getCallOutWarehouseCode());
-        LOGGER.error("审批成功后：移库调用wms获取库房配置信息参数:{}", JSON.toJSON(warehouseConfigReq));
+        LOGGER.info("审批成功后：移库调用wms获取库房配置信息参数:{}", JSON.toJSON(warehouseConfigReq));
         String movementUrl = urlConfig.WMS_API_URL2+"/storehouseConfig/search/info";
-        HttpClient movementUrlHttpClient = HttpClient.post(movementUrl).json(warehouseConfigReq).timeout(200000);
+        HttpClient movementUrlHttpClient = HttpClient.get(movementUrl).timeout(200000);
+        movementUrlHttpClient.addParameter("storehouse_code", allocation1.getCallOutWarehouseCode());
         HttpResponse<WarehouseConfigResp> movementUrlResult = movementUrlHttpClient.action().result(new TypeReference<HttpResponse<WarehouseConfigResp>>(){
         });
         if (!movementUrlResult.getCode().equals(MessageId.SUCCESS_CODE)) {
@@ -1123,11 +1188,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         // 移库主表数据
         BeanUtils.copyProperties(movementWmsReqVo,allocation1);
         movementWmsReqVo.setTransferOrderCode(allocation1.getAllocationCode());
-        movementWmsReqVo.setOutboundWarehouseCode(allocation1.getCallOutLogisticsCenterCode());
-        movementWmsReqVo.setOutboundWarehouseName(allocation1.getCallOutLogisticsCenterName());
+        movementWmsReqVo.setOutboundWarehouseCode(allocation1.getCallOutWarehouseCode());
+        movementWmsReqVo.setOutboundWarehouseName(allocation1.getCallOutWarehouseName());
         movementWmsReqVo.setOutboundOrderCode(allocation1.getOutboundOderCode());
-        movementWmsReqVo.setInboundWarehouseCode(allocation1.getCallInLogisticsCenterCode());
-        movementWmsReqVo.setInboundWarehouseName(allocation1.getCallInLogisticsCenterName());
+        movementWmsReqVo.setInboundWarehouseCode(allocation1.getCallInWarehouseCode());
+        movementWmsReqVo.setInboundWarehouseName(allocation1.getCallInWarehouseName());
         movementWmsReqVo.setInboundOrderCode(allocation1.getInboundOderCode());
         movementWmsReqVo.setCreateBy(allocation1.getCreateById());
         movementWmsReqVo.setCreateByName(allocation1.getCreateByName());
@@ -1156,20 +1221,33 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 movementWmsProductReqVo.setPackageName(purchaseSaleStockRespVo.getStockUnitName());
                 movementWmsProductReqVo.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
             }
+            movementWmsProductoLists.add(movementWmsProductReqVo);
         }
         // 移库商品批次表数据
-        for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
-            BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
-            BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
-            aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
-            aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
-            aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
-            aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
-            aWmsProductBatchList.setSkuCode(aProductBatchList.getSkuCode());
-            aWmsProductBatchList.setSkuName(aProductBatchList.getSkuName());
+        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(aProductBatchLists) && aProductBatchLists.size() > 0){
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation1.getCallOutWarehouseCode());
+            for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
+                // 判断是否为指定批次
+                Integer exist = 0;
+                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+                    exist = productSkuBatchMapper.productSkuBatchExist(aProductBatchList.getSkuCode(), warehouse.getWarehouseCode());
+                }
+                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1) || exist > 0){
+                    BatchWmsInfo aWmsProductBatchList = new BatchWmsInfo();
+                    BeanUtils.copyProperties(aWmsProductBatchList,aProductBatchList);
+                    aWmsProductBatchList.setLineCode(aProductBatchList.getLineNum());
+                    aWmsProductBatchList.setBatchCode(aProductBatchList.getCallInBatchNumber());
+                    aWmsProductBatchList.setBatchRemark(aProductBatchList.getBatchNumberRemark());
+                    aWmsProductBatchList.setTotalCount(aProductBatchList.getQuantity());
+                    aWmsProductBatchList.setSkuCode(aProductBatchList.getSkuCode());
+                    aWmsProductBatchList.setSkuName(aProductBatchList.getSkuName());
+                    movementWmsProductBatchLists.add(aWmsProductBatchList);
+                }
+            }
         }
         movementWmsReqVo.setDetailList(movementWmsProductoLists);
         movementWmsReqVo.setBatchInfoList(movementWmsProductBatchLists);
+        LOGGER.info("审批成功后：移库调用wms参数:{}", JSON.toJSON(movementWmsReqVo));
         String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
         HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
