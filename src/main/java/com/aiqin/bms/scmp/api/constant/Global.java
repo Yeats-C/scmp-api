@@ -285,4 +285,20 @@ public final class Global {
      */
     public static final String DELIVERTO_1 = "收货人地址";
     public static final String DELIVERTO_2 = "货运站";
+
+    /**
+     *  调用wms发运。服务方式: 1. 派送  2.站点自提  3.中心自提  4.自提
+     */
+    public static final String SERVICE_MODE_1 = "派送";
+    public static final String SERVICE_MODE_2 = "站点自提";
+    public static final String SERVICE_MODE_3 = "中心自提";
+    public static final String SERVICE_MODE_4 = "自提";
+
+    /**
+     *  调用wms发运。支付方式: 1. 寄付  2.到付  3.月结
+     */
+    public static final String SETTLE_TYPE_1 = "寄付";
+    public static final String SETTLE_TYPE_2 = "到付";
+    public static final String SETTLE_TYPE_3 = "月结";
+
 }

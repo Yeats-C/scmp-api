@@ -40,12 +40,15 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.OrderTransportRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
+import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
@@ -65,6 +68,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -197,6 +201,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private InboundService inboundService;
     @Resource
     private TransportMapper transportMapper;
+    @Resource
+    @Lazy(true)
+    private TransportService transportService;
     @Resource
     private TransportOrdersMapper transportOrdersMapper;
     @Resource
@@ -1876,5 +1883,40 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
         return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deliveryCallBackSave(DpResponseContent request){
+        // 通过库房编码获取对应信息
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
+        TransportAddRequest transportAddRequest = new TransportAddRequest();
+        transportAddRequest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+        transportAddRequest.setTransportCenterName(warehouse.getLogisticsCenterName());
+        transportAddRequest.setWarehouseCode(warehouse.getWarehouseCode());
+        transportAddRequest.setWarehouseName(warehouse.getWarehouseName());
+        transportAddRequest.setPackingNum(Long.valueOf(request.getPackageAmount()));
+        List<TransportOrders> transportOrders = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(request.getOrderIdsList())){
+            // 查询订单信息
+            TransportOrdersResquest transportOrdersResquest = new TransportOrdersResquest();
+            transportOrdersResquest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+            transportOrdersResquest.setCustomerCode(warehouse.getWarehouseCode());
+            List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
+            Map<String, TransportOrders> skuMap = transportOrders1.stream().collect(Collectors.toMap(TransportOrders::getOrderCode, input -> input, (k1, k2) -> k1));
+            for (String orderCode : request.getOrderIdsList()) {
+                if (skuMap.containsKey(orderCode)) {
+                    TransportOrders transportOrder = new TransportOrders();
+                    BeanCopyUtils.copy(skuMap.get(orderCode),transportOrder);
+                    transportOrders.add(transportOrder);
+                }
+            }
+        }
+        try {
+        return transportService.saveTransport(transportAddRequest);
+        } catch (Exception e) {
+           LOGGER.error(Global.ERROR, e);
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
+        }
     }
 }

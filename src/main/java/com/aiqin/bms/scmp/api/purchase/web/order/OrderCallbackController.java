@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.web.order;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsOutReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.outbound.DpResponseContent;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.profitloss.ProfitLossWmsReqVo;
 import com.aiqin.bms.scmp.api.product.service.MovementService;
@@ -124,15 +125,22 @@ public class OrderCallbackController {
     @PostMapping("/outbound/aiqin")
     @ApiOperation("销售出库单回调并且回传爱亲供应链")
     public HttpResponse outboundOrderCallBack(@RequestBody OutboundCallBackRequest request) {
-        LOGGER.info("销售出库单回调并且回传爱亲供应链,request:{}", request.toString());
+        LOGGER.info("销售出库单回调并且回传爱亲供应链,request:{}", JsonUtil.toJson(request));
         return orderCallbackService.outboundOrderCallBack(request);
     }
 
     @PostMapping("/delivery/info")
     @ApiOperation("发运单的回传")
     public HttpResponse deliveryCallBack(@RequestBody DeliveryCallBackRequest request) {
-        LOGGER.info("发运单的回传,request:{}", request.toString());
+        LOGGER.info("发运单的回传,request:{}", JsonUtil.toJson(request));
         return orderCallbackService.deliveryCallBack(request);
+    }
+
+    @PostMapping("/delivery/info/save")
+    @ApiOperation("wms发运单的保存")
+    public HttpResponse deliveryCallBackSave(@RequestBody DpResponseContent request) {
+        LOGGER.info("wms发运单的保存,request:{}", JsonUtil.toJson(request));
+        return orderCallbackService.deliveryCallBackSave(request);
     }
 
 }
