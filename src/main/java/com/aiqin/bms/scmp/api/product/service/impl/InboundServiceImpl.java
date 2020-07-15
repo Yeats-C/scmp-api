@@ -840,7 +840,13 @@ public class InboundServiceImpl implements InboundService {
                     stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
                     stockBatchInfo.setSourceDocumentType(sourceDocumentType);
                     stockBatchInfo.setSkuCode(batchInfo.getSkuCode());
-                    stockBatchInfo.setSkuName(batchInfo.getSkuName());
+                    String skuName;
+                    if(StringUtils.isNotBlank(batchInfo.getSkuName())){
+                        skuName = batchInfo.getSkuName();
+                    }else {
+                        skuName = product.getSkuName() == null ? "" : product.getSkuName();
+                    }
+                    stockBatchInfo.setSkuName(skuName);
                     stockBatchInfo.setTaxRate(product.getTax());
                     if (StringUtils.isNotBlank(request.getOperatorId())) {
                         stockBatchInfo.setOperatorId(request.getOperatorId());
