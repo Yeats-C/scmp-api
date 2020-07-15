@@ -439,7 +439,7 @@ public class ExcelService {
                 o.setPlatformType(1);
                 o.setOrderProductType(0);
                 o.setBeMasterOrder(1);
-                o.setActualProductTotalAmount(o.getProductTotalAmount());
+                //o.setActualProductTotalAmount(o.getProductTotalAmount());
                 o.setCompanyCode("09");
                 o.setCompanyName("宁波熙耘科技有限公司");
                 o.setStoreName(o.getCustomerName());
