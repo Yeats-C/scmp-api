@@ -48,7 +48,7 @@ public class CheckSkuNewReally {
     Map<String, Manufacturer> manufactureMap;
     Map<String, ProductSkuDraft> productSkuDraftMap;
     Map<String, PurchaseGroupDTO> purchaseGroupMap;
-    private static String picFolderCodeKey="picFolderCode_";
+    private static String picFolderCodeKey = "picFolderCode_";
 
     private CheckSkuNewReally() {
     }
@@ -63,7 +63,7 @@ public class CheckSkuNewReally {
         this.channelMap = channelMap;
         this.skuTagMap = skuTagMap;
         this.repeatMap = repeatMap;
-        this.importVo = BeanCopyUtils.copy(importVo,SkuInfoImportReally.class);
+        this.importVo = BeanCopyUtils.copy(importVo, SkuInfoImportReally.class);
         this.spuMap = spuMap;
         this.dicMap = dicMap;
         this.dicMap2 = dicMap2;
@@ -74,6 +74,7 @@ public class CheckSkuNewReally {
     public CheckSkuNewReally checkRepeat() {
         return this;
     }
+
     //新增检查sku
     public CheckSkuNewReally checkSKuNew() {
         ProductSkuDraft draft = BeanCopyUtils.copy(importVo, ProductSkuDraft.class);
@@ -252,15 +253,15 @@ public class CheckSkuNewReally {
         //保质天数
         if (StringUtils.isBlank(importVo.getQualityDate())) {
             error.add("保质天数不能为空");
-        }else {
+        } else {
             try {
                 int i = Integer.parseInt(importVo.getQualityDate());
-                if ( i == 0) {
+                if (i == 0) {
                     productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.NO.getType());
-                }else if (i>0){
+                } else if (i > 0) {
                     productSkuDraft.setQualityAssuranceManagement(QualityAssuranceManagements.YES.getType());
                     productSkuDraft.setQualityNumber(QualityTypes.DAY.getType().toString());
-                    productSkuDraft.setQualityDate(i+"");
+                    productSkuDraft.setQualityDate(i + "");
                 }
             } catch (NumberFormatException e) {
                 error.add("保质天数格式不正确");
@@ -358,7 +359,7 @@ public class CheckSkuNewReally {
             }
         }
         //特征
-        if(Objects.isNull(importVo.getFeatureName())) {
+        if (Objects.isNull(importVo.getFeatureName())) {
             error.add("特征不能为空");
         } else {
             StatusTypeCode typeCode = StatusTypeCode.getAll().get(importVo.getFeatureName());
@@ -369,7 +370,7 @@ public class CheckSkuNewReally {
             }
         }
         //通货等级
-        if(Objects.isNull(importVo.getCurrencyLevelName())) {
+        if (Objects.isNull(importVo.getCurrencyLevelName())) {
             error.add("通货等级不能为空");
         } else {
             StatusTypeCode typeCode = StatusTypeCode.getAll().get(importVo.getCurrencyLevelName());
@@ -519,9 +520,10 @@ public class CheckSkuNewReally {
                 if (StringUtils.isNotBlank(importVo.getStockBoxLength())) {
                     BigDecimal bigDecimalLength = new BigDecimal(importVo.getStockBoxLength().trim());
                     Long longLength = bigDecimalLength.longValue();
-                    if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                    if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存长格式不正确");
+                        throw new BizException("库存长格式不正确");
                     }
                     stockBox.setBoxLength(longLength);
                 } else {
@@ -533,12 +535,13 @@ public class CheckSkuNewReally {
                 flag = false;
             }
             try {
-                if(StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
+                if (StringUtils.isNotBlank(importVo.getStockBoxWidth())) {
                     BigDecimal bigDecimalWidth = new BigDecimal(importVo.getStockBoxWidth().trim());
                     Long longWidth = bigDecimalWidth.longValue();
-                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                    if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存宽格式不正确");
+                        throw new BizException("库存宽格式不正确");
                     }
                     stockBox.setBoxWidth(longWidth);
                 } else {
@@ -553,9 +556,10 @@ public class CheckSkuNewReally {
                 if (StringUtils.isNotBlank(importVo.getStockBoxHeight())) {
                     BigDecimal bigDecimalHeight = new BigDecimal(importVo.getStockBoxHeight().trim());
                     Long longHeight = bigDecimalHeight.longValue();
-                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                    if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存高格式不正确");
+                        throw new BizException("库存高格式不正确");
                     }
                     stockBox.setBoxHeight(longHeight);
                 } else {
@@ -569,9 +573,10 @@ public class CheckSkuNewReally {
                 if (StringUtils.isNotBlank(importVo.getStockBoxVolume())) {
                     BigDecimal bigDecimalVolume = new BigDecimal(importVo.getStockBoxVolume().trim());
                     Long longVolume = bigDecimalVolume.longValue();
-                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                    if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
+                    } else {
                         //小数
-                        throw  new BizException("库存体积格式不正确");
+                        throw new BizException("库存体积格式不正确");
                     }
                     stockBox.setBoxVolume(longVolume);
                     flag = false;
@@ -637,10 +642,10 @@ public class CheckSkuNewReally {
         }
         //采购包装信息
         //如果长宽高体积毛重净重为空,则不存包装信息
-        if (Objects.nonNull(importVo.getStockUnitName())&&Objects.nonNull(importVo.getPurchaseUnitName())&&(!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName()))) {
+        if (Objects.nonNull(importVo.getStockUnitName()) && Objects.nonNull(importVo.getPurchaseUnitName()) && (!importVo.getStockUnitName().equals(importVo.getPurchaseUnitName()))) {
             boolean purchaseBoxNotSave = StringUtils.isBlank(importVo.getPurchaseBoxLength()) && StringUtils.isBlank(importVo.getPurchaseBoxWidth())
                     && StringUtils.isBlank(importVo.getPurchaseBoxHeight()) && StringUtils.isBlank(importVo.getPurchaseBoxVolume())
-                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight())  && StringUtils.isBlank(importVo.getPurchaseNetWeight());
+                    && StringUtils.isBlank(importVo.getPurchaseBoxGrossWeight()) && StringUtils.isBlank(importVo.getPurchaseNetWeight());
             if (!purchaseBoxNotSave) {
                 ProductSkuBoxPackingDraft purchaseBox = new ProductSkuBoxPackingDraft();
                 purchaseBox.setProductSkuCode(this.resp.getProductSkuDraft().getSkuCode());
@@ -652,9 +657,10 @@ public class CheckSkuNewReally {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxLength())) {
                         BigDecimal bigDecimalLength = new BigDecimal(importVo.getPurchaseBoxLength().trim());
                         Long longLength = bigDecimalLength.longValue();
-                        if (new BigDecimal(longLength).compareTo(bigDecimalLength)==0){}else {
+                        if (new BigDecimal(longLength).compareTo(bigDecimalLength) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购长格式不正确");
+                            throw new BizException("采购长格式不正确");
                         }
                         purchaseBox.setBoxLength(longLength);
                     } else {
@@ -665,12 +671,13 @@ public class CheckSkuNewReally {
                     flag = false;
                 }
                 try {
-                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxWidth())) {
                         BigDecimal bigDecimalWidth = new BigDecimal(importVo.getPurchaseBoxWidth().trim());
                         Long longWidth = bigDecimalWidth.longValue();
-                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth)==0){}else {
+                        if (new BigDecimal(longWidth).compareTo(bigDecimalWidth) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购宽格式不正确");
+                            throw new BizException("采购宽格式不正确");
                         }
                         purchaseBox.setBoxWidth(longWidth);
                     } else {
@@ -684,9 +691,10 @@ public class CheckSkuNewReally {
                     if (StringUtils.isNotBlank(importVo.getPurchaseBoxHeight())) {
                         BigDecimal bigDecimalHeight = new BigDecimal(importVo.getPurchaseBoxHeight().trim());
                         Long longHeight = bigDecimalHeight.longValue();
-                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight)==0){}else {
+                        if (new BigDecimal(longHeight).compareTo(bigDecimalHeight) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购高格式不正确");
+                            throw new BizException("采购高格式不正确");
                         }
                         purchaseBox.setBoxHeight(longHeight);
                     } else {
@@ -697,12 +705,13 @@ public class CheckSkuNewReally {
                     flag = false;
                 }
                 try {
-                    if(StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
+                    if (StringUtils.isNotBlank(importVo.getPurchaseBoxVolume())) {
                         BigDecimal bigDecimalVolume = new BigDecimal(importVo.getPurchaseBoxVolume().trim());
                         Long longVolume = bigDecimalVolume.longValue();
-                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume)==0){}else {
+                        if (new BigDecimal(longVolume).compareTo(bigDecimalVolume) == 0) {
+                        } else {
                             //小数
-                            throw  new BizException("采购体积格式不正确");
+                            throw new BizException("采购体积格式不正确");
                         }
                         purchaseBox.setBoxVolume(longVolume);
                         flag = false;
@@ -828,7 +837,7 @@ public class CheckSkuNewReally {
         sale.setProductSkuName(this.resp.getProductSkuDraft().getSkuName());
         sale.setProductCode(this.resp.getProductSkuDraft().getProductCode());
         sale.setProductName(this.resp.getProductSkuDraft().getProductName());
-        sale.setIsDefault((byte)1);
+        sale.setIsDefault((byte) 1);
         sale.setType((byte) 3);
         //销售规格
 //        if (Objects.isNull(importVo.getSaleSpec())) {
@@ -1005,6 +1014,7 @@ public class CheckSkuNewReally {
         this.resp.setProductSkuSupplyUnitDrafts(supply);
         return this;
     }
+
     //检查价格
     public CheckSkuNewReally checkPrice() {
         List<SkuPriceDraftReqVO> priceList = Lists.newArrayList();
@@ -1014,7 +1024,7 @@ public class CheckSkuNewReally {
             error.add("爱亲渠道价不能为空");
         } else {
             SkuPriceDraftReqVO aiqinChannel1 = price.get("爱亲渠道价");
-            SkuPriceDraftReqVO aiqinChannel =  new SkuPriceDraftReqVO();
+            SkuPriceDraftReqVO aiqinChannel = new SkuPriceDraftReqVO();
 
             BeanCopyUtils.copy(aiqinChannel1, aiqinChannel);
             try {
@@ -1226,7 +1236,7 @@ public class CheckSkuNewReally {
                 ProductSkuManufacturerDraft draft = new ProductSkuManufacturerDraft();
                 draft.setManufacturerName(manufacturer.getName());
                 draft.setManufacturerCode(manufacturer.getManufacturerCode());
-                draft.setIsDefault((byte)1);
+                draft.setIsDefault((byte) 1);
                 //厂方商品编号
                 if (Objects.isNull(importVo.getFactoryProductNumber())) {
                     // error.add("厂方商品编号不能为空");
@@ -1267,4 +1277,5 @@ public class CheckSkuNewReally {
         this.importVo.setError(StringUtils.strip(this.error.toString(), "[]"));
         return this.importVo;
     }
+
 }
