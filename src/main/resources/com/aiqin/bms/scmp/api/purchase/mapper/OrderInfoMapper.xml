@@ -222,7 +222,7 @@ transport_number, platform_type, business_form, tax_id
     <result column="aupdate_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="aactual_product_channel_total_amount" jdbcType="DECIMAL" property="actualProductChannelTotalAmount" />
     <result column="aactual_order_amount" jdbcType="DECIMAL" property="actualOrderAmount" />
-    <result column="aactual_product_num" jdbcType="DECIMAL" property="actualProductNum" />
+    <result column="aactual_product_num" jdbcType="BIGINT" property="actualProductNum" />
     <result column="aorder_original_name" jdbcType="VARCHAR" property="orderOriginalName" />
     <result column="aactual_weight" jdbcType="BIGINT" property="actualWeight" />
     <result column="aactual_volume" jdbcType="BIGINT" property="actualVolume" />
@@ -407,6 +407,7 @@ transport_number, platform_type, business_form, tax_id
              a.consignee_mobile aconsignee_mobile,
              a.actual_logistics_remission_ratio aactual_logistics_remission_ratio,
              a.actual_activity_discount aactual_activity_discount,
+              a.actual_product_num aactual_product_num,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
