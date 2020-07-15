@@ -316,6 +316,7 @@ public class ExcelService {
                 p.setRejectStatus(3);
                 p.setCompanyCode("09");
                 p.setCompanyName("宁波熙耘科技有限公司");
+                p.setOutStockTime(p.getUpdateTime());
             });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 this.rejectRecordDao.insertMany(saves);
@@ -435,6 +436,7 @@ public class ExcelService {
                 o.setOrderTypeCode(1);
                 o.setChannelCode("1");
                 o.setChannelName("爱亲科技");
+                o.setOrderOriginalName("爱亲科技");
                 o.setBusinessForm(1);
                 o.setPlatformType(1);
                 o.setOrderProductType(0);
@@ -443,9 +445,22 @@ public class ExcelService {
                 o.setCompanyCode("09");
                 o.setCompanyName("宁波熙耘科技有限公司");
                 o.setStoreName(o.getCustomerName());
-                if(StringUtils.isNotBlank(o.getCustomerCode())){
+                o.setActualDeliverAmount(o.getDeliverAmount());
+                if (StringUtils.isNotBlank(o.getCustomerCode())) {
                     o.setStoreCode(o.getCustomerCode());
                 }
+                o.setProductTotalAmount(o.getActualProductTotalAmount());
+                o.setActualChannelOrderAmount(o.getActualProductTotalAmount());
+                o.setChannelOrderAmount(o.getActualProductTotalAmount());
+                o.setOrderAmount(o.getProductTotalAmount());
+                //商品渠道总金额
+                o.setProductChannelTotalAmount(o.getChannelOrderAmount());
+                //实际渠道总价actual_product_channel_total_amount
+                o.setActualProductChannelTotalAmount(o.getActualChannelOrderAmount());
+                //实际分销订单金额  actual_order_amount
+                o.setActualOrderAmount(o.getActualProductTotalAmount());
+                o.setProductNum(o.getActualProductNum());
+
             });
             of = null;
             if (CollectionUtils.isNotEmptyCollection(saves)) {
@@ -481,29 +496,41 @@ public class ExcelService {
             List<OrderInfoItem> saves = JSONObject.parseArray(s, OrderInfoItem.class);
             s = null;
             oft = null;
-//            List<String> orderCodeList = saves.stream().map(OrderInfoItem::getOrderCode).distinct().collect(Collectors.toList());
-//            //删除已经存在的数据
-//            List<String> existRejectRecordCodes = this.orderInfoItemMapper.selectByOrderCodes(orderCodeList);
-//            orderCodeList=null;
-//            Iterator<OrderInfoItem> iterator = saves.iterator();
-//            while (iterator.hasNext()) {
-//                OrderInfoItem save = iterator.next();
-//                if (CollectionUtils.isNotEmptyCollection(existRejectRecordCodes)) {
-//                    if (existRejectRecordCodes.contains(save.getOrderCode())) {
-//                        iterator.remove();
-//                    }
-//                }
-//            }
-//            existRejectRecordCodes=null;
+            List<String> orderCodeList = saves.stream().map(OrderInfoItem::getOrderCode).distinct().collect(Collectors.toList());
+            //删除已经存在的数据
+            List<String> existRejectRecordCodes = this.orderInfoItemMapper.selectByOrderCodes(orderCodeList);
+            Set set = new HashSet();
+            if (CollectionUtils.isNotEmptyCollection(existRejectRecordCodes)) {
+                set.addAll(existRejectRecordCodes);
+            }
+            orderCodeList = null;
+            Iterator<OrderInfoItem> iterator = saves.iterator();
+            while (iterator.hasNext()) {
+                OrderInfoItem save = iterator.next();
+                if (CollectionUtils.isNotEmptyCollection(set)&&set.contains(save.getOrderCode())) {
+                    iterator.remove();
+                } else {
+                    save.setPrice(save.getActualPrice());
+                    save.setNum(save.getActualDeliverNum());
+                    save.setAmount(save.getActualAmount());
+                    save.setCompanyCode("09");
+                    save.setCompanyName("宁波熙耘科技有限公司");
+                    save.setChannelUnitPrice(save.getPrice());
+                    save.setTotalChannelPrice(save.getAmount());
+                    save.setActualTotalChannelPrice(save.getActualAmount());
 
-            saves.forEach(o -> {
-                o.setPrice(o.getActualPrice());
-                o.setNum(o.getActualDeliverNum());
-                o.setAmount(o.getActualAmount());
-                o.setCompanyCode("09");
-                o.setCompanyName("宁波熙耘科技有限公司");
+                }
+            }
+            existRejectRecordCodes = null;
 
-            });
+//            saves.forEach(o -> {
+//                o.setPrice(o.getActualPrice());
+//                o.setNum(o.getActualDeliverNum());
+//                o.setAmount(o.getActualAmount());
+//                o.setCompanyCode("09");
+//                o.setCompanyName("宁波熙耘科技有限公司");
+//
+//            });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 Map<Integer, List<OrderInfoItem>> itemMap = new ListUtils<OrderInfoItem>().batchList(saves, 3000);
                 for (Integer i : itemMap.keySet()) {
@@ -565,6 +592,24 @@ public class ExcelService {
                 r.setOrderProductType(1);
                 r.setCompanyCode("09");
                 r.setCompanyName("宁波熙耘科技有限公司");
+                r.setStoreName(r.getCustomerName());
+                r.setOrderOriginalName("爱亲科技");
+                if (StringUtils.isNotBlank(r.getCustomerCode())) {
+                    r.setStoreCode(r.getCustomerCode());
+                }
+                // `actual_product_total_amount` decimal(20,4) DEFAULT NULL COMMENT '实际商品分销总金额',
+                r.setActualProductTotalAmount(r.getReturnOrderAmount());
+                r.setProductTotalAmount(r.getReturnOrderAmount());
+                r.setActualProductChannelTotalAmount(r.getReturnOrderAmount());
+                r.setProductChannelTotalAmount(r.getActualProductTotalAmount());
+
+                //渠道退货金额 == `product_channel_total_amount` decimal(20,4) DEFAULT NULL COMMENT '渠道总金额',
+                r.setProductChannelTotalAmount(r.getReturnOrderAmount());
+                //实退 渠道退货金额    `actual_product_channel_total_amount` decimal(20,4) DEFAULT NULL COMMENT '实际渠道总金额',
+                r.setActualProductChannelTotalAmount(r.getReturnOrderAmount());
+
+
+
             });
             returnOrderInfoExcels = null;
             if (CollectionUtils.isNotEmptyCollection(saves)) {
@@ -616,6 +661,9 @@ public class ExcelService {
             saves.forEach(r -> {
                 r.setCompanyCode("09");
                 r.setCompanyName("宁波熙耘科技有限公司");
+                r.setChannelUnitPrice(r.getPrice());
+                r.setTotalChannelPrice(r.getAmount());
+                r.setActualTotalChannelPrice(r.getActualAmount());
             });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
                 Map<Integer, List<ReturnOrderInfoItem>> itemMap = new ListUtils<ReturnOrderInfoItem>().batchList(saves, 3000);

@@ -64,6 +64,9 @@ public class OrderInfoExcel extends BaseRowModel {
     private BigDecimal deliverAmount;
 
 
+
+
+
     @ApiModelProperty("实际发货数量")
     @ExcelProperty(index = 17, value = "实发数量")
     private Long actualProductNum;
@@ -102,14 +105,17 @@ public class OrderInfoExcel extends BaseRowModel {
     private String transportCenterName;
 
 
+
     @ApiModelProperty("物流中心编码")
-    @ExcelProperty(index = 25, value = "库房名称")
+    @ExcelProperty(index = 25, value = "库房编码")
+    private String warehouseCode;
+
+    @ApiModelProperty("物流中心编码")
+    @ExcelProperty(index = 26, value = "库房名称")
     private String warehouseName;
 
 
-    @ApiModelProperty("物流中心编码")
-    @ExcelProperty(index = 26, value = "库房编码")
-    private String warehouseCode;
+
 
 
 

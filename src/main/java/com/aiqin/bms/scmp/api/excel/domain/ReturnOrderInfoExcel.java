@@ -88,13 +88,24 @@ public class ReturnOrderInfoExcel extends BaseRowModel {
     private Date updateTime;
 
     @ApiModelProperty(value = "仓库编号")
-    @ExcelProperty(index = 17, value = "仓库编号")
+    @ExcelProperty(index = 18, value = "仓库编号")
     private String transportCenterCode;
 
 
     @ApiModelProperty(value = "仓库名称")
-    @ExcelProperty(index = 18, value = "仓库名称")
+    @ExcelProperty(index = 19, value = "仓库名称")
     private String transportCenterName;
+
+
+
+    @ApiModelProperty(value = "仓库编号")
+    @ExcelProperty(index = 20, value = "库房编码")
+    private String warehouseCode;
+
+
+    @ApiModelProperty(value = "仓库名称")
+    @ExcelProperty(index = 21, value = "库房名称")
+    private String warehouseName;
 
 
 }
