@@ -37,6 +37,10 @@ public interface AllocationProductMapper {
                                                             @Param("skuCode") String skuCode,
                                                             @Param("lineCode") Integer lineCode);
 
+    int updateQuantityBySkuCodeAndSource(AllocationProduct allocationProduct);
+
+    int updateQuantityBySkuCodeAndSourceIn(AllocationProduct allocationProduct);
+
     AllocationProductResVo selectAllocationProductByLineCode(@Param("allocationCode") String allocationCode, @Param("lineCode") Integer lineCode);
 }
 

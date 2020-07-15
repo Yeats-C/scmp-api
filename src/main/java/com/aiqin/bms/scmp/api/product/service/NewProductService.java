@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.product.service;
 
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportMain;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportMain;
 import com.aiqin.bms.scmp.api.product.domain.pojo.NewProduct;
@@ -51,6 +50,7 @@ public interface NewProductService {
 
     /** 保存导入商品信息（校验） */
     SkuInfoImportMain saveImportSkuInfoCheck(MultipartFile file);
+
     /**
      * 通过名称查询
      * @author NullPointException

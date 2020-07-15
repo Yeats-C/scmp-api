@@ -636,32 +636,35 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             stockInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
             stockInfoRequest.setOperatorName(orderInfoReqVO.getCreateByName());
             list.add(stockInfoRequest);
-
+        }
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(orderInfoReqVO.getWarehouseCode());
+        if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)){
             if(orderInfoReqVO.getItemBatchList() != null){
                 for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
-                    if(itemReqVo.getSkuCode().equals(itemBatchReqVo.getSkuCode())){
-                        stockBatchInfoRequest = new StockBatchInfoRequest();
-                        stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
-                        stockBatchInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
-                        stockBatchInfoRequest.setSkuCode(itemBatchReqVo.getSkuCode());
-                        stockBatchInfoRequest.setSkuName(itemBatchReqVo.getSkuName());
-                        stockBatchInfoRequest.setBatchCode(itemBatchReqVo.getBatchCode());
-                        stockBatchInfoRequest.setBatchInfoCode(itemBatchReqVo.getBatchInfoCode());
-                        stockBatchInfoRequest.setProductDate(itemBatchReqVo.getProductDate());
-                        stockBatchInfoRequest.setBeOverdueDate(itemBatchReqVo.getBeOverdueDate());
-                        stockBatchInfoRequest.setBatchRemark(itemBatchReqVo.getBatchRemark());
-                        stockBatchInfoRequest.setSupplierCode(itemBatchReqVo.getSupplierCode());
-                        stockBatchInfoRequest.setDocumentType(9);
-                        stockBatchInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
-                        stockBatchInfoRequest.setSourceDocumentType(9);
-                        stockBatchInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
-                        stockBatchInfoRequest.setChangeCount(itemBatchReqVo.getTotalCount());
-                        stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
-                        batchList.add(stockBatchInfoRequest);
-                    }
+//                if(itemReqVo.getSkuCode().equals(itemBatchReqVo.getSkuCode())){
+                    stockBatchInfoRequest = new StockBatchInfoRequest();
+                    stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
+                    stockBatchInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
+                    stockBatchInfoRequest.setSkuCode(itemBatchReqVo.getSkuCode());
+                    stockBatchInfoRequest.setSkuName(itemBatchReqVo.getSkuName());
+                    stockBatchInfoRequest.setBatchCode(itemBatchReqVo.getBatchCode());
+                    stockBatchInfoRequest.setBatchInfoCode(itemBatchReqVo.getBatchInfoCode());
+                    stockBatchInfoRequest.setProductDate(itemBatchReqVo.getProductDate());
+                    stockBatchInfoRequest.setBeOverdueDate(itemBatchReqVo.getBeOverdueDate());
+                    stockBatchInfoRequest.setBatchRemark(itemBatchReqVo.getBatchRemark());
+                    stockBatchInfoRequest.setSupplierCode(itemBatchReqVo.getSupplierCode());
+                    stockBatchInfoRequest.setDocumentType(9);
+                    stockBatchInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
+                    stockBatchInfoRequest.setSourceDocumentType(9);
+                    stockBatchInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
+                    stockBatchInfoRequest.setChangeCount(itemBatchReqVo.getTotalCount());
+                    stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
+                    batchList.add(stockBatchInfoRequest);
+//                }
                 }
             }
         }
+
         changeStockRequest.setStockList(list);
         changeStockRequest.setStockBatchList(batchList);
     }

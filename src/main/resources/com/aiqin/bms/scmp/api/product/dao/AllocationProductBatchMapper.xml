@@ -547,6 +547,19 @@
     </set>
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </update>
+  <update id="updateByBatchIn" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest">
+    update allocation_product_batch
+    <set>
+    <if test="batchInfoCode != null">
+      callin_batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+    </if>
+      <if test="actualTotalCount != null">
+        callin_actual_total_count = #{actualTotalCount,jdbcType=VARCHAR},
+      </if>
+        update_time = now()
+    </set>
+    where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+  </update>
   <select id="selectAllocationOutByCode" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
     select
      b.allocation_code allocationCode,c.supplier_code supplierCode,c.tax_price taxPrice, c.tax tax,c.sku_code skuCode

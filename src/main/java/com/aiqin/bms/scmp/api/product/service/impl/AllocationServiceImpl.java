@@ -670,11 +670,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
         synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
         LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-            return 0;
-        }
+//        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+//        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+//            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+//            return 0;
+//        }
         return i;
     }
 
@@ -700,7 +700,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     allocationProductBatchMapper.updateByBatch(detail);
                 }else {
                     // 保存
-                    List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), detail.getBatchCode());
+                    List<StockBatch> stockBatches;
+                        stockBatches = stockBatchDao.stockBatchByOutbound(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), detail.getBatchCode());
+                    if (org.apache.commons.collections.CollectionUtils.isEmpty(stockBatches) && stockBatches.size() <= 0) {
+                        stockBatches = stockBatchDao.stockBatchByReject(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), null);
+                    }
                     AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
                     allocationProductBatch.setAllocationCode(request.getAllocationCode());
                     allocationProductBatch.setCallOutBatchNumber(detail.getBatchCode());

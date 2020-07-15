@@ -840,7 +840,13 @@ public class InboundServiceImpl implements InboundService {
                     stockBatchInfo.setBatchCode(batchInfo.getBatchCode());
                     stockBatchInfo.setSourceDocumentType(sourceDocumentType);
                     stockBatchInfo.setSkuCode(batchInfo.getSkuCode());
-                    stockBatchInfo.setSkuName(batchInfo.getSkuName());
+                    String skuName;
+                    if(StringUtils.isNotBlank(batchInfo.getSkuName())){
+                        skuName = batchInfo.getSkuName();
+                    }else {
+                        skuName = product.getSkuName() == null ? "" : product.getSkuName();
+                    }
+                    stockBatchInfo.setSkuName(skuName);
                     stockBatchInfo.setTaxRate(product.getTax());
                     if (StringUtils.isNotBlank(request.getOperatorId())) {
                         stockBatchInfo.setOperatorId(request.getOperatorId());
@@ -1132,12 +1138,12 @@ public class InboundServiceImpl implements InboundService {
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
                 allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
                 LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                    log.error(Global.ERROR, response.getMessage());
-                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                }
+//                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+//                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+//                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+//                    log.error(Global.ERROR, response.getMessage());
+//                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
+//                }
                 // 调用sap 传送调拨单的数据给sap
 //                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
 //                LOGGER.info("调拨wms回传,调用sap成功：{}", JsonUtil.toJson(allocation));

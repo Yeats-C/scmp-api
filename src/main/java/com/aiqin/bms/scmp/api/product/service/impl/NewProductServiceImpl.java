@@ -168,7 +168,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         }
         BeanCopyUtils.copy(newProductUpdateReqVO, newProduct);
         //设置审批状态为审批中
-       //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
+        //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
         int flg = ((NewProductService) AopContext.currentProxy()).update(newProduct);
         productCommonService.getInstance(newProduct.getProductCode(), HandleTypeCoce.UPDATE_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.UPDATE_PRODUCT.getName());
         return flg;
@@ -253,7 +253,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public List<NewProductResponseVO> getPageList(QueryNewProductReqVO queryNewProductReqVO) {
         return newProductMapper.getList(queryNewProductReqVO);
     }
-   @Override
+    @Override
     public Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode) {
         return newProductMapper.selectBySpuName(list,companyCode);
     }
@@ -300,29 +300,29 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 //            reqVO.getProductSkuDraft().setProcurementSectionCode(saveSkuInfoReqVo.getPurchaseGroupCode());
 //            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
             Date date = new Date();
-        // spu商品是否存在  不存在新增
-        savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date);
-        // 保存商品信息
-        saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date);
-        // 保存标签信息
-        saveSkuInfTag(reqVO.getTagInfoList(),reqVO.getProductSkuDraft());
-        // 保存渠道信息
-        saveSkuInfChannel(reqVO.getProductSkuChannelDrafts(),reqVO.getProductSkuDraft());
-        // 保存进销存及包装信息
-        saveSkuInfoPurchaseSaleBox(reqVO.getProductSkuDraft(),reqVO.getPurchaseSaleStockReqVos(),reqVO.getProductSkuBoxPackingDrafts());
-        // 保存商品配置信息
-        saveSkuInfoConfig(reqVO.getProductSkuConfigs(),reqVO.getProductSkuDraft());
-        // 保存商品库存信息
-        saveSkuInfoStock(reqVO.getProductSkuDraft());
-        // 保存结算信息
-        saveSkuInfoCheckout(reqVO.getProductSkuCheckoutDraft());
-        // 保存供应商信息
-        saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date);
-        // 保存生产厂家
-        saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts(), reqVO.getProductSkuDraft());
-        // 保存价格信息
-        saveSkuInfoPrice(reqVO.getProductSkuPrices(),reqVO.getProductSkuDraft(), date);
-    }
+            // spu商品是否存在  不存在新增
+            savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date);
+            // 保存商品信息
+            saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date);
+            // 保存标签信息
+            saveSkuInfTag(reqVO.getTagInfoList(),reqVO.getProductSkuDraft());
+            // 保存渠道信息
+            saveSkuInfChannel(reqVO.getProductSkuChannelDrafts(),reqVO.getProductSkuDraft());
+            // 保存进销存及包装信息
+            saveSkuInfoPurchaseSaleBox(reqVO.getProductSkuDraft(),reqVO.getPurchaseSaleStockReqVos(),reqVO.getProductSkuBoxPackingDrafts());
+            // 保存商品配置信息
+            saveSkuInfoConfig(reqVO.getProductSkuConfigs(),reqVO.getProductSkuDraft());
+            // 保存商品库存信息
+            saveSkuInfoStock(reqVO.getProductSkuDraft());
+            // 保存结算信息
+            saveSkuInfoCheckout(reqVO.getProductSkuCheckoutDraft());
+            // 保存供应商信息
+            saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date);
+            // 保存生产厂家
+            saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts(), reqVO.getProductSkuDraft());
+            // 保存价格信息
+            saveSkuInfoPrice(reqVO.getProductSkuPrices(),reqVO.getProductSkuDraft(), date);
+        }
         return HttpResponse.success();
     }
 
@@ -674,9 +674,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         productSkuConfig.setBeContainArea(0);
         if(!productSkuConfig.getEffectiveTimeStart().after(date)){
             productSkuConfig.setBeSynchronous(1);
-         }else {
+        }else {
             productSkuConfig.setBeSynchronous(0);
-          }
+        }
         return productSkuConfig;
     }
 
@@ -821,7 +821,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 productSkuConfig.setCreateBy(getUser().getPersonName());
                 productSkuConfig.setUpdateBy(getUser().getPersonName());
                 productSkuConfigMapper.insertSelective(productSkuConfig);
-             }
+            }
         }
     }
 
