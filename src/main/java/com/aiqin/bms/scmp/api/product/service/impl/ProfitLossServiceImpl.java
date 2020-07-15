@@ -352,11 +352,11 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_5);
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
                 profitSynchrdlStockChange(profitLoss, loss, batchList, stockChangeDlRequest);
-                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                }
+//                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+//                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+//                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+//                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
+//                }
             }
             if(CollectionUtils.isNotEmptyCollection(profit)){
                 //操作类型 直接加库存 6
@@ -374,11 +374,11 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_9);
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
                 profitSynchrdlStockChange(profitLoss, profit, batchList, stockChangeDlRequest);
-                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                }
+//                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+//                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+//                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+//                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
+//                }
             }
             // 加库存 保存入库 损溢不进行出入库记录
 //            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);

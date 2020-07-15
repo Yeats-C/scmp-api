@@ -48,6 +48,8 @@ public interface AllocationProductBatchMapper {
 
     void updateByBatch(AllocationBatchRequest detail);
 
+    void updateByBatchIn(AllocationBatchRequest detail);
+
     AllocationProductBatch selectAllocationOutByCode(@Param("inboundOderCode") String inboundOderCode,
                                    @Param("skuCode") String skuCode,
                                    @Param("lineCode") int lineCode);

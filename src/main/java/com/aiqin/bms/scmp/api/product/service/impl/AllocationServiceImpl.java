@@ -700,7 +700,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     allocationProductBatchMapper.updateByBatch(detail);
                 }else {
                     // 保存
-                    List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), detail.getBatchCode());
+                    List<StockBatch> stockBatches;
+                        stockBatches = stockBatchDao.stockBatchByOutbound(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), detail.getBatchCode());
+                    if (org.apache.commons.collections.CollectionUtils.isEmpty(stockBatches) && stockBatches.size() <= 0) {
+                        stockBatches = stockBatchDao.stockBatchByReject(detail.getSkuCode(), allocation.getCallOutWarehouseCode(), null);
+                    }
                     AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
                     allocationProductBatch.setAllocationCode(request.getAllocationCode());
                     allocationProductBatch.setCallOutBatchNumber(detail.getBatchCode());
