@@ -265,6 +265,16 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 LOGGER.error("wms回调:移库减库存异常");
                 throw new GroundRuntimeException("wms回:调减库存异常");
             }
+
+            List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(addAllocation.getAllocationCode());
+            List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(addAllocation.getAllocationCode());
+            // 操作完库存 调用dl库存同步接口
+            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+            stockChangeDlRequest.setOrderCode(addAllocation.getAllocationCode());
+            stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_4);
+            stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
+            allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+//            stockService.dlStockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
             inboundService.saveInbound2(inboundReqSave);
@@ -279,8 +289,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 throw new GroundRuntimeException("wms回调:加库存异常");
             }
             // 操作完库存 调用dl库存同步接口
-            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
-
+            StockChangeDlRequest stockChangeDl = new StockChangeDlRequest();
+            stockChangeDl.setOrderCode(addAllocation.getAllocationCode());
+            stockChangeDl.setOrderType(Global.DL_ORDER_TYPE_8);
+            stockChangeDl.setOperationType(Global.DL_OPERATION_TYPE_1);
+            allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDl);
 //            stockService.dlStockChange(stockChangeDlRequest);
 
             //生成调拨单
