@@ -190,15 +190,13 @@ public class ExcelService {
                     p.setCompanyName("宁波熙耘科技有限公司");
                 });
                 if (CollectionUtils.isNotEmptyCollection(saves)) {
-
-
                     Map<Integer, List<PurchaseOrder>> itemMap = new ListUtils<PurchaseOrder>().batchList(saves, 3000);
                     for (Integer i : itemMap.keySet()) {
                         //数据量太多会mysql报错 分批次插入
                         List<PurchaseOrder> orderInfosItems = itemMap.get(i);
-                        this.purchaseOrderDao.insertMany(saves);
+                        this.purchaseOrderDao.insertMany(orderInfosItems);
                     }
-                    this.purchaseOrderDao.insertMany(saves);
+
                 }
                 log.info("执行完成采购单主表数据插入条数===================={}", saves.size());
                 saves = null;
@@ -268,8 +266,8 @@ public class ExcelService {
                 Map<Integer, List<PurchaseOrderProduct>> itemMap = new ListUtils<PurchaseOrderProduct>().batchList(saves, 3000);
                 for (Integer i : itemMap.keySet()) {
                     //数据量太多会mysql报错 分批次插入
-                    List<PurchaseOrderProduct> orderInfosItems = itemMap.get(i);
-                    this.purchaseOrderProductDao.insertAll(orderInfosItems);
+                    List<PurchaseOrderProduct> purchaseOrderProducts = itemMap.get(i);
+                    this.purchaseOrderProductDao.insertAll(purchaseOrderProducts);
                 }
 
             }
@@ -327,7 +325,12 @@ public class ExcelService {
                 p.setOutStockTime(p.getUpdateTime());
             });
             if (CollectionUtils.isNotEmptyCollection(saves)) {
-                this.rejectRecordDao.insertMany(saves);
+                Map<Integer, List<RejectRecord>> itemMap = new ListUtils<RejectRecord>().batchList(saves, 3000);
+                for (Integer i : itemMap.keySet()) {
+                    //数据量太多会mysql报错 分批次插入
+                    List<RejectRecord> rejectRecord = itemMap.get(i);
+                    this.rejectRecordDao.insertMany(rejectRecord);
+                }
             }
 
             log.info("执行完成退供单主表插入条数================================{}", saves.size());
