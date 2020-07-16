@@ -98,8 +98,10 @@
     company_name, transport_company_code, transport_company, transport_number, return_reason_code,
     return_reason_content, remake, treatment_method, order_original_name, order_original,
     create_by_id, create_by_name, create_time, update_by_id, update_by_name, update_time,
-    volume, ifnull(actual_weight, 0), ifnull(actual_product_count, 0), ifnull(actual_volume, 0), ifnull(actual_product_total_amount, 0),
-    ifnull(actual_return_order_amount, 0), ifnull(product_channel_total_amount, 0), ifnull(actual_product_channel_total_amount, 0),
+    volume, ifnull(actual_weight, 0) actual_weight, ifnull(actual_product_count, 0) actual_product_count,
+    ifnull(actual_volume, 0) actual_volume, ifnull(actual_product_total_amount, 0) actual_product_total_amount,
+    ifnull(actual_return_order_amount, 0) actual_return_order_amount, ifnull(product_channel_total_amount, 0) product_channel_total_amount,
+    ifnull(actual_product_channel_total_amount, 0) actual_product_channel_total_amount,
     synchr_time, synchr_status, order_product_type
   </sql>
   <select id="selectByCode" resultMap="BaseResultMap">
