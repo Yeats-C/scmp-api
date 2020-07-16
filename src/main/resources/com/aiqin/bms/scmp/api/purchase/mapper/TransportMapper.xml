@@ -50,9 +50,9 @@
         <result column="deliver_time" jdbcType="DATE" property="deliverTime" />
         <result column="product_num" jdbcType="BIGINT" property="productNum" />
         <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-        <result column="create_time" jdbcType="DATE" property="createTime" />
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
         <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-        <result column="update_time" jdbcType="DATE" property="updateTime" />
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
         <result column="customer_code"  property="customerCode"/>
         <result column="customer_name"  property="customerName"/>
     </resultMap>
@@ -61,12 +61,12 @@
     </sql>
     <sql id="Transport_orders_without_code">
         id,order_code,product_total_amount as commodity_amount,order_amount,order_status as status,order_type_code as type,
-	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_date as createTime,product_num,
+	transport_center_code,transport_center_name,warehouse_code,warehouse_name,delivery_time as deliver_time,create_time as create_time,product_num,
 	customer_code,customer_name
     </sql>
 
     <sql id="Base_clomn_sql">
-        id,transport_code,transport_center_code,transport_center_name,customer_code,customer_name,packing_num,order_commodity_num,status,logistics_company,logistics_company_name,
+        id,transport_code,transport_center_code,transport_center_name,customer_code,customer_name,transport_amount,packing_num,order_commodity_num,status,logistics_company,logistics_company_name,
         logistics_number,logistics_fee,standard_logistics_fee,additional_logistics_fee,total_volume,total_weight,deliver_to,transport_time,
         sign_time,consignee_name,consignee_phone,consignee_address,detailed_address,zip,remark,create_by,create_time,update_by,update_time
     </sql>
@@ -138,6 +138,8 @@
         <if test="warehouseName!=null and warehouseName!=''">
             and warehouse_name like concat('%',#{warehouseName})
         </if>
+        and order_code not in (select order_code from transport_orders)
+        order by update_time
     </select>
     <select id="selectDeliverOrdersWithOutCodeList" resultMap="TransportOrdersMap">
         select <include refid="Transport_orders_without_code"></include>
@@ -177,6 +179,7 @@
         detailed_address,
         zip,
         remark,
+        del_flag,
         create_by,
         create_time,
         update_by,
@@ -208,10 +211,11 @@
         #{detailedAddress},
         #{zip},
         #{remark},
+        #{delFlag},
         #{createBy},
-        #{createTime},
+        now(),
         #{updateBy},
-        #{updateTime}
+        now()
         )
     </insert>
     <select id="selectOrderOneByOrderCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.order.SupplyOrderInfo">

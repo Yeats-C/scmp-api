@@ -59,11 +59,11 @@ public class QueryAllocationResVo {
     @ApiModelProperty("入库数量")
     private Long  callInQuantity;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+   // @ApiModelProperty("采购组编码")
+   // private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+   // @ApiModelProperty("采购组名称")
+   // private String purchaseGroupName;
 
     @ApiModelProperty("含税调拨金额(含税库存成本)")
     private BigDecimal taxRefundAmount;
@@ -108,4 +108,11 @@ public class QueryAllocationResVo {
 
     @ApiModelProperty("审批流水编号")
     private String formNo;
+
+    @ApiModelProperty(value = "调拨差异类型（1.有 2.无）")
+    private Integer differenceType;
+
+    @ApiModelProperty(value = "调拨差异名称")
+    private String differenceName;
+
 }

@@ -202,6 +202,7 @@
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="product_code" jdbcType="VARCHAR" property="productCode" />
     <result column="product_name" jdbcType="VARCHAR" property="productName" />
+      <result column="goods_gifts" jdbcType="TINYINT" property="goodsGifts" />
     <result column="product_category_code" jdbcType="VARCHAR" property="productCategoryCode" />
     <result column="product_category_name" jdbcType="VARCHAR" property="productCategoryName" />
     <result column="product_property_name" jdbcType="VARCHAR" property="productPropertyName" />
@@ -217,6 +218,7 @@
     <result column="model_number" jdbcType="VARCHAR" property="modelNumber" />
     <result column="spec" jdbcType="VARCHAR" property="spec" />
     <result column="procurement_section_name" jdbcType="VARCHAR" property="purchaseGroupName" />
+    <result column="sales_code" jdbcType="VARCHAR" property="barCode" />
   </resultMap>
   <resultMap id="QueryApplySkuListMap" type="com.aiqin.bms.scmp.api.product.domain.response.sku.QuerySkuApplyListResp">
     <result column="apply_code" jdbcType="VARCHAR" property="applyCode" />
@@ -869,14 +871,24 @@
   </select>
   <select id="querySkuList" parameterType="com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO" resultMap="QuerySkuListMap">
     SELECT
-      a.sku_code, a.sku_name, a.product_code, a.product_name,
+      a.sku_code, a.sku_name, a.product_code, a.product_name,goods_gifts,
       CASE a.on_sale WHEN 1 THEN '上架' WHEN 0 THEN '下架' ELSE '其他' END on_sale_name,
-      a.product_category_code, a.product_property_name, a.product_brand_name,
+      a.product_category_code, a.product_category_name, a.product_property_name, a.product_brand_name,
       a.create_by, a.create_time, a.update_by, a.update_time, a.product_sort_name,
-      a.color_name,a.model_number, c.spec, a.procurement_section_name
+      a.color_name,a.model_number, c.spec, a.procurement_section_name, d.sales_code
     FROM
       product_sku a
       LEFT JOIN product_sku_distribution_info c on a.sku_code = c.product_sku_code
+      LEFT JOIN product_sku_sales_info d on a.sku_code = d.product_sku_code
+      <if test="inspectionStatus!=null">
+        INNER JOIN product_sku_inspection_report e on
+        <if test="inspectionStatus=0">
+          a.sku_code = e.sku_code
+        </if>
+        <if test="inspectionStatus=1">
+          a.sku_code != e.sku_code
+        </if>
+      </if>
     WHERE a.del_flag=0
       <if test="skuCode!=null and skuCode!=''">
         AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
@@ -934,6 +946,9 @@
       </if>
       <if test="updateTimeEnd != null">
         AND a.update_time &lt;=#{updateTimeEnd,jdbcType=TIMESTAMP}
+      </if>
+      <if test="barCode != null and barCode != '' ">
+        AND d.sales_code=#{barCode,jdbcType=VARCHAR}
       </if>
     order by create_time desc
   </select>
@@ -1755,14 +1770,23 @@
       i.warehouse_code        as warehouseCode,
       i.warehouse_name        as warehouseName,
       i.batch_remark          as batchRemark,
-      i.production_date       as productTime
+      i.product_date       as productTime
       from product_sku a
       left join product b
       on a.spu_code = b.product_code
       left join product_sku_purchase_info c
       on a.sku_code = c.product_sku_code
       left join price_project f
-      on  f.del_flag = 0 and f.price_project_enable = 0 and f.price_category_code = #{changePriceType}
+      on  f.del_flag = 0 and f.price_project_enable = 0
+      <if test="changePriceType != null and  changePriceType != ''">
+        and f.price_category_code = #{changePriceType}
+      </if>
+      <if test="changePriceTypes != null and changePriceTypes.size()>0">
+        and f.price_category_code in
+        <foreach collection="changePriceTypes" open="(" close=")" item="item" separator=",">
+          #{item}
+        </foreach>
+      </if>
       left join product_sku_price_info g
       on a.sku_code = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
       left join tax_cost_log_stock h
@@ -1793,16 +1817,25 @@
     <if test="productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       LEFT JOIN product_category lv4 on lv4.category_id = a.product_category_code
     </if>
-    <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
+    <if test="productCategoryLv3Code != null and  productCategoryLv3Code != '' and productCategoryLv4Code != null and  productCategoryLv4Code != '' ">
       LEFT JOIN product_category lv3 on lv3.category_id = lv4.parent_id
     </if>
-    <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
+    <if test="productCategoryLv2Code != null and  productCategoryLv2Code != '' and productCategoryLv3Code != null and  productCategoryLv3Code != '' ">
       LEFT JOIN product_category lv2 on lv2.category_id = lv3.parent_id
     </if>
-    <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' ">
+    <if test="productCategoryLv1Code != null and  productCategoryLv1Code != '' and productCategoryLv2Code != null and  productCategoryLv2Code != '' ">
       LEFT JOIN product_category lv1 on lv1.category_id = lv2.parent_id
     </if>
-    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode} and f.price_category_code = #{changePriceType}
+    where a.procurement_section_code = #{purchaseGroupCode} and a.company_code = #{companyCode}
+    <if test="changePriceType != null and  changePriceType != ''">
+      and f.price_category_code = #{changePriceType}
+    </if>
+    <if test="changePriceTypes != null and changePriceTypes.size()>0">
+      and f.price_category_code in
+      <foreach collection="changePriceTypes" open="(" close=")" item="item" separator=",">
+        #{item}
+      </foreach>
+    </if>
     <if test="skuCode!=null and skuCode!=''">
       AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
     </if>
@@ -2173,7 +2206,9 @@
   </select>
   <select id="getSkuInfoByCodeList" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo">
     SELECT
-      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice, product_property_name as productPropertyName
+      sku_code as skuCode,ifnull(manufacturer_guide_price,'0') as manufacturerGuidePrice, product_property_name as productPropertyName,
+    product_brand_code as productBrandCode, product_brand_name as productBrandName,
+    product_category_code as productCategoryCode, product_category_name as productCategoryName
      FROM product_sku where sku_code in
     <foreach collection="skuCodeList" item="item" index="index" separator="," close=")" open="(">
       #{item, jdbcType=VARCHAR}
@@ -2182,7 +2217,7 @@
   <select id="purchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select s.stock_code as stockCode,sc.transport_center_code as transportCenterCode,sc.transport_center_name as transportCenterName,
     w.warehouse_code as warehouseCode,w.warehouse_name as warehouseName,ps.sku_code as skuCode,ps.sku_name as skuName,
-    ss.unit_name as stockUnitName,ifnull(s.inventory_num,0) as stockCount, ifnull(s.total_way_num, 0) as totalWayNum,
+    ss.unit_name as stockUnitName,ifnull(s.inventory_count,0) as stockCount, ifnull(s.total_way_count, 0) as totalWayNum,
     ps.product_brand_code as brandId,ps.product_brand_name as brandName, su.factory_sku_code as factorySkuCode,
     ps.product_category_code as categoryId,ps.product_category_name as categoryName, ps.product_property_code as productPropertyCode,
     ps.product_property_name as productPropertyName,ps.goods_gifts as productType, ps.product_sort_code as productSortCode,
@@ -2193,7 +2228,8 @@
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, ifnull(s.tax_cost, 0) as taxCost,
     psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName, psc.Input_tax_rate as taxRate,
     com.contact_name as contactPerson, com.phone as mobile, ps.product_code as spuCode, ps.product_name as productName,
-    su.tax_included_price as productPurchaseAmount, ifnull(su.tax_included_price, 0) as purchaseMax
+    su.tax_included_price as productPurchaseAmount, ifnull(su.tax_included_price, 0) as purchaseMax,
+    com.supplier_code supplierCompanyCode, com.supplier_name supplierCompanyName
     from product_sku ps
     inner join product_sku_supply_unit su on ps.sku_code = su.product_sku_code
     inner join supply_company com on com.supply_code = su.supply_unit_code

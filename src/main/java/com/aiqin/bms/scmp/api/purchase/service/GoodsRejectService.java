@@ -1,85 +1,57 @@
 package com.aiqin.bms.scmp.api.purchase.service;
 
 import com.aiqin.bms.scmp.api.base.PageResData;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.request.*;
+import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyGroupResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 public interface GoodsRejectService {
-    HttpResponse<PageResData<RejectApplyQueryResponse>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
-    HttpResponse rejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
-
-    HttpResponse<List<RejectApplyResponse>> rejectApplyInfo(RejectApplyRequest rejectApplyQueryRequest);
-
-    HttpResponse addReject(RejectRequest request);
-
-    HttpResponse updateReject(String rejectApplyQueryRequest);
-
-    HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest);
-
-    HttpResponse rejectSupplier(RejectRecord rejectApplyQueryRequest, String create_by_company_code);
-
-    HttpResponse<RejectResponse> rejectInfo(String rejectApplyQueryRequest);
-
-    HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
-
-    HttpResponse updateRejectApply(RejectApplyHandleRequest rejectApplyQueryRequest);
-
-    HttpResponse<RejectApplyHandleResponse> selectRejectApply(String rejectApplyQueryRequest);
-
-    HttpResponse rejectTransport(RejectRecord request);
-
-    HttpResponse rejectTransportFinish(String reject_record_id);
-
-    void finishStock(RejectStockRequest request);
-
-    HttpResponse<PageResData<RejectApplyRecordDetail>> rejectApplyDetailInfo(RejectApplyRequest rejectApplyQueryRequest);
-
-    HttpResponse<List<RejectApplyListResponse>> rejectApplyListInfo(RejectApplyRequest rejectApplyQueryRequest);
-
-    HttpResponse rejectCancel(String reject_record_id);
-
-    ILockStocksReqVO handleStockParam(List<RejectRecordDetail> detailList, RejectRecord rejectRecord);
+    HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest);
 
     HttpResponse<PageResData<RejectApplyDetailHandleResponse>> rejectStockProduct(RejectProductRequest rejectQueryRequest);
 
+    HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(String rejectApplyRecordCode, String warehouseCode);
+
+    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(RejectApplyQueryRequest request);
+
+    HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(RejectApplyQueryRequest request);
+
+    HttpResponse<RejectApplyGroupResponse> productGroup(List<RejectApplyDetailRequest> request);
+
+    HttpResponse<RejectApplyDetailHandleResponse> applyProductEdit(String rejectApplyRecordCode);
+
+    HttpResponse<List<RejectImportResponse>> rejectApplyImport(MultipartFile file, String purchaseGroupCode);
+
+    HttpResponse addApplyReject(RejectApplyGroupRequest request);
+
+    HttpResponse<PageResData<RejectRecord>> rejectList(RejectQueryRequest rejectApplyQueryRequest);
+
+    HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode);
+
+    HttpResponse<PageResData<RejectRecordDetail>> rejectProductInfo(RejectQueryRequest request);
+
+    HttpResponse<PageResData<RejectRecordBatch>> rejectBatchInfo(RejectQueryRequest request);
+
+    HttpResponse operationRejectRecord(RejectRecord rejectRecord);
+
+    /** 审批回调，生成退供单，出库单，调用wms，sap*/
+    HttpResponse generateRejectRecord(String rejectApplyRecordCode);
+
     String selectCategoryName(String categoryCode);
 
-    HttpResponse<RejectResponse> applyRejectInfo(String approvalCode);
+    /** wms回传，变更退供单的实际值*/
+    HttpResponse rejectRecordWms(RejectStockRequest request);
 
-    HttpResponse rejectDelete(String rejectApplyRecordCode);
+    HttpResponse rejectApplyRecordCode(String rejectApplyRecordCode);
+
 }

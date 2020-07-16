@@ -160,6 +160,11 @@ public final class Global {
     public static final String SPECIAL_TYPE = "特卖库";
     public static final String DEFECTIVE_TYPE = "残品库";
 
+    public static final Integer SALE_INFO_TYPE= 1;
+    public static final Integer SPECIAL_INFO_TYPE = 2;
+    public static final Integer DEFECTIVE_INFO_TYPE = 3;
+    public static final Integer GIFT_INFO_TYPE = 4;
+
     /**
      * 统计报表数据类型
      *  0 公司 1 部门
@@ -178,5 +183,122 @@ public final class Global {
     public static final String CREATE_BY = "CREATEBY";
     public static final String AUDITOR_BY = "AUDITORBY";
     public static final String APPLY_TYPE = "APPLYTYPE";
+
+    /**
+     * 出入库类型 出库 0 入库 1
+     */
+    public static final Integer OUTBOUND_TYPE = 0;
+    public static final Integer INBOUND_TYPE = 1;
+
+    /**
+     *  订单类型  1配送、2直送、3货架直送、4采购直送
+     */
+    public static final Integer ORDER_TYPE_1 = 1;
+    public static final Integer ORDER_TYPE_2 = 2;
+    public static final Integer ORDER_TYPE_3 = 3;
+    public static final Integer ORDER_TYPE_4 = 4;
+
+    /**
+     *  库房配置管理  移库类型  0.wms发起移库   1.分别发起移库   2.同时发起移库
+     */
+    public static final Integer MOVEMENT_TYPE_0 = 0;
+    public static final Integer MOVEMENT_TYPE_1 = 1;
+    public static final Integer MOVEMENT_TYPE_2 = 2;
+
+    /**
+     *  平台类型 0.爱亲(新系统)，1.DL
+     */
+    public static final Integer PLATFORM_TYPE_0 = 0;
+    public static final Integer PLATFORM_TYPE_1 = 1;
+
+    /**
+     *  库存单据类型 0出库 1入库 2退供 3采购 4调拨 5退货 6移库 7监管仓入库 8报废 9订单 10监管仓出库 11损溢
+     */
+    public static final Integer DOCUMENT_TYPE_0 = 0;
+    public static final Integer DOCUMENT_TYPE_1 = 1;
+    public static final Integer DOCUMENT_TYPE_2 = 2;
+    public static final Integer DOCUMENT_TYPE_3 = 3;
+    public static final Integer DOCUMENT_TYPE_4 = 4;
+    public static final Integer DOCUMENT_TYPE_5 = 5;
+    public static final Integer DOCUMENT_TYPE_6 = 6;
+    public static final Integer DOCUMENT_TYPE_7 = 7;
+    public static final Integer DOCUMENT_TYPE_8 = 8;
+    public static final Integer DOCUMENT_TYPE_9 = 9;
+    public static final Integer DOCUMENT_TYPE_10 = 10;
+    public static final Integer DOCUMENT_TYPE_11 = 11;
+
+    /**
+     *  库存操作类型  1.锁定库存 2.减库存并解锁 3.解锁库存. 4.减库存 5.加并锁定库存 6.加库存
+     *             7.加在途 8.减在途 9.锁转移(锁定库存移入/移出) 10.只减锁库存、总库存、可用库存
+     */
+    public static final Integer STOCK_OPERATION_1 = 1;
+    public static final Integer STOCK_OPERATION_2 = 2;
+    public static final Integer STOCK_OPERATION_3 = 3;
+    public static final Integer STOCK_OPERATION_4 = 4;
+    public static final Integer STOCK_OPERATION_5 = 5;
+    public static final Integer STOCK_OPERATION_6 = 6;
+    public static final Integer STOCK_OPERATION_7 = 7;
+    public static final Integer STOCK_OPERATION_8 = 8;
+    public static final Integer STOCK_OPERATION_9 = 9;
+    public static final Integer STOCK_OPERATION_10 = 10;
+
+
+    /**
+     *  平台类型 批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
+     *   3:全部指定月份模式 4:部分指定月份模式  5:全部指定月份转换日期模式 6:部分指定月份转换日期模式
+     */
+    public static final Integer BATCH_MANAGE_0 = 0;
+    public static final Integer BATCH_MANAGE_1 = 1;
+    public static final Integer BATCH_MANAGE_2 = 2;
+    public static final Integer BATCH_MANAGE_3 = 3;
+    public static final Integer BATCH_MANAGE_4 = 4;
+    public static final Integer BATCH_MANAGE_5 = 5;
+    public static final Integer BATCH_MANAGE_6 = 6;
+
+    /**
+     *  批次管理 2：部分指定批次模式  商品sku是否指定批次 (0:指定 1:不指定)
+     */
+    public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_0 = 0;
+    public static final Integer WAREHOUSE_BATCH_MANAGE_SKU_1 = 1;
+
+    /**
+     *  调用DL 单据类型 1.采购 2.退供 3.调拨出 7调拨入 4.移库出 8移库入 5.报损 9报溢 6.预定订单
+     */
+    public static final Integer DL_ORDER_TYPE_1 = 1;
+    public static final Integer DL_ORDER_TYPE_2 = 2;
+    public static final Integer DL_ORDER_TYPE_3 = 3;
+    public static final Integer DL_ORDER_TYPE_4 = 4;
+    public static final Integer DL_ORDER_TYPE_5 = 5;
+    public static final Integer DL_ORDER_TYPE_6 = 6;
+    public static final Integer DL_ORDER_TYPE_7 = 7;
+    public static final Integer DL_ORDER_TYPE_8 = 8;
+    public static final Integer DL_ORDER_TYPE_9 = 9;
+
+    /**
+     *  调用DL 操作类型类型 1. 加库存  2.减库存
+     */
+    public static final Integer DL_OPERATION_TYPE_1 = 1;
+    public static final Integer DL_OPERATION_TYPE_2 = 2;
+
+    /**
+     *  运输管理:送货至 1. 加库存  2.减库存
+     */
+    public static final String DELIVERTO_1 = "收货人地址";
+    public static final String DELIVERTO_2 = "货运站";
+
+    /**
+     *  调用wms发运。服务方式: 1. 派送  2.站点自提  3.中心自提  4.自提
+     */
+    public static final String SERVICE_MODE_1 = "派送";
+    public static final String SERVICE_MODE_2 = "站点自提";
+    public static final String SERVICE_MODE_3 = "中心自提";
+    public static final String SERVICE_MODE_4 = "自提";
+
+    /**
+     *  调用wms发运。支付方式: 1. 寄付  2.到付  3.月结
+     */
+    public static final String SETTLE_TYPE_1 = "寄付";
+    public static final String SETTLE_TYPE_2 = "到付";
+    public static final String SETTLE_TYPE_3 = "月结";
 
 }

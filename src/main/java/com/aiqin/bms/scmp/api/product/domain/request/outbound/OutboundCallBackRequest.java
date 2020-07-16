@@ -23,9 +23,13 @@ public class OutboundCallBackRequest {
     @JsonProperty("oder_code")
     private String oderCode;
 
+    @ApiModelProperty("订单id")
+    @JsonProperty("order_id")
+    private String orderId;
+
     @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
     @NotEmpty(message = "订单类型")
-    @JsonProperty("orderTypeCode")
+    @JsonProperty("order_type_code")
     private Integer orderTypeCode;
 
     @ApiModelProperty("发货时间")
@@ -70,5 +74,9 @@ public class OutboundCallBackRequest {
     @ApiModelProperty("商品批次列表")
     @JsonProperty("batch_list")
     private List<OutboundCallBackBatchRequest> batchList;
+
+    @ApiModelProperty(value = "批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    @JsonProperty("batch_manage")
+    private Integer batchManage;
 
 }

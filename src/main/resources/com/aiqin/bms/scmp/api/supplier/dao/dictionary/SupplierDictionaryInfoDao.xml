@@ -170,4 +170,18 @@
     from supplier_dictionary_info
     where supplier_dictionary_code in ('120','124','130','137','138')
   </select>
+  <select id="selectPriceTypeAndCategory" resultType="com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfoResponseVO">
+    select
+    id,supplier_weight dictionaryWeight, del_flag delFlag, enabled,
+    supplier_dictionary_value dictionaryDictionaryValue, supplier_content dictionaryContent
+    from supplier_dictionary_info
+    where del_flag=0
+    <if test="status!=null and status==1 ">
+      and supplier_dictionary_code = 143
+    </if>
+    <if test="status!=null and status==2 ">
+      and supplier_dictionary_code = 144
+    </if>
+      and enabled=0
+  </select>
 </mapper>

@@ -1,0 +1,459 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.StockBatchDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="stock_batch_code" jdbcType="VARCHAR" property="stockBatchCode" />
+    <result column="company_code" jdbcType="VARCHAR" property="companyCode" />
+    <result column="company_name" jdbcType="VARCHAR" property="companyName" />
+    <result column="transport_center_code" jdbcType="VARCHAR" property="transportCenterCode" />
+    <result column="transport_center_name" jdbcType="VARCHAR" property="transportCenterName" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
+    <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="inventory_count" jdbcType="BIGINT" property="inventoryCount" />
+    <result column="available_count" jdbcType="BIGINT" property="availableCount" />
+    <result column="lock_count" jdbcType="BIGINT" property="lockCount" />
+    <result column="purchase_price" jdbcType="DECIMAL" property="purchasePrice" />
+    <result column="tax_cost" jdbcType="DECIMAL" property="taxCost" />
+    <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, stock_batch_code, company_code, company_name, transport_center_code, transport_center_name, 
+    warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name, 
+    batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
+    available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time, create_by_id, 
+    create_by_name, update_time, update_by_id, update_by_name, location_code
+  </sql>
+  <insert id="insert">
+    insert into stock_batch (stock_batch_code, company_code,
+      company_name, transport_center_code, transport_center_name, 
+      warehouse_code, warehouse_name, warehouse_type, 
+      supplier_code, sku_code, sku_name, 
+      batch_code, batch_info_code, product_date, 
+      be_overdue_date, batch_remark, inventory_count,
+      available_count, lock_count, purchase_price, 
+      tax_cost, tax_rate, create_time, 
+      create_by_id, create_by_name, update_time, 
+      update_by_id, update_by_name)
+    values (#{stockBatchCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
+      #{companyName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
+      #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseType,jdbcType=VARCHAR}, 
+      #{supplierCode,jdbcType=VARCHAR}, #{skuCode,jdbcType=VARCHAR}, #{skuName,jdbcType=VARCHAR}, 
+      #{batchCode,jdbcType=VARCHAR}, #{batchInfoCode,jdbcType=VARCHAR}, #{productDate,jdbcType=VARCHAR},
+      #{beOverdueDate,jdbcType=VARCHAR}, #{batchRemark,jdbcType=VARCHAR}, #{inventoryCount,jdbcType=BIGINT},
+      #{availableCount,jdbcType=BIGINT}, #{lockCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, 
+      #{taxCost,jdbcType=DECIMAL}, #{taxRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
+      #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update stock_batch
+    <set>
+      <if test="stockBatchCode != null">
+        stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyCode != null">
+        company_code = #{companyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="companyName != null">
+        company_name = #{companyName,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterCode != null">
+        transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+      </if>
+      <if test="transportCenterName != null">
+        transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseName != null">
+        warehouse_name = #{warehouseName,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseType != null">
+        warehouse_type = #{warehouseType,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="inventoryCount != null">
+        inventory_count = #{inventoryCount,jdbcType=BIGINT},
+      </if>
+      <if test="availableCount != null">
+        available_count = #{availableCount,jdbcType=BIGINT},
+      </if>
+      <if test="lockCount != null">
+        lock_count = #{lockCount,jdbcType=BIGINT},
+      </if>
+      <if test="purchasePrice != null">
+        purchase_price = #{purchasePrice,jdbcType=DECIMAL},
+      </if>
+      <if test="taxCost != null">
+        tax_cost = #{taxCost,jdbcType=DECIMAL},
+      </if>
+      <if test="taxRate != null">
+        tax_rate = #{taxRate,jdbcType=DECIMAL},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="createById != null">
+        create_by_id = #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="createByName != null">
+        create_by_name = #{createByName,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="stockBatchList" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse">
+    SELECT
+      b.sku_code skuCode, b.sku_name skuName, a.warehouse_code warehouseCode, a.warehouse_name warehouseName,
+      a.transport_center_code transportCenterCode, a.transport_center_name transportCenterName,
+      a.warehouse_type warehouseType, c.config_status configStatus, b.product_property_code productPropertyCode,
+      b.product_property_name productPropertyName, b.product_category_code productCategoryCode,
+      b.product_category_name productCategoryName, b.product_brand_code productBrandCode,
+      b.product_brand_name productBrandName, b.procurement_section_code purchaseGroupCode,
+      b.procurement_section_name purchaseGroupName, b.color_name colorName, b.model_number modelNumber,
+      d.spec productSpec, a.batch_code batchCode, a.product_date productDate, a.batch_remark batchRemark,
+      d.unit_name unitName, CONCAT(d.base_product_content, '/', d.unit_name) boxGauge,
+      a.inventory_count inventoryCount, a.available_count availableCount, a.lock_count lockCount,
+      a.purchase_price purchasePrice, a.tax_cost taxCost, a.create_time createTime, a.update_time updateTime,
+      a.create_by_name createByName, a.update_by_name updateByName, a.supplier_code supplierCode,
+      f.supply_name supplierName, a.company_code companyCode, a.company_name companyName,
+      a.stock_batch_code stockBatchCode
+    from stock_batch a
+    inner join product_sku b on a.sku_code = b.sku_code
+    inner join product_sku_config c on a.sku_code = c.sku_code and c.transport_center_code = a.transport_center_code
+    inner join product_sku_purchase_info d on a.sku_code = d.product_sku_code
+    inner join supply_company f on f.supply_code = a.supplier_code
+    <where>
+      <if test="transportCenterCode != null and transportCenterCode != ''">
+        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null and warehouseCode != ''">
+        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and b.sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null and skuName != ''">
+        and b.sku_name like CONCAT(#{skuName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="configStatus != null">
+        and c.config_status = #{configStatus,jdbcType=INTEGER}
+      </if>
+      <if test="productPropertyCode != null and productPropertyCode != ''">
+        and b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productPropertyName != null and productPropertyName != ''">
+        and b.product_property_name like CONCAT(#{productPropertyName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productBrandCode != null and productBrandCode != ''">
+        and b.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productBrandName != null and productBrandName != ''">
+        and b.product_brand_name like CONCAT(#{productBrandName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productCategoryCode != null and productCategoryCode != ''">
+        and b.product_category_code like CONCAT(#{productCategoryCode,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productCategoryName != null and productCategoryName != ''">
+        and b.product_category_name like CONCAT(#{productCategoryName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+        and b.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productDate != null">
+        and a.product_date = #{productDate,jdbcType=VARCHAR}
+      </if>
+      <if test="batchCode != null">
+        and a.batch_code = #{batchCode,jdbcType=VARCHAR}
+      </if>
+      <if test="beginInventoryCount != null">
+        and a.inventory_count &gt;= #{beginInventoryCount,jdbcType=VARCHAR}
+      </if>
+      <if test="finishInventoryCount != null">
+        and a.inventory_count &lt;= #{finishInventoryCount,jdbcType=VARCHAR}
+      </if>
+      <if test="beginAvailableCount != null">
+        and a.available_count  &gt;= #{beginAvailableCount,jdbcType=VARCHAR}
+      </if>
+      <if test="finishAvailableCount != null">
+        and a.available_count  &lt;= #{finishAvailableCount,jdbcType=VARCHAR}
+      </if>
+    </where>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="stockBatchListCount" resultType="java.lang.Integer">
+    SELECT count(1)
+    from stock_batch a
+    inner join product_sku b on a.sku_code = b.sku_code
+    inner join product_sku_config c on a.sku_code = c.sku_code
+    and c.transport_center_code = a.transport_center_code
+    <where>
+      <if test="transportCenterCode != null and transportCenterCode != ''">
+        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+      </if>
+      <if test="warehouseCode != null and warehouseCode != ''">
+        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuCode != null and skuCode != ''">
+        and b.sku_code = #{skuCode,jdbcType=VARCHAR}
+      </if>
+      <if test="skuName != null and skuName != ''">
+        and b.sku_name like CONCAT(#{skuName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="configStatus != null">
+        and c.config_status = #{configStatus,jdbcType=INTEGER}
+      </if>
+      <if test="productPropertyCode != null and productPropertyCode != ''">
+        and b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productPropertyName != null and productPropertyName != ''">
+        and b.product_property_name like CONCAT(#{productPropertyName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productBrandCode != null and productBrandCode != ''">
+        and b.product_brand_code = #{productBrandCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productBrandName != null and productBrandName != ''">
+        and b.product_brand_name like CONCAT(#{productBrandName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productCategoryCode != null and productCategoryCode != ''">
+        and b.product_category_code like CONCAT(#{productCategoryCode,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="productCategoryName != null and productCategoryName != ''">
+        and b.product_category_name like CONCAT(#{productCategoryName,jdbcType=VARCHAR},"%")
+      </if>
+      <if test="purchaseGroupCode != null and purchaseGroupCode != ''">
+        and b.procurement_section_code = #{purchaseGroupCode,jdbcType=VARCHAR}
+      </if>
+      <if test="productDate != null">
+        and a.product_date = #{productDate,jdbcType=VARCHAR}
+      </if>
+      <if test="batchCode != null">
+        and a.batch_code = #{batchCode,jdbcType=VARCHAR}
+      </if>
+      <if test="beginInventoryCount != null">
+        and a.inventory_count &gt;= #{beginInventoryCount,jdbcType=VARCHAR}
+      </if>
+      <if test="finishInventoryCount != null">
+        and a.inventory_count &lt;= #{finishInventoryCount,jdbcType=VARCHAR}
+      </if>
+      <if test="beginAvailableCount != null">
+        and a.available_count  &gt;= #{beginAvailableCount,jdbcType=VARCHAR}
+      </if>
+      <if test="finishAvailableCount != null">
+        and a.available_count  &lt;= #{finishAvailableCount,jdbcType=VARCHAR}
+      </if>
+    </where>
+  </select>
+  <select id="stockBatchDetail" resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchResponse">
+    select
+      a.stock_batch_code stockBatchCode, a.product_date productDate, a.batch_remark batchRemark,
+      a.be_overdue_date beOverdueDate, a.batch_code batchCode, a.batch_info_code batchInfoCode,
+      a.supplier_code supplierCode, b.supply_name supplierName, a.tax_cost taxCost,
+      a.create_time createTime, a.update_time updateTime, a.create_by_name createByName,
+      a.update_by_name updateByName, a.sku_code skuCode, a.warehouse_code warehouseCode,
+      a.purchase_price purchasePrice
+    from stock_batch a
+    inner join supply_company b on b.supply_code = a.supplier_code
+    where a.stock_batch_code = #{stockBatchCode,jdbcType=VARCHAR}
+  </select>
+  <select id="stockBatchAndSku" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where sku_code = #{skuCode}
+    and warehouse_code = #{warehouseCode}
+    and batch_code = #{batchCode}
+    <if test="supplierCode != null">
+        and supplier_code = #{supplierCode}
+    </if>
+    and tax_cost = #{taxCost}
+  </select>
+  <update id="updateBatchAll">
+    <foreach collection="list" item="item" separator=";">
+      update stock_batch
+      <set>
+        <if test="item.stockBatchCode != null">
+          stock_batch_code = #{item.stockBatchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.companyCode != null">
+          company_code = #{item.companyCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.companyName != null">
+          company_name = #{item.companyName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.transportCenterCode != null">
+          transport_center_code = #{item.transportCenterCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.transportCenterName != null">
+          transport_center_name = #{item.transportCenterName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseCode != null">
+          warehouse_code = #{item.warehouseCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseName != null">
+          warehouse_name = #{item.warehouseName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.warehouseType != null">
+          warehouse_type = #{item.warehouseType,jdbcType=VARCHAR},
+        </if>
+        <if test="item.supplierCode != null">
+          supplier_code = #{item.supplierCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuCode != null">
+          sku_code = #{item.skuCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuName != null">
+          sku_name = #{item.skuName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.batchCode != null">
+          batch_code = #{item.batchCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.batchInfoCode != null">
+          batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.productDate != null">
+          product_date = #{item.productDate,jdbcType=VARCHAR},
+        </if>
+        <if test="item.beOverdueDate != null">
+          be_overdue_date = #{item.beOverdueDate,jdbcType=VARCHAR},
+        </if>
+        <if test="item.batchRemark != null">
+          batch_remark = #{item.batchRemark,jdbcType=VARCHAR},
+        </if>
+        <if test="item.inventoryCount != null">
+          inventory_count = #{item.inventoryCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.availableCount != null">
+          available_count = #{item.availableCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.lockCount != null">
+          lock_count = #{item.lockCount,jdbcType=BIGINT},
+        </if>
+        <if test="item.purchasePrice != null">
+          purchase_price = #{item.purchasePrice,jdbcType=DECIMAL},
+        </if>
+        <if test="item.taxCost != null">
+          tax_cost = #{item.taxCost,jdbcType=DECIMAL},
+        </if>
+        <if test="item.taxRate != null">
+          tax_rate = #{item.taxRate,jdbcType=DECIMAL},
+        </if>
+          update_time = NOW(),
+        <if test="item.updateById != null">
+          update_by_id = #{item.updateById,jdbcType=VARCHAR},
+        </if>
+        <if test="item.updateByName != null">
+          update_by_name = #{item.updateByName,jdbcType=VARCHAR},
+        </if>
+      </set>
+      where id = #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
+  <insert id="insertAll">
+    insert into stock_batch (stock_batch_code, company_code, company_name, transport_center_code, transport_center_name,
+      warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
+      batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
+      available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
+      create_by_id, create_by_name, update_time, update_by_id, update_by_name)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+    (#{item.stockBatchCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
+      #{item.transportCenterCode,jdbcType=VARCHAR}, #{item.transportCenterName,jdbcType=VARCHAR},
+      #{item.warehouseCode,jdbcType=VARCHAR}, #{item.warehouseName,jdbcType=VARCHAR}, #{item.warehouseType,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.productDate,jdbcType=VARCHAR},
+      #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR}, #{item.inventoryCount,jdbcType=BIGINT},
+      #{item.availableCount,jdbcType=BIGINT}, #{item.lockCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL},
+      #{item.taxCost,jdbcType=DECIMAL}, #{item.taxRate,jdbcType=DECIMAL},
+      NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
+      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
+    </foreach>
+  </insert>
+  <select id="selectStockBatch" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
+    select
+    sku_code as skuCode, sku_name as skuName, batch_code as warehouseBatchNumber, transport_center_code as transportCenterCode,
+    transport_center_name as transportCenterName, warehouse_code as warehouseCode, warehouse_name as warehouseName,
+    batch_remark as batchRemark, available_count as availableNum, product_date as productTime, supplier_code as supplierCode,
+    tax_cost as taxCost, tax_rate as taxRate,batch_info_code as batchInfoCode, location_code as locationCode
+    from stock_batch
+    where sku_code=#{skuCode}
+    <if test="transportCenterCode != null">
+      and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
+    </if>
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </if>
+  </select>
+  <select id="stockBatchByReject" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    <if test="supplierCode != null">
+       and supplier_code = #{supplierCode,jdbcType=VARCHAR}
+    </if>
+    order by batch_code asc
+  </select>
+  <select id="stockBatchByOutbound" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from stock_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    order by batch_code asc
+  </select>
+  <select id="stockBatchInfoOne" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"></include>
+      from stock_batch
+      where batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

@@ -91,12 +91,14 @@ public class BaseServiceImpl implements BaseService {
             Map map = JSON.parseObject(vo.getVariables(), Map.class);
             paramVO.setVariables(map);
         }
-        log.info("调用审批流发起申请,request={}", paramVO);
+        log.info("调用审批流发起申请,request={}", JSON.toJSON(paramVO));
         HttpResponse response = formApplyCommonService.submitActBaseProcessScmp(paramVO);
-        log.info("调用审批流发起申请返回结果,result={}", response);
+        log.info("调用审批流发起申请返回结果,result={}", JSON.toJSON(response));
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
         if(Objects.equals(response.getCode(),"0")){
             workFlowRespVO.setSuccess(true);
+            Map<String,Integer> data = (Map<String,Integer>)response.getData();
+            workFlowRespVO.setStatus(data.get("status"));
         } else {
             workFlowRespVO.setSuccess(false);
             workFlowRespVO.setMsg(response.getMessage());

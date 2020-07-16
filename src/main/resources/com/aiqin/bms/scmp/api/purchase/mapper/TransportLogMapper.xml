@@ -17,8 +17,8 @@
         id,transport_code,type,content,remark,create_by,create_time,update_by,update_time
     </sql>
     <insert id="insertOne">
-        insert into transport_log (transport_code,type,content,remark,create_by,create_time,update_by,update_time) values (
-        #{transportCode},#{type},#{content},#{remark},#{createBy},#{createTime},#{updateBy},#{updateTime}
+        insert into transport_log (transport_code,type,content,remark,del_flag,create_by,create_time,update_by,update_time) values (
+        #{transportCode},#{type},#{content},#{remark},#{delFlag},#{createBy},now(),#{updateBy},now()
         )
     </insert>
     <insert id="insertBatch" parameterType="java.util.List">

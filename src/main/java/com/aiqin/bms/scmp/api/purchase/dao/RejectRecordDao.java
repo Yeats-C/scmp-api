@@ -1,35 +1,27 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
-import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface RejectRecordDao {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(RejectRecord record);
+    Integer insert(RejectRecord record);
 
-    int insertSelective(RejectRecord record);
-
-    RejectRecord selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(RejectRecord record);
-
-    int updateByPrimaryKey(RejectRecord record);
+    Integer update(RejectRecord record);
 
     List<RejectRecord> list(RejectQueryRequest rejectApplyQueryRequest);
 
     Integer listCount(RejectQueryRequest rejectApplyQueryRequest);
 
-    Integer updateStatus(RejectRecord rejectRecord);
-
-    RejectRecord selectByRejectId(String rejectRecordId);
-
     RejectRecord selectByRejectCode(String rejectRecordCode);
 
-    void updateByOrderCodes(List<String> orderCodes);
+    String rejectRecordByCode(String code);
 
-    List<RejectRecord> listForSap(SapOrderRequest sapOrderRequest);
+    List<RejectRecord> selectByRejectCodeList(@Param("list") List<String> rejectCodeList);
+
+    int insertMany(@Param("list") List<RejectRecord> saves);
 }

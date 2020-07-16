@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -258,6 +259,109 @@ public class OrderInfo {
 
     @ApiModelProperty("预计商品数量")
     private Long preProductNum;
+
+    @ApiModelProperty("发票地址")
+    private String invoiceAddress;
+
+    @ApiModelProperty("发票电话")
+    private String invoiceMobile;
+
+    @ApiModelProperty("发票开户银行")
+    private String invoiceBank;
+
+    @ApiModelProperty("发票银行账号")
+    private String invoiceBankAccount;
+
+    @ApiModelProperty("业务形式(熙云:1：批发业务  爱亲母婴:0：门店业务,1：批发业务,天猫业务,优选业务  爱亲科技:0：门店业务,1：批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    private Integer businessForm;
+
+    @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
+    private Integer platformType;
+
+    @ApiModelProperty("税号")
+    private String taxId;
+
+    @ApiModelProperty(value="sap同步时间")
+    @JsonProperty("synchr_time")
+    private Date synchrTime;
+
+    @ApiModelProperty(value="0:未同步,1已同步")
+    @JsonProperty("synchr_status")
+    private Integer synchrStatus;
+
+    @ApiModelProperty(value = "门店编码")
+//    @JsonProperty("store_code")
+    private String storeCode;
+
+    @ApiModelProperty(value = "门店名称")
+//    @JsonProperty("store_name")
+    private String storeName;
+
+    @ApiModelProperty(value = "加盟商编码")
+//    @JsonProperty("franchisee_code")
+    private String franchiseeCode;
+
+    @ApiModelProperty(value = "加盟商名称")
+//    @JsonProperty("franchisee_name")
+    private String franchiseeName;
+
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+//    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+//    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+//    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+//    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "实际A品券优惠金额")
+//    @JsonProperty("actual_suit_coupon_money")
+    private BigDecimal actualSuitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+//    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "实际服纺券优惠金额")
+//    @JsonProperty("actual_top_coupon_money")
+    private BigDecimal actualTopCouponMoney;
+
+    @ApiModelProperty(value = "实际运费")
+//    @JsonProperty("actual_deliver_amount")
+    private BigDecimal actualDeliverAmount;
+
+    @ApiModelProperty(value = "渠道订单金额")
+//    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
+    @ApiModelProperty(value = "实际渠道订单金额")
+//    @JsonProperty("actual_channel_order_amount")
+    private BigDecimal actualChannelOrderAmount;
+
+    @ApiModelProperty(value = "收货人电话")
+//    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
+    @ApiModelProperty(value = "实际减免比例")
+//    @JsonProperty("actual_logistics_remission_ratio")
+    private int actualLogisticsRemissionRatio;
+
+    @ApiModelProperty(value = "实际活动优惠")
+//    @JsonProperty("actual_activity_discount")
+    private BigDecimal actualActivityDiscount;
+
+    @ApiModelProperty(value = "渠道编码")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    private String channelName;
 
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;

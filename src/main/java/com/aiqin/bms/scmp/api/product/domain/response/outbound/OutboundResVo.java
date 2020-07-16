@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.outbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.response.LogData;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
@@ -159,6 +160,9 @@ public class OutboundResVo  {
 
     @ApiModelProperty("sku列表")
     private List<OutboundProductResVo> list;
+
+    @ApiModelProperty("sku列表")
+    private List<OutboundBatch> batchList;
 
     @ApiModelProperty("操作日志列表")
     private List<LogData> logDataList;

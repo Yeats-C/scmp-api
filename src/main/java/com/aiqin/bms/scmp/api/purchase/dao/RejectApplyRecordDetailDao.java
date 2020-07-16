@@ -1,50 +1,41 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyDetailHandleRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectApplyRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailHandleResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyDetailHandleResponse;
 import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyDetailResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyListResponse;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectApplyResponse;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import org.apache.ibatis.annotations.Param;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface RejectApplyRecordDetailDao {
-    int deleteByPrimaryKey(Long id);
 
-    int insertAll(@Param("list") List<RejectApplyDetailHandleRequest> list);
+    List<RejectApplyRecordDetail> rejectApplyRecordDetailList(RejectApplyQueryRequest request);
 
-    int updateByPrimaryKey(RejectApplyRecordDetail record);
+    Integer rejectApplyRecordDetailCount(RejectApplyQueryRequest request);
 
-    List<RejectApplyResponse> listForRejectRecord(RejectApplyRequest rejectApplyQueryRequest);
+    List<RejectApplyRecordDetail> rejectApplyRecordBatchList(RejectApplyQueryRequest request);
 
-    List<RejectApplyRecordDetail> listByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
+    Integer rejectApplyRecordBatchCount(RejectApplyQueryRequest request);
 
-    Integer updateByDetailIds(@Param("list") List<String> detailIds);
+    List<RejectApplyDetailHandleResponse> rejectApplyRecordDetailByEdit(String rejectApplyRecordCode);
 
-    void deleteAll(String rejectApplyRecordCode);
+    Integer insertAll(@Param("list") List<RejectApplyRecordDetail> list);
 
-    List<RejectApplyDetailResponse> selectByRejectCode(String rejectApplyCode);
+    Integer update(RejectApplyRecordDetail record);
 
-    SupplyCompany selectSupplyCompany(String supplyCode);
+    Integer delete(String rejectApplyRecordCode);
 
-    List<RejectApplyRecordDetail> listByConditionPage(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes,@Param("pageSize")Integer pageSize, @Param("beginIndex")Integer beginIndex);
+    List<RejectRecordDetail> rejectApplyByWarehouseProduct(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,
+                                                           @Param("warehouseCode") String warehouseCode);
 
-    Integer listByConditionPageCount(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
+    List<RejectRecordBatch> rejectApplyByWarehouseBatch(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,
+                                                        @Param("warehouseCode") String warehouseCode,
+                                                        @Param("skuCode") String skuCode,
+                                                        @Param("supplierCode") String supplierCode,
+                                                        @Param("settlementMethodCode") String settlementMethodCode,
+                                                        @Param("productType") Integer productType);
 
-    Integer countByRejectId(@Param("rejectApplyRecordCode") String rejectApplyRecordCode,@Param("applyRecordStatus")Integer status);
-
-    List<RejectApplyDetailHandleResponse> selectHandleByRejectCode(String rejectApplyCode);
-
-    void updateStatus(String rejectApplyCode);
-
-    BigDecimal selectReturnAmount(RejectApplyRequest request);
-
-    List<RejectApplyListResponse> applyListByCondition(@Param("supplierCode") String supplierCode,@Param("purchaseGroupCode") String purchaseGroupCode,@Param("settlementMethodCode") String settlementMethod,@Param("transportCenterCode") String transportCenterCode, @Param("warehouseCode")String warehouseCode, @Param("rejectApplyRecordCodes")List<String> rejectApplyRecordCodes);
-
-    Integer selectSkuCount(RejectApplyRequest request);
 }

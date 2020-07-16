@@ -277,7 +277,7 @@ public interface ProductSkuDao {
      * @author NullPointException
      * @date 2019/5/28
      */
-    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(@Param("list") List<Long> list, @Param("changePriceType") String changePriceType);
+    List<QuerySkuInfoRespVO> selectSkuListForSalePrice(@Param("list") List<Long> list, @Param("changePriceType") String changePriceType,@Param("changePriceTypes") List<String> changePriceTypes);
 
     List<Long> selectSkuListForSalePriceCount(QuerySkuInfoReqVO vo);
 

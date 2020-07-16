@@ -158,7 +158,7 @@ public class CheckSkuNewReally {
             ProductCategory productCategory = categoryMap.get(importVo.getProductCategoryName());
             if (Objects.isNull(productCategory)) {
                 error.add("无对应编码为" + importVo.getProductCategoryName() + "的品类信息");
-            } else {
+            }else {
                 productSkuDraft.setProductCategoryCode(productCategory.getCategoryId());
                 productSkuDraft.setProductCategoryName(productCategory.getCategoryName());
             }
@@ -303,7 +303,7 @@ public class CheckSkuNewReally {
         //适用其实月龄
         if (StringUtils.isBlank(importVo.getApplicableMonthAge())) {
             error.add("适用起始月龄不能为空");
-        } else {
+        }else {
             productSkuDraft.setApplicableMonthAge(importVo.getApplicableMonthAge().trim());
         }
         //是否季节商品
@@ -985,7 +985,9 @@ public class CheckSkuNewReally {
             supplyUnitDraft.setFactorySkuCode(importVo.getFactorySkuCode().trim());
         }
         //厂商SKU编码
-        supplyUnitDraft.setTaxIncludedPrice(new BigDecimal(importVo.getTaxIncludedPrice()));
+        if (Objects.nonNull(importVo.getFactorySkuCode())) {
+            supplyUnitDraft.setTaxIncludedPrice(importVo.getTaxIncludedPrice());
+        }
         //供应商供货渠道类别
         if (Objects.isNull(importVo.getSupplyCategoriesSupplyChannelsName())) {
             error.add("供应商供货渠道类别不能为空");

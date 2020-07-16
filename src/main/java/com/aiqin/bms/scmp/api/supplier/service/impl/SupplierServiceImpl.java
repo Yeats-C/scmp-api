@@ -6,11 +6,13 @@ import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Supplier;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.DownSupplierFileReq;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO;
+import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.ApplyListRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplierDetailRespVO;
@@ -19,6 +21,7 @@ import com.aiqin.bms.scmp.api.supplier.mapper.SupplierMapper;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierService;
+import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -47,6 +50,9 @@ public class SupplierServiceImpl implements SupplierService {
     private OperationLogService operationLogService;
     @Autowired
     private SupplierFileDao supplierFileDao;
+
+    @Autowired
+    private SupplyCompanyDao supplyCompanyDao;
     @Autowired
     private SupplierCommonService supplierCommonService;
     @Autowired
@@ -108,6 +114,9 @@ public class SupplierServiceImpl implements SupplierService {
                 logDataList = pageList.getDataList();
             }
             supplierDetailRespVO.setLogDataList(logDataList);
+        QuerySupplyComReqVO querySupplyComReqVO=new QuerySupplyComReqVO();
+        querySupplyComReqVO.setSupplierCode(supplierDetailRespVO.getSupplierCode());
+        supplierDetailRespVO.setSupplyComListRespVOList(supplyCompanyDao.getSupplyCompanyList(querySupplyComReqVO));
             return supplierDetailRespVO;
 
     }

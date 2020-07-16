@@ -47,7 +47,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
     @Resource
     private SapBaseDataService sapBaseDataService;
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void orderInfoAbutment() {
         if (profile.equals("test")) {
             DateTime now = new DateTime();
@@ -56,7 +56,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         }
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void stockAbutment() {
         if (profile.equals("test")) {
             DateTime now = new DateTime();
@@ -65,7 +65,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         }
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void purchaseAbutment() {
         if (profile.equals("test")) {
             DateTime now = new DateTime();
@@ -74,7 +74,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         }
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void productAbutment() {
         if (profile.equals("test")) {
             DateTime now = new DateTime();
@@ -83,7 +83,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         }
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
+    //@Scheduled(cron = "0 0 * * * ?")
     public void supplyAbutment() {
         if (profile.equals("test")) {
             DateTime now = new DateTime();
@@ -120,7 +120,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
-        sapBaseDataService.stockSynchronization(sapOrderRequest);
+        //sapBaseDataService.stockSynchronization(sapOrderRequest);
     }
 
     /**
@@ -135,7 +135,7 @@ public class SapScheduledServiceImpl implements SapScheduledService {
         SapOrderRequest sapOrderRequest = new SapOrderRequest();
         sapOrderRequest.setBeginTime(beginTime);
         sapOrderRequest.setFinishTime(finishTime);
-        sapBaseDataService.purchaseSynchronization(sapOrderRequest);
+        //sapBaseDataService.purchaseSynchronization(sapOrderRequest);
     }
 
     /**

@@ -8,10 +8,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.ProductBrandType;
 import com.aiqin.bms.scmp.api.product.domain.ProductCategory;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuImportReq;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportMain;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportNewReally;
-import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoImportReally;
+import com.aiqin.bms.scmp.api.product.domain.excel.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
@@ -27,9 +24,12 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNewReally;
+import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupBuyerDao;
 import com.aiqin.bms.scmp.api.supplier.dao.purchasegroup.PurchaseGroupDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
@@ -37,10 +37,9 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.purchasegroup.dto.Purchase
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordItemReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.tag.SaveUseTagRecordReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.ApplyUseTagRecordMapper;
-import com.aiqin.bms.scmp.api.supplier.service.ManufacturerService;
-import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
-import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
+import com.aiqin.bms.scmp.api.supplier.service.*;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
@@ -63,6 +62,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -168,7 +168,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         }
         BeanCopyUtils.copy(newProductUpdateReqVO, newProduct);
         //设置审批状态为审批中
-       //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
+        //newProduct.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
         int flg = ((NewProductService) AopContext.currentProxy()).update(newProduct);
         productCommonService.getInstance(newProduct.getProductCode(), HandleTypeCoce.UPDATE_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.UPDATE_PRODUCT.getName());
         return flg;
@@ -253,7 +253,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public List<NewProductResponseVO> getPageList(QueryNewProductReqVO queryNewProductReqVO) {
         return newProductMapper.getList(queryNewProductReqVO);
     }
-   @Override
+    @Override
     public Map<String,NewProduct> selectBySpuName(Set<String> list, String companyCode) {
         return newProductMapper.selectBySpuName(list,companyCode);
     }
@@ -262,6 +262,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public NewProductResponseVO getDetail(String productCode) {
         return newProductMapper.selectByProdutCode(productCode);
     }
+
     /**
      * 保存导入商品信息（真实表）
      */
@@ -270,7 +271,6 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     public HttpResponse saveImportSkuInfo(SkuImportReq saveSkuInfoReqVo) {
         HashMap<String, String> spuMap = Maps.newHashMap();
         for (AddSkuInfoReqVO reqVO : saveSkuInfoReqVo.getAddSkuList()) {
-            PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(reqVO.getProductSkuDraft().getProcurementSectionName());
             if (StringUtils.isBlank(reqVO.getProductSkuDraft().getProductCode())) {
                 //判断是否新增了
                 String s1 = spuMap.get(reqVO.getProductSkuDraft().getProductName());
@@ -285,8 +285,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                         } else {
                             NewProductSaveReqVO saveReqVO = new NewProductSaveReqVO();
                             saveReqVO.setProductName(reqVO.getProductSkuDraft().getProductName());
-                            saveReqVO.setPurchasingGroupCode(purchaseGroupVo.getPurchaseGroupCode());
-                            saveReqVO.setPurchasingGroupName(purchaseGroupVo.getPurchaseGroupName());
+                            saveReqVO.setPurchasingGroupCode(saveSkuInfoReqVo.getPurchaseGroupCode());
+                            saveReqVO.setPurchasingGroupName(saveSkuInfoReqVo.getPurchaseGroupName());
                             saveReqVO.setAbbreviation(reqVO.getSpuInfo().getAbbreviation());
                             saveReqVO.setStyleNumber(reqVO.getSpuInfo().getStyleNumber());
                             productCode = newProductService.insertProduct(saveReqVO);
@@ -301,9 +301,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 //            reqVO.getProductSkuDraft().setProcurementSectionName(saveSkuInfoReqVo.getPurchaseGroupName());
             Date date = new Date();
             // spu商品是否存在  不存在新增
-            savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date, purchaseGroupVo);
+            savespuInfo(reqVO.getSpuInfo(),reqVO.getProductSkuDraft(),date);
             // 保存商品信息
-            saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date, purchaseGroupVo);
+            saveSkuInfo(reqVO.getProductSkuDraft(),reqVO.getProductSkuConfigs(),date);
             // 保存标签信息
             saveSkuInfTag(reqVO.getTagInfoList(),reqVO.getProductSkuDraft());
             // 保存渠道信息
@@ -317,7 +317,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             // 保存结算信息
             saveSkuInfoCheckout(reqVO.getProductSkuCheckoutDraft());
             // 保存供应商信息
-            saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date, reqVO.getProductSkuCheckoutDraft());
+            saveSkuInfoSupply(reqVO.getProductSkuSupplyUnitDrafts(), date);
             // 保存生产厂家
             saveSkuInfoManufacturer(reqVO.getProductSkuManufacturerDrafts(), reqVO.getProductSkuDraft());
             // 保存价格信息
@@ -343,7 +343,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存商品标签信息 */
-    private void saveSkuInfTag(List<SaveUseTagRecordItemReqVo> tagInfoList, ProductSkuDraft productSkuDraft) {
+    private void saveSkuInfTag(List<SaveUseTagRecordItemReqVo> tagInfoList,ProductSkuDraft productSkuDraft) {
         if(CollectionUtils.isNotEmpty(tagInfoList)){
             List<ApplyUseTagRecord> applyUseTagRecords = Lists.newArrayList();
             tagInfoList.forEach(item->{
@@ -395,7 +395,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku进销存及包装信息 */
-    private void saveSkuInfoPurchaseSaleBox(ProductSkuDraft productSkuDraft, List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos, List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts) {
+    private void saveSkuInfoPurchaseSaleBox(ProductSkuDraft productSkuDraft,List<PurchaseSaleStockReqVo> purchaseSaleStockReqVos, List<ProductSkuBoxPackingDraft> productSkuBoxPackingDrafts) {
         Date date = new Date();
         // 进销存信息
         //获取库存信息
@@ -572,12 +572,10 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku供应商信息 */
-    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts, Date date, ProductSkuCheckoutDraft productSkuCheckoutDraft) {
+    private void saveSkuInfoSupply(List<ProductSkuSupplyUnitDraft> productSkuSupplyUnitDrafts, Date date) {
         List<ProductSkuSupplyUnit> productSkuSupplyUnits = BeanCopyUtils.copyList(productSkuSupplyUnitDrafts, ProductSkuSupplyUnit.class);
         if(CollectionUtils.isNotEmpty(productSkuSupplyUnits)){
             productSkuSupplyUnits.forEach(item->{
-                BigDecimal noTaxPurchasePrice = Calculate.computeNoTaxPrice(item.getTaxIncludedPrice(), productSkuCheckoutDraft.getInputTaxRate());
-                item.setNoTaxPurchasePrice(noTaxPurchasePrice);
                 item.setCreateBy(getUser().getPersonName());
                 item.setUpdateBy(getUser().getPersonName());
                 item.setCreateTime(date);
@@ -593,7 +591,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--sku价格信息 */
-    private void saveSkuInfoPrice(List<SkuPriceDraftReqVO> skuInfos, ProductSkuDraft productSkuDraft, Date date) {
+    private void saveSkuInfoPrice(List<SkuPriceDraftReqVO> skuInfos, ProductSkuDraft productSkuDraft,Date date) {
         List<ProductSkuPriceInfo> productSkuConfigs = BeanCopyUtils.copyList(skuInfos, ProductSkuPriceInfo.class);
         if(CollectionUtils.isNotEmpty(productSkuConfigs)){
             productSkuConfigs.forEach(item->{
@@ -683,7 +681,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     }
 
     /** 保存导入商品信息--spu信息 */
-    private NewProduct savespuInfo(NewProduct skuInfo, ProductSkuDraft productSkuDraft, Date date, PurchaseGroupDTO purchaseGroupVo) {
+    private NewProduct savespuInfo(NewProduct skuInfo,ProductSkuDraft productSkuDraft, Date date) {
         // spu编码
         String productName = skuInfo.getProductName();
         // 判断商品名称是否为空
@@ -704,8 +702,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             insetProduct.setCompanyCode(getUser().getCompanyCode());
             insetProduct.setCompanyName(getUser().getCompanyName());
             insetProduct.setBarCode(skuInfo.getBarCode());
-            insetProduct.setPurchasingGroupCode(purchaseGroupVo.getPurchaseGroupCode());
-            insetProduct.setPurchasingGroupName(purchaseGroupVo.getPurchaseGroupName());
+            insetProduct.setPurchasingGroupCode(productSkuDraft.getProcurementSectionCode());
+            insetProduct.setPurchasingGroupName(productSkuDraft.getProcurementSectionName());
             insetProduct.setStyleNumber(skuInfo.getStyleNumber());
             insetProduct.setAbbreviation(skuInfo.getProductName());
             insetProduct.setCreateBy(getUser().getPersonName());
@@ -719,7 +717,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         return newProduct;
     }
     /** 保存导入商品信息--sku信息/配置信息 */
-    private void saveSkuInfo(ProductSkuDraft skuInfo, List<SaveSkuConfigReqVo> productSkuConfigs, Date date,PurchaseGroupDTO purchaseGroupVo) {
+    private void saveSkuInfo(ProductSkuDraft skuInfo, List<SaveSkuConfigReqVo> productSkuConfigs, Date date) {
         ProductSkuInfo productSkuInfo = new ProductSkuInfo();
         BeanCopyUtils.copy(skuInfo, productSkuInfo);
 
@@ -744,9 +742,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
         productSkuInfo.setGoodsGifts(skuInfo.getGoodsGifts());
         productSkuInfo.setCompanyCode(getUser().getCompanyCode());
         productSkuInfo.setCompanyName(getUser().getCompanyName());
-
+        PurchaseGroupDTO purchaseGroupVo = purchaseGroupDao.selectByPurchaseName(skuInfo.getProcurementSectionName());
         productSkuInfo.setProcurementSectionCode(purchaseGroupVo.getPurchaseGroupCode());
-        productSkuInfo.setProcurementSectionName(purchaseGroupVo.getPurchaseGroupName());
+        productSkuInfo.setProcurementSectionName(skuInfo.getProcurementSectionName());
         productSkuInfo.setCreateBy(getUser().getPersonName());
         productSkuInfo.setCreateTime(date);
         productSkuInfo.setUpdateBy(getUser().getPersonName());
@@ -776,13 +774,13 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                         stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
                         stock.setWarehouseCode(warehouse.getWarehouseCode());
                         stock.setWarehouseName(warehouse.getWarehouseName());
-                        stock.setWarehouseType(String.valueOf(warehouse.getWarehouseTypeCode()));
-                        stock.setLockNum(0L);
-                        stock.setInventoryNum(0L);
-                        stock.setAvailableNum(0L);
-                        stock.setPurchaseWayNum(0L);
-                        stock.setAllocationWayNum(0L);
-                        stock.setTotalWayNum(0L);
+                        stock.setWarehouseType(Integer.valueOf(warehouse.getWarehouseTypeCode()));
+                        stock.setLockCount(0L);
+                        stock.setInventoryCount(0L);
+                        stock.setAvailableCount(0L);
+                        stock.setPurchaseWayCount(0L);
+                        stock.setAllocationWayCount(0L);
+                        stock.setTotalWayCount(0L);
 //                            stock.setPurchaseGroupCode(productSkuInfo.getProcurementSectionCode());
 //                            stock.setPurchaseGroupName(productSkuInfo.getProcurementSectionName());
                         stock.setNewPurchasePrice(new BigDecimal(0));

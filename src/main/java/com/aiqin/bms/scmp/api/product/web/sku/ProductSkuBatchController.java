@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ProductSkuBatchReq;
+import com.aiqin.bms.scmp.api.product.domain.request.ProductSkuBatchReq2;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QueryProductSkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.QuerySkuListReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ocenter.QueryCenterSkuListReqVo;
@@ -29,6 +30,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.store.*;
 import com.aiqin.bms.scmp.api.product.service.InspectionReportService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuBatchService;
 import com.aiqin.bms.scmp.api.product.service.SkuService;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo;
+import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseResVo2;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -67,7 +71,17 @@ public class ProductSkuBatchController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+    @PostMapping("/getWarehousetList")
+    @ApiOperation("查询商品仓库名称")
+    public HttpResponse<List<WarehouseDTO>> getWarehousetList(){
 
+        try {
+            return HttpResponse.success(productSkuBatchService.getWarehousetList());
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
     @GetMapping("/banById")
     @ApiOperation("根据id来禁用")
     public HttpResponse<Boolean> banById(Long id){
@@ -82,10 +96,10 @@ public class ProductSkuBatchController {
 
     @PostMapping("/add")
     @ApiOperation("增加")
-    public HttpResponse<Boolean> add(@RequestBody List<ProductSkuBatchReq> productSkuBatchReqList){
+    public HttpResponse<Boolean> add(@RequestBody ProductSkuBatchReq2 productSkuBatchReq2){
 
         try {
-            return HttpResponse.success(productSkuBatchService.add(productSkuBatchReqList));
+            return HttpResponse.success(productSkuBatchService.add(productSkuBatchReq2));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);

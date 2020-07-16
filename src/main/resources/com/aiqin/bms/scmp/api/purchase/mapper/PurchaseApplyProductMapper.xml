@@ -60,6 +60,8 @@
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="tax_rate" jdbcType="DECIMAL" property="taxRate" />
     <result column="stock_amount" jdbcType="DECIMAL" property="stockAmount" />
+    <result column="supplier_company_code" jdbcType="VARCHAR" property="supplierCompanyCode" />
+    <result column="supplier_company_name" jdbcType="VARCHAR" property="supplierCompanyName" />
   </resultMap>
   <sql id="Base_Column_List">
     apply_product_id as applyProductId, purchase_apply_id as purchaseApplyId, sku_code as skuCode, sku_name as skuName, 
@@ -76,7 +78,7 @@
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
     factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName,
-    tax_rate as taxRate, stock_amount as stockAmount
+    tax_rate taxRate, stock_amount stockAmount, supplier_company_code supplierCompanyCode, supplier_company_name supplierCompanyName
   </sql>
   <insert id="insert">
     insert into purchase_apply_product (apply_product_id, purchase_apply_id, purchase_apply_code,
@@ -251,6 +253,12 @@
       <if test="updateByName != null">
         update_by_name = #{updateByName,jdbcType=VARCHAR},
       </if>
+      <if test="supplierCompanyCode != null">
+        supplier_company_code = #{supplierCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCompanyName != null">
+        supplier_company_name = #{supplierCompanyName,jdbcType=VARCHAR},
+      </if>
     </set>
     where apply_product_id = #{applyProductId,jdbcType=VARCHAR}
   </update>
@@ -269,7 +277,8 @@
     purchase_max as purchaseMax, product_spec as productSpec, color_name as colorName, model_number as modelNumber,
     shortage_number as shortageNumber, shortage_day as shortageDay, stock_turnover as stockTurnover,
     receipt_turnover as receiptTurnover, error_info as errorInfo, purchase_apply_code as purchaseApplyCode,
-    factory_sku_code as factorySkuCode, product_property_code as productPropertyCode, product_property_name as productPropertyName
+    factory_sku_code factorySkuCode, product_property_code productPropertyCode, product_property_name productPropertyName,
+    supplier_company_code supplierCompanyCode, supplier_company_name supplierCompanyName
     from purchase_apply_product
     <where>
       apply_product_status = 1
@@ -459,7 +468,8 @@
       stock_unit_name, stock_count, total_way_num, last_time, sales_volume, box_gauge, base_product_content,
       purchase_number, receipt_time, purchase_max, product_spec, color_name, model_number, shortage_number,
       shortage_day, stock_turnover, receipt_turnover, error_info, apply_product_status, factory_sku_code,
-      create_time, create_by_id, create_by_name, update_time, update_by_id, update_by_name, tax_rate, stock_amount)
+      create_time, create_by_id, create_by_name, update_time, update_by_id, update_by_name, tax_rate, stock_amount,
+      supplier_company_code, supplier_company_name)
     values
      <foreach collection="list" item="item" index="" separator=",">
       (#{item.applyProductId,jdbcType=VARCHAR},
@@ -488,331 +498,13 @@
        #{item.errorInfo,jdbcType=VARCHAR}, #{item.applyProductStatus,jdbcType=INTEGER},
        #{item.factorySkuCode,jdbcType=VARCHAR}, now(), #{item.createById,jdbcType=VARCHAR},
        #{item.createByName,jdbcType=VARCHAR}, now(), #{item.updateById,jdbcType=VARCHAR},
-       #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL}, #{item.stockAmount,jdbcType=DECIMAL})
+       #{item.updateByName,jdbcType=VARCHAR}, #{item.taxRate,jdbcType=DECIMAL}, #{item.stockAmount,jdbcType=DECIMAL},
+       #{item.supplierCompanyCode,jdbcType=VARCHAR}, #{item.supplierCompanyName,jdbcType=VARCHAR})
      </foreach>
   </insert>
-  <select id="selectPurchaseForm" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
-    SELECT a.supplier_code as supplierCode,a.supplier_name as supplierName,a.sku_code as skuCode,
-    a.sku_name as skuName,a.warehouse_code as warehouseCode,a.warehouse_name as warehouseName,
-    a.transport_center_code as transportCenterCode, a.transport_center_name as transportCenterName,
-    a.purchase_group_code as purchaseGroupCode,a.purchase_group_name as purchaseGroupName,
-    s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName
-    from purchase_apply_product a
-    inner join product_sku_checkout s on a.sku_code = s.sku_code
-    WHERE a.apply_product_status = 1 and a.info_status = 0
-    and a.purchase_apply_id in
-    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-      #{item}
-    </foreach>
-    group by a.supplier_code,a.transport_center_code,a.warehouse_code,
-    s.settlement_method_code,a.purchase_group_code
-  </select>
-  <select id="purchaseFormProduct" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select
-    a.purchase_whole as purchaseWhole, a.purchase_single as purchaseSingle, a.product_type as productType,
-    a.product_purchase_amount as productPurchaseAmount, a.apply_product_id as applyProductId,
-    a.purchase_apply_id as purchaseApplyId, a.sku_code as skuCode, a.base_product_content as baseProductContent,
-    a.product_spec as productSpec, a.color_name as colorName, a.model_number as modelNumber,
-    a.stock_unit_name as stockUnitName, s.Input_tax_rate as taxRate, a.product_type as productType,
-    a.brand_id as brandId, a.brand_name as brandName, a.category_id as categoryId, a.category_name as categoryName,
-    s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName,
-    a.sku_name as skuName, a.box_gauge as boxGauge, pa.apply_type as applyType
-    from purchase_apply_product a
-    inner join product_sku_checkout s on a.sku_code = s.sku_code
-    inner join purchase_apply pa on pa.purchase_apply_id = a.purchase_apply_id
-    <where>
-      a.apply_product_status = 1 and  a.info_status = 0
-      <if test="supplierCode != null">
-        and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      </if>
-      <if test="transportCenterCode != null">
-        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      </if>
-      <if test="purchaseGroupCode != null">
-        and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      </if>
-      <if test="warehouseCode != null">
-        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      </if>
-      <if test="settlementMethodCode != null">
-        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      </if>
-      <if test="applyIds != null and applyIds.size > 0">
-        and a.purchase_apply_id in
-        <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-          #{item}
-        </foreach>
-      </if>
-    </where>
-  </select>
-  <select id="formSkuCount" resultType="java.lang.Integer">
-    select count(DISTINCT(a.sku_code))
-    from purchase_apply_product a inner join
-    product_sku_checkout s on
-    a.sku_code = s.sku_code
-    <where>
-      a.apply_product_status = 1 and a.info_status = 0
-      <if test="supplierCode != null">
-        and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      </if>
-      <if test="transportCenterCode != null">
-        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      </if>
-      <if test="purchaseGroupCode != null">
-        and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      </if>
-      <if test="warehouseCode != null">
-        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      </if>
-      <if test="settlementMethodCode != null">
-        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      </if>
-      <if test="applyIds != null and applyIds.size > 0">
-        and a.purchase_apply_id in
-        <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-          #{item}
-        </foreach>
-      </if>
-    </where>
-  </select>
-  <select id="applyByProduct" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseFormResponse">
-    select a.apply_product_id as applyProductId, a.purchase_apply_id as purchaseApplyId,
-    a.purchase_apply_code as purchaseApplyCode, p.apply_type as applyType
-    from purchase_apply_product a inner join
-    product_sku_checkout s on
-    a.sku_code = s.sku_code
-    inner join purchase_apply p
-    on a.purchase_apply_id = p.purchase_apply_id
-    <where>
-      a.apply_product_status = 1 and a.info_status = 0
-      <if test="supplierCode != null">
-        and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      </if>
-      <if test="transportCenterCode != null">
-        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      </if>
-      <if test="purchaseGroupCode != null">
-        and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      </if>
-      <if test="warehouseCode != null">
-        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      </if>
-      <if test="settlementMethodCode != null">
-        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      </if>
-      <if test="applyIds != null and applyIds.size > 0">
-        and a.purchase_apply_id in
-        <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-          #{item}
-        </foreach>
-      </if>
-    </where>
-    group by a.purchase_apply_id
-  </select>
-  <select id="purchaseFormList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select
-      a.purchase_whole as purchaseWhole, a.purchase_single as purchaseSingle, a.product_type as productType,
-      a.product_purchase_amount as productPurchaseAmount, a.base_product_content as baseProductContent, a.sku_code as  skuCode,
-      (ifnull(a.purchase_whole, 0) * ifnull(a.base_product_content, 0) + ifnull(a.purchase_single, 0)) as singleCount
-      from purchase_apply_product a inner join
-      product_sku_checkout s on
-      a.sku_code = s.sku_code
-      <where>
-        a.apply_product_status = 1 and a.info_status = 0
-        and  a.sku_code = #{skuCode,jdbcType=VARCHAR}
-        <if test="supplierCode != null">
-           and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-        </if>
-        <if test="transportCenterCode != null">
-           and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-        </if>
-        <if test="purchaseGroupCode != null">
-           and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-        </if>
-        <if test="warehouseCode != null">
-           and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-        </if>
-        <if test="settlementMethodCode != null">
-          and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-        </if>
-        <if test="applyIds != null and applyIds.size > 0">
-           and a.purchase_apply_id in
-        <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-           #{item}
-        </foreach>
-        </if>
-      </where>
-  </select>
-  <select id="productBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select
-    a.product_type as productType, a.product_purchase_amount as productPurchaseAmount, a.apply_product_id as applyProductId,
-    a.purchase_apply_id as purchaseApplyId, a.sku_code as skuCode,
-    a.product_spec as productSpec, a.color_name as colorName, a.model_number as modelNumber,
-    a.stock_unit_name as stockUnitName, s.Input_tax_rate as taxRate, a.product_type as productType,
-    a.brand_id as brandId, a.brand_name as brandName, a.category_id as categoryId, a.category_name as categoryName,
-    s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName,
-    a.sku_name as skuName, a.purchase_apply_id as purchaseApplyId, a.transport_center_code as transportCenterCode,
-    a.warehouse_code as warehouseCode, b.company_code as companyCode
-    from purchase_apply_product a inner join
-    purchase_apply b on a.purchase_apply_code = b.purchase_apply_code
-    inner join product_sku_checkout s on a.sku_code = s.sku_code
-    <where>
-      a.apply_product_status = 1 and a.info_status = 0
-      <if test="supplierCode != null">
-        and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      </if>
-      <if test="transportCenterCode != null">
-        and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      </if>
-      <if test="purchaseGroupCode != null">
-        and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      </if>
-      <if test="warehouseCode != null">
-        and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      </if>
-      <if test="settlementMethodCode != null">
-        and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      </if>
-      <if test="applyIds != null and applyIds.size > 0">
-        and a.purchase_apply_id in
-        <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-          #{item}
-        </foreach>
-      </if>
-    </where>
-    group by a.sku_code
-    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="purchaseFormCount" resultType="java.lang.Integer">
-     select COUNT(DISTINCT(a.sku_code))
-     from purchase_apply_product a inner join
-      product_sku_checkout s on
-      a.sku_code = s.sku_code
-     <where>
-      a.apply_product_status = 1 and a.info_status = 0
-      <if test="supplierCode != null">
-         and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-      </if>
-      <if test="transportCenterCode != null">
-         and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-      </if>
-      <if test="purchaseGroupCode != null">
-         and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-      </if>
-      <if test="warehouseCode != null">
-         and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-      </if>
-      <if test="settlementMethodCode != null">
-         and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-      </if>
-      <if test="applyIds != null and applyIds.size > 0">
-          and a.purchase_apply_id in
-          <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-              #{item}
-          </foreach>
-      </if>
-     </where>
-  </select>
   <delete id="delete">
     delete from purchase_apply_product where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
   </delete>
-  <update id="updateInfoStatus">
-    update purchase_apply_product
-    <set>
-      info_status = 1,
-      update_time = now(),
-      <if test="updateById != null">
-        update_by_id = #{updateById,jdbcType=VARCHAR},
-      </if>
-      <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
-      </if>
-    </set>
-    where purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
-    and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-    and supplier_code = #{supplierCode,jdbcType=VARCHAR}
-    and purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-    and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-    and sku_code = #{skuCode,jdbcType=VARCHAR}
-  </update>
-  <select id="purchaseFormByComplete" resultType="java.lang.Integer">
-    select count(1)
-    from purchase_apply_product
-    where info_status = 0
-    and purchase_apply_id = #{purchaseApplyId,jdbcType=VARCHAR}
-  </select>
-  <select id="purchaseFormByRepeat" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-     select
-      a.purchase_whole as purchaseWhole, a.purchase_single as purchaseSingle, a.product_type as productType,
-      a.product_purchase_amount as productPurchaseAmount, a.apply_product_id as applyProductId,
-      a.purchase_apply_id as purchaseApplyId, a.sku_code as skuCode, a.base_product_content as baseProductContent,
-      a.product_spec as productSpec, a.color_name as colorName, a.model_number as modelNumber,
-      a.stock_unit_name as stockUnitName, s.Input_tax_rate as taxRate, a.product_type as productType,
-      a.brand_id as brandId, a.brand_name as brandName, a.category_id as categoryId, a.category_name as categoryName,
-      s.settlement_method_code as settlementMethodCode, s.settlement_method_name as settlementMethodName,
-      a.sku_name as skuName, a.purchase_apply_id as purchaseApplyId, a.transport_center_code as transportCenterCode,
-      a.warehouse_code as warehouseCode, b.company_code as companyCode,
-      a.product_purchase_amount as productPurchaseAmount, a.base_product_content as baseProductContent, a.sku_code as  skuCode,
-      (ifnull(a.purchase_whole, 0) * ifnull(a.base_product_content, 0) + ifnull(a.purchase_single, 0)) as singleCount
-     from purchase_apply_product a inner join
-     purchase_apply b on a.purchase_apply_code = b.purchase_apply_code
-     inner join product_sku_checkout s on a.sku_code = s.sku_code
-     <where>
-         a.apply_product_status = 1 and a.info_status = 0
-         <if test="supplierCode != null">
-             and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-         </if>
-         <if test="transportCenterCode != null">
-             and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-         </if>
-         <if test="purchaseGroupCode != null">
-             and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-         </if>
-         <if test="warehouseCode != null">
-             and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-         </if>
-         <if test="settlementMethodCode != null">
-             and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-         </if>
-         <if test="applyIds != null and applyIds.size > 0">
-             and a.purchase_apply_id in
-             <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-                 #{item}
-             </foreach>
-         </if>
-     </where>
-     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
-  </select>
-  <select id="purchaseFormByRepeatCount" resultType="java.lang.Integer">
-      select COUNT(1)
-      from purchase_apply_product a inner join
-      product_sku_checkout s on
-      a.sku_code = s.sku_code
-      <where>
-          a.apply_product_status = 1 and a.info_status = 0
-          <if test="supplierCode != null">
-              and a.supplier_code = #{supplierCode,jdbcType=VARCHAR}
-          </if>
-          <if test="transportCenterCode != null">
-              and a.transport_center_code = #{transportCenterCode,jdbcType=VARCHAR}
-          </if>
-          <if test="purchaseGroupCode != null">
-              and a.purchase_group_code = #{purchaseGroupCode,jdbcType=VARCHAR}
-          </if>
-          <if test="warehouseCode != null">
-              and a.warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
-          </if>
-          <if test="settlementMethodCode != null">
-              and s.settlement_method_code = #{settlementMethodCode,jdbcType=VARCHAR}
-          </if>
-          <if test="applyIds != null and applyIds.size > 0">
-              and a.purchase_apply_id in
-              <foreach collection="applyIds" index="index" item="item" open="(" separator="," close=")">
-                  #{item}
-              </foreach>
-          </if>
-      </where>
-  </select>
   <select id="applyPurchaseProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyProduct">
       select
       <include refid="Base_Column_List"></include>
@@ -832,7 +524,8 @@
     product_spec as productSpec, color_name as colorName,product_property_code as productPropertyCode,
     product_property_name as productPropertyName, warehouse_code as warehouseCode,  warehouse_name as warehouseName,
     receipt_turnover as receiptTurnover, tax_rate as taxRate, stock_count as stockCount, stock_amount as stockAmount,
-    stock_turnover as stockTurnover, receipt_turnover as receiptTurnover
+    stock_turnover stockTurnover, receipt_turnover receiptTurnover, supplier_company_code supplierCompanyCode,
+    supplier_company_name supplierCompanyName
     from purchase_apply_product
     where apply_product_status = 1
     and purchase_apply_code = #{purchaseApplyCode,jdbcType=VARCHAR}

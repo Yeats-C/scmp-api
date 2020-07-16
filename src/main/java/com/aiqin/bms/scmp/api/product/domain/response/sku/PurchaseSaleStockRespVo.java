@@ -61,4 +61,10 @@ public class PurchaseSaleStockRespVo extends CommonBean {
 
     @ApiModelProperty("拆零系数")
     private Long zeroRemovalCoefficient;
+
+    @ApiModelProperty("库存单位code")
+    private String stockUnitCode;
+
+    @ApiModelProperty(value = "库存单位名称")
+    private String stockUnitName;
 }

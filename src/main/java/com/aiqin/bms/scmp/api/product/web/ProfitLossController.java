@@ -4,14 +4,19 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.request.profitloss.ProfitLossWmsReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.profitloss.QueryProfitLossVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.DetailProfitLossRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo;
 import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
+import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
+import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +31,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/profitLoss")
 @Slf4j
 public class ProfitLossController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProfitLossController.class);
 
     @Autowired
     private ProfitLossService profitLossService;
@@ -54,4 +61,5 @@ public class ProfitLossController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
 }

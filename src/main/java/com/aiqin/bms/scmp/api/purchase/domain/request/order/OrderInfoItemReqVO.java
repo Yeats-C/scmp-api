@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -62,6 +63,11 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty("批次号")
     private String batchNumber;
 
+
+    @ApiModelProperty(value = "批次编码")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty("单价")
     private BigDecimal price;
 
@@ -106,5 +112,14 @@ public class OrderInfoItemReqVO {
 
     @ApiModelProperty("税率")
     private BigDecimal tax;
+
+    @ApiModelProperty(value = "供应商编码")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "供应商名称")
+    private String supplierName;
+
+    @ApiModelProperty(value = "条形码")
+    private String barCode;
 
 }

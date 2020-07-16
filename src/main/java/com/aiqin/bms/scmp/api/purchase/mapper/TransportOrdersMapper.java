@@ -11,4 +11,8 @@ public interface TransportOrdersMapper {
     void insertBatch(@Param("transportOrders") List<TransportOrders> transportOrders);
 
     List<TransportOrders> selectListByTransportCode(TransportRequest transportRequest);
+
+    List<TransportOrders> selectOrderCodeByTransportCode(@Param("transportCode") String transportCode);
+
+    TransportOrders selectTransportOrdersByTransportCode(@Param("transportCode") String transportCode);
 }

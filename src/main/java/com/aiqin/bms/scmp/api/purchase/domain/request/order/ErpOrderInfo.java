@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,6 +18,7 @@ import java.util.List;
  * @date 2019/12/9 9:49
  */
 @Data
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class ErpOrderInfo {
 
     @ApiModelProperty(value = "订单id")
@@ -55,8 +57,8 @@ public class ErpOrderInfo {
     @JsonProperty("supplier_code")
     private String supplierCode;
 
-    @JsonProperty("supplier_name")
     @ApiModelProperty(value = "供应商名称")
+    @JsonProperty("supplier_name")
     private String supplierName;
 
     @ApiModelProperty(value = "仓库编码")
@@ -327,6 +329,14 @@ public class ErpOrderInfo {
     @JsonProperty("franchisee_name")
     private String franchiseeName;
 
+    @ApiModelProperty(value = "渠道编码")
+    @JsonProperty("channel_code")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    @JsonProperty("channel_name")
+    private String channelName;
+
     @ApiModelProperty(value = "来源单号")
     @JsonProperty("source_code")
     private String sourceCode;
@@ -372,6 +382,74 @@ public class ErpOrderInfo {
     @JsonProperty("update_time")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
+
+    @ApiModelProperty("发票地址")
+    @JsonProperty("invoice_address")
+    private String invoiceAddress;
+
+    @ApiModelProperty("发票电话")
+    @JsonProperty("invoice_mobile")
+    private String invoiceMobile;
+
+    @ApiModelProperty("发票开户银行")
+    @JsonProperty("invoice_bank")
+    private String invoiceBank;
+
+    @ApiModelProperty("发票银行账号")
+    @JsonProperty("invoice_bank_account")
+    private String invoiceBankAccount;
+
+    @ApiModelProperty("(熙云:1：批发业务  爱亲母婴:0：门店业务,1：批发业务,天猫业务,优选业务  爱亲科技:0：门店业务,1：批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    @JsonProperty("business_form")
+    private Integer businessForm;
+
+    @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
+    @JsonProperty("platform_type")
+    private Integer platformType;
+
+    @ApiModelProperty("税号")
+    @JsonProperty("tax_id")
+    private String taxId;
+
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "渠道订单金额")
+    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
+    @ApiModelProperty(value = "商品渠道总金额")
+    @JsonProperty("product_channel_total_amount")
+    private BigDecimal productChannelTotalAmount;
+
+    @ApiModelProperty(value = "收货人电话")
+    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
+    @ApiModelProperty(value="运费减免比例")
+    @JsonProperty("logistics_remission_ratio")
+    private Integer logisticsRemissionRatio;
+
+    @ApiModelProperty(value="wms库房类型")
+    @JsonProperty("wms_warehouse_type")
+    private Integer wmsWarehouseType;
 
     @ApiModelProperty(value = "订单商品明细行")
     @JsonProperty("item_list")

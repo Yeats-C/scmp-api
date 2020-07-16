@@ -1,34 +1,25 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
-import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectRecordDetailResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectQueryRequest;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface RejectRecordDetailDao {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(RejectRecordDetail record);
+    List<RejectRecordDetail> list(RejectQueryRequest request);
 
-    int insertSelective(RejectRecordDetail record);
+    Integer listCount(RejectQueryRequest request);
 
-    RejectRecordDetail selectByPrimaryKey(Long id);
+    Integer update(RejectRecordDetail record);
 
-    int updateByPrimaryKeySelective(RejectRecordDetail record);
-
-    int updateByPrimaryKey(RejectRecordDetail record);
-
-    Integer insertAll(@Param("list") List<RejectRecordDetail> detailList, @Param("rejectRecordId") String rejectId, @Param("rejectRecordCode") String rejectCode, @Param("createById") String createId, @Param("createByName") String createName);
+    Integer insertAll(@Param("list") List<RejectRecordDetail> detailList);
 
     List<RejectRecordDetail> selectByRejectId(@Param("rejectRecordId") String rejectRecordId);
 
-    List<RejectRecordDetailResponse> selectProductByRejectId(String rejectRecordId);
+    RejectRecordDetail rejectRecordByLineCode(@Param("rejectRecordCode") String rejectRecordCode,
+                                              @Param("lineCode") Integer lineCode);
 
-    void updateByDetailId(RejectDetailStockRequest detailResponse);
-
-    List<RejectRecordDetail> selectByRejectDetailIdList(List<Long> list);
-
-    List<RejectRecordDetail> listByRejectIds(List<String> list);
+    List<String> selectByRejectCodeList(@Param("list") List<String> purchaseOrderCodeList);
 }

@@ -34,7 +34,7 @@ public class AllocationResVo {
     @ApiModelProperty("调出仓库(物流中心)名称")
     private String callOutLogisticsCenterName;
 
-    @ApiModelProperty("调出仓库编码")
+    @ApiModelProperty("调出库房编码")
     private String callOutWarehouseCode;
 
     @ApiModelProperty("调出库房名称")
@@ -46,11 +46,11 @@ public class AllocationResVo {
     @ApiModelProperty("仓库类型名称")
     private String inventoryAttributesName;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+  //  @ApiModelProperty("采购组编码")
+  //  private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+  //  @ApiModelProperty("采购组名称")
+  //  private String purchaseGroupName;
 
     @ApiModelProperty("调入仓库(物流中心)编码")
     private String callInLogisticsCenterCode;
@@ -134,6 +134,9 @@ public class AllocationResVo {
 
     @ApiModelProperty("承担单位名称")
     private String undertakingUnitName;
+
+    @ApiModelProperty("物流费用")
+    private Long logisticsOutlay;
 
     @ApiModelProperty("sku")
     private List<AllocationProductResVo> skuList;

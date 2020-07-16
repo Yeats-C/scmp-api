@@ -169,7 +169,7 @@
       purchase_order_code, sku_code, sku_name, brand_id, brand_name, category_id,
       category_name, product_spec, color_name, model_number, product_type, purchase_whole,
       purchase_single, base_product_content, box_gauge, single_count, tax_rate, product_amount,
-      product_total_amount, stock_count, factory_sku_code, create_time, create_by_id, create_by_name,
+      product_total_amount, stock_count,actual_single_count, factory_sku_code, create_time, create_by_id, create_by_name,
       stock_amount, stock_turnover, receipt_turnover, linnum)
     values
     <foreach collection="list" item="item" index="" separator=",">
@@ -180,17 +180,11 @@
       #{item.modelNumber,jdbcType=VARCHAR}, #{item.productType,jdbcType=INTEGER}, #{item.purchaseWhole,jdbcType=INTEGER},
       #{item.purchaseSingle,jdbcType=INTEGER}, #{item.baseProductContent,jdbcType=INTEGER}, #{item.boxGauge,jdbcType=VARCHAR},
       #{item.singleCount,jdbcType=INTEGER}, #{item.taxRate,jdbcType=DECIMAL}, #{item.productAmount,jdbcType=DECIMAL},
-      #{item.productTotalAmount,jdbcType=DECIMAL}, #{item.stockCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
+      #{item.productTotalAmount,jdbcType=DECIMAL}, #{item.stockCount,jdbcType=INTEGER}, #{item.actualSingleCount,jdbcType=INTEGER}, #{item.factorySkuCode,jdbcType=VARCHAR},
       now(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},#{item.stockAmount,jdbcType=DECIMAL},
       #{item.stockTurnover,jdbcType=INTEGER},#{item.receiptTurnover,jdbcType=INTEGER},#{item.linnum,jdbcType=INTEGER})
     </foreach>
   </insert>
-  <select id="orderBySku" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct">
-    select sku_code as skuCode, sku_name as skuName
-    from purchase_order_product
-    where  purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
-    GROUP BY sku_code
-  </select>
   <select id="warehousingInfo" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select purchase_order_id as purchaseOrderId, purchase_order_code as purchaseOrderCode,
     sku_code as skuCode, sku_name as skuName, brand_id as brandId, brand_name as brandName, category_id as categoryId,
@@ -226,16 +220,10 @@
     and sku_code = #{skuCode, jdbcType=VARCHAR}
     and linnum = #{linnum, jdbcType=INTEGER}
   </select>
-  <select id="orderProductInfoByGroup" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
-    select
-    p.sku_code as skuCode, p.sku_name as skuName, sum(p.single_count) as singleCount,
-    sum(p.actual_single_count) as actualSingleCount, o.create_by_name as createByName,
-		o.purchase_order_code as purchaseOrderCode, o.transport_center_code as transportCenterCode,
-		o.transport_center_name as transportCenterName, o.warehouse_code as warehouseCode,
-		o.warehouse_name as warehouseName, p.tax_rate as taxRate
-    from purchase_order_product p
-	inner join purchase_order o on p.purchase_order_id = o.purchase_order_id
-    where o.purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY o.transport_center_code, o.warehouse_code, p.sku_code
+  <select id="orderProductByGroup" resultMap="BaseResultMap">
+    select sku_code, sku_name, sum(single_count) single_count, sum(actual_single_count) actual_single_count, tax_rate
+    from purchase_order_product
+    where purchase_order_id = #{purchaseOrderId, jdbcType=VARCHAR} GROUP BY sku_code
   </select>
   <select id="orderProductList" resultType="com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse">
     select
@@ -261,4 +249,16 @@
     </foreach>
     )
   </select>
+    <select id="selectByPurchaseOrderList" resultType="java.lang.String">
+      select
+      purchase_order_code
+      from
+      purchase_order_product
+      where
+      purchase_order_code in
+      <foreach collection="list" item="item" open="(" close=")" separator=",">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+
+    </select>
 </mapper>

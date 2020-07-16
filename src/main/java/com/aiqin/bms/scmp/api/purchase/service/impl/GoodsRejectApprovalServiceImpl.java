@@ -5,13 +5,8 @@ import com.aiqin.bms.scmp.api.base.WorkFlowBaseUrl;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
-import com.aiqin.bms.scmp.api.product.domain.request.ILockStocksReqVO;
-import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.dao.ApplyRejectRecordDao;
-import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDao;
-import com.aiqin.bms.scmp.api.purchase.dao.RejectRecordDetailDao;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecord;
-import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.dao.RejectApplyRecordDao;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecord;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectApprovalService;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
@@ -20,6 +15,7 @@ import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
 import com.aiqin.bms.scmp.api.workflow.vo.response.WorkFlowRespVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.gson.JsonObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,35 +23,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
 import java.util.Objects;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Service
 @WorkFlowAnnotation(WorkFlow.APPLY_REFUND)
 public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements GoodsRejectApprovalService, WorkFlowHelper {
@@ -65,67 +34,62 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
     @Resource
     private WorkFlowBaseUrl workFlowBaseUrl;
     @Resource
-    private RejectRecordDao rejectRecordDao;
-    @Resource
-    private StockService stockService;
-    @Resource
     private GoodsRejectServiceImpl goodsRejectService;
     @Resource
-    private RejectRecordDetailDao rejectRecordDetailDao;
-    @Resource
-    private ApplyRejectRecordDao applyRejectRecordDao;
+    private RejectApplyRecordDao rejectApplyRecordDao;
 
     /**
      * 审核回调接口
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public String workFlowCallback(WorkFlowCallbackVO vo1) {
         try {
             WorkFlowCallbackVO vo = updateSupStatus(vo1);
             //审批驳回
-            RejectRecord rejectRecord = new RejectRecord();
-            rejectRecord.setRejectRecordCode(vo.getFormNo());
-            RejectRecord record = rejectRecordDao.selectByRejectCode(vo.getFormNo());
+            RejectApplyRecord rejectApplyRecord = new RejectApplyRecord();
+            rejectApplyRecord.setRejectApplyRecordCode(vo.getFormNo());
+            RejectApplyRecord record = rejectApplyRecordDao.selectByRejectCode(vo.getFormNo());
             if (record == null) {
                 //未查询到退供单信息
                 return WorkFlowReturn.FALSE;
-            } else if (record.getRejectStatus().equals(RejectRecordStatus.REJECT_STATUS_CANCEL)) {
+            } else if (!record.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_TO_REVIEW)) {
                 //退供单是取消状态,不进行操作
+                LOGGER.info("退供申请单非待审核状态,无法进行审批:", vo.getFormNo());
                 return WorkFlowReturn.SUCCESS;
             }
             if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL.getNumber())) {
-                //审批中状态
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_AUDITTING);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", count);
-                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", counts);
-            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber()) || Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
-                //审批失败或者撤销
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_NO);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", count);
-                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", counts);
-                //解锁库存
-                List<RejectRecordDetail> list = rejectRecordDetailDao.selectByRejectId(record.getRejectRecordId());
-                ILockStocksReqVO iLockStockBatchReqVO = goodsRejectService.handleStockParam(list, record);
-                Boolean stockStatus = stockService.returnSupplyUnLockStocks(iLockStockBatchReqVO);
-                if (!stockStatus) {
-                    LOGGER.error("解锁库存异常:{}", rejectRecord.toString());
-                    throw new RuntimeException(String.format("解锁库存异常:{%s}", rejectRecord.toString()));
-                }
+                //审批中
+                rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_UNDER_REVIEW);
+                Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
+                LOGGER.info("审批中影响条数:{}", count);
+            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_FAILED.getNumber())) {
+                //审批失败
+                rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_NO);
+                Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
+                LOGGER.info("审核不通过影响条数:{}", count);
+            } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.REVOKED.getNumber())) {
+                //审批撤销
+                rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_REVOKE);
+                Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
+                LOGGER.info("审批撤销影响条数:{}", count);
             } else if (Objects.equals(vo.getApplyStatus(), ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-                //审批通过 状态为待供应商确认
-                rejectRecord.setRejectStatus(RejectRecordStatus.REJECT_STATUS_DEFINE);
-                Integer count = rejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", count);
-                Integer counts = applyRejectRecordDao.updateStatus(rejectRecord);
-                LOGGER.info("影响条数:{}", counts);
+                // 调用生成退供单
+                HttpResponse response = goodsRejectService.generateRejectRecord(vo.getFormNo());
+                //审批通过
+                if(response.getCode().equals("0")){
+                    rejectApplyRecord.setApplyRecordStatus(RejectRecordStatus.REJECT_APPLY_YES);
+                    Integer count = rejectApplyRecordDao.update(rejectApplyRecord);
+                    LOGGER.info("审批通过影响条数:{}", count);
+                    return WorkFlowReturn.SUCCESS;
+                }else {
+                    LOGGER.info("退供单未生成，所以申请单审批未通过:{}", response.getMessage());
+                    return WorkFlowReturn.FALSE;
+                }
             }
             return WorkFlowReturn.SUCCESS;
         } catch (Exception e) {
-            LOGGER.error("审批回调异常:{}", e.getMessage());
+            LOGGER.error("审批回调异常:{}", e.getStackTrace());
             return WorkFlowReturn.SUCCESS;
         }
     }

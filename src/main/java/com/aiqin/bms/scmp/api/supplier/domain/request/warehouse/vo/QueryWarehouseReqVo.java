@@ -37,4 +37,10 @@ public class QueryWarehouseReqVo extends PageReq {
 
     @ApiModelProperty(value = "公司编码", notes = "前端查询接口可以不传,但是其他第三方系统此字段必填", hidden = true)
     private String companyCode;
+
+    @ApiModelProperty("是否采购 0：是 1：不是")
+    private Integer isPurchase;
+
+    @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    private Integer batchManage;
 }

@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
+import com.aiqin.bms.scmp.api.excel.domain.PurchaseOrderExcel;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseApplyRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseOrderResponse;
@@ -28,9 +29,13 @@ public interface PurchaseOrderDao {
 
     void updateByOrderCodes(List<String> orderCodes);
 
-    List<String> getPurchaseOrderPre(@Param("purchaseGroupCode")String purchaseGroupCode,
-                                     @Param("purchaseOrderTypeCode")Integer purchaseOrderTypeCode,
-                                     @Param("purchaseOrderCode")String purchaseOrderCode);
+    List<String> getPurchaseOrderPre(@Param("purchaseGroupCode") String purchaseGroupCode,
+                                     @Param("purchaseOrderTypeCode") Integer purchaseOrderTypeCode,
+                                     @Param("purchaseOrderCode") String purchaseOrderCode);
 
-    List<PurchaseOrder> orderList(@Param("purchaseOrderCode")String purchaseOrderCode);
+    List<PurchaseOrder> orderList(@Param("purchaseOrderCode") String purchaseOrderCode);
+
+    List<PurchaseOrder> selectByPurchaseOrderCode(@Param("codes") List<String> code);
+
+    int insertMany(@Param("list") List<PurchaseOrder> purchaseOrders);
 }

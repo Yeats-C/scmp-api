@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespV
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.info.SaveSkuInfoReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
@@ -77,11 +78,24 @@ public class SkuInfoController {
         }
     }
 
-    @PostMapping("/add2")
+//    @PostMapping("/add2")
+//    @ApiOperation("新增sku信息")
+//    public HttpResponse<Integer> addSkuInfo2(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
+//        try {
+//            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo2(addSkuInfoReqVO));
+//        } catch (BizException bz){
+//            return HttpResponse.failure(bz.getMessageId(),0);
+//        }catch (Exception e) {
+//            log.error(Global.ERROR, e);
+//            return HttpResponse.failure(ResultCode.SYSTEM_ERROR,0);
+//        }
+//    }
+
+    @PostMapping("/sendSap")
     @ApiOperation("新增sku信息")
-    public HttpResponse<Integer> addSkuInfo2(@RequestBody AddSkuInfoReqVO addSkuInfoReqVO){
+    public HttpResponse<Integer> sendSap(){
         try {
-            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo2(addSkuInfoReqVO));
+            return HttpResponse.successGenerics(skuInfoService.saveDraftSkuInfo3());
         } catch (BizException bz){
             return HttpResponse.failure(bz.getMessageId(),0);
         }catch (Exception e) {
@@ -406,6 +420,7 @@ public class SkuInfoController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
     @PostMapping("/save/import/skuInfo/really")
     @ApiOperation(value = "保存导入商品信息（上传校验）")
     public HttpResponse<SkuInfoImportMain> saveImportSkuInfoCheck(MultipartFile file){
@@ -419,4 +434,5 @@ public class SkuInfoController {
         log.info("SkuInfoController---saveImportSkuInfo---导入入参：[{}]", JsonUtil.toJson(reqVO));
         return productService.saveImportSkuInfo(reqVO);
     }
+
 }

@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.order;
 
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemBatchMonth;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
@@ -23,7 +25,7 @@ public class OrderInfoReqVO {
     @ApiModelProperty("订单编码(订单号)")
     private String orderCode;
 
-    @ApiModelProperty("类型：直送、配送、首单、首单赠送.辅采直送")
+    @ApiModelProperty("类型：配送、直送、采购直送、（货架）直送")
     private String orderType;
 
     @ApiModelProperty("类型编码")
@@ -169,8 +171,17 @@ public class OrderInfoReqVO {
     @ApiModelProperty("父订单号")
     private String masterOrderCode;
 
+    @ApiModelProperty(value = "渠道编码")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    private String channelName;
+
     @ApiModelProperty("订单来源")
     private String orderOriginal;
+
+    @ApiModelProperty("订单来源名称")
+    private String orderOriginalName;
 
     @ApiModelProperty("备注")
     private String remake;
@@ -218,6 +229,79 @@ public class OrderInfoReqVO {
     @NotNull(message = "companyCode can not be null！")
     private String companyCode;
 
+    @ApiModelProperty("发票地址")
+    private String invoiceAddress;
+
+    @ApiModelProperty("发票电话")
+    private String invoiceMobile;
+
+    @ApiModelProperty("发票开户银行")
+    private String invoiceBank;
+
+    @ApiModelProperty("发票银行账号")
+    private String invoiceBankAccount;
+
+    @ApiModelProperty("业务形式(熙云:1：批发业务  爱亲母婴:0：门店业务,1：批发业务,天猫业务,优选业务  爱亲科技:0：门店业务,1：批发业务  小红马:线上业务,线下业务  萌贝树: 门店业务)")
+    private Integer businessForm;
+
+    @ApiModelProperty("平台(0:爱亲(新系统) 1:DL)")
+    private Integer platformType;
+
+    @ApiModelProperty("税号")
+    private String taxId;
+
+    @ApiModelProperty(value = "门店编码")
+//    @JsonProperty("store_code")
+    private String storeCode;
+
+    @ApiModelProperty(value = "门店名称")
+//    @JsonProperty("store_name")
+    private String storeName;
+
+    @ApiModelProperty(value = "加盟商编码")
+//    @JsonProperty("franchisee_code")
+    private String franchiseeCode;
+
+    @ApiModelProperty(value = "加盟商名称")
+//    @JsonProperty("franchisee_name")
+    private String franchiseeName;
+
+    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+//    @JsonProperty("order_product_type")
+    private Integer orderProductType;
+
+    @ApiModelProperty("合伙人编码")
+//    @JsonProperty("partner_code")
+    private String partnerCode;
+
+    @ApiModelProperty("合伙人名称")
+//    @JsonProperty("partner_name")
+    private String partnerName;
+
+    @ApiModelProperty(value = "A品券优惠金额")
+//    @JsonProperty("suit_coupon_money")
+    private BigDecimal suitCouponMoney;
+
+    @ApiModelProperty(value = "服纺券优惠金额")
+//    @JsonProperty("top_coupon_money")
+    private BigDecimal topCouponMoney;
+
+    @ApiModelProperty(value = "渠道订单金额")
+//    @JsonProperty("channel_order_amount")
+    private BigDecimal channelOrderAmount;
+
+    @ApiModelProperty(value = "收货人电话")
+//    @JsonProperty("consignee_mobile")
+    private String consigneeMobile;
+
     @ApiModelProperty("商品信息")
     private List<OrderInfoItemReqVO> productList;
+
+    @ApiModelProperty(value = "订单商品明细行（按日）")
+    @JsonProperty("item_batch_list")
+    private List<OrderInfoItemProductBatch> itemBatchList;
+
+    @ApiModelProperty(value = "订单商品批次（按月）")
+    @JsonProperty("item_batch_month_list")
+    private List<OrderInfoItemBatchMonth> itemBatchMonthList;
 }

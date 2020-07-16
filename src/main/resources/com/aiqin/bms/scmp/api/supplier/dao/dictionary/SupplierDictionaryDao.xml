@@ -199,4 +199,20 @@
         </if>
         order by sinfo.supplier_weight ASC
     </select>
+    <select id="checkCode" resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        supplier_dictionary
+        WHERE del_flag=0
+        <if test="supplierDictionaryCode!=null and supplierDictionaryCode!=''">
+            AND supplier_dictionary_code=#{supplierDictionaryCode,jdbcType=VARCHAR}
+        </if>
+        <if test="id!=null">
+            AND id!=#{id,jdbcType=BIGINT}
+        </if>
+        <if test="companyCode != null and companyCode != '' ">
+            and company_code = #{companyCode,jdbcType=VARCHAR}
+        </if>
+    </select>
 </mapper>

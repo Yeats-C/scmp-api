@@ -24,5 +24,11 @@ public interface ProfitLossProductBatchMapper {
 
     void insertList(@Param(value = "list") List<ProfitLossProductBatch> batchList);
 
+    void insertBatchList(@Param(value = "list") List<ProfitLossProductBatch> batchList);
+
     List<ProfitLossProductBatch> listForSap(SapOrderRequest sapOrderRequest);
+
+    List<ProfitLossProductBatch> getBatchListByOrderCode(@Param("skuCode") String skuCode,
+                                                         @Param("orderCode") String orderCode,
+                                                         @Param("lineCode") Long lineCode);
 }

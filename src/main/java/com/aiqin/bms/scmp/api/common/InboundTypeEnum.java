@@ -17,6 +17,7 @@ public enum InboundTypeEnum {
     MOVEMENT((byte)4,"移库"),
     SUPERVISORY_WAREHOUSE_INBOUND((byte)5,"监管仓入库"),
     SCRAP((byte)6,"报废");
+//    PROFIT_LOSS((byte)7,"报溢");    // 损溢没有出入库
     private byte code;
     private String name;
     InboundTypeEnum(byte code, String name){

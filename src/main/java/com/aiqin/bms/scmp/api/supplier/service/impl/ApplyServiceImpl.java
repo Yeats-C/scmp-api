@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.DetailApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.RequsetParamReqVo;
@@ -43,6 +44,8 @@ public class ApplyServiceImpl implements ApplyService {
     private ApplySupplierService applySupplierService;
     @Autowired
     private ApplyContractService applyContractService;
+    @Autowired
+    private AllocationService allocationService;
 
 
     /**
@@ -143,6 +146,11 @@ public class ApplyServiceImpl implements ApplyService {
             case "4":
                 respVo = applyContractService.getInfoByForm(requsetParamReqVo.getFormNo());
                 break;
+            case "5":
+                Long idByFormNo = allocationService.getIdByFormNo(requsetParamReqVo.getFormNo());
+                respVo = new DetailRequestRespVo();
+                respVo.setId(idByFormNo);
+            break;
             default:
                 throw new GroundRuntimeException("请选择功能项");
         }

@@ -57,8 +57,8 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
         outboundReqVo.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
         outboundReqVo.setWarehouseCode(warehouseByCode.getWarehouseCode());
         outboundReqVo.setWarehouseName(warehouseByCode.getWarehouseName());
-        outboundReqVo.setSupplierCode(null);
-        outboundReqVo.setSupplierName(null);
+//        outboundReqVo.setSupplierCode(null);
+//        outboundReqVo.setSupplierName(null);
         outboundReqVo.setConsignee(warehouseByCode.getContact());
         outboundReqVo.setConsigneeNumber(warehouseByCode.getPhone());
         outboundReqVo.setConsigneeRate(null);
@@ -111,7 +111,9 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             reqVo1.setCreateTime(record.getCreateTime());
             reqVo1.setUpdateBy(record.getUpdateBy());
             reqVo1.setUpdateTime(record.getUpdateTime());
-            reqVo1.setLinenum(record.getLineNum().longValue());
+            if(record.getLineNum() != null){
+                reqVo1.setLinenum(record.getLineNum().longValue());
+            }
             preInboundNum += record.getQuantity().intValue();
             preInboundMainNum += record.getQuantity().intValue();
             preTaxAmount = record.getTaxAmount().add(preTaxAmount);
@@ -124,16 +126,20 @@ public class AllocationOrderToOutboundConverter implements Converter<AllocationD
             OutboundBatch batch = new OutboundBatch();
             batch.setSkuCode(batch1.getSkuCode());
             batch.setSkuName(batch1.getSkuName());
-            batch.setOutboundBatchCode(batch1.getCallInBatchNumber());
-            batch.setManufactureTime(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
+            batch.setBatchCode(batch1.getCallInBatchNumber());
+          //  batch.setProductDate(Objects.nonNull(batch1.getProductDate())?DateUtils.toDate(batch1.getProductDate()):null);
+            batch.setProductDate(Objects.nonNull(batch1.getProductDate())?batch1.getProductDate():null);
             batch.setBatchRemark(batch.getBatchRemark());
-            batch.setPreQty(batch1.getQuantity().longValue());
-            batch.setCreateBy(batch1.getCreateBy());
+            batch.setTotalCount(batch1.getQuantity().longValue());
+            batch.setCreateByName(batch1.getCreateBy());
             batch.setCreateTime(batch1.getCreateTime());
-            batch.setUpdateBy(batch1.getUpdateBy());
+            batch.setUpdateByName(batch1.getUpdateBy());
             batch.setUpdateTime(batch1.getUpdateTime());
-            batch.setLineNum(batch1.getLineNum().longValue());
+            batch.setLineCode(batch1.getLineNum().longValue());
             outboundBatchReqVos.add(batch);
+            if(batch1.getSupplierCode() != null){
+                outboundReqVo.setSupplierCode(batch1.getSupplierCode());
+            }
         }
         outboundReqVo.setPreOutboundNum(preInboundNum);
         outboundReqVo.setPreMainUnitNum(preInboundMainNum);

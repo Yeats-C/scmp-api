@@ -33,7 +33,7 @@
   </sql>
 
   <sql id="Allocation_Column_List">
-    a.id, a.allocation_code, a.sku_code, a.sku_name, a.category, a.brand, a.color, a.specification, a.model,
+    a.id, a.allocation_code, a.sku_code sku_code, a.sku_name sku_name, a.category, a.brand, a.color, a.specification, a.model,
     a.unit, a.classes, a.`type`, a.tax, a.tax_price, a.quantity, a.tax_amount,
     a.del_flag, a.create_time, a.create_by, a.update_time, a.update_by, a.picture_url, a.line_num,
     c.pra_outbound_main_num callout_quantity,c.pra_tax_amount callout_tax_amount,
@@ -379,5 +379,28 @@
       picture_url = #{pictureUrl,jdbcType=VARCHAR},
       line_num = #{lineNum,jdbcType=BIGINT}
     where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="selectQuantityBySkuCodeAndSource" resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductResVo">
+    select
+    quantity
+    from allocation_product
+    where
+    allocation_code = #{allocationCode, jdbcType=VARCHAR}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
+    and line_num = #{lineCode, jdbcType=BIGINT}
+  </select>
+  <update id="updateQuantityBySkuCodeAndSource">
+     update allocation_product
+    set callout_actual_total_count = #{quantity,jdbcType=BIGINT}
+     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+     and sku_code = #{skuCode,jdbcType=VARCHAR}
+     and line_num = #{lineNum,jdbcType=VARCHAR}
+  </update>
+  <update id="updateQuantityBySkuCodeAndSourceIn">
+     update allocation_product
+    set callin_actual_total_count = #{quantity,jdbcType=BIGINT}
+     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+     and sku_code = #{skuCode,jdbcType=VARCHAR}
+     and line_num = #{lineNum,jdbcType=VARCHAR}
   </update>
 </mapper>

@@ -2,8 +2,10 @@ package com.aiqin.bms.scmp.api.product.mapper;
 
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationProductToOutboundVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationProductBatchResVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -40,5 +42,16 @@ public interface AllocationProductBatchMapper {
      * @return
      */
     List<AllocationProductToOutboundVo>selectByPictureUrlAllocationCode(String allocationCode);
+
+    // 查看表里是否存在该条数据
+    Integer selectCountByCode(@Param("allocationCode") String allocationCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+
+    void updateByBatch(AllocationBatchRequest detail);
+
+    void updateByBatchIn(AllocationBatchRequest detail);
+
+    AllocationProductBatch selectAllocationOutByCode(@Param("inboundOderCode") String inboundOderCode,
+                                   @Param("skuCode") String skuCode,
+                                   @Param("lineCode") int lineCode);
 }
 

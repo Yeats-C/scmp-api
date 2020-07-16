@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.purchase.domain.PurchaseBatch">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="purchase_oder_code" jdbcType="VARCHAR" property="purchaseOderCode" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
+    <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="product_date" jdbcType="VARCHAR" property="productDate" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
+    <result column="actual_total_count" jdbcType="BIGINT" property="actualTotalCount" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
+    <result column="line_code" jdbcType="INTEGER" property="lineCode" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code, 
+    supplier_name, batch_remark, product_date, be_overdue_date, total_count, actual_total_count,
+    location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name, 
+    update_by_name
+  </sql>
+  <insert id="insertAll">
+    insert into purchase_batch (purchase_oder_code, batch_code, batch_info_code, sku_code, sku_name,
+      supplier_code, supplier_name, batch_remark, product_date, be_overdue_date, total_count,
+      actual_total_count, location_code, line_code, create_time, update_time, create_by_id,
+      update_by_id, create_by_name, update_by_name) values
+    <foreach collection="list" index="index" item="item" separator=",">
+     (#{item.purchaseOderCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
+      #{item.batchInfoCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR}, #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.productDate,jdbcType=VARCHAR}, #{item.beOverdueDate,jdbcType=VARCHAR}, #{item.totalCount,jdbcType=BIGINT},
+      #{item.actualTotalCount,jdbcType=BIGINT}, #{item.locationCode,jdbcType=VARCHAR}, #{item.lineCode,jdbcType=INTEGER},
+      now(), now(), #{item.createById,jdbcType=VARCHAR}, #{item.updateById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <update id="update">
+    update purchase_batch
+    <set>
+      <if test="batchInfoCode != null">
+        batch_info_code = #{batchInfoCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="skuName != null">
+        sku_name = #{skuName,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCode != null">
+        supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
+      </if>
+      <if test="batchRemark != null">
+        batch_remark = #{batchRemark,jdbcType=VARCHAR},
+      </if>
+      <if test="productDate != null">
+        product_date = #{productDate,jdbcType=VARCHAR},
+      </if>
+      <if test="beOverdueDate != null">
+        be_overdue_date = #{beOverdueDate,jdbcType=VARCHAR},
+      </if>
+      <if test="totalCount != null">
+        total_count = #{totalCount,jdbcType=BIGINT},
+      </if>
+      <if test="actualTotalCount != null">
+        actual_total_count = #{actualTotalCount,jdbcType=BIGINT},
+      </if>
+      <if test="locationCode != null">
+        location_code = #{locationCode,jdbcType=VARCHAR},
+      </if>
+      <if test="lineCode != null">
+        line_code = #{lineCode,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
+      <if test="updateById != null">
+        update_by_id = #{updateById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateByName != null">
+        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <select id="purchaseInfo" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
+  </select>
+  <select id="purchaseBatchList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
+  </select>
+  <select id="purchaseBatchListBySap" resultType="com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch">
+    select
+    purchase_oder_code purchaseOrderCode, batch_code batchNo, batch_info_code batchInfoCode, sku_code skuCode,
+    sku_name skuName, supplier_code supplierCode, supplier_name supplierName, batch_remark batchRemark,
+    product_date productDate, actual_total_count actualTotalCount, location_code locationCode, line_code lineCode
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
+  </select>
+  <select id="list" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
+  </select>
+  <select id="listCount" resultType="java.lang.Integer">
+    select count(1)
+    from purchase_batch
+    where purchase_oder_code = #{purchaseOrderCode,jdbcType=VARCHAR}
+  </select>
+</mapper>

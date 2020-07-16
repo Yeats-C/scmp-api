@@ -95,7 +95,7 @@ public class AllocationItemRespVo {
     private Long price;
 
     @ApiModelProperty("库存")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long stockNum;
 
     @ApiModelProperty("数量")

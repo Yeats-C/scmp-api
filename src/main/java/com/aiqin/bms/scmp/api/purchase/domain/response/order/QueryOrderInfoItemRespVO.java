@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.response.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -97,4 +98,16 @@ public class QueryOrderInfoItemRespVO {
 
     @ApiModelProperty("实际分销单价")
     private BigDecimal actualPrice;
+
+    @JsonProperty("supplier_code")
+    @ApiModelProperty("供应商编码")
+    private String supplierCode;
+
+    @JsonProperty("supplier_name")
+    @ApiModelProperty("供应商名称")
+    private String supplierName;
+
+    @JsonProperty("tax")
+    @ApiModelProperty("税率")
+    private BigDecimal tax;
 }

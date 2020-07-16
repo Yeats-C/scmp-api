@@ -3,18 +3,17 @@ package com.aiqin.bms.scmp.api.product.service;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
+import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Allocation;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
-import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
 
@@ -44,6 +43,8 @@ public interface AllocationService extends BaseService {
      * @return
      */
     Long save(AllocationReqVo vo);
+
+    void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest);
 
     /**
      * 撤销调拨单转化实体
@@ -135,17 +136,23 @@ public interface AllocationService extends BaseService {
     /**
      *  根据批次号和sku编码查询对应库存数量
      * @param skuCode
-     * @param batchCode
+     * @param batchInfoCode
      * @return
      */
-    StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchCode);
+    StockBatch getNumberByBatchAndSkuCode(String skuCode, String batchInfoCode);
 
     /**
      *
      * @param m
      * @return
      */
-    BasePage<ManualChoseProductReq> getManualChoseProduct(ManualChoseProductReq m);
+    BasePage<ManualChoseProductRespVo> getManualChoseProduct(ManualChoseProductReq m);
 
-    int updateWmsStatus(Byte status, String allocationCode);
+    int updateWmsStatus(String allocationCode);
+
+    /** 调拨出库wms回传 */
+    HttpResponse allocationWms(AllocationRequest request);
+
+    /** 移库调用wms */
+    HttpResponse movementWms(AllocationDTO allocation, Allocation allocation1, List<AllocationProductResVo> aProductLists, List<AllocationProductBatchResVo> aProductBatchLists);
 }

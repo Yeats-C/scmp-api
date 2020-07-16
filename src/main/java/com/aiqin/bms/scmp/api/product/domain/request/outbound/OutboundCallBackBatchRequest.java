@@ -27,14 +27,22 @@ public class OutboundCallBackBatchRequest {
     @JsonProperty("batch_code")
     private String batchCode;
 
+    @ApiModelProperty(value="批次编号")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
-    private Date productDate;
+ //   @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
+    private String productDate;
+
+    @ApiModelProperty(value="过期日期")
+    @JsonProperty("be_overdue_date")
+    private String beOverdueDate;
 
     @ApiModelProperty("销售数量")
-    @JsonProperty("product_count")
-    private Long productCount;
+    @JsonProperty("total_count")
+    private Long totalCount;
 
     @ApiModelProperty("实际销售数量")
     @JsonProperty("actual_total_count")

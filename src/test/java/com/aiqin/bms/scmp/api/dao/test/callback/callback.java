@@ -169,8 +169,8 @@ public class callback extends SpringBootTestContext {
         batch1.setActualTotalCount(1L);
         batch1.setBatchCode("77777");
         batch1.setBatchRemark("AAA");
-        batch1.setProductCount(1L);
-        batch1.setProductDate(new Date());
+        batch1.setTotalCount(1L);
+        batch1.setProductDate(new Date().toString());
         batchList.add(batch1);
 //        OutboundCallBackBatchRequest batch2 = new OutboundCallBackBatchRequest();
 //        batch2.setSkuCode("000002");

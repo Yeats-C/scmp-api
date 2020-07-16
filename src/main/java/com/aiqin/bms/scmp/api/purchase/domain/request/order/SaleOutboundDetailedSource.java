@@ -12,66 +12,48 @@ import java.util.Date;
 @ApiModel(value = "销售出库推送源数据明细")
 @Data
 public class SaleOutboundDetailedSource implements Serializable {
-    /****/
-    @ApiModelProperty(value="Sku编码")
-    @JsonProperty("sku")
-    private String sku;
 
-    @ApiModelProperty(value="数量")
-    @JsonProperty("qty")
-    private Integer qty;
+    @ApiModelProperty(value="行号")
+    @JsonProperty("line_code")
+    private String lineCode;
 
-    @ApiModelProperty(value="单价")
-    @JsonProperty("price")
-    private Double price;
+    @ApiModelProperty(value="SKU编号")
+    @JsonProperty("sku_code")
+    private String skuCode;
 
-    @ApiModelProperty(value="实际金额")
-    @JsonProperty("actual_amount")
-    private Double actualAmount;
+    @ApiModelProperty(value="SKU名称")
+    @JsonProperty("sku_name")
+    private String skuName;
 
-    @ApiModelProperty(value="批次编码")
-    @JsonProperty("batchCode")
-    private String batchcode;
+    @ApiModelProperty(value="最小单位数量")
+    @JsonProperty("product_count")
+    private String productCount;
 
-    @ApiModelProperty(value = "备用字段1 销售单号")
-    @JsonProperty("gwf1")
-    private String gwf1;
+    @ApiModelProperty(value="分销单价")
+    @JsonProperty("product_amount")
+    private String productAmount;
 
-    @ApiModelProperty(value = "备用字段2 Sku行号")
-    @JsonProperty("gwf2")
-    private String gwf2;
-
-    @ApiModelProperty(value = "备用字段3 颜色")
-    @JsonProperty("gwf3")
-    private String gwf3;
-
-    @ApiModelProperty(value = "备用字段4 尺码")
-    @JsonProperty("gwf4")
-    private String gwf4;
-
-    @ApiModelProperty(value = "备用字段5 分销单位")
-    @JsonProperty("gwf5")
-    private String gwf5;
-
-    /**加上的**/
-
-    /*@ApiModelProperty(value="销售单号")
-    @JsonProperty("sale_num")
-    private String saleNum;
-
-    @ApiModelProperty(value="Sku行号")
-    @JsonProperty("line_num")
-    private String lineNum;
+    @ApiModelProperty(value="分销总价")
+    @JsonProperty("actual_total_product_amount")
+    private String actualTotalProductAmount;
 
     @ApiModelProperty(value="颜色")
-    @JsonProperty("sku_colour")
-    private String skuColour;
+    @JsonProperty("color_name")
+    private String colorName;
 
-    @ApiModelProperty(value="尺码")
-    @JsonProperty("sku_size")
-    private String skuSzie;
+    @ApiModelProperty(value="型号")
+    @JsonProperty("model_number")
+    private String modelNumber;
 
-    @ApiModelProperty(value="分销单位")
-    @JsonProperty("distribution_unit")
-    private String distributionUnit;*/
+    @ApiModelProperty(value="库存单位编号")
+    @JsonProperty("unit_code")
+    private String unitCode;
+
+    @ApiModelProperty(value="库存单位名称")
+    @JsonProperty("unit_name")
+    private String unitName;
+
+    @ApiModelProperty(value="SKU条码")
+    @JsonProperty("sku_bar_code")
+    private String skuBarCode;
 }

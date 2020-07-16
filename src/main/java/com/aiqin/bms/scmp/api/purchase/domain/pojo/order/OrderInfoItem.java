@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.order;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -113,4 +114,13 @@ public class OrderInfoItem {
 
     @ApiModelProperty("税率")
     private BigDecimal tax;
+
+    @ApiModelProperty(value = "供应商编码")
+    private String supplierCode;
+
+    @ApiModelProperty(value = "供应商名称")
+    private String supplierName;
+
+    @ApiModelProperty(value="商品唯一码")
+    private String uniqueCode;
 }

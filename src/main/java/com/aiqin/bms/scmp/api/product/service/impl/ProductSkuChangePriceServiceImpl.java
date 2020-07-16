@@ -111,7 +111,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         reqVO.setCompanyName(currentAuthToken.getCompanyName());
         reqVO.setCreateBy(currentAuthToken.getPersonName());
         reqVO.setCreateTime(new Date());
-        //校验参数
+        //校验参数  校验数据是否重复
         validateParam(reqVO);
         //验重
 //        StringBuilder errorMsg = checkDataRepeat(reqVO);
@@ -148,15 +148,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         List<ProductSkuChangePriceInfoReqVO> infoLists = reqVO.getInfoLists();
         for (ProductSkuChangePriceInfoReqVO vo : infoLists) {
             PriceMeasurementReqVO temp = new PriceMeasurementReqVO();
-            if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())) {
-                temp.setPrice(vo.getTaxCost());
-            }else if (CommonConstant.SALE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
-                temp.setPrice(vo.getNewPrice());
-            }else if(CommonConstant.TEMPORARY_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
-                temp.setPrice(vo.getTemporaryPrice());
-            }else {
-                throw new BizException(ResultCode.DATA_ERROR);
-            }
+//            if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())) {
+//                temp.setPrice(vo.getTaxCost());
+//            }else if (CommonConstant.SALE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+//                temp.setPrice(vo.getNewPrice());
+//            }else if(CommonConstant.TEMPORARY_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+//                temp.setPrice(vo.getTemporaryPrice());
+//            }else {
+//                throw new BizException(ResultCode.DATA_ERROR);
+//            }
+            temp.setPrice(vo.getNewPrice());
             temp.setNewGrossProfitMargin(vo.getNewGrossProfitMargin());
             temp.setOldGrossProfitMargin(vo.getOldGrossProfitMargin());
             temp.setSkuCode(vo.getSkuCode());
@@ -174,21 +175,21 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
      */
     private void validateParam(ProductSkuChangePriceReqVO reqVO) {
         Set checkRepeat = Sets.newLinkedHashSet();
-        if(CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
-            //采购变价 Sku+供应商
-            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
-                if(!checkRepeat.add(vo.getSkuCode()+vo.getSupplierCode())){
-                    throw new BizException(ResultCode.DATA_REPEAT);
-                }
-            }
-        }else {
-            //sku+价格项目+仓库
-            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
-                if(!checkRepeat.add(vo.getSkuCode()+vo.getPriceItemCode()+vo.getTransportCenterCode()+vo.getWarehouseCode()+vo.getWarehouseBatchNumber())){
-                    throw new BizException(ResultCode.DATA_REPEAT);
-                }
-            }
-        }
+//        if(CommonConstant.PURCHASE_CHANGE_PRICE.equals(reqVO.getChangePriceType())){
+//            //采购变价 Sku+供应商
+//            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
+//                if(!checkRepeat.add(vo.getSkuCode()+vo.getSupplierCode())){
+//                    throw new BizException(ResultCode.DATA_REPEAT);
+//                }
+//            }
+//        }else {
+//            //sku+价格项目+仓库
+//            for (ProductSkuChangePriceInfoReqVO vo : reqVO.getInfoLists()) {
+//                if(!checkRepeat.add(vo.getSkuCode()+vo.getPriceItemCode()+vo.getTransportCenterCode()+vo.getWarehouseCode()+vo.getWarehouseBatchNumber())){
+//                    throw new BizException(ResultCode.DATA_REPEAT);
+//                }
+//            }
+//        }
     }
     /**
      * 验证数据重复性
@@ -458,18 +459,18 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public void saveOfficial(WorkFlowCallbackVO newVO, ProductSkuChangePriceDTO dto){
         //根据价格作不同的处理
         //判断类型
-        dto.setChangePriceType("2");
-        switch (dto.getChangePriceType()) {
+//        dto.setChangePriceType("2");
+//        switch (dto.getChangePriceType()) {
 //            case CommonConstant.PURCHASE_CHANGE_PRICE:
 //                 savePurchaseChangePrice(newVO, dto);
 //                break;
-            case CommonConstant.SALE_CHANGE_PRICE:
+//            case CommonConstant.SALE_CHANGE_PRICE:
                 if(dto.getBeContainArea() == 0) {
                     saveSaleChangePrice(newVO, dto);
                 }else {
                     saveSaleAreaChangePrice(newVO, dto);
                 }
-                break;
+//                break;
 //            case CommonConstant.TEMPORARY_CHANGE_PRICE:
 //                if(dto.getBeContainArea() == 0) {
 //                    saveTemporaryChangePrice(newVO, dto);
@@ -483,9 +484,9 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 //            case CommonConstant.TEMPORARY_AREA_CHANGE_PRICE:
 //                saveTemporaryAreaChangePrice(newVO, dto);
 //                break;
-            default:
-                throw new BizException(ResultCode.NOT_HAVE_PARAM);
-        }
+//            default:
+//                throw new BizException(ResultCode.NOT_HAVE_PARAM);
+//        }
         changeStatus(newVO, dto);
     }
     @Override

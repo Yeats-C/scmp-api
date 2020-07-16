@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.DictionaryEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.*;
+import com.aiqin.bms.scmp.api.product.domain.E8OrderCreate;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
@@ -14,10 +16,11 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.*;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
+import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.mapper.*;
-import com.aiqin.bms.scmp.api.product.service.ProductCommonService;
-import com.aiqin.bms.scmp.api.product.service.SkuService;
-import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
@@ -25,32 +28,47 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBat
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
 import com.aiqin.bms.scmp.api.purchase.domain.request.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersSupplyDetailRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.OrderTransportRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.*;
+import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
+import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.DateUtils;
+import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
@@ -59,7 +77,9 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.dao.DataAccessException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -175,6 +195,24 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
     @Resource
     private OrderInfoLogMapper orderInfoLogMapper;
+    @Resource
+    private OutboundService outboundService;
+    @Resource
+    private InboundService inboundService;
+    @Resource
+    private TransportMapper transportMapper;
+    @Resource
+    @Lazy(true)
+    private TransportService transportService;
+    @Resource
+    private TransportOrdersMapper transportOrdersMapper;
+    @Resource
+    private WarehouseDao warehouseDao;
+    @Autowired
+    @Lazy(true)
+    private SapBaseDataService sapBaseDataService;
+    @Autowired
+    private UrlConfig urlConfig;
 
     /**
      * 销售出库接口
@@ -312,8 +350,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 if (infoItem == null) {
                     throw new GroundRuntimeException(String.format("未查询到商品信息!,code:%s", supplyDetailRequest.getSkuCode()));
                 }
-                orderInfoItemProductBatch.setNum(supplyDetailRequest.getActualDeliverNum());
-                orderInfoItemProductBatch.setActualDeliverNum(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setTotalCount(supplyDetailRequest.getActualDeliverNum());
+                orderInfoItemProductBatch.setActualTotalCount(supplyDetailRequest.getActualDeliverNum());
                 orderInfoItemProductBatch.setOrderCode(request.getOrderCode());
                 orderInfoItemProductBatch.setSupplierCode(supplyDetailRequest.getSupplyCode());
                 orderInfoItemProductBatch.setSupplierName(supplyCompany.getSupplyName());
@@ -402,13 +440,13 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(outboundOderCode));
         int i = outboundDao.insertSelective(outbound);
         LOGGER.info("出库主表保存结果:{}", i);
-        int j = outboundProductDao.insertBatch(outboundProducts);
+        int j = outboundProductDao.insertAll(outboundProducts);
         LOGGER.info("出库商品保存结果:{}", j);
         List<OutboundBatch> batchList = stockReqVO.getOutboundBatches();
         if(CollectionUtils.isNotEmpty(batchList)){
             batchList.stream().forEach(outBoundBatch -> outBoundBatch.setOutboundOderCode(outboundOderCode));
             //添加供应商对应的商品信息
-            Integer count = outboundBatchDao.insertList(batchList);
+            Integer count = outboundBatchDao.insertAll(batchList);
             LOGGER.info("插入出库单供应商对应的商品信息返回结果:{}", count);
         }
         //批次商品暂时没有
@@ -431,7 +469,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         //操作时间 签收时间 等于回单时间 退货的商品对应供应商信息取入库单据相关
         //查询退货单是否存在
         LOGGER.info("耘链开始调用退货单，入参{}" + request);
-        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode1(request.getReturnOrderCode());
+        ReturnOrderInfo response = returnOrderInfoMapper.selectByCode(request.getReturnOrderCode());
         if (response != null) {
             LOGGER.info("耘链退货单单据已存在");
             return HttpResponse.failure(ResultCode.ORDER_INFO_IS_HAVE);
@@ -488,11 +526,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 }
                 //订单类型
                 if (dictionaryInfoMap.containsKey(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType())) {
-                    returnOrderInfo.setOrderTypeCode(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue()));
+                    returnOrderInfo.setOrderType(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.ORDER_TYPE.getCode() + request.getOrderType()).getValue()));
                 }
                 //退货类型
                 if (dictionaryInfoMap.containsKey(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType())) {
-                    returnOrderInfo.setReturnOrderTypeCode(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType()).getValue()));
+                    returnOrderInfo.setReturnOrderType(Integer.valueOf(dictionaryInfoMap.get(DictionaryEnum.RETURN_TYPE.getCode() + request.getReturnOrderType()).getValue()));
                 }
                 if (priceChannel != null) {
                     returnOrderInfo.setOrderOriginal(priceChannel.getPriceChannelCode());
@@ -547,7 +585,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     detailList.add(returnOrderInfoItem);
                 }
                 //实际金额 数量
-                returnOrderInfo.setActualProductNum(request.getProductNum());
+                returnOrderInfo.setActualProductCount(request.getProductNum());
                 returnOrderInfo.setActualReturnOrderAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setProductChannelTotalAmount(request.getReturnOrderAmount());
                 returnOrderInfo.setActualProductChannelTotalAmount(request.getReturnOrderAmount());
@@ -662,7 +700,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     inboundBatchReqVo.setSkuCode(returnOrderInfoItem.getSkuCode());
                     inboundBatchReqVo.setSupplierCode(returnOrderInfoItem.getSupplyCode());
                     inboundBatchReqVo.setSupplierName(returnOrderInfoItem.getSupplyName());
-                    inboundBatchReqVo.setPraQty(returnOrderInfoItem.getNum());
+                    inboundBatchReqVo.setActualTotalCount(returnOrderInfoItem.getNum());
                     inboundBatchReqVo.setCreateBy(reqVo.getCreateByName());
                     inboundBatchReqVo.setUpdateBy(reqVo.getUpdateByName());
                     batchList.add(inboundBatchReqVo);
@@ -981,9 +1019,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             outboundBatch.setSkuCode(batch.getSkuCode());
             outboundBatch.setSupplierCode(batch.getSupplierCode());
             outboundBatch.setSupplierName(batch.getSupplierName());
-            outboundBatch.setPraQty(batch.getQuantity());
-            outboundBatch.setCreateBy(allocation.getCreateBy());
-            outboundBatch.setUpdateBy(allocation.getUpdateBy());
+//            outboundBatch.setPraQty(batch.getQuantity());
+//            outboundBatch.setCreateBy(allocation.getCreateBy());
+//            outboundBatch.setUpdateBy(allocation.getUpdateBy());
             batchList.add(outboundBatch);
         }
         OrderProductSkuResponse orderProductSkuResponse;
@@ -1085,7 +1123,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             inboundBatchReqVo.setSkuCode(batch.getSkuCode());
             inboundBatchReqVo.setSupplierCode(batch.getSupplierCode());
             inboundBatchReqVo.setSupplierName(batch.getSupplierName());
-            inboundBatchReqVo.setPraQty(batch.getQuantity());
+            inboundBatchReqVo.setActualTotalCount(batch.getQuantity());
             inboundBatchReqVo.setCreateBy(allocation.getCreateBy());
             inboundBatchReqVo.setUpdateBy(allocation.getUpdateBy());
             batchList.add(inboundBatchReqVo);
@@ -1189,6 +1227,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             List<String> skuList = request.getDetailList().stream().map(ProfitLossDetailRequest::getSkuCode).collect(Collectors.toList());
             List<OrderProductSkuResponse> productSkuList = productSkuDao.selectStockSkuInfoList(skuList);
             Map<String, OrderProductSkuResponse> productSkuResponseMap = productSkuList.stream().collect(Collectors.toMap(OrderProductSkuResponse::getSkuCode, Function.identity()));
+            // 报损报溢记录出入库
+            OutboundReqVo outboundReqVo = new OutboundReqVo();
+            outboundService.saveOutbound(outboundReqVo);
+            InboundReqSave inboundReqSave = new InboundReqSave();
+            inboundService.saveInbound2(inboundReqSave);
             //报溢数量 正数值
             Long profitQuantity;
             //报损数量 负数值
@@ -1253,10 +1296,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     }
                     //增加批次供应商的信息
                     profitLossProductBatch = new ProfitLossProductBatch();
-                    profitLossProductBatch.setQuantity(profitLossDetailRequest.getQuantity());
+              //      profitLossProductBatch.setLogisticsCenterCode(profitLossDetailRequest.getLogisticsCenterCode());
+              //      profitLossProductBatch.setLogisticsCenterName(profitLossDetailRequest.getLogisticsCenterName());
+              //      profitLossProductBatch.setWarehouseCode(profitLossDetailRequest.getWarehouseCode());
+              //      profitLossProductBatch.setWarehouseName(profitLossDetailRequest.getWarehouseName());
+              //      profitLossProductBatch.setQuantity(profitLossDetailRequest.getQuantity());
                     profitLossProductBatch.setSkuCode(profitLossDetailRequest.getSkuCode());
                     profitLossProductBatch.setSkuName(productSkuResponse.getProductName());
                     profitLossProductBatch.setSupplierCode(profitLossDetailRequest.getSupplyCode());
+              //      profitLossProductBatch.setBatchNumber(profitLossDetailRequest.getBatchCode());
+                    profitLossProductBatch.setCreateByName(profitLossDetailRequest.getCreateByName());
                     supplyCompany = supplyCompanyMap.get(profitLossDetailRequest.getSupplyCode());
                     if (supplyCompany == null) {
                         throw new GroundRuntimeException(String.format("未查询到供应商信息!,code:%s", profitLossDetailRequest.getSupplyCode()));
@@ -1285,14 +1334,28 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     return 0;
                 }
             }));
+//            Map<Integer, List<ProfitLossProductBatch>> groupByBatchList = batchList.stream().collect(Collectors.groupingBy(baseOrder -> {
+//                if (baseOrder.getQuantity() > 0) {
+//                    return 1;
+//                } else {
+//                    return 0;
+//                }
+//            }));
             //正值减库存
             if (groupByList.get(0) != null) {
                 //操作类型 直接减库存 4
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(4);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+               // StockChangeRequest stockChangeRequest = new StockChangeRequest();
+               // stockChangeRequest.setOperationType(4);
+               // List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+               // stockChangeRequest.setStockVoRequests(list);
+               // HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(4);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+//                List<StockBatchInfoRequest> listBatch = handleProfitLossBatchStockData(groupByBatchList.get(0), request.getOrderCode());
+//                changeStockRequest.setStockBatchList(listBatch);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:减库存异常");
                     throw new GroundRuntimeException("dl回调:减库存异常");
@@ -1300,11 +1363,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             if (groupByList.get(1) != null) {
                 //操作类型 直接加库存 10
-                StockChangeRequest stockChangeRequest = new StockChangeRequest();
-                stockChangeRequest.setOperationType(10);
-                List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
-                stockChangeRequest.setStockVoRequests(list);
-                HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+              //  StockChangeRequest stockChangeRequest = new StockChangeRequest();
+              //  stockChangeRequest.setOperationType(10);
+              //  List<StockVoRequest> list = handleProfitLossStockData(groupByList.get(1), request.getOrderCode());
+              //  stockChangeRequest.setStockVoRequests(list);
+              //  HttpResponse httpResponse = stockService.changeStock(stockChangeRequest);
+                ChangeStockRequest changeStockRequest = new ChangeStockRequest();
+                changeStockRequest.setOperationType(6);
+                List<StockInfoRequest> list = handleProfitLossStockData(groupByList.get(0), request.getOrderCode());
+                changeStockRequest.setStockList(list);
+//                List<StockBatchInfoRequest> listBatch = handleProfitLossBatchStockData(groupByBatchList.get(0), request.getOrderCode());
+//                changeStockRequest.setStockBatchList(listBatch);
+                HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                 if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                     LOGGER.error("dl回调:加库存异常");
                     throw new GroundRuntimeException("dl回调:加库存异常");
@@ -1318,6 +1388,54 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
     }
 
+    private List<StockBatchInfoRequest> handleProfitLossBatchStockData(List<ProfitLossProductBatch> profitLossProductBatches, String sourceOrderCode) {
+        List<StockBatchInfoRequest> list = Lists.newArrayList();
+        StockBatchInfoRequest stockBatchInfoRequest;
+        for (ProfitLossProductBatch itemReqVo : profitLossProductBatches) {
+            stockBatchInfoRequest = new StockBatchInfoRequest();
+            stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
+            stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
+//            stockBatchInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+//            stockBatchInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+//            stockBatchInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+//            stockBatchInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+//            stockBatchInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
+            stockBatchInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockBatchInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockBatchInfoRequest.setDocumentType(11);
+            stockBatchInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
+            stockBatchInfoRequest.setSourceDocumentType(11);
+            stockBatchInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockBatchInfoRequest.setOperatorName(itemReqVo.getCreateByName());
+            list.add(stockBatchInfoRequest);
+        }
+        return list;
+    }
+
+    private List<StockInfoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
+        List<StockInfoRequest> list = Lists.newArrayList();
+        StockInfoRequest stockInfoRequest;
+        for (ProfitLossDetailRequest itemReqVo : profitLossProductList) {
+            stockInfoRequest = new StockInfoRequest();
+            stockInfoRequest.setCompanyCode(COMPANY_CODE);
+            stockInfoRequest.setCompanyName(COMPANY_NAME);
+            stockInfoRequest.setTransportCenterCode(itemReqVo.getLogisticsCenterCode());
+            stockInfoRequest.setTransportCenterName(itemReqVo.getLogisticsCenterName());
+            stockInfoRequest.setWarehouseCode(itemReqVo.getWarehouseCode());
+            stockInfoRequest.setWarehouseName(itemReqVo.getWarehouseName());
+            stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
+            stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
+            stockInfoRequest.setSkuName(itemReqVo.getSkuName());
+            stockInfoRequest.setDocumentType(11);
+            stockInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
+            stockInfoRequest.setSourceDocumentType(11);
+            stockInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockInfoRequest.setOperatorName(itemReqVo.getCreateByName());
+            list.add(stockInfoRequest);
+        }
+        return list;
+    }
+/*
     private List<StockVoRequest> handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode) {
         List<StockVoRequest> list = Lists.newArrayList();
         StockVoRequest stockVoRequest;
@@ -1340,7 +1458,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             list.add(stockVoRequest);
         }
         return list;
-    }
+    }*/
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -1365,6 +1483,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
+        request.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
+        request.setOrderTypeCode(response.getOrderTypeCode());
+        request.setOrderId(response.getOrderOriginal());
         List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
         if (CollectionUtils.isEmpty(detailList)) {
             LOGGER.info("销售单回传的详情信息缺失");
@@ -1385,6 +1506,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         for (OutboundCallBackDetailRequest detail : detailList) {
             orderInfoItem = new OrderInfoItem();
             orderInfoItem.setActualDeliverNum(detail.getActualProductCount());
+            orderInfoItem.setUniqueCode(detail.getUniqueCode());
             // 根据单价计算总价
             key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
             OrderInfoItem item = product.get(key);
@@ -1401,6 +1523,28 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
             actualTotalChannelAmount = actualTotalChannelAmount.add(item.getChannelUnitPrice());
             actualTotalProductAmount = actualTotalProductAmount.add(item.getPrice());
+            // 自动批次管理，wms回传添加销售单的批次
+//            if(request.getBatchManage().equals(0)){
+//                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
+//                OrderInfoItemProductBatch orderBatch = new OrderInfoItemProductBatch();
+//                orderBatch.setOrderCode(response.getOrderCode());
+//                String batchCode = DateUtils.currentDate().replaceAll("-","");
+//                orderBatch.setBatchCode(batchCode);
+//                String batchInfoCode = item.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
+//                        batchCode + "_" + response.getSupplierCode() + "_" +
+//                        item.getPrice().stripTrailingZeros().toPlainString();
+//                orderBatch.setBatchInfoCode(batchInfoCode);
+//                orderBatch.setSkuCode(item.getSkuCode());
+//                orderBatch.setSkuName(item.getSkuName());
+//                orderBatch.setSupplierCode(response.getSupplierCode());
+//                orderBatch.setSupplierName(response.getSupplierName());
+//                orderBatch.setProductDate(DateUtils.currentDate());
+//                orderBatch.setTotalCount(item.getNum());
+//                orderBatch.setActualTotalCount(detail.getActualProductCount());
+//                orderBatch.setLineCode(detail.getLineCode());
+//                batchList.add(orderBatch);
+//                orderInfoItemProductBatchDao.insertBatch(batchList);
+//            }
         }
         // 更新订单信息
         orderInfo.setActualProductChannelTotalAmount(actualTotalChannelAmount);
@@ -1428,42 +1572,124 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 request.getPersonName(), new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
         orderInfoLogMapper.insert(orderInfoLog);
         // 根据回传信息，更新销售单的实际发货批次信息
-        if(CollectionUtils.isNotEmpty(request.getBatchList())){
+        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0 && !request
+                .getBatchManage().equals(Global.BATCH_MANAGE_0)){
             List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
             OrderInfoItemProductBatch productBatch;
+            List<OrderInfoItemProductBatch> batchListUpdate = Lists.newArrayList();
             for (OutboundCallBackBatchRequest batch : request.getBatchList()){
                 productBatch = new OrderInfoItemProductBatch();
                 productBatch.setOrderCode(request.getOderCode());
                 productBatch.setSkuCode(batch.getSkuCode());
                 productBatch.setSkuName(batch.getSkuName());
-                productBatch.setNum(batch.getProductCount());
-                productBatch.setActualDeliverNum(batch.getActualTotalCount());
-                productBatch.setProductTime(batch.getProductDate());
-                productBatch.setBatchNumber(batch.getBatchCode());
+                if(batch.getActualTotalCount() != null){
+                    productBatch.setActualTotalCount(batch.getActualTotalCount());
+                }else {
+                    productBatch.setActualTotalCount(0L);
+                }
+                productBatch.setBatchCode(batch.getBatchCode());
+                productBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                productBatch.setLineCode(batch.getLineCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
-                productBatch.setTransportCenterCode(response.getTransportCenterCode());
-                productBatch.setTransportCenterName(response.getTransportCenterName());
-                productBatch.setWarehouseCode(response.getWarehouseCode());
-                productBatch.setWarehouseName(response.getWarehouseName());
-                productBatch.setCompanyCode(response.getCompanyCode());
-                productBatch.setCompanyName(response.getCompanyName());
-                productBatch.setSupplierCode(response.getSupplierCode());
-                productBatch.setSupplierName(response.getSupplierName());
-                productBatch.setProductLineNum(batch.getLineCode());
-                batchList.add(productBatch);
+
+                Integer i = orderInfoItemProductBatchDao.selectBatchList(batch.getSkuCode(), request.getOderCode(), batch.getBatchInfoCode());
+                if(i > 0){
+                    batchListUpdate.add(productBatch);
+                }else {
+                    productBatch.setTotalCount(0L);
+                    productBatch.setCreateTime(new Date());
+                    productBatch.setCreateById(request.getPersonId());
+                    productBatch.setCreateByName(request.getPersonName());
+                    batchList.add(productBatch);
+                }
             }
-            orderInfoItemProductBatchDao.insertBatch(batchList);
+            if(CollectionUtils.isNotEmpty(batchListUpdate) && batchListUpdate.size() > 0){
+                orderInfoItemProductBatchDao.updateBatch(batchListUpdate);
+            }
+            if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+                orderInfoItemProductBatchDao.insertBatch(batchList);
+            }
         }
-        // 更新出库单
-        this.updateOutbound(request);
-        // 调用爱亲供应链的接口 回传销售单的发货等信息
-        this.updateAiqinOrder(request);
+
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
+        if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
+            // 调用爱亲供应链的接口 回传销售单的发货等信息
+            LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
+            this.updateAiqinOrder(request);
+        }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 调用dl的接口 回传销售单的发货等信息
+            LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + request);
+            this.updateDlOrder(request);
+        }else {
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
+        }
+
+        // 调用sap 传送销售单的数据给sap
+        sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
+    }
+
+    @Async
+    public void updateDlOrder(OutboundCallBackRequest request) {
+        // dl主表信息
+        EchoOrderRequest echoOrderRequest = new EchoOrderRequest();
+        echoOrderRequest.setOrderCode(request.getOderCode());
+        echoOrderRequest.setOperationTime(request.getDeliveryTime());
+        echoOrderRequest.setOperationType(3);
+        echoOrderRequest.setOperationCode(request.getPersonId());
+        echoOrderRequest.setOperationName(request.getPersonName());
+        echoOrderRequest.setOrderId(request.getOrderId());
+        // dl商品表信息
+        List<ProductRequest> productList = new ArrayList<>();
+        List<OutboundCallBackDetailRequest> detailList = request.getDetailList();
+        ProductRequest productRequest;
+        List<BatchRequest> batchList;
+        BatchRequest batchRequest;
+        for (OutboundCallBackDetailRequest detail : detailList) {
+            productRequest = new ProductRequest();
+            // 商品信息传输
+            productRequest.setLineCode(detail.getLineCode().intValue());
+            productRequest.setSkuCode(detail.getSkuCode());
+            productRequest.setSkuName(detail.getSkuName());
+            productRequest.setActualTotalCount(detail.getActualProductCount());
+
+            // dl批次表信息
+            batchList = new ArrayList<>();
+            List<OutboundCallBackBatchRequest> batchOrderList = request.getBatchList();
+            if(CollectionUtils.isNotEmpty(batchOrderList) && batchOrderList.size() > 0){
+                for (OutboundCallBackBatchRequest batchDetail: batchOrderList) {
+                    batchRequest = new BatchRequest();
+                    // 批次信息传输
+                    if(Objects.equals(detail.getSkuCode() + detail.getLineCode().toString(),
+                            batchDetail.getSkuCode() + batchDetail.getLineCode().toString())){
+                        batchRequest.setLineCode(batchDetail.getLineCode().intValue());
+                        batchRequest.setSkuCode(batchDetail.getSkuCode());
+                        batchRequest.setBatchCode(batchDetail.getBatchCode());
+                        batchRequest.setProductDate(batchDetail.getProductDate());
+                        batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
+                        batchRequest.setActualTotalCount(batchDetail.getTotalCount());
+                        batchList.add(batchRequest);
+                    }
+                }
+                productRequest.setBatchList(batchList);
+            }
+            productList.add(productRequest);
+        }
+        echoOrderRequest.setProductList(productList);
+        LOGGER.info("熙耘->DL,转化退货单回调参数：{}", JsonUtil.toJson(echoOrderRequest));
+        String url = urlConfig.WMS_API_URL + "/dl/order/echo";
+        HttpClient httpClient = HttpClient.post(url).json(echoOrderRequest).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("熙耘->DL，调用abutment-api退货单成功");
+        }else {
+            LOGGER.info("熙耘->DL，调用abutment-api退货单失败:{}", response.getMessage());
+        }
     }
 
     private void updateOutbound(OutboundCallBackRequest request){
         // 根据来源单号查询销售单
-        Outbound outbound = outboundDao.selectBySourceCode(request.getOderCode());
+        Outbound outbound = outboundDao.selectBySourceCode(request.getOderCode(), String.valueOf(OutboundTypeEnum.ORDER.getCode()));
         // 设置状态
         outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
@@ -1519,18 +1745,18 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                 outboundBatch.setSkuCode(batch.getSkuCode());
                 outboundBatch.setSkuName(batch.getSkuName());
-                outboundBatch.setOutboundBatchCode(batch.getBatchCode());
-                outboundBatch.setManufactureTime(batch.getProductDate());
+                outboundBatch.setBatchCode(batch.getBatchCode());
+                outboundBatch.setProductDate(batch.getProductDate().toString());
                 outboundBatch.setBatchRemark(batch.getBatchRemark());
-                outboundBatch.setPraQty(batch.getActualTotalCount());
-                outboundBatch.setCreateBy(request.getDeliveryPerson());
-                outboundBatch.setUpdateBy(request.getDeliveryPerson());
-                outboundBatch.setLineNum(batch.getLineCode());
+                outboundBatch.setTotalCount(batch.getActualTotalCount());
+                outboundBatch.setCreateByName(request.getDeliveryPerson());
+                outboundBatch.setUpdateByName(request.getDeliveryPerson());
+                outboundBatch.setLineCode(batch.getLineCode());
                 outboundBatchList.add(outboundBatch);
             }
-            outboundBatchDao.insertList(outboundBatchList);
+            outboundBatchDao.insertAll(outboundBatchList);
         }
-        Integer count = outboundDao.updateByPrimaryKey(outbound);
+        Integer count = outboundDao.update(outbound);
         if(count <= 0){
             LOGGER.error("发货回传失败, 出库单更新失败");
             throw new GroundRuntimeException(String.format("发货回传失败, 出库单更新失败"));
@@ -1569,6 +1795,12 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if(request == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
+        String code = IdSequenceUtils.getInstance().nextId()+"";
+        request.setDeliveryCode(code);
+        request.setCustomerCode(oi.getCustomerCode());
+        request.setCustomerName(oi.getCustomerName());
+        request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
@@ -1597,22 +1829,94 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             throw new GroundRuntimeException(String.format("更新耘链的订单的发运信息失败:%s", count));
         }
         // 回传爱亲的销售单的发运信息
-        DeliveryInfoVo info =  new DeliveryInfoVo();
-        BeanUtils.copyProperties(request, info);
-        info.setTransportStatus(0);
-        List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
-        info.setDeliveryDetail(infoList);
-        String url = orderUrl + "/purchase/delivery/info";
-        LOGGER.info("打印发运单回传爱亲数据："  + JsonUtil.toJson(info));
-        HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
-        HttpResponse response = httpClient.action().result(HttpResponse.class);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("回传爱亲供应链的发运单成功");
+        if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
+            DeliveryInfoVo info =  new DeliveryInfoVo();
+            BeanUtils.copyProperties(request, info);
+            info.setTransportStatus(0);
+            List<DeliveryDetailInfo> infoList = BeanCopyUtils.copyList(request.getDetailList(), DeliveryDetailInfo.class);
+            info.setDeliveryDetail(infoList);
+            String url = orderUrl + "/purchase/delivery/info";
+            LOGGER.info("打印发运单回传爱亲数据："  + JsonUtil.toJson(info));
+            HttpClient httpClient = HttpClient.post(url).json(info).timeout(20000);
+            HttpResponse response = httpClient.action().result(HttpResponse.class);
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("回传爱亲供应链的发运单成功");
+            }else {
+                LOGGER.error("回传爱亲供应链的发运单失败:{}", response.getMessage());
+                throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
+            }
+        }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
+            // 回传DL的销售单的发运信息
+            OrderTransportRequest orderTransportRequest = new OrderTransportRequest();
+            orderTransportRequest.setTransportCode(request.getDeliveryCode());
+            orderTransportRequest.setTransportCompanyCode(request.getTransportCompanyCode());
+            orderTransportRequest.setTransportCompanyName(request.getTransportCompanyName());
+            orderTransportRequest.setTransportCompanyNumber(request.getTransportCode());
+            orderTransportRequest.setDistributionModeCode(request.getDeliverToCode());
+            orderTransportRequest.setDistributionModeName(request.getDeliverTo());
+            orderTransportRequest.setStandardTransportAmount(request.getStandardLogisticsFee());
+            orderTransportRequest.setChooseTransportAmount(request.getAdditionalLogisticsFee());
+            orderTransportRequest.setTotalCount(request.getOrderCommodityNum());
+            orderTransportRequest.setTransportTotalCount(request.getPackingNum());
+            orderTransportRequest.setTotalVolume(request.getTotalVolume().longValue());
+            orderTransportRequest.setTotalWeight(request.getTotalWeight().longValue());
+            orderTransportRequest.setTransportCenterCode(oi.getWarehouseCode());
+            orderTransportRequest.setCreateTime(request.getTransportDate());
+            List<String> orderCodes = Lists.newArrayList();
+            for (DeliveryDetailRequest order : request.getDetailList()){
+                // 查询dl的来源单号，用来匹配dl的唯一标识
+                OrderInfo info = orderInfoMapper.selectByOrderCode2(order.getOrderCode());
+                orderCodes.add(info.getOrderOriginal());
+            }
+            orderTransportRequest.setOrderCodes(orderCodes);
+            String url = urlConfig.WMS_API_URL + "/dl/order/transport";
+            LOGGER.info("发运物流单回传DL数据："  + JsonUtil.toJson(orderTransportRequest));
+            HttpClient httpClient = HttpClient.post(url).json(orderTransportRequest).timeout(20000);
+            HttpResponse response = httpClient.action().result(HttpResponse.class);
+            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+                LOGGER.info("回传DL的物流单成功");
+            }else {
+                LOGGER.error("回传DL的物流单失败:{}", response.getMessage());
+                throw new GroundRuntimeException(String.format("回传DL的物流单失败:%s",response.getMessage()));
+            }
         }else {
-            LOGGER.error("回传爱亲供应链的发运单失败:{}", response.getMessage());
-            throw new GroundRuntimeException(String.format("回传爱亲供应链的发运单失败:%s",response.getMessage()));
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
         return HttpResponse.success();
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deliveryCallBackSave(DpResponseContent request){
+        // 通过库房编码获取对应信息
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(request.getWarehouseCode());
+        TransportAddRequest transportAddRequest = new TransportAddRequest();
+        transportAddRequest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+        transportAddRequest.setTransportCenterName(warehouse.getLogisticsCenterName());
+        transportAddRequest.setWarehouseCode(warehouse.getWarehouseCode());
+        transportAddRequest.setWarehouseName(warehouse.getWarehouseName());
+        transportAddRequest.setPackingNum(Long.valueOf(request.getPackageAmount()));
+        List<TransportOrders> transportOrders = new ArrayList<>();
+        if(CollectionUtils.isNotEmpty(request.getOrderIdsList())){
+            // 查询订单信息
+            TransportOrdersResquest transportOrdersResquest = new TransportOrdersResquest();
+            transportOrdersResquest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+            transportOrdersResquest.setCustomerCode(warehouse.getWarehouseCode());
+            List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
+            Map<String, TransportOrders> skuMap = transportOrders1.stream().collect(Collectors.toMap(TransportOrders::getOrderCode, input -> input, (k1, k2) -> k1));
+            for (String orderCode : request.getOrderIdsList()) {
+                if (skuMap.containsKey(orderCode)) {
+                    TransportOrders transportOrder = new TransportOrders();
+                    BeanCopyUtils.copy(skuMap.get(orderCode),transportOrder);
+                    transportOrders.add(transportOrder);
+                }
+            }
+        }
+        try {
+        return transportService.saveTransport(transportAddRequest);
+        } catch (Exception e) {
+           LOGGER.error(Global.ERROR, e);
+            return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
+        }
+    }
 }

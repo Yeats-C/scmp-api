@@ -29,7 +29,32 @@
     <result column="apply_status" jdbcType="TINYINT" property="applyStatus" />
     <result column="enable" jdbcType="TINYINT" property="enable" />
   </resultMap>
-  <update id="updatetSupplierApplyStatusByCode" parameterType="java.lang.String">
+    <insert id="add" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO">
+        INSERT INTO supplier (
+	supplier_name,
+	supplier_code,
+	apply_status,
+	enable,
+	del_flag,
+	create_time,
+	create_by,
+	supplier_abbreviation,
+	company_code
+)
+VALUES
+	(
+		#{supplierName,jdbcType=VARCHAR},
+         #{supplierCode,jdbcType=VARCHAR},
+		2,
+		1,
+         0,
+		now(),
+ #{createBy,jdbcType=VARCHAR},
+  #{supplierNameOrShort,jdbcType=VARCHAR},
+ #{companyCode,jdbcType=VARCHAR}
+	)
+    </insert>
+    <update id="updatetSupplierApplyStatusByCode" parameterType="java.lang.String">
     update supplier set apply_status = 1,apply_supplier_code = #{applyCode} where supplier_code = #{supplierCode,jdbcType=VARCHAR}
   </update>
   <select id="getSupplierList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplierReqVO" resultMap="SupplierListMap">
@@ -53,6 +78,9 @@
     <if test="supplierNameOrShort != null  and supplierNameOrShort != '' ">
       and (supplier_name LIKE concat('%',#{supplierNameOrShort,jdbcType=VARCHAR},'%') or supplier_abbreviation LIKE concat('%',#{supplierNameOrShort,jdbcType=VARCHAR},'%'))
     </if>
+      <if test="supplierName!=null and supplierName != '' ">
+          and supplier_name = #{supplierName,jdbcType=VARCHAR}
+      </if>
     <if test="enable!=null and enable != '' ">
       and enable = #{enable,jdbcType=TINYINT}
     </if>

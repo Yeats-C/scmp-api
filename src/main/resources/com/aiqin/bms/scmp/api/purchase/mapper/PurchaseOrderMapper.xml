@@ -61,6 +61,8 @@
     <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
     <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
     <result column="synchr_status" jdbcType="INTEGER" property="synchrStatus" />
+    <result column="supplier_company_code" jdbcType="VARCHAR" property="supplierCompanyCode" />
+    <result column="supplier_company_name" jdbcType="VARCHAR" property="supplierCompanyName" />
   </resultMap>
   <sql id="Base_Column_List">
     purchase_order_id, purchase_order_code, purchase_apply_id, purchase_apply_code,
@@ -74,7 +76,7 @@
     supplier_person, supplier_mobile, delivery_time, warehouse_time, payment_mode, payment_time,
     remark, inbound_line, pre_payment_amount, account_code, account_name, contract_code,
     contract_name, create_time, update_time, create_by_id, update_by_id, create_by_name,
-    update_by_name, synchr_status
+    update_by_name, synchr_status, supplier_company_code, supplier_company_name
   </sql>
   <insert id="insert">
     insert into purchase_order (purchase_order_id, purchase_order_code, purchase_apply_id, purchase_apply_code, purchase_apply_name,
@@ -86,7 +88,8 @@
       actual_return_amount, actual_gift_amount, charge_person_code, charge_person_name, supplier_person,
       supplier_mobile, delivery_time, warehouse_time, payment_mode, payment_time, remark,
       inbound_line, pre_payment_amount, account_code, account_name, contract_code, contract_name,
-      create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name)
+      create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name,
+      supplier_company_code, supplier_company_name)
     values (#{purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrderCode,jdbcType=VARCHAR},
       #{purchaseApplyId,jdbcType=VARCHAR}, #{purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseApplyName,jdbcType=VARCHAR},
       #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR},
@@ -105,8 +108,8 @@
       #{paymentMode,jdbcType=INTEGER}, #{paymentTime,jdbcType=INTEGER}, #{remark,jdbcType=VARCHAR},
       #{inboundLine,jdbcType=INTEGER}, #{prePaymentAmount,jdbcType=DECIMAL}, #{accountCode,jdbcType=VARCHAR},
       #{accountName,jdbcType=VARCHAR}, #{contractCode,jdbcType=VARCHAR}, #{contractName,jdbcType=VARCHAR},
-      now(), now(), #{createById,jdbcType=VARCHAR},
-      #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
+      now(), now(), #{createById,jdbcType=VARCHAR}, #{updateById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR},
+      #{updateByName,jdbcType=VARCHAR}, #{supplierCompanyCode,jdbcType=VARCHAR}, #{supplierCompanyName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update purchase_order
@@ -263,7 +266,16 @@
         update_by_id = #{updateById,jdbcType=VARCHAR},
       </if>
       <if test="updateByName != null">
-        update_by_name = #{updateByName,jdbcType=VARCHAR},
+      update_by_name = #{updateByName,jdbcType=VARCHAR},
+      </if>
+      <if test="synchrStatus != null">
+        synchr_status = #{synchrStatus,jdbcType=INTEGER},
+      </if>
+      <if test="supplierCompanyCode != null">
+        supplier_company_code = #{supplierCompanyCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierCompanyName != null">
+        supplier_company_name = #{supplierCompanyName,jdbcType=VARCHAR},
       </if>
     </set>
     where purchase_order_id = #{purchaseOrderId,jdbcType=VARCHAR}
@@ -425,4 +437,48 @@
       </if>
     </where>
   </select>
+    <select id="selectByPurchaseOrderCode" resultMap="BaseResultMap">
+      select <include refid="Base_Column_List"></include>
+      from purchase_order
+       where purchase_order_code in
+      <foreach collection="codes" index="index" item="item" open="(" separator="," close=")">
+        #{item}
+      </foreach>
+    </select>
+  <insert id="insertMany">
+    INSERT INTO purchase_order (purchase_order_id, purchase_order_code, purchase_apply_id, purchase_apply_code, purchase_apply_name,
+    transport_center_code, transport_center_name, purchase_group_code, purchase_group_name, warehouse_code,
+    warehouse_name, supplier_code, supplier_name, info_status, purchase_order_status, storage_status,
+    single_count, product_total_amount, return_amount, purchase_mode, settlement_method_code, settlement_method_name,
+    cancel_reason, cancel_remark, apply_type_form, approval_code, gift_tax_sum, company_code,
+    company_name, purchase_source, pre_arrival_time, valid_time, actual_total_count, actual_product_amount,
+    actual_return_amount, actual_gift_amount, charge_person_code, charge_person_name, supplier_person,
+    supplier_mobile, delivery_time, warehouse_time, payment_mode, payment_time, remark,
+    inbound_line, pre_payment_amount, account_code, account_name, contract_code, contract_name,
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name,
+    supplier_company_code, supplier_company_name) VALUES
+    <foreach collection="list" item="purchaseOrder" index="index" separator=",">
+      (#{purchaseOrder.purchaseOrderId,jdbcType=VARCHAR}, #{purchaseOrder.purchaseOrderCode,jdbcType=VARCHAR},
+      #{purchaseOrder.purchaseApplyId,jdbcType=VARCHAR}, #{purchaseOrder.purchaseApplyCode,jdbcType=VARCHAR}, #{purchaseOrder.purchaseApplyName,jdbcType=VARCHAR},
+      #{purchaseOrder.transportCenterCode,jdbcType=VARCHAR}, #{purchaseOrder.transportCenterName,jdbcType=VARCHAR},
+      #{purchaseOrder.purchaseGroupCode,jdbcType=VARCHAR}, #{purchaseOrder.purchaseGroupName,jdbcType=VARCHAR}, #{purchaseOrder.warehouseCode,jdbcType=VARCHAR},
+      #{purchaseOrder.warehouseName,jdbcType=VARCHAR}, #{purchaseOrder.supplierCode,jdbcType=VARCHAR}, #{purchaseOrder.supplierName,jdbcType=VARCHAR},
+      #{purchaseOrder.infoStatus,jdbcType=INTEGER}, #{purchaseOrder.purchaseOrderStatus,jdbcType=INTEGER}, #{purchaseOrder.storageStatus,jdbcType=INTEGER},
+      #{purchaseOrder.singleCount,jdbcType=INTEGER}, #{purchaseOrder.productTotalAmount,jdbcType=DECIMAL}, #{purchaseOrder.returnAmount,jdbcType=DECIMAL},
+      #{purchaseOrder.purchaseMode,jdbcType=INTEGER}, #{purchaseOrder.settlementMethodCode,jdbcType=VARCHAR}, #{purchaseOrder.settlementMethodName,jdbcType=VARCHAR},
+      #{purchaseOrder.cancelReason,jdbcType=VARCHAR}, #{purchaseOrder.cancelRemark,jdbcType=VARCHAR}, #{purchaseOrder.applyTypeForm,jdbcType=VARCHAR},
+      #{purchaseOrder.approvalCode,jdbcType=VARCHAR}, #{purchaseOrder.giftTaxSum,jdbcType=DECIMAL}, #{purchaseOrder.companyCode,jdbcType=VARCHAR},
+      #{purchaseOrder.companyName,jdbcType=VARCHAR}, #{purchaseOrder.purchaseSource,jdbcType=VARCHAR}, #{purchaseOrder.preArrivalTime,jdbcType=TIMESTAMP},
+      #{purchaseOrder.validTime,jdbcType=TIMESTAMP}, #{purchaseOrder.actualTotalCount,jdbcType=BIGINT}, #{purchaseOrder.actualProductAmount,jdbcType=DECIMAL},
+      #{purchaseOrder.actualReturnAmount,jdbcType=DECIMAL}, #{purchaseOrder.actualGiftAmount,jdbcType=DECIMAL},
+      #{purchaseOrder.chargePersonCode,jdbcType=VARCHAR}, #{purchaseOrder.chargePersonName,jdbcType=VARCHAR}, #{purchaseOrder.supplierPerson,jdbcType=VARCHAR},
+      #{purchaseOrder.supplierMobile,jdbcType=VARCHAR}, #{purchaseOrder.deliveryTime,jdbcType=TIMESTAMP}, #{purchaseOrder.warehouseTime,jdbcType=TIMESTAMP},
+      #{purchaseOrder.paymentMode,jdbcType=INTEGER}, #{purchaseOrder.paymentTime,jdbcType=INTEGER}, #{purchaseOrder.remark,jdbcType=VARCHAR},
+      #{purchaseOrder.inboundLine,jdbcType=INTEGER}, #{purchaseOrder.prePaymentAmount,jdbcType=DECIMAL}, #{purchaseOrder.accountCode,jdbcType=VARCHAR},
+      #{purchaseOrder.accountName,jdbcType=VARCHAR}, #{purchaseOrder.contractCode,jdbcType=VARCHAR}, #{purchaseOrder.contractName,jdbcType=VARCHAR},
+      #{purchaseOrder.createTime ,jdbcType=TIMESTAMP},  #{purchaseOrder.updateTime,jdbcType=TIMESTAMP}, #{purchaseOrder.createById,jdbcType=VARCHAR}, #{purchaseOrder.updateById,jdbcType=VARCHAR}, #{purchaseOrder.createByName,jdbcType=VARCHAR},
+      #{purchaseOrder.updateByName,jdbcType=VARCHAR}, #{purchaseOrder.supplierCompanyCode,jdbcType=VARCHAR}, #{purchaseOrder.supplierCompanyName,jdbcType=VARCHAR})
+    </foreach>
+
+  </insert>
 </mapper>

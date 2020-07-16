@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.dao.StockMonthBatchFlowDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatchFlow">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
+    <result column="day_type" jdbcType="BIT" property="dayType" />
+    <result column="before_batch_count" jdbcType="BIGINT" property="beforeBatchCount" />
+    <result column="after_batch_count" jdbcType="BIGINT" property="afterBatchCount" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sku_code, warehouse_code, batch_code, day_type, before_batch_count, after_batch_count, 
+    create_time, update_time
+  </sql>
+  <select id="stockMonthBatchFlowOne" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from stock_month_batch_flow
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="delete">
+    delete from stock_month_batch_flow
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insertAll">
+    insert into stock_month_batch_flow (sku_code, warehouse_code, batch_code, day_type,
+      before_batch_count, after_batch_count, create_time, update_time) values
+    <foreach collection="list" item="item" index="index" separator=",">
+     (#{item.skuCode,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR}, #{item.dayType,jdbcType=BIT}, #{item.beforeBatchCount,jdbcType=BIGINT},
+      #{item.afterBatchCount,jdbcType=BIGINT}, now(), now())
+    </foreach>
+  </insert>
+  <update id="update">
+    update stock_month_batch_flow
+    <set>
+      <if test="skuCode != null">
+        sku_code = #{skuCode,jdbcType=VARCHAR},
+      </if>
+      <if test="warehouseCode != null">
+        warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
+      </if>
+      <if test="batchCode != null">
+        batch_code = #{batchCode,jdbcType=VARCHAR},
+      </if>
+      <if test="dayType != null">
+        day_type = #{dayType,jdbcType=BIT},
+      </if>
+      <if test="beforeBatchCount != null">
+        before_batch_count = #{beforeBatchCount,jdbcType=BIGINT},
+      </if>
+      <if test="afterBatchCount != null">
+        after_batch_count = #{afterBatchCount,jdbcType=BIGINT},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

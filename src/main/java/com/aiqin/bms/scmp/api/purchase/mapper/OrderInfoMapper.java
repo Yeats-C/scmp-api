@@ -49,4 +49,11 @@ public interface OrderInfoMapper {
     Integer updateBatch(@Param(value = "list") List<OrderInfo> list);
 
     Integer updateDevliverAmountByOrderCode(@Param("orderCode") String orderCode, @Param("deliverAmount") BigDecimal deliverAmount);
+
+    /** 销售订单同步sap **/
+    void updateOrderSynchrSap(OrderInfo order);
+
+    List<OrderInfo> selectByOrderCodes(@Param("list") List<String> orderCodeList);
+
+    int insertMany(@Param("list") List<OrderInfo> orderInfos1);
 }

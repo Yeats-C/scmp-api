@@ -28,12 +28,15 @@
     <result column="wms_warehouse_code" jdbcType="VARCHAR" property="wmsWarehouseCode" />
     <result column="wms_warehouse_name" jdbcType="VARCHAR" property="wmsWarehouseName" />
     <result column="wms_warehouse_type" jdbcType="TINYINT" property="wmsWarehouseType" />
+    <result column="batch_manage" jdbcType="INTEGER" property="batchManage" />
+    <result column="is_purchase" jdbcType="INTEGER" property="isPurchase" />
   </resultMap>
   <sql id="Base_Column_List">
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
     warehouse_type_name, warehouse_type_code, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, contact, phone, enable, del_flag, 
-    create_by, create_time, update_by, update_time,warehouse_order
+    create_by, create_time, update_by, update_time, warehouse_order, batch_manage, is_purchase,
+    wms_warehouse_code, wms_warehouse_name, wms_warehouse_type
   </sql>
   <select id="findWarehouseList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo" resultMap="BaseResultMap">
   select
@@ -60,6 +63,12 @@
     </if>
     <if test="warehouseTypeCode != null and warehouseTypeCode != '' ">
       and warehouse_type_code = #{warehouseTypeCode,jdbcType=TINYINT}
+    </if>
+    <if test="isPurchase != null">
+      and is_purchase = #{isPurchase,jdbcType=INTEGER}
+    </if>
+    <if test="batchManage != null">
+      and batch_manage = #{batchManage,jdbcType=INTEGER}
     </if>
     order by warehouse_order asc
   </select>
@@ -307,6 +316,12 @@
       <if test="warehouseOrder != null">
         warehouse_order = #{warehouseOrder,jdbcType=INTEGER},
       </if>
+      <if test="isPurchase != null">
+        is_purchase = #{isPurchase,jdbcType=INTEGER},
+      </if>
+      <if test="batchManage != null">
+        batch_manage = #{batchManage,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -378,7 +393,7 @@
   <select id="selectByWarehouseName" resultType="com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse">
     select
       warehouse_code as warehouseCode, warehouse_name as warehouseName, logistics_center_code as logisticsCenterCode,
-      logistics_center_name as logisticsCenterName
+      logistics_center_name as logisticsCenterName, batch_manage batchManage
     from warehouse
     where
     warehouse_name = #{warehouseName,jdbcType=VARCHAR}
@@ -396,10 +411,30 @@
     </if>
     order by warehouse_order asc
   </select>
+  <select id="warehouseByBatchMange" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and batch_manage in (1,2)
+  </select>
+    <select id="findWarehouseListForBatch"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+    from warehouse
+    where del_flag=0 and enable=0 and batch_manage = 2
+    </select>
   <select id="getWarehouseCodeByTransportCenterCode" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from warehouse
     where enable = 0 and logistics_center_code=#{transportCenterCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectWarehouseByWms" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0 and wms_warehouse_code = #{wmsWarehouseCode,jdbcType=VARCHAR}
+    and wms_warehouse_type = #{wmsWarehouseType,jdbcType=TINYINT}
   </select>
 </mapper>

@@ -1,27 +1,42 @@
 package com.aiqin.bms.scmp.api.purchase.mapper;
 
+import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
+import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.ReturnGoodsRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.ReturnOrderInboundBatchResponse;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface ReturnOrderInfoInspectionItemMapper {
-    int deleteByPrimaryKey(Long id);
 
-    int insert(ReturnOrderInfoInspectionItem record);
+    Integer insert(ReturnOrderInfoInspectionItem record);
 
-    int insertSelective(ReturnOrderInfoInspectionItem record);
+    Integer update(ReturnOrderInfoInspectionItem record);
 
-    ReturnOrderInfoInspectionItem selectByPrimaryKey(Long id);
+    Integer insertBatch(@Param("list") List<ReturnOrderInfoInspectionItem> items);
 
-    int updateByPrimaryKeySelective(ReturnOrderInfoInspectionItem record);
+    List<ReturnOrderInfoInspectionItem> returnBatchList(@Param("skuCode") String skuCode,
+                                                        @Param("returnOrderCode") String returnOrderCode,
+                                                        @Param("lineCode") Integer lineCode);
 
-    int updateByPrimaryKey(ReturnOrderInfoInspectionItem record);
-    /**
-     * 保存验货数据
-     * @author NullPointException
-     * @date 2019/6/24
-     * @param items
-     * @return int
-     */
-    int insertBatch(List<ReturnOrderInfoInspectionItem> items);
+    ReturnOrderInfoInspectionItem returnOrderInfo(@Param("batchCode") String batchCode,
+                                                  @Param("returnOrderCode") String returnOrderCode,
+                                                  @Param("lineCode") Integer lineCode,
+                                                  @Param("skuCode") String skuCode);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderBatchList(String returnOderCode);
+
+    List<ReturnOrderInfoInspectionItem> list(ReturnGoodsRequest request);
+
+    Integer listCount(ReturnGoodsRequest request);
+
+    List<ReturnOrderInboundBatchResponse> inboundBatchByReturnOrderList(InboundBatchReqVo request);
+
+    Integer inboundBatchByReturnOrderCount(InboundBatchReqVo request);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderByWarehouse(@Param("returnOrderCode") String returnOrderCode);
+
+    List<ReturnOrderInfoInspectionItem> returnOrderBatchListByWarehouse(@Param("returnOrderCode") String returnOrderCode,
+                                                                        @Param("warehouseCode") String warehouseCode);
 }

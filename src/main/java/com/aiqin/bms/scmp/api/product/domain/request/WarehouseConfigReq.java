@@ -83,7 +83,7 @@ public class WarehouseConfigReq  extends PageReq {
      * 对接系统
      * 表字段 : warhouse_config.docking_system
      */
-    @ApiModelProperty("对接系统(0：DL系统 1：巨沃系统 2:富勒系统 3：德邦系统)")
+    @ApiModelProperty("对接系统(0：巨沃系统 1:京东系统 2：德邦系统 3：DL系统 )")
     @JsonProperty("docking_system")
     private Integer dockingSystem;
 
@@ -119,6 +119,10 @@ public class WarehouseConfigReq  extends PageReq {
     @JsonProperty("counterpart_stock_name")
     private String counterpartStockName;
 
+    @ApiModelProperty("移库类型（0.wms发起移库 1.分别发起移库 2.同时发起移库）")
+    @JsonProperty("movement_type")
+    private Integer movementType;
+
     /**
      * 启用禁用状态
      * 表字段 : warhouse_config.enable
@@ -135,6 +139,10 @@ public class WarehouseConfigReq  extends PageReq {
     @JsonProperty("create_by")
     private String createBy;
 
+    @ApiModelProperty("创建人id")
+    @JsonProperty("create_by_id")
+    private String createById;
+
     /**
      * 创建时间
      * 表字段 : warhouse_config.create_time
@@ -150,6 +158,10 @@ public class WarehouseConfigReq  extends PageReq {
     @ApiModelProperty("创建人")
     @JsonProperty("update_by")
     private String updateBy;
+
+    @ApiModelProperty("创建人id")
+    @JsonProperty("update_by_id")
+    private String updateById;
 
     @ApiModelProperty(value = "修改时间")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")

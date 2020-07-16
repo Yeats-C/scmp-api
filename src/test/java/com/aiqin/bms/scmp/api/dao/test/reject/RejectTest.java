@@ -72,8 +72,8 @@ public class RejectTest extends SpringBootTestContext {
         request.setWarehouseCode("1071");
         request.setSettlementMethodCode("123");
         request.setSupplierCode("10000058");
-        HttpResponse response = goodsRejectService.rejectApplyListInfo(request);
-        System.out.println(response.getData().toString());
+        //HttpResponse response = goodsRejectService.rejectApplyListInfo(request);
+        //System.out.println(response.getData().toString());
     }
 
     @Test
@@ -98,24 +98,24 @@ public class RejectTest extends SpringBootTestContext {
     public void rejectSupplier() {
         RejectRecord request = new RejectRecord();
         request.setRejectRecordId("BI3A6DE17B116B49FAA6FA00F0BBFF6E59");
-        goodsRejectService.rejectSupplier(request, "");
+        //goodsRejectService.rejectSupplier(request, "");
     }
 
     @Test
     public void finishStock() {
         RejectStockRequest rejectStockRequest = new RejectStockRequest();
         rejectStockRequest.setRejectRecordCode("RR100016");
-        rejectStockRequest.setOutStockTime(new Date());
+        //rejectStockRequest.setOutStockTime(new Date());
         List<RejectDetailStockRequest> detailList= new ArrayList<>();
         RejectDetailStockRequest detail= new RejectDetailStockRequest();
-        detail.setId(2L);
-        detail.setActualCount(1);
+//        detail.setId(2L);
+//        detail.setActualCount(1);
         detailList.add(detail);
         rejectStockRequest.setDetailList(detailList);
 //        RejectDetailStockRequest detail2 = new RejectDetailStockRequest();
 //        detailList.add(detail2);
 
-        goodsRejectService.finishStock(rejectStockRequest);
+        //goodsRejectService.finishStock(rejectStockRequest);
 
 
     }
@@ -214,7 +214,7 @@ public class RejectTest extends SpringBootTestContext {
         detailList.add(detail1);
 
         rejectApplyQueryRequest.setDetailList(detailList);
-        goodsRejectService.rejectApply(rejectApplyQueryRequest);
+       // goodsRejectService.rejectApply(rejectApplyQueryRequest);
     }
 
     @Test

@@ -48,7 +48,7 @@
   </resultMap>
 
   <sql id="Base_Column_List">
-    id, company_code, company_name, inbound_status_code, inbound_status_name, inbound_oder_code, 
+    id, company_code, company_name, inbound_status_code, inbound_status_name, inbound_oder_code,
     inbound_type_code, inbound_type_name, source_oder_code, inbound_time, logistics_center_code, 
     logistics_center_name, warehouse_code, warehouse_name, supplier_code, supplier_name, 
     pre_arrival_time, wms_document_code, pre_inbound_num, pre_main_unit_num, pre_tax_amount, 
@@ -557,18 +557,10 @@
       <if test="purchaseNum != null">
         purchase_num = #{purchaseNum,jdbcType=INTEGER},
       </if>
-      <if test="createBy != null">
-        create_by = #{createBy,jdbcType=VARCHAR},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
       </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
+        update_time = now(),
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -640,28 +632,13 @@
     select
     <include refid="Base_Column_List" />
     from inbound
-    where  inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
-  </select>
-  <select id="selectMaxPurchaseNumBySourceOderCode" parameterType="java.lang.String" resultType="java.lang.Integer">
-    select max(purchase_num) from inbound where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
   <select id="selectTimeAndSatusBySourchAndNum" resultMap="BaseResultMap">
     select <include refid="Base_Column_List" />
     from inbound where
     source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
     order by purchase_num asc
-  </select>
-  <select id="selectCreateById" resultType="com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails">
-    select b.create_by_id as createById, b.create_by_name as createByName, b.remark
-    from inbound a
-    left join purchase_order b on a.source_oder_code = b.purchase_order_code
-    where a.inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
-  </select>
-  <select id="selectById" parameterType="java.lang.String" resultMap="BaseResultMap">
-  select
-  <include refid="Base_Column_List" />
-  from inbound
-  where  id = #{id,jdbcType=VARCHAR}
   </select>
   <select id="listForSap" resultMap="BaseResultMap">
     select
@@ -687,5 +664,21 @@
     from inbound
     where source_oder_code = #{code}
     order by id desc limit 1
+  </select>
+  <select id="inboundCodeOrderLast" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from inbound
+    where source_oder_code = #{sourceOderCode}
+    and inbound_type_code = #{inboundTypeCode}
+    order by id desc limit 1
+  </select>
+  <update id="updateInboundSynchrSap">
+    update inbound set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where source_oder_code = #{sourceOderCode}
+  </update>
+  <select id="inboundBySource" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from inbound
+    where source_oder_code = #{sourceOderCode}
+    and inbound_type_code = #{inboundTypeCode}
   </select>
 </mapper>

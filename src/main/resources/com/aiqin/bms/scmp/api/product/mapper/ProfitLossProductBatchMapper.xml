@@ -4,40 +4,29 @@
   <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="order_code" jdbcType="VARCHAR" property="orderCode" />
+    <result column="location_code" jdbcType="VARCHAR" property="locationCode" />
+    <result column="line_code" jdbcType="VARCHAR" property="lineCode" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
-    <result column="category" jdbcType="VARCHAR" property="category" />
-    <result column="brand" jdbcType="VARCHAR" property="brand" />
-    <result column="color" jdbcType="VARCHAR" property="color" />
-    <result column="specification" jdbcType="VARCHAR" property="specification" />
-    <result column="model" jdbcType="VARCHAR" property="model" />
-    <result column="unit" jdbcType="VARCHAR" property="unit" />
-    <result column="classes" jdbcType="VARCHAR" property="classes" />
-    <result column="type" jdbcType="VARCHAR" property="type" />
-    <result column="inventory_unit" jdbcType="VARCHAR" property="inventoryUnit" />
-    <result column="inventory" jdbcType="BIGINT" property="inventory" />
-    <result column="tax" jdbcType="BIGINT" property="tax" />
-    <result column="tax_price" jdbcType="BIGINT" property="taxPrice" />
-    <result column="quantity" jdbcType="BIGINT" property="quantity" />
-    <result column="tax_amount" jdbcType="BIGINT" property="taxAmount" />
-    <result column="del_flag" jdbcType="TINYINT" property="delFlag" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="create_by" jdbcType="VARCHAR" property="createBy" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
-    <result column="picture_url" jdbcType="VARCHAR" property="pictureUrl" />
-    <result column="batch_number" jdbcType="VARCHAR" property="batchNumber" />
-    <result column="batch_number_remark" jdbcType="VARCHAR" property="batchNumberRemark" />
+    <result column="total_count" jdbcType="BIGINT" property="totalCount" />
     <result column="product_date" jdbcType="VARCHAR" property="productDate" />
-    <result column="line_num" jdbcType="BIGINT" property="lineNum" />
-    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="batch_remark" jdbcType="VARCHAR" property="batchRemark" />
+    <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
+    <result column="batch_info_code" jdbcType="VARCHAR" property="batchInfoCode" />
+    <result column="be_overdue_date" jdbcType="VARCHAR" property="beOverdueDate" />
+    <result column="create_by_id" jdbcType="VARCHAR" property="createById" />
+    <result column="create_by_name" jdbcType="VARCHAR" property="createByName" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
+    <result column="update_by_name" jdbcType="VARCHAR" property="updateByName" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, order_code, sku_code, sku_name, category, brand, color, specification, model, 
-    unit, classes, type, inventory_unit, inventory, tax, tax_price, quantity, tax_amount, 
-    del_flag, create_time, create_by, update_time, update_by, picture_url, batch_number, 
-    batch_number_remark, product_date, line_num,supplier_name,supplier_code
+    id, order_code, location_code, line_code, sku_code, sku_name, total_count, product_date,
+    product_date, batch_remark, batch_code, supplier_code, supplier_name, batch_info_code, be_overdue_date,
+    create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -120,6 +109,36 @@
       #{item.lineNum,jdbcType=BIGINT},
       #{item.supplierName,jdbcType=VARCHAR},
       #{item.supplierCode,jdbcType=VARCHAR}
+      )
+    </foreach>
+  </insert>
+  <insert id="insertBatchList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch">
+    insert into profit_loss_product_batch (  order_code, location_code, line_code,
+    sku_code, sku_name, total_count, product_date,
+    batch_remark, batch_code, supplier_code, supplier_name,
+    batch_info_code, be_overdue_date, create_time, update_time,
+    create_by_id, update_by_id, create_by_name, update_by_name)
+    values
+    <foreach collection="list" item="item" index= "index" separator =",">
+      (
+      #{item.orderCode,jdbcType=VARCHAR},
+      #{item.locationCode,jdbcType=VARCHAR},
+      #{item.lineCode,jdbcType=BIGINT},
+      #{item.skuCode,jdbcType=VARCHAR},
+      #{item.skuName,jdbcType=VARCHAR},
+      #{item.totalCount,jdbcType=BIGINT},
+      #{item.productDate,jdbcType=VARCHAR},
+      #{item.batchRemark,jdbcType=VARCHAR},
+      #{item.batchCode,jdbcType=VARCHAR},
+      #{item.supplierCode,jdbcType=VARCHAR},
+      #{item.supplierName,jdbcType=VARCHAR},
+      #{item.batchInfoCode,jdbcType=VARCHAR},
+      #{item.beOverdueDate,jdbcType=VARCHAR},
+      now(),now(),
+      #{item.createById,jdbcType=VARCHAR},
+      #{item.updateById,jdbcType=VARCHAR},
+      #{item.createByName,jdbcType=VARCHAR},
+      #{item.updateByName,jdbcType=VARCHAR}
       )
     </foreach>
   </insert>
@@ -427,5 +446,16 @@
       #{item}
     </foreach>
     )
+  </select>
+  <select id="getBatchListByOrderCode" resultMap="BaseResultMap">
+    select
+    id, order_code, batch_code, batch_info_code, sku_code, sku_name, supplier_code,
+    supplier_name, batch_remark, product_date, be_overdue_date, total_count,
+    location_code, line_code, create_time, update_time, create_by_id, update_by_id, create_by_name,
+    update_by_name
+    from profit_loss_product_batch
+    where sku_code = #{skuCode, jdbcType=VARCHAR}
+    and order_code = #{orderCode, jdbcType=VARCHAR}
+    and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
 </mapper>

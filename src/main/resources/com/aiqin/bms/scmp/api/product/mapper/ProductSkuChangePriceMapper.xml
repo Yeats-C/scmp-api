@@ -547,8 +547,10 @@
     where id = #{id,jdbcType=BIGINT}
   </delete>
   <insert id="insert" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">
-    insert into product_sku_change_price (id, code, change_price_type, 
-      change_price_name, name, purchase_group_code, 
+    insert into product_sku_change_price (id, code,
+      change_price_type,
+      change_price_name,
+      name, purchase_group_code,
       purchase_group_name, remake, direct_supervisor_code, 
       direct_supervisor_name, cost_bearer_code, cost_bearer_name, 
       budget, company_code, company_name, 
@@ -557,8 +559,10 @@
       form_no, auditor_time, original, 
       change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit
       )
-    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR}, #{changePriceType,jdbcType=VARCHAR}, 
-      #{changePriceName,jdbcType=VARCHAR}, #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR},
+      #{changePriceType,jdbcType=VARCHAR},
+      #{changePriceName,jdbcType=VARCHAR},
+      #{name,jdbcType=VARCHAR}, #{purchaseGroupCode,jdbcType=VARCHAR},
       #{purchaseGroupName,jdbcType=VARCHAR}, #{remake,jdbcType=VARCHAR}, #{directSupervisorCode,jdbcType=VARCHAR}, 
       #{directSupervisorName,jdbcType=VARCHAR}, #{costBearerCode,jdbcType=VARCHAR}, #{costBearerName,jdbcType=VARCHAR}, 
       #{budget,jdbcType=BIGINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 

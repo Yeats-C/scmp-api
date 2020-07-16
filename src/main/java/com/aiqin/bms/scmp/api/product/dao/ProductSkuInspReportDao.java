@@ -60,7 +60,7 @@ public interface ProductSkuInspReportDao {
 
     Integer updateInspection(ProductSkuInspReport productSkuInspReport);
 
-    List<InspectionReportRespVO> getInspectionReportsBySkuCode(@Param("skuCode")String skuCode);
-
     Integer getPersonIdByskuCode(@Param("personId")String personId, @Param("skuCode")String skuCode);
+
+    List<InspectionReportRespVO> getInspectionReportsBySkuCode(@Param("skuCode")String skuCode);
 }

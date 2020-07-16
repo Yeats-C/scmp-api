@@ -14,7 +14,7 @@
         <id column="warehouse_code" jdbcType="VARCHAR" property="warehouseCode" />
         <id column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
         <id column="deliver_time" jdbcType="DATE" property="deliverTime" />
-        <id column="product_num" jdbcType="BIGINT" property="productNum" />
+        <id column="product_num" jdbcType="INTEGER" property="productNum" />
         <id column="create_by" jdbcType="VARCHAR" property="createBy" />
         <id column="create_time" jdbcType="DATE" property="createTime" />
         <id column="update_by" jdbcType="VARCHAR" property="updateBy" />
@@ -22,22 +22,33 @@
 
     </resultMap>
     <sql id="Transport_Orders_sql">
-        id,transport_code,order_code,commodity_amount,order_amount,status,type,transport_center_code,transport_center_name,warehouse_code,warehouse_name,deliver_time,create_by,create_time,update_by,update_time
+        id,transport_code,order_code,commodity_amount,order_amount,status,type,transport_center_code,transport_center_name,warehouse_code,warehouse_name,deliver_time,product_num,create_by,create_time,update_by,update_time
     </sql>
     <insert id="insertBatch">
         <foreach collection="transportOrders" item="item" separator=";">
             insert into transport_orders (
             transport_code,order_code,commodity_amount,order_amount,status,type,
             transport_center_code,transport_center_name,warehouse_code,warehouse_name,product_num,
-            deliver_time,create_by,create_time,update_by,update_time
+            deliver_time,del_flag,create_by,create_time,update_by,update_time
             ) values (
             #{item.transportCode},#{item.orderCode},#{item.commodityAmount},#{item.orderAmount},#{item.status},#{item.type},
             #{item.transportCenterCode},#{item.transportCenterName},#{item.warehouseCode},#{item.warehouseName},#{item.productNum},
-            #{item.deliverTime},#{item.createBy},#{item.createTime},#{item.updateBy},#{item.updateTime}
+            #{item.deliverTime},#{item.delFlag},#{item.createBy},now(),#{item.updateBy},now()
             )
         </foreach>
     </insert>
     <select id="selectListByTransportCode" resultMap="TransportOrdersMap">
         select <include refid="Transport_Orders_sql"></include> from transport_orders where transport_code=#{transportCode}
+    </select>
+    <select id="selectOrderCodeByTransportCode" resultMap="TransportOrdersMap">
+        select <include refid="Transport_Orders_sql"></include>
+        from transport_orders
+        where transport_code=#{transportCode}
+    </select>
+    <select id="selectTransportOrdersByTransportCode" resultMap="TransportOrdersMap">
+        select <include refid="Transport_Orders_sql"></include>
+        from transport_orders
+        where transport_code=#{transportCode}
+        limit 1
     </select>
 </mapper>

@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductSaveReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.NewProductUpdateReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.newproduct.QueryNewProductReqVO;
+import com.aiqin.bms.scmp.api.product.domain.request.sku.info.SaveSkuInfoReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;

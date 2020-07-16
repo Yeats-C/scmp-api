@@ -9,12 +9,17 @@ import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderListRespV
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderProductListRespVO;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryProductUniqueCodeListRespVO;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,6 +38,8 @@ import java.util.List;
 @Api(description = "订单api")
 @RequestMapping("/order")
 public class OrderController {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrderController.class);
 
     @Autowired
     private OrderService orderService;
@@ -148,15 +155,19 @@ public class OrderController {
     @PostMapping("/aiqin/sale")
     @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
     public HttpResponse insertSaleOrder(@RequestBody ErpOrderInfo vo) {
-        log.info("爱亲供应链销售单参数", vo);
+        LOGGER.info("爱亲供应链销售单参数{}", JsonUtil.toJson(vo));
         return orderService.insertSaleOrder(vo);
     }
 
     @GetMapping("/cancel")
     @ApiOperation("订单的取消")
-    public HttpResponse orderCancel(@RequestParam("order_code") String orderCode,
-                                    @RequestParam("operator_id") String operatorId,
-                                    @RequestParam("operator_name") String operatorName) {
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "order_code", value = "订单编码", type = "String"),
+            @ApiImplicitParam(name = "operator_id", value = "操作人id", type = "String"),
+            @ApiImplicitParam(name = "operator_name", value = "操作人名称", type = "String") })
+    public HttpResponse orderCancel(@RequestParam(value="order_code",required = true) String orderCode,
+                                    @RequestParam(value="operator_id",required = false) String operatorId,
+                                    @RequestParam(value="operator_name",required = false) String operatorName) {
         log.info("订单的取消:", orderCode);
         return orderService.orderCancel(orderCode, operatorId, operatorName);
     }

@@ -42,7 +42,7 @@ public class ReturnOrderDetailReq {
     @ApiModelProperty(value = "型号")
     private String modelCode;
 
-    @ApiModelProperty(value = "base_product_spec")
+    @ApiModelProperty(value = "规格")
     private Long baseProductSpec;
 
     @ApiModelProperty(value = "单位编码")
@@ -121,4 +121,12 @@ public class ReturnOrderDetailReq {
 
     @ApiModelProperty(value = "均摊后单价")
     private BigDecimal preferentialAmount;
+
+    @ApiModelProperty(value="渠道单价")
+    //@JsonProperty("channel_amount")
+    private BigDecimal channelAmount;
+
+    @ApiModelProperty(value="渠道总价")
+    //@JsonProperty("channel_total_amount")
+    private BigDecimal channelTotalAmount;
 }

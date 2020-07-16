@@ -49,6 +49,7 @@ public enum OrderStatus {
     SCAN_COMPLETED(8,"商品出库","扫描完成","扫描完成，确认订单商品","您的订单已经开始拣货","1","11","108"),
     ALL_SHIPPED(11,"等待收货","已全部发货","已经全部发货","您的订单已全部发货","1","12",null),
     THE_TRANSACTION_IS_ALL_COMPLETED(12,"交易完成","交易全部完成","交易全部完成，客户收货","您的订单已完成配送，欢迎您再次光临！","1",null,null),
+    THE_NULL(13,"辅材直送","辅材直送","辅材直送，辅材直送货架直送","辅材直送货架直送，欢迎您再次光临！",null,null,null),
 
     REJECT_TO_TERMINATE_THE_TRANSACTION(96,"交易取消","拒收终止交易","“已全部发货”后客户拒收","您的订单已终止","1",null,null),
     OUT_OF_STOCK_TO_TERMINATE_THE_TRANSACTION(97,"交易取消","缺货终止交易","“等待配货”时，因为缺货终止交易","您的订单已终止","1",null,null),

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request.inbound;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -157,4 +158,7 @@ public class InboundReqSave {
 
     @ApiModelProperty("入库sku批次")
     private List<InboundBatchReqVo> inboundBatchReqVos;
+
+    @ApiModelProperty("入库sku批次")
+    private List<InboundBatch> inboundBatchList;
 }

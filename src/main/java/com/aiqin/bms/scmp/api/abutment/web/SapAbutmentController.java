@@ -59,16 +59,16 @@ public class SapAbutmentController {
         return HttpResponse.success();
     }
 
-    @GetMapping("/order")
-    @ApiOperation("订单")
-    public HttpResponse saleSynchronization(@RequestParam("begin_time") String beginTime, @RequestParam("finish_time") String finishTime) {
-        SapOrderRequest sapOrderRequest = new SapOrderRequest();
-        sapOrderRequest.setBeginTime(beginTime);
-        sapOrderRequest.setFinishTime(finishTime);
-        LOGGER.info("订单同步sap:{}", JsonUtil.toJson(sapOrderRequest));
-        sapBaseDataService.saleSynchronization(sapOrderRequest);
-        return HttpResponse.success();
-    }
+//    @GetMapping("/order")
+//    @ApiOperation("订单")
+//    public HttpResponse saleSynchronization(@RequestParam("begin_time") String beginTime, @RequestParam("finish_time") String finishTime) {
+//        SapOrderRequest sapOrderRequest = new SapOrderRequest();
+//        sapOrderRequest.setBeginTime(beginTime);
+//        sapOrderRequest.setFinishTime(finishTime);
+//        LOGGER.info("订单同步sap:{}", JsonUtil.toJson(sapOrderRequest));
+//        sapBaseDataService.saleSynchronization(sapOrderRequest);
+//        return HttpResponse.success();
+//    }
 
     @GetMapping("/stock")
     @ApiOperation("出入库")
@@ -81,17 +81,6 @@ public class SapAbutmentController {
         return HttpResponse.success();
     }
 
-    @GetMapping("/purchase")
-    @ApiOperation("采购")
-    public HttpResponse purchaseSynchronization(@RequestParam("begin_time") String beginTime, @RequestParam("finish_time") String finishTime) {
-        SapOrderRequest sapOrderRequest = new SapOrderRequest();
-        sapOrderRequest.setBeginTime(beginTime);
-        sapOrderRequest.setFinishTime(finishTime);
-        LOGGER.info("采购同步sap:{}", JsonUtil.toJson(sapOrderRequest));
-        sapBaseDataService.purchaseSynchronization(sapOrderRequest);
-        return HttpResponse.success();
-    }
-
     @GetMapping("/supply")
     @ApiOperation("供应商")
     public HttpResponse supplySynchronization(@RequestParam("begin_time") String beginTime, @RequestParam("finish_time") String finishTime) {
@@ -100,6 +89,33 @@ public class SapAbutmentController {
         sapOrderRequest.setFinishTime(finishTime);
         LOGGER.info("供应商同步sap:{}", JsonUtil.toJson(sapOrderRequest));
         sapBaseDataService.supplySynchronization(sapOrderRequest);
+        return HttpResponse.success();
+    }
+
+    @GetMapping("/purchase/reject")
+    @ApiOperation("采购与退供")
+    public HttpResponse purchaseSynchronization(@RequestParam("order_code") String orderCode,
+                                                @RequestParam("data_type") Integer dataType) {
+        LOGGER.info("采购同步sap,采购单号:{}", JsonUtil.toJson(orderCode));
+        sapBaseDataService.purchaseAndReject(orderCode, dataType);
+        return HttpResponse.success();
+    }
+
+    @GetMapping("/sale/return")
+    @ApiOperation("订单&退货")
+    public HttpResponse saleSynchronization(@RequestParam("order_code") String orderCode,
+                                             @RequestParam("data_type") Integer dataType) {
+        LOGGER.info("订单同步sap.订单单号:{}", JsonUtil.toJson(orderCode));
+        sapBaseDataService.saleAndReturn(orderCode, dataType);
+        return HttpResponse.success();
+    }
+
+    @GetMapping("/allocation/profitLoss")
+    @ApiOperation("调拨&损溢")
+    public HttpResponse allocationSynchronization(@RequestParam("order_code") String orderCode,
+                                                  @RequestParam("data_type") Integer dataType) {
+        LOGGER.info("调拨/损溢单同步sap.调拨/损溢单单号:{}", JsonUtil.toJson(orderCode+","+dataType));
+        sapBaseDataService.allocationAndprofitLoss(orderCode, dataType);
         return HttpResponse.success();
     }
 

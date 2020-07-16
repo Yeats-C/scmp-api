@@ -192,7 +192,7 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         // 上次的正品含税总成本
         BigDecimal total =  yesterdayLog.getTaxCost().multiply(BigDecimal.valueOf(yesterdayLog.getStockNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
         // 本次采购入库数量
-        long changeNum = stockFlow.getChangeNum();
+        long changeNum = stockFlow.getChangeCount();
         // 本次的采购入库总成本
         BigDecimal price;
         if(stockFlow.getStockCost() != null){
@@ -218,28 +218,28 @@ public class TaxCostLogServiceImpl implements TaxCostLogService {
         // 本次的采购入库总成本
         BigDecimal price;
         if(stockFlow.getStockCost() != null){
-            price = stockFlow.getStockCost().multiply(BigDecimal.valueOf(stockFlow.getChangeNum())).setScale(4, BigDecimal.ROUND_HALF_UP);
+            price = stockFlow.getStockCost().multiply(BigDecimal.valueOf(stockFlow.getChangeCount())).setScale(4, BigDecimal.ROUND_HALF_UP);
         }else{
             price = BigDecimal.valueOf(0);
         }
         // 本次的最终含税成本
-        long num = log.getStockNum() + stockFlow.getChangeNum();
+        long num = log.getStockNum() + stockFlow.getChangeCount();
         BigDecimal taxCost;
         if (num==0){
             taxCost=BigDecimal.valueOf(0);
         }else {
             taxCost = (total.add(price)).divide(BigDecimal.valueOf(num)).setScale(4, BigDecimal.ROUND_HALF_UP);
         }
-        common(taxCost,log.getTaxCost(),st,yesterday,stockFlow.getChangeNum(),num);
+        common(taxCost,log.getTaxCost(),st,yesterday,stockFlow.getChangeCount(),num);
     }
 
     public void costCommon(TaxCostLog todayLog,TaxCostLog log,StockFlow stockFlow){
         if (todayLog == null){
-            outboundProductDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
-            stockFlowDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
+            outboundProductDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentCode(),stockFlow.getSkuCode());
+            stockFlowDao.updateStockCost(log.getTaxCost(),stockFlow.getDocumentCode(),stockFlow.getSkuCode());
         }else{
-            outboundProductDao.updateStockCost(todayLog.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
-            stockFlowDao.updateStockCost(todayLog.getTaxCost(),stockFlow.getDocumentNum(),stockFlow.getSkuCode());
+            outboundProductDao.updateStockCost(todayLog.getTaxCost(),stockFlow.getDocumentCode(),stockFlow.getSkuCode());
+            stockFlowDao.updateStockCost(todayLog.getTaxCost(),stockFlow.getDocumentCode(),stockFlow.getSkuCode());
         }
     }
 

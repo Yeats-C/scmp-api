@@ -111,19 +111,20 @@
              b.order_original_name orderOriginal,
              b.customer_name customerName,
              b.customer_code customerCode,
-             1 as uniqueCode,
+      a.unique_code as uniqueCode,
              a.sku_name skuName,
              a.sku_code skuCode,
              a.spec spec,
              a.unit_name unitName,
              a.price price,
              a.amount amount,
+             a.num num,
              b.order_code orderCode,
              b.transport_center_name transportCenterName,
              b.warehouse_name warehouseName,
              a.give_promotion givePromotion,
              b.create_date createDate,
-             '1' as status,
+      b.order_status as status,
              b.create_by_name createByName,
              b.create_time createTime,
              b.update_by_name updateByName,
@@ -145,10 +146,10 @@
         and b.warehouse_code = #{warehouseCode}
       </if>
       <if test="storeName != null and storeName != ''">
-        and b.customer_name like concat('%',#{storeName},'%')
+        and b.store_name like concat('%',#{storeName},'%')
       </if>
       <if test="storeCode != null and storeCode != ''">
-        and b.customer_code like concat('%',#{storeCode},'%')
+        and b.store_code like concat('%',#{storeCode},'%')
       </if>
       <if test="skuName != null and skuName != ''">
         and a.sku_name like concat('%',#{skuName},'%')
@@ -159,9 +160,10 @@
       <if test="orderCode != null and orderCode != ''">
         and b.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
-<!--      <if test="uniqueCode != null and uniqueCode != ''">-->
-<!--        and a.unique_code = #{uniqueCode}-->
-<!--      </if>-->
+      <if test="uniqueCode != null and uniqueCode != ''">
+        and a.unique_code = #{uniqueCode}
+      </if>
+      and a.unique_code != ''
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from order_info_item
@@ -409,7 +411,7 @@
       model, model_code, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, batch_number, price, num,
       amount, activity_apportionment, preferential_allocation, actual_deliver_num, activity_code, product_line_num,
       promotion_line_num, return_num, company_name, company_code, channel_unit_price, total_channel_price,
-      actual_channel_unit_price, actual_total_channel_price, actual_amount, actual_price, tax)
+      actual_channel_unit_price, actual_total_channel_price, actual_amount, actual_price, tax, supplier_code, supplier_name, unique_code)
     values
     <foreach collection="list" open="" close="" item="item" separator=",">
      (#{item.orderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR},
@@ -423,7 +425,8 @@
       #{item.promotionLineNum,jdbcType=BIGINT}, #{item.returnNum,jdbcType=BIGINT}, #{item.companyName,jdbcType=VARCHAR},
       #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=DECIMAL}, #{item.totalChannelPrice,jdbcType=DECIMAL},
       #{item.actualChannelUnitPrice,jdbcType=DECIMAL}, #{item.actualTotalChannelPrice,jdbcType=DECIMAL},
-      #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL})
+      #{item.actualAmount,jdbcType=DECIMAL}, #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL},
+      #{item.supplierCode,jdbcType=VARCHAR},#{item.supplierName,jdbcType=VARCHAR},#{item.uniqueCode,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem">
@@ -612,7 +615,12 @@
     select
     order_code as orderCode, sku_code as skuCode, sku_name as skuName, product_line_num as productLineNum,
     actual_channel_unit_price as actualChannelUnitPrice, actual_total_channel_price as actualTotalChannelPrice,
-    actual_amount as actualAmount, actual_price as actualPrice
+    actual_amount as actualAmount, actual_price as actualPrice,
+    color_name as colorName, spec, model, unit_name as unitName, give_promotion as givePromotion,
+    channel_unit_price as channelUnitPrice, price, num, activity_apportionment as activityApportionment,
+    preferential_allocation as preferentialAllocation, actual_deliver_num as actualDeliverNum,
+    promotion_line_num as promotionLineNum, return_num as returnNum, activity_code as activityCode,
+    supplier_code as supplierCode, supplier_name as supplierName, tax
     from order_info_item
     where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
@@ -651,9 +659,24 @@
         <if test="item.actualPrice != null and item.actualPrice != ''">
           actual_price = #{item.actualPrice,jdbcType=DECIMAL},
         </if>
+        <if test="item.uniqueCode != null and item.uniqueCode != ''">
+          unique_code = #{item.uniqueCode,jdbcType=VARCHAR},
+        </if>
       </set>
       where order_code = #{item.orderCode,jdbcType=VARCHAR}
       and product_line_num = #{item.productLineNum,jdbcType=BIGINT}
     </foreach>
   </update>
+    <select id="selectByOrderCodes" resultType="java.lang.String">
+      select
+      order_code
+      from
+      order_info_item
+      where
+      order_code in
+      <foreach collection="list" item="item" open="(" close=")" separator=",">
+        #{item,jdbcType=VARCHAR}
+      </foreach>
+
+    </select>
 </mapper>

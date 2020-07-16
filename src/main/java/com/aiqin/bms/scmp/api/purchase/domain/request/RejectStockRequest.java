@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request;
 
+import com.aiqin.bms.scmp.api.purchase.domain.RejectRecordBatch;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,32 +8,6 @@ import lombok.Data;
 import java.util.Date;
 import java.util.List;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Data
 public class RejectStockRequest {
 
@@ -40,12 +15,16 @@ public class RejectStockRequest {
     @JsonProperty("reject_record_code")
     private String rejectRecordCode;
 
-    @ApiModelProperty(value = "")
-    @JsonProperty("out_stock_time")
-    private Date outStockTime;
+    @ApiModelProperty(value = "批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
+    @JsonProperty("batch_manage")
+    private Integer batchManage;
 
-    @ApiModelProperty(value = "")
+    @ApiModelProperty(value = "回传商品信息")
     @JsonProperty("detail_list")
     private List<RejectDetailStockRequest> detailList;
+
+    @ApiModelProperty(value = "回传批次")
+    @JsonProperty("batch_list")
+    private List<RejectRecordBatch> batchList;
 
 }

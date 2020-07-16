@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.product.web.outbound;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
-import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
@@ -21,19 +20,14 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 /**
- * 描述:
- *
  * @author Kt.w
  * @date 2019/1/5
- * @Version 1.0
- * @since 1.0
  */
 @Slf4j
 @RestController
@@ -92,15 +86,8 @@ public class OutboundController {
 
     @ApiOperation("出库单回调接口")
      @PostMapping("/workFlowCallBack")
-    public HttpResponse<Integer> workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo){
-        log.error(" 出库单回调接口错误实体是:[{}]", JSON.toJSONString(reqVo));
-        try {
-            reqVo.setOutboundTime(new DateTime(new Long(reqVo.getDateTime())).toDate());
-            int s = outboundService.workFlowCallBack(reqVo);
-            return HttpResponse.success(s);
-        } catch (Exception e) {
-            return HttpResponse.failure(ResultCode.OUTBOUND_SAVE_ERROR);
-        }
+    public HttpResponse workFlowCallBack(@RequestBody OutboundCallBackReqVo reqVo) {
+        return HttpResponse.success(outboundService.workFlowCallBack(reqVo));
     }
 
     @ApiOperation("根据出库单号查询出库商品批次详情")
@@ -113,16 +100,15 @@ public class OutboundController {
 
     @ApiOperation("pushWms")
     @GetMapping("/pushWms")
-    public HttpResponse pushWms(String code){
-        try {
-            outboundService.pushWms(code);
-            return HttpResponse.success();
-        } catch (Exception e) {
-            log.error("入库单回调接口错误实体是:[{}]", code);
-            log.error(Global.ERROR, e);
-            return HttpResponse.failure(ResultCode.RETURNINOUTBOUNDFAIL);
-        }
+    public HttpResponse pushWms(String code) {
+        outboundService.pushRejectWms(code);
+        return HttpResponse.success();
     }
 
-
+    @ApiOperation("出库回调根据类型回传给来源单号状态测试")
+    @PostMapping("/returnSource/test")
+    public HttpResponse returnSource(@RequestBody OutboundCallBackReqVo requestVo) {
+        outboundService.returnSource(5980L,requestVo);
+        return HttpResponse.success();
+    }
 }

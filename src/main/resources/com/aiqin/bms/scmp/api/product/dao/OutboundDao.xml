@@ -72,24 +72,24 @@
       AND create_time &lt;=#{createEndTime,jdbcType=TIMESTAMP}
     </if>
     <if test="outboundOderCode != null and outboundOderCode != '' ">
-      AND outbound_oder_code  LIKE  CONCAT(CONCAT('%',#{outboundOderCode},'%'))
+      AND outbound_oder_code LIKE CONCAT(#{outboundOderCode},'%')
     </if>
     <if test="outboundTypeCode != null">
       AND outbound_type_code = #{outboundTypeCode}
     </if>
     <if test="logisticsCenterName != null and logisticsCenterName != ''">
-      AND logistics_center_name LIKE  CONCAT(CONCAT('%',#{logisticsCenterName},'%'))
+      AND logistics_center_name LIKE CONCAT(#{logisticsCenterName},'%')
     </if>
     <if test="warehouseName != null and warehouseName != '' ">
-      AND warehouse_name LIKE  CONCAT(CONCAT('%',#{warehouseName},'%'))
+      AND warehouse_name LIKE CONCAT(#{warehouseName},'%')
     </if>
     <if test="supplierName != null and supplierName != ''">
-      AND supplier_name LIKE  CONCAT(CONCAT('%',#{supplierName},'%'))
+      AND supplier_name LIKE CONCAT(,#{supplierName},'%')
     </if>
     <if test="outboundStatusCode != null">
       AND outbound_status_code = #{outboundStatusCode}
     </if>
-    order by create_time desc
+    order by id desc
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
@@ -97,35 +97,21 @@
     from outbound
     where id = #{id,jdbcType=BIGINT}
   </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from outbound
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-
   <select id="selectByCode" parameterType="java.lang.String" resultMap="BaseResultMap">
     select
     <include refid="Base_Column_List" />
     from outbound
     where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
   </select>
-
-  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
-    insert into outbound (id, company_code, company_name, 
-      outbound_status_code, outbound_status_name, 
-      outbound_oder_code, outbound_type_code, outbound_type_name, 
-      source_oder_code, outbound_time, logistics_center_code, 
-      logistics_center_name, warehouse_code, warehouse_name, 
-      supplier_code, supplier_name, pre_arrival_time, 
-      wms_document_code, pre_outbound_num, pre_main_unit_num, 
-      pre_tax_amount, pre_amount, pre_tax, 
-      pra_outbound_num, pra_main_unit_num, pra_tax_amount, 
-      pra_amount, pra_tax, consignee, 
-      consignee_number, consignee_rate, province_code, 
-      province_name, city_code, city_name, 
-      county_code, county_name, detailed_address, 
-      create_by, create_time, update_by, 
-      update_time)
-    values (#{id,jdbcType=BIGINT}, #{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR}, 
+  <insert id="insert">
+    insert into outbound (company_code, company_name, outbound_status_code, outbound_status_name, outbound_oder_code,
+      outbound_type_code, outbound_type_name, source_oder_code, outbound_time, logistics_center_code,
+      logistics_center_name, warehouse_code, warehouse_name, supplier_code, supplier_name, pre_arrival_time,
+      wms_document_code, pre_outbound_num, pre_main_unit_num, pre_tax_amount, pre_amount, pre_tax,
+      pra_outbound_num, pra_main_unit_num, pra_tax_amount, pra_amount, pra_tax, consignee,
+      consignee_number, consignee_rate, province_code, province_name, city_code, city_name,
+      county_code, county_name, detailed_address, create_by, create_time, update_by, update_time)
+    values (#{companyCode,jdbcType=VARCHAR}, #{companyName,jdbcType=VARCHAR},
       #{outboundStatusCode,jdbcType=TINYINT}, #{outboundStatusName,jdbcType=VARCHAR}, 
       #{outboundOderCode,jdbcType=VARCHAR}, #{outboundTypeCode,jdbcType=TINYINT}, #{outboundTypeName,jdbcType=VARCHAR}, 
       #{sourceOderCode,jdbcType=VARCHAR}, #{outboundTime,jdbcType=TIMESTAMP}, #{logisticsCenterCode,jdbcType=VARCHAR}, 
@@ -138,8 +124,7 @@
       #{consigneeNumber,jdbcType=VARCHAR}, #{consigneeRate,jdbcType=VARCHAR}, #{provinceCode,jdbcType=VARCHAR}, 
       #{provinceName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, #{cityName,jdbcType=VARCHAR}, 
       #{countyCode,jdbcType=VARCHAR}, #{countyName,jdbcType=VARCHAR}, #{detailedAddress,jdbcType=VARCHAR}, 
-      #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
-      #{updateTime,jdbcType=TIMESTAMP})
+      #{createBy,jdbcType=VARCHAR}, NOW(), #{updateBy,jdbcType=VARCHAR}, NOW())
   </insert>
   <insert id="insertSelective"  parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
     insert into outbound
@@ -421,7 +406,7 @@
       #{item.updateTime,jdbcType=TIMESTAMP});
     </foreach>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
+    <update id="update">
     update outbound
     <set>
       <if test="companyCode != null">
@@ -542,50 +527,6 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
-    update outbound
-    set company_code = #{companyCode,jdbcType=VARCHAR},
-      company_name = #{companyName,jdbcType=VARCHAR},
-      outbound_status_code = #{outboundStatusCode,jdbcType=TINYINT},
-      outbound_status_name = #{outboundStatusName,jdbcType=VARCHAR},
-      outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR},
-      outbound_type_code = #{outboundTypeCode,jdbcType=TINYINT},
-      outbound_type_name = #{outboundTypeName,jdbcType=VARCHAR},
-      source_oder_code = #{sourceOderCode,jdbcType=VARCHAR},
-      outbound_time = #{outboundTime,jdbcType=TIMESTAMP},
-      logistics_center_code = #{logisticsCenterCode,jdbcType=VARCHAR},
-      logistics_center_name = #{logisticsCenterName,jdbcType=VARCHAR},
-      warehouse_code = #{warehouseCode,jdbcType=VARCHAR},
-      warehouse_name = #{warehouseName,jdbcType=VARCHAR},
-      supplier_code = #{supplierCode,jdbcType=VARCHAR},
-      supplier_name = #{supplierName,jdbcType=VARCHAR},
-      pre_arrival_time = #{preArrivalTime,jdbcType=TIMESTAMP},
-      wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
-      pre_outbound_num = #{preOutboundNum,jdbcType=BIGINT},
-      pre_main_unit_num = #{preMainUnitNum,jdbcType=BIGINT},
-      pre_tax_amount = #{preTaxAmount,jdbcType=DECIMAL},
-      pre_amount = #{preAmount,jdbcType=DECIMAL},
-      pre_tax = #{preTax,jdbcType=DECIMAL},
-      pra_outbound_num = #{praOutboundNum,jdbcType=BIGINT},
-      pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
-      pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
-      pra_amount = #{praAmount,jdbcType=DECIMAL},
-      pra_tax = #{praTax,jdbcType=DECIMAL},
-      consignee = #{consignee,jdbcType=VARCHAR},
-      consignee_number = #{consigneeNumber,jdbcType=VARCHAR},
-      consignee_rate = #{consigneeRate,jdbcType=VARCHAR},
-      province_code = #{provinceCode,jdbcType=VARCHAR},
-      province_name = #{provinceName,jdbcType=VARCHAR},
-      city_code = #{cityCode,jdbcType=VARCHAR},
-      city_name = #{cityName,jdbcType=VARCHAR},
-      county_code = #{countyCode,jdbcType=VARCHAR},
-      county_name = #{countyName,jdbcType=VARCHAR},
-      detailed_address = #{detailedAddress,jdbcType=VARCHAR},
-      update_by = #{updateBy,jdbcType=VARCHAR},
-      update_time = now()
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-
   <select id="selectOutboundInfoByBoundSearch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.BoundRequest"
           resultMap="BaseResultMap" resultType="com.aiqin.bms.scmp.api.product.domain.pojo.Outbound">
     select
@@ -602,65 +543,6 @@
         and warehouse_code = #{warehouseCode, jdbcType=VARCHAR}
       </if>
     </where>
-  </select>
-
-  <select id="selectUpdateStockInfoBySourceOrderCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.UpdateStockReqVo">
-          SELECT
-            a.company_code as companyCode,
-            a.supplier_code as supplyCode,
-            a.logistics_center_code as transportCenterCode,
-            a.warehouse_code as warehouseCode,
-            b.sku_code as skuCode,
-            b.pre_outbound_main_num as num,
-            #{arg1, jdbcType=VARCHAR} as stockStatusCode
-        FROM
-            outbound a
-            LEFT JOIN outbound_product b ON a.outbound_oder_code = b.outbound_oder_code
-        WHERE
-            a.source_oder_code = #{arg0, jdbcType=VARCHAR}
-  </select>
-  <update id="updateOutboundInfo" parameterType="com.aiqin.bms.scmp.api.product.domain.request.UpdateOutBoundReqVO">
-    update outbound
-    <set>
-      <if test="stockStatusCode != null">
-        outbound_status_code = #{stockStatusCode,jdbcType=TINYINT},
-      </if>
-      <if test="stockStatusName != null">
-        outbound_status_name = #{stockStatusName,jdbcType=VARCHAR},
-      </if>
-      <if test="wmsDocumentCode != null">
-        wms_document_code = #{wmsDocumentCode,jdbcType=VARCHAR},
-      </if>
-      <if test="praOutboundNum != null">
-        pra_outbound_num = #{praOutboundNum,jdbcType=BIGINT},
-      </if>
-      <if test="praMainUnitNum != null">
-        pra_main_unit_num = #{praMainUnitNum,jdbcType=BIGINT},
-      </if>
-      <if test="praTaxAmount != null">
-        pra_tax_amount = #{praTaxAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="praAmount != null">
-        pra_amount = #{praAmount,jdbcType=DECIMAL},
-      </if>
-      <if test="praTax != null">
-        pra_tax = #{praTax,jdbcType=DECIMAL},
-      </if>
-      <if test="operator != null">
-        update_by = #{operator,jdbcType=VARCHAR},
-      </if>
-      <if test="currentDate != null">
-        update_time = #{currentDate,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where
-    source_oder_code = #{sourceOrderCode, jdbcType=VARCHAR}
-  </update>
-  <select id="selectById" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select
-    <include refid="Base_Column_List" />
-    from outbound
-    where id = #{id,jdbcType=BIGINT}
   </select>
   <select id="listForSap" resultMap="BaseResultMap">
     select
@@ -686,5 +568,16 @@
     <include refid="Base_Column_List" />
     from outbound
     where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+    and outbound_type_code = #{outboundTypeCode,jdbcType=VARCHAR}
+    order by outbound_oder_code desc limit 1
   </select>
+  <select id="selectOutbouondBySourceCode" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from outbound
+    where source_oder_code = #{sourceOderCode,jdbcType=VARCHAR}
+  </select>
+  <update id="updateOutboundSynchrSap">
+    update outbound set synchr_time=#{synchrTime},synchr_status=#{synchrStatus} where source_oder_code = #{sourceOderCode}
+  </update>
 </mapper>

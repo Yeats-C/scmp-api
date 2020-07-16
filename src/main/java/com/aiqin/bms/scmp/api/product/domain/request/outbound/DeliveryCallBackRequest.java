@@ -19,8 +19,7 @@ import java.util.List;
 @Api("发运单信息")
 public class DeliveryCallBackRequest {
 
-    @ApiModelProperty("发运单号")
-    @NotEmpty(message = "发运单号不能为空")
+    @ApiModelProperty("发运单号(物流单号)")
     @JsonProperty("delivery_code")
     private String deliveryCode;
 
@@ -45,6 +44,14 @@ public class DeliveryCallBackRequest {
     @JsonProperty("transport_amount")
     private BigDecimal transportAmount;
 
+    @ApiModelProperty("标准物流费用")
+    @JsonProperty("standard_logistics_fee")
+    private BigDecimal standardLogisticsFee;
+
+    @ApiModelProperty("选加物流费用")
+    @JsonProperty("additional_logistics_fee")
+    private BigDecimal additionalLogisticsFee;
+
     @ApiModelProperty("物流公司编码")
     @JsonProperty("transport_company_code")
     private String transportCompanyCode;
@@ -53,7 +60,7 @@ public class DeliveryCallBackRequest {
     @JsonProperty("transport_company_name")
     private String transportCompanyName;
 
-    @ApiModelProperty("物流单号")
+    @ApiModelProperty("物流公司单号")
     @JsonProperty("transport_code")
     private String transportCode;
 
@@ -64,6 +71,30 @@ public class DeliveryCallBackRequest {
     @ApiModelProperty(value = "发货仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
+
+    @ApiModelProperty("发货至（传中文-1.收货人地址 2.货运站）")
+    @JsonProperty("deliver_to")
+    private String deliverTo;
+
+    @ApiModelProperty("发货至（传状态-1.收货人地址 2.货运站）")
+    @JsonProperty("deliver_to_code")
+    private String deliverToCode;
+
+    @ApiModelProperty("包装数")
+    @JsonProperty("packing_num")
+    private Long packingNum;
+
+    @ApiModelProperty("订单商品总件数")
+    @JsonProperty("order_commodity_num")
+    private Long orderCommodityNum;
+
+    @ApiModelProperty("总体积")
+    @JsonProperty("total_volume")
+    private BigDecimal totalVolume;
+
+    @ApiModelProperty("总重量")
+    @JsonProperty("total_weight")
+    private BigDecimal totalWeight;
 
     @ApiModelProperty("发运单明细")
     @JsonProperty("detail_list")

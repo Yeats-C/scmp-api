@@ -6,16 +6,15 @@ import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.ManualChoseProductReq;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationImportSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.ManualChoseProductRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.supplier.domain.response.allocation.AllocationItemRespVo;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -75,6 +74,7 @@ public class AllocationController {
         try {
             vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
             vo.setAllocationTypeName(AllocationTypeEnum.ALLOCATION.getTypeName());
+            log.info("新增调拨单参数参数{}", JsonUtil.toJson(vo));
             return HttpResponse.success(allocationService.save(vo));
         }catch (BizException ex){
             return HttpResponse.failure(ex.getMessageId());
@@ -138,12 +138,22 @@ public class AllocationController {
         }
     }
 
-    @ApiOperation("wms返回id")
+    @ApiOperation("wms返回调拨出库完成生成入库调用wms推送")
     @GetMapping("/updateWmsStatus")
-    public HttpResponse<Integer> updateWmsStatus( @RequestParam @ApiParam(value = "状态编码",required = true) Byte status ,
-                                               @RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
+    public HttpResponse<Integer> updateWmsStatus(@RequestParam @ApiParam(value = "调拨单code",required = true) String allocationCode){
         try {
-            return HttpResponse.success(allocationService. updateWmsStatus(status,allocationCode));
+            return HttpResponse.success(allocationService. updateWmsStatus(allocationCode));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
+        }
+    }
+
+    @ApiOperation("wms调拨出库回传更新调拨数据")
+    @PostMapping("/updateWmsStatus")
+    public HttpResponse updateWmsAllocation(@RequestBody AllocationRequest request){
+        try {
+            return HttpResponse.success(allocationService. allocationWms(request));
         } catch (Exception e) {
             log.error(Global.ERROR, e);
             return HttpResponse.failure(ResultCode.ALLOCATION_RETURN_REVOCATION_ERROR);
@@ -166,8 +176,8 @@ public class AllocationController {
     @GetMapping("/getNumberByBatchAndSkuCode")
     @ApiOperation("根据批次号sku获取该批次sku的库存数量")
     public HttpResponse<StockBatch> getNumberByBatchAndSkuCode(@RequestParam @ApiParam(value = "sku编码",required = true) String skuCode,
-                                                               @RequestParam @ApiParam(value = "批次号",required = true) String batchCode){
-        return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchCode));
+                                                               @RequestParam @ApiParam(value = "批次编码",required = true) String batchInfoCode){
+        return HttpResponse.success(allocationService.getNumberByBatchAndSkuCode(skuCode,batchInfoCode));
     }
 
     @GetMapping("/getManualChoseProduct")
@@ -186,20 +196,20 @@ public class AllocationController {
             @ApiImplicitParam(name = "page_no", value = "当前页", type = "String"),
             @ApiImplicitParam(name = "page_size", value = "当前条数", type = "String"),
     })
-    public HttpResponse<BasePage<ManualChoseProductReq>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
-                                                                               @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
-                                                                               @RequestParam(value = "purchase_group_code",required = false) String purchaseGroupCode,
-                                                                               @RequestParam(value = "sku_code",required = false) String skuCode,
-                                                                               @RequestParam(value = "sku_name",required = false) String skuName,
-                                                                               @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
-                                                                               @RequestParam(value = "product_category_code",required = false) String productCategoryCode,
-                                                                               @RequestParam(value = "product_property_code",required = false) String productPropertyCode,
-                                                                               @RequestParam(value = "spu_code",required = false) String spuCode,
-                                                                               @RequestParam(value = "spu_name",required = false) String spuName,
-                                                                               @RequestParam(value = "page_no",required = false) Integer pageNo,
-                                                                               @RequestParam(value = "page_size",required = false) Integer pageSize){
+    public HttpResponse<BasePage<ManualChoseProductRespVo>> getManualChoseProduct(@RequestParam(value = "transport_center_code",required = false) String transportCenterCode,
+                                                                                  @RequestParam(value = "warehouse_code",required = false) String warehouseCode,
+                                                                                  @RequestParam(value = "sku_code",required = false) String skuCode,
+                                                                                  @RequestParam(value = "sku_name",required = false) String skuName,
+                                                                                  @RequestParam(value = "product_brand_code",required = false) String productBrandCode,
+                                                                                  @RequestParam(value = "product_category_code",required = false) String productCategoryCode,
+                                                                                  @RequestParam(value = "product_property_code",required = false) String productPropertyCode,
+                                                                                  @RequestParam(value = "spu_code",required = false) String spuCode,
+                                                                                  @RequestParam(value = "spu_name",required = false) String spuName,
+                                                                                  @RequestParam(value = "page_no",required = false) Integer pageNo,
+                                                                                  @RequestParam(value = "page_size",required = false) Integer pageSize){
         ManualChoseProductReq m = new ManualChoseProductReq();
-        m.setPurchaseGroupCode(purchaseGroupCode);
+        m.setTransportCenterCode(transportCenterCode);
+        m.setWarehouseCode(warehouseCode);
         m.setSkuCode(skuCode);
         m.setSkuName(skuName);
         m.setProductBrandCode(productBrandCode);

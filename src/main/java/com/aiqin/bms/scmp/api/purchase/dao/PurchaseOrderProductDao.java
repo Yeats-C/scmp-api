@@ -1,7 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrder;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderProduct;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.PurchaseApplyDetailResponse;
@@ -21,8 +20,6 @@ public interface PurchaseOrderProductDao {
 
     Integer purchaseOrderCount(PurchaseOrderProductRequest request);
 
-    List<PurchaseOrderProduct> orderBySku(String purchaseOrderId);
-
     PurchaseApplyDetailResponse  warehousingInfo(@Param("purchaseOrderCode")String purchaseOrderCode,@Param("linnum") Integer linnum);
 
     List<PurchaseOrderProduct> orderProductInfo(String purchaseOrderId);
@@ -31,9 +28,11 @@ public interface PurchaseOrderProductDao {
 
     PurchaseOrderProduct selectPreNumAndPraNumBySkuCodeAndSource(@Param("code")String code, @Param("skuCode")String skuCode, @Param("linnum")Integer linnum);
 
-    List<PurchaseApplyDetailResponse> orderProductInfoByGroup(String purchaseOrderId);
+    List<PurchaseOrderProduct> orderProductByGroup(String purchaseOrderId);
 
     List<PurchaseApplyDetailResponse> orderProductList(String purchaseOrderId);
 
     List<PurchaseOrderProduct> listForSap(SapOrderRequest sapOrderRequest);
+
+    List<String> selectByPurchaseOrderList(@Param("list") List<String> list);
 }

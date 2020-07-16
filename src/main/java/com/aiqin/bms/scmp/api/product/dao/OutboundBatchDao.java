@@ -12,9 +12,22 @@ public interface OutboundBatchDao {
 
     Integer countOutboundBatchInfoByOutboundOderCode(String outboundOderCode);
 
-    Integer insertInfo(@Param("list")List<OutboundBatch> outboundBatches);
-
-    Integer insertList(List<OutboundBatch> list);
+    Integer insertAll(@Param("list")List<OutboundBatch> list);
 
     List<OutboundBatch> listByOrderCode(SapOrderRequest sapOrderRequest);
+
+    OutboundBatch selectBatchInfoByLineCode(@Param("outboundOderCode") String outboundOderCode,
+                                            @Param("batchCode") String batchCode,
+                                            @Param("lineCode") Long lineCode,
+                                            @Param("skuCode") String skuCode);
+
+    Integer update(OutboundBatch outboundBatch);
+
+    List<OutboundBatch> selectByOutboundBatchOderCode(String outboundOderCode);
+
+    List<OutboundBatch> outboundBatchBySap(@Param("skuCode") String skuCode,
+                                           @Param("outboundOderCode") String outboundOderCode,
+                                           @Param("lineCode") Long lineCode);
+
+
 }

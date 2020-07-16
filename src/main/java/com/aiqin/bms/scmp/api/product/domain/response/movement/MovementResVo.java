@@ -47,11 +47,11 @@ public class MovementResVo {
     @ApiModelProperty("调入库房名称")
     private String callInWarehouseName;
 
-    @ApiModelProperty("采购组编码")
-    private String purchaseGroupCode;
+ //   @ApiModelProperty("采购组编码")
+ //   private String purchaseGroupCode;
 
-    @ApiModelProperty("采购组名称")
-    private String purchaseGroupName;
+ //   @ApiModelProperty("采购组名称")
+ //   private String purchaseGroupName;
 
     @ApiModelProperty("负责人")
     private String principal;
@@ -126,6 +126,12 @@ public class MovementResVo {
 
     @ApiModelProperty("承担单位名称")
     private String undertakingUnitName;
+
+    @ApiModelProperty(value = "移库模式（1，我方发起 2，wms方发起）")
+    private Integer movementPatternType;
+
+    @ApiModelProperty(value = "移库模式")
+    private String movementPatternName;
 
     @ApiModelProperty("sku")
     private List<AllocationProductResVo> skuList;

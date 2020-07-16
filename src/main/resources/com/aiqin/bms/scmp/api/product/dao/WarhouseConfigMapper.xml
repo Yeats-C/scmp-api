@@ -97,13 +97,13 @@
     </select>
     <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
         select distinct
-        s.warehouse_name warehouseName,
-        s.warehouse_code warehouseCode,
-        s.warehouse_type warehouseType,
-        s.transport_center_code stockName,
-        s.transport_center_name stockCode
-        from stock s inner join warehouse w  on  s.warehouse_code=w.warehouse_code and s.transport_center_code =w.logistics_center_code
-        where s.warehouse_code = #{warehouseCode,jdbcType=BIGINT}
+        warehouse_name warehouseName,
+        warehouse_code warehouseCode,
+        warehouse_type_code warehouseType,
+        logistics_center_code stockCode,
+        logistics_center_name stockName
+        from warehouse
+        where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
 
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">

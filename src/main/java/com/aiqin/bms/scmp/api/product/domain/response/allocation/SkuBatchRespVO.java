@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -31,6 +32,10 @@ public class SkuBatchRespVO {
     @JsonProperty("batch_code")
     private String warehouseBatchNumber;
 
+    @ApiModelProperty("批次编码（唯一）")
+    @JsonProperty("batch_info_code")
+    private String batchInfoCode;
+
     @ApiModelProperty("仓库编码")
     @JsonProperty("transport_center_code")
     private String transportCenterCode;
@@ -52,12 +57,28 @@ public class SkuBatchRespVO {
     private String batchRemark;
 
     @ApiModelProperty("可用库存")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long availableNum;
 
     @ApiModelProperty("生产日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @JsonProperty("production_date")
     private Date productTime;
+
+    @ApiModelProperty("供应商code")
+    @JsonProperty(value = "supplier_code")
+    private String supplierCode;
+
+    @ApiModelProperty("库位号")
+    @JsonProperty(value = "location_code")
+    private String locationCode;
+
+    @ApiModelProperty("税率")
+    @JsonProperty("tax_rate")
+    private BigDecimal taxRate;
+
+    @ApiModelProperty("成本")
+    @JsonProperty("tax_cost")
+    private BigDecimal taxCost;
 
 }

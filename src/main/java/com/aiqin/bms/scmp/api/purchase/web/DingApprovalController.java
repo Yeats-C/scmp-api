@@ -1,15 +1,29 @@
 package com.aiqin.bms.scmp.api.purchase.web;
 
+import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.PageResData;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.AllocationTypeEnum;
 import com.aiqin.bms.scmp.api.common.BizException;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.product.apply.ProductApplyInfoRespVO;
+import com.aiqin.bms.scmp.api.product.domain.request.allocation.QueryAllocationReqVo;
+import com.aiqin.bms.scmp.api.product.domain.request.movement.QueryMovementReqVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.AllocationResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.allocation.QueryAllocationResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.ProductSkuChangePriceRespVO;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.MovementResVo;
+import com.aiqin.bms.scmp.api.product.domain.response.movement.QueryMovementResVo;
+import com.aiqin.bms.scmp.api.product.service.AllocationService;
+import com.aiqin.bms.scmp.api.product.service.MovementService;
 import com.aiqin.bms.scmp.api.product.service.ProductApplyService;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.purchase.domain.PurchaseApplyTransportCenter;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseNewContrastRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseOrderProductRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.RejectApplyRecordDetail;
+import com.aiqin.bms.scmp.api.purchase.domain.request.reject.RejectApplyQueryRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectApplyAndTransportResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseApplyService;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
@@ -26,10 +40,7 @@ import com.aiqin.platform.flows.client.service.FormDetailService;
 import com.aiqin.platform.flows.client.service.FormFileService;
 import com.aiqin.platform.flows.client.service.FormMsgService;
 import com.aiqin.platform.flows.client.service.FormOperateService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiModelProperty;
-import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.apache.poi.ss.formula.functions.T;
@@ -74,6 +85,10 @@ public class DingApprovalController {
     private PurchaseManageService purchaseManageService;
     @Resource
     private ProductSkuChangePriceService productSkuChangePriceService;
+    @Resource
+    private AllocationService allocationService;
+    @Resource
+    private MovementService movementService;
 
     @PostMapping("/apply/detail")
     @ApiOperation("查看供应商申请详情")
@@ -106,12 +121,12 @@ public class DingApprovalController {
         }
     }
 
-    @GetMapping("/record/approval/{approval_code}")
-    @ApiOperation(value = "通过审批关联查询退供单详情")
-    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
-    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
-        return goodsRejectService.applyRejectInfo(approval_code);
-    }
+//    @GetMapping("/record/approval/{approval_code}")
+//    @ApiOperation(value = "通过审批关联查询退供单详情")
+//    @ApiImplicitParam(name = "approval_code", value = "审批单code", type = "String")
+//    public HttpResponse<RejectResponse> applyRejectInfo(@PathVariable String approval_code) {
+//        return goodsRejectService.applyRejectInfo(approval_code);
+//    }
 
     @GetMapping("/purchase/details/apply")
     @ApiOperation("查询采购申请单-采购通用信息")
@@ -299,6 +314,101 @@ public class DingApprovalController {
             return HttpResponse.failure(ex.getMessageId());
         }catch (Exception e) {
             return HttpResponse.failure(ResultCode.FILE_DOWN_ERROR);
+        }
+    }
+
+    @GetMapping("/reject/apply/info")
+    @ApiOperation(value = "退供申请单查询(退供信息、分仓信息)")
+    public HttpResponse<RejectApplyAndTransportResponse> selectRejectApply(@RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+                                                                           @RequestParam(value = "warehouse_code", required = false) String warehouseCode) {
+        return goodsRejectService.selectRejectApply(rejectApplyRecordCode, warehouseCode);
+    }
+
+    @GetMapping("/reject/apply/product")
+    @ApiOperation(value = "退供申请单商品查询")
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyProduct(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize){
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyProduct(request);
+    }
+
+    @GetMapping("/reject/apply/batch")
+    @ApiOperation(value = "退供申请单批次查询")
+    public HttpResponse<PageResData<RejectApplyRecordDetail>> selectRejectApplyBatch(
+            @RequestParam("reject_apply_record_code") String rejectApplyRecordCode,
+            @RequestParam(value = "page_no", required = false) Integer pageNo,
+            @RequestParam(value = "page_size", required = false) Integer pageSize) {
+        RejectApplyQueryRequest request = new RejectApplyQueryRequest();
+        request.setRejectApplyRecordCode(rejectApplyRecordCode);
+        request.setPageNo(pageNo);
+        request.setPageSize(pageSize);
+        return goodsRejectService.selectRejectApplyBatch(request);
+    }
+
+    /**
+     * 调拨单列表详情
+     * @return
+     */
+    @ApiOperation("调拨单列表")
+    @PostMapping("/product/allocation/list")
+    public HttpResponse<BasePage<QueryAllocationResVo>> getList(@RequestBody QueryAllocationReqVo vo) {
+        vo.setAllocationType(AllocationTypeEnum.ALLOCATION.getType());
+        try {
+            return HttpResponse.success(allocationService.getList(vo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 通过id返回调拨单详情
+     * @param id
+     * @return
+     */
+    @ApiOperation("通过id返回调拨单详情")
+    @GetMapping("/product/allocation/view")
+    public HttpResponse<AllocationResVo> allocationView(@RequestParam @ApiParam(value = "传入id",required = true)Long id) {
+        try {
+            return HttpResponse.success(allocationService. view(id));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 移库列表详情
+     * @return
+     */
+    @ApiOperation("移库列表")
+    @PostMapping("/product/movement/list")
+    public HttpResponse<BasePage<QueryMovementResVo>> getList(@RequestBody QueryMovementReqVo vo) {
+        try {
+            return HttpResponse.success(movementService.getList(vo));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+        }
+    }
+
+    /**
+     * 查看移库单详情
+     * @return
+     */
+    @ApiOperation("通过id返回移库单详情")
+    @GetMapping("/product/movement/view")
+    public HttpResponse<MovementResVo> movementView(Long id) {
+        try {
+            return HttpResponse.success(movementService.view(id));
+        } catch (Exception e) {
+            log.error(Global.ERROR, e);
+            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
 }

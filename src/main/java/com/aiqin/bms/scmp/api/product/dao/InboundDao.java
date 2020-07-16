@@ -1,24 +1,18 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
-import com.aiqin.bms.scmp.api.purchase.domain.PurchaseOrderDetails;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
 public interface InboundDao {
 
-
-    /**
-     * 分页查询模糊搜索
-     * @param vo  请求实体
-     * @return  入库单主体
-     */
+    /**分页查询模糊搜索*/
     List<Inbound> getInboundList(QueryInboundReqVo vo);
+
     int deleteByPrimaryKey(Long id);
 
     int insert(Inbound record);
@@ -34,26 +28,25 @@ public interface InboundDao {
     List<Inbound> selectInboundInfoByBoundSearch(BoundRequest boundRequest);
 
     Inbound selectByCode(String inboundOderCode);
-    /**
-     * 批量保存入库信息
-     * @author NullPointException
-     * @date 2019/6/28
-     * @param inboundList
-     * @return int
-     */
+
+    /*** 批量保存入库信息*/
     int insertBatch(List<Inbound> inboundList);
 
-    Integer selectMaxPurchaseNumBySourceOderCode(String sourceOderCode);
-
     List<Inbound> selectTimeAndSatusBySourchAndNum(@Param("sourceOderCode")String sourceOderCode);
-
-    PurchaseOrderDetails selectCreateById(String inboundOderCode);
-
-    Inbound selectById(String id);
 
     List<Inbound> listForSap(SapOrderRequest sapOrderRequest);
 
     void updateByOrderCodes(List<String> list);
 
-    String cancelById(String code);
+    ///String cancelById(String code);
+
+    Inbound inboundCodeOrderLast(@Param("sourceOderCode")String sourceOderCode,
+                                 @Param("inboundTypeCode")String inboundTypeCode);
+
+    /** 调拨/损溢入库同步sap **/
+    void updateInboundSynchrSap(Inbound inbound);
+
+    List<Inbound> inboundBySource(@Param("sourceOderCode")String sourceOderCode,
+                                  @Param("inboundTypeCode")String inboundTypeCode);
+
 }

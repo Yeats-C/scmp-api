@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * @author ch
@@ -15,6 +16,14 @@ import java.math.BigDecimal;
 @Data
 @ApiModel("调拨单选择商品resp")
 public class ManualChoseProductRespVo {
+
+    @ApiModelProperty("仓库编码")
+    @JsonProperty(value = "transport_center_code")
+    private String transportCenterCode;
+
+    @ApiModelProperty("库房编码")
+    @JsonProperty(value = "warehouse_code")
+    private String warehouseCode;
 
     @ApiModelProperty("sku号")
     @JsonProperty(value = "sku_code")
@@ -77,7 +86,7 @@ public class ManualChoseProductRespVo {
     private String productPropertyName;
 
     @ApiModelProperty("可用库存数（选择批次号，数量为批次号数量，未选择批次号数量为商品的库存数）")
-    @JsonProperty("available_num")
+    @JsonProperty("available_count")
     private Long availableNum;
 
     @ApiModelProperty("税率")
@@ -91,6 +100,15 @@ public class ManualChoseProductRespVo {
     @ApiModelProperty("批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
     @JsonProperty("batch_manage")
     private Integer batchManage;
+
+
+    @ApiModelProperty("批次管理 2：部分指定批次模式 商品sku是否指定批次 (0:指定 1:不指定)")
+    @JsonProperty("sku_batch_manage")
+    private Integer skuBatchManage;
+
+    @ApiModelProperty("批次列表")
+    @JsonProperty("sku_batch")
+    private List<SkuBatchRespVO> skuBatchRespVOS;
 
 
 

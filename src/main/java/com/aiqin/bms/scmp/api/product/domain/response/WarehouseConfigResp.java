@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -13,6 +14,7 @@ import java.util.Date;
  * @Description:
  */
 @Data
+@ApiModel("库房配置管理")
 public class WarehouseConfigResp {
     /**
      *
@@ -114,6 +116,10 @@ public class WarehouseConfigResp {
     @ApiModelProperty("对接仓库名称")
     @JsonProperty("counterpart_stock_name")
     private String counterpartStockName;
+
+    @ApiModelProperty("移库类型（0.wms发起移库 1.分别发起移库 2.同时发起移库）")
+    @JsonProperty("movement_type")
+    private Integer movementType;
 
     /**
      * 启用禁用状态

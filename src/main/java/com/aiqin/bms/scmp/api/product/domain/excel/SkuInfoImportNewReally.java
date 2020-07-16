@@ -1,6 +1,5 @@
 package com.aiqin.bms.scmp.api.product.domain.excel;
 
-
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.metadata.BaseRowModel;
 import io.swagger.annotations.ApiModel;

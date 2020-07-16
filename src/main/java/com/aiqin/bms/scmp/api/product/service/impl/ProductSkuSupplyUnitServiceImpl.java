@@ -306,7 +306,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         //设置状态为同步完成
         productSkuSupplyUnitDao.updateBySynStatus(list);
         //保存采购价
-        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(list));
+//        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(list));
     }
 
     @Override
@@ -715,7 +715,7 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                         //供应商产能信息
                         productSkuSupplyUnitCapacityService.saveListForChange(unitList);
                         //保存采购价
-                        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(unitList));
+//                        productSkuPriceInfoService.saveSkuPurchasePriceOfficial(getPriceInfo(unitList));
                     }
                 }
             }
@@ -811,10 +811,10 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     private List<ProductSkuPriceInfo> getPriceInfo(List<ApplyProductSkuSupplyUnit> productSkuSupplyUnits) {
         List<ProductSkuPriceInfo> list = Lists.newArrayList();
         if (CollectionUtils.isNotEmptyCollection(productSkuSupplyUnits)) {
-            QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
-            if (null == purchasePriceProject) {
-                throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
-            }
+//            QueryPriceProjectRespVo purchasePriceProject = priceProjectService.getPurchasePriceProject();
+//            if (null == purchasePriceProject) {
+//                throw new BizException(ResultCode.SKU_PURCHASE_PRICE_IS_EMPTY);
+//            }
             //查询所有的采购组
             Set<String> skuList = Sets.newHashSet();
             productSkuSupplyUnits.forEach(o->{
@@ -833,12 +833,12 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
                 productSkuPriceInfo.setCompanyName(companyName);
                 productSkuPriceInfo.setPurchaseGroupCode(purchaseGroupCode);
                 productSkuPriceInfo.setPurchaseGroupName(purchaseGroupName);
-                productSkuPriceInfo.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
-                productSkuPriceInfo.setPriceItemName(purchasePriceProject.getPriceProjectName());
-                productSkuPriceInfo.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
-                productSkuPriceInfo.setPriceTypeName(purchasePriceProject.getPriceTypeName());
-                productSkuPriceInfo.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
-                productSkuPriceInfo.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
+//                productSkuPriceInfo.setPriceItemCode(purchasePriceProject.getPriceProjectCode());
+//                productSkuPriceInfo.setPriceItemName(purchasePriceProject.getPriceProjectName());
+//                productSkuPriceInfo.setPriceTypeCode(purchasePriceProject.getPriceTypeCode());
+//                productSkuPriceInfo.setPriceTypeName(purchasePriceProject.getPriceTypeName());
+//                productSkuPriceInfo.setPriceAttributeCode(purchasePriceProject.getPriceCategoryCode());
+//                productSkuPriceInfo.setPriceAttributeName(purchasePriceProject.getPriceCategoryName());
                 productSkuPriceInfo.setPriceNoTax(item.getNoTaxPurchasePrice());
                 productSkuPriceInfo.setPriceTax(item.getTaxIncludedPrice());
                 productSkuPriceInfo.setEffectiveTimeStart(new Date());

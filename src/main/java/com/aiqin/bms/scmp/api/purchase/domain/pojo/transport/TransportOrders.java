@@ -1,11 +1,13 @@
 package com.aiqin.bms.scmp.api.purchase.domain.pojo.transport;
 
+import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.aiqin.bms.scmp.api.common.CommonBean;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -28,7 +30,7 @@ public class TransportOrders extends CommonBean {
 
     @ApiModelProperty("订单金额")
 //    @JsonProperty("order_amount")
-    private Long orderAmount;
+    private BigDecimal orderAmount;
 
     @ApiModelProperty("订单状态")
 //    @JsonProperty("status")
@@ -70,4 +72,8 @@ public class TransportOrders extends CommonBean {
     @ApiModelProperty("客户名称")
 //    @JsonProperty("customer_name")
     private String customerName;
+
+//    public void setStatus(Integer status) {
+//        this.status = OrderStatus.getAllStatus().get(status).getBackgroundOrderStatus();
+//    }
 }

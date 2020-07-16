@@ -103,4 +103,14 @@ public class DateUtils {
         DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM");
         return plus.format(df);
     }
+
+    /**
+     *  获取当前年月日
+     */
+    public static String currentDate(){
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+        DateTime dateTime = new DateTime(ca.getTime());
+        return dateTime.toString(PATTERN_DATE);
+    }
 }

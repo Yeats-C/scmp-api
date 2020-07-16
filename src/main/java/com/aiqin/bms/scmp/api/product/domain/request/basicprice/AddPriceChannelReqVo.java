@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotEmpty;
+import java.util.List;
 
 /**
  * @author knight.xie
@@ -14,11 +15,15 @@ import javax.validation.constraints.NotEmpty;
  */
 @ApiModel("新增价格渠道")
 @Data
-public class AddPriceChannelReqVo extends CommonPriceChannelReqVo{
+//public class AddPriceChannelReqVo extends CommonPriceChannelReqVo{
+public class AddPriceChannelReqVo {
     @ApiModelProperty("名称")
     @NotEmpty(message = "名称不能为空")
     private String priceChannelName;
 
     @ApiModelProperty("排序")
     private Integer priceChannelOrder;
+
+    @ApiModelProperty("价格项目列表")
+    private List<CommonPriceChannelReqVo> priceList;
 }

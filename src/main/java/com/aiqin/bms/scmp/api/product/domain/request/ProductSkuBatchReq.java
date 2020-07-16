@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import io.swagger.annotations.ApiModelProperty;
@@ -77,7 +78,7 @@ public class ProductSkuBatchReq {
      * 表字段 : product_sku_batch.warehouse_type
      */
     @ApiModelProperty("库房类型(1.销售库 2.特卖库 3.残品库 4.监管库)")
-    private Boolean warehouseType;
+    private Byte warehouseType;
 
     /**
      * 创建人id
@@ -98,6 +99,7 @@ public class ProductSkuBatchReq {
      * 表字段 : product_sku_batch.create_time
      */
     @ApiModelProperty("创建时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
     /**
@@ -112,6 +114,7 @@ public class ProductSkuBatchReq {
      * 表字段 : product_sku_batch.update_time
      */
     @ApiModelProperty("更新时间")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
     /**

@@ -9,16 +9,18 @@ import io.swagger.annotations.ApiModelProperty;
 
 @ApiModel(value = "分页传输对象")
 public class PagesRequest {
+
     @ApiModelProperty(value = "每页条数")
     @JsonProperty("page_size")
     private Integer pageSize;
+
     @ApiModelProperty(value = "当前页")
     @JsonProperty("page_no")
     private Integer pageNo;
+
     @ApiModelProperty(value = "不用传这个", hidden = true)
     @JsonProperty("page_index")
     private Integer beginIndex;
-
 
     public Integer getPageSize() {
         pageSize = (pageSize == null || pageSize < 1) ? 10 : pageSize;
