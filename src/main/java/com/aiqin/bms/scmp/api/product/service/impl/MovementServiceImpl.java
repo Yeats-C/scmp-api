@@ -274,7 +274,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_4);
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
-//            stockService.dlStockChange(stockChangeDlRequest);
+            LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+            stockService.dlStockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
             inboundService.saveInbound2(inboundReqSave);
@@ -294,7 +295,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDl.setOrderType(Global.DL_ORDER_TYPE_8);
             stockChangeDl.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDl);
-//            stockService.dlStockChange(stockChangeDlRequest);
+            LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
+            stockService.dlStockChange(stockChangeDl);
 
             //生成调拨单
             allocationInsert(addAllocation, type, typeName);
@@ -354,11 +356,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-//            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-//            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-//                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//            }
+            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
         }else if (request.getFlag() == 1){
             // 状态1 要更新调拨单 入库单  入直接加库存
             // 设置移库完成状态
@@ -386,11 +388,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-//            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-//            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-//                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//            }
+            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
         }else {
             // 状态1 要更新调拨单 出入库单 解锁库存  加库存
             finished(allocation1);
@@ -422,11 +424,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-//            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-//            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-//                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//            }
+            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
 
             // 加库存
             // 完成直接加库存。
@@ -446,11 +448,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockChangeDl.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDl);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
-//            HttpResponse responses = stockService.dlStockChange(stockChangeDl);
-//            if (!responses.getCode().equals(MessageId.SUCCESS_CODE)) {
-//                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", responses.getMessage());
-//                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-//            }
+            HttpResponse responses = stockService.dlStockChange(stockChangeDl);
+            if (!responses.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", responses.getMessage());
+                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
+            }
         }
         // 更新移库单状态
         int k = allocationMapper.updateByPrimaryKeySelective(allocation1);
