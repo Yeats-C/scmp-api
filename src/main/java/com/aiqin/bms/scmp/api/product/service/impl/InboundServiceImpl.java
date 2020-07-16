@@ -587,6 +587,10 @@ public class InboundServiceImpl implements InboundService {
             // 查询对应订单的sku
             key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
             InboundProduct product = products.get(key);
+            if(product == null){
+               LOGGER.info("入库单未查询到对应的商品信息：{}", JsonUtil.toJson(inboundProduct));
+               throw new GroundRuntimeException("WMS回传入库单,未查询到对应的商品信息");
+            }
             Long actualTotalCount = inboundProduct.getActualTotalCount();
             product.setPraInboundMainNum(actualTotalCount);
             Long baseContent = product.getInboundBaseContent() == null ? 1L : Long.valueOf(product.getInboundBaseContent());
@@ -1084,22 +1088,23 @@ public class InboundServiceImpl implements InboundService {
                 dlProduct.setProductType(productType);
                 BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(orderProduct.getProductAmount(), orderProduct.getTaxRate());
                 dlProduct.setNotProductAmount(noTaxPrice);
-                dlProductList.add(dlProduct);
+
                 // 查询批次信息
-                List<ScmpPurchaseBatch> batches = purchaseBatchDao.purchaseBatchListBySap(product.getSkuCode(), purchaseOrder.getPurchaseOrderCode(), product.getLinenum().intValue());
+                List<PurchaseBatch> batches = purchaseBatchDao.purchaseBatchList(purchaseOrder.getPurchaseOrderCode(), product.getSkuCode(), product.getLinenum().intValue());
                 if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
                     dlBatchList = Lists.newArrayList();
-                    for (ScmpPurchaseBatch batch : batches){
+                    for (PurchaseBatch batch : batches){
                         dlBatch = new BatchRequest();
                         dlBatch.setLineCode(product.getLinenum().intValue());
                         dlBatch.setSkuCode(product.getSkuCode());
-                        dlBatch.setBatchCode(batch.getBatchNo());
+                        dlBatch.setBatchCode(batch.getBatchCode());
                         dlBatch.setProductDate(batch.getProductDate());
                         dlBatch.setTotalCount(batch.getActualTotalCount());
                         dlBatchList.add(dlBatch);
                     }
                     dlProduct.setBatchList(dlBatchList);
                 }
+                dlProductList.add(dlProduct);
             }
             dlRequest.setProductList(dlProductList);
             LOGGER.info("采购完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));

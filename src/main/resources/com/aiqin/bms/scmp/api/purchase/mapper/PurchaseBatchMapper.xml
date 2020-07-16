@@ -102,7 +102,7 @@
     and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
   </select>
-  <select id="purchaseBtachList" resultMap="BaseResultMap">
+  <select id="purchaseBatchList" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
     from purchase_batch
     where purchase_oder_code = #{purchaseOderCode,jdbcType=VARCHAR}

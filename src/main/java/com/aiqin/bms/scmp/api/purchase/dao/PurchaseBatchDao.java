@@ -25,4 +25,8 @@ public interface PurchaseBatchDao {
 
     Integer listCount(PurchaseOrderProductRequest request);
 
+    List<PurchaseBatch> purchaseBatchList(@Param("purchaseOderCode") String purchaseOderCode,
+                                              @Param("skuCode") String skuCode,
+                                              @Param("lineCode") Integer lineCode);
+
 }
