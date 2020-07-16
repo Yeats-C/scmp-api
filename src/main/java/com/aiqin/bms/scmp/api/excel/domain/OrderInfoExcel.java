@@ -69,7 +69,7 @@ public class OrderInfoExcel extends BaseRowModel {
 
     @ApiModelProperty("实际发货数量")
     @ExcelProperty(index = 17, value = "实发数量")
-    private Long actualProductNum;
+    private BigDecimal actualProductNum;
 
 
     @ApiModelProperty("实际分销总价")
