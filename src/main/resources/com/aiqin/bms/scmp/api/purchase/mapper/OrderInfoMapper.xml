@@ -346,6 +346,7 @@ transport_number, platform_type, business_form, tax_id
              a.zip_code azip_code,
              a.payment_type apayment_type,
              a.deliver_amount adeliver_amount,
+             a.order_amount aorder_amount,
              a.product_num aproduct_num,
              a.payment_time apayment_time,
              a.delivery_time adelivery_time,
