@@ -612,6 +612,18 @@
     from allocation
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectByOutOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from allocation
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByInOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from allocation
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+  </select>
 
   <sql id="Allocation_Column_List">
       a.id, a.allocation_code, a.callout_logistics_center_code,

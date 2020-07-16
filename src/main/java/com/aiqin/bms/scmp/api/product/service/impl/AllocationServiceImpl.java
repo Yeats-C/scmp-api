@@ -1260,7 +1260,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //                        return "调用wms失败";
             return HttpResponse.failure(null,ResultCode.REPEAT_DATA);
         }
-        return null;
+        return HttpResponse.success();
     }
 
     /**

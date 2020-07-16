@@ -91,6 +91,10 @@ public interface AllocationMapper {
      */
     Allocation selectByCode(String allocationCode);
 
+    Allocation selectByOutOrderCode(String outboundOderCode);
+
+    Allocation selectByInOrderCode(String inboundOderCode);
+
 
     /**
      *

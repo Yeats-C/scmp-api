@@ -224,6 +224,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse movementWmsEcho(MovementWmsReq request) {
         try {
             WarehouseDTO warehouseByInCode = warehouseDao.getWarehouseByCode(request.getCallInWarehouseCode());
@@ -308,12 +309,24 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse movementWmsOutEcho(MovementWmsOutReq request) {
         if(request.getFlag() == null){
             return HttpResponse.failure(null,ResultCode.NOT_HAVE_PARAM);
         }
 
         LOGGER.info("wms回传成功，根据出库单信息，变更对应移库单的实际值：", JSON.toJSON(request));
+        if (request.getFlag() == 0){
+            Allocation allocation1 = allocationMapper.selectByOutOrderCode(request.getOutboundOderCode());
+            request.setMovementCode(allocation1.getAllocationCode());
+        }else if (request.getFlag() == 1){
+            Allocation allocation1 = allocationMapper.selectByOutOrderCode(request.getInboundOderCode());
+            request.setMovementCode(allocation1.getAllocationCode());
+            request.setOutboundOderCode(allocation1.getOutboundOderCode());
+        }else {
+            Allocation allocation1 = allocationMapper.selectByOutOrderCode(request.getOutboundOderCode());
+            request.setMovementCode(allocation1.getAllocationCode());
+        }
         Allocation allocation1 = allocationMapper.selectByCode(request.getMovementCode());
         List<AllocationProduct> detailLists = new ArrayList<>();
         List<AllocationProductBatch> detailBatchList = new ArrayList<>();
@@ -334,6 +347,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 入库单
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
+            allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
+            allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundService.saveInbound2(inboundReqSave);
             // 出解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
@@ -762,7 +777,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == 4){
+           if(changeStockRequest.getOperationType() == 2){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
