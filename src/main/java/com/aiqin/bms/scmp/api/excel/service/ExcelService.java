@@ -190,6 +190,14 @@ public class ExcelService {
                     p.setCompanyName("宁波熙耘科技有限公司");
                 });
                 if (CollectionUtils.isNotEmptyCollection(saves)) {
+
+
+                    Map<Integer, List<PurchaseOrder>> itemMap = new ListUtils<PurchaseOrder>().batchList(saves, 3000);
+                    for (Integer i : itemMap.keySet()) {
+                        //数据量太多会mysql报错 分批次插入
+                        List<PurchaseOrder> orderInfosItems = itemMap.get(i);
+                        this.purchaseOrderDao.insertMany(saves);
+                    }
                     this.purchaseOrderDao.insertMany(saves);
                 }
                 log.info("执行完成采购单主表数据插入条数===================={}", saves.size());
@@ -460,6 +468,8 @@ public class ExcelService {
                 //实际分销订单金额  actual_order_amount
                 o.setActualOrderAmount(o.getActualProductTotalAmount());
                 o.setProductNum(o.getActualProductNum());
+                o.setActualDeliverAmount(o.getDeliverAmount());
+                System.out.println(o);
 
             });
             of = null;
