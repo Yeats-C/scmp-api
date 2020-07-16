@@ -1101,7 +1101,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             }
             dlRequest.setProductList(dlProductList);
             LOGGER.info("退供完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
-            //stockService.dlStockChange(dlRequest);
+            stockService.dlStockChange(dlRequest);
         }
         return HttpResponse.success();
     }
