@@ -437,4 +437,14 @@
     where enable = 0 and wms_warehouse_code = #{wmsWarehouseCode,jdbcType=VARCHAR}
     and wms_warehouse_type = #{wmsWarehouseType,jdbcType=TINYINT}
   </select>
+  <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
+        select distinct
+        warehouse_name warehouseName,
+        warehouse_code warehouseCode,
+        warehouse_type_code warehouseType,
+        logistics_center_code stockCode,
+        logistics_center_name stockName
+        from warehouse
+        where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </select>
 </mapper>

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.dao.warehouse;
 
+import com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
@@ -40,4 +41,6 @@ public interface WarehouseDao {
    List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(@Param("transportCenterCode") String transportCenterCode);
 
    WarehouseDTO selectWarehouseByWms(@Param("wmsWarehouseCode") String wmsWarehouseCode, @Param("wmsWarehouseType") Integer wmsWarehouseType);
+
+   WarehouseConfigResp refresh(String warehouseCode);
 }
