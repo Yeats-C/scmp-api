@@ -246,7 +246,7 @@ transport_number, platform_type, business_form, tax_id
       <result column="apartner_name" jdbcType="VARCHAR" property="partnerName" />
       <result column="achannel_order_amount" jdbcType="DECIMAL" property="channelOrderAmount" />
       <result column="aactual_channel_order_amount" jdbcType="DECIMAL" property="actualChannelOrderAmount" />
-      <result column="aactual_deliver_amount" jdbcType="VARCHAR" property="actualDeliverAmount" />
+      <result column="aactual_deliver_amount" jdbcType="DECIMAL" property="actualDeliverAmount" />
       <result column="asuit_coupon_money" jdbcType="DECIMAL" property="suitCouponMoney" />
       <result column="aactual_suit_coupon_money" jdbcType="DECIMAL" property="actualSuitCouponMoney" />
       <result column="atop_coupon_money" jdbcType="DECIMAL" property="topCouponMoney" />
@@ -1092,7 +1092,7 @@ transport_number, platform_type, business_form, tax_id
       #{item.taxId,jdbcType=VARCHAR},#{item.storeCode,jdbcType=VARCHAR},#{item.storeName,jdbcType=VARCHAR},
       #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
       #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
-      #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
+      #{item.actualDeliverAmount,jdbcType=DECIMAL},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
       #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
         #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR},#{item.channelCode,jdbcType=VARCHAR},#{item.channelName,jdbcType=VARCHAR}
       )
@@ -1153,7 +1153,7 @@ transport_number, platform_type, business_form, tax_id
             #{item.taxId,jdbcType=VARCHAR},#{item.storeCode,jdbcType=VARCHAR},#{item.storeName,jdbcType=VARCHAR},
             #{item.franchiseeCode,jdbcType=VARCHAR}, #{item.franchiseeName,jdbcType=VARCHAR},#{item.partnerCode,jdbcType=VARCHAR},
             #{item.partnerName,jdbcType=VARCHAR},#{item.channelOrderAmount,jdbcType=DECIMAL},#{item.actualChannelOrderAmount,jdbcType=DECIMAL},
-            #{item.actualDeliverAmount,jdbcType=BIGINT},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
+            #{item.actualDeliverAmount,jdbcType=DECIMAL},#{item.suitCouponMoney,jdbcType=DECIMAL},#{item.actualSuitCouponMoney,jdbcType=DECIMAL},
             #{item.topCouponMoney,jdbcType=DECIMAL},#{item.actualTopCouponMoney,jdbcType=DECIMAL},#{item.consigneeMobile,jdbcType=VARCHAR},
             #{item.actualLogisticsRemissionRatio,jdbcType=VARCHAR},#{item.actualActivityDiscount,jdbcType=VARCHAR},#{item.channelCode,jdbcType=VARCHAR},#{item.channelName,jdbcType=VARCHAR}
             )
