@@ -20,7 +20,7 @@ center:
 settlement :
   registerUrl: http://settlement.api.aiqin.com/
 product:
-  url: http://http://product.api.aiqin.com/
+  url: http://product.api.aiqin.com/
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 wms:
