@@ -422,7 +422,7 @@
         select
         <include refid="Base_Column_List" />
     from warehouse
-    where del_flag=0 and enable=0 and batch_manage = 2
+    where del_flag=0 and enable=0 and batch_manage in (2,4,6)
     </select>
   <select id="getWarehouseCodeByTransportCenterCode" resultMap="BaseResultMap">
     select
