@@ -136,6 +136,38 @@ public class TransportServiceImpl implements TransportService {
             transportLog.setUpdateBy(currentAuthToken.getPersonName());
         }
         transportLogMapper.insertOne(transportLog);
+
+        // 传发运参数
+        DeliveryCallBackRequest request = new DeliveryCallBackRequest();
+        request.setDeliveryCode(transport.getTransportCode());
+        request.setCustomerCode(transport.getCustomerCode());
+        request.setCustomerName(transport.getCustomerName());
+        request.setTransportDate(transport.getTransportTime());
+//            request.setTransportPerson(); // 发运人
+        request.setTransportAmount(transport.getTransportAmount());
+        request.setStandardLogisticsFee(transport.getStandardLogisticsFee());
+        request.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee());
+        request.setTransportCode(transport.getLogisticsNumber());
+        request.setTransportCompanyCode(transport.getLogisticsCompany());
+        request.setTransportCompanyName(transport.getLogisticsCompanyName());
+        request.setTransportCenterCode(transport.getTransportCenterCode());
+        request.setTransportCenterName(transport.getTransportCenterName());
+        request.setDeliverTo(transport.getDeliverTo());
+        request.setPackingNum(transport.getPackingNum());
+        request.setOrderCommodityNum(transport.getOrderCommodityNum());
+        request.setTotalVolume(transport.getTotalVolume());
+        request.setTotalWeight(transport.getTotalWeight());
+        List<DeliveryDetailRequest> detailList = new ArrayList<>();
+        List<TransportOrders> transportOrderLists = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
+        for (TransportOrders t : transportOrderLists) {
+            DeliveryDetailRequest detail = new DeliveryDetailRequest();
+            detail.setOrderCode(t.getOrderCode());
+            detail.setTransportAmount(t.getOrderAmount());
+            detailList.add(detail);
+        }
+        request.setDetailList(detailList);
+        // 推送wms 发运信息
+        transportWmsPush(request);
         return HttpResponse.success();
     }
 
@@ -181,7 +213,7 @@ public class TransportServiceImpl implements TransportService {
 //            调用发运接口
             orderCallbackService.deliveryCallBack(request);
             // 推送wms 发运信息
-            transportWmsPush(request);
+//            transportWmsPush(request);
             //写入发运单创建日志
             if (transport1.getStatus() != 1) {
                 transportCode.remove(transport1.getTransportCode());

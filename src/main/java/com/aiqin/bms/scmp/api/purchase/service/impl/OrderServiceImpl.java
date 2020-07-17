@@ -708,6 +708,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 出库单信息
         ssis.setOrderStoreCode(request.getOrderCode());
         ssis.setOutboundOderCode(insertOutbound);
+        ssis.setSoType(request.getOrderProductType());
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setWarehouseName(request.getWarehouseName());
         ssis.setCustomerCode(request.getCustomerCode());
