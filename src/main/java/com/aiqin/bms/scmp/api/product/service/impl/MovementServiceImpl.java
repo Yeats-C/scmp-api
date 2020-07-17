@@ -777,7 +777,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == 2){
+           if(changeStockRequest.getOperationType() == 2 || changeStockRequest.getOperationType() == 4){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
