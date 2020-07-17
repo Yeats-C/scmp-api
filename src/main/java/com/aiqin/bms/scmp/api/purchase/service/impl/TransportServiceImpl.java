@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -167,6 +168,7 @@ public class TransportServiceImpl implements TransportService {
         }
         request.setDetailList(detailList);
         // 推送wms 发运信息
+        log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
         transportWmsPush(request);
         return HttpResponse.success();
     }
@@ -269,6 +271,7 @@ public class TransportServiceImpl implements TransportService {
             e8OrderCreate.setIfVisit(true);       // 上门提货
         }
         e8OrderCreate.setSettleType(Global.SETTLE_TYPE_1);    // 支付方式
+        log.info("耘链发运单推送wms调用e8系统发运信息，参数信息：[{}]", JsonUtil.toJson(e8OrderCreate));
         String url = urlConfig.WMS_API_URL2 + "/sale/source/depponShipping";
         HttpClient httpClient = HttpClient.post(url).json(e8OrderCreate).timeout(20000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

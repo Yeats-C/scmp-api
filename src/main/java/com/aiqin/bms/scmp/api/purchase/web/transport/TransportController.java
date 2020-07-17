@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersR
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportRequest;
 import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -67,6 +68,7 @@ public class TransportController {
     @PostMapping("/savetransport")
     public HttpResponse saveTransport(@RequestBody TransportAddRequest transportAddRequest){
         try {
+            log.info("耘链保存发运单，参数信息：[{}]", JsonUtil.toJson(transportAddRequest));
             return transportService.saveTransport(transportAddRequest);
         } catch (Exception e) {
             log.error(Global.ERROR, e);
