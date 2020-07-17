@@ -1075,7 +1075,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 dlProduct = new ProductRequest();
                 dlProduct.setLineCode(detail.getLineCode());
                 dlProduct.setSkuCode(rejectRecordDetail.getSkuCode());
-                dlProduct.setTotalCount(rejectRecordDetail.getTotalCount());
+                dlProduct.setActualTotalCount(rejectRecordDetail.getActualTotalCount());
                 dlProduct.setProductAmount(rejectRecordDetail.getActualProductTotalAmount());
                 dlProduct.setTaxRate(rejectRecordDetail.getTaxRate());
                 Integer productType = rejectRecordDetail.getProductType() == 3 ? 1 : (rejectRecordDetail.getProductType() == 2 ? 2 : 1);
@@ -1093,7 +1093,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                         dlBatch.setSkuCode(rejectRecordDetail.getSkuCode());
                         dlBatch.setBatchCode(batch.getBatchNo());
                         dlBatch.setProductDate(batch.getProductDate());
-                        dlBatch.setTotalCount(batch.getActualTotalCount());
+                        dlBatch.setActualTotalCount(batch.getActualTotalCount());
                         dlBatchList.add(dlBatch);
                     }
                     dlProduct.setBatchList(dlBatchList);
