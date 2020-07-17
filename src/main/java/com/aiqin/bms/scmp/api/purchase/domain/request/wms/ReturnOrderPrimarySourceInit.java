@@ -122,4 +122,8 @@ public class ReturnOrderPrimarySourceInit {
     @JsonProperty("batchInfo_list")
     private List<BatchInfo> batchInfoList;
 
+    @ApiModelProperty(value="订单类型")
+    @JsonProperty("so_type")
+    private Integer soType;
+
 }

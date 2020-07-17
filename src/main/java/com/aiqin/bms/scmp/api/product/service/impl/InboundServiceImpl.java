@@ -1242,6 +1242,7 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setCity(returnOrderInfo.getCityName());
         returnOder.setCounty(returnOrderInfo.getDistrictName());
         returnOder.setStreet(returnOrderInfo.getDetailAddress());
+        returnOder.setSoType(returnOrderInfo.getOrderProductType());
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         returnOder.setCreateTime(sdf.format(inbound.getCreateTime()));
 
