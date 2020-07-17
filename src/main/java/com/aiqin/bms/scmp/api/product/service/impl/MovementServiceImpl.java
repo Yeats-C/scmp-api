@@ -353,16 +353,16 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(2);
             handleProfitLossStockData(allocation1,changeStockRequest);
-//            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
-//            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
-//                LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
-//                throw new GroundRuntimeException("wms移库回调:减并解锁库存异常");
-//            }
+            HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
+            if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
+                LOGGER.error("wms移库回调:移库减并解锁库存异常: 参数{}", changeStockRequest);
+                throw new GroundRuntimeException("wms移库回调:减并解锁库存异常");
+            }
             AllocationDTO allocation  = allocationMapper.selectByFormNO1(allocation1.getFormNo());
             List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
             List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
             // 调用wms入库
-//            allocationService.movementWms(allocation, allocation1, aProductLists, aProductBatchLists);
+            allocationService.movementWms(allocation, allocation1, aProductLists, aProductBatchLists);
             // 调用完库存锁定调用同步dl库存数据
             StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
             stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
