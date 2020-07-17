@@ -118,7 +118,7 @@ public class OrderCallbackController {
     @PostMapping("/wms/out/transfers")
     @ApiOperation(value = "移库wms出库回调")
     public HttpResponse movementWmsOutEcho(@RequestBody MovementWmsOutReq request) {
-        LOGGER.info("移库wms出库回调,request:{}", JSON.toJSON(request));
+        LOGGER.info("移库wms出库回调,request:{}", JsonUtil.toJson(request));
         return movementService.movementWmsOutEcho(request);
     }
 

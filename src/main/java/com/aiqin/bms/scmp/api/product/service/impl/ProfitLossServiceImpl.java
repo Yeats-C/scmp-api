@@ -409,16 +409,16 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
             totalCount+=product.getQuantity();
-            productRequest.setUnitName(product.getUnit());
-            productRequest.setColorName(product.getColor());
-            productRequest.setModelNumber(product.getModel());
+//            productRequest.setUnitName(product.getUnit());
+//            productRequest.setColorName(product.getColor());
+//            productRequest.setModelNumber(product.getModel());
             productRequest.setProductType(0);
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
             productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
             BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
             productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
-            productRequest.setWarehouseCode(profitLoss.getWarehouseCode());
-            productRequest.setWarehouseName(profitLoss.getWarehouseName());
+//            productRequest.setWarehouseCode(profitLoss.getWarehouseCode());
+//            productRequest.setWarehouseName(profitLoss.getWarehouseName());
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
             if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchLists) && batchLists.size() > 0){
