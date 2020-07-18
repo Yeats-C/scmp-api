@@ -30,13 +30,14 @@
     <result column="wms_warehouse_type" jdbcType="TINYINT" property="wmsWarehouseType" />
     <result column="batch_manage" jdbcType="INTEGER" property="batchManage" />
     <result column="is_purchase" jdbcType="INTEGER" property="isPurchase" />
+    <result column="wms_warehouse_id" jdbcType="VARCHAR" property="wmsWarehouseId" />
   </resultMap>
   <sql id="Base_Column_List">
     id, warehouse_code, warehouse_name, logistics_center_code, logistics_center_name, 
     warehouse_type_name, warehouse_type_code, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, contact, phone, enable, del_flag, 
     create_by, create_time, update_by, update_time, warehouse_order, batch_manage, is_purchase,
-    wms_warehouse_code, wms_warehouse_name, wms_warehouse_type
+    wms_warehouse_code, wms_warehouse_name, wms_warehouse_type, wms_warehouse_id
   </sql>
   <select id="findWarehouseList" parameterType="com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo" resultMap="BaseResultMap">
   select
@@ -422,7 +423,7 @@
         select
         <include refid="Base_Column_List" />
     from warehouse
-    where del_flag=0 and enable=0 and batch_manage = 2
+    where del_flag=0 and enable=0 and batch_manage in (2,4,6)
     </select>
   <select id="getWarehouseCodeByTransportCenterCode" resultMap="BaseResultMap">
     select
@@ -436,5 +437,26 @@
     from warehouse
     where enable = 0 and wms_warehouse_code = #{wmsWarehouseCode,jdbcType=VARCHAR}
     and wms_warehouse_type = #{wmsWarehouseType,jdbcType=TINYINT}
+  </select>
+  <select id="refresh" resultType="com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp">
+        select distinct
+        warehouse_name warehouseName,
+        warehouse_code warehouseCode,
+        warehouse_type_code warehouseType,
+        logistics_center_code stockCode,
+        logistics_center_name stockName
+        from warehouse
+        where warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </select>
+  <select id="warehouseList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from warehouse
+  </select>
+  <select id="warehouseWms" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from warehouse
+    where enable = 0
+    and wms_warehouse_id = #{wmsWarehouseId,jdbcType=VARCHAR}
   </select>
 </mapper>

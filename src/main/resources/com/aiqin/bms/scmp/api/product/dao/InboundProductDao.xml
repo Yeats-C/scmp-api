@@ -472,5 +472,6 @@
     inner join product_sku_sales_info b on a.sku_code = b.product_sku_code
     inner join product_sku_stock_info d on a.sku_code = d.product_sku_code
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
+    group by lineCode
   </select>
 </mapper>

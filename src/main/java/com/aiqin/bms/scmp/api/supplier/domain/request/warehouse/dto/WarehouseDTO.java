@@ -92,4 +92,7 @@ public class WarehouseDTO extends CommonBean {
     @ApiModelProperty("wms库房类型")
     private Integer wmsWarehouseType;
 
+    @ApiModelProperty("wms库房编码")
+    private String wmsWarehouseId;
+
 }

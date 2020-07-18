@@ -26,6 +26,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -236,5 +237,17 @@ public class StockController {
     @ApiOperation("同步德邦与京东的批次数据")
     public HttpResponse synchroBatch(@RequestBody StockMonthRequest request) {
         return stockService.synchroBatch(request);
+    }
+
+    @PostMapping("/import/stock")
+    @ApiOperation("同步导入DL库存数据")
+    public HttpResponse importStock(MultipartFile file) {
+        return stockService.importStock(file);
+    }
+
+    @PostMapping("/import/stock/batch")
+    @ApiOperation("同步导入DL库存批次数据")
+    public HttpResponse importStockBatch(MultipartFile file) {
+        return stockService.importStockBatch(file);
     }
 }

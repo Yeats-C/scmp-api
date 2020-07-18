@@ -29,6 +29,7 @@ import com.aiqin.bms.scmp.api.purchase.service.TransportService;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -93,9 +94,11 @@ public class TransportServiceImpl implements TransportService {
         //获取一个运输单号
         String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
+        transport.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : transport.getAdditionalLogisticsFee());
+        transport.setStandardLogisticsFee(transport.getStandardLogisticsFee() == null ? BigDecimal.ZERO : transport.getStandardLogisticsFee());
         transport.setLogisticsFee(transport.getAdditionalLogisticsFee().add(transport.getStandardLogisticsFee()));
         transport.setTransportCode(code);
-        if(currentAuthToken.getPersonName() != null){
+        if(currentAuthToken != null){
             transport.setCreateBy(currentAuthToken.getPersonName());
             transport.setUpdateBy(currentAuthToken.getPersonName());
         }
@@ -104,7 +107,7 @@ public class TransportServiceImpl implements TransportService {
 //        Long orderCommodityNum=0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
-            if(currentAuthToken.getPersonName() != null){
+            if(currentAuthToken != null){
                 transportOrder.setCreateBy(currentAuthToken.getPersonName());
                 transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             }
@@ -131,11 +134,44 @@ public class TransportServiceImpl implements TransportService {
         transportLog.setType("新增");
         transportLog.setContent("新增发运单");
         transportLog.setRemark(transport.getRemark());
-        if(currentAuthToken.getPersonName() != null){
+        if(currentAuthToken != null){
             transportLog.setCreateBy(currentAuthToken.getPersonName());
             transportLog.setUpdateBy(currentAuthToken.getPersonName());
         }
         transportLogMapper.insertOne(transportLog);
+
+        // 传发运参数
+        DeliveryCallBackRequest request = new DeliveryCallBackRequest();
+        request.setDeliveryCode(transport.getTransportCode());
+        request.setCustomerCode(transport.getCustomerCode());
+        request.setCustomerName(transport.getCustomerName());
+        request.setTransportDate(transport.getTransportTime());
+//            request.setTransportPerson(); // 发运人
+        request.setTransportAmount(transport.getTransportAmount());
+        request.setStandardLogisticsFee(transport.getStandardLogisticsFee());
+        request.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee());
+        request.setTransportCode(transport.getLogisticsNumber());
+        request.setTransportCompanyCode(transport.getLogisticsCompany());
+        request.setTransportCompanyName(transport.getLogisticsCompanyName());
+        request.setTransportCenterCode(transport.getTransportCenterCode());
+        request.setTransportCenterName(transport.getTransportCenterName());
+        request.setDeliverTo(transport.getDeliverTo());
+        request.setPackingNum(transport.getPackingNum());
+        request.setOrderCommodityNum(transport.getOrderCommodityNum());
+        request.setTotalVolume(transport.getTotalVolume());
+        request.setTotalWeight(transport.getTotalWeight());
+        List<DeliveryDetailRequest> detailList = new ArrayList<>();
+        List<TransportOrders> transportOrderLists = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
+        for (TransportOrders t : transportOrderLists) {
+            DeliveryDetailRequest detail = new DeliveryDetailRequest();
+            detail.setOrderCode(t.getOrderCode());
+            detail.setTransportAmount(t.getOrderAmount());
+            detailList.add(detail);
+        }
+        request.setDetailList(detailList);
+        // 推送wms 发运信息
+        log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
+        transportWmsPush(request);
         return HttpResponse.success();
     }
 
@@ -181,7 +217,7 @@ public class TransportServiceImpl implements TransportService {
 //            调用发运接口
             orderCallbackService.deliveryCallBack(request);
             // 推送wms 发运信息
-            transportWmsPush(request);
+//            transportWmsPush(request);
             //写入发运单创建日志
             if (transport1.getStatus() != 1) {
                 transportCode.remove(transport1.getTransportCode());
@@ -226,10 +262,16 @@ public class TransportServiceImpl implements TransportService {
         e8OrderCreate.setReceiveDistrict(queryOrderInfoRespVO.getDistrictName());
 //        e8OrderCreate.setReceiveTown();  镇没有
         e8OrderCreate.setReceiveStreetNo(queryOrderInfoRespVO.getDetailAddress());
-        e8OrderCreate.setAmount(request.getPackingNum().intValue());
-        e8OrderCreate.setVolume(request.getTotalVolume().doubleValue());
-        e8OrderCreate.setWeight(request.getTotalWeight().doubleValue());
-        if (request.getDeliverTo().equals(Global.DELIVERTO_1)) {
+        if(request.getPackingNum() != null){
+            e8OrderCreate.setAmount(request.getPackingNum().intValue());
+        }
+        if(request.getTotalVolume() != null){
+            e8OrderCreate.setVolume(request.getTotalVolume().doubleValue());
+        }
+        if(request.getTotalWeight() != null){
+            e8OrderCreate.setWeight(request.getTotalWeight().doubleValue());
+        }
+        if (request.getDeliverTo() != null && request.getDeliverTo().equals(Global.DELIVERTO_1)) {
             e8OrderCreate.setServiceMode(Global.SERVICE_MODE_1);   // 服务方式
             e8OrderCreate.setIfVisit(false);       // 上门提货
         } else {
@@ -237,6 +279,7 @@ public class TransportServiceImpl implements TransportService {
             e8OrderCreate.setIfVisit(true);       // 上门提货
         }
         e8OrderCreate.setSettleType(Global.SETTLE_TYPE_1);    // 支付方式
+        log.info("耘链发运单推送wms调用e8系统发运信息，参数信息：[{}]", JsonUtil.toJson(e8OrderCreate));
         String url = urlConfig.WMS_API_URL2 + "/sale/source/depponShipping";
         HttpClient httpClient = HttpClient.post(url).json(e8OrderCreate).timeout(20000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

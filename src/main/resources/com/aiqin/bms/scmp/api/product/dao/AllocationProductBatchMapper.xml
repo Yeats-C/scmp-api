@@ -486,7 +486,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct">
+  <update id="updateByPrimaryKey" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
     update allocation_product_batch
     set allocation_code = #{allocationCode,jdbcType=VARCHAR},
       sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -515,6 +515,8 @@
       callout_batch_number = #{callOutBatchNumber,jdbcType=VARCHAR},
       callin_batch_number =  #{callInBatchNumber,jdbcType=VARCHAR},
       batch_number_remark = #{batchNumberRemark,jdbcType=VARCHAR},
+      callin_actual_total_count = #{callInActualTotalCount,jdbcType=VARCHAR},
+      callin_batch_info_code = #{callInBatchInfoCode,jdbcType=VARCHAR},
       product_date = #{productDate,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>

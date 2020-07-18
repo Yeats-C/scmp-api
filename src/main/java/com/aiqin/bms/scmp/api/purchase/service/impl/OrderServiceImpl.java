@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.*;
@@ -95,6 +96,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private WmsCancelService wmsCancelService;
     @Autowired
     private WarehouseDao warehouseDao;
+    @Autowired
+    private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private OrderInfoItemBatchMonthMapper orderInfoItemBatchMonthMapper;
 
@@ -638,9 +641,33 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             list.add(stockInfoRequest);
         }
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(orderInfoReqVO.getWarehouseCode());
-        if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)){
-            if(orderInfoReqVO.getItemBatchList() != null){
-                for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
+
+        if(orderInfoReqVO.getItemBatchList() != null) {
+            for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
+                // 在部分情况下查询批次表
+                if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)) {
+                    Integer exist = productSkuBatchDao.productSkuBatchExist(itemBatchReqVo.getSkuCode(), warehouse.getWarehouseCode());
+                    if(exist > 0){
+                        stockBatchInfoRequest = new StockBatchInfoRequest();
+                        stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
+                        stockBatchInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
+                        stockBatchInfoRequest.setSkuCode(itemBatchReqVo.getSkuCode());
+                        stockBatchInfoRequest.setSkuName(itemBatchReqVo.getSkuName());
+                        stockBatchInfoRequest.setBatchCode(itemBatchReqVo.getBatchCode());
+                        stockBatchInfoRequest.setBatchInfoCode(itemBatchReqVo.getBatchInfoCode());
+                        stockBatchInfoRequest.setProductDate(itemBatchReqVo.getProductDate());
+                        stockBatchInfoRequest.setBeOverdueDate(itemBatchReqVo.getBeOverdueDate());
+                        stockBatchInfoRequest.setBatchRemark(itemBatchReqVo.getBatchRemark());
+                        stockBatchInfoRequest.setSupplierCode(itemBatchReqVo.getSupplierCode());
+                        stockBatchInfoRequest.setDocumentType(9);
+                        stockBatchInfoRequest.setDocumentCode(orderInfoReqVO.getOrderCode());
+                        stockBatchInfoRequest.setSourceDocumentType(9);
+                        stockBatchInfoRequest.setSourceDocumentCode(orderInfoReqVO.getOrderCode());
+                        stockBatchInfoRequest.setChangeCount(itemBatchReqVo.getTotalCount());
+                        stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
+                        batchList.add(stockBatchInfoRequest);
+                    }
+                }else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)) {
 //                if(itemReqVo.getSkuCode().equals(itemBatchReqVo.getSkuCode())){
                     stockBatchInfoRequest = new StockBatchInfoRequest();
                     stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
@@ -661,10 +688,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
                     batchList.add(stockBatchInfoRequest);
 //                }
+                }else {
+                    stockBatchInfoRequest = new StockBatchInfoRequest();
+                    batchList.add(stockBatchInfoRequest);
                 }
             }
         }
-
         changeStockRequest.setStockList(list);
         changeStockRequest.setStockBatchList(batchList);
     }
@@ -708,6 +737,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 出库单信息
         ssis.setOrderStoreCode(request.getOrderCode());
         ssis.setOutboundOderCode(insertOutbound);
+        ssis.setSoType(request.getOrderProductType());
         ssis.setWarehouseCode(request.getWarehouseCode());
         ssis.setWarehouseName(request.getWarehouseName());
         ssis.setCustomerCode(request.getCustomerCode());

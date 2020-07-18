@@ -3,16 +3,12 @@ package com.aiqin.bms.scmp.api.product.web.price;
 import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.TagTypeCode;
 import com.aiqin.bms.scmp.api.product.domain.request.price.QueryProductSkuPriceInfoReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceInfoRespVO;
-import com.aiqin.bms.scmp.api.product.domain.response.price.ProductSkuPriceRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.price.QueryProductSkuPriceInfoRespVO;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuPriceInfoService;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.ApplyUseTagRecord;
-import com.aiqin.bms.scmp.api.supplier.service.ApplyUseTagRecordService;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSONObject;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +39,7 @@ public class ProductSkuPriceInfoController {
     @PostMapping("/list")
     @ApiOperation("列表")
     public HttpResponse<BasePage<QueryProductSkuPriceInfoRespVO>> list(@RequestBody QueryProductSkuPriceInfoReqVO reqVO) {
-        log.info("ProductSkuPriceInfoController---list---入参：[{}]", JSONObject.toJSONString(reqVO));
+        log.info("ProductSkuPriceInfoController---list---入参：[{}]", JsonUtil.toJson(reqVO));
         try {
             return HttpResponse.success(productSkuPriceInfoService.list(reqVO));
         } catch (BizException e) {

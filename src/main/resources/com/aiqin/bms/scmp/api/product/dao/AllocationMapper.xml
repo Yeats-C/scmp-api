@@ -331,6 +331,12 @@
       <if test="patternName != null">
         pattern_name,
       </if>
+      <if test="createById != null">
+        create_by_id,
+      </if>
+      <if test="updateById != null">
+        update_by_id,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -443,6 +449,12 @@
       </if>
       <if test="patternName != null">
         #{patternName,jdbcType=VARCHAR},
+      </if>
+      <if test="createById != null">
+        #{createById,jdbcType=VARCHAR},
+      </if>
+      <if test="updateById != null">
+        #{updateById,jdbcType=VARCHAR},
       </if>
     </trim>
   </insert>
@@ -611,6 +623,18 @@
     <include refid="Base_Column_List" />
     from allocation
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByOutOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from allocation
+    where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
+  </select>
+  <select id="selectByInOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from allocation
+    where inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
   </select>
 
   <sql id="Allocation_Column_List">
@@ -961,6 +985,8 @@
         <result column="aremark" jdbcType="CLOB" property="remark" />
         <result column="aallocation_type" jdbcType="TINYINT" property="allocationType" />
         <result column="aallocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
+        <result column="acreate_by_id" jdbcType="VARCHAR" property="createById" />
+        <result column="aupdate_by_id" jdbcType="VARCHAR" property="updateById" />
         <collection property="list" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch">
           <id column="cid" jdbcType="BIGINT" property="id" />
           <result column="callocation_code" jdbcType="VARCHAR" property="allocationCode" />
@@ -1053,6 +1079,8 @@
                    a.remark aremark,
                    a.allocation_type aallocation_type,
                    a.allocation_type_name aallocation_type_name,
+                   a.create_by_id acreate_by_id,
+                   a.update_by_id aupdate_by_id,
                    b.id bid,
                    b.allocation_code ballocation_code,
                    b.sku_code bsku_code,

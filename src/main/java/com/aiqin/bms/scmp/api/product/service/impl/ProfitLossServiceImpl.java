@@ -57,6 +57,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
@@ -156,6 +157,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public HttpResponse profitLossWmsEcho(ProfitLossWmsReqVo request) {
         // 查询该单据是否存在
         ProfitLoss result = profitLossMapper.selectByOrderCode(request.getOrderCode());
@@ -398,6 +400,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         stockChangeDlRequest.setWarehouseCode(profitLoss.getWarehouseCode());
         stockChangeDlRequest.setWarehouseName(profitLoss.getWarehouseName());
         stockChangeDlRequest.setOperationName(profitLoss.getCreateBy());
+        stockChangeDlRequest.setOperationCode("0000");
         // 商品数据
         List<ProductRequest> productList = new ArrayList<>();
         for (ProfitLossDetailRequest product : profitLossProductList) {
@@ -407,16 +410,16 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
             totalCount+=product.getQuantity();
-            productRequest.setUnitName(product.getUnit());
-            productRequest.setColorName(product.getColor());
-            productRequest.setModelNumber(product.getModel());
+//            productRequest.setUnitName(product.getUnit());
+//            productRequest.setColorName(product.getColor());
+//            productRequest.setModelNumber(product.getModel());
             productRequest.setProductType(0);
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
             productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
             BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
             productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
-            productRequest.setWarehouseCode(profitLoss.getWarehouseCode());
-            productRequest.setWarehouseName(profitLoss.getWarehouseName());
+//            productRequest.setWarehouseCode(profitLoss.getWarehouseCode());
+//            productRequest.setWarehouseName(profitLoss.getWarehouseName());
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
             if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchLists) && batchLists.size() > 0){
@@ -428,7 +431,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                         batchRequest.setSkuCode(productBatch.getSkuCode());
                         batchRequest.setBatchCode(productBatch.getBatchCode());
                         batchRequest.setProductDate(productBatch.getProductDate());
-                        batchRequest.setTotalCount(productBatch.getTotalCount());
+                        batchRequest.setActualTotalCount(productBatch.getTotalCount());
                         batchList.add(batchRequest);
                     }
                 }

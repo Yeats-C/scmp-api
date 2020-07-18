@@ -4,10 +4,10 @@ import com.aiqin.bms.scmp.api.base.BasePage;
 import com.aiqin.bms.scmp.api.base.MsgStatus;
 import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
-import com.aiqin.bms.scmp.api.product.dao.WarehouseConfigDao;
 import com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq;
 import com.aiqin.bms.scmp.api.product.domain.response.WarehouseConfigResp;
 import com.aiqin.bms.scmp.api.product.service.WarehouseConfigService;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
@@ -18,31 +18,22 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Objects;
 
-/**
- * @Auther: mamingze
- * @Date: 2020-04-09 17:39
- * @Description:
- */
 @Service
 @Slf4j
 public class WarehouseConfigServiceImpl implements WarehouseConfigService {
-    @Autowired
-    private WarehouseConfigDao warehouseConfigDao;
+
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private WarehouseDao warehouseDao;
+
     @Override
     public BasePage<WarehouseConfigResp> getPage(WarehouseConfigReq warehouseConfigReq) {
         try {
-//            PageHelper.startPage(warehouseConfigReq.getPageNo(),warehouseConfigReq.getPageSize());
-//            List<WarehouseConfigResp> warehouseConfigRespPageInfo=warehouseConfigDao.getList(warehouseConfigReq);
-//            return PageUtil.getPageList(warehouseConfigReq.getPageNo(),warehouseConfigRespPageInfo);
-
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/search/page" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(warehouseConfigReq).timeout(30000);
             HttpResponse<BasePage<WarehouseConfigResp>> result = httpClient.action().result(new TypeReference<HttpResponse<BasePage<WarehouseConfigResp>>>(){
             });
@@ -68,10 +59,8 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         warehouseConfigReq.setUpdateById(currentAuthToken.getPersonId());
         try {
             log.info("库房配置保存传入wmsa，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
-           warehouseConfigDao.insert(warehouseConfigReq);
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/save" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(warehouseConfigReq).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){
             });
@@ -92,7 +81,6 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         try {
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/load" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.get(String.valueOf(url)).timeout(30000);
             httpClient.addParameter("id", String.valueOf(id));
             HttpResponse<WarehouseConfigResp> result = httpClient.action().result(new TypeReference<HttpResponse<WarehouseConfigResp>>(){
@@ -117,7 +105,6 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
             log.info("库房配置更新传入wmsa，传入参数是[{}]", JSON.toJSONString(req));
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/update" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(req).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){
             });
@@ -136,8 +123,7 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
     @Override
     public WarehouseConfigResp refresh(String warehouseCode) {
         try {
-           return warehouseConfigDao.refresh(warehouseCode);
-
+           return warehouseDao.refresh(warehouseCode);
         } catch (Exception e) {
             log.error("修改仓库配置失败");
             e.printStackTrace();

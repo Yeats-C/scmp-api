@@ -604,9 +604,9 @@ public class InboundServiceImpl implements InboundService {
             LOGGER.info("更新入库单商品实际信息：{}" , count);
 
             // 计算入库单主表的实际值
-            praInboundNum = inbound.getPraInboundNum() + product.getPraInboundNum();
-            praMainUnitNum = inbound.getPraMainUnitNum() + product.getPraInboundMainNum();
-            praTaxAmount = inbound.getPraTaxAmount().add(product.getPraTaxAmount());
+            praInboundNum = praInboundNum + product.getPraInboundNum();
+            praMainUnitNum = praMainUnitNum + actualTotalCount;
+            praTaxAmount = praTaxAmount.add(product.getPraTaxAmount());
             if(product.getTax() != null){
                 BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
                 praAmount = inbound.getPraAmount().add(amount);
@@ -1099,7 +1099,7 @@ public class InboundServiceImpl implements InboundService {
                         dlBatch.setSkuCode(product.getSkuCode());
                         dlBatch.setBatchCode(batch.getBatchCode());
                         dlBatch.setProductDate(batch.getProductDate());
-                        dlBatch.setTotalCount(batch.getActualTotalCount());
+                        dlBatch.setActualTotalCount(batch.getActualTotalCount());
                         dlBatchList.add(dlBatch);
                     }
                     dlProduct.setBatchList(dlBatchList);
@@ -1242,6 +1242,7 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setCity(returnOrderInfo.getCityName());
         returnOder.setCounty(returnOrderInfo.getDistrictName());
         returnOder.setStreet(returnOrderInfo.getDetailAddress());
+        returnOder.setSoType(returnOrderInfo.getOrderProductType());
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyy-MM-dd HH:mm:ss" );
         returnOder.setCreateTime(sdf.format(inbound.getCreateTime()));
 

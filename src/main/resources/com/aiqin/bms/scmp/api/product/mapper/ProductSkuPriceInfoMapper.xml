@@ -305,11 +305,8 @@
         <if test="areaCode != null and areaCode !=''">
             and c.code = #{areaCode}
         </if>
-         <if test="isBatchPrice != null and isBatchPrice ==1 ">
-        and a.warehouse_batch_number IS NULL
-        </if>
-        <if test="isBatchPrice != null and isBatchPrice ==0 ">
-            and a.warehouse_batch_number is NOT null
+         <if test="isBatchPrice != null">
+        and a.is_batch_price = #{isBatchPrice}
         </if>
         <if test="isAreaPrice != null and isAreaPrice ==1 ">
             and a.be_contain_area = 1
