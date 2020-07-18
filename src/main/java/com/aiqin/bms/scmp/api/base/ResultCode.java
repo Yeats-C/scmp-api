@@ -216,4 +216,7 @@ public interface ResultCode {
 
     MessageId EXCEL_IS_NULL_ERROR = MessageId.create(Project.SCMP_API, 10008, "未获取到要导入的Excel文件");
 
+    MessageId WAREHOUSE_IS_NULL = MessageId.create(Project.SCMP_API, 1009, "配送未找到对应的库房");
+
+
 }
