@@ -1350,14 +1350,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
         for (StockMonthBatch monthBatch : request.getStockList()){
 
-            batchFlow = new StockMonthBatchFlow();
-
             // 查询对应的月份批次
             StockMonthBatch batch = stockMonthBatchDao.stockMonthBatchOne(monthBatch);
-            batchFlow.setBeforeBatchCount(batch.getBatchCount());
             if(batch == null || batch.getBatchCount() < monthBatch.getBatchCount()){
                 months.add(batch);
             }else {
+                batchFlow = new StockMonthBatchFlow();
+                batchFlow.setBeforeBatchCount(batch.getBatchCount() == null ? 0L : batch.getBatchCount());
                 batch.setBatchCount(batch.getBatchCount() - monthBatch.getBatchCount());
                 Integer count = stockMonthBatchDao.update(batch);
                 LOGGER.info("减月份批次数量：{}", count);

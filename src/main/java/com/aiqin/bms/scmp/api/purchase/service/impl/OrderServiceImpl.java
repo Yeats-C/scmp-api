@@ -39,6 +39,7 @@ import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageHelper;
@@ -474,9 +475,20 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
-        // 进行批次库存处理
-        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(vo.getWarehouseCode());
-        batchProce(vo, warehouse);
+        // 库房编码不为空代表是配送 只有配送的情况下进行批次库存处理
+        WarehouseDTO warehouse=null;
+        if (vo.getOrderTypeCode().equals(Global.ORDER_TYPE_1)) {
+            if(StringUtils.isBlank(vo.getWarehouseCode())){
+                log.error("库房编码参数缺失");
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 1009,"库房编码参数缺失"));
+            }
+            warehouse = warehouseDao.getWarehouseByCode(vo.getWarehouseCode());
+            if(Objects.isNull(warehouse)){
+                log.error("未找到对应的库房=={}",vo.getWarehouseCode());
+                return HttpResponse.failure(ResultCode.WAREHOUSE_IS_NULL);
+            }
+            batchProce(vo, warehouse);
+        }
         Date date = Calendar.getInstance().getTime();
         // 数据处理
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();

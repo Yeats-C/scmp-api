@@ -397,10 +397,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setConsigneePhone(returnOrderInfo.getReceivePerson());
         returnOrder.setDistributionMode(returnOrderInfo.getDistributionModeName());
         // 退货单状态
-        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_2)) {
-            returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
-        } else if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
+        if (returnOrderInfo.getOrderType().equals(Global.ORDER_TYPE_1)) {
             returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_INSPECTION.getStatusCode());
+        } else {
+            returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
         }
         returnOrder.setPaymentTypeCode(returnOrderInfo.getPaymentCode());
         returnOrder.setPaymentType(returnOrderInfo.getPaymentName());
