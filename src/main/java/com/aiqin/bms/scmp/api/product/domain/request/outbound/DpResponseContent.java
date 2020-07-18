@@ -39,6 +39,6 @@ public class DpResponseContent {
 
     //出库单标识 渠道号 耘链
     @ApiModelProperty("耘链订单号")
-    @JsonProperty("order_ids_list")
+    @JsonProperty("orderIds_list")
     private List<String> orderIdsList;
 }

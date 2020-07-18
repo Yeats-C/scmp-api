@@ -97,7 +97,7 @@ public class QueryProductSkuPriceInfoReqVO extends PageReq {
     @ApiModelProperty(value ="4级品类编码",hidden = true)
     private String productCategoryLv4Code;
 
-    @ApiModelProperty("是否批次价格 0:否 1：是 不填就是全部")
+    @ApiModelProperty("价格种类 （0.商品价格 1.批次价格 2.月份价格）")
     private Integer isBatchPrice;
 
 

@@ -400,7 +400,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         stockChangeDlRequest.setWarehouseCode(profitLoss.getWarehouseCode());
         stockChangeDlRequest.setWarehouseName(profitLoss.getWarehouseName());
         stockChangeDlRequest.setOperationName(profitLoss.getCreateBy());
-        stockChangeDlRequest.setOperationCode("");
+        stockChangeDlRequest.setOperationCode("0000");
         // 商品数据
         List<ProductRequest> productList = new ArrayList<>();
         for (ProfitLossDetailRequest product : profitLossProductList) {

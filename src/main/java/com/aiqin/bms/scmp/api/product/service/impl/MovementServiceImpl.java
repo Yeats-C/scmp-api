@@ -493,8 +493,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         inbound.setPraTaxAmount(BigDecimal.ZERO);
         inbound.setPraTax(BigDecimal.ZERO);
         inbound.setPraAmount(BigDecimal.ZERO);
-        inbound.setInboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
-        inbound.setInboundStatusName(InOutStatus.RECEIVE_INOUT.getName());
+        inbound.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
+        inbound.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
 
         // 更新主表数据 / 出库单商品表
         List<MovementProductWmsReq> detailList = request.getDetailList();
@@ -1056,10 +1056,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             outboundBatch.setActualTotalCount(batch.getQuantity());
             outboundBatch.setLineCode(batch.getLineNum());
             outboundBatch.setCreateById(allocation.getCreateById());
-            outboundBatch.setCreateByName(allocation.getCreateByName());
+            outboundBatch.setCreateByName(allocation.getCreateBy());
             outboundBatch.setCreateTime(allocation.getCreateTime());
             outboundBatch.setUpdateById(allocation.getUpdateById());
-            outboundBatch.setUpdateByName(allocation.getUpdateByName());
+            outboundBatch.setUpdateByName(allocation.getUpdateBy());
             outboundBatch.setUpdateTime(allocation.getUpdateTime());
             batchList.add(outboundBatch);
         }

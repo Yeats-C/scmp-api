@@ -155,17 +155,17 @@ public class Allocation extends CommonBean {
     @JsonProperty("create_by_id")
     private String createById;
 
-    @ApiModelProperty(value = "创建人名称")
-    @JsonProperty("create_by_name")
-    private String createByName;
+//    @ApiModelProperty(value = "创建人名称")
+//    @JsonProperty("create_by_name")
+//    private String createByName;
 
     @ApiModelProperty(value = "更新人编码")
     @JsonProperty("update_by_id")
     private String updateById;
 
-    @ApiModelProperty(value = "更新人名称")
-    @JsonProperty("update_by_name")
-    private String updateByName;
+//    @ApiModelProperty(value = "更新人名称")
+//    @JsonProperty("update_by_name")
+//    private String updateByName;
 
     @ApiModelProperty(value="出库时间")
     @JsonProperty("out_stock_time")
