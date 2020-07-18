@@ -83,36 +83,6 @@
         <result column="batch_code" jdbcType="VARCHAR" property="batchCode"/>
         <result column="product_date" jdbcType="VARCHAR" property="productionDate"/>
     </resultMap>
-    <resultMap id="StockFlowMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow">
-        <id column="id" jdbcType="BIGINT" property="id"/>
-        <id column="stock_code" jdbcType="VARCHAR" property="stockCode"/>
-        <id column="flow_code" jdbcType="VARCHAR" property="flowCode"/>
-        <id column="order_code" jdbcType="VARCHAR" property="orderCode"/>
-        <id column="order_type" jdbcType="INTEGER" property="orderType"/>
-        <id column="order_source" jdbcType="VARCHAR" property="orderSource"/>
-        <id column="sku_code" jdbcType="VARCHAR" property="skuCode"/>
-        <id column="sku_name" jdbcType="VARCHAR" property="skuName"/>
-        <id column="before_inventory_num" jdbcType="BIGINT" property="beforeInventoryNum"/>
-        <id column="after_inventory_num" jdbcType="BIGINT" property="afterInventoryNum"/>
-        <id column="before_available_num" jdbcType="BIGINT" property="beforeAvailableNum"/>
-        <id column="after_available_num" jdbcType="BIGINT" property="afterAvailableNum"/>
-        <id column="before_lock_num" jdbcType="BIGINT" property="beforeLockNum"/>
-        <id column="after_lock_num" jdbcType="BIGINT" property="afterLockNum"/>
-        <id column="before_purchase_way_num" jdbcType="BIGINT" property="beforePurchaseWayNum"/>
-        <id column="after_purchase_way_num" jdbcType="BIGINT" property="afterPurchaseWayNum"/>
-        <id column="before_allocation_way_num" jdbcType="BIGINT" property="beforeAllocationWayNum"/>
-        <id column="after_allocation_way_num" jdbcType="BIGINT" property="afterAllocationWayNum"/>
-        <id column="before_total_way_num" jdbcType="BIGINT" property="beforeTotalWayNum"/>
-        <id column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
-        <id column="after_total_way_num" jdbcType="BIGINT" property="afterTotalWayNum"/>
-        <id column="change_num" jdbcType="BIGINT" property="changeNum"/>
-        <id column="operation_type" jdbcType="BIGINT" property="operationType"/>
-    </resultMap>
-    <sql id="Stock_flow_Column">
-        id,stock_code,flow_code,order_code,order_type,order_source,sku_code,sku_name,before_inventory_num,after_inventory_num,
-        before_available_num,after_available_num,before_lock_num,after_lock_num,before_purchase_way_num,after_purchase_way_num,
-        before_allocation_way_num,after_allocation_way_num,before_total_way_num,after_total_way_num,change_num,operation_type
-    </sql>
     <sql id="Base_Column_List">
         id, stock_code, company_code, company_name, transport_center_code, transport_center_name, warehouse_code, warehouse_name,
         warehouse_type, sku_code, sku_name, inventory_count, available_count, lock_count, purchase_way_count, allocation_way_count,
@@ -454,54 +424,21 @@
         where stock_code = #{stockCode,jdbcType=VARCHAR}
     </select>
     <insert id="insertBatch" parameterType="java.util.List">
-        INSERT INTO stock (
-        stock_code,
-        company_code,
-        company_name,
-        transport_center_code,
-        transport_center_name,
-        warehouse_code,
-        warehouse_name,
-        warehouse_type,
-        sku_code,
-        sku_name,
-        new_delivery,
-        new_delivery_name,
-        new_purchase_price,
-         unit_code,
-        unit_name,
-        tax_rate,
-        tax_cost,
-        create_time,
-        create_by_name,
-        update_time,
-        update_by_name
-        )
+        INSERT INTO stock (stock_code, company_code, company_name, transport_center_code,
+        transport_center_name, warehouse_code, warehouse_name, warehouse_type, sku_code,
+        sku_name, inventory_count, available_count, lock_count, purchase_way_count,
+        allocation_way_count, total_way_count, new_delivery, new_delivery_name,
+        new_purchase_price, unit_code, unit_name, tax_rate, tax_cost, create_time,
+        create_by_id, create_by_name, update_time, update_by_id, update_by_name)
         VALUES
         <foreach collection="list" item="item" index="index" separator=",">
-            (
-            #{item.stockCode},
-            #{item.companyCode},
-            #{item.companyName},
-            #{item.transportCenterCode},
-            #{item.transportCenterName},
-            #{item.warehouseCode},
-            #{item.warehouseName},
-            #{item.warehouseType},
-            #{item.skuCode},
-            #{item.skuName},
-            #{item.newDelivery},
-            #{item.newDeliveryName},
-            #{item.newPurchasePrice},
-            #{item.unitCode},
-            #{item.unitName},
-            #{item.taxRate},
-            #{item.taxCost},
-            NOW(),
-            #{item.createBy},
-            NOW(),
-            #{item.updateBy}
-            )
+          (#{item.stockCode}, #{item.companyCode}, #{item.companyName}, #{item.transportCenterCode},
+           #{item.transportCenterName}, #{item.warehouseCode}, #{item.warehouseName}, #{item.warehouseType},
+           #{item.skuCode}, #{item.skuName}, #{item.inventoryCount}, #{item.availableCount}, #{item.lockCount},
+           #{item.purchaseWayCount}, #{item.allocationWayCount}, #{item.totalWayCount},
+           #{item.newDelivery}, #{item.newDeliveryName}, #{item.newPurchasePrice}, #{item.unitCode},
+           #{item.unitName}, #{item.taxRate}, #{item.taxCost}, NOW(), #{item.createById},
+          #{item.createByName}, NOW(), #{item.updateById}, #{item.updateByName})
         </foreach>
     </insert>
     <update id="updateByPrimaryKey">
@@ -691,9 +628,6 @@
             where id=#{item.id}
         </foreach>
     </update>
-    <select id="selectStockLogs" resultMap="StockFlowMap">
-        select <include refid="Stock_flow_Column"></include> from stock_flow where stock_code=#{stockCode} order by id desc
-    </select>
     <select id="selectGroup" resultMap="BaseResultMap">
         select <include refid="Base_Column_List"></include>,count(1) from stock group by transport_center_code,warehouse_code
     </select>
@@ -1299,7 +1233,7 @@
         limit 1
     </select>
     <select id="findSpareWarehouse"
-            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo">
         select
         <include refid="com.aiqin.bms.scmp.api.product.mapper.ProductSkuConfigDraftMapper.List_Column"/>
         from product_sku_config a
@@ -1338,4 +1272,24 @@
         where sku_code = #{skuCode,jdbcType=VARCHAR}
         and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </select>
+    <select id="byCityAndProvinceAndskuCode"
+            resultType="com.aiqin.bms.scmp.api.product.domain.response.stock.StockBatchRespVO">
+        SELECT s.transport_center_code transportCenterCode,
+        ps.sku_code skuCode,
+        ps.sku_name skuName,
+        s.available_num availableNum
+        FROM logistics_center_area l
+        inner  join  stock s on l.logistics_center_code=s.transport_center_code
+        inner  join  product_sku ps on s.sku_code=ps.sku_code
+        <where>
+            l.del_flag=0 and
+            l.province_code = #{provinceCode} and
+            s.warehouse_type=1 and
+            l.city_code=#{cityCode} and
+            ps.sku_code = #{skuCode}
+        </where>
+        order by s.logistics_center_code desc
+        limit 1
+    </select>
+
 </mapper>

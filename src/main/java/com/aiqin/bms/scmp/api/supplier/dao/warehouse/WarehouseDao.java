@@ -43,4 +43,8 @@ public interface WarehouseDao {
    WarehouseDTO selectWarehouseByWms(@Param("wmsWarehouseCode") String wmsWarehouseCode, @Param("wmsWarehouseType") Integer wmsWarehouseType);
 
    WarehouseConfigResp refresh(String warehouseCode);
+
+   List<WarehouseDTO> warehouseList();
+
+   List<WarehouseDTO> warehouseWms(@Param("wmsWarehouseId") String wmsWarehouseId);
 }
