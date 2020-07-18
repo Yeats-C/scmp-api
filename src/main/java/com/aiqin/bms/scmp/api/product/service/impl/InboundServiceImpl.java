@@ -604,9 +604,9 @@ public class InboundServiceImpl implements InboundService {
             LOGGER.info("更新入库单商品实际信息：{}" , count);
 
             // 计算入库单主表的实际值
-            praInboundNum = inbound.getPraInboundNum() + product.getPraInboundNum();
-            praMainUnitNum = inbound.getPraMainUnitNum() + actualTotalCount;
-            praTaxAmount = inbound.getPraTaxAmount().add(product.getPraTaxAmount());
+            praInboundNum = praInboundNum + product.getPraInboundNum();
+            praMainUnitNum = praMainUnitNum + actualTotalCount;
+            praTaxAmount = praTaxAmount.add(product.getPraTaxAmount());
             if(product.getTax() != null){
                 BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
                 praAmount = inbound.getPraAmount().add(amount);
