@@ -293,16 +293,11 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
             totalCount+=product.getQuantity();
-//            productRequest.setUnitName(product.getUnit());
-//            productRequest.setColorName(product.getColor());
-//            productRequest.setModelNumber(product.getModel());
             productRequest.setProductType(0);
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
             productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
             BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
             productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
-//            productRequest.setWarehouseCode(stockChangeDlRequest.getWarehouseCode());
-//            productRequest.setWarehouseName(stockChangeDlRequest.getWarehouseName());
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
             if(org.apache.commons.collections.CollectionUtils.isNotEmpty(list) && list.size() > 0){
@@ -318,7 +313,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                             batchRequest.setBatchCode(productBatch.getCallInBatchNumber());
                         }
                         batchRequest.setProductDate(productBatch.getProductDate());
-                        batchRequest.setTotalCount(productBatch.getQuantity());
+                        batchRequest.setActualTotalCount(productBatch.getQuantity());
                         batchList.add(batchRequest);
                     }
                 }

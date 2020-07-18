@@ -400,6 +400,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         stockChangeDlRequest.setWarehouseCode(profitLoss.getWarehouseCode());
         stockChangeDlRequest.setWarehouseName(profitLoss.getWarehouseName());
         stockChangeDlRequest.setOperationName(profitLoss.getCreateBy());
+        stockChangeDlRequest.setOperationCode("");
         // 商品数据
         List<ProductRequest> productList = new ArrayList<>();
         for (ProfitLossDetailRequest product : profitLossProductList) {
@@ -430,7 +431,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                         batchRequest.setSkuCode(productBatch.getSkuCode());
                         batchRequest.setBatchCode(productBatch.getBatchCode());
                         batchRequest.setProductDate(productBatch.getProductDate());
-                        batchRequest.setTotalCount(productBatch.getTotalCount());
+                        batchRequest.setActualTotalCount(productBatch.getTotalCount());
                         batchList.add(batchRequest);
                     }
                 }
