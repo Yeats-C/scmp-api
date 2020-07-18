@@ -19,4 +19,6 @@ public interface StockFlowDao {
     List<StockFlow> list(StockLogsRequest request);
 
     Integer listCount(StockLogsRequest request);
+
+    List<StockFlow> selectStockLogs(StockLogsRequest stockLogsRequest);
 }

@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.response.StockResponse;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Stock;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockFlow;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.SkuBatchReqVO;
 import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
@@ -51,8 +50,6 @@ public interface StockDao {
     List<Stock> stockByWarehouseAndSku(@Param("stockList") List<StockInfoRequest> stockList);
 
     void updateBatch(@Param("stocks") List<Stock> stocks);
-
-    List<StockFlow> selectStockLogs(StockLogsRequest stockLogsRequest);
 
     List<Stock> selectGroup();
 

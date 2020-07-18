@@ -108,4 +108,7 @@
         FROM stock_flow
         where stock_code = #{stockCode, jdbcType=VARCHAR}
     </select>
+    <select id="selectStockLogs" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"></include> from stock_flow where stock_code=#{stockCode} order by id desc
+    </select>
 </mapper>

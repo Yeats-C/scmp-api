@@ -92,4 +92,7 @@ public class Warehouse extends CommonBean {
     @ApiModelProperty(value="批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式")
     private Integer batchManage;
 
+    @ApiModelProperty(value="wms库房id")
+    private String wmsWarehouseId;
+
 }

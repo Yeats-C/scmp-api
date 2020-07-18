@@ -282,8 +282,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             stockChangeDlRequest.setWarehouseCode(allocation.getCallInWarehouseCode());
             stockChangeDlRequest.setWarehouseName(allocation.getCallInWarehouseName());
         }
-        stockChangeDlRequest.setOperationCode(allocation.getCreateById());
-        stockChangeDlRequest.setOperationName(allocation.getCreateBy());
+        stockChangeDlRequest.setOperationCode(allocation.getUpdateById());
+        stockChangeDlRequest.setOperationName(allocation.getUpdateBy());
         // 商品数据
         List<ProductRequest> productList = new ArrayList<>();
         for (AllocationProductResVo product : products) {
@@ -433,6 +433,10 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public Long insertSelective(Allocation record) {
         record.setCompanyCode(getUser().getCompanyCode());
         record.setCompanyName(getUser().getCompanyName());
+        record.setCreateBy(getUser().getPersonName());
+        record.setCreateById(getUser().getPersonId());
+        record.setUpdateBy(getUser().getPersonName());
+        record.setUpdateById(getUser().getPersonId());
         long k = allocationMapper.insertSelective(record);
         if (k > 0) {
             return record.getId();
@@ -621,7 +625,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         aWmsInSource.setCallInWarehouseName(allocation.getCallInWarehouseName());
         aWmsInSource.setCreateTime(new Date());
         aWmsInSource.setCreateById(allocation.getCreateById());
-        aWmsInSource.setCreateByName(allocation.getCreateByName());
+        aWmsInSource.setCreateByName(allocation.getCreateBy());
         aWmsInSource.setRemark(allocation.getRemark());
         for (AllocationProductResVo aProductList : aProductLists) {
             AllocationWmsProductSource aWmsProductList = new AllocationWmsProductSource();
@@ -807,7 +811,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 stockVoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                 stockVoRequest.setSourceDocumentCode(allocation.getAllocationCode());
                 stockVoRequest.setOperatorId(allocation.getUpdateById());
-                stockVoRequest.setOperatorName(allocation.getUpdateByName());
+                stockVoRequest.setOperatorName(allocation.getUpdateBy());
                 stockVoRequest.setRemark(allocation.getRemark());
                 stockVoRequests.add(stockVoRequest);
             }
@@ -849,7 +853,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                     stockBatchInfoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
                     stockBatchInfoRequest.setSourceDocumentCode(allocation.getAllocationCode());
                     stockBatchInfoRequest.setOperatorId(allocation.getUpdateById());
-                    stockBatchInfoRequest.setOperatorName(allocation.getUpdateByName());
+                    stockBatchInfoRequest.setOperatorName(allocation.getUpdateBy());
                     stockBatchInfoRequest.setBatchRemark(allocationProductBatch.getBatchNumberRemark());
                     stockBatchInfoRequests.add(stockBatchInfoRequest);
                 }
@@ -1012,7 +1016,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 aWmsOutSource.setCallInWarehouseCode(allocation1.getCallInWarehouseCode());
                 aWmsOutSource.setCallInWarehouseName(allocation1.getCallInWarehouseName());
                 aWmsOutSource.setCreateById(allocation1.getCreateById());
-                aWmsOutSource.setCreateByName(allocation1.getCreateByName());
+                aWmsOutSource.setCreateByName(allocation1.getCreateBy());
                 // 获取调入方地址
                 WarehouseDTO warehouseByCode = warehouseDao.getWarehouseByCode(allocation1.getCallInWarehouseCode());
                 if(warehouseByCode != null){
@@ -1208,7 +1212,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         movementWmsReqVo.setInboundWarehouseName(allocation1.getCallInWarehouseName());
         movementWmsReqVo.setInboundOrderCode(allocation1.getInboundOderCode());
         movementWmsReqVo.setCreateBy(allocation1.getCreateById());
-        movementWmsReqVo.setCreateByName(allocation1.getCreateByName());
+        movementWmsReqVo.setCreateByName(allocation1.getCreateBy());
         movementWmsReqVo.setRemark(allocation1.getRemark());
         if(warehouseByCode != null){
             movementWmsReqVo.setOrderContactPhone(warehouseByCode.getPhone());

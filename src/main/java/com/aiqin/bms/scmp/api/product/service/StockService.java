@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageInfo;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -98,4 +99,8 @@ public interface StockService {
     HttpResponse synchroBatch(StockMonthRequest request);
 
     HttpResponse dlStockChange(StockChangeDlRequest request);
+
+    HttpResponse importStock(MultipartFile file);
+
+    HttpResponse importStockBatch(MultipartFile file);
 }
