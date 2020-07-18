@@ -1081,7 +1081,7 @@ public class InboundServiceImpl implements InboundService {
                 dlProduct = new ProductRequest();
                 dlProduct.setLineCode(product.getLinenum().intValue());
                 dlProduct.setSkuCode(product.getSkuCode());
-                dlProduct.setActualTotalCount(product.getPraInboundMainNum());
+                dlProduct.setTotalCount(product.getPraInboundMainNum());
                 dlProduct.setProductAmount(orderProduct.getProductAmount());
                 dlProduct.setTaxRate(orderProduct.getTaxRate());
                 Integer productType = orderProduct.getProductType() == 3 ? 1 : (orderProduct.getProductType() == 2 ? 2 : 1);
