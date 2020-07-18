@@ -1901,7 +1901,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             // 查询订单信息
             TransportOrdersResquest transportOrdersResquest = new TransportOrdersResquest();
             transportOrdersResquest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
-            transportOrdersResquest.setCustomerCode(warehouse.getWarehouseCode());
+            transportOrdersResquest.setWarehouseCode(warehouse.getWarehouseCode());
             List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
             Map<String, TransportOrders> skuMap = transportOrders1.stream().collect(Collectors.toMap(TransportOrders::getOrderCode, input -> input, (k1, k2) -> k1));
             for (String orderCode : request.getOrderIdsList()) {
@@ -1913,6 +1913,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
         }
         try {
+            transportAddRequest.setOrdersList(transportOrders);
         return transportService.saveTransport(transportAddRequest);
         } catch (Exception e) {
            LOGGER.error(Global.ERROR, e);

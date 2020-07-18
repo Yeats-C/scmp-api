@@ -85,9 +85,13 @@ public class AllocationProduct extends CommonBean {
     @JsonProperty(value = "line_num")
     private Long lineNum;
 
-    @ApiModelProperty("实际调拨数量")
-    @JsonProperty(value = "actual_total_count")
-    private Long actualTotalCount;
+    @ApiModelProperty("实际调拨出数量")
+    @JsonProperty(value = "callout_actual_total_count")
+    private Long calloutActualTotalCount;
+
+    @ApiModelProperty("实际调拨入的数量")
+    @JsonProperty(value = "callin_actual_total_count")
+    private Long callinActualTotalCount;
 
     @ApiModelProperty("批次列表")
     @JsonProperty("sku_batch")

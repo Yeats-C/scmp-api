@@ -94,9 +94,11 @@ public class TransportServiceImpl implements TransportService {
         //获取一个运输单号
         String code = IdSequenceUtils.getInstance().nextId()+"";
         BeanCopyUtils.copy(transportAddRequest,transport);
+        transport.setAdditionalLogisticsFee(transport.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : transport.getAdditionalLogisticsFee());
+        transport.setStandardLogisticsFee(transport.getStandardLogisticsFee() == null ? BigDecimal.ZERO : transport.getStandardLogisticsFee());
         transport.setLogisticsFee(transport.getAdditionalLogisticsFee().add(transport.getStandardLogisticsFee()));
         transport.setTransportCode(code);
-        if(currentAuthToken.getPersonName() != null){
+        if(currentAuthToken != null){
             transport.setCreateBy(currentAuthToken.getPersonName());
             transport.setUpdateBy(currentAuthToken.getPersonName());
         }
@@ -105,7 +107,7 @@ public class TransportServiceImpl implements TransportService {
 //        Long orderCommodityNum=0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
-            if(currentAuthToken.getPersonName() != null){
+            if(currentAuthToken != null){
                 transportOrder.setCreateBy(currentAuthToken.getPersonName());
                 transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             }
@@ -132,7 +134,7 @@ public class TransportServiceImpl implements TransportService {
         transportLog.setType("新增");
         transportLog.setContent("新增发运单");
         transportLog.setRemark(transport.getRemark());
-        if(currentAuthToken.getPersonName() != null){
+        if(currentAuthToken != null){
             transportLog.setCreateBy(currentAuthToken.getPersonName());
             transportLog.setUpdateBy(currentAuthToken.getPersonName());
         }
@@ -260,10 +262,16 @@ public class TransportServiceImpl implements TransportService {
         e8OrderCreate.setReceiveDistrict(queryOrderInfoRespVO.getDistrictName());
 //        e8OrderCreate.setReceiveTown();  镇没有
         e8OrderCreate.setReceiveStreetNo(queryOrderInfoRespVO.getDetailAddress());
-        e8OrderCreate.setAmount(request.getPackingNum().intValue());
-        e8OrderCreate.setVolume(request.getTotalVolume().doubleValue());
-        e8OrderCreate.setWeight(request.getTotalWeight().doubleValue());
-        if (request.getDeliverTo().equals(Global.DELIVERTO_1)) {
+        if(request.getPackingNum() != null){
+            e8OrderCreate.setAmount(request.getPackingNum().intValue());
+        }
+        if(request.getTotalVolume() != null){
+            e8OrderCreate.setVolume(request.getTotalVolume().doubleValue());
+        }
+        if(request.getTotalWeight() != null){
+            e8OrderCreate.setWeight(request.getTotalWeight().doubleValue());
+        }
+        if (request.getDeliverTo() != null && request.getDeliverTo().equals(Global.DELIVERTO_1)) {
             e8OrderCreate.setServiceMode(Global.SERVICE_MODE_1);   // 服务方式
             e8OrderCreate.setIfVisit(false);       // 上门提货
         } else {
