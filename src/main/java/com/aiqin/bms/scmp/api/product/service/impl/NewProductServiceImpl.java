@@ -20,12 +20,17 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReq
 import com.aiqin.bms.scmp.api.product.domain.request.sku.info.SaveSkuInfoReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewProductResponseVO;
 import com.aiqin.bms.scmp.api.product.domain.response.newproduct.NewSkuDetailsResponseVO;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuBoxPackingRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuSupplyUnitRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsWmsRepsVo;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNew;
 import com.aiqin.bms.scmp.api.product.service.impl.skuimport.CheckSkuNewReally;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.purchase.manager.DataManageService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -44,10 +49,14 @@ import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -78,8 +87,6 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     @Autowired
     private ProductSkuCheckoutMapper productSkuCheckoutMapper;
     @Autowired
-    private ProductSkuSupplyUnitCapacityMapper productSkuSupplyUnitCapacityMapper;
-    @Autowired
     private ProductSkuStockInfoMapper productSkuStockInfoMapper;
     @Autowired
     private ProductSkuPurchaseInfoMapper productSkuPurchaseInfoMapper;
@@ -97,6 +104,8 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     private ProductCommonService productCommonService;
     @Autowired
     private ProductSkuInfoMapper productSkuInfoMapper;
+    @Autowired
+    private ProductSkuPushWmsMapper productSkuPushWmsMapper;
     @Autowired
     private TagInfoService tagInfoService;
     @Autowired
@@ -122,19 +131,17 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     @Autowired
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
     @Autowired
-    private ProductSkuDisInfoDao productSkuDisInfoDao;
-    @Autowired
     private WarehouseDao warehouseDao;
     @Autowired
-    private ProductSkuInspReportDao productSkuInspReportDao;
-    @Autowired
     private ProductSkuPriceInfoMapper productSkuPriceInfoMapper;
-    @Autowired
-    private ApplyUseTagRecordMapper applyUseTagRecordMapper;
     @Autowired
     private ProductSkuChannelMapper productSkuChannelMapper;
     @Autowired
     private PurchaseGroupDao purchaseGroupDao;
+    @Autowired
+    private UrlConfig urlConfig;
+    @Autowired
+    private ProductSkuDisInfoDao productSkuDisInfoDao;
 
 
     @Override
@@ -967,6 +974,100 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     @Override
     public Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode) {
         return productSkuInfoMapper.selectBySkuNames(skuNameList,companyCode);
+    }
+
+    @Override
+    public HttpResponse skuImportWms() {
+        // 查询出所有没有推送到wms商品信息
+        List<String> skuCodes = productSkuPushWmsMapper.selectAllSkuCode();
+        log.info("查询出所有没有推送到wms商品编码：[{}]", JsonUtil.toJson(skuCodes));
+        for (String skuCode : skuCodes) {
+            log.info("当前准备推送到wms商品编码：[{}]", JsonUtil.toJson(skuCode));
+            ProductSkuInfoWms productSkuInfoWms=new ProductSkuInfoWms();
+            // sku整箱商品包装信息
+            List<ProductSkuBoxPackingRespVo> productSkuBoxPackingRespVos = productSkuBoxPackingDao.getList(skuCode);
+            if(CollectionUtils.isNotEmpty(productSkuBoxPackingRespVos)){
+                productSkuInfoWms.setPackgeUnit(productSkuBoxPackingRespVos.get(0).getLargeUnit());
+                productSkuInfoWms.setBoxGrossWeight(productSkuBoxPackingRespVos.get(0).getNetWeight());
+                productSkuInfoWms.setBoxLength(productSkuBoxPackingRespVos.get(0).getBoxHeight());
+                productSkuInfoWms.setBoxHeight(productSkuBoxPackingRespVos.get(0).getBoxHeight());
+                productSkuInfoWms.setBoxVolume(productSkuBoxPackingRespVos.get(0).getBoxVolume());
+                productSkuInfoWms.setBoxGrossWeight(productSkuBoxPackingRespVos.get(0).getBoxGrossWeight());
+                productSkuInfoWms.setNetWeight(productSkuBoxPackingRespVos.get(0).getNetWeight());
+            }
+            // sku商品库存配置信息
+            List<PurchaseSaleStockRespVo> purchaseSaleStockRespVos = productSkuStockInfoMapper.getList(skuCode);
+            if(CollectionUtils.isNotEmpty(purchaseSaleStockRespVos)){
+                productSkuInfoWms.setUnitName(purchaseSaleStockRespVos.get(0).getUnitName());
+                productSkuInfoWms.setUnitCode(purchaseSaleStockRespVos.get(0).getUnitCode());
+            }
+            // sku商品信息
+            ProductSkuInfo productSkuInfo = productSkuInfoMapper.selectBySkuCode(skuCode);
+            productSkuInfoWms.setFlag(Integer.valueOf(productSkuInfo.getGoodsGifts()));
+            productSkuInfoWms.setSkuCode(productSkuInfo.getSkuCode());
+            productSkuInfoWms.setSkuName(productSkuInfo.getSkuName());
+            productSkuInfoWms.setProductBrandCode(productSkuInfo.getProductBrandCode());
+            productSkuInfoWms.setProductBrandName(productSkuInfo.getProductBrandName());
+            productSkuInfoWms.setProductCategoryCode(productSkuInfo.getProductCategoryCode());
+            productSkuInfoWms.setProductCategoryName(productSkuInfo.getProductCategoryName());
+            productSkuInfoWms.setSkuAbbreviation(productSkuInfo.getSkuAbbreviation());
+            productSkuInfoWms.setModelNumber(productSkuInfo.getModelNumber());
+            productSkuInfoWms.setQualityAssuranceManagement(productSkuInfo.getQualityAssuranceManagement());
+            productSkuInfoWms.setQualityDate(productSkuInfo.getQualityDate());
+            productSkuInfoWms.setUpdateTime(productSkuInfo.getUpdateTime());
+            productSkuInfoWms.setGoodsGifts(productSkuInfo.getGoodsGifts());
+            productSkuInfoWms.setManufacturerGuidePrice(productSkuInfo.getManufacturerGuidePrice());
+            productSkuInfoWms.setItemNumber(productSkuInfo.getItemNumber());
+            productSkuInfoWms.setItemNumber(productSkuInfo.getItemNumber());
+            productSkuInfoWms.setColorCode(productSkuInfo.getColorCode());
+            productSkuInfoWms.setColorName(productSkuInfo.getColorName());
+            productSkuInfoWms.setSkuStatus(productSkuInfo.getSkuStatus());
+            productSkuInfoWms.setSeasonBand(productSkuInfo.getSeasonBand());
+            productSkuInfoWms.setUniqueCode(productSkuInfo.getUniqueCode());
+
+            // sku商品门店销售信息
+            PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(skuCode);
+            log.info("sku条形码{}", JsonUtil.toJson(purchaseSaleStockRespVo));
+            productSkuInfoWms.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+
+            // sku分销设置
+            ProductSkuDisInfoDraft productSkuDisInfoDraft = productSkuDisInfoDao.getDraft(skuCode);
+            productSkuInfoWms.setSpec(productSkuDisInfoDraft.getSpec());
+            // sku经销商信息
+            List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitDao.selectBySkuCode(skuCode);
+            for (ProductSkuSupplyUnitRespVo productSkuSupplyUnitRespVo : productSkuSupplyUnitRespVos ) {
+                if (productSkuSupplyUnitRespVo.getIsDefault().equals("1")){
+                    productSkuInfoWms.setSupplyUnitCode(productSkuSupplyUnitRespVo.getSupplyUnitCode());
+                    productSkuInfoWms.setSupplyUnitName(productSkuSupplyUnitRespVo.getSupplyUnitName());
+                    break;
+                }
+            }
+            // sku商品配置设置
+            List<SkuConfigsRepsVo> skuConfigsRepsVoList=  productSkuConfigMapper.getListBySkuCode(skuCode);
+            List<SkuConfigsWmsRepsVo> skuConfigsWmsRepsVos= Lists.newArrayList();
+            SkuConfigsWmsRepsVo skuConfigsWmsRepsVo;
+            for (SkuConfigsRepsVo skuConfigsRepsVo: skuConfigsRepsVoList ) {
+                skuConfigsWmsRepsVo=new SkuConfigsWmsRepsVo();
+                skuConfigsWmsRepsVo.setConfigStatus(skuConfigsRepsVo.getConfigStatus());
+                skuConfigsWmsRepsVo.setTransportCenterCode(skuConfigsRepsVo.getTransportCenterCode());
+                skuConfigsWmsRepsVo.setTransportCenterName(skuConfigsRepsVo.getTransportCenterName());
+                skuConfigsWmsRepsVos.add(skuConfigsWmsRepsVo);
+            }
+            productSkuInfoWms.setSkuConfigsWmsRepsVos(skuConfigsWmsRepsVos);
+            log.info("传入wms的消息为{}", JsonUtil.toJson(productSkuInfoWms));
+            try {
+                String url = urlConfig.WMS_API_URL2 + "/infoPushAndInquiry/source/productInfoPush";
+                HttpClient httpClient = HttpClient.post(url).json(productSkuInfoWms).timeout(30000);
+                HttpResponse result = httpClient.action().result(new TypeReference<HttpResponse>(){});
+                if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+                    log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JsonUtil.toJson(productSkuInfoWms));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JsonUtil.toJson(productSkuInfoWms));
+            }
+        }
+        return HttpResponse.success();
     }
 
     private void dataValidation( List<SkuInfoImportNewReally> skuInfoImports) {

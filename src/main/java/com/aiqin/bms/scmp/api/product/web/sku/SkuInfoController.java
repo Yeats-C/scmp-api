@@ -435,4 +435,10 @@ public class SkuInfoController {
         return productService.saveImportSkuInfo(reqVO);
     }
 
+    @PostMapping("/import/wms")
+    @ApiOperation(value = "sku商品信息导入wms")
+    public HttpResponse skuImportWms(){
+        return productService.skuImportWms();
+    }
+
 }
