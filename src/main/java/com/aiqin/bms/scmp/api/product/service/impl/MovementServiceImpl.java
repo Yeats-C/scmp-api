@@ -343,7 +343,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //设置移库待出库状态
             outbound(allocation1);
 //            更新出库状态
-            updateOut(request, allocation1, detailLists, detailBatchList);
+            updateOut(request, allocation1, detailLists, detailBatchList,productSkuMap);
 
             // 入库单
             //生成入库单
@@ -382,7 +382,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 设置移库完成状态
             finished(allocation1);
            //更新入库单
-            updateIn(request, allocation1, detailLists, detailBatchList);
+            updateIn(request, allocation1, detailLists, detailBatchList,productSkuMap);
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
@@ -418,8 +418,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 //            outboundService.save(convert);
 //            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
 //            inboundService.saveInbound2(inboundReqSave);
-            updateOut(request, allocation1, detailLists, detailBatchList);
-            updateIn(request, allocation1, detailLists, detailBatchList);
+            updateOut(request, allocation1, detailLists, detailBatchList, productSkuMap);
+            updateIn(request, allocation1, detailLists, detailBatchList, productSkuMap);
             // 解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
@@ -475,7 +475,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         return HttpResponse.success();
     }
 
-    private void updateIn(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList) {
+    private void updateIn(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList,Map<String, OrderProductSkuResponse> productSkuMap) {
         Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
 
         String key;
@@ -506,7 +506,15 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
             allocationProduct.setQuantity(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
-            allocationProduct.setSkuName(detail.getSkuName());
+            if(detail.getSkuName() == null){
+                OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
+                if(orderProductSkuResponse != null){
+                    detail.setSkuName(orderProductSkuResponse.getProductName());
+                    allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
+                }
+            }else {
+                allocationProduct.setSkuName(detail.getSkuName());
+            }
             allocationProduct.setLineNum(detail.getLineCode());
             allocationProductMapper.updateQuantityBySkuCodeAndSourceIn(allocationProduct);
 
@@ -548,6 +556,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 if (CollectionUtils.isEmpty(batchList) && batchList.size() <= 0) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
                     AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(allocation1.getInboundOderCode(), batch.getSkuCode(), batch.getLineCode().intValue());
+                    productBatch = new InboundBatch();
                     allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
 //                    AllocationProductBatch allocationProductBatch1 =
                     allocationProductBatch.setCallInBatchNumber(batch.getBatchCode());
@@ -563,7 +572,17 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     allocationProductBatch.setCallInBatchInfoCode(batchInfoCode);
                     allocationProductBatch.setSupplierCode(allocationProductBatch.getSupplierCode());
                     allocationProductBatch.setSkuCode(batch.getSkuCode());
-                    allocationProductBatch.setSkuName(batch.getSkuName());
+                    if(batch.getSkuName() == null){
+                        OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                        if(orderProductSkuResponse != null){
+                            batch.setSkuName(orderProductSkuResponse.getProductName());
+                            allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                        }
+                    }else {
+                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        productBatch.setSkuName(batch.getSkuName());
+                    }
                     allocationProductBatch.setProductDate(batch.getProductDate());
                     allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
                     allocationProductBatch.setQuantity(batch.getQuantity());
@@ -574,14 +593,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     allocationProductBatchMapper.updateByPrimaryKey(allocationProductBatch);
                     detailBatchList.add(allocationProductBatch);
 
-                    productBatch = new InboundBatch();
+
                     productBatch.setInboundOderCode(inbound.getInboundOderCode());
                     productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
                     productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
                     productBatch.setSupplierCode(inbound.getSupplierCode());
 //                    productBatch.setSupplierName(inbound.getSupplierName());
                     productBatch.setSkuCode(batch.getSkuCode());
-                    productBatch.setSkuName(batch.getSkuName());
+
                     productBatch.setProductDate(batch.getProductDate());
                     productBatch.setTotalCount(batch.getQuantity());
                     productBatch.setActualTotalCount(batch.getQuantity());
@@ -598,12 +617,22 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatchMapper.updateByBatchIn(detail);
                     }else {
                         AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                        productBatch = new InboundBatch();
                         allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
                         allocationProductBatch.setCallInBatchNumber(batchList.get(0).getBatchCode());
                         allocationProductBatch.setCallInBatchInfoCode(batchList.get(0).getBatchInfoCode());
                         allocationProductBatch.setSupplierCode(batchList.get(0).getSupplierCode());
                         allocationProductBatch.setSkuCode(batch.getSkuCode());
-                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            allocationProductBatch.setSkuName(batch.getSkuName());
+                            productBatch.setSkuName(batch.getSkuName());
+                        }
                         allocationProductBatch.setProductDate(batch.getProductDate());
                         allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
                         allocationProductBatch.setQuantity(batch.getQuantity());
@@ -612,14 +641,13 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatch.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                         allocationProductBatchMapper.insertSelective(allocationProductBatch);
 
-                        productBatch = new InboundBatch();
+
                         productBatch.setInboundOderCode(inbound.getInboundOderCode());
                         productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
                         productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
                         productBatch.setSupplierCode(inbound.getSupplierCode());
                         productBatch.setSupplierName(inbound.getSupplierName());
                         productBatch.setSkuCode(batch.getSkuCode());
-                        productBatch.setSkuName(batch.getSkuName());
                         productBatch.setProductDate(batch.getProductDate());
                         productBatch.setTotalCount(batch.getQuantity());
                         productBatch.setActualTotalCount(batch.getQuantity());
@@ -653,7 +681,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         LOGGER.info("入库单主信息实际值更新:{}",k);
     }
 
-    private boolean updateOut(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList) {
+    private boolean updateOut(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList,Map<String, OrderProductSkuResponse> productSkuMap) {
         // 更新出库主表
         Outbound outbound = outboundDao.selectByCode(request.getOutboundOderCode());
         if (outbound == null) {
@@ -683,7 +711,15 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
             allocationProduct.setQuantity(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
-            allocationProduct.setSkuName(detail.getSkuName());
+            if(detail.getSkuName() == null){
+                OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
+                if(orderProductSkuResponse != null){
+                    detail.setSkuName(orderProductSkuResponse.getProductName());
+                    allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
+                }
+            }else {
+                allocationProduct.setSkuName(detail.getSkuName());
+            }
             allocationProduct.setLineNum(detail.getLineCode());
             allocationProduct.setCalloutActualTotalCount(detail.getQuantity());
             allocationProductMapper.updateQuantityBySkuCodeAndSource(allocationProduct);
@@ -731,12 +767,24 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatchMapper.updateByBatch(detail);
                     }else {
                         AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                        outboundBatch = new OutboundBatch();
+
                         allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
                         allocationProductBatch.setCallOutBatchNumber(batchList.get(0).getBatchCode());
                         allocationProductBatch.setCallOutBatchInfoCode(batchList.get(0).getBatchInfoCode());
                         allocationProductBatch.setSupplierCode(batchList.get(0).getSupplierCode());
                         allocationProductBatch.setSkuCode(batch.getSkuCode());
-                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                batch.setSkuName(orderProductSkuResponse.getProductName());
+                                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                outboundBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            allocationProductBatch.setSkuName(batch.getSkuName());
+                            outboundBatch.setSkuName(batch.getSkuName());
+                        }
                         allocationProductBatch.setProductDate(batch.getProductDate());
                         allocationProductBatch.setCallOutActualTotalCount(batch.getQuantity());
                         allocationProductBatch.setQuantity(batch.getQuantity());
@@ -745,12 +793,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatch.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                         allocationProductBatchMapper.insertSelective(allocationProductBatch);
 
-                        outboundBatch = new OutboundBatch();
+
                         outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                         outboundBatch.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         outboundBatch.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         outboundBatch.setSkuCode(batch.getSkuCode());
-                        outboundBatch.setSkuName(batch.getSkuName());
                         outboundBatch.setSupplierCode(outbound.getSupplierCode());
                         outboundBatch.setSupplierName(outbound.getSupplierName());
                         outboundBatch.setProductDate(DateUtils.currentDate());
@@ -831,11 +878,15 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
                stockInfoRequest.setWarehouseName(addAllocation.getCallOutWarehouseName());
+               WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(addAllocation.getCallOutWarehouseCode());
+               stockInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
            }else {
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallInLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallInLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallInWarehouseCode());
                stockInfoRequest.setWarehouseName(addAllocation.getCallInWarehouseName());
+               WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(addAllocation.getCallOutWarehouseCode());
+               stockInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
            }
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
