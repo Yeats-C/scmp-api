@@ -34,7 +34,7 @@ public class OrderTransportRequest {
     private String distributionModeCode;
 
     @ApiModelProperty(value="送货方式名称")
-    @JsonProperty("distribution_mode_code")
+    @JsonProperty("distribution_mode_name")
     private String distributionModeName;
 
     @ApiModelProperty(value="标准物流费")

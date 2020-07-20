@@ -1870,7 +1870,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             }
             orderTransportRequest.setOrderCodes(orderCodes);
             String url = urlConfig.WMS_API_URL + "/dl/order/transport";
-            LOGGER.info("发运物流单回传DL数据："  + JsonUtil.toJson(orderTransportRequest));
+            LOGGER.info("发运物流单回传DL数据,参数：[{}]" ,JsonUtil.toJson(orderTransportRequest));
             HttpClient httpClient = HttpClient.post(url).json(orderTransportRequest).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
             if(response.getCode().equals(MessageId.SUCCESS_CODE)){
