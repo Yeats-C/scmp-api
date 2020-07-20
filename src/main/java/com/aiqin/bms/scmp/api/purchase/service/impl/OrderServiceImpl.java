@@ -829,6 +829,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBtachList.setBeOverdueData(itemBatchList.getBeOverdueDate());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
                 pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
+                pBtachList.setTotalCount(itemBatchList.getTotalCount());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -840,6 +841,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBtachList.setSkuName(itemBatchMonth.getSkuName());
                 pBtachList.setBatchCode(itemBatchMonth.getBatchCode());
                 pBtachList.setTotalCount(itemBatchMonth.getTotalCount());
+                pBtachList.setLineCode(itemBatchMonth.getLineCode().intValue());
                 pBatchLists.add(pBtachList);
             }
         }
