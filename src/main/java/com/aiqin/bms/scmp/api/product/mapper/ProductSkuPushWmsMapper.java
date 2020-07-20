@@ -9,4 +9,6 @@ public interface ProductSkuPushWmsMapper {
     List<ProductSkuPushWms> selectAll();
 
     List<String> selectAllSkuCode();
+
+    Integer updateWmsStatusBySkuCode(String skuCode);
 }

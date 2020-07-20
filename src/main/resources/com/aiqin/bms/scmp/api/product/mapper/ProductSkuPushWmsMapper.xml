@@ -19,6 +19,8 @@
     select sku_code from product_sku_push_wms
     where is_push_wms=1
   </select>
-
+  <update id="updateWmsStatusBySkuCode">
+      update product_sku_push_wms set is_push_wms = 0 where sku_code =#{skuCode}
+  </update>
 
 </mapper>

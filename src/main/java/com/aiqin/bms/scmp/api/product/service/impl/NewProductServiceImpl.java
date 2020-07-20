@@ -1032,7 +1032,10 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
 
             // sku分销设置
             ProductSkuDisInfoDraft productSkuDisInfoDraft = productSkuDisInfoDao.getDraft(skuCode);
-            productSkuInfoWms.setSpec(productSkuDisInfoDraft.getSpec());
+            if(productSkuDisInfoDraft != null){
+                productSkuInfoWms.setSpec(productSkuDisInfoDraft.getSpec());
+            }
+
             // sku经销商信息
             List<ProductSkuSupplyUnitRespVo> productSkuSupplyUnitRespVos = productSkuSupplyUnitDao.selectBySkuCode(skuCode);
             for (ProductSkuSupplyUnitRespVo productSkuSupplyUnitRespVo : productSkuSupplyUnitRespVos ) {
@@ -1066,6 +1069,9 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 e.printStackTrace();
             log.info("穿入wms的sku商品信息失败，传入参数是[{}]", JsonUtil.toJson(productSkuInfoWms));
             }
+
+            // 执行完 改变商品状态
+            productSkuPushWmsMapper.updateWmsStatusBySkuCode(skuCode);
         }
         return HttpResponse.success();
     }
