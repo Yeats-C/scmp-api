@@ -304,6 +304,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setId(item.getId());
             returnOrderInfoItem.setActualPrice(item.getPrice());
             returnOrderInfoItem.setActualChannelUnitPrice(item.getChannelUnitPrice());
+            returnOrderInfoItem.setActualInboundNum(item.getActualInboundNum());
             Integer count = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             LOGGER.info("直送退货单实退的商品数量：{}", count);
 
@@ -349,7 +350,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 退货收货完成- 直送订单 回传运营中台
         changeParameter(itemList.get(0).getReturnOrderCode());
         // 推送结算
-        sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
+        //sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
         return HttpResponse.success();
     }
 
