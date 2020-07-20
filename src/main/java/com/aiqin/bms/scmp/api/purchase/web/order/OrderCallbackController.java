@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * <p>
@@ -93,8 +94,8 @@ public class OrderCallbackController {
 
     @PostMapping("/wms/profitloss")
     @ApiOperation(value = "wms报损报溢回传")
-    public HttpResponse profitLossWmsEcho(@RequestBody ProfitLossWmsReqVo request) {
-        LOGGER.info("报损报溢回传,request:{}", request.toString());
+    public HttpResponse profitLossWmsEcho(@RequestBody List<ProfitLossWmsReqVo> request) {
+        LOGGER.info("报损报溢回传,request:{}", JsonUtil.toJson(request));
         return profitLossService.profitLossWmsEcho(request);
     }
 

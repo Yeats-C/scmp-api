@@ -1278,7 +1278,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         movementWmsReqVo.setDetailList(movementWmsProductoLists);
         movementWmsReqVo.setBatchInfoList(movementWmsProductBatchLists);
-        LOGGER.info("审批成功后：移库调用wms参数:{}", JSON.toJSON(movementWmsReqVo));
+        LOGGER.info("审批成功后：移库调用wms参数:{}", JsonUtil.toJson(movementWmsReqVo));
         String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
         HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

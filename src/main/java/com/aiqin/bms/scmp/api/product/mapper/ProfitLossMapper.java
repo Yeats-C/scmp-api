@@ -30,4 +30,6 @@ public interface ProfitLossMapper {
     void updateByOrderCodes(List<String> list);
 
     ProfitLoss selectByOrderCode(String orderCode);
+
+    String profitLossByCode(String code);
 }
