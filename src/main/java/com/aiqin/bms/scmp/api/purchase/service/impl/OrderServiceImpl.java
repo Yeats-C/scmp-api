@@ -602,6 +602,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 stockMonthBatch.setWarehouseCode(vo.getWarehouseCode());
                 stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                 stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
+                stockMonthBatch.setLineCode(itemBatch.getLineCode());
                 stockList.add(stockMonthBatch);
             }
             vo.setItemBatchList(null);
@@ -619,6 +620,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
                     orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
                     orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
+                    orderInfoItemProductBatch.setLineCode(stockDayBatch.getLineCode());
                     itemBatchLists.add(orderInfoItemProductBatch);
                 }
             }

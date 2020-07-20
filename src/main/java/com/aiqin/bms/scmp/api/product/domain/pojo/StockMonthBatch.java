@@ -46,4 +46,8 @@ public class StockMonthBatch {
     @JsonProperty("wms_type")
     private Integer wmsType;
 
+    @ApiModelProperty("批次行号")
+    @JsonProperty("line_code")
+    private Long lineCode;
+
 }

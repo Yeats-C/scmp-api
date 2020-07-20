@@ -42,4 +42,8 @@ public class StockDayBatch {
     @JsonProperty("synchr_time")
     private Long synchrTime;
 
+    @ApiModelProperty("批次行号")
+    @JsonProperty("line_code")
+    private Long lineCode;
+
 }

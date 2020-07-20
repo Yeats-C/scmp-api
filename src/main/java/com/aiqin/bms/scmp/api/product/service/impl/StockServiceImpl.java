@@ -1408,6 +1408,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         monthFlows.add(batchFlow);
 
                         batchList.get(i).setBatchCount(monthBatch.getBatchCount());
+                        batchList.get(i).setLineCode(monthBatch.getLineCode());
                         days.add(batchList.get(i));
                         break;
                     }else {
@@ -1420,6 +1421,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         monthFlows.add(batchFlow);
 
                         batchList.get(i).setBatchCount(batchList.get(i).getBatchCount());
+                        batchList.get(i).setLineCode(monthBatch.getLineCode());
                         days.add(batchList.get(i));
                     }
                 }
