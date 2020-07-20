@@ -1801,6 +1801,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         request.setCustomerCode(oi.getCustomerCode());
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
+        request.setTransportDate(new Date());
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
