@@ -260,7 +260,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             outboundService.saveOutbound(convert);
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(4);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
             handleProfitLossStockData(addAllocation,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -284,7 +284,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(addAllocation,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -353,7 +353,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             inboundService.saveInbound2(inboundReqSave);
             // 出解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(2);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -386,7 +386,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -422,7 +422,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             updateIn(request, allocation1, detailLists, detailBatchList);
             // 解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(2);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -449,7 +449,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 加库存
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -826,7 +826,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == 2 || changeStockRequest.getOperationType() == 4){
+           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
@@ -855,7 +855,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
                     stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
                     stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
-                    if(changeStockRequest.getOperationType() == 2 || changeStockRequest.getOperationType() == 4){
+                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                         stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         stockBatchInfoRequest.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         stockBatchInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
