@@ -878,7 +878,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         vo.setWeight(request.getTotalWeight());
         vo.setBeMasterOrder(request.getOrderLevel() == 0 ? 1 : 0);
         vo.setMasterOrderCode(request.getMainOrderCode());
-        vo.setOrderOriginal(request.getOrderStoreCode());
+        //vo.setOrderOriginal(request.getOrderStoreCode());
         vo.setStoreTypeCode(request.getStoreType() == null ? "" : request.getStoreType().toString());
         vo.setOrderCategory(request.getOrderCategoryName());
         vo.setCreateById(request.getCreateById());
