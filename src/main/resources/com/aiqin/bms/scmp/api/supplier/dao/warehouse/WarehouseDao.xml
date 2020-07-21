@@ -459,4 +459,11 @@
     where enable = 0
     and wms_warehouse_id = #{wmsWarehouseId,jdbcType=VARCHAR}
   </select>
+  <select id="warehouseDl" resultMap="BaseResultMap">
+      select
+      <include refid="Base_Column_List" />
+      from warehouse
+      where enable = 0 and wms_warehouse_id = #{wmsWarehouseId,jdbcType=VARCHAR}
+      and wms_warehouse_type = #{wmsWarehouseType,jdbcType=TINYINT}
+  </select>
 </mapper>

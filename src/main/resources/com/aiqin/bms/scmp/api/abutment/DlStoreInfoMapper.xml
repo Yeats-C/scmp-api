@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.abutment.dao.DlStoreInfoDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="store_code" jdbcType="VARCHAR" property="storeCode" />
+    <result column="store_name" jdbcType="VARCHAR" property="storeName" />
+    <result column="contacts" jdbcType="VARCHAR" property="contacts" />
+    <result column="contacts_phone" jdbcType="VARCHAR" property="contactsPhone" />
+    <result column="id_number" jdbcType="VARCHAR" property="idNumber" />
+    <result column="province_code" jdbcType="VARCHAR" property="provinceCode" />
+    <result column="province_name" jdbcType="VARCHAR" property="provinceName" />
+    <result column="city_code" jdbcType="VARCHAR" property="cityCode" />
+    <result column="city_name" jdbcType="VARCHAR" property="cityName" />
+    <result column="district_code" jdbcType="VARCHAR" property="districtCode" />
+    <result column="district_name" jdbcType="VARCHAR" property="districtName" />
+    <result column="detail_address" jdbcType="VARCHAR" property="detailAddress" />
+    <result column="use_status" jdbcType="INTEGER" property="useStatus" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, store_code, store_name, contacts, contacts_phone, id_number, province_code, province_name, 
+    city_code, city_name, district_code, district_name, detail_address, use_status, create_time, 
+    update_time
+  </sql>
+  <select id="selectStoreInfo" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from dl_store_info
+    where store_code = #{storeCode,jdbcType=VARCHAR}
+  </select>
+  <insert id="insert">
+    insert into dl_store_info (store_code, store_name, contacts, contacts_phone, id_number,
+      province_code, province_name, city_code, city_name, district_code, district_name,
+      detail_address, use_status, create_time, update_time)
+    values (#{storeCode,jdbcType=VARCHAR}, #{storeName,jdbcType=VARCHAR},
+      #{contacts,jdbcType=VARCHAR}, #{contactsPhone,jdbcType=VARCHAR}, #{idNumber,jdbcType=VARCHAR}, 
+      #{provinceCode,jdbcType=VARCHAR}, #{provinceName,jdbcType=VARCHAR}, #{cityCode,jdbcType=VARCHAR}, 
+      #{cityName,jdbcType=VARCHAR}, #{districtCode,jdbcType=VARCHAR}, #{districtName,jdbcType=VARCHAR}, 
+      #{detailAddress,jdbcType=VARCHAR}, #{useStatus,jdbcType=INTEGER}, now(), now())
+  </insert>
+  <update id="update">
+    update dl_store_info
+    <set>
+      <if test="storeName != null">
+        store_name = #{storeName,jdbcType=VARCHAR},
+      </if>
+      <if test="contacts != null">
+        contacts = #{contacts,jdbcType=VARCHAR},
+      </if>
+      <if test="contactsPhone != null">
+        contacts_phone = #{contactsPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="idNumber != null">
+        id_number = #{idNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceCode != null">
+        province_code = #{provinceCode,jdbcType=VARCHAR},
+      </if>
+      <if test="provinceName != null">
+        province_name = #{provinceName,jdbcType=VARCHAR},
+      </if>
+      <if test="cityCode != null">
+        city_code = #{cityCode,jdbcType=VARCHAR},
+      </if>
+      <if test="cityName != null">
+        city_name = #{cityName,jdbcType=VARCHAR},
+      </if>
+      <if test="districtCode != null">
+        district_code = #{districtCode,jdbcType=VARCHAR},
+      </if>
+      <if test="districtName != null">
+        district_name = #{districtName,jdbcType=VARCHAR},
+      </if>
+      <if test="detailAddress != null">
+        detail_address = #{detailAddress,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        use_status = #{useStatus,jdbcType=INTEGER},
+      </if>
+        update_time = now(),
+    </set>
+    where store_code = #{storeCode,jdbcType=VARCHAR}
+  </update>
+</mapper>

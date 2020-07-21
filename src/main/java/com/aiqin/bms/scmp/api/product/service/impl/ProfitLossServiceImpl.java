@@ -1,10 +1,13 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
@@ -34,10 +37,8 @@ import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
+import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
@@ -67,13 +68,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * @author knight.xie
- * @version 1.0
- * @className ProfitLossServiceImpl
- * @date 2019/6/28 12:19
-
- */
 @Service
 public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLossService {
 
@@ -98,21 +92,14 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     @Autowired
     private StockService stockService;
     @Autowired
-    private OutboundService outboundService;
-    @Autowired
-    private InboundService inboundService;
-    @Autowired
     private EncodingRuleDao encodingRuleDao;
     @Autowired
     private SapBaseDataService sapBaseDataService;
     @Autowired
     private WarehouseDao warehouseDao;
-    /**
-     * 分页查询
-     *
-     * @param vo
-     * @return
-     */
+    @Autowired
+    private DlAbutmentService dlAbutmentService;
+
     @Override
     public BasePage<QueryProfitLossRespVo> findPage(QueryProfitLossVo vo) {
         PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
@@ -358,17 +345,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     }
 
                     // 损 操作完调用dl库存同步接口
-                    StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
                     stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
                     stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_5);
                     stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
                     profitSynchrdlStockChange(profitLoss, loss, batchList, stockChangeDlRequest);
-                    HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
                     LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                    if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                        LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                        throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                    }
+                    dlAbutmentService.stockChange(stockChangeDlRequest);
                 }
                 if(CollectionUtils.isNotEmptyCollection(profit)){
                     //操作类型 直接加库存 6
@@ -381,17 +364,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     }
 
                     // 溢 操作完调用dl库存同步接口
-                    StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
                     stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
                     stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_9);
                     stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
                     profitSynchrdlStockChange(profitLoss, profit, batchList, stockChangeDlRequest);
-                    HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
                     LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                    if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                        LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                        throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                    }
+                    dlAbutmentService.stockChange(stockChangeDlRequest);
                 }
                 // 加库存 保存入库 损溢不进行出入库记录
 //            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);
@@ -404,7 +383,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         return HttpResponse.success();
     }
 
-    private void profitSynchrdlStockChange(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchLists, StockChangeDlRequest stockChangeDlRequest) {
+    private void profitSynchrdlStockChange(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchLists, StockChangeRequest stockChangeDlRequest) {
         // 主表数据
         Long totalCount = 0L;
         stockChangeDlRequest.setWarehouseCode(profitLoss.getWarehouseCode());
@@ -420,16 +399,11 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             productRequest.setSkuName(product.getSkuName());
             productRequest.setTotalCount(product.getQuantity());
             totalCount+=product.getQuantity();
-//            productRequest.setUnitName(product.getUnit());
-//            productRequest.setColorName(product.getColor());
-//            productRequest.setModelNumber(product.getModel());
             productRequest.setProductType(0);
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
             productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
             BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
             productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
-//            productRequest.setWarehouseCode(profitLoss.getWarehouseCode());
-//            productRequest.setWarehouseName(profitLoss.getWarehouseName());
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
             if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchLists) && batchLists.size() > 0){

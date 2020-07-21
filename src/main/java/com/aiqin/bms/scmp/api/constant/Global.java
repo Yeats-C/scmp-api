@@ -301,4 +301,32 @@ public final class Global {
     public static final String SETTLE_TYPE_2 = "到付";
     public static final String SETTLE_TYPE_3 = "月结";
 
+    /**
+     *  Dl与耘链的推送类型  1.sku 2.供应商 3.库存 4.门店
+     */
+    public static final Integer SKU_TYPE  = 1;
+    public static final Integer SUPPLIER_TYPE = 2;
+    public static final Integer STOCK_TYPE  = 3;
+    public static final Integer STORE_TYPE = 4;
+
+    /**
+     *  Dl与耘链的推送单据类型 1.销售 2.退货  3.物流单 4.取消
+     */
+    public static final Integer ORDER_TYPE  = 1;
+    public static final Integer RETURN_INFO_TYPE = 2;
+    public static final Integer ORDER_TRANSPORT_TYPE  = 3;
+    public static final Integer CANCEL_ORDER_TYPE = 4;
+
+    /**
+     *  Dl与耘链的推送 业务单据类型 0 推送(DL->熙耘)  1.回传(熙耘->DL)
+     */
+    public static final Integer PUSH_TYPE  = 0;
+    public static final Integer ECHO_TYPE = 1;
+
+    /**
+     *  0:成功 1:失败
+     */
+    public static final Integer SUCCESS  = 0;
+    public static final Integer FAIL = 1;
+
 }

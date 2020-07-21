@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -20,8 +24,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
@@ -40,9 +42,6 @@ import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
@@ -146,6 +145,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private WmsCancelService wmsCancelService;
     @Autowired
     private ProductSkuBatchMapper productSkuBatchMapper;
+    @Autowired
+    private DlAbutmentService dlService;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -272,7 +273,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //         }
     }
 
-    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest) {
+    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeRequest stockChangeDlRequest) {
         // 主表数据
         Long totalCount = 0L;
         if(allocation.getInboundOderCode() == null){
@@ -673,13 +674,13 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
 
         // 调用完库存锁定调用同步dl库存数据
-        StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+        StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
         stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
         stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
         stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
         synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
         LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
+        HttpResponse response = dlService.stockChange(stockChangeDlRequest);
         if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
             LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
             return 0;
