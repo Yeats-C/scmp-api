@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
@@ -21,6 +22,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -101,6 +103,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private OrderInfoItemBatchMonthMapper orderInfoItemBatchMonthMapper;
+    @Autowired
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -796,6 +800,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItemReqVO> itemList = request.getProductList();
        if(itemList != null){
            for (OrderInfoItemReqVO list : itemList) {
+               PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(list.getSkuCode());
                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
                sods.setLineCode(String.valueOf(list.getProductLineNum()));
                sods.setSkuCode(list.getSkuCode());
@@ -808,7 +813,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                sods.setModelNumber(list.getModelCode());
                sods.setUnitCode(list.getUnitCode());
                sods.setUnitName(list.getUnitName());
-               sods.setSkuBarCode(list.getBarCode());
+               if(purchaseSaleStockRespVo != null){
+                   sods.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+               }
                plists.add(sods);
            }
        }
