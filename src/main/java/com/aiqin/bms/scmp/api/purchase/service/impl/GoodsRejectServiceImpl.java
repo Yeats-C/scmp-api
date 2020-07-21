@@ -152,18 +152,18 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 赋值四级品类名称
             response.setCategoryName(selectCategoryName(response.getCategoryId()));
             Integer batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_1;
-            if(response.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+            if(response.getBatchManage() != null && response.getBatchManage().equals(Global.BATCH_MANAGE_0)){
                 batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_1;
                 response.setSkuBatchManage(batchManage);
                 continue;
-            }else if(response.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+            }else if(response.getBatchManage() != null && response.getBatchManage().equals(Global.BATCH_MANAGE_2)){
                 Integer exist = productSkuBatchDao.productSkuBatchExist(response.getSkuCode(), response.getWarehouseCode());
                 if(exist > 0){
                     batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_0;
                 }else {
                     batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_1;
                 }
-            }else if(response.getBatchManage().equals(Global.BATCH_MANAGE_1)){
+            }else if(response.getBatchManage() != null && response.getBatchManage().equals(Global.BATCH_MANAGE_1)){
                 batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_0;
             }
             response.setSkuBatchManage(batchManage);
