@@ -764,6 +764,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setProvinceName(request.getProvinceName());
         ssis.setCityId(request.getCityCode());
         ssis.setCityName(request.getCityName());
+        ssis.setChannelCode(request.getChannelCode());
+        ssis.setChannelName(request.getChannelName());
         // 直辖市情况下 区/县为null
         if(request.getDistrictName() == null){
             ssis.setDistrictName(request.getCityName());
