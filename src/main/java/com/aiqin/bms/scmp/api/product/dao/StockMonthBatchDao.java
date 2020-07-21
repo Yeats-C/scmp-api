@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
+import com.aiqin.bms.scmp.api.product.domain.request.changeprice.QuerySkuInfoReqVO;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,4 +18,7 @@ public interface StockMonthBatchDao {
 
     Integer update(StockMonthBatch record);
 
+    List<QuerySkuInfoRespVO> querySkuBatchMonthList(QuerySkuInfoReqVO reqVO);
+
+    List<StockMonthBatch> getMonthBatch(@Param("skuCode") String skuCode);
 }

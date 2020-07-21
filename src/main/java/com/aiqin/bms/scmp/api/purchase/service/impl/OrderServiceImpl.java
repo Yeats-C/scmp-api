@@ -455,6 +455,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        LOGGER.info("销售单未转换钱的数据====={}",  JSONObject.toJSONString(request));
         // 获取税率
         String key;
         Map<String, ProductSkuCheckout> product = new HashMap<>();
@@ -476,6 +477,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 }
             }
         }
+
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
@@ -584,6 +586,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemBatchMonth.setWarehouseCode(vo.getWarehouseCode());
                     orderInfoItemBatchMonth.setBatchCode(itemBatch.getBatchCode());
                     orderInfoItemBatchMonth.setTotalCount(itemBatch.getTotalCount());
+                    orderInfoItemBatchMonth.setLineCode(itemBatch.getLineCode());
                     itemBatchMonthList.add(orderInfoItemBatchMonth);
 
                     // 调用月份转换
@@ -592,6 +595,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockMonthBatch.setWarehouseCode(vo.getWarehouseCode());
                     stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                     stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
+                    stockMonthBatch.setLineCode(itemBatch.getLineCode());
                     stockList.add(stockMonthBatch);
                 }
                 vo.setItemBatchList(null);
@@ -600,6 +604,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             stockMonthRequest.setOperationType(2);
             // 批次管理编码 为5，6 传月份   // 转日期 保存日期。 wms类型 京东 2
             for (OrderInfoItemProductBatch itemBatch : itemBatchList) {
+
                 // 调用月份转换
                 stockMonthBatch = new StockMonthBatch();
                 stockMonthBatch.setSkuCode(itemBatch.getSkuCode());
@@ -607,6 +612,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                 stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
                 stockMonthBatch.setLineCode(itemBatch.getLineCode());
+                stockMonthBatch.setSkuName(itemBatch.getSkuName());
+                stockMonthBatch.setProductDate(itemBatch.getProductDate());
                 stockList.add(stockMonthBatch);
             }
             vo.setItemBatchList(null);
@@ -623,6 +630,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
                     orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
                     orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
+                    orderInfoItemProductBatch.setSkuName(stockDayBatch.getSkuName());
+                    orderInfoItemProductBatch.setProductDate(stockDayBatch.getProductDate());
                     orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
                     orderInfoItemProductBatch.setLineCode(stockDayBatch.getLineCode());
                     itemBatchLists.add(orderInfoItemProductBatch);

@@ -167,9 +167,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 batchManage = Global.WAREHOUSE_BATCH_MANAGE_SKU_0;
             }
             response.setSkuBatchManage(batchManage);
-            // 查询对应的批次信息
-            String key = this.rejectBatch(response, rejectApply);
-            response.setBatchList(rejectApply.get(key));
+            if(batchManage == Global.WAREHOUSE_BATCH_MANAGE_SKU_0){
+                // 查询对应的批次信息
+                String key = this.rejectBatch(response, rejectApply);
+                response.setBatchList(rejectApply.get(key));
+            }
         }
         Integer count = stockDao.rejectProductListCount(rejectQueryRequest);
         return HttpResponse.successGenerics(new PageResData<>(count, list));
@@ -199,7 +201,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private String rejectBatch(RejectApplyDetailHandleResponse response, Map<String, List<StockBatch>> rejectApply){
         // 查询对应的批次信息
         String key;
-        if(response.getBatchManage() == 2){
+        if(response.getBatchManage() != null && response.getBatchManage() == 2){
             // 为部分指点批次时候，查询sku是否有批次
             Integer exist = productSkuBatchDao.productSkuBatchExist(response.getSkuCode(), response.getWarehouseCode());
             key = String.format("%s,%s,%s", response.getSkuCode(), response.getWarehouseCode(), null);

@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.google.common.collect.Lists;
@@ -92,6 +93,9 @@ public class QuerySkuInfoRespVO {
 
     @ApiModelProperty("批次信息")
     private List<BatchInfo> batchList;
+
+    @ApiModelProperty("批次月份信息")
+    private List<StockMonthBatch> batchMonthList;
 
     @ApiModelProperty("价格项目集合")
     private List<PriceChannelForChangePrice> priceChannelList;
