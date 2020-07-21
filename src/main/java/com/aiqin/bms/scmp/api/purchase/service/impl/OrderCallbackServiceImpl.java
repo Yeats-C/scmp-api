@@ -1795,13 +1795,32 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if(request == null){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        Date date = new Date();
+        // 更新发运单
+        Transport transport = transportMapper.selectByTransportCode(request.getDeliveryCode());
+        transport.setPackingNum(request.getPackingNum());
+        transport.setOrderCommodityNum(request.getOrderCommodityNum());
+        transport.setLogisticsCompany(request.getTransportCompanyCode());
+        transport.setLogisticsCompanyName(request.getTransportCompanyName());
+        transport.setLogisticsNumber(request.getTransportCode());
+        transport.setLogisticsFee(request.getTransportAmount());
+        transport.setStandardLogisticsFee(request.getStandardLogisticsFee());
+        transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee());
+        transport.setTotalVolume(request.getTotalVolume());
+        transport.setTotalWeight(request.getTotalWeight());
+        transport.setDeliverTo(request.getDeliverTo());
+        transport.setTransportTime(date);
+        LOGGER.info("wms回传更新发运单,参数：[{}]", JsonUtil.toJson(transport));
+        transportMapper.updateTransport(transport);
+
+
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
         String code = IdSequenceUtils.getInstance().nextId()+"";
         request.setDeliveryCode(code);
         request.setCustomerCode(oi.getCustomerCode());
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
-        request.setTransportDate(new Date());
+        request.setTransportDate(date);
         List<OrderInfo> list = Lists.newArrayList();
         OrderInfo orderInfo;
         List<DeliveryDetailRequest> detailList = request.getDetailList();
@@ -1824,6 +1843,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             list.add(orderInfo);
         }
         // 更新订单的发运信息
+        LOGGER.info("wms回传更新销售订单,参数：[{}]", JsonUtil.toJson(list));
         Integer count = orderInfoMapper.updateBatch(list);
         if (count <= 0){
             LOGGER.error("更新耘链的订单的发运信息失败！！！");

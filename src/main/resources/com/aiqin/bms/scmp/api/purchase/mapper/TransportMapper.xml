@@ -239,4 +239,103 @@
           update transport set status=#{status} where transport_code=#{item}
         </foreach>
     </update>
+    <update id="updateTransport" parameterType="com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport">
+      update transport
+        <set>
+            <if test="transportCode != null">
+                transport_code = #{transportCode,jdbcType=VARCHAR},
+            </if>
+            <if test="transportCenterCode != null">
+                transport_center_code = #{transportCenterCode,jdbcType=VARCHAR},
+            </if>
+            <if test="transportCenterName != null">
+                transport_center_name = #{transportCenterName,jdbcType=VARCHAR},
+            </if>
+            <if test="customerCode != null">
+                customer_code = #{customerCode,jdbcType=VARCHAR},
+            </if>
+            <if test="customerName != null">
+                customer_name = #{customerName,jdbcType=VARCHAR},
+            </if>
+            <if test="transportAmount != null">
+                transport_amount = #{transportAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="packingNum != null">
+                packing_num = #{packingNum,jdbcType=BIGINT},
+            </if>
+            <if test="orderCommodityNum != null">
+                order_commodity_num = #{orderCommodityNum,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=INT},
+            </if>
+            <if test="logisticsCompany != null">
+                logistics_company = #{logisticsCompany,jdbcType=VARCHAR},
+            </if>
+            <if test="logisticsCompanyName != null">
+                logistics_company_name = #{logisticsCompanyName,jdbcType=VARCHAR},
+            </if>
+            <if test="logisticsNumber != null">
+                logistics_number = #{logisticsNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="logisticsFee != null">
+                logistics_fee = #{logisticsFee,jdbcType=DECIMAL},
+            </if>
+            <if test="standardLogisticsFee != null">
+                standard_logistics_fee = #{standardLogisticsFee,jdbcType=DECIMAL},
+            </if>
+            <if test="additionalLogisticsFee != null">
+                additional_logistics_fee = #{additionalLogisticsFee,jdbcType=DECIMAL},
+            </if>
+            <if test="totalVolume != null">
+                total_volume = #{totalVolume,jdbcType=DECIMAL},
+            </if>
+            <if test="totalWeight != null">
+                total_weight = #{totalWeight,jdbcType=DECIMAL},
+            </if>
+            <if test="deliverTo != null">
+                deliver_to = #{deliverTo,jdbcType=VARCHAR},
+            </if>
+            <if test="transportTime != null">
+                transport_time = #{transportTime,jdbcType=DATETIME},
+            </if>
+            <if test="signTime != null">
+                sign_time = #{signTime,jdbcType=DATETIME},
+            </if>
+            <if test="consigneeName != null">
+                consignee_name = #{consigneeName,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneePhone != null">
+                consignee_phone = #{consigneePhone,jdbcType=VARCHAR},
+            </if>
+            <if test="consigneeAddress != null">
+                consignee_address = #{consigneeAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="detailedAddress != null">
+                detailed_address = #{detailedAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="zip != null">
+                zip = #{zip,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="delFlag != null">
+                del_flag = #{delFlag,jdbcType=TINYINT},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=DATETIME},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                updateTime = #{createTime,jdbcType=DATETIME},
+            </if>
+            <if test="createBy != null">
+                updateBy = #{createBy,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
 </mapper>

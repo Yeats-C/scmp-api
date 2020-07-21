@@ -398,7 +398,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
 //            inboundService.saveInbound2(inboundReqSave);
             }
             // 损溢单完成调用sap
-            sapBaseDataService.allocationAndprofitLoss(request.getOrderCode(),1);
+//            sapBaseDataService.allocationAndprofitLoss(request.getOrderCode(),1);
             LOGGER.info("移库wms回传成功");
         }
         return HttpResponse.success();
