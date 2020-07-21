@@ -152,6 +152,7 @@ public final class Global {
     public static final String HN_CODE = "1084";
     public static final String HZ_CODE = "1085";
 
+
     /**
      * 库房类型
      */
