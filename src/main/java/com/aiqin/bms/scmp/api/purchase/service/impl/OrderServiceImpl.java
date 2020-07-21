@@ -586,6 +586,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemBatchMonth.setWarehouseCode(vo.getWarehouseCode());
                     orderInfoItemBatchMonth.setBatchCode(itemBatch.getBatchCode());
                     orderInfoItemBatchMonth.setTotalCount(itemBatch.getTotalCount());
+                    orderInfoItemBatchMonth.setLineCode(itemBatch.getLineCode());
                     itemBatchMonthList.add(orderInfoItemBatchMonth);
 
                     // 调用月份转换
@@ -594,6 +595,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockMonthBatch.setWarehouseCode(vo.getWarehouseCode());
                     stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                     stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
+                    stockMonthBatch.setLineCode(itemBatch.getLineCode());
                     stockList.add(stockMonthBatch);
                 }
                 vo.setItemBatchList(null);
