@@ -12,6 +12,7 @@ import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -810,7 +811,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 if(detail.getInsertType() == 1){
                     BigDecimal tax = BigDecimal.ZERO;
                     if(detail.getTax() == null){
-                        ProductSkuCheckoutRespVo info = productSkuCheckoutDao.getInfo(detail.getSkuCode());
+                        ProductSkuCheckout info = productSkuCheckoutDao.getInfo(detail.getSkuCode());
                         if(info != null){
                             tax = info.getOutputTaxRate() == null ? BigDecimal.ZERO : info.getOutputTaxRate();
                         }
