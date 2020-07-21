@@ -630,38 +630,36 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             stockInfoRequest.setOperatorName(itemReqVo.getCreateByName());
             list.add(stockInfoRequest);
 
-            if(batchLists != null){
-                for (ProfitLossProductBatch profitLossProductBatch : batchLists) {
-                    List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(profitLossProductBatch.getSkuCode(), warehouseByCode.getWarehouseCode(), profitLossProductBatch.getBatchCode());
-                    if(itemReqVo.getSkuCode().equals(profitLossProductBatch.getSkuCode())){
-                        stockBatchInfoRequest = new StockBatchInfoRequest();
-                        stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
-                        stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
-                        stockBatchInfoRequest.setSkuCode(profitLossProductBatch.getSkuCode());
-                        stockBatchInfoRequest.setSkuName(profitLossProductBatch.getSkuName());
-                        stockBatchInfoRequest.setTransportCenterCode(warehouseByCode.getLogisticsCenterCode());
-                        stockBatchInfoRequest.setTransportCenterName(warehouseByCode.getLogisticsCenterName());
-                        stockBatchInfoRequest.setWarehouseCode(warehouseByCode.getWarehouseCode());
-                        stockBatchInfoRequest.setWarehouseName(warehouseByCode.getWarehouseName());
-                        stockBatchInfoRequest.setWarehouseType(String.valueOf(warehouseByCode.getWarehouseTypeCode()));
-                        stockBatchInfoRequest.setTaxCost(stockBatches.get(0).getTaxCost());
-                        stockBatchInfoRequest.setTaxRate(stockBatches.get(0).getTaxRate());
-                        stockBatchInfoRequest.setBatchCode(profitLossProductBatch.getBatchCode());
-                        stockBatchInfoRequest.setBatchInfoCode(stockBatches.get(0).getBatchInfoCode());
-                        stockBatchInfoRequest.setProductDate(profitLossProductBatch.getProductDate());
-                        stockBatchInfoRequest.setBeOverdueDate(stockBatches.get(0).getBeOverdueDate());
-                        stockBatchInfoRequest.setBatchRemark(profitLossProductBatch.getBatchRemark());
-                        stockBatchInfoRequest.setSupplierCode(stockBatches.get(0).getSupplierCode());
-                        stockBatchInfoRequest.setDocumentType(11);
-                        stockBatchInfoRequest.setDocumentCode(profitLossProductBatch.getOrderCode());
-                        stockBatchInfoRequest.setSourceDocumentType(11);
-                        stockBatchInfoRequest.setSourceDocumentCode(profitLossProductBatch.getOrderCode());
-                        stockBatchInfoRequest.setChangeCount(profitLossProductBatch.getTotalCount());
-                        stockBatchInfoRequest.setOperatorId(profitLossProductBatch.getCreateById());
-                        stockBatchInfoRequest.setOperatorName(profitLossProductBatch.getCreateByName());
-                        batchList.add(stockBatchInfoRequest);
-                    }
-                }
+        }
+        if(batchLists != null){
+            for (ProfitLossProductBatch profitLossProductBatch : batchLists) {
+                List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(profitLossProductBatch.getSkuCode(), warehouseByCode.getWarehouseCode(), profitLossProductBatch.getBatchCode());
+                stockBatchInfoRequest = new StockBatchInfoRequest();
+                stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
+                stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
+                stockBatchInfoRequest.setSkuCode(profitLossProductBatch.getSkuCode());
+                stockBatchInfoRequest.setSkuName(profitLossProductBatch.getSkuName());
+                stockBatchInfoRequest.setTransportCenterCode(warehouseByCode.getLogisticsCenterCode());
+                stockBatchInfoRequest.setTransportCenterName(warehouseByCode.getLogisticsCenterName());
+                stockBatchInfoRequest.setWarehouseCode(warehouseByCode.getWarehouseCode());
+                stockBatchInfoRequest.setWarehouseName(warehouseByCode.getWarehouseName());
+                stockBatchInfoRequest.setWarehouseType(String.valueOf(warehouseByCode.getWarehouseTypeCode()));
+                stockBatchInfoRequest.setTaxCost(stockBatches.get(0).getTaxCost());
+                stockBatchInfoRequest.setTaxRate(stockBatches.get(0).getTaxRate());
+                stockBatchInfoRequest.setBatchCode(profitLossProductBatch.getBatchCode());
+                stockBatchInfoRequest.setBatchInfoCode(stockBatches.get(0).getBatchInfoCode());
+                stockBatchInfoRequest.setProductDate(profitLossProductBatch.getProductDate());
+                stockBatchInfoRequest.setBeOverdueDate(stockBatches.get(0).getBeOverdueDate());
+                stockBatchInfoRequest.setBatchRemark(profitLossProductBatch.getBatchRemark());
+                stockBatchInfoRequest.setSupplierCode(stockBatches.get(0).getSupplierCode());
+                stockBatchInfoRequest.setDocumentType(11);
+                stockBatchInfoRequest.setDocumentCode(profitLossProductBatch.getOrderCode());
+                stockBatchInfoRequest.setSourceDocumentType(11);
+                stockBatchInfoRequest.setSourceDocumentCode(profitLossProductBatch.getOrderCode());
+                stockBatchInfoRequest.setChangeCount(profitLossProductBatch.getTotalCount());
+                stockBatchInfoRequest.setOperatorId(profitLossProductBatch.getCreateById());
+                stockBatchInfoRequest.setOperatorName(profitLossProductBatch.getCreateByName());
+                batchList.add(stockBatchInfoRequest);
             }
         }
         changeStockRequest.setStockList(list);
