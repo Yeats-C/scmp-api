@@ -398,12 +398,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         }else {
             // 状态1 要更新调拨单 出入库单 解锁库存  加库存
             finished(allocation1);
-
-            // 更新出入库单
-//            OutboundReqVo convert = handleTransferOutbound(allocation1, productSkuMap, outboundTypeEnum);
-//            outboundService.save(convert);
-//            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
-//            inboundService.saveInbound2(inboundReqSave);
             updateOut(request, allocation1, detailLists, detailBatchList, productSkuMap);
             updateIn(request, allocation1, detailLists, detailBatchList, productSkuMap);
             // 解锁库存
@@ -427,7 +421,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
             dlService.stockChange(stockChangeDlRequest);
-
             // 加库存
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();

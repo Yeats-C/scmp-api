@@ -981,15 +981,17 @@ public class InboundServiceImpl implements InboundService {
                 LOGGER.error("入库单回传调拨失败：{}", e.getMessage());
                 throw new GroundRuntimeException("入库单回传调拨失败");
             }
-        } else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
-            // 移库
-            try {
-                inBoundReturnMovement(inbound.getSourceOderCode());
-            } catch (Exception e) {
-                LOGGER.error("入库单回传移库失败：{}", e.getMessage());
-                throw new GroundRuntimeException("入库单回传移库失败");
-            }
-        } else {
+        }
+//        else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.MOVEMENT.getCode())) {
+//            // 移库
+//            try {
+//                inBoundReturnMovement(inbound.getSourceOderCode());
+//            } catch (Exception e) {
+//                LOGGER.error("入库单回传移库失败：{}", e.getMessage());
+//                throw new GroundRuntimeException("入库单回传移库失败");
+//            }
+//        }
+        else {
             LOGGER.info("入库单回传单据类型无法匹配，回传失败");
             throw new GroundRuntimeException("无法回传匹配类型");
         }
@@ -1110,16 +1112,14 @@ public class InboundServiceImpl implements InboundService {
     @Async("myTaskAsyncPool")
     public void inBoundReturn(String allocationCode) {
         try {
-//          productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__ALLOCATION.getName());
-//            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_ALLOCATION.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__ALLOCATION.getName(), null, HandleTypeCoce.ADD_ALLOCATION.getName(), "系统自动");
-                Allocation allocation = allocationMapper.selectByCode(allocationCode);
-                //设置调拨状态
-                allocation.setInStockTime(Calendar.getInstance().getTime());
-                allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
-                allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
-                //跟新调拨单状态
-                int count = allocationMapper.updateByPrimaryKeySelective(allocation);
-            if(count > 0){
+            Allocation allocation = allocationMapper.selectByCode(allocationCode);
+            //设置调拨状态
+            allocation.setInStockTime(Calendar.getInstance().getTime());
+            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
+            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
+            //跟新调拨单状态
+            int count = allocationMapper.updateByPrimaryKeySelective(allocation);
+            if (count > 0) {
                 // 调用完库存锁定调用同步dl库存数据
                 StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
                 List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);

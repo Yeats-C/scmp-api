@@ -176,7 +176,6 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             OrderProductSkuResponse productSkuResponse;
             // 查询供应商信息
             List<String> supplyIds = request.getDetailList().stream().map(ProfitLossProductWmsReqVo::getSupplierCode).collect(Collectors.toList());
-            Map<String, SupplyCompany> supplyCompanyMap = supplyCompanyDao.selectByCompanyCodeList(supplyIds, "09");
             //报溢数量 正数值
             Long profitQuantity;
             //报损数量 负数值
@@ -210,7 +209,6 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 profitLossDetail.setType(productTypeList.get(productSkuResponse.getProductType()));
                 profitLossDetail.setTax(productSkuResponse.getTax());
                 profitLossDetail.setPictureUrl(productSkuResponse.getPictureUrl());
-//            profitLossDetail.setTaxAmount(profitLossDetail.getTaxPrice()*profitLossDetail.getQuantity());
                 profitLossDetail.setCreateTime(request.getCreateTime());
                 profitLossDetail.setCreateById(request.getCreateById());
                 profitLossDetail.setCreateByName(request.getCreateByName());
@@ -372,9 +370,6 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
                     dlAbutmentService.stockChange(stockChangeDlRequest);
                 }
-                // 加库存 保存入库 损溢不进行出入库记录
-//            InboundReqSave inboundReqSave = inbouont(profitLoss, profitLossProductList, batchList);
-//            inboundService.saveInbound2(inboundReqSave);
             }
             // 损溢单完成调用sap
 //            sapBaseDataService.allocationAndprofitLoss(request.getOrderCode(),1);

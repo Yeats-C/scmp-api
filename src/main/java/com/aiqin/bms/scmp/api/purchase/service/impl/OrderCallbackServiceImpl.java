@@ -4,6 +4,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.EchoOrderRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.OrderTransportRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
@@ -24,6 +25,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
+import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
@@ -88,32 +90,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @Service
 public class OrderCallbackServiceImpl implements OrderCallbackService {
 
@@ -210,6 +186,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private SapBaseDataService sapBaseDataService;
     @Autowired
     private UrlConfig urlConfig;
+    @Autowired
+    private DlAbutmentService dlAbutmentService;
+
 
     /**
      * 销售出库接口
@@ -1673,15 +1652,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             productList.add(productRequest);
         }
         echoOrderRequest.setProductList(productList);
-        LOGGER.info("熙耘->DL,转化退货单回调参数：{}", JsonUtil.toJson(echoOrderRequest));
-        String url = urlConfig.WMS_API_URL + "/dl/order/echo";
-        HttpClient httpClient = HttpClient.post(url).json(echoOrderRequest).timeout(20000);
-        HttpResponse response = httpClient.action().result(HttpResponse.class);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("熙耘->DL，调用abutment-api退货单成功");
-        }else {
-            LOGGER.info("熙耘->DL，调用abutment-api退货单失败:{}", response.getMessage());
-        }
+        LOGGER.info("销售单回传dl参数：{}", JsonUtil.toJson(echoOrderRequest));
+        dlAbutmentService.echoOrderInfo(echoOrderRequest);
     }
 
     private void updateOutbound(OutboundCallBackRequest request){
@@ -1887,16 +1859,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 orderCodes.add(info.getOrderOriginal());
             }
             orderTransportRequest.setOrderCodes(orderCodes);
-            String url = urlConfig.WMS_API_URL + "/dl/order/transport";
             LOGGER.info("发运物流单回传DL数据,参数：[{}]" ,JsonUtil.toJson(orderTransportRequest));
-            HttpClient httpClient = HttpClient.post(url).json(orderTransportRequest).timeout(20000);
-            HttpResponse response = httpClient.action().result(HttpResponse.class);
-            if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-                LOGGER.info("回传DL的物流单成功");
-            }else {
-                LOGGER.error("回传DL的物流单失败:{}", response.getMessage());
-                throw new GroundRuntimeException(String.format("回传DL的物流单失败:%s",response.getMessage()));
-            }
+            dlAbutmentService.orderTransport(orderTransportRequest);
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
