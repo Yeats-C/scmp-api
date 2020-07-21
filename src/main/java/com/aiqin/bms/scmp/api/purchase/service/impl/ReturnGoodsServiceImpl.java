@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
@@ -15,6 +16,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.ProductSkuCheckoutRespVo;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
@@ -90,6 +92,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private SapBaseDataService sapBaseDataService;
     @Resource
     private WarehouseDao warehouseDao;
+    @Resource
+    private ProductSkuCheckoutDao productSkuCheckoutDao;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -804,7 +808,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 list.add(inboundProductReqVo);
                 // 计算预计无税金额、税额
                 if(detail.getInsertType() == 1){
-                    BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getAmount(), detail.getTax());
+                    BigDecimal tax = BigDecimal.ZERO;
+                    if(detail.getTax() == null){
+                        ProductSkuCheckoutRespVo info = productSkuCheckoutDao.getInfo(detail.getSkuCode());
+                        if(info != null){
+                            tax = info.getOutputTaxRate() == null ? BigDecimal.ZERO : info.getOutputTaxRate();
+                        }
+                    }
+                    BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getAmount(), tax);
                     preAmount = preAmount.add(noTax);
                 }
             }

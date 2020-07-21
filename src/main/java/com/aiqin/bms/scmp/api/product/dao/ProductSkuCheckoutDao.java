@@ -19,7 +19,7 @@ public interface ProductSkuCheckoutDao {
 
     ProductSkuCheckoutRespVo getBySkuCode(String skuCode);
 
-    ProductSkuCheckout getInfo(String skuCode);
+    ProductSkuCheckoutRespVo getInfo(String skuCode);
 
     int insertApply(@Param("applyProductSkuCheckouts") List<ApplyProductSkuCheckout> applyProductSkuCheckouts);
 

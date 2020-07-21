@@ -928,12 +928,6 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
-        stockBatchInfo.setCompanyCode(inbound.getCompanyCode());
-        stockBatchInfo.setCompanyName(inbound.getCompanyName());
-        stockBatchInfo.setTransportCenterCode(inbound.getLogisticsCenterCode());
-        stockBatchInfo.setTransportCenterName(inbound.getLogisticsCenterName());
-        stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
-        stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
         stockBatchInfo.setSupplierCode(inbound.getSupplierCode());
         stockBatchInfo.setDocumentCode(inbound.getInboundOderCode());
         stockBatchInfo.setDocumentType(Global.INBOUND_TYPE);
