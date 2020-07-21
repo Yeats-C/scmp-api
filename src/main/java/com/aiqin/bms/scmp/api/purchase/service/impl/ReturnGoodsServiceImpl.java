@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.EchoOrderRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
@@ -94,6 +95,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private WarehouseDao warehouseDao;
     @Resource
     private ProductSkuCheckoutDao productSkuCheckoutDao;
+    @Resource
+    private DlAbutmentService dlAbutmentService;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -581,10 +584,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }else {
             request.setProductList(productList);
             LOGGER.info("退货单回调DL参数：{}", JsonUtil.toJson(request));
-            sb.append(urlConfig.WMS_API_URL).append("/dl/order/echo");
-            httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
-            httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
-            });
+            httpResponse = dlAbutmentService.echoOrderInfo(request);
         }
 
         // 判断回调是否成功

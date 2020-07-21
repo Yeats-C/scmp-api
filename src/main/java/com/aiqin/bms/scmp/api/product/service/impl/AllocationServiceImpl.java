@@ -603,12 +603,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     public int updateWmsStatus(String allocationCode) {
         // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
-        // 已完成状态时调用wms。 入库
-   //     AllocationWmsInSource allocationInboundSource = new AllocationWmsInSource();
- //       List<AllocationWmsProductSource> aOutboundDetails = new ArrayList<>();
-        // 调拨出库完成调用调拨入库 生成调拨入库单 调用wms
-   //     Allocation allocation1 = allocationMapper.selectByCode(allocationCode);
-   //     String inboundOderCode = outboundService.createInbound(allocation1.getFormNo());
         // 获取调拨数据
         Allocation allocation = allocationMapper.selectByCode(allocationCode);
         List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
@@ -680,11 +674,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
         synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
         LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-        HttpResponse response = dlService.stockChange(stockChangeDlRequest);
-        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-            return 0;
-        }
+        dlService.stockChange(stockChangeDlRequest);
         return i;
     }
 
@@ -733,17 +723,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
         }
 
-
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
         return HttpResponse.success();
-//        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
-//            AllocationProduct allocationProduct = new AllocationProduct();
-//            // 查询调拨单商品信息
-//            allocationProduct.setAllocationCode(request.getAllocationCode());
-//            allocationProduct.setActualTotalCount(allocationDetailRequest.getActualCount());
-//            allocationProduct.setLineNum(allocationDetailRequest.getLineCode().longValue());
-//            allocationProduct.setTaxAmount(allocationDetailRequest.getActualAmount());
-//        }
     }
 
     @Override
