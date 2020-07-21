@@ -1,6 +1,10 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.PageResData;
@@ -13,7 +17,6 @@ import com.aiqin.bms.scmp.api.constant.RejectRecordStatus;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.StockDao;
-import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Outbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.returnsupply.ReturnSupplyToOutBoundReqVo;
@@ -27,9 +30,6 @@ import com.aiqin.bms.scmp.api.purchase.dao.*;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectDetailStockRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.RejectStockRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.reject.*;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.domain.response.*;
@@ -129,6 +129,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     private WmsCancelService wmsCancelService;
     @Resource
     private ProductSkuBatchMapper productSkuBatchDao;
+    @Resource
+    private DlAbutmentService dlService;
 
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
@@ -1053,7 +1055,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             //sapBaseDataService.purchaseAndReject(rejectRecord.getRejectRecordCode(), 1);
 
             // 调用DL，把退供的库存变更推送给DL
-            StockChangeDlRequest dlRequest = new StockChangeDlRequest();
+            StockChangeRequest dlRequest = new StockChangeRequest();
             dlRequest.setOrderCode(rejectRecord.getRejectRecordCode());
             dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
             dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
@@ -1101,7 +1103,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             }
             dlRequest.setProductList(dlProductList);
             LOGGER.info("退供完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
-            stockService.dlStockChange(dlRequest);
+            dlService.stockChange(dlRequest);
         }
         return HttpResponse.success();
     }

@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -112,5 +113,11 @@ public class DateUtils {
         ca.setTime(new Date());
         DateTime dateTime = new DateTime(ca.getTime());
         return dateTime.toString(PATTERN_DATE);
+    }
+
+    public static Date strToDateLong(String strDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat(FORMAT);
+        ParsePosition pos = new ParsePosition(0);
+        return formatter.parse(strDate, pos);
     }
 }

@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
-import com.aiqin.bms.scmp.api.abutment.domain.request.purchase.ScmpPurchaseBatch;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.common.*;
@@ -36,9 +39,6 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildSourceInit;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySourceInit;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
@@ -82,14 +82,6 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-/**
- * @Classname: InboundServiceImpl
- * 描述:
- * @Author: Kt.w
- * @Date: 2019/3/4
- * @Version 1.0
- * @Since 1.0
- */
 @Service
 @Slf4j
 public class InboundServiceImpl implements InboundService {
@@ -139,14 +131,14 @@ public class InboundServiceImpl implements InboundService {
     private ReturnOrderInfoMapper returnOrderInfoDao;
     @Resource
     private ProductSkuDistributionInfoMapper productSkuDistributionInfoMapper;
-    @Resource
-    private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private AllocationProductMapper allocationProductMapper;
     @Autowired
     private AllocationProductBatchMapper allocationProductBatchMapper;
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
+    @Autowired
+    private DlAbutmentService dlService;
     @Autowired
     private StockBatchDao stockBatchDao;
 
@@ -1052,7 +1044,7 @@ public class InboundServiceImpl implements InboundService {
             //sapBaseDataService.purchaseAndReject(order.getPurchaseOrderId(), 0);
 
             // 采购入库生成回传dl
-            StockChangeDlRequest dlRequest = new StockChangeDlRequest();
+            StockChangeRequest dlRequest = new StockChangeRequest();
             dlRequest.setOrderCode(inbound.getInboundOderCode());
             dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
             dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
@@ -1102,7 +1094,7 @@ public class InboundServiceImpl implements InboundService {
             }
             dlRequest.setProductList(dlProductList);
             LOGGER.info("采购完成之后调用DL， 传送DL库存变更的参数：{}", JsonUtil.toJson(dlRequest));
-            stockService.dlStockChange(dlRequest);
+            dlService.stockChange(dlRequest);
 
         } else {
             LOGGER.error("入库单回传给采购失败:{}", httpResponse.getMessage());
@@ -1129,7 +1121,7 @@ public class InboundServiceImpl implements InboundService {
                 int count = allocationMapper.updateByPrimaryKeySelective(allocation);
             if(count > 0){
                 // 调用完库存锁定调用同步dl库存数据
-                StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+                StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
                 List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
                 List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocationCode);
                 stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
@@ -1137,12 +1129,7 @@ public class InboundServiceImpl implements InboundService {
                 stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
                 allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
                 LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-                if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                    LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                    log.error(Global.ERROR, response.getMessage());
-                    throw new GroundRuntimeException("调用完库存锁定调用同步dl库存参数数据");
-                }
+                dlService.stockChange(stockChangeDlRequest);
                 // 调用sap 传送调拨单的数据给sap
 //                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
 //                LOGGER.info("调拨wms回传,调用sap成功：{}", JsonUtil.toJson(allocation));

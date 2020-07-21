@@ -47,4 +47,6 @@ public interface WarehouseDao {
    List<WarehouseDTO> warehouseList();
 
    List<WarehouseDTO> warehouseWms(@Param("wmsWarehouseId") String wmsWarehouseId);
+
+   WarehouseDTO warehouseDl(@Param("wmsWarehouseId") String wmsWarehouseId, @Param("wmsWarehouseType") Integer wmsWarehouseType);
 }
