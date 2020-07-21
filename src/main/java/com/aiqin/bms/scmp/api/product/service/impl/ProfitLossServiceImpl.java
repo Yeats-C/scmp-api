@@ -10,10 +10,8 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.OutboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLoss;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProduct;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProfitLossProductBatch;
+import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
@@ -99,6 +97,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     private WarehouseDao warehouseDao;
     @Autowired
     private DlAbutmentService dlAbutmentService;
+    @Autowired
+    private StockBatchDao stockBatchDao;
 
     @Override
     public BasePage<QueryProfitLossRespVo> findPage(QueryProfitLossVo vo) {
@@ -189,10 +189,10 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     throw new GroundRuntimeException("未查询到商品信息");
                 }
                 ProfitLossDetailRequest profitLossDetail = new ProfitLossDetailRequest();
-                profitLossDetail.setLogisticsCenterCode(request.getTransportCenterCode());
-                profitLossDetail.setLogisticsCenterName(request.getTransportCenterName());
-                profitLossDetail.setWarehouseCode(request.getWarehouseCode());
-                profitLossDetail.setWarehouseName(request.getWarehouseName());
+                profitLossDetail.setLogisticsCenterCode(warehouseByCode.getLogisticsCenterCode());
+                profitLossDetail.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
+                profitLossDetail.setWarehouseCode(warehouseByCode.getWarehouseCode());
+                profitLossDetail.setWarehouseName(warehouseByCode.getWarehouseName());
                 profitLossDetail.setLineNum(product.getLineNum());
                 profitLossDetail.setOrderCode(String.valueOf(orderCode));
                 profitLossDetail.setSkuCode(product.getSkuCode());
@@ -232,8 +232,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     profitLossProductBatch.setOrderCode(String.valueOf(orderCode));
                     String batchCode = DateUtils.currentDate().replaceAll("-","");
                     profitLossProductBatch.setBatchCode(batchCode);
+                    BigDecimal taxPrice = profitLossDetail.getTaxPrice() == null ? BigDecimal.ZERO : profitLossDetail.getTaxPrice();
                     String batchInfoCode = profitLossDetail.getSkuCode() + "_" + request.getWarehouseCode() + "_" +
-                            batchCode + "_" + profitLossDetail.getTaxPrice().stripTrailingZeros().toPlainString();
+                            batchCode + "_" + taxPrice.stripTrailingZeros().toPlainString();
                     profitLossProductBatch.setBatchInfoCode(batchInfoCode);
                     profitLossProductBatch.setLineCode(profitLossDetail.getLineNum());
                     profitLossProductBatch.setSkuCode(profitLossDetail.getSkuCode());
@@ -257,7 +258,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 for (ProfitLossBatchWmsReqVo productBatch : request.getBatchList()) {
                     productSkuResponse = productSkuResponseMap.get(productBatch.getSkuCode());
                     if (productSkuResponse == null) {
-                        throw new GroundRuntimeException("未查询到商品信息");
+                        throw new GroundRuntimeException("批次未查询到商品信息");
                     }
                     ProfitLossProductBatch profitLossProductBatch = new ProfitLossProductBatch();
                     profitLossProductBatch.setOrderCode(String.valueOf(orderCode));
@@ -334,7 +335,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 }
                 if(CollectionUtils.isNotEmptyCollection(loss)){
                     //操作类型 直接减库存 4
-                    ChangeStockRequest changeStockRequest = handleProfitLossStockData(loss, request.getOrderCode(), batchList, warehouseByCode);
+                    ChangeStockRequest changeStockRequest = handleProfitLossStockData(loss, batchList, warehouseByCode);
                     changeStockRequest.setOperationType(4);
                     HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                     if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -353,7 +354,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                 }
                 if(CollectionUtils.isNotEmptyCollection(profit)){
                     //操作类型 直接加库存 6
-                    ChangeStockRequest changeStockRequest = handleProfitLossStockData(profit, request.getOrderCode(), batchList, warehouseByCode);
+                    ChangeStockRequest changeStockRequest = handleProfitLossStockData(profit,  batchList, warehouseByCode);
                     changeStockRequest.setOperationType(6);
                     HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                     if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -605,7 +606,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         return outboundReqVo;
     }
 
-    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, String sourceOrderCode, List<ProfitLossProductBatch> batchLists, WarehouseDTO warehouseByCode) {
+    private ChangeStockRequest handleProfitLossStockData(List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchLists, WarehouseDTO warehouseByCode) {
         ChangeStockRequest changeStockRequest = new ChangeStockRequest();
         List<StockInfoRequest> list = Lists.newArrayList();
         StockInfoRequest stockInfoRequest;
@@ -625,34 +626,40 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             stockInfoRequest.setDocumentType(11);
             stockInfoRequest.setDocumentCode(itemReqVo.getOrderCode());
             stockInfoRequest.setSourceDocumentType(11);
-            stockInfoRequest.setSourceDocumentCode(sourceOrderCode);
+            stockInfoRequest.setSourceDocumentCode(itemReqVo.getOrderCode());
             stockInfoRequest.setOperatorName(itemReqVo.getCreateByName());
             list.add(stockInfoRequest);
 
-            if(batchLists != null){
-                for (ProfitLossProductBatch profitLossProductBatch : batchLists) {
-                    if(itemReqVo.getSkuCode().equals(profitLossProductBatch.getSkuCode())){
-                        stockBatchInfoRequest = new StockBatchInfoRequest();
-                        stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
-                        stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
-                        stockBatchInfoRequest.setSkuCode(profitLossProductBatch.getSkuCode());
-                        stockBatchInfoRequest.setSkuName(profitLossProductBatch.getSkuName());
-                        stockBatchInfoRequest.setBatchCode(profitLossProductBatch.getBatchCode());
-                        stockBatchInfoRequest.setBatchInfoCode(profitLossProductBatch.getBatchInfoCode());
-                        stockBatchInfoRequest.setProductDate(profitLossProductBatch.getProductDate());
-                        stockBatchInfoRequest.setBeOverdueDate(profitLossProductBatch.getBeOverdueDate());
-                        stockBatchInfoRequest.setBatchRemark(profitLossProductBatch.getBatchRemark());
-                        stockBatchInfoRequest.setSupplierCode(profitLossProductBatch.getSupplierCode());
-                        stockBatchInfoRequest.setDocumentType(11);
-                        stockBatchInfoRequest.setDocumentCode(profitLossProductBatch.getOrderCode());
-                        stockBatchInfoRequest.setSourceDocumentType(11);
-                        stockBatchInfoRequest.setSourceDocumentCode(sourceOrderCode);
-                        stockBatchInfoRequest.setChangeCount(profitLossProductBatch.getTotalCount());
-                        stockBatchInfoRequest.setOperatorId(profitLossProductBatch.getCreateById());
-                        stockBatchInfoRequest.setOperatorName(profitLossProductBatch.getCreateByName());
-                        batchList.add(stockBatchInfoRequest);
-                    }
-                }
+        }
+        if(batchLists != null){
+            for (ProfitLossProductBatch profitLossProductBatch : batchLists) {
+                List<StockBatch> stockBatches = stockBatchDao.stockBatchByOutbound(profitLossProductBatch.getSkuCode(), warehouseByCode.getWarehouseCode(), profitLossProductBatch.getBatchCode());
+                stockBatchInfoRequest = new StockBatchInfoRequest();
+                stockBatchInfoRequest.setCompanyCode(COMPANY_CODE);
+                stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
+                stockBatchInfoRequest.setSkuCode(profitLossProductBatch.getSkuCode());
+                stockBatchInfoRequest.setSkuName(profitLossProductBatch.getSkuName());
+                stockBatchInfoRequest.setTransportCenterCode(warehouseByCode.getLogisticsCenterCode());
+                stockBatchInfoRequest.setTransportCenterName(warehouseByCode.getLogisticsCenterName());
+                stockBatchInfoRequest.setWarehouseCode(warehouseByCode.getWarehouseCode());
+                stockBatchInfoRequest.setWarehouseName(warehouseByCode.getWarehouseName());
+                stockBatchInfoRequest.setWarehouseType(String.valueOf(warehouseByCode.getWarehouseTypeCode()));
+                stockBatchInfoRequest.setTaxCost(stockBatches.get(0).getTaxCost());
+                stockBatchInfoRequest.setTaxRate(stockBatches.get(0).getTaxRate());
+                stockBatchInfoRequest.setBatchCode(profitLossProductBatch.getBatchCode());
+                stockBatchInfoRequest.setBatchInfoCode(stockBatches.get(0).getBatchInfoCode());
+                stockBatchInfoRequest.setProductDate(profitLossProductBatch.getProductDate());
+                stockBatchInfoRequest.setBeOverdueDate(stockBatches.get(0).getBeOverdueDate());
+                stockBatchInfoRequest.setBatchRemark(profitLossProductBatch.getBatchRemark());
+                stockBatchInfoRequest.setSupplierCode(stockBatches.get(0).getSupplierCode());
+                stockBatchInfoRequest.setDocumentType(11);
+                stockBatchInfoRequest.setDocumentCode(profitLossProductBatch.getOrderCode());
+                stockBatchInfoRequest.setSourceDocumentType(11);
+                stockBatchInfoRequest.setSourceDocumentCode(profitLossProductBatch.getOrderCode());
+                stockBatchInfoRequest.setChangeCount(profitLossProductBatch.getTotalCount());
+                stockBatchInfoRequest.setOperatorId(profitLossProductBatch.getCreateById());
+                stockBatchInfoRequest.setOperatorName(profitLossProductBatch.getCreateByName());
+                batchList.add(stockBatchInfoRequest);
             }
         }
         changeStockRequest.setStockList(list);

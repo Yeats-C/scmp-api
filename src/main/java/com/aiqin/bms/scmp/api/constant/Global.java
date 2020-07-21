@@ -329,4 +329,11 @@ public final class Global {
     public static final Integer SUCCESS  = 0;
     public static final Integer FAIL = 1;
 
+    /**
+     *  sku价格表 新建变价 是否批次： 0.商品价格 1.批次价格 2.月份价格
+     */
+    public static final Integer IS_BATCH_PRICE_0 = 0;
+    public static final Integer IS_BATCH_PRICE_1 = 1;
+    public static final Integer IS_BATCH_PRICE_2 = 2;
+
 }

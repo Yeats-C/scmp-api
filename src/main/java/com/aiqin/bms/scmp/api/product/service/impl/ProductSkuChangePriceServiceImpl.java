@@ -8,7 +8,9 @@ import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.common.WorkFlowReturn;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
+import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuChangePriceSaleAreaMapper;
+import com.aiqin.bms.scmp.api.product.dao.StockMonthBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.SaleCountDTO;
@@ -40,6 +42,7 @@ import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.excel.support.ExcelTypeEnum;
 import com.alibaba.fastjson.JSON;
+import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -101,6 +104,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
     @Autowired
     private ProductSkuChangePriceSaleAreaMapper productSkuChangePriceSaleAreaMapper;
+    @Autowired
+    private StockMonthBatchDao stockMonthBatchDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -895,7 +900,20 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
-        return stockService.querySkuBatchList(reqVO);
+        BasePage<QuerySkuInfoRespVO> querySkuInfoRespVOBasePage = null;
+        if(Global.IS_BATCH_PRICE_1.equals(reqVO)){
+            querySkuInfoRespVOBasePage = stockService.querySkuBatchList(reqVO);
+        }else {
+            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+            reqVO.setCompanyCode(getUser().getCompanyCode());
+            List<QuerySkuInfoRespVO> querySkuInfoRespVOS = stockMonthBatchDao.querySkuBatchMonthList(reqVO);
+            for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
+                List<StockMonthBatch> batch = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
+                querySkuInfoRespVO.setBatchMonthList(batch);
+            }
+            querySkuInfoRespVOBasePage = PageUtil.getPageList(reqVO.getPageNo(), querySkuInfoRespVOS);
+        }
+        return querySkuInfoRespVOBasePage;
     }
 
     @Override

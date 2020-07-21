@@ -12,6 +12,34 @@
     <result column="synchr_time" jdbcType="BIGINT" property="synchrTime" />
     <result column="wms_type" jdbcType="INTEGER" property="wmsType" />
   </resultMap>
+  <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
+    <result column="skuCode" property="skuCode"/>
+    <result column="skuName" property="skuName"/>
+    <result column="batchCode" property="batchCode"/>
+    <result column="productCategoryName" property="productBrandName"/>
+    <result column="productBrandName" property="productBrandName"/>
+    <result column="spec" property="spec"/>
+    <result column="colorName" property="colorName"/>
+    <result column="modelNumber" property="modelNumber"/>
+    <result column="unitName" property="unitName"/>
+    <result column="productSortName" property="productSortName"/>
+    <result column="goodsGifts" property="goodsGifts"/>
+    <result column="productPropertyName" property="productPropertyName"/>
+    <result column="spuName" property="spuName"/>
+    <result column="spuCode" property="spuCode"/>
+    <result column="warehouseBatchNumber" property="warehouseBatchNumber"/>
+    <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="getSaleChannelList" />
+  </resultMap>
+  <resultMap id="getSaleChannelList" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice">
+    <result column="priceItemCode" property="priceItemCode"/>
+    <result column="priceItemName" property="priceItemName"/>
+    <result column="priceTypeCode" property="priceTypeCode"/>
+    <result column="priceTypeName" property="priceTypeName"/>
+    <result column="priceAttributeCode" property="priceAttributeCode"/>
+    <result column="priceAttributeName" property="priceAttributeName"/>
+    <result column="oldPrice" property="oldPrice"/>
+    <result column="taxCost" property="taxCost"/>
+  </resultMap>
   <sql id="Base_Column_List">
     id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time
   </sql>
@@ -55,4 +83,76 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
+  <select id="querySkuBatchMonthList" resultMap="SkuListForSalePriceMap">
+    select
+    a.sku_code              as skuCode,
+    b.sku_name              as skuName,
+    a.batch_code              as batchCode,
+    b.product_category_name as productCategoryName,
+    b.product_brand_name    as productBrandName,
+    d.spec                  as spec,
+    b.color_name            as colorName,
+    b.model_number          as modelNumber,
+    d.unit_name             as unitName,
+    b.product_sort_name     as productSortName,
+    b.goods_gifts           as goodsGifts,
+    b.product_property_name as productPropertyName,
+    b.product_name          as spuName,
+    b.product_code          as spuCode,
+    a.batch_code      as warehouseBatchNumber,
+    #{changePriceType}      as changePriceType,
+    #{companyCode}          as companyCode
+    from stock_month_batch a
+    left join product_sku b
+    on a.sku_code = b.sku_code
+    left join product c
+    on b.spu_code = c.product_code
+    left join product_sku_purchase_info d
+    on a.sku_code = d.product_sku_code
+    where b.procurement_section_code = #{purchaseGroupCode}  and b.company_code = #{companyCode}
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND b.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND b.product_category_name LIKE CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND b.product_brand_name LIKE CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuCode!=null and spuCode!=''">
+      AND c.product_code = #{spuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuName!=null and spuName!=''">
+      AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
+    </if>
+  </select>
+  <select id="getSaleChannelList" resultMap="getSaleChannelList">
+    select
+    f.price_project_code    as priceItemCode,
+    f.price_project_name    as priceItemName,
+    f.price_type_code       as priceTypeCode,
+    f.price_type_name       as priceTypeName,
+    f.price_category_code   as priceAttributeCode,
+    f.price_category_name   as priceAttributeName,
+    ifnull(g.price_tax,0) as oldPrice,
+    ifnull(h.stock_tax_cost,0) as taxCost
+    from price_project f
+    left join product_sku_price_info g
+    on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
+    left join tax_cost_log_stock h
+    on g.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
+    where  f.company_code = #{companyCode}
+  </select>
+  <select id="getMonthBatch" resultMap="BaseResultMap">
+    select  <include refid="Base_Column_List" />
+    from stock_month_batch
+    where sku_code = #{skuCode,jdbcType=VARCHAR}
+    order by synchr_time desc
+  </select>
 </mapper>

@@ -167,9 +167,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
 
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
-        orderInfo.setUpdateByName(getUser().getPersonName());
-        orderInfo.setUpdateById(getUser().getPersonId());
-        log.setOperator(getUser().getPersonName());
+        orderInfo.setUpdateByName(returnOrderInfo.getUpdateByName());
+        orderInfo.setUpdateById(returnOrderInfo.getUpdateById());
+        log.setOperator(returnOrderInfo.getUpdateByName());
         orderInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
         orderInfo.setReturnReasonContent(returnOrderInfo.getReturnReasonContent());
         Integer count = returnOrderInfoMapper.update(orderInfo);
