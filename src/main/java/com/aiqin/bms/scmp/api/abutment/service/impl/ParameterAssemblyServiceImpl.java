@@ -168,15 +168,15 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setPlatformType(1);
         returnInfo.setCopartnerAreaId(request.getPartnerCode());
         returnInfo.setCopartnerAreaName(request.getPartnerName());
-        if(request.getOrderType() == 1){
-            // 配送默认状态为4
-            returnInfo.setReturnOrderStatus(4);
-        }else {
-            // 其他的默认状态为5
-            returnInfo.setReturnOrderStatus(5);
-        }
+//        if(request.getOrderType() == 1){
+//            // 配送默认状态为4
+//            returnInfo.setReturnOrderStatus(4);
+//        }else {
+//            // 其他的默认状态为5
+//            returnInfo.setReturnOrderStatus(5);
+//        }
         // 转换库房信息
-        WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getWarehouseCode(), request.getWmsWarehouseType());
+        WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
         if(warehouse == null){
             LOGGER.info("DL 推送退货单耘链的库房转换失败：{}", JsonUtil.toJson(request));
             return null;
