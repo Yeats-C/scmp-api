@@ -1,17 +1,21 @@
 package com.aiqin.bms.scmp.api.abutment.service.impl;
 
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.OrderInfoRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ReturnOrderInfoRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.web.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
+import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderItem;
+import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.DeliveryInformation;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyAccount;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
@@ -33,6 +37,12 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     private static Logger LOGGER = LoggerFactory.getLogger(DlAbutmentServiceImpl.class);
     @Resource
     private WarehouseDao warehouseDao;
+    @Resource
+    private SupplyCompanyAccountDao supplyCompanyAccountDao;
+    @Resource
+    private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
+    @Resource
+    private DlAbutmentService dlAbutmentService;
 
     @Override
     public ErpOrderInfo orderInfoParameter(OrderInfoRequest request) {
@@ -212,6 +222,79 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnRequest.setReturnOrderDetailReqList(itemList);
         LOGGER.info("DL->耘链 推送退货单到耘链的参数转换：{}", JsonUtil.toJson(returnRequest));
         return returnRequest;
+    }
+
+    @Override
+    public SupplierInfoRequest supplierParameter(SupplierAbutmentRequest request){
+        SupplierInfoRequest supplierInfo = new SupplierInfoRequest();
+        supplierInfo.setSupplierCode(request.getSupplyCompanyCode());
+        supplierInfo.setSupplierName(request.getApplySupplyName());
+        // 查询供应商的类型
+        String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getApplySupplyType(), "106");
+        LOGGER.info("查询供应商属性信息：{}", typeName);
+        supplierInfo.setSupplierType(typeName);
+        supplierInfo.setSupplierAbbreviation(request.getSupplierAbbreviation());
+        supplierInfo.setMobile(request.getPhone());
+        supplierInfo.setFax(request.getFax());
+        supplierInfo.setCompanyWebsite(request.getCompanyWebsite());
+        supplierInfo.setTaxId(request.getTaxId());
+        supplierInfo.setRegisteredCapital(request.getRegisteredCapital());
+        supplierInfo.setCorporateRepresentative(request.getCorporateRepresentative());
+        supplierInfo.setMinOrderAmount(request.getMinOrderAmount());
+        supplierInfo.setMaxOrderAmount(request.getMaxOrderAmount());
+        supplierInfo.setContactsPhone(request.getMobilePhone());
+        supplierInfo.setContacts(request.getContactName());
+        supplierInfo.setProvinceCode(request.getProvinceId());
+        supplierInfo.setProvinceName(request.getProvinceName());
+        supplierInfo.setCityCode(request.getCityId());
+        supplierInfo.setCityName(request.getCityName());
+        supplierInfo.setDistrictCode(request.getDistrictId());
+        supplierInfo.setDistrictName(request.getDistrictName());
+        supplierInfo.setDetailAddress(request.getAddress());
+        supplierInfo.setZipCode(request.getZipCode());
+        supplierInfo.setEmail(request.getEmail());
+        supplierInfo.setPaymentMethod(request.getPaymentMethod());
+        supplierInfo.setEnable(request.getEnable().intValue());
+        supplierInfo.setProperty(request.getProperty());
+        supplierInfo.setSupplierCompanyCode(request.getSupplierCode());
+        supplierInfo.setSupplierCompanyName(request.getSupplierName());
+        // 查询供应商的结算账户信息
+        SupplyCompanyAccount account = supplyCompanyAccountDao.companyAccount(supplierInfo.getSupplierCode());
+        if(account != null){
+            supplierInfo.setBankAccount(account.getBankAccount());
+            supplierInfo.setAccount(account.getAccount());
+            supplierInfo.setAccountName(account.getAccountName());
+            supplierInfo.setMaxPaymentAmount(account.getMaxPaymentAmount());
+        }
+
+        if(CollectionUtils.isNotEmpty(request.getGroupList())){
+            List<String> groups = Lists.newArrayList();
+            for (SupplyCompanyPurchaseGroup group : request.getGroupList()){
+                groups.add(group.getPurchasingGroupName());
+            }
+            supplierInfo.setPurchaseGroupName(groups);
+        }
+
+        if(CollectionUtils.isNotEmpty(request.getDeliveryList())){
+            List<SupplierDeliveryRequest> deliveryRequests = Lists.newArrayList();
+            SupplierDeliveryRequest deliveryRequest;
+            for (DeliveryInformation delivery : request.getDeliveryList()){
+                deliveryRequest = new SupplierDeliveryRequest();
+                deliveryRequest.setDeliveryType(delivery.getDeliveryType().intValue());
+                deliveryRequest.setProvinceCode(delivery.getSendProvinceId());
+                deliveryRequest.setProvinceName(delivery.getSendProvinceName());
+                deliveryRequest.setCityCode(delivery.getSendCityId());
+                deliveryRequest.setCityName(delivery.getSendCityName());
+                deliveryRequest.setDistrictCode(delivery.getSendDistrictId());
+                deliveryRequest.setDistrictName(delivery.getSendDistrictName());
+                deliveryRequest.setDetailAddress(delivery.getSendingAddress());
+                deliveryRequests.add(deliveryRequest);
+            }
+            supplierInfo.setDeliveryList(deliveryRequests);
+        }
+        LOGGER.info("供应商转换调用dl参数：{}", JsonUtil.toJson(supplierInfo));
+        dlAbutmentService.supplierInfo(supplierInfo);
+        return supplierInfo;
     }
 
 }

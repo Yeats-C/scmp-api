@@ -41,4 +41,7 @@ public interface SupplierDictionaryInfoDao {
     List<InnerValue> allList();
 
     List<DictionaryInfoResponseVO> selectPriceTypeAndCategory(@Param("status")  Integer status);
+
+    String dictionaryDetailInfo(@Param("supplierDictionaryValue") String supplierDictionaryValue,
+                                @Param("supplierDictionaryCode") String supplierDictionaryCode);
 }

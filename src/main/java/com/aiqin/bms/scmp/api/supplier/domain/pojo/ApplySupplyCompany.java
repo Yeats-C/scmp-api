@@ -187,4 +187,7 @@ public class ApplySupplyCompany extends CommonBean {
 
     @ApiModelProperty("职位名称")
     private String positionName;
+
+    @ApiModelProperty("属性")
+    private String property;
 }
