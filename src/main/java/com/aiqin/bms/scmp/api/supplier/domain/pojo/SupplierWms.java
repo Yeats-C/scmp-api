@@ -13,11 +13,11 @@ import java.util.Date;
 @Data
 public class SupplierWms extends CommonBean {
 
-    @ApiModelProperty("供应商集团名称")
+    @ApiModelProperty("供应商名称")
     @JsonProperty("supply_name")
     private String supplyName;
 
-    @ApiModelProperty("供应商集团编号")
+    @ApiModelProperty("供应商编号")
     @JsonProperty("supply_code")
     private String supplyCode;
 

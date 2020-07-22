@@ -224,4 +224,10 @@ public class SupplyCompanyController {
             return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
         }
     }
+
+    @PostMapping("/import/wms")
+    @ApiOperation(value = "供应商信息信息导入wms")
+    public HttpResponse skuImportWms(){
+        return supplyComService.supplyImportWms();
+    }
 }
