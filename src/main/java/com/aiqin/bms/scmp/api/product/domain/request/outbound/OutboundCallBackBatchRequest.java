@@ -55,4 +55,12 @@ public class OutboundCallBackBatchRequest {
     @ApiModelProperty("备注")
     @JsonProperty("batch_remark")
     private String batchRemark;
+
+    @ApiModelProperty(value="供应商编码")
+    @JsonProperty("supplier_code")
+    private String supplierCode;
+
+    @ApiModelProperty(value="供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
 }
