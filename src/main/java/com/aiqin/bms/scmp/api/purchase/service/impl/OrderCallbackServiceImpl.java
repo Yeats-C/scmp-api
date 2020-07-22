@@ -1445,9 +1445,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
         }
 
-        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
-            return HttpResponse.success("商品已出库完成,等待拣货中");
-        }
+//        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
+//            return HttpResponse.success("商品已出库完成,等待拣货中");
+//        }
         // 操作时间 签收时间
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(request.getOderCode());
@@ -1572,7 +1572,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 if(i > 0){
                     batchListUpdate.add(productBatch);
                 }else {
-                    productBatch.setTotalCount(0L);
+                    productBatch.setTotalCount(productBatch.getActualTotalCount());
                     productBatch.setCreateTime(new Date());
                     productBatch.setCreateById(request.getPersonId());
                     productBatch.setCreateByName(request.getPersonName());
@@ -1581,6 +1581,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     productBatch.setUpdateByName(request.getPersonName());
                     productBatch.setSupplierCode(batch.getSupplierCode());
                     productBatch.setSupplierName(batch.getSupplierName());
+                    productBatch.setProductDate(batch.getProductDate());
                     batchList.add(productBatch);
                 }
             }

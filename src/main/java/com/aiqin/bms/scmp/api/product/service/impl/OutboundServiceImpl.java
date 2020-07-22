@@ -755,6 +755,24 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                 for (OutboundProductCallBackReqVo product : productList) {
                     for (int i = 0; i <= batchList.size(); i++) {
+                        outboundBatch = new OutboundBatch();
+                        outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+                        outboundBatch.setBatchCode(batchList.get(i).getBatchCode());
+                        outboundBatch.setBatchInfoCode(batchList.get(i).getBatchInfoCode());
+                        outboundBatch.setSkuCode(batchList.get(i).getSkuCode());
+                        outboundBatch.setSkuName(batchList.get(i).getSkuName());
+                        outboundBatch.setSupplierCode(batchList.get(i).getSupplierCode());
+                        //outboundBatch.setSupplierName(outbound.getSupplierName());
+                        outboundBatch.setProductDate(batchList.get(i).getProductDate());
+                        outboundBatch.setTotalCount(product.getActualTotalCount());
+                        outboundBatch.setActualTotalCount(product.getActualTotalCount());
+                        outboundBatch.setLineCode(product.getLineCode());
+                        outboundBatch.setCreateById(request.getOperatorId());
+                        outboundBatch.setCreateByName(request.getOperatorName());
+                        outboundBatch.setUpdateById(request.getOperatorId());
+                        outboundBatch.setUpdateByName(request.getOperatorName());
+                        outboundBatches.add(outboundBatch);
+
                         stockBatchInfoRequest = new StockBatchInfoRequest();
                         stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
                         stockBatchInfoRequest.setTransportCenterName(batchList.get(i).getTransportCenterName());
@@ -788,25 +806,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             stockBatchVoRequestList.add(stockBatchInfoRequest);
                             product.setActualTotalCount(product.getActualTotalCount() - batchList.get(i).getAvailableCount());
                         }
-
-                        outboundBatch = new OutboundBatch();
-                        outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
-                        outboundBatch.setBatchCode(batchList.get(i).getBatchCode());
-                        outboundBatch.setBatchInfoCode(batchList.get(i).getBatchInfoCode());
-                        outboundBatch.setSkuCode(batchList.get(i).getSkuCode());
-                        outboundBatch.setSkuName(batchList.get(i).getSkuName());
-                        outboundBatch.setSupplierCode(batchList.get(i).getSupplierCode());
-                        //outboundBatch.setSupplierName(outbound.getSupplierName());
-                        outboundBatch.setProductDate(batchList.get(i).getProductDate());
-                        outboundBatch.setTotalCount(product.getActualTotalCount());
-                        outboundBatch.setActualTotalCount(product.getActualTotalCount());
-                        outboundBatch.setLineCode(product.getLineCode());
-                        outboundBatch.setCreateById(request.getOperatorId());
-                        outboundBatch.setCreateByName(request.getOperatorName());
-                        outboundBatch.setUpdateById(request.getOperatorId());
-                        outboundBatch.setUpdateByName(request.getOperatorName());
-                        outboundBatches.add(outboundBatch);
-
                     }
 
                 }
