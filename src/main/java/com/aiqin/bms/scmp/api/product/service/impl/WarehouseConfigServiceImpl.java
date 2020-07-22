@@ -11,6 +11,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -38,7 +39,7 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
             HttpResponse<BasePage<WarehouseConfigResp>> result = httpClient.action().result(new TypeReference<HttpResponse<BasePage<WarehouseConfigResp>>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("传入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
+                log.info("传入wmsa失败，传入参数是[{}]", JsonUtil.toJson(warehouseConfigReq));
             }
             return result.getData();
         } catch (Exception e) {
@@ -58,14 +59,14 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         warehouseConfigReq.setUpdateBy(currentAuthToken.getPersonName());
         warehouseConfigReq.setUpdateById(currentAuthToken.getPersonId());
         try {
-            log.info("库房配置保存传入wmsa，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
+            log.info("库房配置保存传入wmsa，传入参数是[{}]", JsonUtil.toJson(warehouseConfigReq));
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/save" );
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(warehouseConfigReq).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("传入wmsa失败，传入参数是[{}]", JSON.toJSONString(warehouseConfigReq));
+                log.info("传入wmsa失败，传入参数是[{}]", JsonUtil.toJson(warehouseConfigReq));
             }
             return result.getData();
         } catch (Exception e) {
@@ -102,14 +103,14 @@ public class WarehouseConfigServiceImpl implements WarehouseConfigService {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         req.setUpdateBy(currentAuthToken.getPersonName());
         try {
-            log.info("库房配置更新传入wmsa，传入参数是[{}]", JSON.toJSONString(req));
+            log.info("库房配置更新传入wmsa，传入参数是[{}]", JsonUtil.toJson(req));
             StringBuilder url = new StringBuilder();
             url.append(urlConfig.WMS_API_URL2).append("/storehouseConfig/update" );
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(req).timeout(30000);
             HttpResponse<Boolean> result = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wmsa失败，传入参数是[{}]", JSON.toJSONString(req));
+                log.info("穿入wmsa失败，传入参数是[{}]", JsonUtil.toJson(req));
             }
             return result.getData();
         } catch (Exception e) {
