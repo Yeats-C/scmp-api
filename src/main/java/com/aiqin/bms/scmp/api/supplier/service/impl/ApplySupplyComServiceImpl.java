@@ -1,15 +1,11 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapSupplier;
-import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierBank;
-import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierCompany;
-import com.aiqin.bms.scmp.api.abutment.domain.request.SupplierPurchase;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.request.WarehouseConfigReq;
 import com.aiqin.bms.scmp.api.product.service.WarehouseConfigService;
 import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -22,7 +18,6 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
 import com.aiqin.bms.scmp.api.supplier.domain.request.QueryApplySupplyListComReqVO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.apply.QueryApplyReqVo;
-import com.aiqin.bms.scmp.api.supplier.domain.request.contract.dto.ContractDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.dto.*;
 import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.*;
 import com.aiqin.bms.scmp.api.supplier.domain.response.ApplyComDetailRespVO;
@@ -1514,23 +1509,6 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
-    private void sendWms2( SupplierWms supplierWms ) {
-        try {
-            StringBuilder url = new StringBuilder();
-            url.append(urlConfig.WMS_API_URL).append("/infoPushAndInquiry/source/supplierInfoPush" );
-//            HttpClient httpClient = HttpClient.get(url.toString());
-            HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
-            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
-            });
-            if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
-        }
-    }
-
 
     public Map<String, AreaInfo> getAreaTree() {
         HttpResponse<List<AreaBasic>> treeList = areaBasicInfoService.getTreeList();
@@ -2495,27 +2473,4 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         return num;
     }
 
-    @Override
-    public HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO) {
-
-        SupplyCompanyDetailDTO supplyCompanyDetailDTO=  supplyCompanyDao.getSupplyComDetail(Long.valueOf(1556));
-        SupplierWms supplierWms=new SupplierWms();
-
-        BeanCopyUtils.copy(supplyCompanyDetailDTO,supplierWms);
-//        supplierWms.setAddress("测试地址");
-//        supplierWms.setArea("测试地区");
-//        supplierWms.setContactName("张三");
-//        supplierWms.setDelFlag((byte) 1);
-//        supplierWms.setEmail("13213@qq.com");
-//        supplierWms.setMobilePhone("2111123213123");
-//        supplierWms.setRemark("备注");
-//        supplierWms.setSupplierAbbreviation("测试简称");
-//        supplierWms.setSupplyCode("testcode001");
-//        supplierWms.setSupplyName("testname001");
-//        supplierWms.setSupplyType("testtype001");
-//        supplierWms.setUpdateTime(new Date());
-        sendWms2(supplierWms);
-        log.info(JSON.toJSONString(supplierWms));
-        return HttpResponse.success();
-    }
 }

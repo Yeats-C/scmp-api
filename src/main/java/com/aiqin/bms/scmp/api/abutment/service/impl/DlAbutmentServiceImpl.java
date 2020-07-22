@@ -370,7 +370,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         DlOtherInfo info = new DlOtherInfo();
         info.setDocumentCode(request.getSupplierCode());
         info.setDocumentType(Global.SUPPLIER_TYPE);
-        info.setBusinessType(Global.PUSH_TYPE);
+        info.setBusinessType(Global.ECHO_TYPE);
         info.setDocumentContent(JsonUtil.toJson(request));
         Integer logCount = dlOtherInfoDao.insert(info);
         LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);

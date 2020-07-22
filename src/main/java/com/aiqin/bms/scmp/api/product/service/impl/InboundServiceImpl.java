@@ -1308,7 +1308,8 @@ public class InboundServiceImpl implements InboundService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         repealOrderRequest.setRepealTime(formatter.format(Calendar.getInstance().getTime()));
         try{
-            String url =urlConfig.WMS_API_URL+"/wms/repeal/inbound";
+            String url = "";
+            //String url =urlConfig.WMS_API_URL+"/wms/repeal/inbound";
             HttpClient httpClient = HttpClient.post(url).json(repealOrderRequest);
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
             String data= JSON.toJSONString(orderDto.getData());

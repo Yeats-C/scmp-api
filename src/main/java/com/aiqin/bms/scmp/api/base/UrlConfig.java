@@ -21,8 +21,8 @@ public class UrlConfig {
     @Value("${Store.url}")
     public String STORE_API_URL;
 
-    @Value("${wms.url}")
-    public String WMS_API_URL;
+//    @Value("${wms.url}")
+//    public String WMS_API_URL;
 
     @Value("${wms2.url}")
     public String WMS_API_URL2;

@@ -527,7 +527,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundWmsReqVO.setCreateById("0");
                 outboundWmsReqVO.setCreateByName("系统");
             }
-            url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+            //url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+            url = "";
             log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
             HttpResponse orderDto = HttpClient.post(url).json(outboundWmsReqVO).timeout(10000).action().result(HttpResponse.class);
             if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
