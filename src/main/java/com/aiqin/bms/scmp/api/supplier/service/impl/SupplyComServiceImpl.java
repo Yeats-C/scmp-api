@@ -2,15 +2,20 @@ package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 
 import com.aiqin.bms.scmp.api.base.BasePage;
+import com.aiqin.bms.scmp.api.base.MsgStatus;
+import com.aiqin.bms.scmp.api.base.UrlConfig;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.QueryProductSkuListResp;
+import com.aiqin.bms.scmp.api.product.mapper.ProductSkuPushWmsMapper;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
+import com.aiqin.bms.scmp.api.purchase.domain.response.reject.RejectResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplierFileDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierFile;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierWms;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompanyPurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogVo;
@@ -32,8 +37,13 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
+import com.aiqin.ground.util.http.HttpClient;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.github.pagehelper.PageHelper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -71,6 +81,10 @@ public class SupplyComServiceImpl implements SupplyComService {
     private TagInfoService tagInfoService;
     @Autowired
     private SupplyCompanyPurchaseGroupMapper supplyCompanyPurchaseGroupMapper;
+    @Autowired
+    private ProductSkuPushWmsMapper productSkuPushWmsMapper;
+    @Autowired
+    private UrlConfig urlConfig;
     @Override
     public BasePage<SupplyComListRespVO> getSupplyCompanyInfoList(QuerySupplyComReqVO querySupplyComReqVO) {
         try {
@@ -280,5 +294,47 @@ public class SupplyComServiceImpl implements SupplyComService {
     @Override
     public Map<String, SupplyCompany> selectBySupplyComNames(Set<String> supplierList, String companyCode) {
         return supplyCompanyMapper.selectBySupplyComNames(supplierList, companyCode);
+    }
+
+    @Override
+    public HttpResponse supplyImportWms() {
+        // 查询出所有没有推送到wms的供应商信息
+        List<String> supplyCodes = productSkuPushWmsMapper.selectAllSupplyCode();
+        log.info("查询出所有没有推送到wms供应商信息：[{}]", JsonUtil.toJson(supplyCodes));
+        for (String supplyCode : supplyCodes) {
+            log.info("当前准备推送到wms供应商信息：[{}]", JsonUtil.toJson(supplyCode));
+            SupplyCompany supplyCompany = supplyCompanyDao.detailByCode(supplyCode, Global.COMPANY_09);
+            SupplierWms supplierWms=new SupplierWms();
+            supplierWms.setAddress(supplyCompany.getAddress());
+            supplierWms.setArea(supplyCompany.getArea());
+            supplierWms.setContactName(supplyCompany.getContactName());
+            supplierWms.setDelFlag(supplyCompany.getDelFlag());
+            supplierWms.setEmail(supplyCompany.getEmail());
+            supplierWms.setMobilePhone(supplyCompany.getMobilePhone());
+            supplierWms.setRemark(supplyCompany.getRemark());
+            supplierWms.setSupplierAbbreviation(supplyCompany.getSupplyAbbreviation());
+            supplierWms.setSupplyCode(supplyCompany.getSupplyCode());
+            supplierWms.setSupplyName(supplyCompany.getSupplyName());
+            supplierWms.setSupplyType(supplyCompany.getSupplyType());
+            supplierWms.setUpdateTime(supplyCompany.getUpdateTime());
+            log.info("传入wms的供应商信息为{}", JsonUtil.toJson(supplierWms));
+            try {
+                StringBuilder url = new StringBuilder();
+                url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/supplierInfoPush" );
+                HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
+                HttpResponse result = httpClient.action().result(new TypeReference<HttpResponse>(){
+                });
+                if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
+                    log.info("传入wms的供应商信息失败，传入参数是[{}]", JsonUtil.toJson(supplierWms));
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                log.info("传入wms的供应商信息失败，传入参数是[{}]", JsonUtil.toJson(supplierWms));
+            }
+
+            // 执行完 改变商品状态
+            productSkuPushWmsMapper.updateWmsStatusBySupplyCode(supplyCode);
+        }
+        return HttpResponse.success();
     }
 }

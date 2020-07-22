@@ -129,7 +129,7 @@
       remark, del_flag,
       create_time, create_by, update_time,
       update_by, order_status_code, order_status_name,
-      company_code,company_name)
+      company_code,company_name, profit_loss_wms_code)
     values
      <foreach collection="list" item="item" separator=",">
        (
@@ -152,7 +152,8 @@
        #{item.orderStatusCode,jdbcType=VARCHAR},
        #{item.orderStatusName,jdbcType=VARCHAR},
        #{item.companyCode,jdbcType=VARCHAR},
-       #{item.companyName,jdbcType=VARCHAR}
+       #{item.companyName,jdbcType=VARCHAR},
+       #{item.profitLossWmsCode,jdbcType=VARCHAR}
        )
      </foreach>
 
@@ -407,5 +408,11 @@
       #{item,jdbcType=VARCHAR}
     </foreach>
   </update>
+  <select id="profitLossByCode" resultType="java.lang.String">
+    select order_code
+    from profit_loss
+    where order_code like concat(#{code,jdbcType=VARCHAR},'%')
+    order by id desc limit 1
+  </select>
 
 </mapper>

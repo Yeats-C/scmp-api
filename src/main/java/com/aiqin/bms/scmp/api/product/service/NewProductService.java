@@ -60,4 +60,6 @@ public interface NewProductService {
      * @return java.util.Map<java.lang.String,com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo>
      */
     Map<String, ProductSkuInfo> selectBySkuNames(Set<String> skuNameList, String companyCode);
+
+    HttpResponse skuImportWms();
 }

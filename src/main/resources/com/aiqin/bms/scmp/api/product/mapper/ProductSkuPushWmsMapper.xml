@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.product.mapper.ProductSkuPushWmsMapper">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuPushWms">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
+    <result column="is_push_wms" jdbcType="TINYINT" property="isPushWms" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, sku_code, is_push_wms
+  </sql>
+  <select id="selectAll" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from product_sku_push_wms
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <select id="selectAllSkuCode" resultType="java.lang.String">
+    select sku_code from product_sku_push_wms
+    where is_push_wms=1
+  </select>
+  <update id="updateWmsStatusBySkuCode">
+      update product_sku_push_wms set is_push_wms = 0 where sku_code =#{skuCode}
+  </update>
+  <select id="selectAllSupplyCode" resultType="java.lang.String">
+    select supply_code from product_sku_push_wms
+    where is_push_wms=1
+  </select>
+  <update id="updateWmsStatusBySupplyCode">
+    update product_sku_push_wms set is_push_wms = 0 where supply_code =#{supplyCode}
+  </update>
+</mapper>

@@ -25,6 +25,9 @@ product:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
 wms:
   url: http://abutment.api.aiqin.com
+dl:
+  key: 32a81543c57511eab0eb7cd30adaed42
+  url: http://yunlian.api.daruiyun.com:8091
 wms2:
   url: http://39.96.89.2:9001
 ground:

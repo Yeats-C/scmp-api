@@ -10,46 +10,19 @@ import com.aiqin.bms.scmp.api.product.service.MovementService;
 import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.List;
 
-/**
- * <p>
- * ━━━━━━神兽出没━━━━━━
- * 　　┏┓　　　┏┓+ +
- * 　┏┛┻━━━┛┻┓ + +
- * 　┃　　　　　　　┃
- * 　┃　　　━　　　┃ ++ + + +
- * ████━████ ┃+
- * 　┃　　　　　　　┃ +
- * 　┃　　　┻　　　┃
- * 　┃　　　　　　　┃
- * 　┗━┓　　　┏━┛
- * 　　　┃　　　┃                  神兽保佑, 永无BUG!
- * 　　　┃　　　┃
- * 　　　┃　　　┃     Code is far away from bug with the animal protecting
- * 　　　┃　 　　┗━━━┓
- * 　　　┃ 　　　　　　　┣┓
- * 　　　┃ 　　　　　　　┏┛
- * 　　　┗┓┓┏━┳┓┏┛
- * 　　　　┃┫┫　┃┫┫
- * 　　　　┗┻┛　┗┻┛
- * ━━━━━━感觉萌萌哒━━━━━━
- * <p>
- * <p>
- * 思维方式*热情*能力
- */
 @RestController
 @RequestMapping("/order/callback")
 public class OrderCallbackController {
@@ -93,8 +66,8 @@ public class OrderCallbackController {
 
     @PostMapping("/wms/profitloss")
     @ApiOperation(value = "wms报损报溢回传")
-    public HttpResponse profitLossWmsEcho(@RequestBody ProfitLossWmsReqVo request) {
-        LOGGER.info("报损报溢回传,request:{}", request.toString());
+    public HttpResponse profitLossWmsEcho(@RequestBody List<ProfitLossWmsReqVo> request) {
+        LOGGER.info("报损报溢回传,request:{}", JsonUtil.toJson(request));
         return profitLossService.profitLossWmsEcho(request);
     }
 

@@ -46,4 +46,17 @@ public class StockMonthBatch {
     @JsonProperty("wms_type")
     private Integer wmsType;
 
+    @ApiModelProperty("批次行号")
+    @JsonProperty("line_code")
+    private Long lineCode;
+
+    @ApiModelProperty("sku名称")
+    @JsonProperty("sku_name")
+    private String skuName;
+
+    @ApiModelProperty("生产日期")
+    @JsonProperty("product_date")
+    private String productDate;
+
+
 }

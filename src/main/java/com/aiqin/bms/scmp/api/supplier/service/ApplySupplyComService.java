@@ -110,43 +110,25 @@ public interface ApplySupplyComService {
      * @return
      */
     List<ApplyListRespVo> queryApplyList(QueryApplyReqVo querySupplierReqVO);
+
     /**
      * 保存导入
-     * @author NullPointException
-     * @date 2019/7/16
-     * @param file
-     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
     SupplierImportResp dealImport(MultipartFile file);
+
     /**
      * 修改导入
-     * @author NullPointException
-     * @date 2019/7/16
-     * @param file
-     * @return java.util.List<com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.ApplySupplyCompanyReqVO>
      */
     SupplierImportResp dealImport2(MultipartFile file);
 
     /**
-     *
      * 功能描述: 新增导入保存
-     *
-     * @param req
-     * @return
-     * @auther knight.xie
-     * @date 2019/7/26 14:40
      */
     Boolean importSupplierNewSave(SupplierImportReq req);
 
 
     /**
-     *
      * 功能描述: 修改导入保存
-     *
-     * @param req
-     * @return
-     * @auther knight.xie
-     * @date 2019/7/26 14:41
      */
     Boolean importSupplierNewUpdate(SupplierImportReq req);
 
@@ -169,16 +151,9 @@ public interface ApplySupplyComService {
     int insertData(ApplySupplyCompany applySupplyCompany);
 
 
-//    BasePage<SupplyComListRespVO> applyList();
 
     /**
-     *
      * 功能描述: 返回详情接口请求参数
-     *
-     * @param formNo
-     * @return
-     * @auther knight.xie
-     * @date 2019/8/9 14:41
      */
     DetailRequestRespVo getInfoByForm(String formNo);
 
@@ -186,11 +161,6 @@ public interface ApplySupplyComService {
     /**
      *
      * 功能描述: 保存供应商采购组申请信息
-     *
-     * @param purchaseGroups
-     * @return
-     * @auther knight.xie
-     * @date 2019/8/23 10:52
      */
     int saveApplyPurchaseGroupList(List<ApplySupplyCompanyPurchaseGroup> purchaseGroups);
 
@@ -203,5 +173,4 @@ public interface ApplySupplyComService {
      */
     Integer reUpdateApply(String applyCode);
 
-    HttpResponse saveApply2(ApplySupplyCompanyReqVO applySupplyCompanyReqVO);
 }

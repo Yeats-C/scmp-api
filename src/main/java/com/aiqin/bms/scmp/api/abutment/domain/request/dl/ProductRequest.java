@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request.dl;
+package com.aiqin.bms.scmp.api.abutment.domain.request.dl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;

@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request.dl;
+package com.aiqin.bms.scmp.api.abutment.domain.request.dl;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -12,7 +12,7 @@ import java.util.List;
 
 @Data
 @ApiModel("DL- 库存变动推送")
-public class StockChangeDlRequest {
+public class StockChangeRequest {
 
     @NotNull(message = "单据不能为空")
     @ApiModelProperty(value="单据号")

@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.EchoOrderRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
@@ -8,9 +12,11 @@ import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -21,9 +27,6 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoLog;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.EchoOrderRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
@@ -90,6 +93,10 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private SapBaseDataService sapBaseDataService;
     @Resource
     private WarehouseDao warehouseDao;
+    @Resource
+    private ProductSkuCheckoutDao productSkuCheckoutDao;
+    @Resource
+    private DlAbutmentService dlAbutmentService;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -160,9 +167,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }
 
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
-        orderInfo.setUpdateByName(getUser().getPersonName());
-        orderInfo.setUpdateById(getUser().getPersonId());
-        log.setOperator(getUser().getPersonName());
+        orderInfo.setUpdateByName(returnOrderInfo.getUpdateByName());
+        orderInfo.setUpdateById(returnOrderInfo.getUpdateById());
+        log.setOperator(returnOrderInfo.getUpdateByName());
         orderInfo.setOrderStatus(ReturnOrderStatus.cancelled.getStatusCode());
         orderInfo.setReturnReasonContent(returnOrderInfo.getReturnReasonContent());
         Integer count = returnOrderInfoMapper.update(orderInfo);
@@ -304,6 +311,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             returnOrderInfoItem.setId(item.getId());
             returnOrderInfoItem.setActualPrice(item.getPrice());
             returnOrderInfoItem.setActualChannelUnitPrice(item.getChannelUnitPrice());
+            returnOrderInfoItem.setActualInboundNum(item.getActualInboundNum());
             Integer count = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             LOGGER.info("直送退货单实退的商品数量：{}", count);
 
@@ -349,7 +357,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 退货收货完成- 直送订单 回传运营中台
         changeParameter(itemList.get(0).getReturnOrderCode());
         // 推送结算
-        sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
+        //sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
         return HttpResponse.success();
     }
 
@@ -576,10 +584,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         }else {
             request.setProductList(productList);
             LOGGER.info("退货单回调DL参数：{}", JsonUtil.toJson(request));
-            sb.append(urlConfig.WMS_API_URL).append("/dl/order/echo");
-            httpClient = HttpClient.post(String.valueOf(sb)).json(response).timeout(10000);
-            httpResponse = httpClient.action().result(new TypeReference<HttpResponse<Boolean>>() {
-            });
+            httpResponse = dlAbutmentService.echoOrderInfo(request);
         }
 
         // 判断回调是否成功
@@ -803,7 +808,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 list.add(inboundProductReqVo);
                 // 计算预计无税金额、税额
                 if(detail.getInsertType() == 1){
-                    BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getAmount(), detail.getTax());
+                    BigDecimal tax = BigDecimal.ZERO;
+                    if(detail.getTax() == null){
+                        ProductSkuCheckout info = productSkuCheckoutDao.getInfo(detail.getSkuCode());
+                        if(info != null){
+                            tax = info.getOutputTaxRate() == null ? BigDecimal.ZERO : info.getOutputTaxRate();
+                        }
+                    }
+                    BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getAmount(), tax);
                     preAmount = preAmount.add(noTax);
                 }
             }

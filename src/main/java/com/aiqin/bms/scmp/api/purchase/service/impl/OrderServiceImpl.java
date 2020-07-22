@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.OutboundDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSalesInfoDao;
 import com.aiqin.bms.scmp.api.product.domain.converter.order.OrderToOutBoundConverter;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO;
 import com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoItemDTO;
@@ -21,6 +22,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.ChangeStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockBatchInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockInfoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
+import com.aiqin.bms.scmp.api.product.domain.response.sku.PurchaseSaleStockRespVo;
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuBatchMapper;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
@@ -101,6 +103,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     private ProductSkuBatchMapper productSkuBatchDao;
     @Autowired
     private OrderInfoItemBatchMonthMapper orderInfoItemBatchMonthMapper;
+    @Autowired
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -451,6 +455,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+        LOGGER.info("销售单未转换钱的数据====={}",  JSONObject.toJSONString(request));
         // 获取税率
         String key;
         Map<String, ProductSkuCheckout> product = new HashMap<>();
@@ -472,6 +477,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 }
             }
         }
+
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
         LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
@@ -580,6 +586,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemBatchMonth.setWarehouseCode(vo.getWarehouseCode());
                     orderInfoItemBatchMonth.setBatchCode(itemBatch.getBatchCode());
                     orderInfoItemBatchMonth.setTotalCount(itemBatch.getTotalCount());
+                    orderInfoItemBatchMonth.setLineCode(itemBatch.getLineCode());
                     itemBatchMonthList.add(orderInfoItemBatchMonth);
 
                     // 调用月份转换
@@ -588,6 +595,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockMonthBatch.setWarehouseCode(vo.getWarehouseCode());
                     stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                     stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
+                    stockMonthBatch.setLineCode(itemBatch.getLineCode());
                     stockList.add(stockMonthBatch);
                 }
                 vo.setItemBatchList(null);
@@ -596,12 +604,16 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             stockMonthRequest.setOperationType(2);
             // 批次管理编码 为5，6 传月份   // 转日期 保存日期。 wms类型 京东 2
             for (OrderInfoItemProductBatch itemBatch : itemBatchList) {
+
                 // 调用月份转换
                 stockMonthBatch = new StockMonthBatch();
                 stockMonthBatch.setSkuCode(itemBatch.getSkuCode());
                 stockMonthBatch.setWarehouseCode(vo.getWarehouseCode());
                 stockMonthBatch.setBatchCode(itemBatch.getBatchCode());
                 stockMonthBatch.setBatchCount(itemBatch.getTotalCount());
+                stockMonthBatch.setLineCode(itemBatch.getLineCode());
+                stockMonthBatch.setSkuName(itemBatch.getSkuName());
+                stockMonthBatch.setProductDate(itemBatch.getProductDate());
                 stockList.add(stockMonthBatch);
             }
             vo.setItemBatchList(null);
@@ -618,7 +630,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
                     orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
                     orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
+                    orderInfoItemProductBatch.setSkuName(stockDayBatch.getSkuName());
+                    orderInfoItemProductBatch.setProductDate(stockDayBatch.getProductDate());
                     orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
+                    orderInfoItemProductBatch.setLineCode(stockDayBatch.getLineCode());
                     itemBatchLists.add(orderInfoItemProductBatch);
                 }
             }
@@ -758,6 +773,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setProvinceName(request.getProvinceName());
         ssis.setCityId(request.getCityCode());
         ssis.setCityName(request.getCityName());
+        ssis.setChannelCode(request.getChannelCode());
+        ssis.setChannelName(request.getChannelName());
         // 直辖市情况下 区/县为null
         if(request.getDistrictName() == null){
             ssis.setDistrictName(request.getCityName());
@@ -794,6 +811,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItemReqVO> itemList = request.getProductList();
        if(itemList != null){
            for (OrderInfoItemReqVO list : itemList) {
+               PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(list.getSkuCode());
                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
                sods.setLineCode(String.valueOf(list.getProductLineNum()));
                sods.setSkuCode(list.getSkuCode());
@@ -806,7 +824,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                sods.setModelNumber(list.getModelCode());
                sods.setUnitCode(list.getUnitCode());
                sods.setUnitName(list.getUnitName());
-               sods.setSkuBarCode(list.getBarCode());
+               if(purchaseSaleStockRespVo != null){
+                   sods.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+               }
                plists.add(sods);
            }
        }
@@ -827,6 +847,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBtachList.setBeOverdueData(itemBatchList.getBeOverdueDate());
                 pBtachList.setBatchRemark(itemBatchList.getBatchRemark());
                 pBtachList.setActualTotalCount(itemBatchList.getActualTotalCount());
+                pBtachList.setTotalCount(itemBatchList.getTotalCount());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -838,6 +859,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 pBtachList.setSkuName(itemBatchMonth.getSkuName());
                 pBtachList.setBatchCode(itemBatchMonth.getBatchCode());
                 pBtachList.setTotalCount(itemBatchMonth.getTotalCount());
+                pBtachList.setLineCode(itemBatchMonth.getLineCode().intValue());
                 pBatchLists.add(pBtachList);
             }
         }
@@ -878,7 +900,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         vo.setWeight(request.getTotalWeight());
         vo.setBeMasterOrder(request.getOrderLevel() == 0 ? 1 : 0);
         vo.setMasterOrderCode(request.getMainOrderCode());
-        vo.setOrderOriginal(request.getOrderStoreCode());
+        //vo.setOrderOriginal(request.getOrderStoreCode());
         vo.setStoreTypeCode(request.getStoreType() == null ? "" : request.getStoreType().toString());
         vo.setOrderCategory(request.getOrderCategoryName());
         vo.setCreateById(request.getCreateById());

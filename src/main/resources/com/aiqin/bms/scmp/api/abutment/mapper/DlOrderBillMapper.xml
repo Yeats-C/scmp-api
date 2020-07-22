@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aiqin.bms.scmp.api.abutment.dao.DlOrderBillDao">
+  <resultMap id="BaseResultMap" type="com.aiqin.bms.scmp.api.abutment.domain.DlOrderBill">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="document_code" jdbcType="VARCHAR" property="documentCode" />
+    <result column="document_type" jdbcType="INTEGER" property="documentType" />
+    <result column="business_type" jdbcType="INTEGER" property="businessType" />
+    <result column="return_status" jdbcType="INTEGER" property="returnStatus" />
+    <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="document_content" jdbcType="VARCHAR" property="documentContent" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, document_code, document_type, business_type, return_status, request_url, create_time, update_time, document_content
+  </sql>
+  <insert id="insert">
+    insert into dl_order_bill (document_code, document_type, business_type, return_status, request_url, 
+      create_time, update_time, document_content)
+    values (#{documentCode,jdbcType=VARCHAR}, #{documentType,jdbcType=INTEGER}, 
+      #{businessType,jdbcType=INTEGER}, #{returnStatus,jdbcType=INTEGER}, #{requestUrl,jdbcType=VARCHAR}, 
+      now(), now(), #{documentContent,jdbcType=VARCHAR})
+  </insert>
+  <update id="update">
+    update dl_order_bill
+    <set>
+      <if test="returnStatus != null">
+        return_status = #{returnStatus,jdbcType=BIT},
+      </if>
+      <if test="requestUrl != null">
+        request_url = #{requestUrl,jdbcType=VARCHAR},
+      </if>
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      <if test="documentContent != null">
+        document_content = #{documentContent,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where document_code = #{documentCode,jdbcType=VARCHAR}
+    and document_type = #{documentType,jdbcType=INTEGER}
+    and business_type = #{businessType,jdbcType=INTEGER}
+  </update>
+  <select id="selectByCode" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from dl_order_bill
+    where document_code = #{documentCode,jdbcType=VARCHAR}
+    and document_type = #{documentType,jdbcType=INTEGER}
+    and business_type = #{businessType,jdbcType=INTEGER}
+  </select>
+</mapper>

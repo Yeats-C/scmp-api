@@ -31,16 +31,13 @@ import com.aiqin.bms.scmp.api.product.domain.trans.ILockStockReqVoToQueryStockSk
 import com.aiqin.bms.scmp.api.product.mapper.ProductSkuStockInfoMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.LockOrderItemBatchReqVO;
-import com.aiqin.bms.scmp.api.purchase.domain.response.RejectImportResponse;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
 import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -1408,6 +1405,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         monthFlows.add(batchFlow);
 
                         batchList.get(i).setBatchCount(monthBatch.getBatchCount());
+                        batchList.get(i).setLineCode(monthBatch.getLineCode());
+                        batchList.get(i).setSkuName(monthBatch.getSkuName());
+                        batchList.get(i).setProductDate(monthBatch.getProductDate());
                         days.add(batchList.get(i));
                         break;
                     }else {
@@ -1420,6 +1420,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         monthFlows.add(batchFlow);
 
                         batchList.get(i).setBatchCount(batchList.get(i).getBatchCount());
+                        batchList.get(i).setLineCode(monthBatch.getLineCode());
+                        batchList.get(i).setSkuName(monthBatch.getSkuName());
+                        batchList.get(i).setProductDate(monthBatch.getProductDate());
                         days.add(batchList.get(i));
                     }
                 }
@@ -1502,20 +1505,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return HttpResponse.success();
     }
 
-    public HttpResponse dlStockChange(StockChangeDlRequest request) {
-        LOGGER.info("开始调用DL库存变动,参数：{}", JsonUtil.toJson(request));
-        String url = urlConfig.WMS_API_URL + "/dl/stock/change";
-        HttpClient httpClient = HttpClient.post(url).json(request).timeout(20000);
-        HttpResponse response = httpClient.action().result(HttpResponse.class);
-        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            LOGGER.info("熙耘->DL，推送库存变更信息成功");
-            return HttpResponse.success();
-        } else {
-            LOGGER.info("熙耘->DL，推送库存变更信息失败:{}", response.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "熙耘->DL，推送库存变更信息失败"));
-        }
-    }
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse importStock(MultipartFile file){
@@ -1525,7 +1514,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
 
         final String[] importRejectApplyHeaders = new String[]{
-                "库房编号", "编号", "税率", "存储仓位", "在途数量", "存储仓位数量", "退货仓位数量",
+                "库房编号", "编号", "税率", "存储仓位可用数量", "在途数量", "存储仓位数量", "退货仓位数量",
                 "存储仓位含税总金额", "退货仓位含税总金额", "含税进价"
         };
 
@@ -1546,7 +1535,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             Map<String, List<WarehouseDTO>> map = new HashMap<>();
             List<WarehouseDTO> warehouses = warehouseDao.warehouseList();
             for(WarehouseDTO ware :  warehouses){
-                if(map.get(ware.getWmsWarehouseId()) == null){
+                if(ware.getWmsWarehouseId() != null && map.get(ware.getWmsWarehouseId()) == null){
                     map.put(ware.getWmsWarehouseId(), warehouseDao.warehouseWms(ware.getWmsWarehouseId()));
                 }
             }
@@ -1566,7 +1555,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
             for (int i = 1; i <= result.length - 1; i++) {
                 record = result[i];
-                warehouseList = map.get(record[0]);
+                String warehouseCode = new BigDecimal(record[0]).stripTrailingZeros().toPlainString();
+                warehouseList = map.get(warehouseCode);
                 if(CollectionUtils.isEmpty(warehouseList)){
                     continue;
                 }
@@ -1596,15 +1586,15 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stock.setUpdateById("0000");
                     stock.setUpdateByName("系统导入");
                     if(warehouse.getWmsWarehouseType() == 1){
-                        stock.setInventoryCount(Long.getLong(record[5]));
-                        stock.setAvailableCount(Long.getLong(record[3]));
-                        stock.setLockCount(Long.getLong(record[5]) - Long.getLong(record[3]));
-                        stock.setPurchaseWayCount(Long.getLong(record[4]));
-                        stock.setTotalWayCount(Long.getLong(record[4]));
+                        stock.setInventoryCount(new BigDecimal(record[5]).longValue());
+                        stock.setAvailableCount(new BigDecimal(record[3]).longValue());
+                        stock.setLockCount(stock.getInventoryCount() - stock.getAvailableCount());
+                        stock.setPurchaseWayCount(new BigDecimal(record[4]).longValue());
+                        stock.setTotalWayCount(new BigDecimal(record[4]).longValue());
                     }else {
-                        stock.setInventoryCount(Long.getLong(record[6]));
-                        stock.setAvailableCount(Long.getLong(record[6]));
-                        stock.setLockCount(Long.getLong(record[6]) - Long.getLong(record[6]));
+                        stock.setInventoryCount(new BigDecimal(record[6]).longValue());
+                        stock.setAvailableCount(new BigDecimal(record[6]).longValue());
+                        stock.setLockCount(0L);
                     }
                     stockList.add(stock);
                 }
@@ -1634,7 +1624,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
         final String[] importRejectApplyHeaders = new String[]{
                 "库房编号", "SKU号", "仓位类型", "仓卡日期", "失效日期", "库存数量",
-                "可用库存数量", "含税单价", "税率", "供应商编码", "仓位号"
+                "可用库存数量", "含税单价", "税率", "供应商编号", "仓位号"
         };
 
         try {
@@ -1654,7 +1644,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             Map<String, List<WarehouseDTO>> map = new HashMap<>();
             List<WarehouseDTO> warehouses = warehouseDao.warehouseList();
             for(WarehouseDTO ware :  warehouses){
-                if(map.get(ware.getWmsWarehouseId()) == null){
+                if(ware.getWmsWarehouseId() != null && map.get(ware.getWmsWarehouseId()) == null){
                     map.put(ware.getWmsWarehouseId(), warehouseDao.warehouseWms(ware.getWmsWarehouseId()));
                 }
             }
@@ -1667,27 +1657,32 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             Map<String, ProductSkuStockInfo> stockMap = new HashMap<>();
             for (int i = 1; i <= result.length - 1; i++) {
                 record = result[i];
-                if(stockMap.get(record[1]) == null){
-                    stockMap.put(record[1], productSkuStockInfoMapper.getBySkuCode(record[1]));
+                String skuCode = new BigDecimal(record[1]).stripTrailingZeros().toPlainString();
+                if(stockMap.get(skuCode) == null){
+                    stockMap.put(skuCode, productSkuStockInfoMapper.getBySkuCode(skuCode));
                 }
             }
 
             for (int i = 1; i <= result.length - 1; i++) {
                 record = result[i];
-                warehouseList = map.get(record[0]);
+                String skuCode = new BigDecimal(record[1]).stripTrailingZeros().toPlainString();
+                String warehouseCode = new BigDecimal(record[0]).stripTrailingZeros().toPlainString();
+                String supplierCode = new BigDecimal(record[9]).stripTrailingZeros().toPlainString();
+                warehouseList = map.get(warehouseCode);
                 if (CollectionUtils.isEmpty(warehouseList)) {
                     continue;
                 }
                 stockBatch = new StockBatch();
                 // 添加库存单位
-                productSkuStockInfo = stockMap.get(record[1]);
+                productSkuStockInfo = stockMap.get(skuCode);
                 if (productSkuStockInfo != null) {
                     stockBatch.setSkuName(productSkuStockInfo.getProductSkuName());
                 }
+                stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
                 stockBatch.setCompanyCode(Global.COMPANY_09);
                 stockBatch.setCompanyName(Global.COMPANY_09_NAME);
-                stockBatch.setSkuCode(record[1]);
-                stockBatch.setSupplierCode(record[9]);
+                stockBatch.setSkuCode(skuCode);
+                stockBatch.setSupplierCode(supplierCode);
                 stockBatch.setTaxRate(new BigDecimal(record[8]));
                 stockBatch.setTaxCost(new BigDecimal(record[7]));
                 stockBatch.setLocationCode(record[10]);
@@ -1699,6 +1694,9 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stockBatch.setCreateByName("系统导入");
                 stockBatch.setUpdateById("0000");
                 stockBatch.setUpdateByName("系统导入");
+                stockBatch.setInventoryCount(new BigDecimal(record[5]).longValue());
+                stockBatch.setAvailableCount(new BigDecimal(record[6]).longValue());
+                stockBatch.setLockCount(stockBatch.getInventoryCount() - stockBatch.getAvailableCount());
                 Integer type = 2;
                 if (record[2].equals("存储")) {
                     type = 1;
@@ -1707,27 +1705,24 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     if (!warehouse.getWmsWarehouseType().equals(type)) {
                         continue;
                     }
-                    stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
                     stockBatch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
                     stockBatch.setTransportCenterName(warehouse.getLogisticsCenterName());
                     stockBatch.setWarehouseCode(warehouse.getWarehouseCode());
                     stockBatch.setWarehouseName(warehouse.getWarehouseName());
                     stockBatch.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
-                    stockBatch.setInventoryCount(Long.getLong(record[5]));
-                    stockBatch.setAvailableCount(Long.getLong(record[6]));
-                    stockBatch.setLockCount(Long.getLong(record[5]) - Long.getLong(record[6]));
+
                     // 生成批次编号
                     String batchInfoCode;
-                    if(StringUtils.isNotBlank(record[9])){
-                        batchInfoCode = record[1] + "_" + warehouse.getWarehouseCode() + "_" + record[3] + "_" +
-                                record[9]+ "_" + stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
+                    if(StringUtils.isNotBlank(supplierCode)){
+                        batchInfoCode = skuCode + "_" + warehouse.getWarehouseCode() + "_" + record[3] + "_" +
+                                supplierCode + "_" + stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
                     }else {
-                        batchInfoCode = record[1] + "_" + warehouse.getWarehouseCode() + "_" + record[3] + "_" +
+                        batchInfoCode = skuCode + "_" + warehouse.getWarehouseCode() + "_" + record[3] + "_" +
                                 stockBatch.getTaxCost().stripTrailingZeros().toPlainString();
                     }
                     stockBatch.setBatchInfoCode(batchInfoCode);
-                    stockList.add(stockBatch);
                 }
+                stockList.add(stockBatch);
             }
 
             // 添加库存信息

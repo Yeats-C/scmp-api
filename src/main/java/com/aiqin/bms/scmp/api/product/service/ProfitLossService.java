@@ -8,6 +8,8 @@ import com.aiqin.bms.scmp.api.product.domain.response.profitloss.DetailProfitLos
 import com.aiqin.bms.scmp.api.product.domain.response.profitloss.QueryProfitLossRespVo;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
+import java.util.List;
+
 /**
  * @author knight.xie
  * @version 1.0
@@ -32,5 +34,5 @@ public interface ProfitLossService extends BaseService {
     DetailProfitLossRespVo view(Long id);
 
 
-    HttpResponse profitLossWmsEcho(ProfitLossWmsReqVo request);
+    HttpResponse profitLossWmsEcho(List<ProfitLossWmsReqVo> request);
 }

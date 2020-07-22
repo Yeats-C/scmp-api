@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -9,10 +11,7 @@ import com.aiqin.bms.scmp.api.product.domain.dto.allocation.AllocationDTO;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.MovementWmsProductReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.allocation.MovementWmsReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.*;
@@ -29,9 +28,6 @@ import com.aiqin.bms.scmp.api.product.mapper.AllocationMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductBatchMapper;
 import com.aiqin.bms.scmp.api.product.mapper.AllocationProductMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
-import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossDetailRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.impl.OrderCallbackServiceImpl;
@@ -49,17 +45,13 @@ import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.helper.WorkFlowHelper;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
-import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.json.JsonUtil;
-import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
-import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -141,6 +133,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     private InboundProductDao inboundProductDao;
     @Autowired
     private InboundBatchDao inboundBatchDao;
+    @Autowired
+    private DlAbutmentService dlService;
 
 
     /**
@@ -260,7 +254,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             outboundService.saveOutbound(convert);
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(4);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
             handleProfitLossStockData(addAllocation,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -271,20 +265,20 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(addAllocation.getAllocationCode());
             List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(addAllocation.getAllocationCode());
             // 操作完库存 调用dl库存同步接口
-            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
             stockChangeDlRequest.setOrderCode(addAllocation.getAllocationCode());
             stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_4);
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-            stockService.dlStockChange(stockChangeDlRequest);
+            dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
             inboundService.saveInbound2(inboundReqSave);
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(addAllocation,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -292,13 +286,13 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 throw new GroundRuntimeException("wms回调:加库存异常");
             }
             // 操作完库存 调用dl库存同步接口
-            StockChangeDlRequest stockChangeDl = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDl = new StockChangeRequest();
             stockChangeDl.setOrderCode(addAllocation.getAllocationCode());
             stockChangeDl.setOrderType(Global.DL_ORDER_TYPE_8);
             stockChangeDl.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(addAllocation, aProductLists, aProductBatchLists, stockChangeDl);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
-            stockService.dlStockChange(stockChangeDl);
+            dlService.stockChange(stockChangeDl);
 
             //生成调拨单
             allocationInsert(addAllocation, type, typeName);
@@ -343,7 +337,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //设置移库待出库状态
             outbound(allocation1);
 //            更新出库状态
-            updateOut(request, allocation1, detailLists, detailBatchList);
+            updateOut(request, allocation1, detailLists, detailBatchList,productSkuMap);
 
             // 入库单
             //生成入库单
@@ -353,7 +347,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             inboundService.saveInbound2(inboundReqSave);
             // 出解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(2);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -366,27 +360,23 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             // 调用wms入库
             allocationService.movementWms(allocation, allocation1, aProductLists, aProductBatchLists);
             // 调用完库存锁定调用同步dl库存数据
-            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
             stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
             stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_4);
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-            }
+            dlService.stockChange(stockChangeDlRequest);
         }else if (request.getFlag() == 1){
             // 状态1 要更新调拨单 入库单  入直接加库存
             // 设置移库完成状态
             finished(allocation1);
            //更新入库单
-            updateIn(request, allocation1, detailLists, detailBatchList);
+            updateIn(request, allocation1, detailLists, detailBatchList,productSkuMap);
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -398,31 +388,21 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
             List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
             // 调用完库存锁定调用同步dl库存数据
-            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
             stockChangeDlRequest.setOrderCode(allocation1.getAllocationCode());
             stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_8);
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-            }
+            dlService.stockChange(stockChangeDlRequest);
         }else {
             // 状态1 要更新调拨单 出入库单 解锁库存  加库存
             finished(allocation1);
-
-            // 更新出入库单
-//            OutboundReqVo convert = handleTransferOutbound(allocation1, productSkuMap, outboundTypeEnum);
-//            outboundService.save(convert);
-//            InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
-//            inboundService.saveInbound2(inboundReqSave);
-            updateOut(request, allocation1, detailLists, detailBatchList);
-            updateIn(request, allocation1, detailLists, detailBatchList);
+            updateOut(request, allocation1, detailLists, detailBatchList, productSkuMap);
+            updateIn(request, allocation1, detailLists, detailBatchList, productSkuMap);
             // 解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(2);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -434,22 +414,17 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocation1.getAllocationCode());
             List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(allocation1.getAllocationCode());
             // 调用完库存锁定调用同步dl库存数据
-            StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
             stockChangeDlRequest.setOrderCode(allocation1.getAllocationCode());
             stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_4);
             stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-            HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-            }
-
+            dlService.stockChange(stockChangeDlRequest);
             // 加库存
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
-            stockRequest.setOperationType(6);
+            stockRequest.setOperationType(Global.STOCK_OPERATION_6);
             handleProfitLossStockData(allocation1,stockRequest);
             HttpResponse stockResponse = stockService.stockAndBatchChange(stockRequest);
             if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
@@ -458,24 +433,20 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             }
 
             // 调用完库存锁定调用同步dl库存数据
-            StockChangeDlRequest stockChangeDl = new StockChangeDlRequest();
+            StockChangeRequest stockChangeDl = new StockChangeRequest();
             stockChangeDl.setOrderCode(allocation.getAllocationCode());
             stockChangeDl.setOrderType(Global.DL_ORDER_TYPE_8);
             stockChangeDl.setOperationType(Global.DL_OPERATION_TYPE_1);
             allocationService.synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDl);
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
-            HttpResponse responses = stockService.dlStockChange(stockChangeDl);
-            if (!responses.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", responses.getMessage());
-                return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-            }
+            dlService.stockChange(stockChangeDl);
         }
         // 更新移库单状态
         int k = allocationMapper.updateByPrimaryKeySelective(allocation1);
         return HttpResponse.success();
     }
 
-    private void updateIn(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList) {
+    private void updateIn(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList,Map<String, OrderProductSkuResponse> productSkuMap) {
         Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
 
         String key;
@@ -506,7 +477,15 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
             allocationProduct.setQuantity(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
-            allocationProduct.setSkuName(detail.getSkuName());
+            if(detail.getSkuName() == null){
+                OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
+                if(orderProductSkuResponse != null){
+                    detail.setSkuName(orderProductSkuResponse.getProductName());
+                    allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
+                }
+            }else {
+                allocationProduct.setSkuName(detail.getSkuName());
+            }
             allocationProduct.setLineNum(detail.getLineCode());
             allocationProductMapper.updateQuantityBySkuCodeAndSourceIn(allocationProduct);
 
@@ -548,6 +527,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                 if (CollectionUtils.isEmpty(batchList) && batchList.size() <= 0) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
                     AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(allocation1.getInboundOderCode(), batch.getSkuCode(), batch.getLineCode().intValue());
+                    productBatch = new InboundBatch();
                     allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
 //                    AllocationProductBatch allocationProductBatch1 =
                     allocationProductBatch.setCallInBatchNumber(batch.getBatchCode());
@@ -563,7 +543,17 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     allocationProductBatch.setCallInBatchInfoCode(batchInfoCode);
                     allocationProductBatch.setSupplierCode(allocationProductBatch.getSupplierCode());
                     allocationProductBatch.setSkuCode(batch.getSkuCode());
-                    allocationProductBatch.setSkuName(batch.getSkuName());
+                    if(batch.getSkuName() == null){
+                        OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                        if(orderProductSkuResponse != null){
+                            batch.setSkuName(orderProductSkuResponse.getProductName());
+                            allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                        }
+                    }else {
+                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        productBatch.setSkuName(batch.getSkuName());
+                    }
                     allocationProductBatch.setProductDate(batch.getProductDate());
                     allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
                     allocationProductBatch.setQuantity(batch.getQuantity());
@@ -574,14 +564,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     allocationProductBatchMapper.updateByPrimaryKey(allocationProductBatch);
                     detailBatchList.add(allocationProductBatch);
 
-                    productBatch = new InboundBatch();
+
                     productBatch.setInboundOderCode(inbound.getInboundOderCode());
                     productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
                     productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
                     productBatch.setSupplierCode(inbound.getSupplierCode());
 //                    productBatch.setSupplierName(inbound.getSupplierName());
                     productBatch.setSkuCode(batch.getSkuCode());
-                    productBatch.setSkuName(batch.getSkuName());
+
                     productBatch.setProductDate(batch.getProductDate());
                     productBatch.setTotalCount(batch.getQuantity());
                     productBatch.setActualTotalCount(batch.getQuantity());
@@ -598,12 +588,22 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatchMapper.updateByBatchIn(detail);
                     }else {
                         AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                        productBatch = new InboundBatch();
                         allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
                         allocationProductBatch.setCallInBatchNumber(batchList.get(0).getBatchCode());
                         allocationProductBatch.setCallInBatchInfoCode(batchList.get(0).getBatchInfoCode());
                         allocationProductBatch.setSupplierCode(batchList.get(0).getSupplierCode());
                         allocationProductBatch.setSkuCode(batch.getSkuCode());
-                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            allocationProductBatch.setSkuName(batch.getSkuName());
+                            productBatch.setSkuName(batch.getSkuName());
+                        }
                         allocationProductBatch.setProductDate(batch.getProductDate());
                         allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
                         allocationProductBatch.setQuantity(batch.getQuantity());
@@ -612,14 +612,13 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatch.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                         allocationProductBatchMapper.insertSelective(allocationProductBatch);
 
-                        productBatch = new InboundBatch();
+
                         productBatch.setInboundOderCode(inbound.getInboundOderCode());
                         productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
                         productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
                         productBatch.setSupplierCode(inbound.getSupplierCode());
                         productBatch.setSupplierName(inbound.getSupplierName());
                         productBatch.setSkuCode(batch.getSkuCode());
-                        productBatch.setSkuName(batch.getSkuName());
                         productBatch.setProductDate(batch.getProductDate());
                         productBatch.setTotalCount(batch.getQuantity());
                         productBatch.setActualTotalCount(batch.getQuantity());
@@ -653,7 +652,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         LOGGER.info("入库单主信息实际值更新:{}",k);
     }
 
-    private boolean updateOut(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList) {
+    private boolean updateOut(MovementWmsOutReq request, Allocation allocation1, List<AllocationProduct> detailLists, List<AllocationProductBatch> detailBatchList,Map<String, OrderProductSkuResponse> productSkuMap) {
         // 更新出库主表
         Outbound outbound = outboundDao.selectByCode(request.getOutboundOderCode());
         if (outbound == null) {
@@ -683,7 +682,15 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocationProduct.setAllocationCode(allocation1.getAllocationCode());
             allocationProduct.setQuantity(detail.getQuantity());
             allocationProduct.setSkuCode(detail.getSkuCode());
-            allocationProduct.setSkuName(detail.getSkuName());
+            if(detail.getSkuName() == null){
+                OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(detail.getSkuCode());
+                if(orderProductSkuResponse != null){
+                    detail.setSkuName(orderProductSkuResponse.getProductName());
+                    allocationProduct.setSkuName(orderProductSkuResponse.getProductName());
+                }
+            }else {
+                allocationProduct.setSkuName(detail.getSkuName());
+            }
             allocationProduct.setLineNum(detail.getLineCode());
             allocationProduct.setCalloutActualTotalCount(detail.getQuantity());
             allocationProductMapper.updateQuantityBySkuCodeAndSource(allocationProduct);
@@ -731,12 +738,24 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatchMapper.updateByBatch(detail);
                     }else {
                         AllocationProductBatch allocationProductBatch = new AllocationProductBatch();
+                        outboundBatch = new OutboundBatch();
+
                         allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
                         allocationProductBatch.setCallOutBatchNumber(batchList.get(0).getBatchCode());
                         allocationProductBatch.setCallOutBatchInfoCode(batchList.get(0).getBatchInfoCode());
                         allocationProductBatch.setSupplierCode(batchList.get(0).getSupplierCode());
                         allocationProductBatch.setSkuCode(batch.getSkuCode());
-                        allocationProductBatch.setSkuName(batch.getSkuName());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                batch.setSkuName(orderProductSkuResponse.getProductName());
+                                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                outboundBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            allocationProductBatch.setSkuName(batch.getSkuName());
+                            outboundBatch.setSkuName(batch.getSkuName());
+                        }
                         allocationProductBatch.setProductDate(batch.getProductDate());
                         allocationProductBatch.setCallOutActualTotalCount(batch.getQuantity());
                         allocationProductBatch.setQuantity(batch.getQuantity());
@@ -745,12 +764,11 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                         allocationProductBatch.setTax(batchList.get(0).getTaxRate() == null ? BigDecimal.ZERO : batchList.get(0).getTaxRate());
                         allocationProductBatchMapper.insertSelective(allocationProductBatch);
 
-                        outboundBatch = new OutboundBatch();
+
                         outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                         outboundBatch.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         outboundBatch.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         outboundBatch.setSkuCode(batch.getSkuCode());
-                        outboundBatch.setSkuName(batch.getSkuName());
                         outboundBatch.setSupplierCode(outbound.getSupplierCode());
                         outboundBatch.setSupplierName(outbound.getSupplierName());
                         outboundBatch.setProductDate(DateUtils.currentDate());
@@ -826,16 +844,20 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == 2 || changeStockRequest.getOperationType() == 4){
+           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
                stockInfoRequest.setWarehouseName(addAllocation.getCallOutWarehouseName());
+               WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(addAllocation.getCallOutWarehouseCode());
+               stockInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
            }else {
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallInLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallInLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallInWarehouseCode());
                stockInfoRequest.setWarehouseName(addAllocation.getCallInWarehouseName());
+               WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(addAllocation.getCallOutWarehouseCode());
+               stockInfoRequest.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
            }
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
@@ -855,7 +877,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
                     stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
                     stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
-                    if(changeStockRequest.getOperationType() == 2 || changeStockRequest.getOperationType() == 4){
+                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                         stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         stockBatchInfoRequest.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         stockBatchInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());

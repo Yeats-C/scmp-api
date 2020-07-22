@@ -35,4 +35,6 @@ public interface TransportMapper {
      * @return int
      */
     int updateStatusByTransportCodes(@Param("items") List<String> transportCode, @Param("status") int status);
+
+    void updateTransport(Transport transport);
 }

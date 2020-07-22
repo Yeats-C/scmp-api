@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.request.supplier.vo.QuerySupplyCom
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailByCodeRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComDetailRespVO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.supplier.SupplyComListRespVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -84,4 +85,6 @@ public interface SupplyComService {
     Map<String, SupplyCompany> selectBySupplyComCodes(Set<String> supplierList,String companyCode);
 
     Map<String, SupplyCompany> selectBySupplyComNames(Set<String> supplierList, String companyCode);
+
+    HttpResponse supplyImportWms();
 }

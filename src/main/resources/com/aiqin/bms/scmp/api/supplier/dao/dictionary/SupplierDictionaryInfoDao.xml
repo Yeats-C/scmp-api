@@ -184,4 +184,11 @@
     </if>
       and enabled=0
   </select>
+  <select id="dictionaryDetailInfo" resultType="java.lang.String">
+    select supplier_content supplierContent
+    from supplier_dictionary_info
+    where del_flag = 0
+    and supplier_dictionary_value = #{supplierDictionaryValue}
+    and supplier_dictionary_code = #{supplierDictionaryCode}
+  </select>
 </mapper>

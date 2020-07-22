@@ -527,7 +527,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundWmsReqVO.setCreateById("0");
                 outboundWmsReqVO.setCreateByName("系统");
             }
-            url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+            //url =urlConfig.WMS_API_URL+"/wms/save/purchase/outbound";
+            url = "";
             log.info("向wms发送出库单的参数是：{}", JSON.toJSON(outboundWmsReqVO));
             HttpResponse orderDto = HttpClient.post(url).json(outboundWmsReqVO).timeout(10000).action().result(HttpResponse.class);
             if(orderDto.getCode().equals(MessageId.SUCCESS_CODE)){
@@ -577,6 +578,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse workFlowCallBack(OutboundCallBackReqVo request) {
         LOGGER.info("WMS回传出库单参数：{}", JsonUtil.toJson(request));
+        if (CollectionUtils.isEmpty(request.getDetailList())){
+            return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+        }
         Outbound outbound;
         if(request.getOutboundTypeCode().equals(Integer.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode())) ||
                 request.getOutboundTypeCode().equals(Integer.valueOf(OutboundTypeEnum.ORDER.getCode()))){
@@ -750,7 +754,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 }
 
                 for (OutboundProductCallBackReqVo product : productList) {
-                    Long changeCount;
                     for (int i = 0; i <= batchList.size(); i++) {
                         stockBatchInfoRequest = new StockBatchInfoRequest();
                         stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
@@ -777,14 +780,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         stockBatchInfoRequest.setSupplierCode(batchList.get(i).getSupplierCode());
                         stockBatchInfoRequest.setTaxCost(batchList.get(i).getTaxCost());
                         if (batchList.get(i).getAvailableCount() >= product.getActualTotalCount()) {
-                            changeCount = product.getActualTotalCount();
-                            stockBatchInfoRequest.setChangeCount(changeCount);
+                            stockBatchInfoRequest.setChangeCount(product.getActualTotalCount());
                             stockBatchVoRequestList.add(stockBatchInfoRequest);
                             break;
                         } else {
-                            changeCount = product.getActualTotalCount() - batchList.get(i).getAvailableCount();
-                            stockBatchInfoRequest.setChangeCount(changeCount);
+                            stockBatchInfoRequest.setChangeCount(batchList.get(i).getAvailableCount());
                             stockBatchVoRequestList.add(stockBatchInfoRequest);
+                            product.setActualTotalCount(product.getActualTotalCount() - batchList.get(i).getAvailableCount());
                         }
                     }
                 }

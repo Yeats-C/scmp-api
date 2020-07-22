@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -20,8 +24,6 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProduct;
 import com.aiqin.bms.scmp.api.product.domain.pojo.AllocationProductBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.QueryStockSkuReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.StockChangeRequest;
-import com.aiqin.bms.scmp.api.product.domain.request.StockVoRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.allocation.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundReqVo;
@@ -40,9 +42,6 @@ import com.aiqin.bms.scmp.api.product.service.AllocationService;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
 import com.aiqin.bms.scmp.api.product.service.OutboundService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.ProductRequest;
-import com.aiqin.bms.scmp.api.purchase.domain.request.dl.StockChangeDlRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.BatchWmsInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.CancelSource;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
@@ -146,6 +145,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     private WmsCancelService wmsCancelService;
     @Autowired
     private ProductSkuBatchMapper productSkuBatchMapper;
+    @Autowired
+    private DlAbutmentService dlService;
 
     @Override
     public BasePage<QueryAllocationResVo> getList(QueryAllocationReqVo vo) {
@@ -272,7 +273,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
 //         }
     }
 
-    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeDlRequest stockChangeDlRequest) {
+    public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeRequest stockChangeDlRequest) {
         // 主表数据
         Long totalCount = 0L;
         if(allocation.getInboundOderCode() == null){
@@ -602,12 +603,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     @Override
     public int updateWmsStatus(String allocationCode) {
         // 调拨状态编码(0.待审核，1.审核中，2.待出库，3.已出库，4.待入库，5. 已完成，6.取消，7.审核不通过)
-        // 已完成状态时调用wms。 入库
-   //     AllocationWmsInSource allocationInboundSource = new AllocationWmsInSource();
- //       List<AllocationWmsProductSource> aOutboundDetails = new ArrayList<>();
-        // 调拨出库完成调用调拨入库 生成调拨入库单 调用wms
-   //     Allocation allocation1 = allocationMapper.selectByCode(allocationCode);
-   //     String inboundOderCode = outboundService.createInbound(allocation1.getFormNo());
         // 获取调拨数据
         Allocation allocation = allocationMapper.selectByCode(allocationCode);
         List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(allocationCode);
@@ -673,17 +668,13 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
 
         // 调用完库存锁定调用同步dl库存数据
-        StockChangeDlRequest stockChangeDlRequest = new StockChangeDlRequest();
+        StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
         stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
         stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
         stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
         synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
         LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-        HttpResponse response = stockService.dlStockChange(stockChangeDlRequest);
-        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            LOGGER.info("调用完库存锁定调用同步dl库存数据异常信息:{}", response.getMessage());
-            return 0;
-        }
+        dlService.stockChange(stockChangeDlRequest);
         return i;
     }
 
@@ -732,17 +723,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             }
         }
 
-
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
         return HttpResponse.success();
-//        for (AllocationDetailRequest allocationDetailRequest : request.getDetailList()) {
-//            AllocationProduct allocationProduct = new AllocationProduct();
-//            // 查询调拨单商品信息
-//            allocationProduct.setAllocationCode(request.getAllocationCode());
-//            allocationProduct.setActualTotalCount(allocationDetailRequest.getActualCount());
-//            allocationProduct.setLineNum(allocationDetailRequest.getLineCode().longValue());
-//            allocationProduct.setTaxAmount(allocationDetailRequest.getActualAmount());
-//        }
     }
 
     @Override
@@ -1278,7 +1260,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         }
         movementWmsReqVo.setDetailList(movementWmsProductoLists);
         movementWmsReqVo.setBatchInfoList(movementWmsProductBatchLists);
-        LOGGER.info("审批成功后：移库调用wms参数:{}", JSON.toJSON(movementWmsReqVo));
+        LOGGER.info("审批成功后：移库调用wms参数:{}", JsonUtil.toJson(movementWmsReqVo));
         String url = urlConfig.WMS_API_URL2+"/infoPushAndInquiry/source/transferInfoPush";
         HttpClient httpClient = HttpClient.post(url).json(movementWmsReqVo).timeout(200000);
         HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

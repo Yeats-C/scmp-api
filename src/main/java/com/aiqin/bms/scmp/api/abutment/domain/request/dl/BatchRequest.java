@@ -1,4 +1,4 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request.dl;
+package com.aiqin.bms.scmp.api.abutment.domain.request.dl;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
@@ -52,5 +52,4 @@ public class BatchRequest {
     @ApiModelProperty(value="wms库房类型")
     @JsonProperty("wms_warehouse_type")
     private Integer wmsWarehouseType;
-
 }

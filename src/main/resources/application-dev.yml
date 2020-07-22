@@ -3,6 +3,29 @@ spring:
     host: 127.0.0.1
     port: 6379
     timeout: 3600000
+
+#  rabbitmq:
+#    addresses: localhost:5672
+#    username: guest
+#    password: guest
+#    virtual-host: /
+#    listener:
+#      simple:
+#        acknowledge-mode: manual #手工签收
+#        concurrency: 5
+#        max-concurrency: 10
+#    publisher-confirms: true
+#    publisher-returns: true
+#
+#scmp:
+#  exchangenames: scmp_exchange
+#  notification:
+#    notifiqueuename: scmp.notification.queue
+#    notifibindingkey: scmp.notification.bkey
+#  deal:
+#    dealqueuename: scmp.deal.queue
+#    dealbindingkey: scmp.deal.bkey
+
 web:
   host-url: http://scmp.bms.aiqin.com
 #server:
@@ -10,10 +33,8 @@ web:
 #    basedir: /tmp/dir
 center:
   main:
-  #中控服务端
+    # 中控
     url: http://control.api.aiqin.com
-    #http://39.106.215.2:9003
-  #中控前端
     host: http://control.mgs.aiqin.com
 #结算服务
 settlement :
@@ -23,9 +44,10 @@ product:
   url: http://product.api.aiqin.com/
   info:
     url: http://com.aiqin.bms.scmp.api.api.aiqin.com
-#    url: http://127.0.0.1:9021
-wms:
-  url: http://127.0.0.1:8082
+
+dl:
+  key: 0122db92c57511eab0eb7cd30adaed42
+  url: http://dev.api.daruiyun.com:7070
 wms2:
   url: http://39.96.89.2:9001
 ground:

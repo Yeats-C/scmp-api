@@ -411,7 +411,7 @@ public class ErpOrderInfo {
     @JsonProperty("tax_id")
     private String taxId;
 
-    @ApiModelProperty("订单产品类型 0.B2B 1.B2C")
+    @ApiModelProperty("订单产品类型 1.B2B 2.B2C")
     @JsonProperty("order_product_type")
     private Integer orderProductType;
 

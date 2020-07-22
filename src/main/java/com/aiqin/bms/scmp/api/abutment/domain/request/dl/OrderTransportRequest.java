@@ -1,10 +1,12 @@
-package com.aiqin.bms.scmp.api.purchase.domain.request.dl;
+package com.aiqin.bms.scmp.api.abutment.domain.request.dl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 @ApiModel("DL- 销售物流单回传参数")
 public class OrderTransportRequest {
 
+    @NotNull(message = "物流单号不能为空")
     @ApiModelProperty(value="物流单号")
     @JsonProperty("transport_code")
     private String transportCode;
@@ -25,7 +28,8 @@ public class OrderTransportRequest {
     @JsonProperty("transport_company_name")
     private String transportCompanyName;
 
-    @ApiModelProperty(value="物流单号")
+    @NotNull(message = "物流公司单号不能为空")
+    @ApiModelProperty(value="物流公司单号")
     @JsonProperty("transport_company_number")
     private String transportCompanyNumber;
 
@@ -34,7 +38,7 @@ public class OrderTransportRequest {
     private String distributionModeCode;
 
     @ApiModelProperty(value="送货方式名称")
-    @JsonProperty("distribution_mode_code")
+    @JsonProperty("distribution_mode_name")
     private String distributionModeName;
 
     @ApiModelProperty(value="标准物流费")
@@ -71,8 +75,10 @@ public class OrderTransportRequest {
 
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createTime;
 
+    @NotNull(message = "销售单号不能为空")
     @ApiModelProperty(value="销售单号")
     @JsonProperty("order_codes")
     private List<String> orderCodes;
