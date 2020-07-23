@@ -1784,11 +1784,22 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setTotalVolume(request.getTotalVolume());
         transport.setTotalWeight(request.getTotalWeight());
         transport.setDeliverTo(request.getDeliverTo());
+        transport.setStandardLogisticsFee(request.getStandardLogisticsFee() == null ? BigDecimal.ZERO : request.getStandardLogisticsFee());
+        transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : request.getAdditionalLogisticsFee());
+        transport.setTransportAmount(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
         transport.setTransportTime(date);
         LOGGER.info("wms回传更新发运单,参数：[{}]", JsonUtil.toJson(transport));
         transportMapper.updateTransport(transport);
 
-
+        List<DeliveryDetailRequest> detailLists = new ArrayList<>();
+        List<TransportOrders> transportOrders = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
+        for (TransportOrders t : transportOrders) {
+            DeliveryDetailRequest detail = new DeliveryDetailRequest();
+            detail.setOrderCode(t.getOrderCode());
+            detail.setTransportAmount(t.getOrderAmount());
+            detailLists.add(detail);
+        }
+        request.setDetailList(detailLists);
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
         String code = IdSequenceUtils.getInstance().nextId()+"";
         request.setDeliveryCode(code);

@@ -323,15 +323,7 @@
             <if test="delFlag != null">
                 del_flag = #{delFlag,jdbcType=TINYINT},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
-            <if test="createBy != null">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                update_time = #{createTime,jdbcType=TIMESTAMP},
-            </if>
+                update_time = now(),
             <if test="createBy != null">
                 update_by = #{createBy,jdbcType=VARCHAR},
             </if>
