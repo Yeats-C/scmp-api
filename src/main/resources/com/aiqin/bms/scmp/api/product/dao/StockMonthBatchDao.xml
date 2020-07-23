@@ -13,6 +13,10 @@
     <result column="wms_type" jdbcType="INTEGER" property="wmsType" />
   </resultMap>
   <resultMap id="SkuListForSalePriceMap" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO">
+    <result column="transport_center_code" property="transportCenterCode"/>
+    <result column="transport_center_name" property="transportCenterName"/>
+    <result column="warehouse_code" property="warehouseCode"/>
+    <result column="warehouse_name" property="warehouseName"/>
     <result column="skuCode" property="skuCode"/>
     <result column="skuName" property="skuName"/>
     <result column="batchCode" property="batchCode"/>
@@ -85,6 +89,10 @@
   </update>
   <select id="querySkuBatchMonthList" resultMap="SkuListForSalePriceMap">
     select
+    w.logistics_center_code    as transport_center_code,
+    w.logistics_center_name    as transport_center_name,
+    w.warehouse_code    as warehouse_code,
+    w.warehouse_name    as warehouse_name,
     a.sku_code              as skuCode,
     b.sku_name              as skuName,
     a.batch_code              as batchCode,
@@ -103,6 +111,7 @@
     #{changePriceType}      as changePriceType,
     #{companyCode}          as companyCode
     from stock_month_batch a
+    left join warehouse w on a.warehouse_code = w.warehouse_code
     left join product_sku b
     on a.sku_code = b.sku_code
     left join product c
