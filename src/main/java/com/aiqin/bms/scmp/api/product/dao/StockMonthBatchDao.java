@@ -21,4 +21,6 @@ public interface StockMonthBatchDao {
     List<QuerySkuInfoRespVO> querySkuBatchMonthList(QuerySkuInfoReqVO reqVO);
 
     List<StockMonthBatch> getMonthBatch(@Param("skuCode") String skuCode);
+
+    Integer querySkuBatchMonthCount(QuerySkuInfoReqVO reqVO);
 }

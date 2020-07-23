@@ -564,6 +564,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         for (ProductSkuChangePriceInfo info : infos) {
             ProductSkuPriceInfo priceInfo = BeanCopyUtils.copy(info, ProductSkuPriceInfo.class);
             priceInfo.setId(null);
+            priceInfo.setIsBatchPrice(dto.getIsBatchPrice());
             priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
             priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
             priceInfo.setApplyCode(dto.getCode());
@@ -659,6 +660,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             for (ProductSkuChangePriceInfo info : noRepeat) {
                 ProductSkuPriceInfo priceInfo = BeanCopyUtils.copy(info, ProductSkuPriceInfo.class);
                 priceInfo.setId(null);
+                priceInfo.setIsBatchPrice(dto.getIsBatchPrice());
                 priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
                 priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
                 priceInfo.setApplyCode(dto.getCode());
@@ -900,20 +902,23 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
-        BasePage<QuerySkuInfoRespVO> querySkuInfoRespVOBasePage = null;
-        if(Global.IS_BATCH_PRICE_1.equals(reqVO)){
-            querySkuInfoRespVOBasePage = stockService.querySkuBatchList(reqVO);
+        if(Global.IS_BATCH_PRICE_1.equals(reqVO.getIsBatchPrice())){
+            BasePage<QuerySkuInfoRespVO> querySkuInfoRespVOBasePage = stockService.querySkuBatchList(reqVO);
+            return querySkuInfoRespVOBasePage;
         }else {
-            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-            reqVO.setCompanyCode(getUser().getCompanyCode());
+//            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+//            reqVO.setCompanyCode(getUser().getCompanyCode());
+            Integer count = stockMonthBatchDao.querySkuBatchMonthCount(reqVO);
             List<QuerySkuInfoRespVO> querySkuInfoRespVOS = stockMonthBatchDao.querySkuBatchMonthList(reqVO);
             for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
                 List<StockMonthBatch> batch = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
                 querySkuInfoRespVO.setBatchMonthList(batch);
             }
-            querySkuInfoRespVOBasePage = PageUtil.getPageList(reqVO.getPageNo(), querySkuInfoRespVOS);
+            BasePage basePage = new BasePage();
+            basePage.setDataList(querySkuInfoRespVOS);
+            basePage.setTotalCount(Long.valueOf(count));
+            return basePage;
         }
-        return querySkuInfoRespVOBasePage;
     }
 
     @Override

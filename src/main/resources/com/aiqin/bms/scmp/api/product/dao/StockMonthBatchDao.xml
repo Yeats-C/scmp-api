@@ -131,6 +131,7 @@
     <if test="spuName!=null and spuName!=''">
       AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
     </if>
+    LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="getSaleChannelList" resultMap="getSaleChannelList">
     select
@@ -154,5 +155,37 @@
     from stock_month_batch
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     order by synchr_time desc
+  </select>
+  <select id="querySkuBatchMonthCount" resultType="java.lang.Integer">
+    select count(1)
+    from stock_month_batch a
+    left join product_sku b
+    on a.sku_code = b.sku_code
+    left join product c
+    on b.spu_code = c.product_code
+    left join product_sku_purchase_info d
+    on a.sku_code = d.product_sku_code
+    where b.procurement_section_code = #{purchaseGroupCode}  and b.company_code = #{companyCode}
+    <if test="skuCode!=null and skuCode!=''">
+      AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="skuName!=null and skuName!=''">
+      AND b.sku_name LIKE CONCAT('',#{skuName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productCategoryName!=null and productCategoryName!=''">
+      AND b.product_category_name LIKE CONCAT('',#{productCategoryName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productBrandName!=null and productBrandName!=''">
+      AND b.product_brand_name LIKE CONCAT('',#{productBrandName,jdbcType=VARCHAR},'%')
+    </if>
+    <if test="productPropertyCode!=null and productPropertyCode!=''">
+      AND b.product_property_code = #{productPropertyCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuCode!=null and spuCode!=''">
+      AND c.product_code = #{spuCode,jdbcType=VARCHAR}
+    </if>
+    <if test="spuName!=null and spuName!=''">
+      AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
+    </if>
   </select>
 </mapper>
