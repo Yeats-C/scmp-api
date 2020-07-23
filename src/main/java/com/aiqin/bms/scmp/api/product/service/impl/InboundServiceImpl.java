@@ -702,6 +702,7 @@ public class InboundServiceImpl implements InboundService {
                         stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
                         stockBatchInfo.setTaxRate(product.getTax());
                         stockBatchInfo.setSupplierCode(batch.getSupplierCode());
+                        stockBatchInfo.setSupplierName(batch.getSupplierName());
 
                         // 添加入库单批次
                         productBatch = new InboundBatch();
@@ -1002,6 +1003,7 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
         stockBatchInfo.setSupplierCode(inbound.getSupplierCode());
+        stockBatchInfo.setSupplierName(inbound.getSupplierName());
         stockBatchInfo.setDocumentCode(inbound.getInboundOderCode());
         stockBatchInfo.setDocumentType(Global.INBOUND_TYPE);
         stockBatchInfo.setSourceDocumentCode(inbound.getSourceOderCode());

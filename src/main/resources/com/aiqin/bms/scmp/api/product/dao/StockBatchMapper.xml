@@ -12,6 +12,7 @@
     <result column="warehouse_name" jdbcType="VARCHAR" property="warehouseName" />
     <result column="warehouse_type" jdbcType="VARCHAR" property="warehouseType" />
     <result column="supplier_code" jdbcType="VARCHAR" property="supplierCode" />
+    <result column="supplier_name" jdbcType="VARCHAR" property="supplierName" />
     <result column="sku_code" jdbcType="VARCHAR" property="skuCode" />
     <result column="sku_name" jdbcType="VARCHAR" property="skuName" />
     <result column="batch_code" jdbcType="VARCHAR" property="batchCode" />
@@ -38,19 +39,14 @@
     warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name, 
     batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
     available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time, create_by_id, 
-    create_by_name, update_time, update_by_id, update_by_name, location_code
+    create_by_name, update_time, update_by_id, update_by_name, location_code, supplier_name
   </sql>
   <insert id="insert">
-    insert into stock_batch (stock_batch_code, company_code,
-      company_name, transport_center_code, transport_center_name, 
-      warehouse_code, warehouse_name, warehouse_type, 
-      supplier_code, sku_code, sku_name, 
-      batch_code, batch_info_code, product_date, 
-      be_overdue_date, batch_remark, inventory_count,
-      available_count, lock_count, purchase_price, 
-      tax_cost, tax_rate, create_time, 
-      create_by_id, create_by_name, update_time, 
-      update_by_id, update_by_name)
+    insert into stock_batch (stock_batch_code, company_code, company_name, transport_center_code, transport_center_name,
+      warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
+      batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
+      available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
+      create_by_id, create_by_name, update_time, update_by_id, update_by_name, supplier_name)
     values (#{stockBatchCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseType,jdbcType=VARCHAR}, 
@@ -60,7 +56,7 @@
       #{availableCount,jdbcType=BIGINT}, #{lockCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, 
       #{taxCost,jdbcType=DECIMAL}, #{taxRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR})
+      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update stock_batch
@@ -91,6 +87,9 @@
       </if>
       <if test="supplierCode != null">
         supplier_code = #{supplierCode,jdbcType=VARCHAR},
+      </if>
+      <if test="supplierName != null">
+        supplier_name = #{supplierName,jdbcType=VARCHAR},
       </if>
       <if test="skuCode != null">
         sku_code = #{skuCode,jdbcType=VARCHAR},
@@ -348,6 +347,9 @@
         <if test="item.supplierCode != null">
           supplier_code = #{item.supplierCode,jdbcType=VARCHAR},
         </if>
+        <if test="supplierName != null">
+          supplier_name = #{supplierName,jdbcType=VARCHAR},
+        </if>
         <if test="item.skuCode != null">
           sku_code = #{item.skuCode,jdbcType=VARCHAR},
         </if>
@@ -403,7 +405,7 @@
       warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
       batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
       available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
-      create_by_id, create_by_name, update_time, update_by_id, update_by_name)
+      create_by_id, create_by_name, update_time, update_by_id, update_by_name, supplier_name)
     values
     <foreach collection="list" item="item" index="index" separator=",">
     (#{item.stockBatchCode,jdbcType=VARCHAR}, #{item.companyCode,jdbcType=VARCHAR}, #{item.companyName,jdbcType=VARCHAR},
@@ -415,7 +417,7 @@
       #{item.availableCount,jdbcType=BIGINT}, #{item.lockCount,jdbcType=BIGINT}, #{item.purchasePrice,jdbcType=DECIMAL},
       #{item.taxCost,jdbcType=DECIMAL}, #{item.taxRate,jdbcType=DECIMAL},
       NOW(), #{item.createById,jdbcType=VARCHAR}, #{item.createByName,jdbcType=VARCHAR},
-      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR})
+      NOW(), #{item.updateById,jdbcType=VARCHAR}, #{item.updateByName,jdbcType=VARCHAR}, #{item.supplierName,jdbcType=VARCHAR})
     </foreach>
   </insert>
   <select id="selectStockBatch" parameterType="java.lang.String" resultType="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
