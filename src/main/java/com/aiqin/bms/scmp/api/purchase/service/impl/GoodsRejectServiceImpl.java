@@ -1062,7 +1062,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 调用DL，把退供的库存变更推送给DL
             StockChangeRequest dlRequest = new StockChangeRequest();
             dlRequest.setOrderCode(rejectRecord.getRejectRecordCode());
-            dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
+            dlRequest.setOrderType(Global.DL_ORDER_TYPE_2);
             dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
             dlRequest.setSupplierCode(rejectRecord.getSupplierCode());
             dlRequest.setWarehouseCode(rejectRecord.getWarehouseCode());
