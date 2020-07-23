@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.sale.Order;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
@@ -37,10 +38,12 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildSourceInit;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySourceInit;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
@@ -141,6 +144,8 @@ public class InboundServiceImpl implements InboundService {
     private DlAbutmentService dlService;
     @Autowired
     private StockBatchDao stockBatchDao;
+    @Autowired
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
 
 
     /**
@@ -626,7 +631,7 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setOperatorId(request.getOperatorId());
             stockInfo.setOperatorName(request.getOperatorName());
 
-            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            if(inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
                 // 查询对应的采购商品
                 PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource
                         (inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
@@ -649,7 +654,7 @@ public class InboundServiceImpl implements InboundService {
                         stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
                     }
                 }
-            }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
+            }else if (inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ALLOCATE.getCode()))) {
                 AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(inbound.getSourceOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode().intValue());
                 stockInfo.setPreWayCount(allocationProductResVo.getQuantity());
             }
@@ -662,67 +667,143 @@ public class InboundServiceImpl implements InboundService {
         InboundBatch productBatch = null;
         List<InboundBatchCallBackRequest> notBatchList = Lists.newArrayList();
         if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
-            Map<String, Long> actualTotalCountMap = new HashMap<>();
-            for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
-                if(actualTotalCountMap.get(inboundProduct.getSkuCode()) == null){
-                    actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount());
-                }else {
-                    actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount() + actualTotalCountMap.get(inboundProduct.getSkuCode()));
-                }
+            // 处理退货流程
+            List<OrderInfoItemProductBatch> orderBatchs = null;
+            ReturnOrderInfo returnOrderInfo = null;
+            if(request.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ORDER.getCode()))){
+                // 根据退货单信息
+                returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
+                orderBatchs = orderInfoItemProductBatchDao.selectByPrimaryKey(returnOrderInfo.getOrderCode());
+                LOGGER.info("退货单查对应的销售单批次信息为空：{}", JsonUtil.toJson(orderBatchs));
             }
-            Map<String, InboundProductCallBackRequest> inboundMap = new HashMap<>();
-            for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
-                key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
-                InboundProduct product = products.get(key);
-                String productDate = DateUtils.currentDate();
-                String batchCode = DateUtils.currentDate().replaceAll("-","");
-                String batchInfoCode;
-                if(StringUtils.isBlank(inbound.getSupplierCode())){
-                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                            batchCode  + "_" + product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
-                }else {
-                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                            batchCode + "_" + inbound.getSupplierCode() + "_" +
-                            product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
-                }
-                if(inboundMap.get(inboundProduct.getSkuCode()) == null){
-                    // 添加批次库存
-                    stockBatchInfo = new StockBatchInfoRequest();
-                    this.addStockBatch(stockBatchInfo, inbound);
-                    stockBatchInfo.setProductDate(productDate);
-                    stockBatchInfo.setBatchCode(batchCode);
-                    stockBatchInfo.setChangeCount(actualTotalCountMap.get(inboundProduct.getSkuCode()));
-                    stockBatchInfo.setOperatorId(request.getOperatorId());
-                    stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
-                    stockBatchInfo.setOperatorName(request.getOperatorName());
-                    stockBatchInfo.setSourceDocumentType(sourceDocumentType);
-                    stockBatchInfo.setBatchInfoCode(batchInfoCode);
-                    stockBatchInfo.setSkuCode(product.getSkuCode());
-                    stockBatchInfo.setSkuName(product.getSkuName());
-                    stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
-                    stockBatchInfo.setTaxRate(product.getTax());
-                    batchList.add(stockBatchInfo);
-                    inboundMap.put(inboundProduct.getSkuCode(), inboundProduct);
-                }
 
-                // 查询对应订单的sku
-                productBatch = new InboundBatch();
-                productBatch.setUpdateById(request.getOperatorId());
-                productBatch.setUpdateByName(request.getOperatorName());
-                productBatch.setInboundOderCode(product.getInboundOderCode());
-                productBatch.setBatchCode(batchCode);
-                productBatch.setBatchInfoCode(batchInfoCode);
-                productBatch.setSupplierCode(inbound.getSupplierCode());
-                productBatch.setSupplierName(inbound.getSupplierName());
-                productBatch.setSkuCode(product.getSkuCode());
-                productBatch.setSkuName(product.getSkuName());
-                productBatch.setProductDate(productDate);
-                productBatch.setTotalCount(product.getPreInboundMainNum());
-                productBatch.setActualTotalCount(product.getPraInboundMainNum());
-                productBatch.setLineCode(product.getLinenum().intValue());
-                productBatch.setCreateById(request.getOperatorId());
-                productBatch.setCreateByName(request.getOperatorName());
-                inboundBatchList.add(productBatch);
+            if(request.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ORDER.getCode())) && CollectionUtils.isNotEmpty(orderBatchs)){
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
+                    InboundProduct product = products.get(key);
+                    if(product == null){
+                        LOGGER.info("未查询到对应入库单的商品信息：{}", key);
+                        throw new GroundRuntimeException("未查询到对应入库单的商品信息");
+                    }
+                    orderBatchs = orderInfoItemProductBatchDao.orderBatchList(inboundProduct.getSkuCode(), returnOrderInfo.getOrderCode(), inboundProduct.getLineCode().intValue());
+                    for(OrderInfoItemProductBatch batch : orderBatchs){
+                        // 添加批次库存
+                        stockBatchInfo = new StockBatchInfoRequest();
+                        this.addStockBatch(stockBatchInfo, inbound);
+                        stockBatchInfo.setProductDate(batch.getProductDate());
+                        stockBatchInfo.setBatchCode(batch.getBatchCode());
+                        stockBatchInfo.setOperatorId(request.getOperatorId());
+                        stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                        stockBatchInfo.setOperatorName(request.getOperatorName());
+                        stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                        stockBatchInfo.setBatchInfoCode(batch.getBatchInfoCode());
+                        stockBatchInfo.setSkuCode(product.getSkuCode());
+                        stockBatchInfo.setSkuName(product.getSkuName());
+                        stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+                        stockBatchInfo.setTaxRate(product.getTax());
+                        stockBatchInfo.setSupplierCode(batch.getSupplierCode());
+
+                        // 添加入库单批次
+                        productBatch = new InboundBatch();
+                        productBatch.setUpdateById(request.getOperatorId());
+                        productBatch.setUpdateByName(request.getOperatorName());
+                        productBatch.setInboundOderCode(product.getInboundOderCode());
+                        productBatch.setBatchCode(batch.getBatchCode());
+                        productBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                        productBatch.setSupplierCode(batch.getSupplierCode());
+                        //productBatch.setSupplierName(inbound.getSupplierName());
+                        productBatch.setSkuCode(product.getSkuCode());
+                        productBatch.setSkuName(product.getSkuName());
+                        productBatch.setProductDate(batch.getProductDate());
+                        productBatch.setLineCode(product.getLinenum().intValue());
+                        productBatch.setCreateById(request.getOperatorId());
+                        productBatch.setCreateByName(request.getOperatorName());
+                        if(inboundProduct.getActualTotalCount() <= batch.getActualTotalCount()){
+                            productBatch.setTotalCount(inboundProduct.getActualTotalCount());
+                            productBatch.setActualTotalCount(inboundProduct.getActualTotalCount());
+                            inboundBatchList.add(productBatch);
+
+                            stockBatchInfo.setChangeCount(inboundProduct.getActualTotalCount());
+                            batchList.add(stockBatchInfo);
+                            break;
+                        }else {
+                            productBatch.setTotalCount(batch.getActualTotalCount());
+                            productBatch.setActualTotalCount(batch.getActualTotalCount());
+                            inboundBatchList.add(productBatch);
+                            inboundProduct.setActualTotalCount(inboundProduct.getActualTotalCount() - batch.getActualTotalCount());
+                            stockBatchInfo.setChangeCount(batch.getActualTotalCount());
+                            batchList.add(stockBatchInfo);
+                        }
+                    }
+
+                }
+            }else {
+                Map<String, Long> actualTotalCountMap = new HashMap<>();
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    if(actualTotalCountMap.get(inboundProduct.getSkuCode()) == null){
+                        actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount());
+                    }else {
+                        actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount() + actualTotalCountMap.get(inboundProduct.getSkuCode()));
+                    }
+                }
+                Map<String, InboundProductCallBackRequest> inboundMap = new HashMap<>();
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
+                    InboundProduct product = products.get(key);
+                    if(product == null){
+                        LOGGER.info("未查询到对应入库单的商品信息：{}", key);
+                        throw new GroundRuntimeException("未查询到对应入库单的商品信息");
+                    }
+                    String productDate = DateUtils.currentDate();
+                    String batchCode = DateUtils.currentDate().replaceAll("-","");
+                    String batchInfoCode;
+                    if(StringUtils.isBlank(inbound.getSupplierCode())){
+                        batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                batchCode  + "_" + product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                    }else {
+                        batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                batchCode + "_" + inbound.getSupplierCode() + "_" +
+                                product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                    }
+                    if(inboundMap.get(inboundProduct.getSkuCode()) == null){
+                        // 添加批次库存
+                        stockBatchInfo = new StockBatchInfoRequest();
+                        this.addStockBatch(stockBatchInfo, inbound);
+                        stockBatchInfo.setProductDate(productDate);
+                        stockBatchInfo.setBatchCode(batchCode);
+                        stockBatchInfo.setChangeCount(actualTotalCountMap.get(inboundProduct.getSkuCode()));
+                        stockBatchInfo.setOperatorId(request.getOperatorId());
+                        stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                        stockBatchInfo.setOperatorName(request.getOperatorName());
+                        stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                        stockBatchInfo.setBatchInfoCode(batchInfoCode);
+                        stockBatchInfo.setSkuCode(product.getSkuCode());
+                        stockBatchInfo.setSkuName(product.getSkuName());
+                        stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+                        stockBatchInfo.setTaxRate(product.getTax());
+                        batchList.add(stockBatchInfo);
+                        inboundMap.put(inboundProduct.getSkuCode(), inboundProduct);
+                    }
+
+                    // 查询对应订单的sku
+                    productBatch = new InboundBatch();
+                    productBatch.setUpdateById(request.getOperatorId());
+                    productBatch.setUpdateByName(request.getOperatorName());
+                    productBatch.setInboundOderCode(product.getInboundOderCode());
+                    productBatch.setBatchCode(batchCode);
+                    productBatch.setBatchInfoCode(batchInfoCode);
+                    productBatch.setSupplierCode(inbound.getSupplierCode());
+                    productBatch.setSupplierName(inbound.getSupplierName());
+                    productBatch.setSkuCode(product.getSkuCode());
+                    productBatch.setSkuName(product.getSkuName());
+                    productBatch.setProductDate(productDate);
+                    productBatch.setTotalCount(product.getPreInboundMainNum());
+                    productBatch.setActualTotalCount(product.getPraInboundMainNum());
+                    productBatch.setLineCode(product.getLinenum().intValue());
+                    productBatch.setCreateById(request.getOperatorId());
+                    productBatch.setCreateByName(request.getOperatorName());
+                    inboundBatchList.add(productBatch);
+                }
             }
         }else {
             Map<String, StockBatchInfoRequest> stockMap = new HashMap<>();
