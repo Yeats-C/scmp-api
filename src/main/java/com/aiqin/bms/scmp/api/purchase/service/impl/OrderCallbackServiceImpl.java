@@ -1773,6 +1773,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Date date = new Date();
         // 更新发运单
         Transport transport = transportMapper.selectByTransportCode(request.getDeliveryCode());
+        request.setTransportCenterCode(transport.getTransportCenterCode());
+        request.setTransportCenterName(transport.getTransportCenterName());
         transport.setPackingNum(request.getPackingNum());
         transport.setOrderCommodityNum(request.getOrderCommodityNum());
         transport.setLogisticsCompany(request.getTransportCompanyCode());

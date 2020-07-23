@@ -36,6 +36,7 @@
     <result column="remark" jdbcType="CLOB" property="remark" />
     <result column="allocation_type" jdbcType="TINYINT" property="allocationType" />
     <result column="allocation_type_name" jdbcType="VARCHAR" property="allocationTypeName" />
+    <result column="update_by_id" jdbcType="VARCHAR" property="updateById" />
   </resultMap>
   <sql id="Base_Column_List">
       id, allocation_code, callout_logistics_center_code,
@@ -50,7 +51,7 @@
       update_time, update_by ,form_no,company_code,company_name,
       direct_supervisor_code,direct_supervisor_name,
       undertaking_unit_code,undertaking_unit_name,remark,allocation_type,
-      allocation_type_name
+      allocation_type_name, update_by_id
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
