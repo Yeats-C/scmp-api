@@ -347,8 +347,8 @@
         <if test="item.supplierCode != null">
           supplier_code = #{item.supplierCode,jdbcType=VARCHAR},
         </if>
-        <if test="supplierName != null">
-          supplier_name = #{supplierName,jdbcType=VARCHAR},
+        <if test="item.supplierName != null">
+          supplier_name = #{item.supplierName,jdbcType=VARCHAR},
         </if>
         <if test="item.skuCode != null">
           sku_code = #{item.skuCode,jdbcType=VARCHAR},
