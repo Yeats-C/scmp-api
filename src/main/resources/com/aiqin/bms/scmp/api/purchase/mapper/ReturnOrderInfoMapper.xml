@@ -84,6 +84,8 @@
       <result column="actual_product_channel_total_amount" jdbcType="DECIMAL" property="actualProductChannelTotalAmount" />
       <result column="synchr_time" jdbcType="TIMESTAMP" property="synchrTime" />
       <result column="synchr_status" jdbcType="INTEGER" property="synchrStatus" />
+      <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
+      <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
   </resultMap>
   <sql id="Base_Column_List">
     id, return_order_code, order_code, create_date, order_type, return_order_type, order_category,
@@ -102,7 +104,7 @@
     ifnull(actual_volume, 0) actual_volume, ifnull(actual_product_total_amount, 0) actual_product_total_amount,
     ifnull(actual_return_order_amount, 0) actual_return_order_amount, ifnull(product_channel_total_amount, 0) product_channel_total_amount,
     ifnull(actual_product_channel_total_amount, 0) actual_product_channel_total_amount,
-    synchr_time, synchr_status, order_product_type
+    synchr_time, synchr_status, order_product_type, channel_code, channel_name
   </sql>
   <select id="selectByCode" resultMap="BaseResultMap">
       select
@@ -124,7 +126,8 @@
       transport_number, return_reason_code, return_reason_content, remake, treatment_method, order_original_name, 
       order_original, create_by_id, create_by_name, create_time, update_by_id, update_by_name, 
       update_time, volume, actual_weight, actual_product_count, actual_volume, actual_product_total_amount, 
-      actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount, order_product_type)
+      actual_return_order_amount, product_channel_total_amount, actual_product_channel_total_amount, order_product_type,
+       channel_code, channel_name)
     values ( #{returnOrderCode,jdbcType=VARCHAR}, #{orderCode,jdbcType=VARCHAR}, 
       #{createDate,jdbcType=TIMESTAMP}, #{orderType,jdbcType=INTEGER}, #{returnOrderType,jdbcType=INTEGER}, 
       #{orderCategory,jdbcType=INTEGER}, #{businessForm,jdbcType=INTEGER}, #{platformType,jdbcType=INTEGER},
@@ -152,7 +155,8 @@
       NOW(), #{volume,jdbcType=VARCHAR}, #{actualWeight,jdbcType=BIGINT}, 
       #{actualProductCount,jdbcType=BIGINT}, #{actualVolume,jdbcType=BIGINT}, #{actualProductTotalAmount,jdbcType=DECIMAL}, 
       #{actualReturnOrderAmount,jdbcType=DECIMAL}, #{productChannelTotalAmount,jdbcType=DECIMAL}, 
-      #{actualProductChannelTotalAmount,jdbcType=DECIMAL}, #{orderProductType,jdbcType=INTEGER})
+      #{actualProductChannelTotalAmount,jdbcType=DECIMAL}, #{orderProductType,jdbcType=INTEGER},
+      #{channelCode,jdbcType=VARCHAR}, #{channelName,jdbcType=VARCHAR})
   </insert>
   <update id="update">
       update return_order_info
@@ -385,6 +389,12 @@
           </if>
           <if test="synchrStatus != null">
               synchr_status = #{synchrStatus,jdbcType=INTEGER},
+          </if>
+          <if test="channelCode != null">
+              channel_code = #{channelCode,jdbcType=VARCHAR},
+          </if>
+          <if test="channelName != null">
+              channel_name = #{channelName,jdbcType=VARCHAR},
           </if>
       </set>
       where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}

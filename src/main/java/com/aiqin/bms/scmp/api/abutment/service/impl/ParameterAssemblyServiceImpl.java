@@ -183,13 +183,6 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setPlatformType(1);
         returnInfo.setCopartnerAreaId(request.getPartnerCode());
         returnInfo.setCopartnerAreaName(request.getPartnerName());
-//        if(request.getOrderType() == 1){
-//            // 配送默认状态为4
-//            returnInfo.setReturnOrderStatus(4);
-//        }else {
-//            // 其他的默认状态为5
-//            returnInfo.setReturnOrderStatus(5);
-//        }
         // 转换库房信息
         WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
         if(warehouse == null){
@@ -200,6 +193,12 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setWarehouseName(warehouse.getWarehouseName());
         returnInfo.setTransportCenterCode(warehouse.getLogisticsCenterCode());
         returnInfo.setTransportCenterName(warehouse.getLogisticsCenterName());
+        if(StringUtils.isNotBlank(request.getChannelName())){
+            // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
+            returnInfo.setChannelName(request.getChannelName());
+            returnInfo.setChannelCode(request.getChannelName() == "爱亲科技" ? "1" :(request.getChannelName() == "萌贝树" ? "2" :
+                    (request.getChannelName() == "小红马" ? "3" : "4")));
+        }
         returnRequest.setReturnOrderInfo(returnInfo);
         if(CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0){
             LOGGER.info("DL->耘链 推送耘链退货单商品信息为空");
