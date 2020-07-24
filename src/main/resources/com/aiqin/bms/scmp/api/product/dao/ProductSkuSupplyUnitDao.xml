@@ -867,4 +867,7 @@
         </if>
         order by create_time desc
     </select>
+    <select id="selectOneBySkuCode"  resultMap="DraftMap">
+
+    </select>
 </mapper>
