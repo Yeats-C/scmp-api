@@ -96,5 +96,5 @@ public interface ProductSkuSupplyUnitDao {
 
     int updateIsDeFaultBySkuCode(@Param("list") List<String> skuCodes, @Param("isDefault") Byte value);
 
-    ProductSkuSupplyUnitDraft selectOneBySkuCode(@Param("skuCode") String skuCode);
+    ProductSkuSupplyUnit selectOneBySkuCode(@Param("skuCode") String skuCode);
 }
