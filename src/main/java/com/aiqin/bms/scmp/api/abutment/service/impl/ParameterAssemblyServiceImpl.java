@@ -57,6 +57,9 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         orderInfo.setOrderTypeName(request.getOrderType() == 1 ? "配送" :(request.getOrderType() == 2 ? "直送" :
                 (request.getOrderType() == 3 ? "供货直送" : "采购直送")));
         orderInfo.setOrderCategoryName(request.getOrderCategory());
+        orderInfo.setOrderCategoryCode(request.getOrderCategoryCode());
+        orderInfo.setStoreCode(request.getCustomerCode());
+        orderInfo.setSourceName(request.getCustomerName());
         if(request.getOrderType() == 1){
             // 配送默认状态为6
             orderInfo.setOrderStatus(6);
@@ -87,6 +90,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         orderInfo.setPlatformType(1);
         // 默认主订单
         orderInfo.setOrderLevel(0);
+        // 默认已支付
+        orderInfo.setPaymentStatus(0);
         if(StringUtils.isNotBlank(request.getChannelName())){
             // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
             orderInfo.setChannelName(request.getChannelName());
