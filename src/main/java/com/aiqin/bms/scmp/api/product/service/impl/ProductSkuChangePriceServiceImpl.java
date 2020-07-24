@@ -911,8 +911,20 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             Integer count = stockMonthBatchDao.querySkuBatchMonthCount(reqVO);
             List<QuerySkuInfoRespVO> querySkuInfoRespVOS = stockMonthBatchDao.querySkuBatchMonthList(reqVO);
             for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
-                List<StockMonthBatch> batch = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
-                querySkuInfoRespVO.setBatchMonthList(batch);
+                List<BatchInfo> batchList = new ArrayList<>();
+                List<StockMonthBatch> batchMonthList = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
+                for (StockMonthBatch batchMonth : batchMonthList) {
+                    BatchInfo batch = new BatchInfo();
+                    batch.setBatchCode(batchMonth.getBatchCode());
+                    batch.setWarehouseBatchName(batchMonth.getBatchCode());
+                    batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
+                    batch.setTransportCenterCode(querySkuInfoRespVO.getTransportCenterCode());
+                    batch.setTransportCenterName(querySkuInfoRespVO.getTransportCenterName());
+                    batch.setWarehouseCode(querySkuInfoRespVO.getWarehouseCode());
+                    batch.setWarehouseName(querySkuInfoRespVO.getWarehouseName());
+                    batchList.add(batch);
+                }
+                querySkuInfoRespVO.setBatchList(batchList);
             }
             BasePage basePage = new BasePage();
             basePage.setDataList(querySkuInfoRespVOS);
