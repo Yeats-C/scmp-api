@@ -2,12 +2,11 @@ package com.aiqin.bms.scmp.api.abutment.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
-import com.aiqin.bms.scmp.api.abutment.web.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
-import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderItem;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -29,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -226,36 +226,23 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
     @Override
     public SupplierInfoRequest supplierParameter(SupplierAbutmentRequest request){
-        SupplierInfoRequest supplierInfo = new SupplierInfoRequest();
-        supplierInfo.setSupplierCode(request.getSupplyCompanyCode());
-        supplierInfo.setSupplierName(request.getApplySupplyName());
+        LOGGER.info("供应商开始转换调用DL参数：{}", JsonUtil.toJson(request));
+        //SupplierInfoRequest supplierInfo = new SupplierInfoRequest();
+        SupplierInfoRequest supplierInfo = BeanCopyUtils.copy(request, SupplierInfoRequest.class);
+        supplierInfo.setSupplierCode(request.getSupplierCode());
+        supplierInfo.setSupplierName(request.getSupplierName());
         // 查询供应商的类型
-        String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getApplySupplyType(), "106");
+        String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getSupplyType(), "106");
         LOGGER.info("查询供应商属性信息：{}", typeName);
         supplierInfo.setSupplierType(typeName);
-        supplierInfo.setSupplierAbbreviation(request.getSupplierAbbreviation());
         supplierInfo.setMobile(request.getPhone());
-        supplierInfo.setFax(request.getFax());
-        supplierInfo.setCompanyWebsite(request.getCompanyWebsite());
-        supplierInfo.setTaxId(request.getTaxId());
-        supplierInfo.setRegisteredCapital(request.getRegisteredCapital());
-        supplierInfo.setCorporateRepresentative(request.getCorporateRepresentative());
-        supplierInfo.setMinOrderAmount(request.getMinOrderAmount());
-        supplierInfo.setMaxOrderAmount(request.getMaxOrderAmount());
         supplierInfo.setContactsPhone(request.getMobilePhone());
         supplierInfo.setContacts(request.getContactName());
         supplierInfo.setProvinceCode(request.getProvinceId());
-        supplierInfo.setProvinceName(request.getProvinceName());
         supplierInfo.setCityCode(request.getCityId());
-        supplierInfo.setCityName(request.getCityName());
         supplierInfo.setDistrictCode(request.getDistrictId());
-        supplierInfo.setDistrictName(request.getDistrictName());
         supplierInfo.setDetailAddress(request.getAddress());
-        supplierInfo.setZipCode(request.getZipCode());
-        supplierInfo.setEmail(request.getEmail());
-        supplierInfo.setPaymentMethod(request.getPaymentMethod());
         supplierInfo.setEnable(request.getEnable().intValue());
-        supplierInfo.setProperty(request.getProperty());
         supplierInfo.setSupplierCompanyCode(request.getSupplierCode());
         supplierInfo.setSupplierCompanyName(request.getSupplierName());
         // 查询供应商的结算账户信息
@@ -265,6 +252,11 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             supplierInfo.setAccount(account.getAccount());
             supplierInfo.setAccountName(account.getAccountName());
             supplierInfo.setMaxPaymentAmount(account.getMaxPaymentAmount());
+        }else {
+            supplierInfo.setBankAccount("");
+            supplierInfo.setAccount("");
+            supplierInfo.setAccountName("");
+            supplierInfo.setMaxPaymentAmount(BigDecimal.ZERO);
         }
 
         if(CollectionUtils.isNotEmpty(request.getGroupList())){

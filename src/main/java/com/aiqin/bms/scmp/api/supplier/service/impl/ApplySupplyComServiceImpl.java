@@ -1,6 +1,8 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapSupplier;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.SupplierAbutmentRequest;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
@@ -75,8 +77,6 @@ import java.util.stream.Collectors;
 public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplySupplyComService, WorkFlowHelper {
     @Autowired
     private OperationLogService operationLogService;
-    @Resource
-    private WarehouseConfigService warehouseConfigService;
     @Value("${sap.supply}")
     private String SUPPLY_URL;
     @Autowired
@@ -135,6 +135,8 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
     private  UrlConfig urlConfig;
     @Autowired
     private WorkFlowService workFlowService;
+    @Autowired
+    private ParameterAssemblyService parameterAssemblyService;
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
@@ -821,6 +823,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //发货/退货信息
             //插入正式数据
             List<ApplyDeliveryInformation> applyDeliveryInfos = applyDeliveryInfoDao.getApplyDeliveryInfo(applySupplyCompany.getApplySupplyCompanyCode());
+            List<DeliveryInformation> deliveryInformations = null;
             if (CollectionUtils.isNotEmptyCollection(applyDeliveryInfos)) {
                 //更新申请表信息
                 applyDeliveryInfos.forEach(item -> {
@@ -830,7 +833,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     item.setApplyDeliveryInformationCode(item.getApplyCode());
                 });
                 applyDeliveryInfoDao.updateBatch(applyDeliveryInfos);
-                List<DeliveryInformation> deliveryInformations = BeanCopyUtils.copyList(applyDeliveryInfos, DeliveryInformation.class);
+                deliveryInformations = BeanCopyUtils.copyList(applyDeliveryInfos, DeliveryInformation.class);
                 if (CollectionUtils.isNotEmptyCollection(deliveryInformations)) {
                     deliveryInformations.forEach(item -> {
                         item.setSupplyCompanyCode(supplyCompany.getSupplyCode());
@@ -853,8 +856,9 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             }
             //采购组信息
             List<ApplySupplyCompanyPurchaseGroup> applySupplyCompanyPurchaseGroups = applySupplyCompanyPurchaseGroupMapper.selectByApplySupplyCompanyCode(applySupplyCompany.getApplySupplyCompanyCode());
+            List<SupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = null;
             if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyPurchaseGroups)){
-                List<SupplyCompanyPurchaseGroup> supplyCompanyPurchaseGroups = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroup.class);
+                supplyCompanyPurchaseGroups = BeanCopyUtils.copyList(applySupplyCompanyPurchaseGroups, SupplyCompanyPurchaseGroup.class);
                 if(CollectionUtils.isNotEmptyCollection(supplyCompanyPurchaseGroups)){
                     supplyCompanyPurchaseGroups.forEach(item->{
                         item.setSupplyCompanyCode(supplyCompany.getSupplyCode());
@@ -868,6 +872,12 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
            sendWms(applySupplyCompany);
           //传输sap
             sendSap(applySupplyCompany);
+
+            // 调用DL
+            SupplierAbutmentRequest request = BeanCopyUtils.copy(supplyCompany, SupplierAbutmentRequest.class);
+            request.setGroupList(supplyCompanyPurchaseGroups);
+            request.setDeliveryList(deliveryInformations);
+            //parameterAssemblyService.supplierParameter(request);
 
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
@@ -1504,9 +1514,6 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         if(Objects.isNull(applySupplyCompany)){
             return HandlingExceptionCode.FLOW_CALL_BACK_FALSE;
         }
-
-
-
         return insideWorkFlowCallback(applySupplyCompany,vo);
     }
 
