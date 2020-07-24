@@ -35,6 +35,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -185,6 +186,9 @@ public class TransportServiceImpl implements TransportService {
         }
         List<TransportLog> logs = Lists.newArrayList();
         for (Transport transport1 : transport) {
+            if(StringUtils.isBlank(transport1.getLogisticsCompany()) || StringUtils.isBlank(transport1.getLogisticsCompanyName()) || StringUtils.isBlank(transport1.getLogisticsNumber())){
+                return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+            }
             // 传发运参数
             DeliveryCallBackRequest request = new DeliveryCallBackRequest();
             request.setDeliveryCode(transport1.getTransportCode());
