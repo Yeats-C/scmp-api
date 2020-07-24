@@ -376,7 +376,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);
 
         // 调用耘链新增供应商接口
-        String url = DL_URL + "";
+        String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("DL->熙耘，保存供应商信息成功");

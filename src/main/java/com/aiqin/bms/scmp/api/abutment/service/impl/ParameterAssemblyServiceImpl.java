@@ -232,10 +232,10 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Override
     public SupplierInfoRequest supplierParameter(SupplierAbutmentRequest request){
         LOGGER.info("供应商开始转换调用DL参数：{}", JsonUtil.toJson(request));
-        //SupplierInfoRequest supplierInfo = new SupplierInfoRequest();
         SupplierInfoRequest supplierInfo = BeanCopyUtils.copy(request, SupplierInfoRequest.class);
-        supplierInfo.setSupplierCode(request.getSupplierCode());
-        supplierInfo.setSupplierName(request.getSupplierName());
+        supplierInfo.setSupplierCode(request.getSupplyCode());
+        supplierInfo.setSupplierName(request.getSupplyName());
+        supplierInfo.setSupplierAbbreviation(request.getSupplyAbbreviation());
         // 查询供应商的类型
         String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getSupplyType(), "106");
         LOGGER.info("查询供应商属性信息：{}", typeName);

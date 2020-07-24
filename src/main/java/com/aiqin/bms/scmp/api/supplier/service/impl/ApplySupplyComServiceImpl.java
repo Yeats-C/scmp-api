@@ -877,7 +877,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             SupplierAbutmentRequest request = BeanCopyUtils.copy(supplyCompany, SupplierAbutmentRequest.class);
             request.setGroupList(supplyCompanyPurchaseGroups);
             request.setDeliveryList(deliveryInformations);
-            //parameterAssemblyService.supplierParameter(request);
+            parameterAssemblyService.supplierParameter(request);
 
         } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             applyHandleTypeCoce = HandleTypeCoce.APPROVAL_FAILED;
