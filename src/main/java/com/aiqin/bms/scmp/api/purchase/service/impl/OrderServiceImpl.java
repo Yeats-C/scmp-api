@@ -669,7 +669,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(orderInfoReqVO.getWarehouseCode());
 
-        if(orderInfoReqVO.getItemBatchList() != null) {
+        if(CollectionUtils.isNotEmptyCollection(orderInfoReqVO.getItemBatchList())) {
             for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
                 // 在部分情况下查询批次表
                 if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)) {
@@ -1201,36 +1201,38 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
        // 获取订单信息
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(orderInfo.getOrderCode());
-        List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
-        List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
-        // 查询出库单编码
-        Outbound outbound = outboundDao.selectOutbouondBySourceCode(oi.getOrderCode());
-        //  参数转换
-        OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
-        List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
-        List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
-        info.setProductList(infoItem);
-        info.setItemBatchList(infoItemBatch);
-        // 进行解锁库存操作
-        ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
-        stockChangeRequest.setOperationType(3);
-        handleProfitLossStockData(info,stockChangeRequest,outbound.getOutboundOderCode());
-        LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
-        HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
-        if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-            LOGGER.error("订单取消进行解锁库存操作异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
-            throw new GroundRuntimeException("wms回调:加库存异常");
-        }
-        //        撤销wms销售单
-        CancelSource cancelSource = new CancelSource();
-        cancelSource.setOrderType("1");
-        cancelSource.setOrderCode(orderInfo.getOrderCode());
-        cancelSource.setWarehouseCode(oi.getWarehouseCode());
-        cancelSource.setWarehouseName(oi.getWarehouseName());
-        log.info("取消订单传wms参数数据：{}", JsonUtil.toJson(cancelSource));
-        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
-        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+        if(oi.getOrderTypeCode().equals(Global.ORDER_TYPE_1)){
+            List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
+            List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
+            // 查询出库单编码
+            Outbound outbound = outboundDao.selectOutbouondBySourceCode(oi.getOrderCode());
+            //  参数转换
+            OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
+            List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
+            List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
+            info.setProductList(infoItem);
+            info.setItemBatchList(infoItemBatch);
+            // 进行解锁库存操作
+            ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
+            stockChangeRequest.setOperationType(3);
+            handleProfitLossStockData(info,stockChangeRequest,outbound.getOutboundOderCode());
+            LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
+            HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
+            if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+                LOGGER.error("订单取消进行解锁库存操作异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
+                throw new GroundRuntimeException("wms回调:加库存异常");
+            }
+            // 撤销wms销售单
+            CancelSource cancelSource = new CancelSource();
+            cancelSource.setOrderType("1");
+            cancelSource.setOrderCode(orderInfo.getOrderCode());
+            cancelSource.setWarehouseCode(oi.getWarehouseCode());
+            cancelSource.setWarehouseName(oi.getWarehouseName());
+            log.info("取消订单传wms参数数据：{}", JsonUtil.toJson(cancelSource));
+            HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+            }
         }
         return HttpResponse.success(true);
     }
