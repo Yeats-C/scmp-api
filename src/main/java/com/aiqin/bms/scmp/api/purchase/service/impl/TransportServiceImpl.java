@@ -205,15 +205,7 @@ public class TransportServiceImpl implements TransportService {
             request.setOrderCommodityNum(transport1.getOrderCommodityNum());
             request.setTotalVolume(transport1.getTotalVolume());
             request.setTotalWeight(transport1.getTotalWeight());
-            List<DeliveryDetailRequest> detailList = new ArrayList<>();
-            List<TransportOrders> transportOrders = transportOrdersMapper.selectOrderCodeByTransportCode(transport1.getTransportCode());
-            for (TransportOrders t : transportOrders) {
-                DeliveryDetailRequest detail = new DeliveryDetailRequest();
-                detail.setOrderCode(t.getOrderCode());
-                detail.setTransportAmount(t.getOrderAmount());
-                detailList.add(detail);
-            }
-            request.setDetailList(detailList);
+
 //            调用发运接口
             orderCallbackService.deliveryCallBack(request);
             // 推送wms 发运信息

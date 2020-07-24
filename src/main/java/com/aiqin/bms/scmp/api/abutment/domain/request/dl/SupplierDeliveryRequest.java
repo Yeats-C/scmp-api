@@ -11,7 +11,7 @@ public class SupplierDeliveryRequest {
 
     @ApiModelProperty(value="发货退货类型 0 发货 1退货 ")
     @JsonProperty("delivery_type")
-    private String delivery_type;
+    private Integer deliveryType;
 
     @ApiModelProperty(value="省编码")
     @JsonProperty("province_code")
@@ -23,7 +23,7 @@ public class SupplierDeliveryRequest {
 
     @ApiModelProperty(value="市编码")
     @JsonProperty("city_code")
-    private String city_code;
+    private String cityCode;
 
     @ApiModelProperty(value="市")
     @JsonProperty("city_name")

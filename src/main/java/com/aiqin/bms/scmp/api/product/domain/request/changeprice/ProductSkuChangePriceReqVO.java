@@ -118,4 +118,8 @@ public class ProductSkuChangePriceReqVO {
 
     @ApiModelProperty("职位名称")
     private String positionName;
+
+    @ApiModelProperty("价格种类 （0.商品价格 1.批次价格 2.月份价格）")
+    private Integer isBatchPrice;
+
 }

@@ -1445,9 +1445,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
         }
 
-        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
-            return HttpResponse.success("商品已出库完成,等待拣货中");
-        }
+//        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
+//            return HttpResponse.success("商品已出库完成,等待拣货中");
+//        }
         // 操作时间 签收时间
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(request.getOderCode());
@@ -1500,15 +1500,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             actualTotalChannelAmount = actualTotalChannelAmount.add(item.getChannelUnitPrice());
             actualTotalProductAmount = actualTotalProductAmount.add(item.getPrice());
             // 自动批次管理，wms回传添加销售单的批次
-//            if(request.getBatchManage().equals(0)){
+//            if(request.getBatchManage().equals(Global.BATCH_MANAGE_0)){
 //                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
 //                OrderInfoItemProductBatch orderBatch = new OrderInfoItemProductBatch();
 //                orderBatch.setOrderCode(response.getOrderCode());
 //                String batchCode = DateUtils.currentDate().replaceAll("-","");
 //                orderBatch.setBatchCode(batchCode);
+//                BigDecimal price = item.getPrice() == null ? BigDecimal.ZERO : item.getPrice();
 //                String batchInfoCode = item.getSkuCode() + "_" + response.getWarehouseCode() + "_" +
 //                        batchCode + "_" + response.getSupplierCode() + "_" +
-//                        item.getPrice().stripTrailingZeros().toPlainString();
+//                        price.stripTrailingZeros().toPlainString();
 //                orderBatch.setBatchInfoCode(batchInfoCode);
 //                orderBatch.setSkuCode(item.getSkuCode());
 //                orderBatch.setSkuName(item.getSkuName());
@@ -1548,8 +1549,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 request.getPersonName(), new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
         orderInfoLogMapper.insert(orderInfoLog);
         // 根据回传信息，更新销售单的实际发货批次信息
-        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0 && !request
-                .getBatchManage().equals(Global.BATCH_MANAGE_0)){
+        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0){
             List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
             OrderInfoItemProductBatch productBatch;
             List<OrderInfoItemProductBatch> batchListUpdate = Lists.newArrayList();
@@ -1572,10 +1572,16 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 if(i > 0){
                     batchListUpdate.add(productBatch);
                 }else {
-                    productBatch.setTotalCount(0L);
+                    productBatch.setTotalCount(productBatch.getActualTotalCount());
                     productBatch.setCreateTime(new Date());
                     productBatch.setCreateById(request.getPersonId());
                     productBatch.setCreateByName(request.getPersonName());
+                    productBatch.setUpdateTime(new Date());
+                    productBatch.setUpdateById(request.getPersonId());
+                    productBatch.setUpdateByName(request.getPersonName());
+                    productBatch.setSupplierCode(batch.getSupplierCode());
+                    productBatch.setSupplierName(batch.getSupplierName());
+                    productBatch.setProductDate(batch.getProductDate());
                     batchList.add(productBatch);
                 }
             }
@@ -1767,6 +1773,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Date date = new Date();
         // 更新发运单
         Transport transport = transportMapper.selectByTransportCode(request.getDeliveryCode());
+        request.setTransportCenterCode(transport.getTransportCenterCode());
+        request.setTransportCenterName(transport.getTransportCenterName());
         transport.setPackingNum(request.getPackingNum());
         transport.setOrderCommodityNum(request.getOrderCommodityNum());
         transport.setLogisticsCompany(request.getTransportCompanyCode());
@@ -1778,11 +1786,22 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setTotalVolume(request.getTotalVolume());
         transport.setTotalWeight(request.getTotalWeight());
         transport.setDeliverTo(request.getDeliverTo());
+        transport.setStandardLogisticsFee(request.getStandardLogisticsFee() == null ? BigDecimal.ZERO : request.getStandardLogisticsFee());
+        transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : request.getAdditionalLogisticsFee());
+        transport.setTransportAmount(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
         transport.setTransportTime(date);
         LOGGER.info("wms回传更新发运单,参数：[{}]", JsonUtil.toJson(transport));
         transportMapper.updateTransport(transport);
 
-
+        List<DeliveryDetailRequest> detailLists = new ArrayList<>();
+        List<TransportOrders> transportOrders = transportOrdersMapper.selectOrderCodeByTransportCode(transport.getTransportCode());
+        for (TransportOrders t : transportOrders) {
+            DeliveryDetailRequest detail = new DeliveryDetailRequest();
+            detail.setOrderCode(t.getOrderCode());
+            detail.setTransportAmount(t.getOrderAmount());
+            detailLists.add(detail);
+        }
+        request.setDetailList(detailLists);
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
         String code = IdSequenceUtils.getInstance().nextId()+"";
         request.setDeliveryCode(code);

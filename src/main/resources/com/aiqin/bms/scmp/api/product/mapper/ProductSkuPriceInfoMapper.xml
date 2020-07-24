@@ -817,7 +817,7 @@
         warehouse_code, warehouse_name, batch_remark,
         product_time, apply_code, company_code,
         company_name, be_synchronous,
-        be_contain_area)
+        be_contain_area, is_batch_price)
         values
         <foreach collection="items" item="item" open="" close="" separator=",">
             (
@@ -841,7 +841,7 @@
             #{item.productTime,jdbcType=TIMESTAMP}, #{item.applyCode,jdbcType=VARCHAR},
             #{item.companyCode,jdbcType=VARCHAR},
             #{item.companyName,jdbcType=VARCHAR}, #{item.beSynchronous,jdbcType=INTEGER},
-            #{item.beContainArea,jdbcType=INTEGER}
+            #{item.beContainArea,jdbcType=INTEGER}, #{item.isBatchPrice,jdbcType=TINYINT}
             )
         </foreach>
     </insert>

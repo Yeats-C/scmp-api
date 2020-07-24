@@ -37,4 +37,6 @@ public interface SupplyCompanyAccountDao {
      * @return
      */
     SupplyCompanyAccount getSupplyCompanyAccount(String applyCode);
+
+    SupplyCompanyAccount companyAccount(String supplyCompanyCode);
 }

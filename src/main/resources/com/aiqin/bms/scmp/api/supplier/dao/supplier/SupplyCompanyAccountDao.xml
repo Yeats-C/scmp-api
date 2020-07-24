@@ -225,4 +225,9 @@
     <select id="getSupplyCompanyAccount" parameterType="java.lang.String" resultMap="BaseResultMap">
         SELECT * from supply_company_account WHERE apply_company_account_code=#{applyCode,jdbcType=VARCHAR}
     </select>
+    <select id="companyAccount" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"></include>
+        from supply_company_account WHERE supply_company_code = #{supplyCompanyCode,jdbcType=VARCHAR}
+        and apply_status = 2 and del_flag = 0 limit 1
+    </select>
 </mapper>

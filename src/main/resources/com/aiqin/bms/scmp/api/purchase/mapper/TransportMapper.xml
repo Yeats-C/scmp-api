@@ -267,7 +267,7 @@
                 order_commodity_num = #{orderCommodityNum,jdbcType=BIGINT},
             </if>
             <if test="status != null">
-                status = #{status,jdbcType=INT},
+                status = #{status,jdbcType=INTEGER},
             </if>
             <if test="logisticsCompany != null">
                 logistics_company = #{logisticsCompany,jdbcType=VARCHAR},
@@ -297,10 +297,10 @@
                 deliver_to = #{deliverTo,jdbcType=VARCHAR},
             </if>
             <if test="transportTime != null">
-                transport_time = #{transportTime,jdbcType=DATETIME},
+                transport_time = #{transportTime,jdbcType=TIMESTAMP},
             </if>
             <if test="signTime != null">
-                sign_time = #{signTime,jdbcType=DATETIME},
+                sign_time = #{signTime,jdbcType=TIMESTAMP},
             </if>
             <if test="consigneeName != null">
                 consignee_name = #{consigneeName,jdbcType=VARCHAR},
@@ -323,17 +323,9 @@
             <if test="delFlag != null">
                 del_flag = #{delFlag,jdbcType=TINYINT},
             </if>
-            <if test="createTime != null">
-                create_time = #{createTime,jdbcType=DATETIME},
-            </if>
+                update_time = now(),
             <if test="createBy != null">
-                create_by = #{createBy,jdbcType=VARCHAR},
-            </if>
-            <if test="createTime != null">
-                updateTime = #{createTime,jdbcType=DATETIME},
-            </if>
-            <if test="createBy != null">
-                updateBy = #{createBy,jdbcType=VARCHAR},
+                update_by = #{createBy,jdbcType=VARCHAR},
             </if>
         </set>
         where id = #{id,jdbcType=BIGINT}

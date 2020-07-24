@@ -273,8 +273,17 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             LOGGER.info("验货之后根据库房新增的商品条数：", detailCount);
         }
 
-        Integer batchCount = returnOrderInfoInspectionItemMapper.insertBatch(request.getItemList());
-        LOGGER.info("保存退货单验货商品信息：", batchCount);
+        List<ReturnOrderInfoInspectionItem> list = Lists.newArrayList();
+        for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
+            if(StringUtils.isBlank(item.getBatchCode())){
+                continue;
+            }
+            list.add(item);
+        }
+        if(CollectionUtils.isNotEmptyCollection(list)){
+            Integer batchCount = returnOrderInfoInspectionItemMapper.insertBatch(request.getItemList());
+            LOGGER.info("保存退货单验货商品信息：", batchCount);
+        }
 
         // 调用生成入库单 并传送wms
         getInboundReqSave(request.getReturnOrderCode());
