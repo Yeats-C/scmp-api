@@ -1904,6 +1904,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             transportOrdersResquest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
             transportOrdersResquest.setWarehouseCode(warehouse.getWarehouseCode());
             List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
+            LOGGER.info("活动订单中全部已发货的定心信息，参数信息：[{}]", JsonUtil.toJson(transportOrders1));
             Map<String, TransportOrders> skuMap = transportOrders1.stream().collect(Collectors.toMap(TransportOrders::getOrderCode, input -> input, (k1, k2) -> k1));
             for (String orderCode : request.getOrderIdsList()) {
                 if (skuMap.containsKey(orderCode)) {
