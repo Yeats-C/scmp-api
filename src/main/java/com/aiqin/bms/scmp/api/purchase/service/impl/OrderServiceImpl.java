@@ -916,7 +916,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         BigDecimal totalChannelAmount = BigDecimal.ZERO;
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
         for(ErpOrderItem item : request.getItemList()){
-            item.setBatchCode("2020-07");
             product = new OrderInfoItemReqVO();
             SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // map中有数据判断 没有新增
