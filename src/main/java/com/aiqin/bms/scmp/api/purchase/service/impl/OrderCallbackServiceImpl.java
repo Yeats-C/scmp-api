@@ -1790,6 +1790,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : request.getAdditionalLogisticsFee());
         transport.setTransportAmount(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
         transport.setTransportTime(date);
+        transport.setStatus(2);
         LOGGER.info("wms回传更新发运单,参数：[{}]", JsonUtil.toJson(transport));
         transportMapper.updateTransport(transport);
 
