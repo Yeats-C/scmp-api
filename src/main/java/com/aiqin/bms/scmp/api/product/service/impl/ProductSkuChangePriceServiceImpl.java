@@ -24,8 +24,11 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -106,6 +109,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     private ProductSkuChangePriceSaleAreaMapper productSkuChangePriceSaleAreaMapper;
     @Autowired
     private StockMonthBatchDao stockMonthBatchDao;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -914,14 +919,15 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                 List<BatchInfo> batchList = new ArrayList<>();
                 List<StockMonthBatch> batchMonthList = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
                 for (StockMonthBatch batchMonth : batchMonthList) {
+                    WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchMonth.getWarehouseCode());
                     BatchInfo batch = new BatchInfo();
                     batch.setBatchCode(batchMonth.getBatchCode());
                     batch.setWarehouseBatchName(batchMonth.getBatchCode());
                     batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
-                    batch.setTransportCenterCode(querySkuInfoRespVO.getTransportCenterCode());
-                    batch.setTransportCenterName(querySkuInfoRespVO.getTransportCenterName());
-                    batch.setWarehouseCode(querySkuInfoRespVO.getWarehouseCode());
-                    batch.setWarehouseName(querySkuInfoRespVO.getWarehouseName());
+                    batch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                    batch.setTransportCenterName(warehouse.getLogisticsCenterName());
+                    batch.setWarehouseCode(warehouse.getWarehouseCode());
+                    batch.setWarehouseName(warehouse.getWarehouseName());
                     batchList.add(batch);
                 }
                 querySkuInfoRespVO.setBatchList(batchList);
