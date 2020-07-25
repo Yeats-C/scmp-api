@@ -52,7 +52,6 @@ public interface ApplyProductSkuSaleAreaMainMapper {
      * @author NullPointException
      * @date 2019/6/4
      * @param formNo
-     * @return java.util.List<com.aiqin.mgs.product.api.domain.dto.salearea.ApplyProductSkuSaleAreaDTO>
      */
     List<ApplyProductSkuSaleAreaMainDTO> selectByFormNo(String formNo);
     /**

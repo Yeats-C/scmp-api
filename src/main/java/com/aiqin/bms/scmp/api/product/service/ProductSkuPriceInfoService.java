@@ -100,16 +100,12 @@ public interface ProductSkuPriceInfoService {
      * @author NullPointException
      * @date 2019/7/9
      * @param skuCode
-     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
     List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForOfficial(String skuCode);
     /**
      * 申请查看价格
      * @author NullPointException
      * @date 2019/7/9
-     * @param skuCode
-     * @param applyCode
-     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
     List<ProductSkuPriceRespVo> getSkuPriceBySkuCodeForApply(String skuCode, String applyCode);
     /**

@@ -78,11 +78,6 @@ public interface InboundService {
     void returnSource(Long id);
 
     /**
-     * 回调采购接口
-     */
-    //void returnPurchase(StorageResultReqVo storageResultItemReqVo);
-
-    /**
      * 入库单回传调拨
      */
     void inBoundReturn(String allocationCode);
