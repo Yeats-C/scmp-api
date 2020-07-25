@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
 import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
@@ -92,6 +93,8 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     private DlAbutmentService dlAbutmentService;
     @Autowired
     private StockBatchDao stockBatchDao;
+    @Autowired
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
     @Override
     public BasePage<QueryProfitLossRespVo> findPage(QueryProfitLossVo vo) {
@@ -182,6 +185,10 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     throw new GroundRuntimeException("未查询到商品信息");
                 }
                 ProfitLossDetailRequest profitLossDetail = new ProfitLossDetailRequest();
+                List<ProductSkuSupplyUnit> info = productSkuSupplyUnitDao.getInfo(product.getSkuCode());
+                if(org.apache.commons.collections.CollectionUtils.isNotEmpty(info) && info.size() > 0){
+                    profitLossDetail.setTaxPrice(info.get(0).getTaxIncludedPrice());
+                }
                 profitLossDetail.setLogisticsCenterCode(warehouseByCode.getLogisticsCenterCode());
                 profitLossDetail.setLogisticsCenterName(warehouseByCode.getLogisticsCenterName());
                 profitLossDetail.setWarehouseCode(warehouseByCode.getWarehouseCode());
@@ -392,7 +399,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
             productRequest.setProductAmount(product.getTaxPrice() == null ? BigDecimal.ZERO : product.getTaxPrice());
             productRequest.setTaxRate(product.getTax() == null ? BigDecimal.ZERO : product.getTax());
             BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(productRequest.getProductAmount(), productRequest.getTaxRate());
-            productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : product.getTaxPrice());
+            productRequest.setNotProductAmount(noTaxPrice == null ? BigDecimal.ZERO : noTaxPrice);
             // 批次数据
             List<BatchRequest> batchList = new ArrayList<>();
             if(org.apache.commons.collections.CollectionUtils.isNotEmpty(batchLists) && batchLists.size() > 0){

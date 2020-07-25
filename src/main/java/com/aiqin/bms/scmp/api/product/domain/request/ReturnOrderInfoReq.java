@@ -306,4 +306,10 @@ public class ReturnOrderInfoReq {
     @ApiModelProperty(value="wms库房类型")
     private Integer wmsWarehouseType;
 
+    @ApiModelProperty(value = "渠道编码")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    private String channelName;
+
 }

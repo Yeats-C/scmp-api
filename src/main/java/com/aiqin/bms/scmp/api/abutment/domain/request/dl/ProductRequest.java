@@ -48,7 +48,7 @@ public class ProductRequest {
     @JsonProperty("model_number")
     private String modelNumber;
 
-    @ApiModelProperty(value="商品类型 0商品 1赠品 2实物返回")
+    @ApiModelProperty(value="商品类型 0商品 1赠品 2实物返回  销售（0商品（本品） 1赠品）")
     @JsonProperty("product_type")
     private Integer productType;
 
@@ -108,6 +108,10 @@ public class ProductRequest {
     @ApiModelProperty(value="退货回传类型 1.正品 2.次品")
     @JsonProperty("return_type")
     private Integer returnType;
+
+    @ApiModelProperty(value="拆零系数")
+    @JsonProperty("zero_disassembly_coefficient")
+    private Long zeroDisassemblyCoefficient;
 
     @ApiModelProperty(value="批次信息")
     @JsonProperty("batch_list")

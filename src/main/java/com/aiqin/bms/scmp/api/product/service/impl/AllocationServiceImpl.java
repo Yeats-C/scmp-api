@@ -666,15 +666,6 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         allocation1.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
         allocation1.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
         int i = allocationMapper.updateByPrimaryKeySelective(allocation);
-
-        // 调用完库存锁定调用同步dl库存数据
-        StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
-        stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
-        stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
-        stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
-        synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
-        LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-        dlService.stockChange(stockChangeDlRequest);
         return i;
     }
 
@@ -722,6 +713,17 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 }
             }
         }
+
+        List<AllocationProductResVo> aProductLists = allocationProductMapper.selectByAllocationCode(request.getAllocationCode());
+        List<AllocationProductBatchResVo> aProductBatchLists = allocationProductBatchMapper.selectByAllocationCode(request.getAllocationCode());
+        // 调用完库存锁定调用同步dl库存数据
+        StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
+        stockChangeDlRequest.setOrderCode(allocation.getAllocationCode());
+        stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_3);
+        stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
+        synchrdlStockChange(allocation, aProductLists, aProductBatchLists, stockChangeDlRequest);
+        LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+        dlService.stockChange(stockChangeDlRequest);
 
         LOGGER.info("wms回传-更新调拨单的实际值：{}", count);  // 调拨出库不调用sap 入库完成后调用sap
         return HttpResponse.success();

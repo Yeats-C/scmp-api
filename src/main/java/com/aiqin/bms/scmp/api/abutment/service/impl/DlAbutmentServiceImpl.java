@@ -10,7 +10,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
-import com.aiqin.bms.scmp.api.abutment.web.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
@@ -376,7 +376,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);
 
         // 调用耘链新增供应商接口
-        String url = DL_URL + "";
+        String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("DL->熙耘，保存供应商信息成功");
