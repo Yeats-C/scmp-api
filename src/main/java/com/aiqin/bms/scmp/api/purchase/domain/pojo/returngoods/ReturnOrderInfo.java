@@ -346,6 +346,14 @@ public class ReturnOrderInfo {
     @JsonProperty("synchr_status")
     private Integer synchrStatus;
 
+    @ApiModelProperty(value = "渠道编码")
+    @JsonProperty("channel_code")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道名称")
+    @JsonProperty("channel_name")
+    private String channelName;
+
     public ReturnOrderInfo() {
     }
 
