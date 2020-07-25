@@ -7,6 +7,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.types.Expiration;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
@@ -20,6 +21,7 @@ import java.util.concurrent.TimeUnit;
  * @Description:
  */
 @Slf4j
+@Component
 public class RedisTool {
     private static final int RELEASE_SUCCESS = 1;
     private static final int EXPIRE_TIME = 10;
