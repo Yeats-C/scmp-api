@@ -18,8 +18,10 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoIt
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.util.RedisTool;
 import com.aiqin.ground.util.id.IdUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -28,10 +30,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 异步执行保存单据
@@ -91,10 +90,60 @@ public class AsynSaveDocuments {
     @Resource
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
 
+    @Resource
+    private RedisTool redisTool;
 
+    /**
+     * @param code 销售单发货时候生成采购单保存
+     */
     @Async("myTaskAsyncPool")
+    public void savePurchase(String code) {
+        if (StringUtils.isBlank(code)) {
+            log.info("异步保存销售发货单号为空");
+            return;
+        }
+        String lockKey = "lock:savePurchase:" + code;
+        String requestId = UUID.randomUUID().toString();
+        try {
+            if (!redisTool.tryGetDistributedLock(lockKey, requestId)) {
+                log.info("异步保存销售发货单重复请求单号={}", code);
+                return;
+            }
+            savePurchaseOrder(code);
+        } finally {
+            redisTool.releaseDistributedLock(lockKey, requestId);
+        }
+
+    }
+
+
+    /**
+     * @param code 退货单收获时生成退购单保存
+     */
+    @Async("myTaskAsyncPool")
+    public void saveReject(String code) {
+        if (StringUtils.isBlank(code)) {
+            log.info("异步保存退货收货单号为空");
+            return;
+
+        }
+        String lockKey = "lock:saveReject:" + code;
+        String requestId = UUID.randomUUID().toString();
+        try {
+            if (!redisTool.tryGetDistributedLock(lockKey, requestId)) {
+                log.info("异步保存退货收货单重复请求单号={}", code);
+                return;
+            }
+            saveRejectOrder(code);
+        } finally {
+            redisTool.releaseDistributedLock(lockKey, requestId);
+        }
+
+    }
+
+
     @Transactional(rollbackFor = Exception.class)
-    public synchronized void savePurchase(String orderCode) {
+    public void savePurchaseOrder(String orderCode) {
         OrderInfo order = orderInfoMapper.selectByOrderCode2(orderCode);
         if (Objects.isNull(order)) {
             log.info("未找到对应的销售单信息={}", orderCode);
@@ -272,9 +321,8 @@ public class AsynSaveDocuments {
     /**
      * 收货后保存退供单
      */
-    @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public synchronized void saveReject(String returnOrderCode) {
+    public void saveRejectOrder(String returnOrderCode) {
         ReturnOrderInfo returnOrderInfo = this.returnOrderInfoMapper.selectByCode(returnOrderCode);
         if (Objects.nonNull(returnOrderInfo)) {
             log.info("未找到对应的退货物信息={}", returnOrderCode);
