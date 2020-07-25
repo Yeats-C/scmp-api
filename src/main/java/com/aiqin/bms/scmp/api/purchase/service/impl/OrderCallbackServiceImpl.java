@@ -1207,7 +1207,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             OutboundReqVo outboundReqVo = new OutboundReqVo();
             outboundService.saveOutbound(outboundReqVo);
             InboundReqSave inboundReqSave = new InboundReqSave();
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
             //报溢数量 正数值
             Long profitQuantity;
             //报损数量 负数值
@@ -1904,7 +1904,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             TransportOrdersResquest transportOrdersResquest = new TransportOrdersResquest();
             transportOrdersResquest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
             transportOrdersResquest.setWarehouseCode(warehouse.getWarehouseCode());
-            List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersWithOutCodeList(transportOrdersResquest);
+            List<TransportOrders> transportOrders1 = transportMapper.selectTransportOrdersList(transportOrdersResquest);
             LOGGER.info("活动订单中全部已发货的定心信息，参数信息：[{}]", JsonUtil.toJson(transportOrders1));
             Map<String, TransportOrders> skuMap = transportOrders1.stream().collect(Collectors.toMap(TransportOrders::getOrderCode, input -> input, (k1, k2) -> k1));
             for (String orderCode : request.getOrderIdsList()) {

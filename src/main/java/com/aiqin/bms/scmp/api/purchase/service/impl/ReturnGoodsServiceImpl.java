@@ -414,6 +414,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         } else {
             returnOrder.setPlatformType(Global.PLATFORM_TYPE_1);
         }
+
+        if(StringUtils.isNotBlank(returnOrder.getWarehouseCode())){
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(returnOrder.getWarehouseCode());
+            returnOrder.setWarehouseName(warehouse.getWarehouseName());
+            returnOrder.setTransportCenterName(warehouse.getLogisticsCenterName());
+        }
         returnOrder.setOrderOriginal(returnOrderInfo.getReturnOrderId());
         returnOrder.setOrderCode(returnOrderInfo.getOrderStoreCode());
         returnOrder.setCreateDate(returnOrderInfo.getCreateTime());

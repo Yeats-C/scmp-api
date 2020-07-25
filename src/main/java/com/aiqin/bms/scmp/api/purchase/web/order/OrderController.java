@@ -61,7 +61,7 @@ public class OrderController {
     @ApiOperation("订单列表")
     @PostMapping("/list")
     public HttpResponse<BasePage<QueryOrderListRespVO>> list(@RequestBody @Valid QueryOrderListReqVO reqVO){
-        log.info("OrderController---list---param：[{}]", JSONObject.toJSONString(reqVO));
+        log.info("OrderController---list---param：[{}]", JsonUtil.toJson(reqVO));
         try {
             return HttpResponse.success(orderService.list(reqVO));
         } catch (BizException e){
@@ -115,7 +115,7 @@ public class OrderController {
     @ApiOperation("11发货")
     @PostMapping("/delivery")
     public HttpResponse<Boolean> delivery(@RequestBody DeliveryReqVO reqVO){
-        log.info("OrderController---delivery---param：[{}],[{}]",JSONObject.toJSONString(reqVO));
+        log.info("OrderController---delivery---param：[{}]",JsonUtil.toJson(reqVO));
         try {
             return HttpResponse.success(orderService.delivery(reqVO));
         } catch (BizException e){
