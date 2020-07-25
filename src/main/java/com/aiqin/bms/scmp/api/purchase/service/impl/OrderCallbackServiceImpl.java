@@ -1207,7 +1207,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             OutboundReqVo outboundReqVo = new OutboundReqVo();
             outboundService.saveOutbound(outboundReqVo);
             InboundReqSave inboundReqSave = new InboundReqSave();
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
             //报溢数量 正数值
             Long profitQuantity;
             //报损数量 负数值

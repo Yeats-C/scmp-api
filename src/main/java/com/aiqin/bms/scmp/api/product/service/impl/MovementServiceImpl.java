@@ -274,7 +274,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
@@ -344,7 +344,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
             allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundReqSave.setInboundBatchList(null);
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
             // 出解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);

@@ -3,7 +3,6 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.sale.Order;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
@@ -147,7 +146,6 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
 
-
     /**
      * 分页查询以及列表搜索
      * @param vo
@@ -179,7 +177,7 @@ public class InboundServiceImpl implements InboundService {
         try {
             log.info("查询入库信息");
             List<String> inboundOderCodeList = new ArrayList<>();
-            List<InboundProduct> inboundProductList = new ArrayList<>();
+            List<InboundProduct> inboundProductList;
             InboundResponse inboundResponse = new InboundResponse();
             List<InboundResponse> responseList = new ArrayList<>();
             List<Inbound> inboundList = inboundDao.selectInboundInfoByBoundSearch(boundRequest);
@@ -299,17 +297,17 @@ public class InboundServiceImpl implements InboundService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
-            log.info("单据调用入库单参数：" + reqVo);
+            log.info("单据调用入库单参数：{}", JsonUtil.toJson(reqVo));
             // 入库单转化主体保存实体
             Inbound inbound = new Inbound();
             BeanCopyUtils.copy(reqVo, inbound);
 
-            EncodingRule rule = null;
-            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
-                // 获取编码
-                rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-                inbound.setInboundOderCode(rule.getNumberingValue().toString());
-            }
+//            EncodingRule rule = null;
+//            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+//                // 获取编码
+//                rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+//                inbound.setInboundOderCode(rule.getNumberingValue().toString());
+//            }
 
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
@@ -329,9 +327,9 @@ public class InboundServiceImpl implements InboundService {
             }
 
             //更新编码表
-            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
-                encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
-            }
+//            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
+//                encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
+//            }
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(),
@@ -352,55 +350,6 @@ public class InboundServiceImpl implements InboundService {
         }
     }
 
-    /**
-     * @param reqVo
-     */
-    @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
-    public String saveInbound2(InboundReqSave reqVo) {
-        try {
-            // 入库单转化主体保存实体
-            Inbound inbound = new Inbound();
-            BeanCopyUtils.copy(reqVo, inbound);
-            // 获取编码 尺度
-            //EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-            //inbound.setInboundOderCode(rule.getNumberingValue().toString());
-            //插入入库单主表
-            int insert = inboundDao.insert(inbound);
-            log.info("插入入库单主表返回结果:{}", insert);
-            if(insert <= 0){
-                log.info("新增入库单主表数据失败");
-                throw new GroundRuntimeException("新增入库单主表数据失败");
-            }
-            //  转化入库单sku实体
-            List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
-            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
-            //插入入库单商品表
-            int insertProducts=inboundProductDao.insertBatch(list);
-            log.info("插入入库单商品表返回结果:{}", insertProducts);
-            if(insert <= 0){
-                log.info("新增入库单商品表数据失败");
-                throw new GroundRuntimeException("新增入库单商品表数据失败");
-            }
-            List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
-            if(CollectionUtils.isNotEmpty(batchList)){
-                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
-                Integer count = inboundBatchDao.insertList(batchList);
-                log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
-            }
-            //更新编码表
-            //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
-
-            // 保存日志
-            productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy(), reqVo.getRemark());
-            InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            // 跟新数据库状态
-            return inbound.getInboundOderCode();
-        } catch (GroundRuntimeException e) {
-            log.error("保存入库单接口错误:{}",e.getCause());
-            throw new GroundRuntimeException(String.format("添加入库单失败:%s",e.getMessage()));
-        }
-    }
     /**
      * 获取入库类型
      * @return
@@ -1221,34 +1170,6 @@ public class InboundServiceImpl implements InboundService {
         } catch (Exception e) {
             log.error(Global.ERROR, JsonUtil.toJson(allocationCode));
             throw new GroundRuntimeException("调拨单更改入库状态失败");
-        }
-    }
-
-    /**
-     *入库单回传移库
-     * @param allocationCode
-     */
-    @Override
-    @Async("myTaskAsyncPool")
-    public void inBoundReturnMovement(String allocationCode) {
-        try {
-//          productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
-//            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
-            Allocation allocation = allocationMapper.selectByCode(allocationCode);
-            //设置调拨状态
-            allocation.setInStockTime(Calendar.getInstance().getTime());
-            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
-            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
-            //更新调拨单状态
-            int count = allocationMapper.updateByPrimaryKeySelective(allocation);
-            if(count > 0){
-                // 调用sap 传送调拨单的数据给sap
-                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
-                LOGGER.info("移库wms回传成功");
-            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }
 

@@ -1,14 +1,12 @@
 package com.aiqin.bms.scmp.api.product.web.inbound;
 
 import com.aiqin.bms.scmp.api.base.BasePage;
-import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
 import com.aiqin.bms.scmp.api.product.domain.request.BoundRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.QueryInboundReqVo;
-import com.aiqin.bms.scmp.api.product.domain.request.outbound.OutboundCallBackReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.returngoods.SupplyReturnOrderMainReqVO;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResVo;
 import com.aiqin.bms.scmp.api.product.domain.response.inbound.InboundResponse;
@@ -25,11 +23,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-/**
- * 描述: 库房入库控制层
- * @author Kt.w
- * @date 2019/1/4
- */
 @Slf4j
 @RestController
 @Api(tags = "库房入库管理")
@@ -60,11 +53,7 @@ public class InboundController {
     @ApiOperation("通过id获取入库单")
     @GetMapping("/view")
     public HttpResponse<InboundResVo> view(@RequestParam @ApiParam(value = "主键id",required = true) Long id){
-        try{
         return HttpResponse.success(inboundService.view(id));
-        }catch (Exception e){
-            return HttpResponse.failure(ResultCode.SYSTEM_ERROR);
-        }
     }
 
     @ApiOperation("查询入库类型")
@@ -101,24 +90,24 @@ public class InboundController {
         return HttpResponse.success();
     }
 
-    @ApiOperation("测试wms")
-    @GetMapping("/test")
-    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
-        inboundService.pushWms(inboundOderCode);
-        return HttpResponse.success();
-    }
-
-    @ApiOperation("测试wms调拨入库回传")
-    @GetMapping("/test/allocation")
-    public HttpResponse allocationTest(@RequestParam(value = "allocation_code")String allocationCode){
-        inboundService.inBoundReturn(allocationCode);
-        return HttpResponse.success();
-    }
-
-    @ApiOperation("入库回调根据类型回传给来源单号状态测试")
-    @PostMapping("/returnSource/test")
-    public HttpResponse returnSource() {
-        inboundService.returnSource(3304L);
-        return HttpResponse.success();
-    }
+//    @ApiOperation("测试wms")
+//    @GetMapping("/test")
+//    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
+//        inboundService.pushWms(inboundOderCode);
+//        return HttpResponse.success();
+//    }
+//
+//    @ApiOperation("测试wms调拨入库回传")
+//    @GetMapping("/test/allocation")
+//    public HttpResponse allocationTest(@RequestParam(value = "allocation_code")String allocationCode){
+//        inboundService.inBoundReturn(allocationCode);
+//        return HttpResponse.success();
+//    }
+//
+//    @ApiOperation("入库回调根据类型回传给来源单号状态测试")
+//    @PostMapping("/returnSource/test")
+//    public HttpResponse returnSource() {
+//        inboundService.returnSource(3304L);
+//        return HttpResponse.success();
+//    }
 }
