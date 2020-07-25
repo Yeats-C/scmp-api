@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class RedisTool {
     private static final int RELEASE_SUCCESS = 1;
-    private static final int EXPIRE_TIME = 10;
+    private static final int EXPIRE_TIME = 15;
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
