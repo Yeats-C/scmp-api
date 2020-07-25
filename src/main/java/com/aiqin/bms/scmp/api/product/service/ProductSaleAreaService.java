@@ -213,7 +213,6 @@ public interface ProductSaleAreaService {
      * @author NullPointException
      * @date 2019/5/15
      * @param code
-     * @return com.aiqin.mgs.product.api.domain.response.salearea.ProductSaleAreaForOfficialRespVO
      */
     ProductSaleAreaForOfficialMainRespVO officialView(String code);
     /**
