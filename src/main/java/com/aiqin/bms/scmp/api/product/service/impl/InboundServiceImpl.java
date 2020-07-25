@@ -302,12 +302,12 @@ public class InboundServiceImpl implements InboundService {
             Inbound inbound = new Inbound();
             BeanCopyUtils.copy(reqVo, inbound);
 
-//            EncodingRule rule = null;
-//            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
-//                // 获取编码
-//                rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-//                inbound.setInboundOderCode(rule.getNumberingValue().toString());
-//            }
+            EncodingRule rule = null;
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
+                // 获取编码
+                rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+                inbound.setInboundOderCode(rule.getNumberingValue().toString());
+            }
 
             //插入入库单主表
             int insert = inboundDao.insert(inbound);
@@ -327,9 +327,9 @@ public class InboundServiceImpl implements InboundService {
             }
 
             //更新编码表
-//            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
-//                encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
-//            }
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+                encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
+            }
 
             // 保存日志
             productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(),
