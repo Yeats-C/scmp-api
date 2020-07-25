@@ -14,9 +14,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author: yutong
- * @createDate: 2018/7/16
- * @company: (C) Copyright fotron
+ * @author: nh
  * @since: JDK 1.8
  * @Description:
  */
