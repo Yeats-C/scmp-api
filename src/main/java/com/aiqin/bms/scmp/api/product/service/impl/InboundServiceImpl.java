@@ -257,16 +257,17 @@ public class InboundServiceImpl implements InboundService {
             List<InboundProductResVo> productList = inboundResVo.getList();
             if(CollectionUtils.isNotEmpty(productList)){
                 for(InboundProductResVo vo:productList){
+                    Long inboundBaseContent = vo.getInboundBaseContent() == null ? 1L : Long.valueOf(vo.getInboundBaseContent());
                     if(Objects.isNull(vo.getPraInboundMainNum()) || vo.getPraInboundMainNum() == 0){
                         vo.setPraSingleCount(vo.getPraInboundMainNum());
                     }else{
-                        vo.setPraSingleCount(vo.getPraInboundMainNum() % Long.valueOf(vo.getInboundBaseContent()));
+                        vo.setPraSingleCount(vo.getPraInboundMainNum() % inboundBaseContent);
                     }
 
                     if(Objects.isNull(vo.getPreInboundMainNum()) || vo.getPreInboundMainNum() == 0){
                         vo.setPreSingleCount(vo.getPreInboundMainNum());
                     }else{
-                        vo.setPreSingleCount(vo.getPreInboundMainNum() % Long.valueOf(vo.getInboundBaseContent()));
+                        vo.setPreSingleCount(vo.getPreInboundMainNum() % inboundBaseContent);
                     }
                 }
             }
