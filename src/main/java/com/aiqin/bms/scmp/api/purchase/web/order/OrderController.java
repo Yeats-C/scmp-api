@@ -115,7 +115,7 @@ public class OrderController {
     @ApiOperation("11发货")
     @PostMapping("/delivery")
     public HttpResponse<Boolean> delivery(@RequestBody DeliveryReqVO reqVO){
-        log.info("OrderController---delivery---param：[{}],[{}]",JsonUtil.toJson(reqVO));
+        log.info("OrderController---delivery---param：[{}]",JsonUtil.toJson(reqVO));
         try {
             return HttpResponse.success(orderService.delivery(reqVO));
         } catch (BizException e){

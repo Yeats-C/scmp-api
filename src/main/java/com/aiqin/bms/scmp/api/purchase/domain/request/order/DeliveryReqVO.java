@@ -24,6 +24,15 @@ public class DeliveryReqVO {
     @ApiModelProperty("运费")
     private BigDecimal deliverAmount;
 
+    @ApiModelProperty("物流公司")
+    private String transportCompany;
+
+    @ApiModelProperty("物流公司编码")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("物流公司单号")
+    private String transportNumber;
+
     protected List<DeliveryItemReqVo> itemList;
 
 }
