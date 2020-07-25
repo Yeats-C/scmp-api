@@ -15,6 +15,8 @@ public interface TransportMapper {
 
     List<TransportOrders> selectTransportOrdersWithOutCodeList(TransportOrdersResquest transportOrdersResquest);
 
+    List<TransportOrders> selectTransportOrdersList(TransportOrdersResquest transportOrdersResquest);
+
     List<TransportOrders> selectDeliverOrdersWithOutCodeList(TransportOrdersResquest transportOrdersResquest);
 
     Integer insertOne(Transport transport);
