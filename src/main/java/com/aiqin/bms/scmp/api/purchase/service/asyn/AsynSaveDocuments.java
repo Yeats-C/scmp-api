@@ -88,10 +88,13 @@ public class AsynSaveDocuments {
     @Resource
     private RejectRecordBatchDao rejectRecordBatchDao;
 
+    @Resource
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
+
 
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void savePurchase(String orderCode) {
+    public synchronized void savePurchase(String orderCode) {
         OrderInfo order = orderInfoMapper.selectByOrderCode2(orderCode);
         if (Objects.isNull(order)) {
             log.info("未找到对应的销售单信息={}", orderCode);
@@ -102,11 +105,19 @@ public class AsynSaveDocuments {
         //类型编码（1.配送 2.直送 3.货架直送  4.采购直送）
         //订单类型编码为 货架直送和采购直送的需要生成采购单存储
         if (orderTypeCode.equals(Global.ORDER_TYPE_3) || orderTypeCode.equals(Global.ORDER_TYPE_4)) {
+            List<String> codes = new ArrayList<>();
+            codes.add(orderCode);
+            List<PurchaseOrder> purchaseOrders = this.purchaseOrderDao.selectByPurchaseOrderCode(codes);
+            if (!CollectionUtils.isEmpty(purchaseOrders)) {
+                log.info("此销售单数据已经存在={}", orderCode);
+                return;
+            }
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
             //状态直接已经完成
-            savePurchaseOrder.setPurchaseOrderId(IdUtil.purchaseId());
-            savePurchaseOrder.setPurchaseSource(2);
+            String purchaseId = IdUtil.purchaseId();
+            savePurchaseOrder.setPurchaseOrderId(purchaseId);
+            savePurchaseOrder.setPurchaseSource(1);
             savePurchaseOrder.setPurchaseOrderStatus(8);
             savePurchaseOrder.setTransportCenterCode(Global.HB_CODE);
             savePurchaseOrder.setTransportCenterName("华北仓");
@@ -176,9 +187,8 @@ public class AsynSaveDocuments {
                 //sku对应的供应商采购价格
                 BigDecimal taxIncludedPrice = productSkuSupplyUnit.getTaxIncludedPrice();
                 BeanUtils.copyProperties(orderInfoItem, product);
+                product.setPurchaseOrderId(purchaseId);
                 product.setPurchaseOrderCode(orderCode);
-                product.setSkuCode(orderInfoItem.getSkuCode());
-                product.setSkuName(orderInfoItem.getSkuName());
                 product.setProductSpec(orderInfoItem.getSpec());
                 product.setColorName(orderInfoItem.getColorName());
                 product.setModelNumber(orderInfoItem.getModelCode());
@@ -193,8 +203,6 @@ public class AsynSaveDocuments {
                 product.setCreateByName(order.getCreateByName());
                 product.setUpdateByName(order.getUpdateByName());
                 product.setProductAmount(taxIncludedPrice);
-
-
                 //数量
                 BigDecimal num = new BigDecimal(orderInfoItem.getNum() + "");
                 //累加数量
@@ -238,7 +246,7 @@ public class AsynSaveDocuments {
             savePurchaseOrder.setActualTotalCount(actualTotalCount);
             savePurchaseOrder.setCreateTime(now);
             //设置批次信息
-            List<OrderInfoItemProductBatch> detailBatchList = order.getDetailBatchList();
+            List<OrderInfoItemProductBatch> detailBatchList = this.orderInfoItemProductBatchMapper.selectByPrimaryKey(orderCode);
             if (!CollectionUtils.isEmpty(detailBatchList)) {
                 List<PurchaseBatch> purchaseBatchList = new ArrayList<>();
                 detailBatchList.forEach(op -> {
@@ -266,7 +274,7 @@ public class AsynSaveDocuments {
      */
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void saveReject(String returnOrderCode) {
+    public synchronized void saveReject(String returnOrderCode) {
         ReturnOrderInfo returnOrderInfo = this.returnOrderInfoMapper.selectByCode(returnOrderCode);
         if (Objects.nonNull(returnOrderInfo)) {
             log.info("未找到对应的退货物信息={}", returnOrderCode);
@@ -279,9 +287,16 @@ public class AsynSaveDocuments {
         //订单类型编码为 货架直送和采购直送的需要生成采购单存储
         if (orderTypeCode.equals(Global.ORDER_TYPE_3) || orderTypeCode.equals(Global.ORDER_TYPE_4)) {
 
+            RejectRecord rejectRecord = this.rejectRecordDao.selectByRejectCode(returnOrderCode);
+            if (Objects.nonNull(rejectRecord)) {
+                log.info("此退货单数据已经存在={}", returnOrderCode);
+                return;
+            }
+
             RejectRecord saveRejectRecord = new RejectRecord();
             BeanUtils.copyProperties(returnOrderInfo, saveRejectRecord);
-            saveRejectRecord.setRejectRecordId(IdUtil.rejectRecordId());
+            String rejectRecordId = IdUtil.rejectRecordId();
+            saveRejectRecord.setRejectRecordId(rejectRecordId);
             saveRejectRecord.setRejectRecordCode(returnOrderCode);
             //状态直接已经完成
             saveRejectRecord.setRejectStatus(3);
@@ -354,9 +369,8 @@ public class AsynSaveDocuments {
                 //sku对应的供应商采购价格
                 BigDecimal taxIncludedPrice = productSkuSupplyUnit.getTaxIncludedPrice();
                 BeanUtils.copyProperties(returnDetail, detail);
+                detail.setRejectRecordId(rejectRecordId);
                 detail.setRejectRecordDetailId(returnOrderCode);
-                detail.setSkuCode(returnDetail.getSkuCode());
-                detail.setSkuName(returnDetail.getSkuName());
                 detail.setProductSpec(returnDetail.getSpec());
                 detail.setColorName(returnDetail.getColorName());
                 detail.setModelNumber(returnDetail.getModelCode());

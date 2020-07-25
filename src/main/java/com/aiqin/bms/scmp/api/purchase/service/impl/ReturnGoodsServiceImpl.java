@@ -31,6 +31,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.domain.response.returngoods.*;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
+import com.aiqin.bms.scmp.api.purchase.service.asyn.AsynSaveDocuments;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
@@ -97,6 +98,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private ProductSkuCheckoutDao productSkuCheckoutDao;
     @Resource
     private DlAbutmentService dlAbutmentService;
+
+    @Resource
+    private AsynSaveDocuments asynSaveDocuments;
 
     @Override
     public HttpResponse<ReturnOrderDetailResponse> returnOrderDetail(String returnOrderCode) {
@@ -367,6 +371,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         changeParameter(itemList.get(0).getReturnOrderCode());
         // 推送结算
         //sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
+        //异步保存单据
+        asynSaveDocuments.saveReject(itemList.get(0).getReturnOrderCode());
         return HttpResponse.success();
     }
 
