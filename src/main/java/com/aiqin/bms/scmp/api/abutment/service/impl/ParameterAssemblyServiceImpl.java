@@ -128,7 +128,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             if(CollectionUtils.isNotEmpty(product.getBatchList()) && product.getBatchList().size() > 0){
                for (BatchRequest batch : product.getBatchList()){
                    item.setProductCount(batch.getTotalCount());
-                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+//                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+                   item.setBatchDate(batch.getProductDate());
                    itemList.add(item);
                }
             }else {
