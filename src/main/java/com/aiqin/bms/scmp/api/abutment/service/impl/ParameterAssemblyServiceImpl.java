@@ -214,7 +214,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             item.setReturnOrderCode(request.getReturnOrderCode());
             item.setModelCode(product.getModelNumber());
             // 默认商品类型 - 商品
-            item.setProductType(0);
+            item.setProductType(product.getProductType());
             item.setZeroDisassemblyCoefficient(1L);
             item.setReturnProductCount(product.getTotalCount());
             item.setTotalProductAmount(product.getProductTotalAmount());
