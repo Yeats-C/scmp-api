@@ -1460,6 +1460,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         orderInfo.setUpdateByName(request.getPersonName());
         orderInfo.setReceivingTime(request.getReceiveTime());
         orderInfo.setActualProductNum(request.getActualTotalCount());
+        orderInfo.setPackingNum(request.getPackingNum());
         request.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
         request.setOrderTypeCode(response.getOrderTypeCode());
         request.setOrderId(response.getOrderOriginal());

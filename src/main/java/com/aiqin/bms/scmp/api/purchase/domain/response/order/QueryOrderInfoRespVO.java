@@ -313,6 +313,9 @@ public class QueryOrderInfoRespVO {
     @ApiModelProperty(value = "渠道编码")
     private String channelName;
 
+    @ApiModelProperty("包装数")
+    private Integer packingNum;
+
     @ApiModelProperty("商品信息")
     private List<QueryOrderInfoItemRespVO> productList;
 
