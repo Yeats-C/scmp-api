@@ -4698,6 +4698,22 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         sapStorageAbutment(productSkuList);
         return 1;
     }
+
+    @Override
+    public HttpResponse updateSkuTaxCode(QuerySkuListReqVO querySkuListReqVO) {
+        if (StringUtils.isBlank(querySkuListReqVO.getSkuCode())) {
+            throw new BizException("sku编号不能为空");
+        }
+        if (StringUtils.isBlank(querySkuListReqVO.getTaxCode())) {
+            throw new BizException("税收分类编码不能为空");
+        }
+        Integer count = productSkuInfoMapper.updateTaxCodeBySkuCode(querySkuListReqVO.getSkuCode(), querySkuListReqVO.getTaxCode());
+        if(count > 0){
+            return HttpResponse.success();
+        }else {
+            return HttpResponse.failure(ResultCode.UPDATE_ERROR);
+        }
+    }
 }
 
 

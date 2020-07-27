@@ -28,6 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -135,6 +136,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse orderTransport(OrderTransportRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -178,6 +180,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse echoOrderInfo(EchoOrderRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -241,7 +244,9 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         return HttpResponse.success();
     }
 
+
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse stockChange(StockChangeRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -361,6 +366,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse supplierInfo(SupplierInfoRequest request){
         if(null == request){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);

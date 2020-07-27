@@ -256,6 +256,7 @@ transport_number, platform_type, business_form, tax_id
       <result column="aconsignee_mobile" jdbcType="DECIMAL" property="consigneeMobile" />
       <result column="aactual_logistics_remission_ratio" jdbcType="DECIMAL" property="actualLogisticsRemissionRatio" />
       <result column="aactual_activity_discount" jdbcType="DECIMAL" property="actualActivityDiscount" />
+      <result column="apacking_num" jdbcType="BIGINT" property="packingNum" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -415,6 +416,7 @@ transport_number, platform_type, business_form, tax_id
              a.actual_logistics_remission_ratio aactual_logistics_remission_ratio,
              a.actual_activity_discount aactual_activity_discount,
               a.actual_product_num aactual_product_num,
+               a.packing_num apacking_num,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -1725,7 +1727,10 @@ transport_number, platform_type, business_form, tax_id
           transport_company_code = #{transportCompanyCode,jdbcType=VARCHAR},
       </if>
       <if test="transportNumber != null">
-          transport_number = #{transportNumber,jdbcType=VARCHAR}
+          transport_number = #{transportNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="packingNum != null">
+          packing_num = #{packingNum,jdbcType=BIGINT}
       </if>
    </set>
     where order_code = #{orderCode,jdbcType=BIGINT}

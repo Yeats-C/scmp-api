@@ -95,11 +95,10 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private InboundProductDao inboundProductDao;
     @Autowired
+    @Lazy
     private SkuService skuService;
     @Autowired
     private UrlConfig urlConfig;
-    @Autowired
-    private StockService stockService;
     @Autowired
     private ProductCommonService productCommonService;
     @Autowired
@@ -140,11 +139,15 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
     @Autowired
+    @Lazy(true)
     private DlAbutmentService dlService;
     @Autowired
     private StockBatchDao stockBatchDao;
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
+    @Autowired
+    @Lazy(true)
+    private StockService stockService;
 
     /**
      * 分页查询以及列表搜索
@@ -961,7 +964,7 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    @Async("myTaskAsyncPool")
+    //@Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         // 查询入库单信息
         Inbound inbound = inboundDao.selectByPrimaryKey(id);
@@ -1040,7 +1043,7 @@ public class InboundServiceImpl implements InboundService {
     /**
      * 回调采购接口
      */
-    @Async("myTaskAsyncPool")
+    //@Async("myTaskAsyncPool")
     public void returnPurchase(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
         // 查询对应的采购单

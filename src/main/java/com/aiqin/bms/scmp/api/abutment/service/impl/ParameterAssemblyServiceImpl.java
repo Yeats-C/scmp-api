@@ -25,6 +25,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,6 +43,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Resource
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
     @Resource
+    @Lazy(true)
     private DlAbutmentService dlAbutmentService;
 
     @Override
@@ -126,7 +128,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             if(CollectionUtils.isNotEmpty(product.getBatchList()) && product.getBatchList().size() > 0){
                for (BatchRequest batch : product.getBatchList()){
                    item.setProductCount(batch.getTotalCount());
-                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+//                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+                   item.setBatchDate(batch.getProductDate());
                    itemList.add(item);
                }
             }else {
@@ -212,7 +215,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             item.setReturnOrderCode(request.getReturnOrderCode());
             item.setModelCode(product.getModelNumber());
             // 默认商品类型 - 商品
-            item.setProductType(0);
+            item.setProductType(product.getProductType());
             item.setZeroDisassemblyCoefficient(1L);
             item.setReturnProductCount(product.getTotalCount());
             item.setTotalProductAmount(product.getProductTotalAmount());

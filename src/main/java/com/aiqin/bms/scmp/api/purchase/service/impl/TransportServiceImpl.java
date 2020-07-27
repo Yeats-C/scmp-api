@@ -104,15 +104,16 @@ public class TransportServiceImpl implements TransportService {
             transport.setUpdateBy(currentAuthToken.getPersonName());
         }
         List<TransportOrders> transportOrders = BeanCopyUtils.copyList(transportAddRequest.getOrdersList(), TransportOrders.class);
-        Long transportAmount=0L;
-//        Long orderCommodityNum=0L;
+        Long transportAmount = 0L;
+        Long orderCommodityNum = 0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
             if(currentAuthToken != null){
                 transportOrder.setCreateBy(currentAuthToken.getPersonName());
                 transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             }
-            transportAmount+=transportOrder.getOrderAmount().longValue();
+            transportAmount += transportOrder.getOrderAmount().longValue();
+            orderCommodityNum += transportOrder.getProductNum();
             transport.setTransportCenterCode(transportOrder.getTransportCenterCode());
 //            orderCommodityNum+=transportOrder.getProductNum();
         }
@@ -125,7 +126,7 @@ public class TransportServiceImpl implements TransportService {
         transport.setDetailedAddress(orderInfo.getDetailAddress());
         transport.setStatus(1);//设置未发运状态
         transport.setTransportAmount(new BigDecimal(transportAmount).add(transport.getLogisticsFee()));
-        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
+        transport.setOrderCommodityNum(orderCommodityNum);
         transport.setZip(orderInfo.getZipCode());
         transportMapper.insertOne(transport);
         transportOrdersMapper.insertBatch(transportOrders);

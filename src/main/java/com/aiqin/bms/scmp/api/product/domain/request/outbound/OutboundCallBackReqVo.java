@@ -76,4 +76,8 @@ public class OutboundCallBackReqVo{
     @JsonProperty("batch_manage")
     private Integer batchManage;
 
+    @ApiModelProperty("包装数")
+    @JsonProperty("packing_num")
+    private Integer packingNum;
+
 }

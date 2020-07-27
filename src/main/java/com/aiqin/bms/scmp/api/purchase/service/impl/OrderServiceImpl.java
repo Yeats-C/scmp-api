@@ -937,7 +937,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
         for (ErpOrderItem item : request.getItemList()) {
             product = new OrderInfoItemReqVO();
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // map中有数据判断 没有新增
             if (productList != null && productList.size() > 0) {
                 String key = item.getSkuCode() + item.getLineCode();
@@ -990,9 +990,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         productBatch.setSkuName(item.getSkuName());
                         productBatch.setTotalCount(item.getProductCount());
                         productBatch.setActualTotalCount(item.getActualProductCount());
-                        if (item.getBatchDate() != null) {
-                            productBatch.setProductDate(sf.format(item.getBatchDate()));
-                        }
+//                        if (item.getBatchDate() != null) {
+//                            productBatch.setProductDate(sf.format(item.getBatchDate()));
+//                        }
+                        productBatch.setProductDate(item.getBatchDate());
                         productBatch.setBeOverdueDate(item.getBeOverdueDate());
                         productBatch.setLockType(item.getLockType());
                         productBatch.setSupplierCode(item.getSupplierCode());
@@ -1044,9 +1045,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productBatch.setSkuName(item.getSkuName());
                     productBatch.setTotalCount(item.getProductCount());
                     productBatch.setActualTotalCount(item.getActualProductCount());
-                    if (item.getBatchDate() != null) {
-                        productBatch.setProductDate(sf.format(item.getBatchDate()));
-                    }
+//                    if (item.getBatchDate() != null) {
+//                        productBatch.setProductDate(sf.format(item.getBatchDate()));
+//                    }
+                    productBatch.setProductDate(item.getBatchDate());
                     productBatch.setLockType(item.getLockType());
                     productBatch.setSupplierCode(item.getSupplierCode());
                     productBatch.setSupplierName(item.getSupplierName());
