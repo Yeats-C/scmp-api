@@ -145,6 +145,9 @@ public class InboundServiceImpl implements InboundService {
     private StockBatchDao stockBatchDao;
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
+    @Autowired
+    @Lazy(true)
+    private StockService stockService;
 
     /**
      * 分页查询以及列表搜索
