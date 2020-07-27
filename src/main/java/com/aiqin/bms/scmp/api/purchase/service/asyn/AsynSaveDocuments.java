@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
@@ -97,7 +98,9 @@ public class AsynSaveDocuments {
      * @param code 销售单发货时候生成采购单保存
      */
     @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class)
     public void savePurchase(String code) {
+        log.info("=================");
         if (StringUtils.isBlank(code)) {
             log.info("异步保存销售发货单号为空");
             return;
@@ -121,6 +124,7 @@ public class AsynSaveDocuments {
      * @param code 退货单收获时生成退购单保存
      */
     @Async("myTaskAsyncPool")
+    @Transactional(rollbackFor = Exception.class )
     public void saveReject(String code) {
         if (StringUtils.isBlank(code)) {
             log.info("异步保存退货收货单号为空");
@@ -142,7 +146,7 @@ public class AsynSaveDocuments {
     }
 
 
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class,propagation=Propagation.REQUIRES_NEW )
     public void savePurchaseOrder(String orderCode) {
         OrderInfo order = orderInfoMapper.selectByOrderCode2(orderCode);
         if (Objects.isNull(order)) {
@@ -237,6 +241,8 @@ public class AsynSaveDocuments {
                 BigDecimal taxIncludedPrice = productSkuSupplyUnit.getTaxIncludedPrice();
                 BeanUtils.copyProperties(orderInfoItem, product);
                 product.setPurchaseOrderId(purchaseId);
+                String id = UUID.randomUUID().toString().replaceAll("-", "");
+                product.setOrderProductId(id);
                 product.setPurchaseOrderCode(orderCode);
                 product.setProductSpec(orderInfoItem.getSpec());
                 product.setColorName(orderInfoItem.getColorName());
@@ -247,8 +253,7 @@ public class AsynSaveDocuments {
                 product.setActualSingleCount(Integer.parseInt(orderInfoItem.getActualDeliverNum() + ""));
                 // 是否是赠品(0否1是)
                 Long productLineNum = orderInfoItem.getProductLineNum();
-                Long promotionLineNum = orderInfoItem.getPromotionLineNum();
-                product.setLinnum(givePromotion == 0 ? Integer.parseInt(productLineNum + "") : Integer.parseInt(promotionLineNum + ""));
+                product.setLinnum(Integer.parseInt(productLineNum+""));
                 product.setCreateByName(order.getCreateByName());
                 product.setUpdateByName(order.getUpdateByName());
                 product.setProductAmount(taxIncludedPrice);
@@ -311,6 +316,7 @@ public class AsynSaveDocuments {
             }
             //保存主表数据
             this.purchaseOrderDao.insert(savePurchaseOrder);
+
             //保存明细表数据
             this.purchaseOrderProductDao.insertAll(purchaseOrderProduct);
 
@@ -321,7 +327,7 @@ public class AsynSaveDocuments {
     /**
      * 收货后保存退供单
      */
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = Exception.class,propagation=Propagation.REQUIRES_NEW )
     public void saveRejectOrder(String returnOrderCode) {
         ReturnOrderInfo returnOrderInfo = this.returnOrderInfoMapper.selectByCode(returnOrderCode);
         if (Objects.nonNull(returnOrderInfo)) {
