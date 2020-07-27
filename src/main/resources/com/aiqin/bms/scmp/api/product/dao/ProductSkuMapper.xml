@@ -952,6 +952,15 @@
       <if test="barCode != null and barCode != '' ">
         AND d.sales_code=#{barCode,jdbcType=VARCHAR}
       </if>
+      <if test="taxCode != null and taxCode != '' ">
+        AND a.tax_code=#{taxCode,jdbcType=VARCHAR}
+      </if>
+      <if test="isTaxCode != null and isTaxCode == 0">
+        AND a.tax_code is not null
+      </if>
+      <if test="isTaxCode != null and isTaxCode == 1">
+        AND a.tax_code is null
+      </if>
     order by create_time desc
   </select>
   <select id="querySkuCodeList" resultType="java.lang.String">

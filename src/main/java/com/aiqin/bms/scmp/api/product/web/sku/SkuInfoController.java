@@ -441,4 +441,11 @@ public class SkuInfoController {
         return productService.skuImportWms();
     }
 
+    @PutMapping("/update/taxCode")
+    @ApiOperation(value = "修改sku商品税码分类管理")
+    public HttpResponse updateSkuTaxCode(@RequestBody QuerySkuListReqVO querySkuListReqVO){
+        log.info("SkuInfoController---updateSkuTaxCode---修改sku商品税码分类管理入参：[{}]", JsonUtil.toJson(querySkuListReqVO));
+        return skuInfoService.updateSkuTaxCode(querySkuListReqVO);
+    }
+
 }

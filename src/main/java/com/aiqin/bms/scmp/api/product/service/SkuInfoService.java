@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.file.ProductSkuFileRespVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -338,4 +339,6 @@ public interface SkuInfoService{
     Integer saveDraftSkuInfo2(AddSkuInfoReqVO addSkuInfoReqVO);
 
     Integer saveDraftSkuInfo3();
+
+    HttpResponse updateSkuTaxCode(QuerySkuListReqVO querySkuListReqVO);
 }

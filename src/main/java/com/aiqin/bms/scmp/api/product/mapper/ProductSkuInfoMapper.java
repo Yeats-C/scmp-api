@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.product.domain.excel.SkuEditExport;
 import com.aiqin.bms.scmp.api.product.domain.excel.SkuInfoExport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInfo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.SkuStatusRespVo;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.ibatis.annotations.MapKey;
 import org.apache.ibatis.annotations.Param;
 
@@ -97,4 +98,6 @@ public interface ProductSkuInfoMapper {
     List<SkuEditExport> exportEditSku(String applyCode);
 
     int checkName(@Param("skuCode") String skuCode,@Param("skuName") String skuName);
+
+    Integer updateTaxCodeBySkuCode(@Param("skuCode") String skuCode, @Param("taxCode") String taxCode);
 }
