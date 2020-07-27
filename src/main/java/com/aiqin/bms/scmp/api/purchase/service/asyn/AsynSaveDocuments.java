@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.purchase.service.asyn;
 
+import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
@@ -16,7 +17,9 @@ import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
+import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.util.RedisTool;
 import com.aiqin.ground.util.id.IdUtil;
@@ -97,6 +100,9 @@ public class AsynSaveDocuments {
     @Resource
     private ApplicationContext applicationContext;
 
+    @Resource
+    private EncodingRuleDao encodingRuleDao;
+
 
     /**
      * @param code 销售单发货时候生成采购单保存
@@ -171,21 +177,24 @@ public class AsynSaveDocuments {
             }
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
+
+
+            // 获取采购单编码
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+            savePurchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
             //状态直接已经完成
             String purchaseId = IdUtil.purchaseId();
             savePurchaseOrder.setPurchaseOrderId(purchaseId);
+            savePurchaseOrder.setPurchaseApplyCode(orderCode);
             savePurchaseOrder.setPurchaseSource(1);
             savePurchaseOrder.setPurchaseOrderStatus(8);
             savePurchaseOrder.setTransportCenterCode(Global.HB_CODE);
             savePurchaseOrder.setTransportCenterName("华北仓");
             savePurchaseOrder.setWarehouseCode("1048");
             savePurchaseOrder.setWarehouseName("采购直送库");
-            savePurchaseOrder.setCreateByName(order.getCreateByName());
-            savePurchaseOrder.setUpdateByName(order.getUpdateByName());
             savePurchaseOrder.setInboundLine(1);
             savePurchaseOrder.setPurchaseSource(1);
-            //采购单号直接使用订单号
-            savePurchaseOrder.setPurchaseOrderCode(orderCode);
             savePurchaseOrder.setPurchaseMode(order.getOrderTypeCode() == 1 ? 0 : 1);
             //查询订单商品表
             List<OrderInfoItem> orderInfoItemList = this.orderInfoItemMapper.selectListByOrderCode(orderCode);
@@ -219,12 +228,15 @@ public class AsynSaveDocuments {
                         savePurchaseOrder.setPurchaseGroupCode(supCode);
                         savePurchaseOrder.setPurchaseGroupName(productSku.getProcurementSectionName());
                         //通过供应商信息拿到联系电话和联系人
-                        SupplyCompany supplyCompany = this.supplyCompanyDao.selectBySupplierCode(supCode);
+
+                        SupplyCompany supplyCompany = this.supplyCompanyDao.selectBySupplierCode(order.getSupplierCode());
                         if (Objects.nonNull(supplyCompany)) {
                             savePurchaseOrder.setSupplierMobile(supplyCompany.getMobilePhone());
                             savePurchaseOrder.setSupplierPerson(supplyCompany.getContactName());
-                            savePurchaseOrder.setSupplierCode(supplyCompany.getSupplierCode());
-                            savePurchaseOrder.setSupplierName(supplyCompany.getSupplierName());
+                            savePurchaseOrder.setSupplierCode(supplyCompany.getSupplyCode());
+                            savePurchaseOrder.setSupplierName(supplyCompany.getSupplyName());
+                            savePurchaseOrder.setSupplierCompanyCode(supplyCompany.getSupplierCode());
+                            savePurchaseOrder.setSupplierCompanyName(supplyCompany.getSupplierName());
                         }
 
                     }
@@ -261,6 +273,7 @@ public class AsynSaveDocuments {
                 product.setCreateByName(order.getCreateByName());
                 product.setUpdateByName(order.getUpdateByName());
                 product.setProductAmount(taxIncludedPrice);
+                product.setTaxRate(orderInfoItem.getTax());
                 //数量
                 BigDecimal num = new BigDecimal(orderInfoItem.getNum() + "");
                 //累加数量
@@ -320,6 +333,8 @@ public class AsynSaveDocuments {
             }
             //保存主表数据
             this.purchaseOrderDao.insert(savePurchaseOrder);
+            // 变更采购单号
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
 
             //保存明细表数据
             this.purchaseOrderProductDao.insertAll(purchaseOrderProduct);
@@ -405,8 +420,9 @@ public class AsynSaveDocuments {
                         if (Objects.nonNull(supplyCompany)) {
                             saveRejectRecord.setSupplierMobile(supplyCompany.getMobilePhone());
                             saveRejectRecord.setSupplierPerson(supplyCompany.getContactName());
-                            saveRejectRecord.setSupplierCode(supplyCompany.getSupplierCode());
-                            saveRejectRecord.setSupplierName(supplyCompany.getSupplierName());
+                            saveRejectRecord.setSupplierCode(supplyCompany.getSupplyCode());
+                            saveRejectRecord.setSupplierName(supplyCompany.getSupplyName());
+                            saveRejectRecord.setSupplierCompanyCode(supplyCompany.getSupplierCode());
                         }
 
                     }
