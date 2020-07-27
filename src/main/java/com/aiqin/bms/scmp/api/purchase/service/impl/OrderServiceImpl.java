@@ -318,6 +318,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         order.setOperatorTime(date);
         order.setRemake(reqVO.getRemark());
         order.setDeliveryTime(reqVO.getDeliveryTime());
+        order.setTransportCompany(reqVO.getTransportCompany());
+        order.setTransportCompanyCode(reqVO.getTransportCompanyCode());
+        order.setTransportNumber(reqVO.getTransportNumber());
         //更新
         updateByOrderCode(order);
         //存日志
@@ -398,6 +401,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         changeOrderStatusReqVO.setOperatorCode(getUser().getPersonId());
         changeOrderStatusReqVO.setOrderCode(reqVO.getOrderCode());
         changeOrderStatusReqVO.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        changeOrderStatusReqVO.setTransportCompany(reqVO.getTransportCompany());
+        changeOrderStatusReqVO.setTransportCompanyCode(reqVO.getTransportCompanyCode());
+        changeOrderStatusReqVO.setTransportNumber(reqVO.getTransportNumber());
         //更新状态
         changeStatus(changeOrderStatusReqVO);
         //更新运费信息
@@ -416,8 +422,9 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == orderCode) {
             throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
         }
-        if (Objects.equals(orderInfo.getOrderTypeCode(), OrderType.DIRECT_DELIVERY.getNum()) ||
-                Objects.equals(orderInfo.getOrderTypeCode(), OrderType.DIRECT_DELIVERY_FUCAI.getNum())) {
+       if(Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY.getNum()) ||
+                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.SHELVE_DIRECT_DELIVERY.getNum())||
+                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.PURCHASE_DIRECT_DELIVERY.getNum())) {
             OutboundCallBackRequest request = new OutboundCallBackRequest();
             request.setOderCode(orderCode);
             request.setOrderStatus(orderInfo.getOrderStatus());
@@ -1149,8 +1156,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 商品批次
         List<OrderInfoItemProductBatch> itemBatchList = vo.getItemBatchList();
         List<OutboundBatch> outboundBatches = new ArrayList<>();
-        if (CollectionUtils.isNotEmptyCollection(itemBatchList)) {
-            for (OrderInfoItemProductBatch batchProduct : itemBatchList) {
+        if(CollectionUtils.isNotEmptyCollection(itemBatchList)){
+            for (OrderInfoItemProductBatch batchProduct: itemBatchList) {
                 OutboundBatch outboundBatche = new OutboundBatch();
                 outboundBatche.setBatchCode(batchProduct.getBatchCode());
                 outboundBatche.setBatchInfoCode(batchProduct.getBatchInfoCode());
