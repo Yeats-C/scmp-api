@@ -21,8 +21,10 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.RedisTool;
 import com.aiqin.ground.util.id.IdUtil;
+import com.aiqin.ground.util.json.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -170,7 +172,7 @@ public class AsynSaveDocuments {
         if (orderTypeCode.equals(Global.ORDER_TYPE_3) || orderTypeCode.equals(Global.ORDER_TYPE_4)) {
             List<String> codes = new ArrayList<>();
             codes.add(orderCode);
-            List<PurchaseOrder> purchaseOrders = this.purchaseOrderDao.selectByPurchaseOrderCode(codes);
+            List<PurchaseOrder> purchaseOrders = this.purchaseOrderDao.selectByPurchaseApplyCode(orderCode);
             if (!CollectionUtils.isEmpty(purchaseOrders)) {
                 log.info("此销售单数据已经存在={}", orderCode);
                 return;
@@ -259,7 +261,7 @@ public class AsynSaveDocuments {
                 product.setPurchaseOrderId(purchaseId);
                 String id = UUID.randomUUID().toString().replaceAll("-", "");
                 product.setOrderProductId(id);
-                product.setPurchaseOrderCode(orderCode);
+                product.setPurchaseOrderCode(purchaseOrderCode);
                 product.setProductSpec(orderInfoItem.getSpec());
                 product.setColorName(orderInfoItem.getColorName());
                 product.setModelNumber(orderInfoItem.getModelCode());
@@ -323,7 +325,7 @@ public class AsynSaveDocuments {
                 detailBatchList.forEach(op -> {
                     PurchaseBatch purchaseBatch = new PurchaseBatch();
                     BeanUtils.copyProperties(op, purchaseBatch);
-                    purchaseBatch.setPurchaseOderCode(orderCode);
+                    purchaseBatch.setPurchaseOderCode(purchaseOrderCode);
                     purchaseBatch.setCreateTime(now);
                     purchaseBatchList.add(purchaseBatch);
 
@@ -364,12 +366,12 @@ public class AsynSaveDocuments {
                 log.info("此退货单数据已经存在={}", returnOrderCode);
                 return;
             }
-
             RejectRecord saveRejectRecord = new RejectRecord();
             BeanUtils.copyProperties(returnOrderInfo, saveRejectRecord);
             String rejectRecordId = IdUtil.rejectRecordId();
             saveRejectRecord.setRejectRecordId(rejectRecordId);
             saveRejectRecord.setRejectRecordCode(returnOrderCode);
+            saveRejectRecord.setSourceCode(returnOrderCode);
             //状态直接已经完成
             saveRejectRecord.setRejectStatus(3);
             saveRejectRecord.setTransportCenterCode(Global.HB_CODE);
@@ -403,6 +405,11 @@ public class AsynSaveDocuments {
             Integer actualProductCount = 0;
             //实际赠品数量
             Integer actualGiftCount = 0;
+            //product_count 商品数量
+            Long productCount=0L;
+            //gift_count 赠品数量
+            Long giftCount=0L;
+
             List<RejectRecordDetail> RejectRecordDetailList = new ArrayList<>();
             for (int i = 0; i < returnOrderInfoItems.size(); i++) {
                 ReturnOrderInfoItem returnDetail = returnOrderInfoItems.get(i);
@@ -475,12 +482,14 @@ public class AsynSaveDocuments {
                     actualProductAmount = actualProductAmount.add(actualAmont);
                     //累加实际商品数量
                     actualProductCount = actualProductCount + actNum;
+                    productCount=productCount+returnDetail.getNum();
                 } else {
                     //累加赠品含税总价
                     giftTaxSum = giftTaxSum.add(actualAmont);
                     actualGiftAmount = actualGiftAmount.add(actualAmont);
-                    //累加实际赠品刷领
+                    //累加实际赠品数量
                     actualGiftCount = actualGiftCount + actNum;
+                    giftCount=giftCount+returnDetail.getNum();
 
                 }
                 detail.setTotalCount(returnDetail.getNum());
@@ -489,9 +498,12 @@ public class AsynSaveDocuments {
                 detail.setProductTotalAmount(amount);
                 detail.setActualProductTotalAmount(actualAmont);
                 detail.setCreateTime(now);
+                detail.setTaxRate(returnDetail.getTax());
                 RejectRecordDetailList.add(detail);
             }
             saveRejectRecord.setTotalCount(totalCount);
+            saveRejectRecord.setProductCount(productCount);
+            saveRejectRecord.setGiftCount(giftCount);
             saveRejectRecord.setActualTotalCount(Long.parseLong(actualTotalCount + ""));
             saveRejectRecord.setActualProductCount(Long.parseLong(actualProductCount + ""));
             saveRejectRecord.setActualGiftCount(Long.parseLong(actualGiftCount + ""));
