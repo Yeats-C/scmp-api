@@ -187,6 +187,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Autowired
     private UrlConfig urlConfig;
     @Autowired
+    @Lazy(true)
     private DlAbutmentService dlAbutmentService;
 
 
