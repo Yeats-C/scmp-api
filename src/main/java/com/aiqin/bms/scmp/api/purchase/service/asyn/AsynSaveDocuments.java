@@ -333,7 +333,7 @@ public class AsynSaveDocuments {
     @Transactional(rollbackFor = Exception.class)
     public void saveRejectOrder(String returnOrderCode) {
         ReturnOrderInfo returnOrderInfo = this.returnOrderInfoMapper.selectByCode(returnOrderCode);
-        if (Objects.nonNull(returnOrderInfo)) {
+        if (Objects.isNull(returnOrderInfo)) {
             log.info("未找到对应的退货物信息={}", returnOrderCode);
             return;
         }
@@ -426,6 +426,7 @@ public class AsynSaveDocuments {
                 //sku对应的供应商采购价格
                 BigDecimal taxIncludedPrice = productSkuSupplyUnit.getTaxIncludedPrice();
                 BeanUtils.copyProperties(returnDetail, detail);
+                detail.setRejectRecordCode(returnOrderCode);
                 detail.setRejectRecordId(rejectRecordId);
                 detail.setRejectRecordDetailId(returnOrderCode);
                 detail.setProductSpec(returnDetail.getSpec());
@@ -435,8 +436,7 @@ public class AsynSaveDocuments {
                 detail.setTaxRate(returnDetail.getTax());
                 // 是否是赠品(0否1是)
                 Long productLineNum = returnDetail.getProductLineNum();
-                Long promotionLineNum = returnDetail.getPromotionLineNum();
-                detail.setLineCode(givePromotion == 0 ? Integer.parseInt(productLineNum + "") : Integer.parseInt(promotionLineNum + ""));
+                detail.setLineCode(Integer.parseInt(productLineNum + ""));
                 detail.setCreateByName(returnOrderInfo.getCreateByName());
                 detail.setUpdateByName(returnOrderInfo.getUpdateByName());
                 //数量
