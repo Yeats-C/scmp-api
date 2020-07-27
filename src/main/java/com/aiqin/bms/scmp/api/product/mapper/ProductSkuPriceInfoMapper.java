@@ -119,7 +119,6 @@ public interface ProductSkuPriceInfoMapper {
      * @date 2019/7/9
      * @param skuCode
      * @param companyCode
-     * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.response.price.SkuPriceRespVO>
      */
     List<ProductSkuPriceRespVo> selectBySkuCodeForDraft(@Param("skuCode") String skuCode, @Param("companyCode") String companyCode);
 

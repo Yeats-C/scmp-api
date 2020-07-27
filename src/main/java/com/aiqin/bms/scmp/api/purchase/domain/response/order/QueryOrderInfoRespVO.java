@@ -307,6 +307,15 @@ public class QueryOrderInfoRespVO {
 //    @JsonProperty("actual_activity_discount")
     private BigDecimal actualActivityDiscount;
 
+    @ApiModelProperty(value = "渠道名称")
+    private String channelCode;
+
+    @ApiModelProperty(value = "渠道编码")
+    private String channelName;
+
+    @ApiModelProperty("包装数")
+    private Integer packingNum;
+
     @ApiModelProperty("商品信息")
     private List<QueryOrderInfoItemRespVO> productList;
 

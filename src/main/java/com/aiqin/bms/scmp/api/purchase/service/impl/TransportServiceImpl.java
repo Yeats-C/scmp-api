@@ -35,6 +35,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -103,15 +104,16 @@ public class TransportServiceImpl implements TransportService {
             transport.setUpdateBy(currentAuthToken.getPersonName());
         }
         List<TransportOrders> transportOrders = BeanCopyUtils.copyList(transportAddRequest.getOrdersList(), TransportOrders.class);
-        Long transportAmount=0L;
-//        Long orderCommodityNum=0L;
+        Long transportAmount = 0L;
+        Long orderCommodityNum = 0L;
         for (TransportOrders  transportOrder: transportOrders) {
             transportOrder.setTransportCode(code);
             if(currentAuthToken != null){
                 transportOrder.setCreateBy(currentAuthToken.getPersonName());
                 transportOrder.setUpdateBy(currentAuthToken.getPersonName());
             }
-            transportAmount+=transportOrder.getOrderAmount().longValue();
+            transportAmount += transportOrder.getOrderAmount().longValue();
+            orderCommodityNum += transportOrder.getProductNum();
             transport.setTransportCenterCode(transportOrder.getTransportCenterCode());
 //            orderCommodityNum+=transportOrder.getProductNum();
         }
@@ -124,7 +126,7 @@ public class TransportServiceImpl implements TransportService {
         transport.setDetailedAddress(orderInfo.getDetailAddress());
         transport.setStatus(1);//设置未发运状态
         transport.setTransportAmount(new BigDecimal(transportAmount).add(transport.getLogisticsFee()));
-        transport.setOrderCommodityNum(transportAddRequest.getOrderCommodityNum());
+        transport.setOrderCommodityNum(orderCommodityNum);
         transport.setZip(orderInfo.getZipCode());
         transportMapper.insertOne(transport);
         transportOrdersMapper.insertBatch(transportOrders);
@@ -185,6 +187,9 @@ public class TransportServiceImpl implements TransportService {
         }
         List<TransportLog> logs = Lists.newArrayList();
         for (Transport transport1 : transport) {
+            if(StringUtils.isBlank(transport1.getLogisticsCompany()) || StringUtils.isBlank(transport1.getLogisticsCompanyName()) || StringUtils.isBlank(transport1.getLogisticsNumber())){
+                return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM);
+            }
             // 传发运参数
             DeliveryCallBackRequest request = new DeliveryCallBackRequest();
             request.setDeliveryCode(transport1.getTransportCode());
@@ -205,15 +210,7 @@ public class TransportServiceImpl implements TransportService {
             request.setOrderCommodityNum(transport1.getOrderCommodityNum());
             request.setTotalVolume(transport1.getTotalVolume());
             request.setTotalWeight(transport1.getTotalWeight());
-            List<DeliveryDetailRequest> detailList = new ArrayList<>();
-            List<TransportOrders> transportOrders = transportOrdersMapper.selectOrderCodeByTransportCode(transport1.getTransportCode());
-            for (TransportOrders t : transportOrders) {
-                DeliveryDetailRequest detail = new DeliveryDetailRequest();
-                detail.setOrderCode(t.getOrderCode());
-                detail.setTransportAmount(t.getOrderAmount());
-                detailList.add(detail);
-            }
-            request.setDetailList(detailList);
+
 //            调用发运接口
             orderCallbackService.deliveryCallBack(request);
             // 推送wms 发运信息

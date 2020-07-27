@@ -201,9 +201,9 @@ public class ErpOrderItem {
     private String batchInfoCode;
 
     @ApiModelProperty(value = "批次号时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
     @JsonProperty("batch_date")
-    private Date batchDate;
+    private String batchDate;
 
     @ApiModelProperty("过期日期")
     @JsonProperty("be_overdue_date")

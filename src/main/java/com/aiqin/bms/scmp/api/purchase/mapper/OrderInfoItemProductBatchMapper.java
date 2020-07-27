@@ -15,7 +15,7 @@ public interface OrderInfoItemProductBatchMapper {
 
     int insertSelective(OrderInfoItemProductBatch record);
 
-    OrderInfoItemProductBatch selectByPrimaryKey(Long id);
+    List<OrderInfoItemProductBatch> selectByPrimaryKey(String orderCode);
 
     int updateByPrimaryKeySelective(OrderInfoItemProductBatch record);
 

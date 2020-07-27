@@ -62,6 +62,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -130,6 +131,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Resource
     private ProductSkuBatchMapper productSkuBatchDao;
     @Resource
+    @Lazy
     private DlAbutmentService dlService;
 
     @Override
@@ -1062,7 +1064,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             // 调用DL，把退供的库存变更推送给DL
             StockChangeRequest dlRequest = new StockChangeRequest();
             dlRequest.setOrderCode(rejectRecord.getRejectRecordCode());
-            dlRequest.setOrderType(Global.DL_ORDER_TYPE_1);
+            dlRequest.setOrderType(Global.DL_ORDER_TYPE_2);
             dlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
             dlRequest.setSupplierCode(rejectRecord.getSupplierCode());
             dlRequest.setWarehouseCode(rejectRecord.getWarehouseCode());

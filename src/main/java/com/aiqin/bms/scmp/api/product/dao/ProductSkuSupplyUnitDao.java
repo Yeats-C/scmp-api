@@ -1,6 +1,9 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
-import com.aiqin.bms.scmp.api.product.domain.pojo.*;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuSupplyUnit;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnit;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuSupplyUnitDraft;
 import com.aiqin.bms.scmp.api.product.domain.request.product.apply.QueryProductApplyRespVO;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.ConfigSearchVo;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.ApplyProductSkuConfigReqVo;
@@ -92,4 +95,6 @@ public interface ProductSkuSupplyUnitDao {
     List<QueryProductApplyRespVO> queryApplyList(QueryProductApplyReqVO reqVo);
 
     int updateIsDeFaultBySkuCode(@Param("list") List<String> skuCodes, @Param("isDefault") Byte value);
+
+    ProductSkuSupplyUnit selectOneBySkuCode(@Param("skuCode") String skuCode);
 }

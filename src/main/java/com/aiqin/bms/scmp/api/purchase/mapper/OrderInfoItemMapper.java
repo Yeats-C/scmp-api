@@ -70,4 +70,6 @@ public interface OrderInfoItemMapper {
     List<OrderInfoItem> selectByIds(List<Long> itemIds);
 
     List<String> selectByOrderCodes(@Param("list") List<String> orderCodeList);
+
+    List<OrderInfoItem> selectListByOrderCode(@Param("orderCode") String orderCode);
 }

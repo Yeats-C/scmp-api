@@ -68,10 +68,10 @@ public class OrderInfoItem {
     private BigDecimal amount;
 
     @ApiModelProperty("活动分摊")
-    private Long activityApportionment;
+    private BigDecimal activityApportionment;
 
     @ApiModelProperty("优惠分摊")
-    private Long preferentialAllocation;
+    private BigDecimal preferentialAllocation;
 
     @ApiModelProperty("实发数量")
     private Long actualDeliverNum;

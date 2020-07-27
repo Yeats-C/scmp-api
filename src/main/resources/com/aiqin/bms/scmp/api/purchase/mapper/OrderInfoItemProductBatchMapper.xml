@@ -35,11 +35,11 @@
     product_date, batch_remark, batch_id, batch_code, lock_type, supplier_code,supplier_name,batch_info_code, be_overdue_date,
     create_time, update_time, create_by_id, update_by_id, create_by_name, update_by_name
   </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
     from order_info_item_product_batch
-    where id = #{id,jdbcType=BIGINT}
+    where order_code = #{orderCode,jdbcType=VARCHAR}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from order_info_item_product_batch

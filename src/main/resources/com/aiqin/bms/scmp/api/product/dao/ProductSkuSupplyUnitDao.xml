@@ -867,4 +867,7 @@
         </if>
         order by create_time desc
     </select>
+    <select id="selectOneBySkuCode"  resultMap="SkuSupplyUnitMap">
+    select * from product_sku_supply_unit  where product_sku_code=#{skuCode}  limit 1
+    </select>
 </mapper>

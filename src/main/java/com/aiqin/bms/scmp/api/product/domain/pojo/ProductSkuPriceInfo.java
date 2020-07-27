@@ -120,4 +120,7 @@ public class ProductSkuPriceInfo {
 
     @ApiModelProperty("是否含有区域")
     private Integer beContainArea;
+
+    @ApiModelProperty("价格种类 （0.商品价格 1.批次价格 2.月份价格）")
+    private Integer isBatchPrice;
 }

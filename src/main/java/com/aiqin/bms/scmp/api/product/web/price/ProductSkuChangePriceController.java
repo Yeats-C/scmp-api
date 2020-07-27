@@ -9,6 +9,7 @@ import com.aiqin.bms.scmp.api.product.domain.response.changeprice.*;
 import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -166,7 +167,7 @@ public class ProductSkuChangePriceController {
     @PostMapping("/querySkuBatchList")
     @ApiOperation("根据条件查询sku批次列表")
     public HttpResponse<BasePage<QuerySkuInfoRespVO>> querySkuBatchList(@RequestBody @Valid QuerySkuInfoReqVO reqVO){
-        log.info("ProductSkuChangePriceController---querySkuBatchList---入参：[{}]", JSON.toJSONString(reqVO));
+        log.info("ProductSkuChangePriceController---querySkuBatchList---入参：[{}]", JsonUtil.toJson(reqVO));
         try {
             return HttpResponse.success(productSkuChangePriceService.querySkuBatchList(reqVO));
         } catch (Exception e) {

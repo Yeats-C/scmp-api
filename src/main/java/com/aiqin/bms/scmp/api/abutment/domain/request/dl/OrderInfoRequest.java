@@ -41,6 +41,10 @@ public class OrderInfoRequest extends CommonRequest{
     @JsonProperty("order_category")
     private String orderCategory;
 
+    @ApiModelProperty(value="订单类别")
+    @JsonProperty("order_category_code")
+    private String orderCategoryCode;
+
     @ApiModelProperty(value="渠道 :爱亲科技、爱亲母婴、萌贝树、小红马")
     @JsonProperty("channel_name")
     private String channelName;

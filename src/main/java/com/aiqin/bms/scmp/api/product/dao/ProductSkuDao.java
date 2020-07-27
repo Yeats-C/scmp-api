@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.dao;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.SapOrderRequest;
 import com.aiqin.bms.scmp.api.base.PagesRequest;
+import com.aiqin.bms.scmp.api.product.domain.ProductSku;
 import com.aiqin.bms.scmp.api.product.domain.SkuWarehouseStockNum;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuDraft;
@@ -361,4 +362,6 @@ public interface ProductSkuDao {
     List<SkuWarehouseResponse> skuList(PagesRequest request);
 
     Integer selectByNameAndcode(ProductSkuInfo productSkuInfo);
+
+    ProductSku selectOneBySkuCode(@Param("skuCode") String skuCode);
 }

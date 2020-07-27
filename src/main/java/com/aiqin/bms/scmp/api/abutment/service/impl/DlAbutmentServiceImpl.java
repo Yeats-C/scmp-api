@@ -10,7 +10,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
-import com.aiqin.bms.scmp.api.abutment.web.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
@@ -28,6 +28,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -135,6 +136,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse orderTransport(OrderTransportRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -178,6 +180,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse echoOrderInfo(EchoOrderRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -241,7 +244,9 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         return HttpResponse.success();
     }
 
+
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse stockChange(StockChangeRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -361,6 +366,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public HttpResponse supplierInfo(SupplierInfoRequest request){
         if(null == request){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -376,7 +382,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);
 
         // 调用耘链新增供应商接口
-        String url = DL_URL + "";
+        String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("DL->熙耘，保存供应商信息成功");

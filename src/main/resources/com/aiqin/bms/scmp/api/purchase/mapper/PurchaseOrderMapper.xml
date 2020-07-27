@@ -481,4 +481,7 @@
     </foreach>
 
   </insert>
+  <select id="selectByPurchaseApplyCode" resultMap="BaseResultMap">
+   select  * from  purchase_order where purchase_apply_code=#{purchaseApplyCode}
+  </select>
 </mapper>

@@ -34,6 +34,7 @@ import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.WmsCancelService;
+import com.aiqin.bms.scmp.api.purchase.service.asyn.AsynSaveDocuments;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.*;
@@ -48,6 +49,7 @@ import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
@@ -57,6 +59,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -106,9 +109,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Autowired
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
+    @Resource
+    private AsynSaveDocuments asynSaveDocuments;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean save(List<OrderInfoReqVO> reqVOs){
+    public Boolean save(List<OrderInfoReqVO> reqVOs) {
         //校验
         validateOrderData(reqVOs);
         Date date = new Date();
@@ -116,7 +122,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OrderInfoItem> orderItems = Lists.newCopyOnWriteArrayList();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         List<OrderInfo> orders = Lists.newCopyOnWriteArrayList();
-        reqVOs.parallelStream().forEach(o->{
+        reqVOs.parallelStream().forEach(o -> {
             OrderInfo info = BeanCopyUtils.copy(o, OrderInfo.class);
 //            info.setCreateDate(date);
 //            info.setOperator(CommonConstant.SYSTEM_AUTO);
@@ -126,7 +132,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             List<OrderInfoItem> orderItem = BeanCopyUtils.copyList(o.getProductList(), OrderInfoItem.class);
             orderItems.addAll(orderItem);
             //拼装日志信息
-            OrderInfoLog log = new OrderInfoLog(null,info.getOrderCode(),info.getOrderStatus(), OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(),null,info.getOperator(),date,info.getCompanyCode(),info.getCompanyName());
+            OrderInfoLog log = new OrderInfoLog(null, info.getOrderCode(), info.getOrderStatus(), OrderStatus.getAllStatus().get(info.getOrderStatus()).getBackgroundOrderStatus(), OrderStatus.getAllStatus().get(info.getOrderStatus()).getStandardDescription(), null, info.getOperator(), date, info.getCompanyCode(), info.getCompanyName());
             logs.add(log);
         });
         //保存
@@ -135,7 +141,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         saveLog(logs);
         //异步调用库房接口推送订单信息
         OrderServiceImpl service = (OrderServiceImpl) AopContext.currentProxy();
-        service.lockBatchStock(orders,orderItems,service);
+        service.lockBatchStock(orders, orderItems, service);
         return true;
     }
 
@@ -149,7 +155,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         List<OutboundReqVo> outboundReqVoList = new OrderToOutBoundConverter().convert(dtos);
         Boolean b = outboundService.saveList(outboundReqVoList);
         //根据返回结果得到对应的状态
-        Integer status = b?OrderStatus.WAITING_FOR_PICKING.getStatusCode():OrderStatus.WAITING_FOR_PICKING_FAILED.getStatusCode();
+        Integer status = b ? OrderStatus.WAITING_FOR_PICKING.getStatusCode() : OrderStatus.WAITING_FOR_PICKING_FAILED.getStatusCode();
         List<OrderInfoLog> logs = Lists.newCopyOnWriteArrayList();
         //修改订单状态
         dtos.forEach(dto -> {
@@ -168,12 +174,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     /**
      * 数据处理
-     * @author NullPointException
-     * @date 2019/6/25
+     *
      * @param orders
      * @param orderItems
      * @param list
      * @return java.util.List<com.aiqin.bms.scmp.api.product.domain.dto.order.OrderInfoDTO>
+     * @author NullPointException
+     * @date 2019/6/25
      */
     private List<OrderInfoDTO> dealToOutBoundData(List<OrderInfo> orders, List<OrderInfoItem> orderItems, List<OrderInfoItemProductBatch> list) {
         List<OrderInfoDTO> dtos = Lists.newArrayList();
@@ -193,11 +200,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     @Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
-    public void lockBatchStock(List<OrderInfo> orders, List<OrderInfoItem> orderItems,OrderServiceImpl service) {
+    public void lockBatchStock(List<OrderInfo> orders, List<OrderInfoItem> orderItems, OrderServiceImpl service) {
         //TODO 调用库存接口锁库
-        List<LockOrderItemBatchReqVO> vo = dealData(orders,orderItems);
+        List<LockOrderItemBatchReqVO> vo = dealData(orders, orderItems);
         List<OrderInfoItemProductBatch> list = stockService.lockBatchStock(vo);
-        if(CollectionUtils.isEmptyCollection(list)){
+        if (CollectionUtils.isEmptyCollection(list)) {
             throw new BizException(ResultCode.LOCK_BATCH_STOCK_FAILED);
         }
         saveLockBatch(list);
@@ -208,21 +215,23 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void saveLockBatch(List<OrderInfoItemProductBatch> list) {
-        if(CollectionUtils.isEmptyCollection(list)){
+        if (CollectionUtils.isEmptyCollection(list)) {
             return;
         }
         int i = orderInfoItemProductBatchMapper.insertBatch(list);
-        if(i!=list.size()){
+        if (i != list.size()) {
             throw new BizException(ResultCode.SAVE_LOCK_BATCH_FAILED);
         }
     }
+
     /**
      * 拼装锁库数据
-     * @author NullPointException
-     * @date 2019/6/21
+     *
      * @param orders
      * @param orderItems
      * @return void
+     * @author NullPointException
+     * @date 2019/6/21
      */
     private List<LockOrderItemBatchReqVO> dealData(List<OrderInfo> orders, List<OrderInfoItem> orderItems) {
         Map<String, OrderInfo> collect = orders.stream().collect(Collectors.toMap(OrderInfo::getOrderCode, Function.identity()));
@@ -242,22 +251,23 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     public void saveLog(List<OrderInfoLog> logs) {
-        if(CollectionUtils.isEmptyCollection(logs)){
+        if (CollectionUtils.isEmptyCollection(logs)) {
             return;
         }
         int i = orderInfoLogMapper.insertBatch(logs);
         if (i != logs.size()) {
-            log.info("需要插入订单日志条数[{}]，实际插入订单日志的条数：[{}]",logs.size(),i);
+            log.info("需要插入订单日志条数[{}]，实际插入订单日志的条数：[{}]", logs.size(), i);
             throw new BizException(ResultCode.LOG_SAVE_ERROR);
         }
     }
 
     /**
      * 校验参数
-     * @author NullPointException
-     * @date 2019/6/14
+     *
      * @param reqVOs
      * @return void
+     * @author NullPointException
+     * @date 2019/6/14
      */
     private void validateOrderData(List<OrderInfoReqVO> reqVOs) {
         //TODO 这里需要参数校验
@@ -266,14 +276,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveData(List<OrderInfoItem> infoItems, List<OrderInfo> info){
+    public void saveData(List<OrderInfoItem> infoItems, List<OrderInfo> info) {
         int insert = orderInfoMapper.insertBatch(info);
         if (insert != info.size()) {
             log.error("订单主表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
         int i = orderInfoItemMapper.insertBatch(infoItems);
-        if(i!=infoItems.size()){
+        if (i != infoItems.size()) {
             log.error("订单附表插入影响条数：[{}]", insert);
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
@@ -284,7 +294,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         reqVO.setCompanyCode(getUser().getCompanyCode());
         PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         List<QueryOrderListRespVO> list = orderInfoMapper.selectListByQueryVO(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
@@ -308,10 +318,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         order.setOperatorTime(date);
         order.setRemake(reqVO.getRemark());
         order.setDeliveryTime(reqVO.getDeliveryTime());
+        order.setTransportCompany(reqVO.getTransportCompany());
+        order.setTransportCompanyCode(reqVO.getTransportCompanyCode());
+        order.setTransportNumber(reqVO.getTransportNumber());
         //更新
         updateByOrderCode(order);
         //存日志
-        OrderInfoLog log = new OrderInfoLog(null,reqVO.getOrderCode(),reqVO.getOrderStatus(), OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(),null,reqVO.getOperator(),date,order.getCompanyCode(),order.getCompanyName());
+        OrderInfoLog log = new OrderInfoLog(null, reqVO.getOrderCode(), reqVO.getOrderStatus(), OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getBackgroundOrderStatus(), OrderStatus.getAllStatus().get(reqVO.getOrderStatus()).getStandardDescription(), null, reqVO.getOperator(), date, order.getCompanyCode(), order.getCompanyName());
         List<OrderInfoLog> logs = Lists.newArrayList();
         logs.add(log);
         saveLog(logs);
@@ -322,22 +335,22 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Transactional(rollbackFor = Exception.class)
     public void updateByOrderCode(OrderInfo order) {
         int i = orderInfoMapper.updateByOrderCode(order);
-        if(i<1){
+        if (i < 1) {
             throw new BizException(ResultCode.UPDATE_ORDER_STATUS_FAILED);
         }
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean distribution(String orderCode,Integer status) {
+    public Boolean distribution(String orderCode, Integer status) {
         ChangeOrderStatusReqVO reqVO = new ChangeOrderStatusReqVO();
         reqVO.setOperator(getUser().getPersonName());
         reqVO.setOperatorCode(getUser().getPersonId());
         reqVO.setOrderCode(orderCode);
         reqVO.setOrderStatus(status);
         Boolean flag = changeStatus(reqVO);
-        if(flag && Objects.equals(status,ReturnOrderStatus.RETURN_ABNORMALLY_TERMINATED.getStatusCode())){
-           updateAiqinOrder(orderCode,null);
+        if (flag && Objects.equals(status, ReturnOrderStatus.RETURN_ABNORMALLY_TERMINATED.getStatusCode())) {
+            updateAiqinOrder(orderCode, null);
         }
         return flag;
     }
@@ -354,33 +367,33 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     public BasePage<QueryOrderProductListRespVO> orderProductList(QueryOrderProductListReqVO reqVO) {
-        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
         List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectOrderProductList(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     public BasePage<QueryProductUniqueCodeListRespVO> productUniqueCodeList(QueryProductUniqueCodeListReqVO reqVO) {
-        PageHelper.startPage(reqVO.getPageNo(),reqVO.getPageSize());
+        PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
         reqVO.setCompanyCode(getUser().getCompanyCode());
         List<QueryOrderProductListRespVO> list = orderInfoItemMapper.selectproductUniqueCodeList(reqVO);
-        return PageUtil.getPageList(reqVO.getPageNo(),list);
+        return PageUtil.getPageList(reqVO.getPageNo(), list);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean delivery(DeliveryReqVO reqVO) {
-        if(null == reqVO){
+        if (null == reqVO) {
             throw new BizException("参数信息错误");
         }
-        if(StringUtils.isBlank(reqVO.getOrderCode())){
+        if (StringUtils.isBlank(reqVO.getOrderCode())) {
             throw new BizException("订单编号不能为空");
         }
-        if(CollectionUtils.isEmptyCollection(reqVO.getItemList())){
+        if (CollectionUtils.isEmptyCollection(reqVO.getItemList())) {
             throw new BizException("发货明细不能为空");
         }
-        if(null == reqVO.getDeliverAmount()){
+        if (null == reqVO.getDeliverAmount()) {
             throw new BizException("运费信息不能为空");
         }
         ChangeOrderStatusReqVO changeOrderStatusReqVO = new ChangeOrderStatusReqVO();
@@ -388,24 +401,30 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         changeOrderStatusReqVO.setOperatorCode(getUser().getPersonId());
         changeOrderStatusReqVO.setOrderCode(reqVO.getOrderCode());
         changeOrderStatusReqVO.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        changeOrderStatusReqVO.setTransportCompany(reqVO.getTransportCompany());
+        changeOrderStatusReqVO.setTransportCompanyCode(reqVO.getTransportCompanyCode());
+        changeOrderStatusReqVO.setTransportNumber(reqVO.getTransportNumber());
         //更新状态
         changeStatus(changeOrderStatusReqVO);
         //更新运费信息
-        orderInfoMapper.updateDevliverAmountByOrderCode(reqVO.getOrderCode(),reqVO.getDeliverAmount());
+        orderInfoMapper.updateDevliverAmountByOrderCode(reqVO.getOrderCode(), reqVO.getDeliverAmount());
         //更新发货数量
         int i = orderInfoItemMapper.updateBatchNumById(reqVO.getItemList());
-        updateAiqinOrder(reqVO.getOrderCode(),reqVO.getItemList().stream().map(DeliveryItemReqVo :: getId).distinct().collect(Collectors.toList()));
+        updateAiqinOrder(reqVO.getOrderCode(), reqVO.getItemList().stream().map(DeliveryItemReqVo::getId).distinct().collect(Collectors.toList()));
+        //异步保存单据
+        asynSaveDocuments.savePurchase(reqVO.getOrderCode());
         return Boolean.TRUE;
     }
 
     private void updateAiqinOrder(String orderCode, List<Long> itemIds) {
         //根据订单编码获取最新的订单信息
         OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(orderCode);
-        if(null == orderCode){
+        if (null == orderCode) {
             throw new BizException(ResultCode.CAN_NOT_FIND_ORDER);
         }
-        if(Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY.getNum()) ||
-                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY_FUCAI.getNum())) {
+       if(Objects.equals(orderInfo.getOrderTypeCode(),OrderType.DIRECT_DELIVERY.getNum()) ||
+                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.SHELVE_DIRECT_DELIVERY.getNum())||
+                Objects.equals(orderInfo.getOrderTypeCode(),OrderType.PURCHASE_DIRECT_DELIVERY.getNum())) {
             OutboundCallBackRequest request = new OutboundCallBackRequest();
             request.setOderCode(orderCode);
             request.setOrderStatus(orderInfo.getOrderStatus());
@@ -434,7 +453,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 for (OrderInfoItem orderInfoItem : orderInfoItems) {
                     long actualDeliverNum = 0L;
                     if (null != orderInfoItem.getActualDeliverNum()) {
-                        actualDeliverNum = orderInfoItem.getActualDeliverNum();;
+                        actualDeliverNum = orderInfoItem.getActualDeliverNum();
+                        ;
                     }
                     sum += actualDeliverNum;
                 }
@@ -455,7 +475,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        LOGGER.info("销售单未转换钱的数据====={}",  JSONObject.toJSONString(request));
+        LOGGER.info("销售单未转换钱的数据====={}", JSONObject.toJSONString(request));
         // 获取税率
         String key;
         Map<String, ProductSkuCheckout> product = new HashMap<>();
@@ -468,11 +488,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         for (ErpOrderItem detail : request.getItemList()) {
             // set税率
             key = String.format("%s", detail.getSkuCode());
-            if(detail.getTaxRate() == null){
+            if (detail.getTaxRate() == null) {
                 ProductSkuCheckout item = product.get(key);
-                if(item == null || item.getOutputTaxRate() == null){
+                if (item == null || item.getOutputTaxRate() == null) {
                     detail.setTaxRate(BigDecimal.ZERO);
-                }else {
+                } else {
                     detail.setTaxRate(item.getOutputTaxRate());
                 }
             }
@@ -480,17 +500,17 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
         // 转换erp参数
         OrderInfoReqVO vo = this.orderInfoRequestVo(request);
-        LOGGER.info("爱亲供应链销售单转换erp参数{}",  JSONObject.toJSONString(vo));
+        LOGGER.info("爱亲供应链销售单转换erp参数{}", JSONObject.toJSONString(vo));
         // 库房编码不为空代表是配送 只有配送的情况下进行批次库存处理
-        WarehouseDTO warehouse=null;
+        WarehouseDTO warehouse = null;
         if (vo.getOrderTypeCode().equals(Global.ORDER_TYPE_1)) {
-            if(StringUtils.isBlank(vo.getWarehouseCode())){
+            if (StringUtils.isBlank(vo.getWarehouseCode())) {
                 log.error("库房编码参数缺失");
-                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 1009,"库房编码参数缺失"));
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 1009, "库房编码参数缺失"));
             }
             warehouse = warehouseDao.getWarehouseByCode(vo.getWarehouseCode());
-            if(Objects.isNull(warehouse)){
-                log.error("未找到对应的库房=={}",vo.getWarehouseCode());
+            if (Objects.isNull(warehouse)) {
+                log.error("未找到对应的库房=={}", vo.getWarehouseCode());
                 return HttpResponse.failure(ResultCode.WAREHOUSE_IS_NULL);
             }
             batchProce(vo, warehouse);
@@ -512,30 +532,30 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         orderBtachMonths.addAll(infoBtachMonth);
         // 调用销售单生成出库单信息
         String insertOutbound = this.insertOutbound(vo);
-        LOGGER.info("调用销售单生成出库单信息{}",  JSONObject.toJSONString(insertOutbound));
+        LOGGER.info("调用销售单生成出库单信息{}", JSONObject.toJSONString(insertOutbound));
         // 保存订单和订单商品信息
         //saveData(orderItems, orders);
         saveDatas(orderItems, orders, orderBtachs, orderBtachMonths);
         // 拼装日志信息
-        if(vo.getOrderType() != null){
+        if (vo.getOrderType() != null) {
             OrderInfoLog log;
-            if(vo.getOrderTypeCode().equals(Global.ORDER_TYPE_2) || vo.getOrderTypeCode().equals(Global.ORDER_TYPE_3) || vo.getOrderTypeCode().equals(Global.ORDER_TYPE_4)){
-               log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStatusCode(),
-                       OrderStatus.WAITING_FOR_DISTRIBUTION.getBackgroundOrderStatus(),
-                       OrderStatus.WAITING_FOR_DISTRIBUTION.getExplain(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStandardDescription(),
-                       info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
-            }else{
-               log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_PICKING.getStatusCode(),
-                       OrderStatus.WAITING_FOR_PICKING.getBackgroundOrderStatus(),
-                       OrderStatus.WAITING_FOR_PICKING.getExplain(), OrderStatus.WAITING_FOR_PICKING.getStandardDescription(),
+            if (vo.getOrderTypeCode().equals(Global.ORDER_TYPE_2) || vo.getOrderTypeCode().equals(Global.ORDER_TYPE_3) || vo.getOrderTypeCode().equals(Global.ORDER_TYPE_4)) {
+                log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStatusCode(),
+                        OrderStatus.WAITING_FOR_DISTRIBUTION.getBackgroundOrderStatus(),
+                        OrderStatus.WAITING_FOR_DISTRIBUTION.getExplain(), OrderStatus.WAITING_FOR_DISTRIBUTION.getStandardDescription(),
+                        info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
+            } else {
+                log = new OrderInfoLog(null, info.getOrderCode(), OrderStatus.WAITING_FOR_PICKING.getStatusCode(),
+                        OrderStatus.WAITING_FOR_PICKING.getBackgroundOrderStatus(),
+                        OrderStatus.WAITING_FOR_PICKING.getExplain(), OrderStatus.WAITING_FOR_PICKING.getStandardDescription(),
                         info.getCreateByName(), date, info.getCompanyCode(), info.getCompanyName());
 
-               // 进行锁库存操作
+                // 进行锁库存操作
                 ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
                 stockChangeRequest.setOperationType(1);
-                handleProfitLossStockData(vo,stockChangeRequest,insertOutbound);
+                handleProfitLossStockData(vo, stockChangeRequest, insertOutbound);
                 LOGGER.error("订单同步耘链锁库存：参数{}", JsonUtil.toJson(stockChangeRequest));
-                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)){
+                if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)) {
                     stockChangeRequest.setStockBatchList(null);
                 }
                 HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
@@ -544,11 +564,11 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     throw new GroundRuntimeException("wms回调:加库存异常");
                 }
 
-               // 配送的情况下 调用wms
-                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo,insertOutbound);
-                LOGGER.info("销售单生成wms参数信息{}",  JsonUtil.toJson(saleSourcInfoSource));
+                // 配送的情况下 调用wms
+                SaleSourcInfoSource saleSourcInfoSource = insertWms(vo, insertOutbound);
+                LOGGER.info("销售单生成wms参数信息{}", JsonUtil.toJson(saleSourcInfoSource));
 //                System.out.println(JsonUtil.toJson(saleSourcInfoSource));
-                String url = urlConfig.WMS_API_URL2+"/sale/source/outbound";
+                String url = urlConfig.WMS_API_URL2 + "/sale/source/outbound";
                 HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
                 HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
                 if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
@@ -570,13 +590,13 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         StockMonthBatch stockMonthBatch;
         List<OrderInfoItemProductBatch> itemBatchList = vo.getItemBatchList();
         // 批次管理编码 为0 不传批次 为1，2 正常传批次处理
-        if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+        if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
             vo.setItemBatchMonthList(null);
             vo.setItemBatchList(null);
-        }else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4)){
+        } else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4)) {
             stockMonthRequest.setOperationType(1);
             // 批次管理编码 为3，4 传月份   // 保存月份的 去掉日的。 wms类型 德邦 1
-            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchList) && itemBatchList.size() > 0){
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchList) && itemBatchList.size() > 0) {
                 for (OrderInfoItemProductBatch itemBatch : itemBatchList) {
                     // 订单月份保存
                     orderInfoItemBatchMonth = new OrderInfoItemBatchMonth();
@@ -600,7 +620,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 }
                 vo.setItemBatchList(null);
             }
-        }else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)){
+        } else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)) {
             stockMonthRequest.setOperationType(2);
             // 批次管理编码 为5，6 传月份   // 转日期 保存日期。 wms类型 京东 2
             for (OrderInfoItemProductBatch itemBatch : itemBatchList) {
@@ -619,12 +639,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             vo.setItemBatchList(null);
         }
         //  调用月份日期转换  京东情况下转日期传日期
-        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockList) && stockList.size() > 0){
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockList) && stockList.size() > 0) {
             stockMonthRequest.setStockList(stockList);
             List<StockDayBatch> stockDayBatches = stockService.monthBatch(stockMonthRequest);
             List<OrderInfoItemProductBatch> itemBatchLists = new ArrayList<>();
             OrderInfoItemProductBatch orderInfoItemProductBatch;
-            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0){
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0) {
                 for (StockDayBatch stockDayBatch : stockDayBatches) {
                     orderInfoItemProductBatch = new OrderInfoItemProductBatch();
                     orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
@@ -639,7 +659,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
             vo.setItemBatchList(itemBatchLists);
         }
-        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0){
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0) {
             vo.setItemBatchMonthList(itemBatchMonthList);
         }
     }
@@ -669,12 +689,12 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(orderInfoReqVO.getWarehouseCode());
 
-        if(orderInfoReqVO.getItemBatchList() != null) {
+        if (CollectionUtils.isNotEmptyCollection(orderInfoReqVO.getItemBatchList())) {
             for (OrderInfoItemProductBatch itemBatchReqVo : orderInfoReqVO.getItemBatchList()) {
                 // 在部分情况下查询批次表
                 if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)) {
                     Integer exist = productSkuBatchDao.productSkuBatchExist(itemBatchReqVo.getSkuCode(), warehouse.getWarehouseCode());
-                    if(exist > 0){
+                    if (exist > 0) {
                         stockBatchInfoRequest = new StockBatchInfoRequest();
                         stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
                         stockBatchInfoRequest.setCompanyName(orderInfoReqVO.getCompanyName());
@@ -694,7 +714,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
                         batchList.add(stockBatchInfoRequest);
                     }
-                }else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)) {
+                } else if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1)) {
 //                if(itemReqVo.getSkuCode().equals(itemBatchReqVo.getSkuCode())){
                     stockBatchInfoRequest = new StockBatchInfoRequest();
                     stockBatchInfoRequest.setCompanyCode(orderInfoReqVO.getCompanyCode());
@@ -715,7 +735,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     stockBatchInfoRequest.setOperatorName(itemBatchReqVo.getCreateByName());
                     batchList.add(stockBatchInfoRequest);
 //                }
-                }else {
+                } else {
                     stockBatchInfoRequest = new StockBatchInfoRequest();
                     batchList.add(stockBatchInfoRequest);
                 }
@@ -726,32 +746,32 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     private void saveDatas(List<OrderInfoItem> infoItems, List<OrderInfo> info, List<OrderInfoItemProductBatch> orderBtachs, List<OrderInfoItemBatchMonth> orderBtachMonths) {
-        LOGGER.info("订单主表插入信息{}",  JsonUtil.toJson(info));
+        LOGGER.info("订单主表插入信息{}", JsonUtil.toJson(info));
         int insert = orderInfoMapper.insertBatch(info);
         if (insert != info.size()) {
             log.error("订单主表插入影响条数：[{}]", JsonUtil.toJson(insert));
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
-        LOGGER.info("订单商品表插入信息{}",  JsonUtil.toJson(infoItems));
+        LOGGER.info("订单商品表插入信息{}", JsonUtil.toJson(infoItems));
         int i = orderInfoItemMapper.insertBatch(infoItems);
-        if(i!=infoItems.size()){
+        if (i != infoItems.size()) {
             log.error("订单附表插入影响条数：[{}]", JsonUtil.toJson(i));
             throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
         }
         // 销售单批次商品日的数据
-        if(orderBtachs.size() > 0 && orderBtachs != null){
-            LOGGER.info("订单商品批次表插入信息{}",  JsonUtil.toJson(orderBtachs));
+        if (orderBtachs.size() > 0 && orderBtachs != null) {
+            LOGGER.info("订单商品批次表插入信息{}", JsonUtil.toJson(orderBtachs));
             int i1 = orderInfoItemProductBatchMapper.insertBatch(orderBtachs);
-            if(i1!=orderBtachs.size()){
+            if (i1 != orderBtachs.size()) {
                 log.error("订单批次附表插入影响条数：[{}]", JsonUtil.toJson(i1));
                 throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
             }
         }
         // 销售单批次商品月的数据
-        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(orderBtachMonths) && orderBtachMonths.size() > 0){
-            LOGGER.info("订单商品批次月数据表插入信息{}",  JsonUtil.toJson(orderBtachMonths));
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(orderBtachMonths) && orderBtachMonths.size() > 0) {
+            LOGGER.info("订单商品批次月数据表插入信息{}", JsonUtil.toJson(orderBtachMonths));
             int i2 = orderInfoItemBatchMonthMapper.insertList(orderBtachMonths);
-            if(i2!=orderBtachMonths.size()){
+            if (i2 != orderBtachMonths.size()) {
                 log.error("订单批次附表插入影响条数：[{}]", JsonUtil.toJson(i2));
                 throw new BizException(ResultCode.ORDER_SAVE_FAILURE);
             }
@@ -759,7 +779,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     }
 
     // 将数据传给wms
-    private SaleSourcInfoSource insertWms(OrderInfoReqVO request,String insertOutbound) {
+    private SaleSourcInfoSource insertWms(OrderInfoReqVO request, String insertOutbound) {
         SaleSourcInfoSource ssis = new SaleSourcInfoSource();
         // 出库单信息
         ssis.setOrderStoreCode(request.getOrderCode());
@@ -776,14 +796,14 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setChannelCode(request.getChannelCode());
         ssis.setChannelName(request.getChannelName());
         // 直辖市情况下 区/县为null
-        if(request.getDistrictName() == null){
+        if (request.getDistrictName() == null) {
             ssis.setDistrictName(request.getCityName());
-        }else {
+        } else {
             ssis.setDistrictName(request.getDistrictName());
         }
-        if(request.getDistrictCode() == null){
+        if (request.getDistrictCode() == null) {
             ssis.setDistrictId(request.getCityCode());
-        }else {
+        } else {
             ssis.setDistrictId(request.getDistrictCode());
         }
         ssis.setReceiveAddress(request.getDetailAddress());
@@ -792,7 +812,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setDistributionModeCode(request.getDistributionModeCode());
         ssis.setDistributionModeName(request.getDistributionMode());
         ssis.setOrderAmount(request.getProductTotalAmount().toString());
-     //   ssis.setIsInvoice(request.getProductTotalAmount().toString());
+        //   ssis.setIsInvoice(request.getProductTotalAmount().toString());
         ssis.setInvoiceTitle(request.getInvoiceTitle());
         ssis.setInvoiceTaxNo(request.getTaxId());
         ssis.setInvoiceAddress(request.getInvoiceAddress());
@@ -809,35 +829,35 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
         List<OrderInfoItemReqVO> itemList = request.getProductList();
-       if(itemList != null){
-           for (OrderInfoItemReqVO list : itemList) {
-               PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(list.getSkuCode());
-               SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
-               sods.setLineCode(String.valueOf(list.getProductLineNum()));
-               sods.setSkuCode(list.getSkuCode());
-               sods.setSkuName(list.getSkuName());
-               sods.setProductCount(String.valueOf(list.getNum()));
-               sods.setProductAmount(String.valueOf(list.getPrice()));
-               BigDecimal totalCount = list.getPrice().multiply(new BigDecimal(list.getNum()));
-               sods.setActualTotalProductAmount(String.valueOf(totalCount));
-               sods.setColorName(list.getColorName());
-               sods.setModelNumber(list.getModelCode());
-               sods.setUnitCode(list.getUnitCode());
-               sods.setUnitName(list.getUnitName());
-               if(purchaseSaleStockRespVo != null){
-                   sods.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
-               }
-               plists.add(sods);
-           }
-       }
+        if (itemList != null) {
+            for (OrderInfoItemReqVO list : itemList) {
+                PurchaseSaleStockRespVo purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(list.getSkuCode());
+                SaleOutboundDetailedSource sods = new SaleOutboundDetailedSource();
+                sods.setLineCode(String.valueOf(list.getProductLineNum()));
+                sods.setSkuCode(list.getSkuCode());
+                sods.setSkuName(list.getSkuName());
+                sods.setProductCount(String.valueOf(list.getNum()));
+                sods.setProductAmount(String.valueOf(list.getPrice()));
+                BigDecimal totalCount = list.getPrice().multiply(new BigDecimal(list.getNum()));
+                sods.setActualTotalProductAmount(String.valueOf(totalCount));
+                sods.setColorName(list.getColorName());
+                sods.setModelNumber(list.getModelCode());
+                sods.setUnitCode(list.getUnitCode());
+                sods.setUnitName(list.getUnitName());
+                if (purchaseSaleStockRespVo != null) {
+                    sods.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
+                }
+                plists.add(sods);
+            }
+        }
         ssis.setDetailList(plists);
         List<BatchWmsInfo> pBatchLists = new ArrayList<>();
         List<OrderInfoItemProductBatch> itemBatchLists = request.getItemBatchList();
         BatchWmsInfo pBtachList;
-        if(itemBatchLists != null && itemBatchLists.size() > 0){
+        if (itemBatchLists != null && itemBatchLists.size() > 0) {
             for (OrderInfoItemProductBatch itemBatchList : itemBatchLists) {
                 pBtachList = new BatchWmsInfo();
-                if(itemBatchList.getLineCode() != null){
+                if (itemBatchList.getLineCode() != null) {
                     pBtachList.setLineCode(itemBatchList.getLineCode().intValue());
                 }
                 pBtachList.setSkuCode(itemBatchList.getSkuCode());
@@ -852,7 +872,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             }
         }
         List<OrderInfoItemBatchMonth> itemBatchMonthList = request.getItemBatchMonthList();
-        if(org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0){
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(itemBatchMonthList) && itemBatchMonthList.size() > 0) {
             for (OrderInfoItemBatchMonth itemBatchMonth : itemBatchMonthList) {
                 pBtachList = new BatchWmsInfo();
                 pBtachList.setSkuCode(itemBatchMonth.getSkuCode());
@@ -867,7 +887,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         return ssis;
     }
 
-    private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request){
+    private OrderInfoReqVO orderInfoRequestVo(ErpOrderInfo request) {
         OrderInfoReqVO vo = new OrderInfoReqVO();
         BeanUtils.copyProperties(request, vo);
         vo.setCompanyCode(Global.COMPANY_09);
@@ -915,25 +935,24 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         Long productNum = 0L;
         BigDecimal totalChannelAmount = BigDecimal.ZERO;
         Map<String, ErpOrderItem> erpOrderItemMap = new HashMap<>();
-        for(ErpOrderItem item : request.getItemList()){
-            item.setBatchCode("2020-07");
+        for (ErpOrderItem item : request.getItemList()) {
             product = new OrderInfoItemReqVO();
-            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//            SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             // map中有数据判断 没有新增
-            if (productList != null && productList.size() > 0){
-                String key = item.getSkuCode()+item.getLineCode();
+            if (productList != null && productList.size() > 0) {
+                String key = item.getSkuCode() + item.getLineCode();
                 // map中有商品合并商品 没有新增
                 if (erpOrderItemMap.containsKey(key)) {
                     for (OrderInfoItemReqVO p : productList) {
-                        String pKey = p.getSkuCode()+p.getProductLineNum();
-                        if(key.equals(pKey)){
-                            p.setNum(item.getProductCount()+p.getNum());
+                        String pKey = p.getSkuCode() + p.getProductLineNum();
+                        if (key.equals(pKey)) {
+                            p.setNum(item.getProductCount() + p.getNum());
                             p.setAmount(item.getTotalProductAmount().add(p.getAmount()));
                             p.setActivityApportionment(item.getTotalAcivityAmount().add(p.getActivityApportionment()));
                             p.setPreferentialAllocation(item.getTotalPreferentialAmount().add(p.getPreferentialAllocation()));
                         }
                     }
-                }else {
+                } else {
                     BeanUtils.copyProperties(item, product);
                     product.setCompanyCode(Global.COMPANY_09);
                     product.setCompanyName(Global.COMPANY_09_NAME);
@@ -961,7 +980,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productList.add(product);
 
                     // 批次商品的 自动批次下不传批次 其他传批次
-                    if(item.getBatchCode() != null) {
+                    if (item.getBatchCode() != null) {
                         productBatch = new OrderInfoItemProductBatch();
                         productBatch.setOrderCode(item.getOrderStoreCode());
                         productBatch.setLineCode(item.getLineCode());
@@ -971,9 +990,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         productBatch.setSkuName(item.getSkuName());
                         productBatch.setTotalCount(item.getProductCount());
                         productBatch.setActualTotalCount(item.getActualProductCount());
-                        if (item.getBatchDate() != null) {
-                            productBatch.setProductDate(sf.format(item.getBatchDate()));
-                        }
+//                        if (item.getBatchDate() != null) {
+//                            productBatch.setProductDate(sf.format(item.getBatchDate()));
+//                        }
+                        productBatch.setProductDate(item.getBatchDate());
                         productBatch.setBeOverdueDate(item.getBeOverdueDate());
                         productBatch.setLockType(item.getLockType());
                         productBatch.setSupplierCode(item.getSupplierCode());
@@ -985,7 +1005,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                         productBatcheList.add(productBatch);
                     }
                 }
-            }else {
+            } else {
                 BeanUtils.copyProperties(item, product);
                 product.setCompanyCode(Global.COMPANY_09);
                 product.setCompanyName(Global.COMPANY_09_NAME);
@@ -1015,7 +1035,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 productList.add(product);
 
                 // 批次商品的  有批次加批次  没有批次不处理
-                if(item.getBatchCode() != null){
+                if (item.getBatchCode() != null) {
                     productBatch = new OrderInfoItemProductBatch();
                     productBatch.setOrderCode(item.getOrderStoreCode());
                     productBatch.setLineCode(item.getLineCode());
@@ -1025,9 +1045,10 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productBatch.setSkuName(item.getSkuName());
                     productBatch.setTotalCount(item.getProductCount());
                     productBatch.setActualTotalCount(item.getActualProductCount());
-                    if(item.getBatchDate() != null){
-                        productBatch.setProductDate(sf.format(item.getBatchDate()));
-                    }
+//                    if (item.getBatchDate() != null) {
+//                        productBatch.setProductDate(sf.format(item.getBatchDate()));
+//                    }
+                    productBatch.setProductDate(item.getBatchDate());
                     productBatch.setLockType(item.getLockType());
                     productBatch.setSupplierCode(item.getSupplierCode());
                     productBatch.setSupplierName(item.getSupplierName());
@@ -1038,7 +1059,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                     productBatcheList.add(productBatch);
                 }
             }
-            erpOrderItemMap.put(item.getSkuCode()+item.getLineCode(), item);
+            erpOrderItemMap.put(item.getSkuCode() + item.getLineCode(), item);
         }
         vo.setProductNum(productNum);
         vo.setProductChannelTotalAmount(totalChannelAmount);
@@ -1174,8 +1195,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public HttpResponse orderCancel(String orderCode,  String operatorId, String operatorName){
-        if(StringUtils.isBlank(orderCode)){
+    public HttpResponse orderCancel(String orderCode, String operatorId, String operatorName) {
+        if (StringUtils.isBlank(orderCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
         // TODO 调用DL 取消的销售单接口
@@ -1196,42 +1217,44 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
                 OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStandardDescription(),
                 operatorName, new Date(), Global.COMPANY_09, Global.COMPANY_09_NAME);
         orderInfoLogMapper.insert(orderInfoLog);
-        if(count <=  0){
+        if (count <= 0) {
             log.info("取消订单失败！！！");
             return HttpResponse.success(false);
         }
-       // 获取订单信息
+        // 获取订单信息
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(orderInfo.getOrderCode());
-        List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
-        List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
-        // 查询出库单编码
-        Outbound outbound = outboundDao.selectOutbouondBySourceCode(oi.getOrderCode());
-        //  参数转换
-        OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
-        List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
-        List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
-        info.setProductList(infoItem);
-        info.setItemBatchList(infoItemBatch);
-        // 进行解锁库存操作
-        ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
-        stockChangeRequest.setOperationType(3);
-        handleProfitLossStockData(info,stockChangeRequest,outbound.getOutboundOderCode());
-        LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
-        HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
-        if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
-            LOGGER.error("订单取消进行解锁库存操作异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
-            throw new GroundRuntimeException("wms回调:加库存异常");
-        }
-        //        撤销wms销售单
-        CancelSource cancelSource = new CancelSource();
-        cancelSource.setOrderType("1");
-        cancelSource.setOrderCode(orderInfo.getOrderCode());
-        cancelSource.setWarehouseCode(oi.getWarehouseCode());
-        cancelSource.setWarehouseName(oi.getWarehouseName());
-        log.info("取消订单传wms参数数据：{}", JsonUtil.toJson(cancelSource));
-        HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
-        if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+        if (oi.getOrderTypeCode().equals(Global.ORDER_TYPE_1)) {
+            List<QueryOrderInfoItemRespVO> items = orderInfoItemMapper.productList(oi.getOrderCode());
+            List<QueryOrderInfoItemBatchRespVO> itemBatchs = orderInfoItemProductBatchMapper.selectList(oi.getOrderCode());
+            // 查询出库单编码
+            Outbound outbound = outboundDao.selectOutbouondBySourceCode(oi.getOrderCode());
+            //  参数转换
+            OrderInfoReqVO info = BeanCopyUtils.copy(oi, OrderInfoReqVO.class);
+            List<OrderInfoItemReqVO> infoItem = BeanCopyUtils.copyList(items, OrderInfoItemReqVO.class);
+            List<OrderInfoItemProductBatch> infoItemBatch = BeanCopyUtils.copyList(itemBatchs, OrderInfoItemProductBatch.class);
+            info.setProductList(infoItem);
+            info.setItemBatchList(infoItemBatch);
+            // 进行解锁库存操作
+            ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
+            stockChangeRequest.setOperationType(3);
+            handleProfitLossStockData(info, stockChangeRequest, outbound.getOutboundOderCode());
+            LOGGER.error("订单取消进行解锁库存操作：参数{}", JsonUtil.toJson(stockChangeRequest));
+            HttpResponse stockResponse = stockService.stockAndBatchChange(stockChangeRequest);
+            if (!MsgStatus.SUCCESS.equals(stockResponse.getCode())) {
+                LOGGER.error("订单取消进行解锁库存操作异常：参数{}", JsonUtil.toJson(stockResponse.getMessage()));
+                throw new GroundRuntimeException("wms回调:加库存异常");
+            }
+            // 撤销wms销售单
+            CancelSource cancelSource = new CancelSource();
+            cancelSource.setOrderType("1");
+            cancelSource.setOrderCode(orderInfo.getOrderCode());
+            cancelSource.setWarehouseCode(oi.getWarehouseCode());
+            cancelSource.setWarehouseName(oi.getWarehouseName());
+            log.info("取消订单传wms参数数据：{}", JsonUtil.toJson(cancelSource));
+            HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
+            if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+            }
         }
         return HttpResponse.success(true);
     }
@@ -1300,7 +1323,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         changeOrderStatusReqVO.setOperator(vo.getOutboundOperator());
         changeStatus(changeOrderStatusReqVO);
         //存日志
-        OrderInfoLog log = new OrderInfoLog(null,vo.getOrderStoreCode(), OrderStatus.PICKING.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getBackgroundOrderStatus(),OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getStandardDescription(),null,vo.getOutboundOperator(),new Date(),null,null);
+        OrderInfoLog log = new OrderInfoLog(null, vo.getOrderStoreCode(), OrderStatus.PICKING.getStatusCode(), OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getBackgroundOrderStatus(), OrderStatus.getAllStatus().get(OrderStatus.PICKING.getStatusCode()).getStandardDescription(), null, vo.getOutboundOperator(), new Date(), null, null);
         List<OrderInfoLog> logs = Lists.newArrayList();
         logs.add(log);
         saveLog(logs);

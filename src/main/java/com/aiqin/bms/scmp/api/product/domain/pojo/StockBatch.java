@@ -52,6 +52,10 @@ public class StockBatch {
     @JsonProperty("supplier_code")
     private String supplierCode;
 
+    @ApiModelProperty(value="供应商名称")
+    @JsonProperty("supplier_name")
+    private String supplierName;
+
     @ApiModelProperty(value="sku编码")
     @JsonProperty("sku_code")
     private String skuCode;

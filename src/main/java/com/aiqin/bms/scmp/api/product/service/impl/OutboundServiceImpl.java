@@ -689,36 +689,36 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockInfoRequestList.add(stockInfoRequest);
 
             // 自动批次管理，新增批次信息
-            if(warehouse.getBatchManage().equals(0)){
-                BigDecimal amount = outboundProduct.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : outboundProduct.getPreTaxPurchaseAmount();
-                outboundBatch = new OutboundBatch();
-                String batchCode = DateUtils.currentDate().replaceAll("-","");
-                outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
-                outboundBatch.setBatchCode(batchCode);
-                String batchInfoCode;
-                if(StringUtils.isNotBlank(outbound.getSupplierCode())){
-                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                            batchCode + "_" + outbound.getSupplierCode() + "_" +
-                            amount.stripTrailingZeros().toPlainString();
-                }else {
-                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                            batchCode + "_" + amount.stripTrailingZeros().toPlainString();
-                }
-                outboundBatch.setBatchInfoCode(batchInfoCode);
-                outboundBatch.setSkuCode(outboundProduct.getSkuCode());
-                outboundBatch.setSkuName(outboundProduct.getSkuName());
-                outboundBatch.setSupplierCode(outbound.getSupplierCode());
-                outboundBatch.setSupplierName(outbound.getSupplierName());
-                outboundBatch.setProductDate(DateUtils.currentDate());
-                outboundBatch.setTotalCount(outboundProduct.getPreOutboundMainNum());
-                outboundBatch.setActualTotalCount(detail.getActualTotalCount());
-                outboundBatch.setLineCode(detail.getLineCode());
-                outboundBatch.setCreateById(request.getOperatorId());
-                outboundBatch.setCreateByName(request.getOperatorName());
-                outboundBatch.setUpdateById(request.getOperatorId());
-                outboundBatch.setUpdateByName(request.getOperatorName());
-                outboundBatches.add(outboundBatch);
-            }
+//            if(warehouse.getBatchManage().equals(0)){
+//                BigDecimal amount = outboundProduct.getPreTaxPurchaseAmount() == null ? BigDecimal.ZERO : outboundProduct.getPreTaxPurchaseAmount();
+//                outboundBatch = new OutboundBatch();
+//                String batchCode = DateUtils.currentDate().replaceAll("-","");
+//                outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+//                outboundBatch.setBatchCode(batchCode);
+//                String batchInfoCode;
+//                if(StringUtils.isNotBlank(outbound.getSupplierCode())){
+//                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+//                            batchCode + "_" + outbound.getSupplierCode() + "_" +
+//                            amount.stripTrailingZeros().toPlainString();
+//                }else {
+//                    batchInfoCode = detail.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
+//                            batchCode + "_" + amount.stripTrailingZeros().toPlainString();
+//                }
+//                outboundBatch.setBatchInfoCode(batchInfoCode);
+//                outboundBatch.setSkuCode(outboundProduct.getSkuCode());
+//                outboundBatch.setSkuName(outboundProduct.getSkuName());
+//                outboundBatch.setSupplierCode(outbound.getSupplierCode());
+//                outboundBatch.setSupplierName(outbound.getSupplierName());
+//                outboundBatch.setProductDate(DateUtils.currentDate());
+//                outboundBatch.setTotalCount(outboundProduct.getPreOutboundMainNum());
+//                outboundBatch.setActualTotalCount(detail.getActualTotalCount());
+//                outboundBatch.setLineCode(detail.getLineCode());
+//                outboundBatch.setCreateById(request.getOperatorId());
+//                outboundBatch.setCreateByName(request.getOperatorName());
+//                outboundBatch.setUpdateById(request.getOperatorId());
+//                outboundBatch.setUpdateByName(request.getOperatorName());
+//                outboundBatches.add(outboundBatch);
+//            }
         }
         outbound.setPraOutboundNum(praOutboundCount);
         outbound.setPraMainUnitNum(praTotalOutboundCount);
@@ -755,6 +755,24 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                 for (OutboundProductCallBackReqVo product : productList) {
                     for (int i = 0; i <= batchList.size(); i++) {
+                        outboundBatch = new OutboundBatch();
+                        outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
+                        outboundBatch.setBatchCode(batchList.get(i).getBatchCode());
+                        outboundBatch.setBatchInfoCode(batchList.get(i).getBatchInfoCode());
+                        outboundBatch.setSkuCode(batchList.get(i).getSkuCode());
+                        outboundBatch.setSkuName(batchList.get(i).getSkuName());
+                        outboundBatch.setSupplierCode(batchList.get(i).getSupplierCode());
+                        //outboundBatch.setSupplierName(outbound.getSupplierName());
+                        outboundBatch.setProductDate(batchList.get(i).getProductDate());
+                        outboundBatch.setTotalCount(product.getActualTotalCount());
+                        outboundBatch.setActualTotalCount(product.getActualTotalCount());
+                        outboundBatch.setLineCode(product.getLineCode());
+                        outboundBatch.setCreateById(request.getOperatorId());
+                        outboundBatch.setCreateByName(request.getOperatorName());
+                        outboundBatch.setUpdateById(request.getOperatorId());
+                        outboundBatch.setUpdateByName(request.getOperatorName());
+                        outboundBatches.add(outboundBatch);
+
                         stockBatchInfoRequest = new StockBatchInfoRequest();
                         stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
                         stockBatchInfoRequest.setTransportCenterName(batchList.get(i).getTransportCenterName());
@@ -789,6 +807,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             product.setActualTotalCount(product.getActualTotalCount() - batchList.get(i).getAvailableCount());
                         }
                     }
+
                 }
             }
         } else {
@@ -836,31 +855,26 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             // 出库单非指定批次
                             List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
                             BigDecimal amount = BigDecimal.ZERO;
-                            String supplierCode = null;
-                            if (CollectionUtils.isNotEmpty(batches) && batches.size() > 0) {
-                                amount = batches.get(0).getTaxCost() == null ? BigDecimal.ZERO : batches.get(0).getTaxCost();
-                                if(StringUtils.isNotBlank(batches.get(0).getSupplierCode())){
-                                    supplierCode = batches.get(0).getSupplierCode();
-                                }
-                            }
+                            String batchInfoCode;
+
                             // 新增出库单的批次信息
                             outboundBatch = BeanCopyUtils.copy(batch, OutboundBatch.class);
                             outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
-                            String batchInfoCode;
-                            if(StringUtils.isBlank(supplierCode)){
-                                supplierCode = outbound.getSupplierCode();
-                            }
 
-                            if (StringUtils.isNotBlank(supplierCode)) {
+
+                            if (CollectionUtils.isNotEmpty(batches)) {
+                                batchInfoCode = batches.get(0).getBatchInfoCode();
+                                outboundBatch.setSupplierCode(batches.get(0).getSupplierCode());
+                            }else if (StringUtils.isNotBlank(outbound.getSupplierCode())) {
                                 batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                        batch.getBatchCode() + "_" + supplierCode + "_" +
+                                        batch.getBatchCode() + "_" + outbound.getSupplierCode() + "_" +
                                         amount.stripTrailingZeros().toPlainString();
+                                outboundBatch.setSupplierCode(outbound.getSupplierCode());
                             } else {
                                 batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
                                         batch.getBatchCode() + "_" + amount.stripTrailingZeros().toPlainString();
                             }
                             outboundBatch.setBatchInfoCode(batchInfoCode);
-                            outboundBatch.setSupplierCode(supplierCode);
                             outboundBatch.setSupplierName(outbound.getSupplierName());
                             outboundBatch.setTotalCount(batch.getActualTotalCount());
                             outboundBatch.setCreateById(request.getOperatorId());
@@ -995,6 +1009,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             request.setPersonName(outbound.getUpdateBy());
             request.setActualTotalCount(outbound.getPraMainUnitNum());
             request.setBatchManage(requestVo.getBatchManage());
+            request.setPackingNum(requestVo.getPackingNum());
             List<OutboundCallBackDetailRequest> orderItems = new ArrayList<>();
             for (OutboundProduct op : list) {
                 OutboundCallBackDetailRequest orderItem = new OutboundCallBackDetailRequest();

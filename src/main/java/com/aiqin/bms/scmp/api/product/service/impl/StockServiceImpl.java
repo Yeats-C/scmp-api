@@ -1278,12 +1278,15 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
     @Override
     public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
+        Integer count = stockDao.getSkuBatchForChangePriceCount(reqVO);
         List<QuerySkuInfoRespVO> skuBatchForChangePrice = stockDao.getSkuBatchForChangePrice(reqVO);
         for (QuerySkuInfoRespVO querySkuInfoRespVO: skuBatchForChangePrice) {
             List<BatchInfo> batch = stockDao.getBatch(reqVO.getCompanyCode(), querySkuInfoRespVO.getSkuCode());
             querySkuInfoRespVO.setBatchList(batch);
         }
-        BasePage pageList = PageUtil.getPageList(reqVO.getPageNo(), skuBatchForChangePrice);
+        BasePage pageList = new BasePage();
+        pageList.setDataList(skuBatchForChangePrice);
+        pageList.setTotalCount(Long.valueOf(count));
         return pageList;
     }
 

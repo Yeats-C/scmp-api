@@ -73,6 +73,10 @@ public class StockBatchInfoRequest {
     @JsonProperty(value = "supplier_code")
     private String supplierCode;
 
+    @ApiModelProperty("供应商名称")
+    @JsonProperty(value = "supplier_name")
+    private String supplierName;
+
     @ApiModelProperty("批次采购价")
     @JsonProperty(value = "purchase_price")
     private BigDecimal purchasePrice;

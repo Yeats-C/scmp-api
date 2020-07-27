@@ -24,8 +24,11 @@ import com.aiqin.bms.scmp.api.product.service.ProductSkuChangePriceService;
 import com.aiqin.bms.scmp.api.product.service.SkuInfoService;
 import com.aiqin.bms.scmp.api.product.service.StockService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
+import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplierDictionaryInfo;
+import com.aiqin.bms.scmp.api.supplier.domain.pojo.Warehouse;
 import com.aiqin.bms.scmp.api.supplier.domain.request.OperationLogBean;
+import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
@@ -106,6 +109,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     private ProductSkuChangePriceSaleAreaMapper productSkuChangePriceSaleAreaMapper;
     @Autowired
     private StockMonthBatchDao stockMonthBatchDao;
+    @Autowired
+    private WarehouseDao warehouseDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -564,6 +569,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
         for (ProductSkuChangePriceInfo info : infos) {
             ProductSkuPriceInfo priceInfo = BeanCopyUtils.copy(info, ProductSkuPriceInfo.class);
             priceInfo.setId(null);
+            priceInfo.setIsBatchPrice(dto.getIsBatchPrice());
             priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
             priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
             priceInfo.setApplyCode(dto.getCode());
@@ -659,6 +665,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
             for (ProductSkuChangePriceInfo info : noRepeat) {
                 ProductSkuPriceInfo priceInfo = BeanCopyUtils.copy(info, ProductSkuPriceInfo.class);
                 priceInfo.setId(null);
+                priceInfo.setIsBatchPrice(dto.getIsBatchPrice());
                 priceInfo.setPurchaseGroupCode(dto.getPurchaseGroupCode());
                 priceInfo.setPurchaseGroupName(dto.getPurchaseGroupName());
                 priceInfo.setApplyCode(dto.getCode());
@@ -900,20 +907,36 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     public BasePage<QuerySkuInfoRespVO> querySkuBatchList(QuerySkuInfoReqVO reqVO) {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         reqVO.setCompanyCode(currentAuthToken.getCompanyCode());
-        BasePage<QuerySkuInfoRespVO> querySkuInfoRespVOBasePage = null;
-        if(Global.IS_BATCH_PRICE_1.equals(reqVO)){
-            querySkuInfoRespVOBasePage = stockService.querySkuBatchList(reqVO);
+        if(Global.IS_BATCH_PRICE_1.equals(reqVO.getIsBatchPrice())){
+            BasePage<QuerySkuInfoRespVO> querySkuInfoRespVOBasePage = stockService.querySkuBatchList(reqVO);
+            return querySkuInfoRespVOBasePage;
         }else {
-            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
-            reqVO.setCompanyCode(getUser().getCompanyCode());
+//            PageHelper.startPage(reqVO.getPageNo(), reqVO.getPageSize());
+//            reqVO.setCompanyCode(getUser().getCompanyCode());
+            Integer count = stockMonthBatchDao.querySkuBatchMonthCount(reqVO);
             List<QuerySkuInfoRespVO> querySkuInfoRespVOS = stockMonthBatchDao.querySkuBatchMonthList(reqVO);
             for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
-                List<StockMonthBatch> batch = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
-                querySkuInfoRespVO.setBatchMonthList(batch);
+                List<BatchInfo> batchList = new ArrayList<>();
+                List<StockMonthBatch> batchMonthList = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
+                for (StockMonthBatch batchMonth : batchMonthList) {
+                    WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchMonth.getWarehouseCode());
+                    BatchInfo batch = new BatchInfo();
+                    batch.setBatchCode(batchMonth.getBatchCode());
+                    batch.setWarehouseBatchName(batchMonth.getBatchCode());
+                    batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
+                    batch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                    batch.setTransportCenterName(warehouse.getLogisticsCenterName());
+                    batch.setWarehouseCode(warehouse.getWarehouseCode());
+                    batch.setWarehouseName(warehouse.getWarehouseName());
+                    batchList.add(batch);
+                }
+                querySkuInfoRespVO.setBatchList(batchList);
             }
-            querySkuInfoRespVOBasePage = PageUtil.getPageList(reqVO.getPageNo(), querySkuInfoRespVOS);
+            BasePage basePage = new BasePage();
+            basePage.setDataList(querySkuInfoRespVOS);
+            basePage.setTotalCount(Long.valueOf(count));
+            return basePage;
         }
-        return querySkuInfoRespVOBasePage;
     }
 
     @Override

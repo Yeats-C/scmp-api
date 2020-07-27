@@ -38,4 +38,6 @@ public interface PurchaseOrderDao {
     List<PurchaseOrder> selectByPurchaseOrderCode(@Param("codes") List<String> code);
 
     int insertMany(@Param("list") List<PurchaseOrder> purchaseOrders);
+
+    List<PurchaseOrder> selectByPurchaseApplyCode(@Param("purchaseApplyCode") String purchaseApplyCode);
 }

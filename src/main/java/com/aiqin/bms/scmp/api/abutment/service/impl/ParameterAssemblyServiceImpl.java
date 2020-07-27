@@ -2,12 +2,11 @@ package com.aiqin.bms.scmp.api.abutment.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
-import com.aiqin.bms.scmp.api.abutment.web.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
-import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderItem;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -26,9 +25,11 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -42,6 +43,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Resource
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
     @Resource
+    @Lazy(true)
     private DlAbutmentService dlAbutmentService;
 
     @Override
@@ -57,6 +59,9 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         orderInfo.setOrderTypeName(request.getOrderType() == 1 ? "配送" :(request.getOrderType() == 2 ? "直送" :
                 (request.getOrderType() == 3 ? "供货直送" : "采购直送")));
         orderInfo.setOrderCategoryName(request.getOrderCategory());
+        orderInfo.setOrderCategoryCode(request.getOrderCategoryCode());
+        orderInfo.setStoreCode(request.getCustomerCode());
+        orderInfo.setSourceName(request.getCustomerName());
         if(request.getOrderType() == 1){
             // 配送默认状态为6
             orderInfo.setOrderStatus(6);
@@ -87,6 +92,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         orderInfo.setPlatformType(1);
         // 默认主订单
         orderInfo.setOrderLevel(0);
+        // 默认已支付
+        orderInfo.setPaymentStatus(0);
         if(StringUtils.isNotBlank(request.getChannelName())){
             // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
             orderInfo.setChannelName(request.getChannelName());
@@ -121,7 +128,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             if(CollectionUtils.isNotEmpty(product.getBatchList()) && product.getBatchList().size() > 0){
                for (BatchRequest batch : product.getBatchList()){
                    item.setProductCount(batch.getTotalCount());
-                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+//                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
+                   item.setBatchDate(batch.getProductDate());
                    itemList.add(item);
                }
             }else {
@@ -178,13 +186,6 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setPlatformType(1);
         returnInfo.setCopartnerAreaId(request.getPartnerCode());
         returnInfo.setCopartnerAreaName(request.getPartnerName());
-//        if(request.getOrderType() == 1){
-//            // 配送默认状态为4
-//            returnInfo.setReturnOrderStatus(4);
-//        }else {
-//            // 其他的默认状态为5
-//            returnInfo.setReturnOrderStatus(5);
-//        }
         // 转换库房信息
         WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
         if(warehouse == null){
@@ -195,6 +196,12 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setWarehouseName(warehouse.getWarehouseName());
         returnInfo.setTransportCenterCode(warehouse.getLogisticsCenterCode());
         returnInfo.setTransportCenterName(warehouse.getLogisticsCenterName());
+        if(StringUtils.isNotBlank(request.getChannelName())){
+            // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
+            returnInfo.setChannelName(request.getChannelName());
+            returnInfo.setChannelCode(request.getChannelName() == "爱亲科技" ? "1" :(request.getChannelName() == "萌贝树" ? "2" :
+                    (request.getChannelName() == "小红马" ? "3" : "4")));
+        }
         returnRequest.setReturnOrderInfo(returnInfo);
         if(CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0){
             LOGGER.info("DL->耘链 推送耘链退货单商品信息为空");
@@ -208,7 +215,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             item.setReturnOrderCode(request.getReturnOrderCode());
             item.setModelCode(product.getModelNumber());
             // 默认商品类型 - 商品
-            item.setProductType(0);
+            item.setProductType(product.getProductType());
             item.setZeroDisassemblyCoefficient(1L);
             item.setReturnProductCount(product.getTotalCount());
             item.setTotalProductAmount(product.getProductTotalAmount());
@@ -226,36 +233,23 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
     @Override
     public SupplierInfoRequest supplierParameter(SupplierAbutmentRequest request){
-        SupplierInfoRequest supplierInfo = new SupplierInfoRequest();
-        supplierInfo.setSupplierCode(request.getSupplyCompanyCode());
-        supplierInfo.setSupplierName(request.getApplySupplyName());
+        LOGGER.info("供应商开始转换调用DL参数：{}", JsonUtil.toJson(request));
+        SupplierInfoRequest supplierInfo = BeanCopyUtils.copy(request, SupplierInfoRequest.class);
+        supplierInfo.setSupplierCode(request.getSupplyCode());
+        supplierInfo.setSupplierName(request.getSupplyName());
+        supplierInfo.setSupplierAbbreviation(request.getSupplyAbbreviation());
         // 查询供应商的类型
-        String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getApplySupplyType(), "106");
+        String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getSupplyType(), "106");
         LOGGER.info("查询供应商属性信息：{}", typeName);
         supplierInfo.setSupplierType(typeName);
-        supplierInfo.setSupplierAbbreviation(request.getSupplierAbbreviation());
         supplierInfo.setMobile(request.getPhone());
-        supplierInfo.setFax(request.getFax());
-        supplierInfo.setCompanyWebsite(request.getCompanyWebsite());
-        supplierInfo.setTaxId(request.getTaxId());
-        supplierInfo.setRegisteredCapital(request.getRegisteredCapital());
-        supplierInfo.setCorporateRepresentative(request.getCorporateRepresentative());
-        supplierInfo.setMinOrderAmount(request.getMinOrderAmount());
-        supplierInfo.setMaxOrderAmount(request.getMaxOrderAmount());
         supplierInfo.setContactsPhone(request.getMobilePhone());
         supplierInfo.setContacts(request.getContactName());
         supplierInfo.setProvinceCode(request.getProvinceId());
-        supplierInfo.setProvinceName(request.getProvinceName());
         supplierInfo.setCityCode(request.getCityId());
-        supplierInfo.setCityName(request.getCityName());
         supplierInfo.setDistrictCode(request.getDistrictId());
-        supplierInfo.setDistrictName(request.getDistrictName());
         supplierInfo.setDetailAddress(request.getAddress());
-        supplierInfo.setZipCode(request.getZipCode());
-        supplierInfo.setEmail(request.getEmail());
-        supplierInfo.setPaymentMethod(request.getPaymentMethod());
         supplierInfo.setEnable(request.getEnable().intValue());
-        supplierInfo.setProperty(request.getProperty());
         supplierInfo.setSupplierCompanyCode(request.getSupplierCode());
         supplierInfo.setSupplierCompanyName(request.getSupplierName());
         // 查询供应商的结算账户信息
@@ -265,6 +259,11 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             supplierInfo.setAccount(account.getAccount());
             supplierInfo.setAccountName(account.getAccountName());
             supplierInfo.setMaxPaymentAmount(account.getMaxPaymentAmount());
+        }else {
+            supplierInfo.setBankAccount("");
+            supplierInfo.setAccount("");
+            supplierInfo.setAccountName("");
+            supplierInfo.setMaxPaymentAmount(BigDecimal.ZERO);
         }
 
         if(CollectionUtils.isNotEmpty(request.getGroupList())){

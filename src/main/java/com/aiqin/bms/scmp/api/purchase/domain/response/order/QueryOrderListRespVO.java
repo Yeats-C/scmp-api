@@ -85,7 +85,7 @@ public class QueryOrderListRespVO {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updateTime;
 
-    public void setOrderStatus(Integer orderStatus) {
-        this.orderStatus = OrderStatus.getAllStatus().get(orderStatus).getBackgroundOrderStatus();
-    }
+//    public void setOrderStatus(Integer orderStatus) {
+//        this.orderStatus = OrderStatus.getAllStatus().get(orderStatus).getBackgroundOrderStatus();
+//    }
 }

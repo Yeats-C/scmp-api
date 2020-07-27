@@ -66,6 +66,7 @@
       <result column="adecrease_count" jdbcType="BIGINT" property="decreaseCount" />
       <result column="aincrease_gross_profit" jdbcType="BIGINT" property="increaseGrossProfit" />
       <result column="adecrease_gross_profit" jdbcType="BIGINT" property="decreaseGrossProfit" />
+      <result column="ais_batch_price" jdbcType="TINYINT" property="isBatchPrice" />
     <collection property="infos" ofType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePriceInfo">
       <id column="bid" jdbcType="BIGINT" property="id" />
       <result column="bcode" jdbcType="VARCHAR" property="code" />
@@ -440,6 +441,7 @@
                a.decrease_count adecrease_count,
                a.increase_gross_profit aincrease_gross_profit,
                a.decrease_gross_profit adecrease_gross_profit,
+               a.is_batch_price ais_batch_price,
                b.id bid,
                b.code bcode,
                b.sku_code bsku_code,
@@ -557,7 +559,7 @@
       create_by, create_time, update_by, 
       update_time, auditor_by, apply_status, 
       form_no, auditor_time, original, 
-      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit
+      change_price_reason_code, change_price_reason_name, be_contain_area,increase_count,decrease_count,increase_gross_profit,decrease_gross_profit, is_batch_price
       )
     values (#{id,jdbcType=BIGINT}, #{code,jdbcType=VARCHAR},
       #{changePriceType,jdbcType=VARCHAR},
@@ -569,7 +571,8 @@
       #{createBy,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, #{updateBy,jdbcType=VARCHAR}, 
       #{updateTime,jdbcType=TIMESTAMP}, #{auditorBy,jdbcType=VARCHAR}, #{applyStatus,jdbcType=INTEGER}, 
       #{formNo,jdbcType=VARCHAR}, #{auditorTime,jdbcType=TIMESTAMP}, #{original,jdbcType=INTEGER}, 
-      #{changePriceReasonCode,jdbcType=VARCHAR}, #{changePriceReasonName,jdbcType=VARCHAR}, #{beContainArea,jdbcType=INTEGER},#{increaseCount,jdbcType=BIGINT},#{decreaseCount,jdbcType=BIGINT},#{increaseGrossProfit,jdbcType=BIGINT},#{decreaseGrossProfit,jdbcType=BIGINT}
+      #{changePriceReasonCode,jdbcType=VARCHAR}, #{changePriceReasonName,jdbcType=VARCHAR}, #{beContainArea,jdbcType=INTEGER},#{increaseCount,jdbcType=BIGINT},#{decreaseCount,jdbcType=BIGINT},#{increaseGrossProfit,jdbcType=BIGINT},#{decreaseGrossProfit,jdbcType=BIGINT},
+      #{isBatchPrice,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuChangePrice">

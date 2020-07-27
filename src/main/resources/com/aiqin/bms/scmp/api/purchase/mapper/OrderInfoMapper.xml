@@ -226,6 +226,8 @@ transport_number, platform_type, business_form, tax_id
     <result column="aorder_original_name" jdbcType="VARCHAR" property="orderOriginalName" />
     <result column="aactual_weight" jdbcType="BIGINT" property="actualWeight" />
     <result column="aactual_volume" jdbcType="BIGINT" property="actualVolume" />
+    <result column="achannel_code" jdbcType="VARCHAR" property="channelCode" />
+    <result column="achannel_name" jdbcType="VARCHAR" property="channelName" />
     <result column="aactual_product_total_amount" jdbcType="DECIMAL" property="actualProductTotalAmount" />
       <result column="atransport_company" jdbcType="VARCHAR" property="transportCompany" />
       <result column="atransport_company_code" jdbcType="VARCHAR" property="transportCompanyCode" />
@@ -254,6 +256,7 @@ transport_number, platform_type, business_form, tax_id
       <result column="aconsignee_mobile" jdbcType="DECIMAL" property="consigneeMobile" />
       <result column="aactual_logistics_remission_ratio" jdbcType="DECIMAL" property="actualLogisticsRemissionRatio" />
       <result column="aactual_activity_discount" jdbcType="DECIMAL" property="actualActivityDiscount" />
+      <result column="apacking_num" jdbcType="BIGINT" property="packingNum" />
     <collection property="productList" ofType="com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO">
       <id column="bid" property="id"/>
       <result column="bsku_code" jdbcType="VARCHAR" property="skuCode" />
@@ -328,6 +331,10 @@ transport_number, platform_type, business_form, tax_id
   <select id="selectByOrderCode" resultMap="selectByOrderCode">
         select a.order_code aorder_code,
              a.order_type aorder_type,
+             a.consignee aconsignee,
+             a.consignee_phone aconsignee_phone,
+             a.channel_code achannel_code,
+             a.channel_name achannel_name,
              a.customer_name acustomer_name,
              a.customer_code acustomer_code,
              a.create_date acreate_date,
@@ -409,6 +416,7 @@ transport_number, platform_type, business_form, tax_id
              a.actual_logistics_remission_ratio aactual_logistics_remission_ratio,
              a.actual_activity_discount aactual_activity_discount,
               a.actual_product_num aactual_product_num,
+               a.packing_num apacking_num,
              b.id bid,
              b.sku_code bsku_code,
              b.sku_name bsku_name,
@@ -1719,7 +1727,10 @@ transport_number, platform_type, business_form, tax_id
           transport_company_code = #{transportCompanyCode,jdbcType=VARCHAR},
       </if>
       <if test="transportNumber != null">
-          transport_number = #{transportNumber,jdbcType=VARCHAR}
+          transport_number = #{transportNumber,jdbcType=VARCHAR},
+      </if>
+      <if test="packingNum != null">
+          packing_num = #{packingNum,jdbcType=BIGINT}
       </if>
    </set>
     where order_code = #{orderCode,jdbcType=BIGINT}

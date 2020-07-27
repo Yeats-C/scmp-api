@@ -37,10 +37,12 @@ import com.aiqin.bms.scmp.api.purchase.dao.PurchaseBatchDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderDao;
 import com.aiqin.bms.scmp.api.purchase.dao.PurchaseOrderProductDao;
 import com.aiqin.bms.scmp.api.purchase.domain.*;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.PurchaseStorageRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderChildSourceInit;
 import com.aiqin.bms.scmp.api.purchase.domain.request.wms.ReturnOrderPrimarySourceInit;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.PurchaseManageService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
@@ -93,11 +95,10 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private InboundProductDao inboundProductDao;
     @Autowired
+    @Lazy
     private SkuService skuService;
     @Autowired
     private UrlConfig urlConfig;
-    @Autowired
-    private StockService stockService;
     @Autowired
     private ProductCommonService productCommonService;
     @Autowired
@@ -138,10 +139,15 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     private PurchaseBatchDao purchaseBatchDao;
     @Autowired
+    @Lazy(true)
     private DlAbutmentService dlService;
     @Autowired
     private StockBatchDao stockBatchDao;
-
+    @Autowired
+    private OrderInfoItemProductBatchMapper orderInfoItemProductBatchDao;
+    @Autowired
+    @Lazy(true)
+    private StockService stockService;
 
     /**
      * 分页查询以及列表搜索
@@ -174,7 +180,7 @@ public class InboundServiceImpl implements InboundService {
         try {
             log.info("查询入库信息");
             List<String> inboundOderCodeList = new ArrayList<>();
-            List<InboundProduct> inboundProductList = new ArrayList<>();
+            List<InboundProduct> inboundProductList;
             InboundResponse inboundResponse = new InboundResponse();
             List<InboundResponse> responseList = new ArrayList<>();
             List<Inbound> inboundList = inboundDao.selectInboundInfoByBoundSearch(boundRequest);
@@ -252,16 +258,17 @@ public class InboundServiceImpl implements InboundService {
             List<InboundProductResVo> productList = inboundResVo.getList();
             if(CollectionUtils.isNotEmpty(productList)){
                 for(InboundProductResVo vo:productList){
+                    Long inboundBaseContent = vo.getInboundBaseContent() == null ? 1L : Long.valueOf(vo.getInboundBaseContent());
                     if(Objects.isNull(vo.getPraInboundMainNum()) || vo.getPraInboundMainNum() == 0){
                         vo.setPraSingleCount(vo.getPraInboundMainNum());
                     }else{
-                        vo.setPraSingleCount(vo.getPraInboundMainNum() % Long.valueOf(vo.getInboundBaseContent()));
+                        vo.setPraSingleCount(vo.getPraInboundMainNum() % inboundBaseContent);
                     }
 
                     if(Objects.isNull(vo.getPreInboundMainNum()) || vo.getPreInboundMainNum() == 0){
                         vo.setPreSingleCount(vo.getPreInboundMainNum());
                     }else{
-                        vo.setPreSingleCount(vo.getPreInboundMainNum() % Long.valueOf(vo.getInboundBaseContent()));
+                        vo.setPreSingleCount(vo.getPreInboundMainNum() % inboundBaseContent);
                     }
                 }
             }
@@ -293,13 +300,13 @@ public class InboundServiceImpl implements InboundService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveInbound(InboundReqSave reqVo) {
         try {
-            log.info("单据调用入库单参数：" + reqVo);
+            log.info("单据调用入库单参数：{}", JsonUtil.toJson(reqVo));
             // 入库单转化主体保存实体
             Inbound inbound = new Inbound();
             BeanCopyUtils.copy(reqVo, inbound);
 
             EncodingRule rule = null;
-            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
                 // 获取编码
                 rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
                 inbound.setInboundOderCode(rule.getNumberingValue().toString());
@@ -323,7 +330,7 @@ public class InboundServiceImpl implements InboundService {
             }
 
             //更新编码表
-            if(!reqVo.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
                 encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
             }
 
@@ -346,55 +353,6 @@ public class InboundServiceImpl implements InboundService {
         }
     }
 
-    /**
-     * @param reqVo
-     */
-    @Override
-    @Transactional(rollbackFor = GroundRuntimeException.class)
-    public String saveInbound2(InboundReqSave reqVo) {
-        try {
-            // 入库单转化主体保存实体
-            Inbound inbound = new Inbound();
-            BeanCopyUtils.copy(reqVo, inbound);
-            // 获取编码 尺度
-            //EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-            //inbound.setInboundOderCode(rule.getNumberingValue().toString());
-            //插入入库单主表
-            int insert = inboundDao.insert(inbound);
-            log.info("插入入库单主表返回结果:{}", insert);
-            if(insert <= 0){
-                log.info("新增入库单主表数据失败");
-                throw new GroundRuntimeException("新增入库单主表数据失败");
-            }
-            //  转化入库单sku实体
-            List<InboundProduct> list =BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
-            list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(inbound.getInboundOderCode()));
-            //插入入库单商品表
-            int insertProducts=inboundProductDao.insertBatch(list);
-            log.info("插入入库单商品表返回结果:{}", insertProducts);
-            if(insert <= 0){
-                log.info("新增入库单商品表数据失败");
-                throw new GroundRuntimeException("新增入库单商品表数据失败");
-            }
-            List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
-            if(CollectionUtils.isNotEmpty(batchList)){
-                batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(inbound.getInboundOderCode()));
-                Integer count = inboundBatchDao.insertList(batchList);
-                log.info("插入入库单供应商对应的商品信息返回结果:{}", count);
-            }
-            //更新编码表
-            //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
-
-            // 保存日志
-            productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(),reqVo,HandleTypeCoce.ADD_INBOUND_ODER.getName(),new Date(),reqVo.getCreateBy(), reqVo.getRemark());
-            InboundServiceImpl inboundService = (InboundServiceImpl) AopContext.currentProxy();
-            // 跟新数据库状态
-            return inbound.getInboundOderCode();
-        } catch (GroundRuntimeException e) {
-            log.error("保存入库单接口错误:{}",e.getCause());
-            throw new GroundRuntimeException(String.format("添加入库单失败:%s",e.getMessage()));
-        }
-    }
     /**
      * 获取入库类型
      * @return
@@ -626,7 +584,7 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setOperatorId(request.getOperatorId());
             stockInfo.setOperatorName(request.getOperatorName());
 
-            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
+            if(inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
                 // 查询对应的采购商品
                 PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource
                         (inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
@@ -649,7 +607,7 @@ public class InboundServiceImpl implements InboundService {
                         stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
                     }
                 }
-            }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
+            }else if (inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ALLOCATE.getCode()))) {
                 AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(inbound.getSourceOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode().intValue());
                 stockInfo.setPreWayCount(allocationProductResVo.getQuantity());
             }
@@ -662,67 +620,144 @@ public class InboundServiceImpl implements InboundService {
         InboundBatch productBatch = null;
         List<InboundBatchCallBackRequest> notBatchList = Lists.newArrayList();
         if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
-            Map<String, Long> actualTotalCountMap = new HashMap<>();
-            for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
-                if(actualTotalCountMap.get(inboundProduct.getSkuCode()) == null){
-                    actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount());
-                }else {
-                    actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount() + actualTotalCountMap.get(inboundProduct.getSkuCode()));
-                }
+            // 处理退货流程
+            List<OrderInfoItemProductBatch> orderBatchs = null;
+            ReturnOrderInfo returnOrderInfo = null;
+            if(request.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ORDER.getCode()))){
+                // 根据退货单信息
+                returnOrderInfo = returnOrderInfoDao.selectByCode(inbound.getSourceOderCode());
+                orderBatchs = orderInfoItemProductBatchDao.selectByPrimaryKey(returnOrderInfo.getOrderCode());
+                LOGGER.info("退货单查对应的销售单批次信息为空：{}", JsonUtil.toJson(orderBatchs));
             }
-            Map<String, InboundProductCallBackRequest> inboundMap = new HashMap<>();
-            for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
-                key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
-                InboundProduct product = products.get(key);
-                String productDate = DateUtils.currentDate();
-                String batchCode = DateUtils.currentDate().replaceAll("-","");
-                String batchInfoCode;
-                if(StringUtils.isBlank(inbound.getSupplierCode())){
-                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                            batchCode  + "_" + product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
-                }else {
-                    batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
-                            batchCode + "_" + inbound.getSupplierCode() + "_" +
-                            product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
-                }
-                if(inboundMap.get(inboundProduct.getSkuCode()) == null){
-                    // 添加批次库存
-                    stockBatchInfo = new StockBatchInfoRequest();
-                    this.addStockBatch(stockBatchInfo, inbound);
-                    stockBatchInfo.setProductDate(productDate);
-                    stockBatchInfo.setBatchCode(batchCode);
-                    stockBatchInfo.setChangeCount(actualTotalCountMap.get(inboundProduct.getSkuCode()));
-                    stockBatchInfo.setOperatorId(request.getOperatorId());
-                    stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
-                    stockBatchInfo.setOperatorName(request.getOperatorName());
-                    stockBatchInfo.setSourceDocumentType(sourceDocumentType);
-                    stockBatchInfo.setBatchInfoCode(batchInfoCode);
-                    stockBatchInfo.setSkuCode(product.getSkuCode());
-                    stockBatchInfo.setSkuName(product.getSkuName());
-                    stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
-                    stockBatchInfo.setTaxRate(product.getTax());
-                    batchList.add(stockBatchInfo);
-                    inboundMap.put(inboundProduct.getSkuCode(), inboundProduct);
-                }
 
-                // 查询对应订单的sku
-                productBatch = new InboundBatch();
-                productBatch.setUpdateById(request.getOperatorId());
-                productBatch.setUpdateByName(request.getOperatorName());
-                productBatch.setInboundOderCode(product.getInboundOderCode());
-                productBatch.setBatchCode(batchCode);
-                productBatch.setBatchInfoCode(batchInfoCode);
-                productBatch.setSupplierCode(inbound.getSupplierCode());
-                productBatch.setSupplierName(inbound.getSupplierName());
-                productBatch.setSkuCode(product.getSkuCode());
-                productBatch.setSkuName(product.getSkuName());
-                productBatch.setProductDate(productDate);
-                productBatch.setTotalCount(product.getPreInboundMainNum());
-                productBatch.setActualTotalCount(product.getPraInboundMainNum());
-                productBatch.setLineCode(product.getLinenum().intValue());
-                productBatch.setCreateById(request.getOperatorId());
-                productBatch.setCreateByName(request.getOperatorName());
-                inboundBatchList.add(productBatch);
+            if(request.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ORDER.getCode())) && CollectionUtils.isNotEmpty(orderBatchs)){
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
+                    InboundProduct product = products.get(key);
+                    if(product == null){
+                        LOGGER.info("未查询到对应入库单的商品信息：{}", key);
+                        throw new GroundRuntimeException("未查询到对应入库单的商品信息");
+                    }
+                    orderBatchs = orderInfoItemProductBatchDao.orderBatchList(inboundProduct.getSkuCode(), returnOrderInfo.getOrderCode(), inboundProduct.getLineCode().intValue());
+                    for(OrderInfoItemProductBatch batch : orderBatchs){
+                        // 添加批次库存
+                        stockBatchInfo = new StockBatchInfoRequest();
+                        this.addStockBatch(stockBatchInfo, inbound);
+                        stockBatchInfo.setProductDate(batch.getProductDate());
+                        stockBatchInfo.setBatchCode(batch.getBatchCode());
+                        stockBatchInfo.setOperatorId(request.getOperatorId());
+                        stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                        stockBatchInfo.setOperatorName(request.getOperatorName());
+                        stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                        stockBatchInfo.setBatchInfoCode(batch.getBatchInfoCode());
+                        stockBatchInfo.setSkuCode(product.getSkuCode());
+                        stockBatchInfo.setSkuName(product.getSkuName());
+                        stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+                        stockBatchInfo.setTaxRate(product.getTax());
+                        stockBatchInfo.setSupplierCode(batch.getSupplierCode());
+                        stockBatchInfo.setSupplierName(batch.getSupplierName());
+
+                        // 添加入库单批次
+                        productBatch = new InboundBatch();
+                        productBatch.setUpdateById(request.getOperatorId());
+                        productBatch.setUpdateByName(request.getOperatorName());
+                        productBatch.setInboundOderCode(product.getInboundOderCode());
+                        productBatch.setBatchCode(batch.getBatchCode());
+                        productBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                        productBatch.setSupplierCode(batch.getSupplierCode());
+                        //productBatch.setSupplierName(inbound.getSupplierName());
+                        productBatch.setSkuCode(product.getSkuCode());
+                        productBatch.setSkuName(product.getSkuName());
+                        productBatch.setProductDate(batch.getProductDate());
+                        productBatch.setLineCode(product.getLinenum().intValue());
+                        productBatch.setCreateById(request.getOperatorId());
+                        productBatch.setCreateByName(request.getOperatorName());
+                        if(inboundProduct.getActualTotalCount() <= batch.getActualTotalCount()){
+                            productBatch.setTotalCount(inboundProduct.getActualTotalCount());
+                            productBatch.setActualTotalCount(inboundProduct.getActualTotalCount());
+                            inboundBatchList.add(productBatch);
+
+                            stockBatchInfo.setChangeCount(inboundProduct.getActualTotalCount());
+                            batchList.add(stockBatchInfo);
+                            break;
+                        }else {
+                            productBatch.setTotalCount(batch.getActualTotalCount());
+                            productBatch.setActualTotalCount(batch.getActualTotalCount());
+                            inboundBatchList.add(productBatch);
+                            inboundProduct.setActualTotalCount(inboundProduct.getActualTotalCount() - batch.getActualTotalCount());
+                            stockBatchInfo.setChangeCount(batch.getActualTotalCount());
+                            batchList.add(stockBatchInfo);
+                        }
+                    }
+
+                }
+            }else {
+                Map<String, Long> actualTotalCountMap = new HashMap<>();
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    if(actualTotalCountMap.get(inboundProduct.getSkuCode()) == null){
+                        actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount());
+                    }else {
+                        actualTotalCountMap.put(inboundProduct.getSkuCode(), inboundProduct.getActualTotalCount() + actualTotalCountMap.get(inboundProduct.getSkuCode()));
+                    }
+                }
+                Map<String, InboundProductCallBackRequest> inboundMap = new HashMap<>();
+                for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+                    key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
+                    InboundProduct product = products.get(key);
+                    if(product == null){
+                        LOGGER.info("未查询到对应入库单的商品信息：{}", key);
+                        throw new GroundRuntimeException("未查询到对应入库单的商品信息");
+                    }
+                    String productDate = DateUtils.currentDate();
+                    String batchCode = DateUtils.currentDate().replaceAll("-","");
+                    String batchInfoCode;
+                    if(StringUtils.isBlank(inbound.getSupplierCode())){
+                        batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                batchCode  + "_" + product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                    }else {
+                        batchInfoCode = inboundProduct.getSkuCode() + "_" + inbound.getWarehouseCode() + "_" +
+                                batchCode + "_" + inbound.getSupplierCode() + "_" +
+                                product.getPreTaxPurchaseAmount().stripTrailingZeros().toPlainString();
+                    }
+                    if(inboundMap.get(inboundProduct.getSkuCode()) == null){
+                        // 添加批次库存
+                        stockBatchInfo = new StockBatchInfoRequest();
+                        this.addStockBatch(stockBatchInfo, inbound);
+                        stockBatchInfo.setProductDate(productDate);
+                        stockBatchInfo.setBatchCode(batchCode);
+                        stockBatchInfo.setChangeCount(actualTotalCountMap.get(inboundProduct.getSkuCode()));
+                        stockBatchInfo.setOperatorId(request.getOperatorId());
+                        stockBatchInfo.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                        stockBatchInfo.setOperatorName(request.getOperatorName());
+                        stockBatchInfo.setSourceDocumentType(sourceDocumentType);
+                        stockBatchInfo.setBatchInfoCode(batchInfoCode);
+                        stockBatchInfo.setSkuCode(product.getSkuCode());
+                        stockBatchInfo.setSkuName(product.getSkuName());
+                        stockBatchInfo.setTaxCost(product.getPreTaxPurchaseAmount());
+                        stockBatchInfo.setTaxRate(product.getTax());
+                        batchList.add(stockBatchInfo);
+                        inboundMap.put(inboundProduct.getSkuCode(), inboundProduct);
+                    }
+
+                    // 查询对应订单的sku
+                    productBatch = new InboundBatch();
+                    productBatch.setUpdateById(request.getOperatorId());
+                    productBatch.setUpdateByName(request.getOperatorName());
+                    productBatch.setInboundOderCode(product.getInboundOderCode());
+                    productBatch.setBatchCode(batchCode);
+                    productBatch.setBatchInfoCode(batchInfoCode);
+                    productBatch.setSupplierCode(inbound.getSupplierCode());
+                    productBatch.setSupplierName(inbound.getSupplierName());
+                    productBatch.setSkuCode(product.getSkuCode());
+                    productBatch.setSkuName(product.getSkuName());
+                    productBatch.setProductDate(productDate);
+                    productBatch.setTotalCount(product.getPreInboundMainNum());
+                    productBatch.setActualTotalCount(product.getPraInboundMainNum());
+                    productBatch.setLineCode(product.getLinenum().intValue());
+                    productBatch.setCreateById(request.getOperatorId());
+                    productBatch.setCreateByName(request.getOperatorName());
+                    inboundBatchList.add(productBatch);
+                }
             }
         }else {
             Map<String, StockBatchInfoRequest> stockMap = new HashMap<>();
@@ -921,6 +956,7 @@ public class InboundServiceImpl implements InboundService {
         stockBatchInfo.setWarehouseCode(inbound.getWarehouseCode());
         stockBatchInfo.setWarehouseName(inbound.getWarehouseName());
         stockBatchInfo.setSupplierCode(inbound.getSupplierCode());
+        stockBatchInfo.setSupplierName(inbound.getSupplierName());
         stockBatchInfo.setDocumentCode(inbound.getInboundOderCode());
         stockBatchInfo.setDocumentType(Global.INBOUND_TYPE);
         stockBatchInfo.setSourceDocumentCode(inbound.getSourceOderCode());
@@ -928,7 +964,7 @@ public class InboundServiceImpl implements InboundService {
     }
 
     @Override
-    @Async("myTaskAsyncPool")
+    //@Async("myTaskAsyncPool")
     public void returnSource(Long id) {
         // 查询入库单信息
         Inbound inbound = inboundDao.selectByPrimaryKey(id);
@@ -1007,7 +1043,7 @@ public class InboundServiceImpl implements InboundService {
     /**
      * 回调采购接口
      */
-    @Async("myTaskAsyncPool")
+    //@Async("myTaskAsyncPool")
     public void returnPurchase(String sourceOderCode, List<InboundProduct> list, List<InboundBatch> batchList) {
         PurchaseStorageRequest purchaseStorage = new PurchaseStorageRequest();
         // 查询对应的采购单
@@ -1137,34 +1173,6 @@ public class InboundServiceImpl implements InboundService {
         } catch (Exception e) {
             log.error(Global.ERROR, JsonUtil.toJson(allocationCode));
             throw new GroundRuntimeException("调拨单更改入库状态失败");
-        }
-    }
-
-    /**
-     *入库单回传移库
-     * @param allocationCode
-     */
-    @Override
-    @Async("myTaskAsyncPool")
-    public void inBoundReturnMovement(String allocationCode) {
-        try {
-//          productCommonService.getInstance(allocationCode+"", HandleTypeCoce.SUCCESS__MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(),allocationCode ,HandleTypeCoce.SUCCESS__MOVEMENT.getName());
-//            supplierCommonService.getInstance(allocationCode + "", HandleTypeCoce.ADD_MOVEMENT.getStatus(), ObjectTypeCode.ALLOCATION.getStatus(), HandleTypeCoce.SUCCESS__MOVEMENT.getName(), null, HandleTypeCoce.ADD_MOVEMENT.getName(), "系统自动");
-            Allocation allocation = allocationMapper.selectByCode(allocationCode);
-            //设置调拨状态
-            allocation.setInStockTime(Calendar.getInstance().getTime());
-            allocation.setAllocationStatusCode(AllocationEnum.ALLOCATION_TYPE_FINISHED.getStatus());
-            allocation.setAllocationStatusName(AllocationEnum.ALLOCATION_TYPE_FINISHED.getName());
-            //更新调拨单状态
-            int count = allocationMapper.updateByPrimaryKeySelective(allocation);
-            if(count > 0){
-                // 调用sap 传送调拨单的数据给sap
-                sapBaseDataService.allocationAndprofitLoss(allocationCode,0);
-                LOGGER.info("移库wms回传成功");
-            }
-        } catch (Exception e) {
-            log.error(Global.ERROR, e);
-            throw new GroundRuntimeException("移库单更改入库状态失败");
         }
     }
 

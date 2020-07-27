@@ -56,6 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,6 +135,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     @Autowired
     private InboundBatchDao inboundBatchDao;
     @Autowired
+    @Lazy(true)
     private DlAbutmentService dlService;
 
 
@@ -274,7 +276,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
 
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
@@ -344,7 +346,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             InboundReqSave inboundReqSave = handleTransferInbound(allocation1, productSkuMap, inboundTypeEnum);
             allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundReqSave.setInboundBatchList(null);
-            inboundService.saveInbound2(inboundReqSave);
+            inboundService.saveInbound(inboundReqSave);
             // 出解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);

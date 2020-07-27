@@ -679,4 +679,12 @@
       </foreach>
 
     </select>
+  <select id="selectListByOrderCode" resultMap="BaseResultMap">
+    select
+     *
+    from
+    order_info_item
+    where
+    order_code =#{orderCode} order by id asc
+  </select>
 </mapper>

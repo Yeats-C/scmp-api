@@ -367,12 +367,14 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             for(PurchaseOrderProduct order:orderProducts){
                 // 商品采购件数量
                 Integer purchaseWhole = order.getPurchaseWhole() == null ? 0 : order.getPurchaseWhole();
-                Integer purchaseSingle = order.getPurchaseSingle() == null ? 0 : order.getPurchaseSingle();
+                //Integer purchaseSingle = order.getSingleCount() == null ? 0 : order.getPurchaseSingle();
+
+                Integer totalCount = order.getSingleCount() == null ? 0 : order.getSingleCount();
                 // 包装数量
                 Integer packNumber = order.getBaseProductContent() == null ? 0 : order.getBaseProductContent();
                 BigDecimal amount = order.getProductAmount() == null ? big : order.getProductAmount();
-                Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
-                singleSum += singleCount;
+                //Integer singleCount = purchaseWhole * packNumber + purchaseSingle;
+                singleSum += totalCount;
                 priceSum += purchaseWhole;
                 // 实际
                 Integer actualSingleCount = order.getActualSingleCount() == null ? 0: order.getActualSingleCount();
@@ -384,22 +386,22 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                 actualSingleSum += actualSingleCount;
                 if(order.getProductType().equals(Global.PRODUCT_TYPE_0)){
                     productPieceSum += purchaseWhole;
-                    productSingleSum += singleCount;
-                    productTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTaxSum);
+                    productSingleSum += totalCount;
+                    productTaxSum = amount.multiply(BigDecimal.valueOf(totalCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(productTaxSum);
                     actualProductPieceSum += actualWhole;
                     actualProductSingleSum += actualSingleCount;
                     actualProductTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualProductTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_2)){
                     matterPieceSum += purchaseWhole;
-                    matterSingleSum += singleCount;
-                    matterTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(matterTaxSum);
+                    matterSingleSum += totalCount;
+                    matterTaxSum = amount.multiply(BigDecimal.valueOf(totalCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(matterTaxSum);
                     actualMatterPieceSum += actualWhole;
                     actualMatterSingleSum += actualSingleCount;
                     actualMatterTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualMatterTaxSum);
                 }else if(order.getProductType().equals(Global.PRODUCT_TYPE_1)){
                     giftPieceSum += purchaseWhole;
-                    giftSingleSum += singleCount;
-                    giftTaxSum = amount.multiply(BigDecimal.valueOf(singleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
+                    giftSingleSum += totalCount;
+                    giftTaxSum = amount.multiply(BigDecimal.valueOf(totalCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(giftTaxSum);
                     actualGiftPieceSum += actualWhole;
                     actualGiftSingleSum += actualSingleCount;
                     actualGiftTaxSum = amount.multiply(BigDecimal.valueOf(actualSingleCount)).setScale(4, BigDecimal.ROUND_HALF_UP).add(actualGiftTaxSum);
@@ -574,12 +576,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             // 计算采购单的实际商品 0商品 1赠品 2实物返回
             // 查询含税单价
             BigDecimal amount = orderProduct.getProductAmount() == null ? BigDecimal.ZERO : orderProduct.getProductAmount();
+            BigDecimal totalAmount = BigDecimal.valueOf(actualSingleCount).multiply(amount).setScale(4, BigDecimal.ROUND_HALF_UP);
             if(orderProduct.getProductType().equals(Global.PRODUCT_TYPE_0)) {
-                actualProductAmount = amount.add(actualProductAmount);
+                actualProductAmount = totalAmount.add(actualProductAmount);
             }else if(orderProduct.getProductType().equals(Global.PRODUCT_TYPE_1)) {
-                actualGiftAmount = amount.add(actualGiftAmount);
+                actualGiftAmount = totalAmount.add(actualGiftAmount);
             }else {
-                actualReturnAmount = amount.add(actualReturnAmount);
+                actualReturnAmount = totalAmount.add(actualReturnAmount);
             }
             actualTotalCount += actualSingleCount;
         }
@@ -594,16 +597,17 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
             List<PurchaseBatch> purchaseBatches = Lists.newArrayList();
             for(PurchaseBatch purchaseBatch : purchaseStorage.getBatchList()){
                 // 根据批次编号 采购单号确认批次是否存在
-//                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(),
-//                        purchaseOrder.getPurchaseOrderCode(), purchaseBatch.getLineCode());
-//                if(batchInfo != null){
-//                    batchInfo.setActualTotalCount(batchInfo.getActualTotalCount() + purchaseBatch.getActualTotalCount());
-//                    batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());
-//                    batchInfo.setUpdateById(purchaseBatch.getUpdateById());
-//                    Integer count = purchaseBatchDao.update(batchInfo);
-//                    LOGGER.info("变更采购单批次参数：" + JsonUtil.toJson(batchInfo)+ "，-条数：", count);
-//                    continue;
-//                }
+                PurchaseBatch batchInfo = purchaseBatchDao.purchaseInfo(purchaseBatch.getBatchInfoCode(),
+                        purchaseOrder.getPurchaseOrderCode(), purchaseBatch.getLineCode());
+                if(batchInfo != null){
+                    Long actualCount = batchInfo.getActualTotalCount() == null ? 0L : batchInfo.getActualTotalCount();
+                    batchInfo.setActualTotalCount(actualCount + purchaseBatch.getActualTotalCount());
+                    batchInfo.setUpdateByName(purchaseBatch.getUpdateByName());
+                    batchInfo.setUpdateById(purchaseBatch.getUpdateById());
+                    Integer count = purchaseBatchDao.update(batchInfo);
+                    LOGGER.info("变更采购单批次参数：" + JsonUtil.toJson(batchInfo)+ "，-条数：", count);
+                    continue;
+                }
                 PurchaseBatch info = BeanCopyUtils.copy(purchaseBatch, PurchaseBatch.class);
                 info.setPurchaseOderCode(purchaseOrder.getPurchaseOrderCode());
                 purchaseBatches.add(info);

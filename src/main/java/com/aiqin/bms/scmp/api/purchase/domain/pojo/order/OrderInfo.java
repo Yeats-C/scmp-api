@@ -363,6 +363,9 @@ public class OrderInfo {
     @ApiModelProperty(value = "渠道名称")
     private String channelName;
 
+    @ApiModelProperty("包装数")
+    private Integer packingNum;
+
     @ApiModelProperty("订单详情")
     private List<OrderInfoItem> detailList;
 

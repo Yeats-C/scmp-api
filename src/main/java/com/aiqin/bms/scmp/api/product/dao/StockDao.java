@@ -128,4 +128,5 @@ public interface StockDao {
 
     List<Stock> stockByWarehouseTypeSum();
 
+    Integer getSkuBatchForChangePriceCount(QuerySkuInfoReqVO reqVO);
 }
