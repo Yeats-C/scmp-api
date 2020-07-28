@@ -90,6 +90,9 @@ public class QueryProductSkuListResp {
     @ApiModelProperty("质检报告（0.有 1.无）")
     private String inspectionStatus;
 
+    @ApiModelProperty(value = "税收分类编码")
+    private String taxCode;
+
     @ApiModelProperty(value = "sku渠道信息")
     private List<ProductSkuChannelRespVo> productSkuChannels;
 
