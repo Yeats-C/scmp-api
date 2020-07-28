@@ -1452,7 +1452,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
         final Integer DEBANG = 1;
         final Integer JINGDONG = 2;
-        long timeInMillis = Calendar.getInstance().getTimeInMillis();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        Long timeInMillis = Long.valueOf(sdf.format(Calendar.getInstance().getTime()));
 
         // 德邦
         if(request.getOperationType().equals(DEBANG)){

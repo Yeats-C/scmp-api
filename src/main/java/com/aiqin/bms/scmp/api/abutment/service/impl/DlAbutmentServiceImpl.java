@@ -371,7 +371,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         if(null == request){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        LOGGER.info("DL->熙耘，供应商信息参数：{}", JsonUtil.toJson(request));
+        LOGGER.info("熙耘->DL，供应商信息参数：{}", JsonUtil.toJson(request));
         // 保存DL推送熙耘门店信息日志
         DlOtherInfo info = new DlOtherInfo();
         info.setDocumentCode(request.getSupplierCode());
@@ -379,22 +379,22 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setBusinessType(Global.ECHO_TYPE);
         info.setDocumentContent(JsonUtil.toJson(request));
         Integer logCount = dlOtherInfoDao.insert(info);
-        LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);
+        LOGGER.info("熙耘->DL，保存供应商日志：{}", logCount);
 
         // 调用耘链新增供应商接口
         String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("DL->熙耘，保存供应商信息成功");
+            LOGGER.info("熙耘->DL，保存供应商信息成功");
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("DL->熙耘，保存供应商信息失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存供应商信息失败:{}", dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
-        LOGGER.info("DL->熙耘，变更供应商日志状态：{}", count);
+        LOGGER.info("熙耘->DL，变更供应商日志状态：{}", count);
         return HttpResponse.success();
     }
 

@@ -35,7 +35,7 @@ import java.util.List;
 @Service
 public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(DlAbutmentServiceImpl.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(ParameterAssemblyServiceImpl.class);
     @Resource
     private WarehouseDao warehouseDao;
     @Resource
