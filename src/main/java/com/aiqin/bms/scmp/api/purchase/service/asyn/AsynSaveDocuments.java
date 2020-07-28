@@ -217,6 +217,8 @@ public class AsynSaveDocuments {
             BigDecimal actualProductAmount = BigDecimal.ZERO;
             //实际赠品金额
             BigDecimal actualGiftAmount = BigDecimal.ZERO;
+            //进项税率
+            BigDecimal tax = BigDecimal.ZERO;
             List<PurchaseOrderProduct> purchaseOrderProduct = new ArrayList<>();
             for (int i = 0; i < orderInfoItemList.size(); i++) {
                 OrderInfoItem orderInfoItem = orderInfoItemList.get(i);
@@ -242,11 +244,14 @@ public class AsynSaveDocuments {
                         }
 
                     }
+
+
                     //通过结账信息拿到结算方式和编码
                     ProductSkuCheckoutRespVo bySkuCode = this.productSkuCheckoutDao.getBySkuCode(skuCode);
                     if (Objects.nonNull(bySkuCode)) {
                         savePurchaseOrder.setSettlementMethodCode(bySkuCode.getSettlementMethodCode());
                         savePurchaseOrder.setSettlementMethodName(bySkuCode.getSettlementMethodName());
+                        tax=bySkuCode.getInputTaxRate();
                     }
                 }
                 //获取含税单价取sku与供应商对应的采购价。
@@ -275,7 +280,7 @@ public class AsynSaveDocuments {
                 product.setCreateByName(order.getCreateByName());
                 product.setUpdateByName(order.getUpdateByName());
                 product.setProductAmount(taxIncludedPrice);
-                product.setTaxRate(orderInfoItem.getTax());
+                product.setTaxRate(tax);
                 //数量
                 BigDecimal num = new BigDecimal(orderInfoItem.getNum() + "");
                 //累加数量
@@ -409,7 +414,8 @@ public class AsynSaveDocuments {
             Long productCount=0L;
             //gift_count 赠品数量
             Long giftCount=0L;
-
+            //进项税率
+            BigDecimal tax = BigDecimal.ZERO;
             List<RejectRecordDetail> RejectRecordDetailList = new ArrayList<>();
             for (int i = 0; i < returnOrderInfoItems.size(); i++) {
                 ReturnOrderInfoItem returnDetail = returnOrderInfoItems.get(i);
@@ -438,6 +444,7 @@ public class AsynSaveDocuments {
                     if (Objects.nonNull(bySkuCode)) {
                         saveRejectRecord.setSettlementMethodCode(bySkuCode.getSettlementMethodCode());
                         saveRejectRecord.setSettlementMethodName(bySkuCode.getSettlementMethodName());
+                        tax=bySkuCode.getInputTaxRate();
                     }
                 }
                 //获取含税单价取sku与供应商对应的采购价。
@@ -456,7 +463,7 @@ public class AsynSaveDocuments {
                 detail.setColorName(returnDetail.getColorName());
                 detail.setModelNumber(returnDetail.getModelCode());
                 detail.setProductType(returnDetail.getGivePromotion());
-                detail.setTaxRate(returnDetail.getTax());
+                detail.setTaxRate(tax);
                 // 是否是赠品(0否1是)
                 Long productLineNum = returnDetail.getProductLineNum();
                 detail.setLineCode(Integer.parseInt(productLineNum + ""));
