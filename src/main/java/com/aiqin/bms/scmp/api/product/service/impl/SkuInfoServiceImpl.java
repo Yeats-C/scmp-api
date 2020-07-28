@@ -2026,7 +2026,8 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         productSkuInfoWms.setProductCategoryName(productSkuInfo.getProductCategoryName());
         productSkuInfoWms.setSkuAbbreviation(productSkuInfo.getSkuAbbreviation());
         productSkuInfoWms.setModelNumber(productSkuInfo.getModelNumber());
-        productSkuInfoWms.setQualityAssuranceManagement(productSkuInfo.getQualityAssuranceManagement());
+        productSkuInfoWms.setQualityAssuranceManagement(String.valueOf(productSkuInfo.getQualityAssuranceManagement()));
+        productSkuInfoWms.setQualityNumber(productSkuInfo.getQualityNumber());
         productSkuInfoWms.setQualityDate(productSkuInfo.getQualityDate());
         productSkuInfoWms.setUpdateTime(productSkuInfo.getUpdateTime());
         productSkuInfoWms.setGoodsGifts(productSkuInfo.getGoodsGifts());

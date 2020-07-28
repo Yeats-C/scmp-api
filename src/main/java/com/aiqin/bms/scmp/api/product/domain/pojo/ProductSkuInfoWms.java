@@ -94,8 +94,11 @@ public class ProductSkuInfoWms extends CommonBean {
 
     @ApiModelProperty("保质管理（0:管理 1:不管理）")
     @JsonProperty("quality_assurance_management")
-    private Byte qualityAssuranceManagement;
+    private String qualityAssuranceManagement;
 
+    @ApiModelProperty("保质数量")
+    @JsonProperty("quality_number")
+    private String qualityNumber;
 
     @ApiModelProperty("保质日期")
     @JsonProperty("quality_date")
