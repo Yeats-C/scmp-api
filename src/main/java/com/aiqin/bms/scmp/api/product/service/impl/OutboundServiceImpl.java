@@ -1007,15 +1007,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             request.setDeliveryPerson(requestVo.getOperatorName());
             request.setPersonId(requestVo.getOperatorId());
             request.setPersonName(outbound.getUpdateBy());
-            request.setActualTotalCount(outbound.getPraMainUnitNum());
             request.setBatchManage(requestVo.getBatchManage());
             request.setPackingNum(requestVo.getPackingNum());
             List<OutboundCallBackDetailRequest> orderItems = new ArrayList<>();
+            Long actualTotalCount = 0L;
             for (OutboundProduct op : list) {
                 OutboundCallBackDetailRequest orderItem = new OutboundCallBackDetailRequest();
                 orderItem.setSkuCode(op.getSkuCode());
                 orderItem.setSkuName(op.getSkuName());
                 orderItem.setActualProductCount(op.getPraOutboundMainNum());
+                actualTotalCount += op.getPraOutboundMainNum();
                 orderItem.setLineCode(op.getLinenum());
                 orderItems.add(orderItem);
             }
@@ -1031,7 +1032,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 List<OutboundCallBackBatchRequest> infoBatch = BeanCopyUtils.copyList(batchList, OutboundCallBackBatchRequest.class);
                 request.setBatchList(infoBatch);
             }
-
+            request.setActualTotalCount(actualTotalCount);
             HttpResponse httpResponse = orderCallbackService.outboundOrderCallBack(request);
         }else if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.RETURN_SUPPLY.getCode())) {
             // 退供
