@@ -252,6 +252,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         supplierInfo.setEnable(request.getEnable().intValue());
         supplierInfo.setSupplierCompanyCode(request.getSupplierCode());
         supplierInfo.setSupplierCompanyName(request.getSupplierName());
+        supplierInfo.setPurchaseGroupCode(request.getPurchasingGroupCode());
+        supplierInfo.setPurchaseGroupName(request.getPurchasingGroupName());
         // 查询供应商的结算账户信息
         SupplyCompanyAccount account = supplyCompanyAccountDao.companyAccount(supplierInfo.getSupplierCode());
         if(account != null){
@@ -264,14 +266,6 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             supplierInfo.setAccount("");
             supplierInfo.setAccountName("");
             supplierInfo.setMaxPaymentAmount(BigDecimal.ZERO);
-        }
-
-        if(CollectionUtils.isNotEmpty(request.getGroupList())){
-            List<String> groups = Lists.newArrayList();
-            for (SupplyCompanyPurchaseGroup group : request.getGroupList()){
-                groups.add(group.getPurchasingGroupName());
-            }
-            supplierInfo.setPurchaseGroupName(groups);
         }
 
         if(CollectionUtils.isNotEmpty(request.getDeliveryList())){
