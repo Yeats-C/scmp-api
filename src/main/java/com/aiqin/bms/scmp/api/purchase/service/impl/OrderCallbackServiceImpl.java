@@ -1607,11 +1607,10 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
 
-//        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(response.getWarehouseCode());
-        if(request.getFlag().equals(1)){
-            // flag标识状态在1的情况下，属于京东销售回传，调用发运接口
-            this.saleInsertTransport(request, response);
-        }
+//        if(request.getFlag().equals(1)){
+//            // flag标识状态在1的情况下，属于京东销售回传，调用发运接口
+//            this.saleInsertTransport(request, response);
+//        }
 
         // 调用sap 传送销售单的数据给sap
         //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
