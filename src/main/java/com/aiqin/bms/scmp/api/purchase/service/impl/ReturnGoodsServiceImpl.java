@@ -357,6 +357,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrderInfo.setUpdateById(getUser().getPersonId());
         returnOrderInfo.setUpdateByName(getUser().getPersonName());
         returnOrderInfo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        returnOrderInfo.setTransportCompany(itemList.get(0).getTransportCompany());
+        returnOrderInfo.setTransportCompanyCode(itemList.get(0).getTransportCompanyCode());
+        returnOrderInfo.setTransportNumber(itemList.get(0).getTransportNumber());
         Integer returnCount = returnOrderInfoMapper.update(returnOrderInfo);
         LOGGER.info("退货单退货收货完成变更退货单状态：{}", returnCount);
 

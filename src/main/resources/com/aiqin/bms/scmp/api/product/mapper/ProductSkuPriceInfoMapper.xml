@@ -305,8 +305,8 @@
         <if test="areaCode != null and areaCode !=''">
             and c.code = #{areaCode}
         </if>
-         <if test="isBatchPrice != null">
-        and a.is_batch_price = #{isBatchPrice}
+        <if test="isBatchPrice != null">
+            and a.is_batch_price = #{isBatchPrice}
         </if>
         <if test="isAreaPrice != null and isAreaPrice ==1 ">
             and a.be_contain_area = 1
@@ -376,6 +376,9 @@
         </if>
         <if test="batchNumber != null and batchNumber !=''">
             and a.warehouse_batch_number = #{batchNumber}
+        </if>
+        <if test="isBatchPrice != null">
+            and a.is_batch_price = #{isBatchPrice}
         </if>
     </select>
     <resultMap id="selectInfoByCode"

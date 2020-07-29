@@ -162,4 +162,17 @@ public class ReturnOrderInfoItem {
     @JsonProperty("insert_type")
     private Integer insertType;
 
+    @ApiModelProperty("物流公司")
+    @JsonProperty("transport_company")
+    private String transportCompany;
+
+    @ApiModelProperty("物流公司编码")
+    @JsonProperty("transport_company_code")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("物流公司单号")
+    @JsonProperty("transport_number")
+    private String transportNumber;
+
+
 }

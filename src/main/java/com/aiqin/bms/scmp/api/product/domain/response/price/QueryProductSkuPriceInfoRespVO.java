@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +47,7 @@ public class QueryProductSkuPriceInfoRespVO {
     private String priceAttributeName;
 
     @ApiModelProperty("含税金额")
-    private Long priceTax;
+    private BigDecimal priceTax;
 
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
