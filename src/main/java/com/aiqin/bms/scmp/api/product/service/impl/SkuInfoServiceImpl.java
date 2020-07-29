@@ -1029,7 +1029,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 
         //获取分销信息
         List<PurchaseSaleStockReqVo> saleList = purchaseSaleStockReqVos.stream().filter(item-> Objects.equals(StatusTypeCode.SALE.getStatus(),item.getType())).collect(Collectors.toList());
-        List<PurchaseSaleStockRespVo> list2 = productSkuPurchaseInfoService.getList(productSkuDraft.getSkuCode());
+        List<PurchaseSaleStockRespVo> list2 = productSkuDisInfoService.getList(productSkuDraft.getSkuCode());
         if (CollectionUtils.isEmpty(list2) || list2.size() != 1) {
             throw new BizException(ResultCode.PURCHASE_SALE_STOCK_EMPTY);
         }
