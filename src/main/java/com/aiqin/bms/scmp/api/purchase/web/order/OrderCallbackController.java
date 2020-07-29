@@ -116,4 +116,11 @@ public class OrderCallbackController {
         return orderCallbackService.deliveryCallBackSave(request);
     }
 
+    @PostMapping("/delivery/amount/save/jd")
+    @ApiOperation("保存wms京东的发运单运费信息")
+    public HttpResponse deliveryAmountSaveJd(@RequestBody DeliveryCallBackRequest request) {
+        LOGGER.info("保存wms京东的发运单运费信息,request:{}", JsonUtil.toJson(request));
+        return orderCallbackService.deliveryAmountSaveJd(request);
+    }
+
 }

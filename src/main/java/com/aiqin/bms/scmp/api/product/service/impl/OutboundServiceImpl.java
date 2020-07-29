@@ -1013,6 +1013,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             request.setPersonName(outbound.getUpdateBy());
             request.setBatchManage(requestVo.getBatchManage());
             request.setPackingNum(requestVo.getPackingNum());
+            request.setFlag(requestVo.getFlag());
+            request.setTotalWeight(requestVo.getTotalWeight());
+            request.setTransportCompanyCode(requestVo.getTransportCompanyCode());
+            request.setTransportCompanyName(requestVo.getTransportCompanyName());
+            request.setTransportCode(requestVo.getTransportCode());
             List<OutboundCallBackDetailRequest> orderItems = new ArrayList<>();
             Long actualTotalCount = 0L;
             for (OutboundProduct op : list) {

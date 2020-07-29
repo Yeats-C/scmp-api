@@ -334,7 +334,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             Integer count = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             LOGGER.info("直送退货单实退的商品数量：{}", count);
 
-            actualProductCount += item.getActualInboundNum();
+            actualProductCount += item.getActualInboundNum() == null ? 0 : item.getActualInboundNum();
             actualTotalProductAmount = actualTotalProductAmount.add(item.getActualAmount());
             actualTotalChannelAmount = actualTotalChannelAmount.add(item.getActualTotalChannelPrice());
         }

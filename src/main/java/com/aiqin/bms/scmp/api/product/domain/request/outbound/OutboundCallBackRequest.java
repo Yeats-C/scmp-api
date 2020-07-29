@@ -83,4 +83,24 @@ public class OutboundCallBackRequest {
     @JsonProperty("packing_num")
     private Integer packingNum;
 
+    @ApiModelProperty("总重量")
+    @JsonProperty("total_weight")
+    private BigDecimal totalWeight;
+
+    @ApiModelProperty("第三方wms标记(1:京东)")
+    @JsonProperty("flag")
+    private Integer flag;
+
+    @ApiModelProperty("物流公司编码")
+    @JsonProperty("transport_company_code")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("物流公司名称")
+    @JsonProperty("transport_company_name")
+    private String transportCompanyName;
+
+    @ApiModelProperty("物流公司单号")
+    @JsonProperty("transport_code")
+    private String transportCode;
+
 }

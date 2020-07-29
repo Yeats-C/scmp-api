@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.domain.request.transport;
 
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.TransportOrders;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -77,6 +78,10 @@ public class TransportAddRequest {
     @ApiModelProperty("订单商品总件数")
 //    @JsonProperty("order_commodity_num")
     private Long orderCommodityNum;
+
+    @ApiModelProperty("第三方wms标记(1:京东)")
+//    @JsonProperty("flag")
+    private Integer flag;
 
     @ApiModelProperty("订单列表")
     //@JsonProperty("orders_list")
