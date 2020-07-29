@@ -174,7 +174,7 @@ public class TransportServiceImpl implements TransportService {
         request.setDetailList(detailList);
         // 推送wms 发运信息
         log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
-        if(transportAddRequest.getFlag().equals(1)){
+        if(transportAddRequest.getFlag() != null && transportAddRequest.getFlag().equals(1)){
             transportWmsPushJD(request);
         }else {
             transportWmsPush(request);

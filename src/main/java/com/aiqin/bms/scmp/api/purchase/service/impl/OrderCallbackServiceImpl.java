@@ -1794,6 +1794,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 复制订单主信息
         BeanUtils.copyProperties(request, info);
         info.setOrderStoreCode(request.getOderCode());
+        info.setOrderTypeCode(String.valueOf(request.getOrderTypeCode()));
         // 复制订单商品明细
         List<OrderStoreDetail> infoList = BeanCopyUtils.copyList(request.getDetailList(), OrderStoreDetail.class);
         info.setOrderStoreDetail(infoList);

@@ -24,9 +24,9 @@ public class OrderIogisticsVo implements Serializable {
     @NotEmpty(message = "订单号不能为空")
     private String orderStoreCode;
 
-    @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
+    @ApiModelProperty("订单类型 1配送、2直送、3货架直送、4采购直送")
     @NotEmpty(message = "订单类型")
-    @JsonProperty("orderTypeCode")
+    @JsonProperty("order_type_code")
     private String orderTypeCode;
 
     @ApiModelProperty(value = "实际销售数量")
