@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.DlOtherInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
@@ -395,6 +396,39 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更供应商日志状态：{}", count);
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Async("myTaskAsyncPool")
+    public HttpResponse productInspection(ProductInspectionRequest request) {
+        if(null == request){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        LOGGER.info("熙耘->DL，质检报告参数：{}", JsonUtil.toJson(request));
+        // 保存DL推送熙耘门店信息日志
+        DlOtherInfo info = new DlOtherInfo();
+        info.setDocumentCode(request.getSkuCode());
+        info.setDocumentType(Global.INSPECTION_TYPE);
+        info.setBusinessType(Global.ECHO_TYPE);
+        info.setDocumentContent(JsonUtil.toJson(request));
+        Integer logCount = dlOtherInfoDao.insert(info);
+        LOGGER.info("熙耘->DL，保存质检报告日志：{}", logCount);
+
+        // 调用DL推送质检报告
+        String url = DL_URL + "";
+        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
+        if (dlResponse.getStatus() == 0) {
+            LOGGER.info("熙耘->DL，保存质检报告信息成功");
+            info.setReturnStatus(Global.SUCCESS);
+        }else {
+            LOGGER.info("熙耘->DL，保存质检报告信息失败:{}", dlResponse.getMessage());
+            info.setReturnStatus(Global.FAIL);
+        }
+        // 调用之后变更日志状态
+        info.setRequestUrl(url);
+        Integer count = dlOtherInfoDao.update(info);
+        LOGGER.info("熙耘->DL，变更质检报告日志状态：{}", count);
         return HttpResponse.success();
     }
 

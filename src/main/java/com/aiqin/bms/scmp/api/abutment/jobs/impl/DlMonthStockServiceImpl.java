@@ -99,7 +99,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
             }
         }
 
-        String url = DL_URL + "update/productdate";
+        String url = DL_URL + "/update/productdate";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(list), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("熙耘->DL，同步月份批次信息成功");
