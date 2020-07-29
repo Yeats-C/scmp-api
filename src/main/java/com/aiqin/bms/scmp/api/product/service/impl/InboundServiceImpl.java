@@ -467,6 +467,9 @@ public class InboundServiceImpl implements InboundService {
         if(inbound == null){
             LOGGER.info("WMS入库单回传，耘链未查询到入库单，回传失败");
             throw new GroundRuntimeException("WMS入库单回传，耘链未查询到入库单，回传失败");
+        }else if(inbound.getSynchrStatus().equals(Global.SYNCHR)){
+            LOGGER.info("此单据已回传：{}", JsonUtil.toJson(inbound));
+            throw new GroundRuntimeException("此单据已回传:" + inbound.getInboundOderCode());
         }
 
         // 设置入库单默认值
@@ -905,6 +908,7 @@ public class InboundServiceImpl implements InboundService {
         inbound.setPraTaxAmount(praTaxAmount);
         inbound.setPraAmount(praAmount);
         inbound.setPraTax(praTaxAmount.subtract(praAmount));
+        inbound.setSynchrStatus(Global.SYNCHR);
         if(StringUtils.isNotBlank(request.getOperatorName())){
             inbound.setUpdateBy(request.getOperatorName());
         }

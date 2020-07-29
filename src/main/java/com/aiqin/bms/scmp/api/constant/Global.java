@@ -337,4 +337,10 @@ public final class Global {
     public static final Integer IS_BATCH_PRICE_1 = 1;
     public static final Integer IS_BATCH_PRICE_2 = 2;
 
+    /**
+     * 同步状态
+     */
+    public static final Integer NOT_SYNCHR = 0;
+    public static final Integer SYNCHR = 1;
+
 }

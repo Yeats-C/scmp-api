@@ -591,6 +591,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         if (outbound == null) {
             LOGGER.info("WMS回传出库单信息为空");
             return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+        }else if(outbound.getSynchrStatus().equals(Global.SYNCHR)){
+            LOGGER.info("此出库单单据已回传：{}", JsonUtil.toJson(outbound));
+            throw new GroundRuntimeException("此单据已回传：" + outbound.getOutboundOderCode());
         }
 
         // 设置已回传默认值
@@ -960,6 +963,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }
 
         // 修改实际的入库单主表
+        outbound.setSynchrStatus(Global.SYNCHR);
         Integer k = outboundDao.update(outbound);
         LOGGER.error("wms回传出库单主表的实际值变更：{}", k);
 
