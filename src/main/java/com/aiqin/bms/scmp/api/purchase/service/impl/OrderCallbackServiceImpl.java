@@ -1630,6 +1630,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transportAddRequest.setLogisticsCompanyName(request.getTransportCompanyName());
         transportAddRequest.setLogisticsNumber(request.getTransportCode());
         transportAddRequest.setTotalWeight(request.getTotalWeight());
+        transportAddRequest.setFlag(request.getFlag());
 
         List<TransportOrders> transportOrders = new ArrayList<>();
         TransportOrders transportOrder = new TransportOrders();
@@ -1637,16 +1638,17 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transportOrder.setCommodityAmount(response.getProductTotalAmount());
         transportOrder.setOrderAmount(response.getOrderAmount());
         transportOrder.setStatus(response.getOrderStatus());
-        transportOrder.setType(Integer.valueOf(response.getOrderType()));
+        transportOrder.setType(Integer.valueOf(response.getOrderTypeCode()));
         transportOrder.setTransportCenterCode(response.getTransportCenterCode());
         transportOrder.setTransportCenterName(response.getTransportCenterName());
         transportOrder.setWarehouseCode(response.getWarehouseCode());
         transportOrder.setWarehouseName(response.getWarehouseName());
         transportOrder.setDeliverTime(request.getDeliveryTime());
         transportOrder.setCreateTime(new Date());
-        transportOrder.setProductNum(response.getPackingNum());
+        transportOrder.setProductNum(request.getActualTotalCount().intValue());
         transportOrder.setCustomerCode(response.getCustomerCode());
         transportOrder.setCustomerName(response.getCustomerName());
+        transportOrders.add(transportOrder);
         transportAddRequest.setOrdersList(transportOrders);
         HttpResponse response1 = transportService.saveTransport(transportAddRequest);
         if(response1.getCode().equals(MessageId.SUCCESS_CODE)){
