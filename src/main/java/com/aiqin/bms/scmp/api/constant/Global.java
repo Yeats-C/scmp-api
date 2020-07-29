@@ -303,12 +303,13 @@ public final class Global {
     public static final String SETTLE_TYPE_3 = "月结";
 
     /**
-     *  Dl与耘链的推送类型  1.sku 2.供应商 3.库存 4.门店
+     *  Dl与耘链的推送类型  1.sku 2.供应商 3.库存 4.门店 5.质检报告
      */
     public static final Integer SKU_TYPE  = 1;
     public static final Integer SUPPLIER_TYPE = 2;
     public static final Integer STOCK_TYPE  = 3;
     public static final Integer STORE_TYPE = 4;
+    public static final Integer INSPECTION_TYPE = 5;
 
     /**
      *  Dl与耘链的推送单据类型 1.销售 2.退货  3.物流单 4.取消
