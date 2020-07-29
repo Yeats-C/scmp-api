@@ -587,30 +587,26 @@ public class InboundServiceImpl implements InboundService {
             stockInfo.setOperatorId(request.getOperatorId());
             stockInfo.setOperatorName(request.getOperatorName());
 
-            if(inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.RETURN_SUPPLY.getCode()))){
+            if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
                 // 查询对应的采购商品
                 PurchaseOrderProduct purchaseOrderProduct = purchaseOrderProductDao.selectPreNumAndPraNumBySkuCodeAndSource
                         (inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum().intValue());
-                if(purchaseOrderProduct.getProductType() != 2){
+                if (purchaseOrderProduct.getProductType() != 2) {
                     stockInfo.setNewPurchasePrice(product.getPraTaxPurchaseAmount());
                 }
                 // 判断是否为最后一次采购
                 Long actualSingleCount = purchaseOrderProduct.getActualSingleCount() == null ? 0L : purchaseOrderProduct.getActualSingleCount();
-                Integer actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount.intValue() - inboundProduct.getActualTotalCount().intValue();
-                if(purchase.getInboundLine() == inbound.getPurchaseNum()){
-                    if(actualCount == 0){
+                Long actualCount = purchaseOrderProduct.getSingleCount() - actualSingleCount;
+                if (purchase.getInboundLine() == inbound.getPurchaseNum()) {
+                    stockInfo.setPreWayCount(actualCount);
+                } else {
+                    if (actualCount >= inboundProduct.getActualTotalCount()) {
                         stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
-                    }else {
-                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount().longValue() - actualSingleCount);
-                    }
-                }else {
-                    if(actualCount >= 0){
-                        stockInfo.setPreWayCount(purchaseOrderProduct.getSingleCount() - actualSingleCount);
-                    }else {
-                        stockInfo.setPreWayCount(inboundProduct.getActualTotalCount());
+                    } else {
+                        stockInfo.setPreWayCount(actualCount);
                     }
                 }
-            }else if (inbound.getInboundTypeCode().equals(Integer.valueOf(InboundTypeEnum.ALLOCATE.getCode()))) {
+            }else if (inbound.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
                 AllocationProductResVo allocationProductResVo = allocationProductMapper.selectQuantityBySkuCodeAndSource(inbound.getSourceOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode().intValue());
                 stockInfo.setPreWayCount(allocationProductResVo.getQuantity());
             }
