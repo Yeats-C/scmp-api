@@ -193,11 +193,14 @@
     select <include refid="Base_Column_List"></include>
     from return_order_info_inspection_item
     where return_order_code = #{returnOrderCode,jdbcType=VARCHAR}
-    <if test="batchCode != null">
-    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    <if test="batchInfoCode != null">
+    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
     </if>
     <if test="lineCode != null">
         and line_code = #{lineCode,jdbcType=BIGINT}
+    </if>
+    <if test="warehouseCode != null">
+      and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
     </if>
     and sku_code = #{skuCode,jdbcType=VARCHAR}
   </select>
