@@ -81,14 +81,14 @@ public class InboundController {
         return HttpResponse.success();
     }
 
-    @ApiOperation("根据入库单号查询入库商品批次详情")
-    @GetMapping("/getInfoByOderCode")
-    public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
-                                                                              @RequestParam(value = "page_size", required = false)Integer pageSize,
-                                                                              @RequestParam(value = "page_no", required = false)Integer pageNo){
-        //return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
-        return HttpResponse.success();
-    }
+//    @ApiOperation("根据入库单号查询入库商品批次详情")
+//    @GetMapping("/getInfoByOderCode")
+//    public HttpResponse<InboundBatch> selectInboundBatchInfoByInboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode,
+//                                                                              @RequestParam(value = "page_size", required = false)Integer pageSize,
+//                                                                              @RequestParam(value = "page_no", required = false)Integer pageNo){
+//        return inboundService.selectInboundBatchInfoByInboundOderCode(new InboundBatch(inboundOderCode, pageSize, pageNo));
+//        return HttpResponse.success();
+//    }
 
 //    @ApiOperation("测试wms")
 //    @GetMapping("/test")

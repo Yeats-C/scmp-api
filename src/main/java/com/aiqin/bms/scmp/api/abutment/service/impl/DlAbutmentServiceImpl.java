@@ -29,6 +29,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -48,6 +49,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     @Resource
     private DlOrderBillDao dlOrderBillDao;
     @Resource
+    @Lazy
     private ParameterAssemblyService parameterAssemblyService;
     @Resource
     private WarehouseDao warehouseDao;
@@ -81,21 +83,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         }
 
         // 转换生成调用耘链销售单的参数
-        ErpOrderInfo orderInfo = parameterAssemblyService.orderInfoParameter(request);
-        LOGGER.info("DL->熙耘，销售单转换调用耘链的参数：{}", JsonUtil.toJson(orderInfo));
-
-        // 调用耘链接口 生成对应的销售单信息
-        HttpResponse response = orderService.insertSaleOrder(orderInfo);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存耘链销售单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        }else {
-            LOGGER.info("DL->熙耘，保存耘链销售单失败", response.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        // 调用之后变更日志状态
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("DL->熙耘，变更销售单日志状态：{}", count);
+        parameterAssemblyService.orderInfoParameter(request);
         return HttpResponse.success();
     }
 
@@ -119,20 +107,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             LOGGER.info("DL->熙耘，编辑退货出库单日志：{}", logCount);
         }
 
-        ReturnReq returnInfo = parameterAssemblyService.returnInfoParameter(request);
-        LOGGER.info("DL->熙耘，退货单转换调用耘链的参数：{}", JsonUtil.toJson(returnInfo));
-
-        // 调用耘链 生成耘链对应的退货单、出库单
-        HttpResponse response = returnGoodsService.record(returnInfo);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存退货单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        }else {
-            LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("DL->熙耘，变更退货单日志状态：{}", count);
+        parameterAssemblyService.returnInfoParameter(request);
         return HttpResponse.success();
     }
 

@@ -1,5 +1,9 @@
 package com.aiqin.bms.scmp.api.abutment.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.dao.DlOrderBillDao;
+import com.aiqin.bms.scmp.api.abutment.dao.DlOtherInfoDao;
+import com.aiqin.bms.scmp.api.abutment.dao.DlStoreInfoDao;
+import com.aiqin.bms.scmp.api.abutment.domain.DlOrderBill;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
@@ -9,6 +13,8 @@ import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderItem;
+import com.aiqin.bms.scmp.api.purchase.service.OrderService;
+import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyAccountDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
@@ -20,12 +26,15 @@ import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
+import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -43,10 +52,23 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Resource
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
     @Resource
-    @Lazy(true)
+    @Lazy
     private DlAbutmentService dlAbutmentService;
+    @Resource
+    @Lazy
+    private OrderService orderService;
+    @Resource
+    @Lazy
+    private ReturnGoodsService returnGoodsService;
+    @Resource
+    private DlStoreInfoDao dlStoreInfoDao;
+    @Resource
+    private DlOtherInfoDao dlOtherInfoDao;
+    @Resource
+    private DlOrderBillDao dlOrderBillDao;
 
     @Override
+    @Async("myTaskAsyncPool")
     public ErpOrderInfo orderInfoParameter(OrderInfoRequest request) {
         ErpOrderInfo orderInfo = BeanCopyUtils.copy(request, ErpOrderInfo.class);
         orderInfo.setSourceCode(request.getOrderId());
@@ -139,10 +161,25 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         }
         orderInfo.setItemList(itemList);
         LOGGER.info("DL 推送销售单耘链的参数转换：{}", JsonUtil.toJson(orderInfo));
+
+        // 调用耘链接口 生成对应的销售单信息
+        HttpResponse response = orderService.insertSaleOrder(orderInfo);
+        DlOrderBill info = new DlOrderBill();
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("DL->熙耘，保存耘链销售单成功");
+            info.setReturnStatus(Global.SUCCESS);
+        }else {
+            LOGGER.info("DL->熙耘，保存耘链销售单失败", response.getMessage());
+            info.setReturnStatus(Global.FAIL);
+        }
+        // 调用之后变更日志状态
+        Integer count = dlOrderBillDao.update(info);
+        LOGGER.info("DL->熙耘，变更销售单日志状态：{}", count);
         return orderInfo;
     }
 
     @Override
+    @Async("myTaskAsyncPool")
     public ReturnReq returnInfoParameter(ReturnOrderInfoRequest request){
         ReturnReq returnRequest = new ReturnReq();
         ReturnOrderInfoReq returnInfo = BeanCopyUtils.copy(request, ReturnOrderInfoReq.class);
@@ -228,6 +265,19 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         }
         returnRequest.setReturnOrderDetailReqList(itemList);
         LOGGER.info("DL->耘链 推送退货单到耘链的参数转换：{}", JsonUtil.toJson(returnRequest));
+
+        // 调用耘链 生成耘链对应的退货单、出库单
+        HttpResponse response = returnGoodsService.record(returnRequest);
+        DlOrderBill info = new DlOrderBill();
+        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("DL->熙耘，保存退货单成功");
+            info.setReturnStatus(Global.SUCCESS);
+        }else {
+            LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
+            info.setReturnStatus(Global.FAIL);
+        }
+        Integer count = dlOrderBillDao.update(info);
+        LOGGER.info("DL->熙耘，变更退货单日志状态：{}", count);
         return returnRequest;
     }
 

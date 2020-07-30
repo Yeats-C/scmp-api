@@ -3,8 +3,6 @@ package com.aiqin.bms.scmp.api.abutment.jobs.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
-import com.aiqin.bms.scmp.api.abutment.service.impl.ParameterAssemblyServiceImpl;
-import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.StockMonthBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
