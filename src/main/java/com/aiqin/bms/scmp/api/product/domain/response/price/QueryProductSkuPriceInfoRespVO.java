@@ -49,6 +49,12 @@ public class QueryProductSkuPriceInfoRespVO {
     @ApiModelProperty("含税金额")
     private BigDecimal priceTax;
 
+    @ApiModelProperty("未税金额")
+    private BigDecimal priceNoTax;
+
+    @ApiModelProperty("税率")
+    private BigDecimal tax;
+
     @ApiModelProperty("仓库批次号编码")
     private String warehouseBatchNumber;
 
