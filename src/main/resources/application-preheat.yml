@@ -29,7 +29,7 @@ dl:
   key: 0122db92c57511eab0eb7cd30adaed42
   url: http://dev.api.daruiyun.com:7070
 wms2:
-  url: http://39.96.89.2:9001
+  url: http://wmsa.api.aiqin.com
 ground:
   druid:
     url: jdbc:mysql://rm-2ze48puce4v05ig2v.mysql.rds.aliyuncs.com/preheat_bms_scmp?connectTimeout=7500&socketTimeout=60000&useUnicode=true&characterEncoding=UTF-8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
