@@ -330,7 +330,7 @@ public class InboundServiceImpl implements InboundService {
             }
 
             //更新编码表
-            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
                 encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
             }
 
