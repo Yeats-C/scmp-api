@@ -55,6 +55,8 @@ public class StockDayBatch {
     @JsonProperty("product_date")
     private String productDate;
 
-
+    @ApiModelProperty(value="wms类型  1.德邦 2.京东")
+    @JsonProperty("wms_type")
+    private Integer wmsType;
 
 }

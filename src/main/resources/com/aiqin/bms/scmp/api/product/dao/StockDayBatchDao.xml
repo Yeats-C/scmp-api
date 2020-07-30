@@ -10,9 +10,10 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="synchr_time" jdbcType="BIGINT" property="synchrTime" />
+    <result column="wms_type" jdbcType="INTEGER" property="wmsType" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time
+    id, sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time, wms_type
   </sql>
   <select id="stockDayBatchOne" resultMap="BaseResultMap">
     select 
@@ -25,14 +26,15 @@
   </select>
   <delete id="delete">
     delete from stock_day_batch
-    where synchr_time = #{synchrTime,jdbcType=BIGINT}
+    where wms_type = #{wmsType,jdbcType=INTEGER}
+    and synchr_time != #{synchrTime,jdbcType=BIGINT}
   </delete>
   <insert id="insertAll">
-    insert into stock_day_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time)
+    insert into stock_day_batch (sku_code, warehouse_code, batch_code, batch_count, create_time, update_time, synchr_time, wms_type)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (#{item.skuCode,jdbcType=VARCHAR}, #{item.warehouseCode,jdbcType=VARCHAR}, #{item.batchCode,jdbcType=VARCHAR},
-        #{item.batchCount,jdbcType=BIGINT}, now(), now(), #{item.synchrTime,jdbcType=BIGINT})
+        #{item.batchCount,jdbcType=BIGINT}, now(), now(), #{item.synchrTime,jdbcType=BIGINT}, #{item.wmsType,jdbcType=INTEGER})
     </foreach>
   </insert>
   <update id="update">
@@ -73,6 +75,7 @@
       sum(batch_count) batchCount
     from stock_day_batch
     where synchr_time = #{synchrTime,jdbcType=BIGINT}
+    and wms_type = #{wmsType,jdbcType=INTEGER}
     group by skuCode, warehouseCode, batchCode
   </select>
 </mapper>

@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface StockDayBatchDao {
 
-    Integer delete(Long synchrTime);
+    Integer delete(StockMonthBatch deleteBatch);
 
     Integer insertAll(@Param("list") List<StockMonthBatch> record);
 
@@ -18,6 +18,7 @@ public interface StockDayBatchDao {
 
     List<StockDayBatch> stockDayBatchList(StockMonthBatch record);
 
-    List<StockMonthBatch> dayBatchByGroup(Long synchrTime);
+    List<StockMonthBatch> dayBatchByGroup(@Param("synchrTime") Long synchrTime,
+                                          @Param("wmsType") Integer wmsType);
 
 }
