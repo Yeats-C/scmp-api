@@ -197,10 +197,4 @@
       AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
     </if>
   </select>
-  <select id="stockMonthByDl" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from stock_month_batch
-    where synchr_time =
-    (SELECT synchr_time from stock_month_batch where wms_type = #{wmsType} ORDER BY synchr_time desc limit 1)
-  </select>
 </mapper>

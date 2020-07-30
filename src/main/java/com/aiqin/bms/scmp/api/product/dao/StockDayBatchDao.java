@@ -21,4 +21,6 @@ public interface StockDayBatchDao {
     List<StockMonthBatch> dayBatchByGroup(@Param("synchrTime") Long synchrTime,
                                           @Param("wmsType") Integer wmsType);
 
+    List<StockDayBatch> stockDayByDl(Integer wmsType);
+
 }

@@ -3,8 +3,8 @@ package com.aiqin.bms.scmp.api.abutment.jobs.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
-import com.aiqin.bms.scmp.api.product.dao.StockMonthBatchDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
+import com.aiqin.bms.scmp.api.product.dao.StockDayBatchDao;
+import com.aiqin.bms.scmp.api.product.domain.pojo.StockDayBatch;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
@@ -32,7 +32,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
     public static final Integer JINGDONG = 2;
 
     @Resource
-    private StockMonthBatchDao stockMonthBatchDao;
+    private StockDayBatchDao stockDayBatchDao;
     @Resource
     private WarehouseDao warehouseDao;
     @Value("${dl.url}")
@@ -41,7 +41,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
     private DLHttpClientUtil dlHttpClientUtil;
 
     @Override
-    //@Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/20 * * * ?")
     public void monthStockDl(){
 
         Map<String, WarehouseDTO> warehouseMap = new HashMap<>();
@@ -56,9 +56,9 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
         List<MonthStockRequest> list = Lists.newArrayList();
 
         // 查询德邦所有的库存信息
-        List<StockMonthBatch> stockMonthBatches = stockMonthBatchDao.stockMonthByDl(DEBANG);
-        if(CollectionUtils.isNotEmptyCollection(stockMonthBatches)){
-            for(StockMonthBatch stockMonth : stockMonthBatches){
+        List<StockDayBatch> stockDayBatches = stockDayBatchDao.stockDayByDl(DEBANG);
+        if(CollectionUtils.isNotEmptyCollection(stockDayBatches)){
+            for(StockDayBatch stockMonth : stockDayBatches){
                 monthStockRequest = new MonthStockRequest();
                 monthStockRequest.setSkuCode(stockMonth.getSkuCode());
                 monthStockRequest.setBatchCode(stockMonth.getBatchCode());
@@ -70,16 +70,16 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
                     monthStockRequest.setWarehouseName(warehouse.getWmsWarehouseName());
                     monthStockRequest.setWmsWarehouseType(warehouse.getWmsWarehouseType());
                 }else {
-                    LOGGER.info("同步dl月份批次未查询到德邦对应的库房：{}", stockMonth.getWarehouseCode());
+                    LOGGER.info("同步dl日期批次未查询到德邦对应的库房：{}", stockMonth.getWarehouseCode());
                 }
                 list.add(monthStockRequest);
             }
         }
 
         // 查询京东所有的库存信息
-        List<StockMonthBatch> stockMonthBatcheJds = stockMonthBatchDao.stockMonthByDl(JINGDONG);
-        if(CollectionUtils.isNotEmptyCollection(stockMonthBatcheJds)){
-            for(StockMonthBatch stockMonth : stockMonthBatcheJds){
+        List<StockDayBatch> stockDayBatchJds = stockDayBatchDao.stockDayByDl(JINGDONG);
+        if(CollectionUtils.isNotEmptyCollection(stockDayBatchJds)){
+            for(StockDayBatch stockMonth : stockDayBatchJds){
                 monthStockRequest = new MonthStockRequest();
                 monthStockRequest.setSkuCode(stockMonth.getSkuCode());
                 monthStockRequest.setBatchCode(stockMonth.getBatchCode());
@@ -100,9 +100,9 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
         String url = DL_URL + "/update/productdate";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(list), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，同步月份批次信息成功");
+            LOGGER.info("熙耘->DL，同步日期批次信息成功:{}", dlResponse.getMessage());
         } else {
-            LOGGER.info("熙耘->DL，同步月份批次信息失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，同步日期批次信息失败:{}", dlResponse.getMessage());
         }
     }
 }

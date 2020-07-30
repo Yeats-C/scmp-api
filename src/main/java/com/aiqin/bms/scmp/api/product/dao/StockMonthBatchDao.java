@@ -23,5 +23,4 @@ public interface StockMonthBatchDao {
 
     Integer querySkuBatchMonthCount(QuerySkuInfoReqVO reqVO);
 
-    List<StockMonthBatch> stockMonthByDl(Integer wmsType);
 }
