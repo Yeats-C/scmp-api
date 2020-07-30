@@ -16,7 +16,4 @@ public class SupplierAbutmentRequest extends SupplyCompany {
     @JsonProperty("delivery_list")
     private List<DeliveryInformation> deliveryList;
 
-    @ApiModelProperty(value="采购组信息")
-    @JsonProperty("group_list")
-    private List<SupplyCompanyPurchaseGroup> groupList;
 }

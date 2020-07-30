@@ -45,6 +45,7 @@
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_by" jdbcType="VARCHAR" property="updateBy" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
+    <result column="synchr_status" jdbcType="TINYINT" property="synchrStatus" />
   </resultMap>
 
   <sql id="Base_Column_List">
@@ -55,7 +56,7 @@
     pre_amount, pre_tax, pra_inbound_num, pra_main_unit_num, pra_tax_amount, pra_amount, 
     pra_tax, shipper, shipper_number, shipper_rate, province_code, province_name, city_code, 
     city_name, county_code, county_name, detailed_address, purchase_num, create_by, create_time, update_by,
-    update_time
+    update_time, synchr_status
   </sql>
 
   <select id="getInboundList" parameterType="com.aiqin.bms.scmp.api.product.domain.pojo.Inbound" resultMap="BaseResultMap">
@@ -559,6 +560,9 @@
       </if>
       <if test="updateBy != null">
         update_by = #{updateBy,jdbcType=VARCHAR},
+      </if>
+      <if test="synchrStatus != null">
+        synchr_status = #{synchrStatus,jdbcType=TINYINT},
       </if>
         update_time = now(),
     </set>

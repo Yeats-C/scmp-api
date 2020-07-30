@@ -337,6 +337,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     //操作类型 直接减库存 4
                     ChangeStockRequest changeStockRequest = handleProfitLossStockData(loss, batchList, warehouseByCode);
                     changeStockRequest.setOperationType(4);
+                    if(Global.BATCH_MANAGE_0.equals(warehouseByCode.getBatchManage())){
+                        changeStockRequest.setStockBatchList(null);
+                    }
                     HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
                     if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
                         LOGGER.error("wms回调:减库存异常");

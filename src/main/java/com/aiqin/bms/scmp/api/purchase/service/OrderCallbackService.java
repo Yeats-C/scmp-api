@@ -51,4 +51,6 @@ public interface OrderCallbackService {
     void updateAiqinOrder(OutboundCallBackRequest request);
 
     HttpResponse deliveryCallBackSave(DpResponseContent request);
+
+    HttpResponse deliveryAmountSaveJd(DeliveryCallBackRequest request);
 }

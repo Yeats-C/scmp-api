@@ -8,6 +8,7 @@ import com.aiqin.bms.scmp.api.common.BizException;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.domain.E8OrderCreate;
+import com.aiqin.bms.scmp.api.product.domain.JdB2cDespatchTarget;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryDetailRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
@@ -173,7 +174,45 @@ public class TransportServiceImpl implements TransportService {
         request.setDetailList(detailList);
         // 推送wms 发运信息
         log.info("耘链发运单推送wms发运信息，参数信息：[{}]", JsonUtil.toJson(request));
-        transportWmsPush(request);
+        if(transportAddRequest.getFlag() != null && transportAddRequest.getFlag().equals(1)){
+            transportWmsPushJD(request);
+        }else {
+            transportWmsPush(request);
+        }
+        return HttpResponse.success();
+    }
+
+    public HttpResponse transportWmsPushJD(DeliveryCallBackRequest request) {
+        // 查询 订单库房
+        TransportOrders transportOrders = transportOrdersMapper.selectTransportOrdersByTransportCode(request.getDeliveryCode());
+        // 通过库房编码获取对应信息
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(transportOrders.getWarehouseCode());
+        // 查询订单信息
+        QueryOrderInfoRespVO queryOrderInfoRespVO = orderInfoMapper.selectByOrderCode(transportOrders.getOrderCode());
+        // 参数赋值
+        JdB2cDespatchTarget jdB2cDespatchTarget = new JdB2cDespatchTarget();
+        jdB2cDespatchTarget.setSoType(queryOrderInfoRespVO.getOrderProductType());
+        jdB2cDespatchTarget.setWarehouseCode(warehouse.getWarehouseCode());
+        jdB2cDespatchTarget.setOrderId(queryOrderInfoRespVO.getOrderCode());
+        jdB2cDespatchTarget.setSenderName(warehouse.getContact());
+        jdB2cDespatchTarget.setSenderAddress(warehouse.getDetailedAddress());
+        jdB2cDespatchTarget.setSenderMobile(warehouse.getPhone());
+        jdB2cDespatchTarget.setReceiveName(queryOrderInfoRespVO.getConsignee());
+        jdB2cDespatchTarget.setReceiveAddress(queryOrderInfoRespVO.getDetailAddress());
+        jdB2cDespatchTarget.setProvince(queryOrderInfoRespVO.getProvinceName());
+        jdB2cDespatchTarget.setCity(queryOrderInfoRespVO.getCityName());
+        jdB2cDespatchTarget.setCounty(queryOrderInfoRespVO.getDistrictName());
+        jdB2cDespatchTarget.setReceiveMobile(queryOrderInfoRespVO.getConsigneePhone());
+        jdB2cDespatchTarget.setPostcode(queryOrderInfoRespVO.getZipCode());
+        jdB2cDespatchTarget.setPackageCount(String.valueOf(request.getPackingNum()));
+        jdB2cDespatchTarget.setWeight(String.valueOf(request.getTotalWeight()));
+        log.info("耘链发运单推送wms调用京东系统发运信息，参数信息：[{}]", JsonUtil.toJson(jdB2cDespatchTarget));
+        String url = urlConfig.WMS_API_URL2 + "/sale/source/jDongShipping";
+        HttpClient httpClient = HttpClient.post(url).json(jdB2cDespatchTarget).timeout(20000);
+        HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+        if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+            return HttpResponse.failure(null, "调用wms调用京东系统失败,原因：" + orderDto.getMessage());
+        }
         return HttpResponse.success();
     }
 

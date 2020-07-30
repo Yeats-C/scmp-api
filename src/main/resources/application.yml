@@ -350,6 +350,9 @@ mgs:
       - code: SCMP004013
         name: 历史数据导入
         link: '/product/historySkuImport'
+      - code: SCMP004014
+        name: 商品税码管理
+        link: '/product/skuTaxCode'
     - code: SCMP005
       name: 价格管理
       link: ''

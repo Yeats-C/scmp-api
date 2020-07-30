@@ -27,7 +27,7 @@ public class OutboundCallBackRequest {
     @JsonProperty("order_id")
     private String orderId;
 
-    @ApiModelProperty("订单类型 1直送 2配送 3辅采直送")
+    @ApiModelProperty("订单类型 1配送、2直送、3货架直送、4采购直送")
     @NotEmpty(message = "订单类型")
     @JsonProperty("order_type_code")
     private Integer orderTypeCode;
@@ -82,5 +82,25 @@ public class OutboundCallBackRequest {
     @ApiModelProperty("包装数")
     @JsonProperty("packing_num")
     private Integer packingNum;
+
+    @ApiModelProperty("总重量")
+    @JsonProperty("total_weight")
+    private BigDecimal totalWeight;
+
+    @ApiModelProperty("第三方wms标记(1:京东)")
+    @JsonProperty("flag")
+    private Integer flag;
+
+    @ApiModelProperty("物流公司编码")
+    @JsonProperty("transport_company_code")
+    private String transportCompanyCode;
+
+    @ApiModelProperty("物流公司名称")
+    @JsonProperty("transport_company_name")
+    private String transportCompanyName;
+
+    @ApiModelProperty("物流公司单号")
+    @JsonProperty("transport_code")
+    private String transportCode;
 
 }

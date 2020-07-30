@@ -11,6 +11,10 @@ import java.util.Date;
 @ApiModel("DL- 商品推送质检报告信息")
 public class ProductInspectionRequest {
 
+    @ApiModelProperty(value="sku编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
+
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
     private Date productDate;

@@ -140,9 +140,13 @@ public class SupplierInfoRequest {
     @JsonProperty("max_payment_amount")
     private BigDecimal maxPaymentAmount;
 
-    @ApiModelProperty(value="采购组")
+    @ApiModelProperty(value="采购组编码")
+    @JsonProperty("purchase_group_code")
+    private String purchaseGroupCode;
+
+    @ApiModelProperty(value="采购组名称")
     @JsonProperty("purchase_group_name")
-    private List<String> purchaseGroupName;
+    private String purchaseGroupName;
 
     @ApiModelProperty(value="发货退货信息")
     @JsonProperty("delivery_list")

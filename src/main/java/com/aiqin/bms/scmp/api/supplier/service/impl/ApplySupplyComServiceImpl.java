@@ -875,7 +875,6 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 
             // 调用DL
             SupplierAbutmentRequest request = BeanCopyUtils.copy(supplyCompany, SupplierAbutmentRequest.class);
-            request.setGroupList(supplyCompanyPurchaseGroups);
             request.setDeliveryList(deliveryInformations);
             parameterAssemblyService.supplierParameter(request);
 

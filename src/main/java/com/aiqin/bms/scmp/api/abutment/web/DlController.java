@@ -2,6 +2,8 @@ package com.aiqin.bms.scmp.api.abutment.web;
 
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
+import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
@@ -20,6 +22,8 @@ public class DlController {
 
     @Resource
     private DlAbutmentService dlService;
+    @Resource
+    private DlMonthStockService dlMonthStockService;
 
     @PostMapping("/order/info")
     @ApiOperation(value = "DL->熙耘，推送耘链销售单")
@@ -67,6 +71,18 @@ public class DlController {
     @ApiOperation(value = "DL->熙耘，供应商信息推送")
     public HttpResponse supplierInfo(@RequestBody SupplierInfoRequest request) {
         return dlService.supplierInfo(request);
+    }
+
+    @PostMapping("/syn/month/stock")
+    @ApiOperation(value = "熙耘->DL，德邦/京东月份批次库存同步")
+    public void monthStockDl() {
+        dlMonthStockService.monthStockDl();
+    }
+
+    @PostMapping("/product/inspection")
+    @ApiOperation(value = "熙耘->DL，质检报告的推送")
+    public HttpResponse productInspection(@RequestBody ProductInspectionRequest request) {
+        return dlService.productInspection(request);
     }
 
 //    @PostMapping("/product")

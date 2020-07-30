@@ -283,14 +283,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             LOGGER.info("验货之后根据库房新增的商品条数：", detailCount);
         }
 
-        List<ReturnOrderInfoInspectionItem> list = Lists.newArrayList();
-        for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
-            if (StringUtils.isBlank(item.getBatchCode())) {
-                continue;
-            }
-            list.add(item);
-        }
-        if (CollectionUtils.isNotEmptyCollection(list)) {
+//        List<ReturnOrderInfoInspectionItem> list = Lists.newArrayList();
+//        for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
+//            if (StringUtils.isBlank(item.getBatchCode())) {
+//                continue;
+//            }
+//            list.add(item);
+//        }
+        if (CollectionUtils.isNotEmptyCollection(request.getItemList())) {
             Integer batchCount = returnOrderInfoInspectionItemMapper.insertBatch(request.getItemList());
             LOGGER.info("保存退货单验货商品信息：", batchCount);
         }
@@ -334,7 +334,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             Integer count = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             LOGGER.info("直送退货单实退的商品数量：{}", count);
 
-            actualProductCount += item.getActualInboundNum();
+            actualProductCount += item.getActualInboundNum() == null ? 0 : item.getActualInboundNum();
             actualTotalProductAmount = actualTotalProductAmount.add(item.getActualAmount());
             actualTotalChannelAmount = actualTotalChannelAmount.add(item.getActualTotalChannelPrice());
         }
@@ -357,6 +357,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrderInfo.setUpdateById(getUser().getPersonId());
         returnOrderInfo.setUpdateByName(getUser().getPersonName());
         returnOrderInfo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        returnOrderInfo.setTransportCompany(itemList.get(0).getTransportCompany());
+        returnOrderInfo.setTransportCompanyCode(itemList.get(0).getTransportCompanyCode());
+        returnOrderInfo.setTransportNumber(itemList.get(0).getTransportNumber());
         Integer returnCount = returnOrderInfoMapper.update(returnOrderInfo);
         LOGGER.info("退货单退货收货完成变更退货单状态：{}", returnCount);
 
@@ -689,11 +692,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         List<ReturnOrderInfoInspectionItem> notBatchList = Lists.newArrayList();
         ReturnOrderInfoInspectionItem returnBatchItem;
         ReturnOrderInfoInspectionItem returnBatch;
-        // 查询批次管理信息
-        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(inbound.getWarehouseCode());
         for (InboundBatch batch : inboundBatches) {
-            if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
-                // 新增批次信息
+            returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
+                    inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode(), inbound.getWarehouseCode());
+            if (returnBatchItem == null) {
+                returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(null,
+                        inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode(), inbound.getWarehouseCode());
+            }
+            if (returnBatchItem == null) {
                 returnBatch = new ReturnOrderInfoInspectionItem();
                 returnBatch.setReturnOrderCode(inbound.getSourceOderCode());
                 returnBatch.setSkuCode(batch.getSkuCode());
@@ -706,36 +712,19 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 returnBatch.setBeOverdueDate(batch.getBeOverdueDate());
                 returnBatch.setProductDate(batch.getProductDate());
                 returnBatch.setBatchRemark(batch.getBatchRemark());
+                returnBatch.setTransportCenterCode(inbound.getLogisticsCenterCode());
+                returnBatch.setTransportCenterName(inbound.getLogisticsCenterName());
+                returnBatch.setWarehouseCode(inbound.getWarehouseCode());
+                returnBatch.setWarehouseName(inbound.getWarehouseName());
+                returnBatch.setSupplierCode(inbound.getSupplierCode());
+                returnBatch.setSupplierName(inbound.getSupplierName());
+                returnBatch.setLockType(1);
                 batchList.add(returnBatch);
             } else {
-                // 根据批次号、sku、行号查询对应的批次
-                returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchCode(),
-                        inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode());
-                if (returnBatchItem == null) {
-                    returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(null,
-                            inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode());
-                }
-                if (returnBatchItem == null) {
-                    returnBatch = new ReturnOrderInfoInspectionItem();
-                    returnBatch.setReturnOrderCode(inbound.getSourceOderCode());
-                    returnBatch.setSkuCode(batch.getSkuCode());
-                    returnBatch.setSkuName(batch.getSkuName());
-                    returnBatch.setLineCode(batch.getLineCode().longValue());
-                    returnBatch.setReturnProductCount(batch.getTotalCount());
-                    returnBatch.setActualProductCount(batch.getActualTotalCount());
-                    returnBatch.setBatchInfoCode(batch.getBatchInfoCode());
-                    returnBatch.setBatchCode(batch.getBatchCode());
-                    returnBatch.setBeOverdueDate(batch.getBeOverdueDate());
-                    returnBatch.setProductDate(batch.getProductDate());
-                    returnBatch.setBatchRemark(batch.getBatchRemark());
-                    notBatchList.add(returnBatch);
-                    LOGGER.info("wms回传退货单，非自动批次未找到的退货批次信息：{}", JsonUtil.toJson(notBatchList));
-                } else {
-                    Long batchCount = returnBatchItem.getActualProductCount() == null ? 0L : returnBatchItem.getActualProductCount();
-                    returnBatchItem.setActualProductCount(batch.getActualTotalCount() + batchCount);
-                    Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
-                    LOGGER.info("更新退货单批次：", i);
-                }
+                Long batchCount = returnBatchItem.getActualProductCount() == null ? 0L : returnBatchItem.getActualProductCount();
+                returnBatchItem.setActualProductCount(batch.getActualTotalCount() + batchCount);
+                Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
+                LOGGER.info("更新退货单批次：", i);
             }
         }
         if (CollectionUtils.isNotEmptyCollection(batchList) && batchList.size() > 0) {

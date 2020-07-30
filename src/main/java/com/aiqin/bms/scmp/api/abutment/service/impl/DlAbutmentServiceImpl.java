@@ -8,14 +8,13 @@ import com.aiqin.bms.scmp.api.abutment.domain.DlOtherInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
-import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
@@ -28,6 +27,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +47,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     @Resource
     private DlOrderBillDao dlOrderBillDao;
     @Resource
+    @Lazy
     private ParameterAssemblyService parameterAssemblyService;
     @Resource
     private WarehouseDao warehouseDao;
@@ -80,21 +81,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         }
 
         // 转换生成调用耘链销售单的参数
-        ErpOrderInfo orderInfo = parameterAssemblyService.orderInfoParameter(request);
-        LOGGER.info("DL->熙耘，销售单转换调用耘链的参数：{}", JsonUtil.toJson(orderInfo));
-
-        // 调用耘链接口 生成对应的销售单信息
-        HttpResponse response = orderService.insertSaleOrder(orderInfo);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存耘链销售单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        }else {
-            LOGGER.info("DL->熙耘，保存耘链销售单失败", response.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        // 调用之后变更日志状态
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("DL->熙耘，变更销售单日志状态：{}", count);
+        parameterAssemblyService.orderInfoParameter(request, info);
         return HttpResponse.success();
     }
 
@@ -118,25 +105,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             LOGGER.info("DL->熙耘，编辑退货出库单日志：{}", logCount);
         }
 
-        ReturnReq returnInfo = parameterAssemblyService.returnInfoParameter(request);
-        LOGGER.info("DL->熙耘，退货单转换调用耘链的参数：{}", JsonUtil.toJson(returnInfo));
-
-        // 调用耘链 生成耘链对应的退货单、出库单
-        HttpResponse response = returnGoodsService.record(returnInfo);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存退货单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        }else {
-            LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("DL->熙耘，变更退货单日志状态：{}", count);
+        parameterAssemblyService.returnInfoParameter(request, info);
         return HttpResponse.success();
     }
 
     @Override
-    @Async("myTaskAsyncPool")
     public HttpResponse orderTransport(OrderTransportRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -163,24 +136,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         }
 
         // 调用Dl 回传DL物流单
-        String url = DL_URL + "/back/logisticsOrder";
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
-        if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存销售物流单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        } else {
-            LOGGER.info("熙耘->DL，保存销售物流单失败:{}", dlResponse.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        // 调用之后变更日志状态
-        info.setRequestUrl(url);
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("熙耘->DL，变更销售物流单日志状态：{}", count);
+        parameterAssemblyService.orderTransportParameter(request, info);
         return HttpResponse.success();
     }
 
     @Override
-    @Async("myTaskAsyncPool")
     public HttpResponse echoOrderInfo(EchoOrderRequest request) {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
@@ -229,18 +189,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
 
         // 调用Dl 回传DL单据
         String url = DL_URL + dlUrl;
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
-        if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存回传DL单据成功");
-            info.setReturnStatus(Global.SUCCESS);
-        } else {
-            LOGGER.info("熙耘->DL，保存回传单据失败：{}", dlResponse.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        // 调用之后变更日志状态
-        info.setRequestUrl(url);
-        Integer count = dlOrderBillDao.update(info);
-        LOGGER.info("熙耘->DL，变更回传单据日志状态：{}", count);
+        parameterAssemblyService.echoOrderInfoParameter(request, info, url);
         return HttpResponse.success();
     }
 
@@ -273,19 +222,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         request.setWmsWarehouseType(warehouse.getWmsWarehouseType());
         LOGGER.info("转换库存变动，dl日志：{}", JsonUtil.toJson(request));
         // 调用Dl 回传DL库存变更
-        String url = DL_URL + "/back/stock/change";
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
-        if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存库存变更成功");
-            info.setReturnStatus(Global.SUCCESS);
-        } else {
-            LOGGER.info("熙耘->DL，保存库存变更失败：{}", dlResponse.getMessage());
-            info.setReturnStatus(Global.FAIL);
-        }
-        // 调用之后变更日志状态
-        info.setRequestUrl(url);
-        Integer count = dlOtherInfoDao.update(info);
-        LOGGER.info("熙耘->DL，变更库存变更日志状态：{}", count);
+        parameterAssemblyService.stockChangeParameter(request, info);
         return HttpResponse.success();
 
     }
@@ -371,30 +308,63 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         if(null == request){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        LOGGER.info("DL->熙耘，供应商信息参数：{}", JsonUtil.toJson(request));
+        LOGGER.info("熙耘->DL，供应商信息参数：{}", JsonUtil.toJson(request));
         // 保存DL推送熙耘门店信息日志
         DlOtherInfo info = new DlOtherInfo();
         info.setDocumentCode(request.getSupplierCode());
         info.setDocumentType(Global.SUPPLIER_TYPE);
         info.setBusinessType(Global.ECHO_TYPE);
-        info.setDocumentContent(JsonUtil.toJson(request));
-        Integer logCount = dlOtherInfoDao.insert(info);
-        LOGGER.info("DL->熙耘，保存供应商日志：{}", logCount);
+//        info.setDocumentContent(JsonUtil.toJson(request));
+//        Integer logCount = dlOtherInfoDao.insert(info);
+//        LOGGER.info("熙耘->DL，保存供应商日志：{}", logCount);
 
         // 调用耘链新增供应商接口
         String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("DL->熙耘，保存供应商信息成功");
+            LOGGER.info("熙耘->DL，保存供应商信息成功");
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("DL->熙耘，保存供应商信息失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存供应商信息失败:{}", dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
-        LOGGER.info("DL->熙耘，变更供应商日志状态：{}", count);
+        LOGGER.info("熙耘->DL，变更供应商日志状态：{}", count);
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Async("myTaskAsyncPool")
+    public HttpResponse productInspection(ProductInspectionRequest request) {
+        if(null == request){
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+        LOGGER.info("熙耘->DL，质检报告参数：{}", JsonUtil.toJson(request));
+        // 保存DL推送熙耘门店信息日志
+        DlOtherInfo info = new DlOtherInfo();
+        info.setDocumentCode(request.getSkuCode());
+        info.setDocumentType(Global.INSPECTION_TYPE);
+        info.setBusinessType(Global.ECHO_TYPE);
+        info.setDocumentContent(JsonUtil.toJson(request));
+        Integer logCount = dlOtherInfoDao.insert(info);
+        LOGGER.info("熙耘->DL，保存质检报告日志：{}", logCount);
+
+        // 调用DL推送质检报告
+        String url = DL_URL + "";
+        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
+        if (dlResponse.getStatus() == 0) {
+            LOGGER.info("熙耘->DL，保存质检报告信息成功");
+            info.setReturnStatus(Global.SUCCESS);
+        }else {
+            LOGGER.info("熙耘->DL，保存质检报告信息失败:{}", dlResponse.getMessage());
+            info.setReturnStatus(Global.FAIL);
+        }
+        // 调用之后变更日志状态
+        info.setRequestUrl(url);
+        Integer count = dlOtherInfoDao.update(info);
+        LOGGER.info("熙耘->DL，变更质检报告日志状态：{}", count);
         return HttpResponse.success();
     }
 

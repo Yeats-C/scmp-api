@@ -26,7 +26,7 @@ public class TransportOrders extends CommonBean {
 
     @ApiModelProperty("商品金额")
 //    @JsonProperty("commodity_amount")
-    private Long commodityAmount;
+    private BigDecimal commodityAmount;
 
     @ApiModelProperty("订单金额")
 //    @JsonProperty("order_amount")

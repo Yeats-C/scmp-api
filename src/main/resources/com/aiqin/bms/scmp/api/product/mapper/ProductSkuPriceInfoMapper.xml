@@ -196,6 +196,8 @@
         <result column="aprice_type_name" property="priceTypeName"/>
         <result column="aprice_attribute_name" property="priceAttributeName"/>
         <result column="aprice_tax" property="priceTax"/>
+        <result column="aprice_no_tax" property="priceNoTax"/>
+        <result column="atax" property="tax"/>
         <result column="aeffective_time_start" property="effectiveTimeStart"/>
         <result column="aeffective_time_end" property="effectiveTimeEnd"/>
         <result column="asupplier_name" property="supplierName"/>
@@ -227,6 +229,8 @@
         a.price_type_name aprice_type_name,
         a.price_attribute_name aprice_attribute_name,
         a.price_tax aprice_tax,
+        a.price_no_tax aprice_no_tax,
+        a.tax atax,
         a.supplier_name asupplier_name,
         a.warehouse_batch_number awarehouse_batch_number,
         a.warehouse_batch_name awarehouse_batch_name,
@@ -305,8 +309,8 @@
         <if test="areaCode != null and areaCode !=''">
             and c.code = #{areaCode}
         </if>
-         <if test="isBatchPrice != null">
-        and a.is_batch_price = #{isBatchPrice}
+        <if test="isBatchPrice != null">
+            and a.is_batch_price = #{isBatchPrice}
         </if>
         <if test="isAreaPrice != null and isAreaPrice ==1 ">
             and a.be_contain_area = 1
@@ -376,6 +380,9 @@
         </if>
         <if test="batchNumber != null and batchNumber !=''">
             and a.warehouse_batch_number = #{batchNumber}
+        </if>
+        <if test="isBatchPrice != null">
+            and a.is_batch_price = #{isBatchPrice}
         </if>
     </select>
     <resultMap id="selectInfoByCode"

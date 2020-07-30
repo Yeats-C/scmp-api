@@ -1445,10 +1445,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         if (response == null) {
             return HttpResponse.failure(ResultCode.ORDER_INFO_NOT_HAVE);
         }
-
-//        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
-//            return HttpResponse.success("商品已出库完成,等待拣货中");
-//        }
+        if(response.getOrderStatus().equals(OrderStatus.ALL_SHIPPED.getStatusCode())){
+            return HttpResponse.success("商品已出库完成,等待拣货中");
+        }
         // 操作时间 签收时间
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(request.getOderCode());
@@ -1608,9 +1607,55 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
         }
 
+//        if(request.getFlag().equals(1)){
+//            // flag标识状态在1的情况下，属于京东销售回传，调用发运接口
+//            this.saleInsertTransport(request, response);
+//        }
+
         // 调用sap 传送销售单的数据给sap
         //sapBaseDataService.saleAndReturn(request.getOderCode(), 0);
         return HttpResponse.success();
+    }
+
+    public void saleInsertTransport(OutboundCallBackRequest request, OrderInfo response) {
+        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(response.getWarehouseCode());
+        TransportAddRequest transportAddRequest = new TransportAddRequest();
+        transportAddRequest.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+        transportAddRequest.setTransportCenterName(warehouse.getLogisticsCenterName());
+        transportAddRequest.setWarehouseCode(warehouse.getWarehouseCode());
+        transportAddRequest.setWarehouseName(warehouse.getWarehouseName());
+        transportAddRequest.setPackingNum(Long.valueOf(request.getPackingNum()));
+        transportAddRequest.setLogisticsCompany(request.getTransportCompanyCode());
+        transportAddRequest.setLogisticsCompanyName(request.getTransportCompanyName());
+        transportAddRequest.setLogisticsNumber(request.getTransportCode());
+        transportAddRequest.setTotalWeight(request.getTotalWeight());
+        transportAddRequest.setFlag(request.getFlag());
+
+        List<TransportOrders> transportOrders = new ArrayList<>();
+        TransportOrders transportOrder = new TransportOrders();
+        transportOrder.setOrderCode(response.getOrderCode());
+        transportOrder.setCommodityAmount(response.getProductTotalAmount());
+        transportOrder.setOrderAmount(response.getOrderAmount());
+        transportOrder.setStatus(response.getOrderStatus());
+        transportOrder.setType(Integer.valueOf(response.getOrderTypeCode()));
+        transportOrder.setTransportCenterCode(response.getTransportCenterCode());
+        transportOrder.setTransportCenterName(response.getTransportCenterName());
+        transportOrder.setWarehouseCode(response.getWarehouseCode());
+        transportOrder.setWarehouseName(response.getWarehouseName());
+        transportOrder.setDeliverTime(request.getDeliveryTime());
+        transportOrder.setCreateTime(new Date());
+        transportOrder.setProductNum(request.getActualTotalCount().intValue());
+        transportOrder.setCustomerCode(response.getCustomerCode());
+        transportOrder.setCustomerName(response.getCustomerName());
+        transportOrders.add(transportOrder);
+        transportAddRequest.setOrdersList(transportOrders);
+        HttpResponse response1 = transportService.saveTransport(transportAddRequest);
+        if(response1.getCode().equals(MessageId.SUCCESS_CODE)){
+            LOGGER.info("生成发运单推送京东wms成功");
+        }else {
+            LOGGER.error("生成发运单推送京东wms失败:{}", response1.getMessage());
+            throw new GroundRuntimeException(String.format("生成发运单推送京东wms失败:%s", response1.getMessage()));
+        }
     }
 
     @Async
@@ -1749,6 +1794,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 复制订单主信息
         BeanUtils.copyProperties(request, info);
         info.setOrderStoreCode(request.getOderCode());
+        info.setOrderTypeCode(String.valueOf(request.getOrderTypeCode()));
         // 复制订单商品明细
         List<OrderStoreDetail> infoList = BeanCopyUtils.copyList(request.getDetailList(), OrderStoreDetail.class);
         info.setOrderStoreDetail(infoList);
@@ -1924,5 +1970,19 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
            LOGGER.error(Global.ERROR, e);
             return HttpResponse.failure(MessageId.create(Project.PURCHASE_API,-1,e.getMessage()));
         }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse deliveryAmountSaveJd(DeliveryCallBackRequest request){
+        // 更新发运单
+        Transport transport = new Transport();
+        transport.setStandardLogisticsFee(request.getStandardLogisticsFee() == null ? BigDecimal.ZERO : request.getStandardLogisticsFee());
+        transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : request.getAdditionalLogisticsFee());
+        transport.setTransportAmount(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
+        transport.setTransportTime(new Date());
+        LOGGER.info("wms回传更新京东发运单运费,参数：[{}]", JsonUtil.toJson(transport));
+        transportMapper.updateTransport(transport);
+        return HttpResponse.success();
     }
 }
