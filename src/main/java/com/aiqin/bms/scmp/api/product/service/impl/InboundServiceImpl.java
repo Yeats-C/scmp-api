@@ -1222,7 +1222,8 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setShipper(returnOrderInfo.getConsignee());
         returnOder.setShipperNumber(returnOrderInfo.getConsigneePhone());
         returnOder.setRemake(returnOrderInfo.getRemake());
-        returnOder.setReturnOrderCode(inbound.getInboundOderCode());
+        returnOder.setReturnOrderCode(inbound.getSourceOderCode());
+        returnOder.setInboundOrderCode(inbound.getInboundOderCode());
         returnOder.setOrderCode(returnOrderInfo.getOrderCode());
         returnOder.setSupplierCode(returnOrderInfo.getSupplierCode());
         returnOder.setSupplierName(returnOrderInfo.getSupplierName());
