@@ -1852,8 +1852,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         request.setDetailList(detailLists);
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
-        String code = IdSequenceUtils.getInstance().nextId()+"";
-        request.setDeliveryCode(code);
+//        String code = IdSequenceUtils.getInstance().nextId()+"";
+        request.setDeliveryCode(request.getDeliveryCode());
         request.setCustomerCode(oi.getCustomerCode());
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));
