@@ -306,7 +306,7 @@ public class InboundServiceImpl implements InboundService {
             BeanCopyUtils.copy(reqVo, inbound);
 
             EncodingRule rule = null;
-            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
                 // 获取编码
                 rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
                 inbound.setInboundOderCode(rule.getNumberingValue().toString());
