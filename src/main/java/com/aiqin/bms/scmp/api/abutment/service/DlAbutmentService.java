@@ -6,6 +6,8 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
+import java.util.List;
+
 public interface DlAbutmentService {
 
     HttpResponse orderInfo(OrderInfoRequest request);
@@ -24,7 +26,7 @@ public interface DlAbutmentService {
 
     HttpResponse supplierInfo(SupplierInfoRequest request);
 
-    HttpResponse productInspection(ProductInspectionRequest request);
+    HttpResponse productInspection(ProductInspectionDlRequest request);
 
     HttpResponse productInfo(ProductInfoRequest request);
 }

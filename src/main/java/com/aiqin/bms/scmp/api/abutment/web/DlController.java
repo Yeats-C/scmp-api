@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @RestController
 @Api(tags = "DL单据等信息传送")
@@ -81,7 +82,7 @@ public class DlController {
 
     @PostMapping("/product/inspection")
     @ApiOperation(value = "熙耘->DL，质检报告的推送")
-    public HttpResponse productInspection(@RequestBody ProductInspectionRequest request) {
+    public HttpResponse productInspection(@RequestBody ProductInspectionDlRequest request) {
         return dlService.productInspection(request);
     }
 

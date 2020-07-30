@@ -6,10 +6,12 @@ import com.aiqin.bms.scmp.api.abutment.dao.DlStoreInfoDao;
 import com.aiqin.bms.scmp.api.abutment.domain.DlOrderBill;
 import com.aiqin.bms.scmp.api.abutment.domain.DlOtherInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
@@ -64,8 +66,6 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Resource
     @Lazy
     private ReturnGoodsService returnGoodsService;
-    @Resource
-    private DlStoreInfoDao dlStoreInfoDao;
     @Resource
     private DlOtherInfoDao dlOtherInfoDao;
     @Resource
@@ -408,6 +408,38 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更库存变更日志状态：{}", count);
+    }
+
+    @Override
+    public ProductInspectionDlRequest productInspectionParameter(List<ProductSkuInspReport> productSkuInspReports){
+        LOGGER.info("推送DL质检报告参数：{}", JsonUtil.toJson(productSkuInspReports));
+        ProductInspectionDlRequest request = new ProductInspectionDlRequest();
+        List<ProductInspectionRequest> list = Lists.newArrayList();
+        ProductInspectionRequest productInspection;
+        if(CollectionUtils.isNotEmpty(productSkuInspReports)){
+            for(ProductSkuInspReport report : productSkuInspReports){
+                productInspection = new ProductInspectionRequest();
+                productInspection.setInspectionReportPath(report.getInspectionReportPath());
+                productInspection.setSkuCode(report.getSkuCode());
+                productInspection.setProductDate(report.getProductionDate());
+                list.add(productInspection);
+            }
+            LOGGER.info("转化为推送DL的质检报告：{}", JsonUtil.toJson(list));
+            // 保存DL推送熙耘门店信息日志
+            String uuid = IdUtil.uuid();
+            request.setDocumentCode(uuid);
+            request.setList(list);
+
+            DlOtherInfo info = new DlOtherInfo();
+            info.setDocumentCode(uuid);
+            info.setDocumentType(Global.INSPECTION_TYPE);
+            info.setBusinessType(Global.ECHO_TYPE);
+            info.setDocumentContent(JsonUtil.toJson(request));
+            Integer logCount = dlOtherInfoDao.insert(info);
+            LOGGER.info("熙耘->DL，保存质检报告日志：{}", logCount);
+            dlAbutmentService.productInspection(request);
+        }
+        return request;
     }
 
 }

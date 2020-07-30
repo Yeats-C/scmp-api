@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.abutment.domain.DlOtherInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
@@ -26,12 +25,14 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 @Service
 public class DlAbutmentServiceImpl implements DlAbutmentService {
@@ -51,7 +52,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     private ParameterAssemblyService parameterAssemblyService;
     @Resource
     private WarehouseDao warehouseDao;
-    @Resource
+    @Autowired
     private DLHttpClientUtil dlHttpClientUtil;
     @Resource
     private OrderService orderService;
@@ -337,23 +338,15 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
 
     @Override
     @Async("myTaskAsyncPool")
-    public HttpResponse productInspection(ProductInspectionRequest request) {
-        if(null == request){
-            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
-        }
-        LOGGER.info("熙耘->DL，质检报告参数：{}", JsonUtil.toJson(request));
-        // 保存DL推送熙耘门店信息日志
+    public HttpResponse productInspection(ProductInspectionDlRequest request) {
+
         DlOtherInfo info = new DlOtherInfo();
-        info.setDocumentCode(request.getSkuCode());
+        info.setDocumentCode(request.getDocumentCode());
         info.setDocumentType(Global.INSPECTION_TYPE);
         info.setBusinessType(Global.ECHO_TYPE);
-        info.setDocumentContent(JsonUtil.toJson(request));
-        Integer logCount = dlOtherInfoDao.insert(info);
-        LOGGER.info("熙耘->DL，保存质检报告日志：{}", logCount);
-
         // 调用DL推送质检报告
-        String url = DL_URL + "";
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
+        String url = DL_URL + "/update/inspectionreport";
+        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request.getList()), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("熙耘->DL，保存质检报告信息成功");
             info.setReturnStatus(Global.SUCCESS);
