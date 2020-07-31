@@ -1498,8 +1498,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfoItem.setOrderCode(request.getOderCode());
             itemList.add(orderInfoItem);
 
-            actualTotalChannelAmount = actualTotalChannelAmount.add(item.getChannelUnitPrice());
-            actualTotalProductAmount = actualTotalProductAmount.add(item.getPrice());
+            actualTotalChannelAmount = actualTotalChannelAmount.add(orderInfoItem.getActualTotalChannelPrice());
+            actualTotalProductAmount = actualTotalProductAmount.add(orderInfoItem.getActualAmount());
             // 自动批次管理，wms回传添加销售单的批次
 //            if(request.getBatchManage().equals(Global.BATCH_MANAGE_0)){
 //                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
@@ -1852,8 +1852,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         request.setDetailList(detailLists);
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getDetailList().get(0).getOrderCode());
-        String code = IdSequenceUtils.getInstance().nextId()+"";
-        request.setDeliveryCode(code);
+//        String code = IdSequenceUtils.getInstance().nextId()+"";
+        request.setDeliveryCode(request.getDeliveryCode());
         request.setCustomerCode(oi.getCustomerCode());
         request.setCustomerName(oi.getCustomerName());
         request.setTransportAmount(request.getStandardLogisticsFee().add(request.getAdditionalLogisticsFee()));

@@ -306,7 +306,7 @@ public class InboundServiceImpl implements InboundService {
             BeanCopyUtils.copy(reqVo, inbound);
 
             EncodingRule rule = null;
-            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())){
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
                 // 获取编码
                 rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
                 inbound.setInboundOderCode(rule.getNumberingValue().toString());
@@ -330,7 +330,7 @@ public class InboundServiceImpl implements InboundService {
             }
 
             //更新编码表
-            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode())) {
+            if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
                 encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
             }
 
@@ -1222,7 +1222,8 @@ public class InboundServiceImpl implements InboundService {
         returnOder.setShipper(returnOrderInfo.getConsignee());
         returnOder.setShipperNumber(returnOrderInfo.getConsigneePhone());
         returnOder.setRemake(returnOrderInfo.getRemake());
-        returnOder.setReturnOrderCode(inbound.getInboundOderCode());
+        returnOder.setReturnOrderCode(inbound.getSourceOderCode());
+        returnOder.setInboundOrderCode(inbound.getInboundOderCode());
         returnOder.setOrderCode(returnOrderInfo.getOrderCode());
         returnOder.setSupplierCode(returnOrderInfo.getSupplierCode());
         returnOder.setSupplierName(returnOrderInfo.getSupplierName());

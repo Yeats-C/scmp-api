@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.BizException;
@@ -26,10 +27,12 @@ import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +56,9 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
     private ProductSkuInspReportMapper productSkuInspReportMapper;
     @Autowired
     private FileInfoService fileInfoService;
+    @Resource
+    @Lazy
+    private ParameterAssemblyService parameterAssemblyService;
 
     @Autowired
     private  ProductSkuInspReportService productSkuInspReportService;
@@ -190,6 +196,11 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
             item.setSkuCode(reportReqVo.getSkuCode());
             item.setSkuName(reportReqVo.getSkuName());
         });
+
+        // 推送质检报告到dl
+        if(CollectionUtils.isNotEmpty(productSkuInspReports)){
+            parameterAssemblyService.productInspectionParameter(productSkuInspReports);
+        }
         return ((ProductSkuInspReportService)AopContext.currentProxy()).insertList(productSkuInspReports);
     }
 
@@ -241,6 +252,13 @@ public class ProductSkuInspReportServiceImpl extends BaseServiceImpl implements 
         if(CollectionUtils.isNotEmpty(list)){
             List<Long> ids = list.stream().map(ProductSkuInspReportRespVo::getId).collect(Collectors.toList());
             productSkuInspReportMapper.deleteByIds(ids);
+        }
+
+        // 推送质检报告到dl
+        List<ProductSkuInspReport> dlList = Lists.newArrayList();
+        dlList.add(reportReqVo);
+        if(CollectionUtils.isNotEmpty(dlList)){
+            parameterAssemblyService.productInspectionParameter(dlList);
         }
         return productSkuInspReportMapper.insertSelective(reportReqVo);
     }

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Data
 @ApiModel("发运单推送京东数据（b2c发运接口推送）")
@@ -13,7 +14,7 @@ public class JdB2cDespatchTarget {
 
     @ApiModelProperty(value="订单类型")
     @JsonProperty("so_type")
-    @NotBlank(message ="so_type不能为空" )
+    @NotNull(message ="so_type不能为空" )
     private Integer soType;
 
     @ApiModelProperty(value="库房编码")
@@ -27,7 +28,8 @@ public class JdB2cDespatchTarget {
     private String orderId;
 
     @ApiModelProperty(value="寄件人姓名，说明：不能为生僻字)")
-    @JsonProperty("sender_ame")
+    @JsonProperty("sender_name")
+    @NotBlank(message = "sender_name不能为空")
     private String senderName;
 
     @ApiModelProperty(value="寄件人地址说明：不能为生僻字")
@@ -65,7 +67,7 @@ public class JdB2cDespatchTarget {
     private String town;
 
     @ApiModelProperty(value="收件人手机号(收件人电话、手机至少有一个不为空)")
-    @JsonProperty("receiveMobile")
+    @JsonProperty("receive_mobile")
     private String receiveMobile;
 
     @ApiModelProperty(value="收件人邮编，长度：6")
@@ -73,12 +75,15 @@ public class JdB2cDespatchTarget {
     private String postcode;
 
     @ApiModelProperty(value="包裹数(大于0，小于1000)")
-    @JsonProperty("packageCount")
+    @JsonProperty("package_count")
     private String packageCount;
 
     @ApiModelProperty(value="重量(单位：kg，保留小数点后两位)")
     @JsonProperty("weight")
     private String weight;
 
+    @ApiModelProperty(value="体积(单位：cm3，保留小数点后两位)")
+    @JsonProperty("vloumn")
+    private String vloumn;
 
 }
