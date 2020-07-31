@@ -91,7 +91,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         orderInfo.setOrderCategoryName(request.getOrderCategory());
         orderInfo.setOrderCategoryCode(request.getOrderCategoryCode());
         orderInfo.setStoreCode(request.getCustomerCode());
-        orderInfo.setSourceName(request.getCustomerName());
+        orderInfo.setStoreName(request.getCustomerName());
         if(request.getOrderType() == 1){
             // 配送默认状态为6
             orderInfo.setOrderStatus(6);
@@ -123,6 +123,9 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         // 默认主订单
         orderInfo.setOrderLevel(0);
         // 默认已支付
+        if(StringUtils.isNotBlank(request.getDistributionModeCode())){
+            orderInfo.setDistributionModeName(request.getDistributionModeCode().equals("0") ? "货运站" : "收货地址");
+        }
         orderInfo.setPaymentStatus(0);
         if(StringUtils.isNotBlank(request.getChannelName())){
             // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴

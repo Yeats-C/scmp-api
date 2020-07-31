@@ -671,8 +671,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             Integer returnInfoProduct = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             log.info("更新退货单商品:", returnInfoProduct);
 
-            actualChannelAmount.add(returnOrderInfoItem.getActualTotalChannelPrice());
-            actualProductAmount.add(returnOrderInfoItem.getActualPrice());
+            actualChannelAmount.add(channelAmount);
+            actualProductAmount.add(totalAmount);
         }
 
         returnOrder.setActualProductChannelTotalAmount(actualChannelAmount);
@@ -689,7 +689,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         // 查询入库单的批次信息
         List<InboundBatch> inboundBatches = inboundBatchDao.selectInboundBatchList(inboundOderCode);
         List<ReturnOrderInfoInspectionItem> batchList = Lists.newArrayList();
-        List<ReturnOrderInfoInspectionItem> notBatchList = Lists.newArrayList();
         ReturnOrderInfoInspectionItem returnBatchItem;
         ReturnOrderInfoInspectionItem returnBatch;
         for (InboundBatch batch : inboundBatches) {
