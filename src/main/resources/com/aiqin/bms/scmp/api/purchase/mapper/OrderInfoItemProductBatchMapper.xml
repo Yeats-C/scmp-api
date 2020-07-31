@@ -401,4 +401,13 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
   </select>
+  <update id="updateByReturnBatchCount">
+    update order_info_item_product_batch set
+    <if test="returnTotalCount != null">
+      return_total_count = #{returnTotalCount,jdbcType=BIGINT}
+    </if>
+    WHERE  order_code = #{orderCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=BIGINT}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+  </update>
 </mapper>

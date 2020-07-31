@@ -72,4 +72,6 @@ public interface OrderInfoItemMapper {
     List<String> selectByOrderCodes(@Param("list") List<String> orderCodeList);
 
     List<OrderInfoItem> selectListByOrderCode(@Param("orderCode") String orderCode);
+
+    Integer updateByReturnCount(OrderInfoItem orderInfoItem);
 }

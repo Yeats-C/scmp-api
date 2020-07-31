@@ -195,7 +195,7 @@
     from product_sku_sales_info a
     inner join product_sku_stock_info b
     on a.product_sku_code = b.product_sku_code
-    where a.usage_status = 1 and a.product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    where a.product_sku_code = #{skuCode,jdbcType=VARCHAR}
     limit 1
   </select>
 </mapper>

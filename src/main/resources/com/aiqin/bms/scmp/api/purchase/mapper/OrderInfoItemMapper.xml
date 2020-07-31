@@ -687,4 +687,13 @@
     where
     order_code =#{orderCode} order by id asc
   </select>
+  <update id="updateByReturnCount">
+    update order_info_item set
+    <if test="returnNum != null">
+      return_num = #{returnNum,jdbcType=BIGINT}
+    </if>
+    WHERE  order_code = #{orderCode,jdbcType=VARCHAR}
+    and product_line_num = #{productLineNum,jdbcType=BIGINT}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+  </update>
 </mapper>
