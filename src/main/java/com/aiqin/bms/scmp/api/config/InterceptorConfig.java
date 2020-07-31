@@ -35,6 +35,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/order/aiqin/**",
                         "/returnGoods/record/return",
                         "/returnGoods/recordDL/return",
+                        "/returnGoods/receipt",
                         "/excel/import",
                         "/stock/synchro/batch",
                         "/LogisticsCenter/getLogisticsCenterList",
