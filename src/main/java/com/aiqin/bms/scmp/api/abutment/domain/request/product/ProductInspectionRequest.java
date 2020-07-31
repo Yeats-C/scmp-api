@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.abutment.domain.request.product;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -17,6 +18,7 @@ public class ProductInspectionRequest {
 
     @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date productDate;
 
     @ApiModelProperty(value="质检报告路径")
