@@ -351,7 +351,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         info.setDocumentCode(request.getSupplierCode());
         info.setDocumentType(Global.SUPPLIER_TYPE);
         info.setBusinessType(Global.ECHO_TYPE);
-        info.setDocumentContent(JsonUtil.toJson(request));
+        info.setDocumentContent(JsonUtil.toJson(supplierInfo));
         Integer logCount = dlOtherInfoDao.insert(info);
         LOGGER.info("熙耘->DL，保存供应商日志：{}", logCount);
 
