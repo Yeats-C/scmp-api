@@ -22,6 +22,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundReqSave;
 import com.aiqin.bms.scmp.api.product.service.InboundService;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoInspectionItem;
@@ -93,6 +94,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     private InboundProductDao inboundProductDao;
     @Autowired
     private InboundBatchDao inboundBatchDao;
+    @Autowired
+    private OrderInfoItemMapper orderInfoItemMapper;
     @Autowired
     private OrderInfoItemProductBatchMapper orderInfoItemProductBatchMapper;
     @Resource
@@ -655,6 +658,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfoItem returnOrderInfoItem;
         List<InboundProduct> inboundProducts = inboundProductDao.selectByInboundOderCode(inboundOderCode);
 
+        OrderInfoItem orderInfoItem;
         for (InboundProduct product : inboundProducts) {
             // 查询对应的退货单商品信息
             returnOrderInfoItem = returnOrderInfoItemMapper.returnOrderOne(inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum());
@@ -671,8 +675,17 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             Integer returnInfoProduct = returnOrderInfoItemMapper.update(returnOrderInfoItem);
             log.info("更新退货单商品:", returnInfoProduct);
 
-            actualChannelAmount.add(channelAmount);
-            actualProductAmount.add(totalAmount);
+            // 更新订单的退货数量
+            orderInfoItem = new OrderInfoItem();
+            orderInfoItem.setSkuCode(returnOrderInfoItem.getSkuCode());
+            orderInfoItem.setProductLineNum(returnOrderInfoItem.getProductLineNum());
+            orderInfoItem.setOrderCode(returnOrderInfo.getOrderCode());
+            orderInfoItem.setReturnNum(productCount + product.getPraInboundMainNum());
+            Integer count = orderInfoItemMapper.updateByReturnCount(orderInfoItem);
+            LOGGER.info("更改退货单对应销售单商品的实际退货数量：{}", count);
+
+            actualChannelAmount = actualChannelAmount.add(channelAmount);
+            actualProductAmount = actualProductAmount.add(totalAmount);
         }
 
         returnOrder.setActualProductChannelTotalAmount(actualChannelAmount);
@@ -691,6 +704,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         List<ReturnOrderInfoInspectionItem> batchList = Lists.newArrayList();
         ReturnOrderInfoInspectionItem returnBatchItem;
         ReturnOrderInfoInspectionItem returnBatch;
+        OrderInfoItemProductBatch productBatch;
         for (InboundBatch batch : inboundBatches) {
             returnBatchItem = returnOrderInfoInspectionItemMapper.returnOrderInfo(batch.getBatchInfoCode(),
                     inbound.getSourceOderCode(), batch.getLineCode(), batch.getSkuCode(), inbound.getWarehouseCode());
@@ -723,12 +737,21 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 Long batchCount = returnBatchItem.getActualProductCount() == null ? 0L : returnBatchItem.getActualProductCount();
                 returnBatchItem.setActualProductCount(batch.getActualTotalCount() + batchCount);
                 Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
-                LOGGER.info("更新退货单批次：", i);
+                LOGGER.info("更新退货单批次：{}", i);
+
+                // 更新销售单对应的批次退货数量
+                productBatch = new OrderInfoItemProductBatch();
+                productBatch.setLineCode(batch.getLineCode().longValue());
+                productBatch.setSkuCode(batch.getSkuCode());
+                productBatch.setReturnTotalCount(batch.getActualTotalCount() + batchCount);
+                productBatch.setOrderCode(returnOrderInfo.getOrderCode());
+                orderInfoItemProductBatchMapper.updateByReturnBatchCount(productBatch);
+                LOGGER.info("更新退货单对应的销售单的实际退货数量 ：{}", i);
             }
         }
         if (CollectionUtils.isNotEmptyCollection(batchList) && batchList.size() > 0) {
             Integer count = returnOrderInfoInspectionItemMapper.insertBatch(batchList);
-            LOGGER.info("添加退货单批次：", count);
+            LOGGER.info("添加退货单批次：{}", count);
         }
 
         Integer returnInfo = returnOrderInfoMapper.update(returnOrder);

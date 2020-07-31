@@ -40,4 +40,6 @@ public interface OrderInfoItemProductBatchMapper {
     Integer selectBatchList(@Param("skuCode") String skuCode, @Param("orderCode") String orderCode, @Param("batchInfoCode") String batchInfoCode);
 
     Integer updateBatch(List<OrderInfoItemProductBatch> batchList);
+
+    Integer updateByReturnBatchCount(OrderInfoItemProductBatch record);
 }
