@@ -40,6 +40,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/stock/synchro/batch",
                         "/LogisticsCenter/getLogisticsCenterList",
                         "/sku/info/import/wms",
+                        "/supplier/company/import/wms",
                         "/dl/**")
                 .excludePathPatterns("/workFlow/workFlowCallBack/**")
                 .excludePathPatterns("/swagger-resources/**", "/webjars/**", "/v2/**", "/swagger-ui.html/**", "/swagger-ui.htm/**");
