@@ -18,7 +18,7 @@ center:
     host: http://control.mgs.aiqin.com
 #结算服务
 settlement :
-  registerUrl: http://settlement.api.aiqin.com/
+  url: http://settlement.api.aiqin.com/
 product:
   url: http://product.api.aiqin.com/
   info:
