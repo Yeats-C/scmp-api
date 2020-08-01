@@ -39,6 +39,7 @@
     where document_code = #{documentCode,jdbcType=VARCHAR}
     and document_type = #{documentType,jdbcType=INTEGER}
     and business_type = #{businessType,jdbcType=INTEGER}
+    order by id desc limit 1
   </update>
   <select id="selectByCode" resultMap="BaseResultMap">
     select <include refid="Base_Column_List"></include>
@@ -46,5 +47,6 @@
     where document_code = #{documentCode,jdbcType=VARCHAR}
     and document_type = #{documentType,jdbcType=INTEGER}
     and business_type = #{businessType,jdbcType=INTEGER}
+    order by id desc limit 1
   </select>
 </mapper>
