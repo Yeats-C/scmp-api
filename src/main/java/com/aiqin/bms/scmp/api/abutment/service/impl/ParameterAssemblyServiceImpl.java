@@ -76,7 +76,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     private DLHttpClientUtil dlHttpClientUtil;
 
     @Override
-    //@Async("myTaskAsyncPool")
+    @Async("myTaskAsyncPool")
     public ErpOrderInfo orderInfoParameter(OrderInfoRequest request, DlOrderBill info) {
         ErpOrderInfo orderInfo = BeanCopyUtils.copy(request, ErpOrderInfo.class);
         orderInfo.setSourceCode(request.getOrderId());
