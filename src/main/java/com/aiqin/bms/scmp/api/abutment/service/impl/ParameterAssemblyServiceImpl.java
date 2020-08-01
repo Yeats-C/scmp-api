@@ -80,6 +80,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     public ErpOrderInfo orderInfoParameter(OrderInfoRequest request, DlOrderBill info) {
         ErpOrderInfo orderInfo = BeanCopyUtils.copy(request, ErpOrderInfo.class);
         orderInfo.setSourceCode(request.getOrderId());
+        orderInfo.setRemake(request.getRemark());
         orderInfo.setOrderStoreCode(request.getOrderCode());
         // 默认公司为宁波熙耘
         orderInfo.setCompanyCode(Global.COMPANY_09);
@@ -195,6 +196,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         ReturnOrderInfoReq returnInfo = BeanCopyUtils.copy(request, ReturnOrderInfoReq.class);
         returnInfo.setReturnOrderId(request.getReturnOrderId());
         returnInfo.setOrderStoreCode(request.getOrderCode());
+        returnInfo.setRemark(request.getRemark());
         // 默认公司为宁波熙耘
         returnInfo.setCompanyCode(Global.COMPANY_09);
         returnInfo.setCompanyName(Global.COMPANY_09_NAME);

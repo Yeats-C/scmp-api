@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.product.domain.response.changeprice;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.collect.Lists;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -90,6 +91,12 @@ public class QuerySkuInfoRespVO {
     @ApiModelProperty("生产日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     private Date productTime;
+
+    @ApiModelProperty("供应商名称")
+    private String supplyName;
+
+    @ApiModelProperty("供应商编号")
+    private String supplyCode;
 
     @ApiModelProperty("批次信息")
     private List<BatchInfo> batchList;

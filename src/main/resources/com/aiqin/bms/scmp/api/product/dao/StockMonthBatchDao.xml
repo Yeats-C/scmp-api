@@ -140,6 +140,7 @@
     <if test="spuName!=null and spuName!=''">
       AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
     </if>
+    and a.warehouse_code is not null
     LIMIT #{beginIndex,jdbcType=INTEGER}, #{pageSize,jdbcType=INTEGER}
   </select>
   <select id="getSaleChannelList" resultMap="getSaleChannelList">
@@ -196,5 +197,6 @@
     <if test="spuName!=null and spuName!=''">
       AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
     </if>
+    and a.warehouse_code is not null
   </select>
 </mapper>

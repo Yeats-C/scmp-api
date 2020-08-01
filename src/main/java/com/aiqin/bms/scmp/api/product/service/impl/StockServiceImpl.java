@@ -1536,7 +1536,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
             }
 
-            List<Stock> stockList = Lists.newArrayList();
+            List<Stock> stockList;
             Stock stock;
             ProductSkuStockInfo productSkuStockInfo;
 
@@ -1557,6 +1557,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     continue;
                 }
                 for(WarehouseDTO warehouse : warehouseList){
+                    stockList = Lists.newArrayList();
                     stock = new Stock();
                     // 添加库存单位
                     productSkuStockInfo = stockMap.get(record[1]);
@@ -1593,14 +1594,16 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         stock.setLockCount(0L);
                     }
                     stockList.add(stock);
+                    Integer count = stockDao.insertBatch(stockList);
+                    LOGGER.info("添加同步DL库存信息数量：{}", count);
                 }
             }
 
             // 添加库存信息
-            if(CollectionUtils.isNotEmpty(stockList)){
-                Integer count = stockDao.insertBatch(stockList);
-                LOGGER.info("添加同步DL库存信息数量：{}", count);
-            }
+//            if(CollectionUtils.isNotEmpty(stockList)){
+//                Integer count = stockDao.insertBatch(stockList);
+//                LOGGER.info("添加同步DL库存信息数量：{}", count);
+//            }
 
         } catch (Exception e) {
             LOGGER.error("导入DL库存数据失败:{}", e.getMessage());
@@ -1651,7 +1654,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 
             // 查询所有的库存单位信息
             Map<String, ProductSkuStockInfo> stockMap = new HashMap<>();
-            for (int i = 1; i <= result.length - 1; i++) {
+            for (int i = 1; i <= result.length -1; i++) {
                 record = result[i];
                 String skuCode = new BigDecimal(record[1]).stripTrailingZeros().toPlainString();
                 if(stockMap.get(skuCode) == null){
@@ -1659,6 +1662,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }
             }
 
+            LOGGER.info("--------------", result.length);
             for (int i = 1; i <= result.length - 1; i++) {
                 record = result[i];
                 String skuCode = new BigDecimal(record[1]).stripTrailingZeros().toPlainString();
@@ -1718,15 +1722,17 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     }
                     stockBatch.setBatchInfoCode(batchInfoCode);
                 }
-                stockList.add(stockBatch);
-            }
-
-            // 添加库存信息
-            if(CollectionUtils.isNotEmpty(stockList)){
-                Integer count = stockBatchDao.insertAll(stockList);
+                //stockList.add(stockBatch);
+                Integer count = stockBatchDao.insert(stockBatch);
                 LOGGER.info("添加同步DL批次库存信息数量：{}", count);
             }
 
+            // 添加库存信息
+//            if(CollectionUtils.isNotEmpty(stockList)){
+//                Integer count = stockBatchDao.insertAll(stockList);
+//                LOGGER.info("添加同步DL批次库存信息数量：{}", count);
+//            }
+            LOGGER.info("--------------", result.length);
         } catch (Exception e) {
             LOGGER.error("导入DL批次库存数据失败:{}", e.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL批次库存数据失败"));

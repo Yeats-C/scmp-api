@@ -46,7 +46,7 @@
       warehouse_code, warehouse_name, warehouse_type, supplier_code, sku_code, sku_name,
       batch_code, batch_info_code, product_date, be_overdue_date, batch_remark, inventory_count,
       available_count, lock_count, purchase_price, tax_cost, tax_rate, create_time,
-      create_by_id, create_by_name, update_time, update_by_id, update_by_name, supplier_name)
+      create_by_id, create_by_name, update_time, update_by_id, update_by_name, supplier_name, location_code)
     values (#{stockBatchCode,jdbcType=VARCHAR}, #{companyCode,jdbcType=VARCHAR},
       #{companyName,jdbcType=VARCHAR}, #{transportCenterCode,jdbcType=VARCHAR}, #{transportCenterName,jdbcType=VARCHAR}, 
       #{warehouseCode,jdbcType=VARCHAR}, #{warehouseName,jdbcType=VARCHAR}, #{warehouseType,jdbcType=VARCHAR}, 
@@ -56,7 +56,7 @@
       #{availableCount,jdbcType=BIGINT}, #{lockCount,jdbcType=BIGINT}, #{purchasePrice,jdbcType=DECIMAL}, 
       #{taxCost,jdbcType=DECIMAL}, #{taxRate,jdbcType=DECIMAL}, #{createTime,jdbcType=TIMESTAMP}, 
       #{createById,jdbcType=VARCHAR}, #{createByName,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR})
+      #{updateById,jdbcType=VARCHAR}, #{updateByName,jdbcType=VARCHAR}, #{supplierName,jdbcType=VARCHAR}, #{locationCode,jdbcType=VARCHAR})
   </insert>
   <update id="update">
     update stock_batch

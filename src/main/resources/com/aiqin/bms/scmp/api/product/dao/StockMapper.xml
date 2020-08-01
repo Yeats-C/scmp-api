@@ -905,6 +905,8 @@
         <result column="warehouseName" property="warehouseName"/>
         <result column="batchRemark" property="batchRemark"/>
         <result column="productTime" property="productTime"/>
+        <result column="supplyCode" property="supplyCode"/>
+        <result column="supplyName" property="supplyName"/>
         <collection property="priceChannelList" javaType="java.util.List" ofType="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice" column="changePriceType = changePriceType,companyCode = companyCode,skuCode = skuCode" select="getSaleChannelList" />
     </resultMap>
     <select id="getSkuBatchForChangePrice" resultMap="SkuListForSalePriceMap">
@@ -932,7 +934,9 @@
         a.batch_remark          as batchRemark,
         a.product_date       as productTime,
         #{changePriceType}      as changePriceType,
-        #{companyCode}          as companyCode
+        #{companyCode}          as companyCode,
+        e.supply_name         as supplyName,
+        e.supply_code         as supplyCode
         from stock_batch a
         left join product_sku b
         on a.sku_code = b.sku_code
@@ -940,6 +944,8 @@
         on b.spu_code = c.product_code
         left join product_sku_purchase_info d
         on a.sku_code = d.product_sku_code
+        left join supply_company e
+        on a.supplier_code = e.supply_code
         where b.procurement_section_code = #{purchaseGroupCode}  and b.company_code = #{companyCode}
         <if test="skuCode!=null and skuCode!=''">
             AND a.sku_code = #{skuCode,jdbcType=VARCHAR}
@@ -974,8 +980,12 @@
           a.warehouse_code        as warehouseCode,
           a.warehouse_name        as warehouseName,
           a.batch_remark          as batchRemark,
-          a.product_date       as productTime
+          a.product_date       as productTime,
+          b.supply_name         as supplyName,
+          b.supply_code         as supplyCode
        from stock_batch a
+       left join supply_company b
+        on a.supplier_code = b.supply_code
        where a.sku_code = #{skuCode} and a.company_code = #{companyCode}
     </select>
     <resultMap id="getSaleChannelList" type="com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice">

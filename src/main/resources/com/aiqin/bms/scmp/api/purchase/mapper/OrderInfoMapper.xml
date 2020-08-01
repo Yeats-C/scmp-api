@@ -1822,4 +1822,15 @@ transport_number, platform_type, business_form, tax_id
             #{item}
         </foreach>
     </select>
+
+
+    <select id="selectCodesByOrderCodes" resultType="string">
+        select
+        order_code
+        from order_info
+        where order_code in
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
 </mapper>
