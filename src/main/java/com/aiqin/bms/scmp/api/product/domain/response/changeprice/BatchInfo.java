@@ -19,7 +19,7 @@ import java.util.Date;
  * @time: 19:46
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_NULL)
+//@JsonInclude(JsonInclude.Include.NON_NULL)
 public class BatchInfo  implements Serializable {
     @ApiModelProperty("仓库批次号编码")
     @JsonProperty("warehouse_batch_number")
@@ -57,6 +57,14 @@ public class BatchInfo  implements Serializable {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd")
     @JsonProperty("production_date")
     private Date productTime;
+
+    @ApiModelProperty("供应商名称")
+    @JsonProperty("supply_name")
+    private String supplyName;
+
+    @ApiModelProperty("供应商编号")
+    @JsonProperty("supply_code")
+    private String supplyCode;
 
 //    public String getWarehouseBatchName() {
 //        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

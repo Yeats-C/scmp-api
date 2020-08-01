@@ -915,22 +915,26 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
 //            reqVO.setCompanyCode(getUser().getCompanyCode());
             Integer count = stockMonthBatchDao.querySkuBatchMonthCount(reqVO);
             List<QuerySkuInfoRespVO> querySkuInfoRespVOS = stockMonthBatchDao.querySkuBatchMonthList(reqVO);
-            for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
-                List<BatchInfo> batchList = new ArrayList<>();
-                List<StockMonthBatch> batchMonthList = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
-                for (StockMonthBatch batchMonth : batchMonthList) {
-                    WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchMonth.getWarehouseCode());
-                    BatchInfo batch = new BatchInfo();
-                    batch.setBatchCode(batchMonth.getBatchCode());
-                    batch.setWarehouseBatchName(batchMonth.getBatchCode());
-                    batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
-                    batch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
-                    batch.setTransportCenterName(warehouse.getLogisticsCenterName());
-                    batch.setWarehouseCode(warehouse.getWarehouseCode());
-                    batch.setWarehouseName(warehouse.getWarehouseName());
-                    batchList.add(batch);
+            if (CollectionUtils.isNotEmpty(querySkuInfoRespVOS)){
+                for (QuerySkuInfoRespVO querySkuInfoRespVO: querySkuInfoRespVOS) {
+                    List<BatchInfo> batchList = new ArrayList<>();
+                    List<StockMonthBatch> batchMonthList = stockMonthBatchDao.getMonthBatch(querySkuInfoRespVO.getSkuCode());
+                    if (CollectionUtils.isNotEmpty(querySkuInfoRespVOS)){
+                        for (StockMonthBatch batchMonth : batchMonthList) {
+                            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchMonth.getWarehouseCode());
+                            BatchInfo batch = new BatchInfo();
+                            batch.setBatchCode(batchMonth.getBatchCode());
+                            batch.setWarehouseBatchName(batchMonth.getBatchCode());
+                            batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
+                            batch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                            batch.setTransportCenterName(warehouse.getLogisticsCenterName());
+                            batch.setWarehouseCode(warehouse.getWarehouseCode());
+                            batch.setWarehouseName(warehouse.getWarehouseName());
+                            batchList.add(batch);
+                        }
+                    }
+                    querySkuInfoRespVO.setBatchList(batchList);
                 }
-                querySkuInfoRespVO.setBatchList(batchList);
             }
             BasePage basePage = new BasePage();
             basePage.setDataList(querySkuInfoRespVOS);
