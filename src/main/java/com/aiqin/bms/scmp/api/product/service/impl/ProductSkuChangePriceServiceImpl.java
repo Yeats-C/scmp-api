@@ -924,7 +924,7 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                             WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchMonth.getWarehouseCode());
                             BatchInfo batch = new BatchInfo();
                             batch.setBatchCode(batchMonth.getBatchCode());
-                            batch.setWarehouseBatchName(batchMonth.getBatchCode());
+                            batch.setWarehouseBatchName(batchMonth.getWarehouseCode() + "_" + batchMonth.getBatchCode());
                             batch.setWarehouseBatchNumber(batchMonth.getBatchCode());
                             batch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
                             batch.setTransportCenterName(warehouse.getLogisticsCenterName());
