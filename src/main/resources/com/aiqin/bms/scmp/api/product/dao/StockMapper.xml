@@ -1013,7 +1013,7 @@
       on #{skuCode} = g.sku_code and g.price_item_code = f.price_project_code and g.be_contain_area = 0
        left join tax_cost_log_stock h
       on g.sku_code = h.sku_code and DATE_FORMAT(h.tax_date,'%Y-%m-%d') = DATE_FORMAT(DATE_SUB(NOW(),INTERVAL 1 DAY),'%Y-%m-%d')
-      where  f.company_code = #{companyCode} group by g.price_item_code
+      where  f.company_code = #{companyCode} group by f.price_project_code, g.price_item_code
   </select>
     <resultMap id="queryStockBatchForAllo" type="com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO">
         <result column="skuCode" property="skuCode"/>
