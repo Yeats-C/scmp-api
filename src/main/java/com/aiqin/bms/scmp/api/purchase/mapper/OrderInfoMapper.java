@@ -55,5 +55,7 @@ public interface OrderInfoMapper {
 
     List<OrderInfo> selectByOrderCodes(@Param("list") List<String> orderCodeList);
 
+    List<String> selectCodesByOrderCodes(@Param("list") List<String> orderCodeList);
+
     int insertMany(@Param("list") List<OrderInfo> orderInfos1);
 }

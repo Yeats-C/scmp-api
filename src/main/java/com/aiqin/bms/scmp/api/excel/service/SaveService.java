@@ -78,6 +78,7 @@ public class SaveService {
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveDb(List<PurchaseOrderExcel> purchaseOrders) throws Exception {
+        purchaseOrders = purchaseOrders.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(PurchaseOrderExcel :: getPurchaseOrderCode))), ArrayList::new));
         List<String> code = purchaseOrders.stream().map(PurchaseOrderExcel::getPurchaseOrderCode).collect(Collectors.toList());
         if (CollectionUtils.isNotEmptyCollection(code)) {
             //查询出已经存在的采购编号数据
@@ -194,7 +195,6 @@ public class SaveService {
             }
             log.info("执行完成采购单明细表数据插入条数==============================={}", saves.size());
             saves = null;
-            int i=1/0;
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
@@ -215,6 +215,7 @@ public class SaveService {
     @Transactional(rollbackFor = Exception.class)
     public void saveRejectRecord(List<RejectRecordExcel> rrs) throws Exception {
         if (CollectionUtils.isNotEmptyCollection(rrs)) {
+            rrs = rrs.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(RejectRecordExcel :: getRejectRecordCode))), ArrayList::new));
             List<String> rejectCodeList = rrs.stream().map(RejectRecordExcel::getRejectRecordCode).collect(Collectors.toList());
 
             //查询出已经在退供主表存在的退供单单号信息
@@ -337,18 +338,17 @@ public class SaveService {
     public void saveOrderInfo(List<OrderInfoExcel> of) {
 
         if (CollectionUtils.isNotEmptyCollection(of)) {
+            of = of.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(OrderInfoExcel :: getOrderCode))), ArrayList::new));
             List<String> orderCodeList = of.stream().map(OrderInfoExcel::getOrderCode).collect(Collectors.toList());
 
             //查询出已经在存在的销售单信息
-            List<OrderInfo> existOrderCodeeList = this.orderInfoMapper.selectByOrderCodes(orderCodeList);
+            List<String> existOrderCodeeList = this.orderInfoMapper.selectCodesByOrderCodes(orderCodeList);
             if (CollectionUtils.isNotEmptyCollection(existOrderCodeeList)) {
                 //已经存在销售单信息
-                List<String> existOrderCodes = existOrderCodeeList.stream().map(OrderInfo::getOrderCode).collect(Collectors.toList());
-
                 Iterator<OrderInfoExcel> iterator = of.iterator();
                 while (iterator.hasNext()) {
                     OrderInfoExcel next = iterator.next();
-                    if (existOrderCodes.contains(next.getOrderCode())) {
+                    if (existOrderCodeeList.contains(next.getOrderCode())) {
                         //删除已经存在的
                         iterator.remove();
                     }
@@ -494,6 +494,8 @@ public class SaveService {
 
 
         if (CollectionUtils.isNotEmptyCollection(returnOrderInfoExcels)) {
+            returnOrderInfoExcels = returnOrderInfoExcels.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(ReturnOrderInfoExcel :: getReturnOrderCode))), ArrayList::new));
+
             List<String> retrunOrderCodeList = returnOrderInfoExcels.stream().map(ReturnOrderInfoExcel::getReturnOrderCode).collect(Collectors.toList());
 
             //查询出已经在存在的退货信息
