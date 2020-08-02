@@ -807,7 +807,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             ssis.setDistrictId(request.getDistrictCode());
         }
         ssis.setReceiveAddress(request.getDetailAddress());
-        ssis.setReceivePerson(request.getCustomerName());
+        ssis.setReceivePerson(request.getConsignee());
         ssis.setReceiveMobile(request.getConsigneePhone());
         ssis.setDistributionModeCode(request.getDistributionModeCode());
         ssis.setDistributionModeName(request.getDistributionMode());
