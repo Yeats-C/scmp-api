@@ -1217,7 +1217,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 Long preLockCount = stockBatchInfo.getPreLockCount() == null ? 0L : stockBatchInfo.getPreLockCount();
                 if(lockCount < preLockCount || inventoryCount < changeCount){
                     LOGGER.error("wms回传出库减并解锁批次库存: 锁定库存、总库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
-                    throw new BizException("wms回传出库减并批次库存: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
+                    break;
+                    //throw new BizException("wms回传出库减并批次库存: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
                 stockBatch.setInventoryCount(inventoryCount - changeCount);
                 if(stockBatchInfo.getSkuBatchManage() != null && stockBatchInfo.getSkuBatchManage().equals(Global.WAREHOUSE_BATCH_MANAGE_SKU_0)){
@@ -1225,7 +1226,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 }else {
                     if(changeCount > availableCount) {
                         LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
-                        throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+                        //throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+                        break;
                     }else {
                         stockBatch.setAvailableCount(availableCount - changeCount);
                     }
