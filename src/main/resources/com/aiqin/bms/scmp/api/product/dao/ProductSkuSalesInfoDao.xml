@@ -196,6 +196,7 @@
     inner join product_sku_stock_info b
     on a.product_sku_code = b.product_sku_code
     where a.product_sku_code = #{skuCode,jdbcType=VARCHAR}
+    order by is_default desc
     limit 1
   </select>
 </mapper>
