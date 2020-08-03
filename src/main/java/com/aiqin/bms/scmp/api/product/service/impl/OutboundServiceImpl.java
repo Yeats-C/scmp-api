@@ -1024,8 +1024,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 OutboundCallBackDetailRequest orderItem = new OutboundCallBackDetailRequest();
                 orderItem.setSkuCode(op.getSkuCode());
                 orderItem.setSkuName(op.getSkuName());
-                orderItem.setActualProductCount(op.getPraOutboundMainNum());
-                actualTotalCount += op.getPraOutboundMainNum();
+                Long count = op.getPraOutboundMainNum() == null ? 0L : op.getPraOutboundMainNum();
+                orderItem.setActualProductCount(count);
+                actualTotalCount += count;
                 orderItem.setLineCode(op.getLinenum());
                 orderItems.add(orderItem);
             }
