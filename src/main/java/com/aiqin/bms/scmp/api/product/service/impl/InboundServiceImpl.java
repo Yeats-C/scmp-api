@@ -394,7 +394,7 @@ public class InboundServiceImpl implements InboundService {
     //@Async("myTaskAsyncPool")
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String inboundOderCode) {
-        log.info("调用wms开始");
+        log.info("调用wms开始:{}", inboundOderCode);
         // 查询入库单
         Inbound inbound = inboundDao.selectByCode(inboundOderCode);
         PurchaseInboundSource inboundSource = BeanCopyUtils.copy(inbound, PurchaseInboundSource.class);
@@ -424,7 +424,7 @@ public class InboundServiceImpl implements InboundService {
             inboundSource.setRemark(purchaseOrder.getRemark());
         }
         Integer s = inboundDao.updateByPrimaryKeySelective(inbound);
-        LOGGER.info("开始调用wms，更改入库单的转态：", s);
+        LOGGER.info("开始调用wms，更改入库单的转态：{}", s);
 
         //保存日志
         productCommonService.instanceThreeParty(inboundOderCode, HandleTypeCoce.PULL_INBOUND_ODER.getStatus(),
@@ -450,7 +450,7 @@ public class InboundServiceImpl implements InboundService {
             HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
             HttpResponse response = httpClient.action().result(HttpResponse.class);
             if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                log.info("入库单推送wms成功");
+                log.info("入库单推送wms成功:{}", inboundOderCode);
             } else {
                 log.error("入库单推送wms失败:{}", response.getMessage());
             }
