@@ -298,7 +298,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         SupplierInfoRequest supplierInfo = BeanCopyUtils.copy(request, SupplierInfoRequest.class);
         supplierInfo.setSupplierCode(request.getSupplyCode());
         supplierInfo.setSupplierName(request.getSupplyName());
-        supplierInfo.setSupplierAbbreviation(request.getSupplyAbbreviation());
+        supplierInfo.setSupplierAbbreviation(request.getSupplyAbbreviation() == null ? "" : request.getSupplyAbbreviation() );
         // 查询供应商的类型
         String typeName = supplierDictionaryInfoDao.dictionaryDetailInfo(request.getSupplyType(), "106");
         LOGGER.info("查询供应商属性信息：{}", typeName);
