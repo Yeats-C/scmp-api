@@ -150,6 +150,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
     @Autowired
     private ProductSkuBatchMapper productSkuBatchMapper;
+    @Autowired
+    private RedisLockService redisLockService;
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -349,6 +351,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         try {
             //编码生成
             EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+            // 给sku加锁
+            long time = System.currentTimeMillis() + 5;
+            if (!redisLockService.lock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time))) {
+                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+            }
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(numberingType.getNumberingValue());
@@ -372,7 +380,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
             //更新编码
             int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
-            LOGGER.info("变更出库单号--------------" + value);
+            LOGGER.info("变更出库单号：{}" + numberingType.getNumberingValue());
+            // 给sku解锁 - redis
+            redisLockService.unlock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time));
+            LOGGER.info("redis解锁出库单成功：{}" + numberingType.getNumberingValue());
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 

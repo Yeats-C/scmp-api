@@ -949,16 +949,16 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     }
     @Override
     public List<QuerySkuInfoRespVOForIm> importForChangePrice(MultipartFile file, String purchaseGroupCode, String changePriceType){
-        if (changePriceType.equals(CommonConstant.PURCHASE_CHANGE_PRICE)) {
-            return importForPurchasePrice(file, purchaseGroupCode, changePriceType);
-        }
-        if (changePriceType.equals(CommonConstant.SALE_CHANGE_PRICE)) {
+//        if (changePriceType.equals(CommonConstant.PURCHASE_CHANGE_PRICE)) {
+//            return importForPurchasePrice(file, purchaseGroupCode, changePriceType);
+//        }
+//        if (changePriceType.equals(CommonConstant.SALE_CHANGE_PRICE)) {
             return importForSalePrice(file, purchaseGroupCode, changePriceType);
-        }
-        if (changePriceType.equals(CommonConstant.TEMPORARY_CHANGE_PRICE)) {
-            return importForTemporaryPrice(file, purchaseGroupCode, changePriceType);
-        }
-        return Lists.newArrayList();
+//        }
+//        if (changePriceType.equals(CommonConstant.TEMPORARY_CHANGE_PRICE)) {
+//            return importForTemporaryPrice(file, purchaseGroupCode, changePriceType);
+//        }
+//        return Lists.newArrayList();
     }
     @Override
     public List<QuerySkuInfoRespVOForIm> importForPurchasePrice(MultipartFile file, String purchaseGroupCode,String changePriceType) {
