@@ -63,7 +63,7 @@ public interface OrderInfoItemMapper {
 
     List<QueryOrderInfoItemRespVO> productList(String orderCode);
 
-    OrderInfoItem selectOrderByLine(@Param("orderCode") String orderCode, @Param("lineCode")Long lineCode);
+    OrderInfoItem selectOrderByLine(@Param("orderCode") String orderCode, @Param("skuCode")String skuCode, @Param("lineCode")Long lineCode);
 
     Integer updateBatch(List<OrderInfoItem> itemList);
 

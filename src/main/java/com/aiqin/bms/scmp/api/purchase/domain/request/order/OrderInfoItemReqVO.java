@@ -122,4 +122,9 @@ public class OrderInfoItemReqVO {
     @ApiModelProperty(value = "条形码")
     private String barCode;
 
+    @ApiModelProperty("实际分销单价")
+    private BigDecimal actualPrice;
+
+    @ApiModelProperty("实际分销总价")
+    private BigDecimal actualAmount;
 }

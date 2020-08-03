@@ -1474,9 +1474,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Map<String, OrderInfoItem> product = new HashMap<>();
         String key;
         for (OutboundCallBackDetailRequest detail : detailList) {
-            key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
+            key = String.format("%s,%s", response.getOrderCode(), detail.getSkuCode(), detail.getLineCode());
             if (product.get(key) == null) {
-                product.put(key, orderInfoItemMapper.selectOrderByLine(response.getOrderCode(), detail.getLineCode()));
+                product.put(key, orderInfoItemMapper.selectOrderByLine(response.getOrderCode(), detail.getSkuCode(), detail.getLineCode()));
             }
         }
         BigDecimal actualTotalChannelAmount = BigDecimal.ZERO, actualTotalProductAmount = BigDecimal.ZERO;
@@ -1485,7 +1485,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             orderInfoItem.setActualDeliverNum(detail.getActualProductCount());
             orderInfoItem.setUniqueCode(detail.getUniqueCode());
             // 根据单价计算总价
-            key = String.format("%s,%s", response.getOrderCode(), detail.getLineCode());
+            key = String.format("%s,%s", response.getOrderCode(), detail.getSkuCode(), detail.getLineCode());
             OrderInfoItem item = product.get(key);
             // 计算实际分销总价和实际渠道总计
             orderInfoItem.setActualPrice(item.getPrice());
