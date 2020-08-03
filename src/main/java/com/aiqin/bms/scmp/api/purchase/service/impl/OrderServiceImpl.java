@@ -1262,6 +1262,38 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         }
         return HttpResponse.success(true);
     }
+
+    @Override
+    public HttpResponse insertWmsOrder(List<String> orderCodes) {
+        List<OrderInfo> orderInfos = orderInfoMapper.selectByOrderCodes(orderCodes);
+        for (OrderInfo orderInfo : orderInfos) {
+            // 主表
+            OrderInfoReqVO vo = BeanCopyUtils.copy(orderInfo, OrderInfoReqVO.class);
+            // 商品表
+            List<OrderInfoItem> orderInfoItems = orderInfoItemMapper.selectListByOrderCode(orderInfo.getOrderCode());
+            List<OrderInfoItemReqVO> orderItem = BeanCopyUtils.copyList(orderInfoItems, OrderInfoItemReqVO.class);
+            vo.setProductList(orderItem);
+            // 批次表
+            List<OrderInfoItemProductBatch> productBatches = orderInfoItemProductBatchMapper.orderBatchList(null, orderInfo.getOrderCode(), null);
+//            List<OrderInfoItemProductBatch> infoBtach = BeanCopyUtils.copyList(productBatches, OrderInfoItemProductBatch.class);
+            vo.setItemBatchList(productBatches);
+            // 月份批次
+            List<OrderInfoItemBatchMonth> infoBtachMonth = orderInfoItemBatchMonthMapper.orderBatchMonthList(orderInfo.getOrderCode());
+//            List<OrderInfoItemBatchMonth> infoBtachMonth = BeanCopyUtils.copyList(vo.getItemBatchMonthList(), OrderInfoItemBatchMonth.class);
+            vo.setItemBatchMonthList(infoBtachMonth);
+            // 出库单号
+            Outbound outbound = outboundDao.selectOutbouondBySourceCode(orderInfo.getOrderCode());
+            SaleSourcInfoSource saleSourcInfoSource = insertWms(vo, outbound.getOutboundOderCode());
+            LOGGER.info("耘链销售单生成wms参数信息：{}", JsonUtil.toJson(saleSourcInfoSource));
+            String url = urlConfig.WMS_API_URL2 + "/sale/source/outbound";
+            HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
+            HttpResponse orderDto = httpClient.action().result(HttpResponse.class);
+            if (!orderDto.getCode().equals(MessageId.SUCCESS_CODE)) {
+                return HttpResponse.failure(null, "耘链销售单生成wms参数信息,调用wms失败,原因：" + orderDto.getMessage());
+            }
+        }
+        return null;
+    }
 /*
     @Override
     public HttpResponse updateSaleOrder(WmsOrderInfo vo) {

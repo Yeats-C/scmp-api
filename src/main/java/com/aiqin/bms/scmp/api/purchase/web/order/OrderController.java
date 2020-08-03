@@ -159,6 +159,13 @@ public class OrderController {
         return orderService.insertSaleOrder(vo);
     }
 
+    @PostMapping("/wms/sale")
+    @ApiOperation(value = "根据耘链的销售单 生成wms的单据")
+    public HttpResponse insertSaleOrder(@RequestBody List<String> orderCodes) {
+        LOGGER.info("根据耘链的销售单code参数{}", JsonUtil.toJson(orderCodes));
+        return orderService.insertWmsOrder(orderCodes);
+    }
+
     @GetMapping("/cancel")
     @ApiOperation("订单的取消")
     @ApiImplicitParams({

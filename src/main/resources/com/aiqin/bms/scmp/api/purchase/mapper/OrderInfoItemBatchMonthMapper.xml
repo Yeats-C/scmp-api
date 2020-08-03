@@ -259,4 +259,9 @@
       </if>
     </trim>
   </insert>
+  <select id="orderBatchMonthList" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List" />
+    from order_info_item_batch_month
+    where order_code = #{orderCode,jdbcType=VARCHAR}
+  </select>
 </mapper>
