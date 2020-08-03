@@ -139,6 +139,12 @@ public class OrderInfoReqVO {
     @ApiModelProperty("商品数量")
     private Long productNum;
 
+    @ApiModelProperty("实际发货数量")
+    private Long actualProductNum;
+
+    @ApiModelProperty("实际订单金额")
+    private BigDecimal actualOrderAmount;
+
     @ApiModelProperty("支付日期")
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     private Date paymentTime;

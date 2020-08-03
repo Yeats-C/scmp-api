@@ -629,6 +629,7 @@
     <include refid="Base_Column_List" />
     from order_info_item
     where order_code = #{orderCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
     and product_line_num = #{lineCode,jdbcType=BIGINT}
   </select>
   <select id="selectByIds" resultMap="BaseResultMap">

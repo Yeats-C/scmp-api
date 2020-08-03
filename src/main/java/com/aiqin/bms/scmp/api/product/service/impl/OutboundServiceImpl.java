@@ -61,6 +61,7 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.alibaba.fastjson.JSON;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
+import lombok.Synchronized;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -345,6 +346,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         return outboundOderCode;
     }
 
+    @Synchronized
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
