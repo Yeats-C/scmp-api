@@ -90,12 +90,12 @@ public class InboundController {
 //        return HttpResponse.success();
 //    }
 
-//    @ApiOperation("测试wms")
-//    @GetMapping("/test")
-//    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
-//        inboundService.pushWms(inboundOderCode);
-//        return HttpResponse.success();
-//    }
+    @ApiOperation("采购推送失败，重新推送wms")
+    @GetMapping("/wms/purchase")
+    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
+        inboundService.pushWms(inboundOderCode);
+        return HttpResponse.success();
+    }
 //
 //    @ApiOperation("测试wms调拨入库回传")
 //    @GetMapping("/test/allocation")
