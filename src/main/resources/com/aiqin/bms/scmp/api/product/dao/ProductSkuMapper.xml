@@ -2418,7 +2418,7 @@
     s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
     pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
-    ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_num, 0) * ifnull(s.tax_cost, 0) as stockAmount,
+    ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_count, 0) * ifnull(s.tax_cost, 0) as stockAmount,
     psc.settlement_method_code as settlementMethodCode, psc.settlement_method_name as settlementMethodName,
     psc.Input_tax_rate as taxRate, su.tax_included_price as productPurchaseAmount
     from product_sku ps
