@@ -2415,7 +2415,7 @@
     sc.transport_center_code as transportCenterCode, sc.transport_center_name as transportCenterName,
     su.supply_unit_code as supplierCode, com.supply_name as supplierName, ifnull(pi.base_product_content, 0) as baseProductContent,
     CONCAT(pi.base_product_content, '/', pi.unit_name) as boxGauge, pi.spec as productSpec,
-    s.inventory_num as stockCount, s.total_way_num as totalWayNum, w.warehouse_code as warehouseCode,
+    s.inventory_count as stockCount, s.total_way_count as totalWayNum, w.warehouse_code as warehouseCode,
     w.warehouse_name as warehouseName, sc.turnover_period_after_arrival as receiptTurnover,
     pi.unit_name as stockUnitName, su.joint_franchise_rate as taxRate, ifnull(s.new_purchase_price, 0) as newPurchasePrice,
     ifnull(su.tax_included_price, 0) as purchaseMax, ifnull(s.tax_cost, 0) as taxCost, ifnull(s.inventory_count, 0) * ifnull(s.tax_cost, 0) as stockAmount,
