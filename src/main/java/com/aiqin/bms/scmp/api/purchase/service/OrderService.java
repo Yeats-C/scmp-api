@@ -79,4 +79,6 @@ public interface OrderService {
     HttpResponse insertSaleOrder(ErpOrderInfo vo);
 
     HttpResponse orderCancel(String orderCode, String operatorId, String operatorName);
+
+    HttpResponse insertWmsOrder(List<String> orderCodes);
 }

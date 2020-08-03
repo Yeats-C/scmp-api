@@ -14,4 +14,7 @@ public interface OrderInfoItemBatchMonthMapper {
     int insertSelective(OrderInfoItemBatchMonth record);
 
     Integer insertList(@Param(value = "list") List<OrderInfoItemBatchMonth> detailList);
+
+    List<OrderInfoItemBatchMonth> orderBatchMonthList(@Param("orderCode") String orderCode);
+
 }
