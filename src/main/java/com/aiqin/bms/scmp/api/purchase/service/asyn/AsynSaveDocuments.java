@@ -103,8 +103,6 @@ public class AsynSaveDocuments {
 
     @Resource
     private EncodingRuleDao encodingRuleDao;
-    @Resource
-    private BaseService baseService;
 
 
     /**
@@ -171,11 +169,11 @@ public class AsynSaveDocuments {
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
             // 获取采购单编码
-            String purchaseOrderCode = baseService.getCode(null, EncodingRuleType.PURCHASE_ORDER_CODE);
+            //String purchaseOrderCode = baseService.getCode(null, EncodingRuleType.PURCHASE_ORDER_CODE);
             // 变更采购单号
-            //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
-            //String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
-            //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             savePurchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
             //状态直接已经完成
             String purchaseId = IdUtil.purchaseId();

@@ -58,8 +58,9 @@ public class BaseServiceImpl implements BaseService {
     private final String encoding_rule = "encoding_rule:%s";
 
 
-    @Resource
-    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public AuthToken getUser() {
@@ -245,16 +246,16 @@ public class BaseServiceImpl implements BaseService {
     @Override
     public String getRedisCode(String key) {
         String redisKey = String.format(encoding_rule, key);
-        if (stringRedisTemplate.hasKey(redisKey)) {
-            return stringRedisTemplate.opsForValue().increment(redisKey, 1).toString();
+        if (redisTemplate.hasKey(redisKey)) {
+            return redisTemplate.opsForValue().increment(redisKey, 1).toString();
         } else {
-            synchronized (BaseServiceImpl.class) {
-                if (stringRedisTemplate.hasKey(redisKey)) {
-                    return stringRedisTemplate.opsForValue().increment(redisKey, 1).toString();
+            synchronized (this) {
+                if (redisTemplate.hasKey(redisKey)) {
+                    return redisTemplate.opsForValue().increment(redisKey, 1).toString();
                 } else {
                     EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
                     Long numberingValue = numberingType.getNumberingValue() + 100L;
-                    stringRedisTemplate.opsForValue().set(redisKey, numberingValue + "");
+                    redisTemplate.opsForValue().set(redisKey, numberingValue + "");
                     return numberingValue + "";
                 }
 

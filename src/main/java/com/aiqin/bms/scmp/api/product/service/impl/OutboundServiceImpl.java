@@ -71,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -155,8 +156,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     private RedisLockService redisLockService;
 
-    @Resource
-    private BaseService baseService;
+
 
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
@@ -363,7 +363,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
 //                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
 //            }
-            String code = baseService.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
+            String code = super.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(code);
