@@ -131,8 +131,17 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         if(StringUtils.isNotBlank(request.getChannelName())){
             // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
             orderInfo.setChannelName(request.getChannelName());
-            orderInfo.setChannelCode(request.getChannelName() == "爱亲科技" ? "1" :(request.getChannelName() == "萌贝树" ? "2" :
-                    (request.getChannelName() == "小红马" ? "3" : "4")));
+            String channelCode = "";
+            if(request.getChannelName().equals("爱亲科技")){
+                channelCode = "1";
+            }else if(request.getChannelName().equals("萌贝树")){
+                channelCode = "2";
+            }else if(request.getChannelName().equals("小红马")){
+                channelCode = "3";
+            }else {
+                channelCode = "4";
+            }
+            orderInfo.setChannelCode(channelCode);
         }
         // 转换库房信息
         WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getWarehouseCode(), request.getWmsWarehouseType());
@@ -191,7 +200,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
     @Override
     @Async("myTaskAsyncPool")
-    public ReturnReq returnInfoParameter(ReturnOrderInfoRequest request, DlOrderBill info){
+    public ReturnReq returnInfoParameter(ReturnOrderInfoRequest request, DlOrderBill info) {
         ReturnReq returnRequest = new ReturnReq();
         ReturnOrderInfoReq returnInfo = BeanCopyUtils.copy(request, ReturnOrderInfoReq.class);
         returnInfo.setReturnOrderId(request.getReturnOrderId());
@@ -237,7 +246,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setCopartnerAreaName(request.getPartnerName());
         // 转换库房信息
         WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
-        if(warehouse == null){
+        if (warehouse == null) {
             LOGGER.info("DL 推送退货单耘链的库房转换失败：{}", JsonUtil.toJson(request));
             return null;
         }
@@ -245,20 +254,27 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         returnInfo.setWarehouseName(warehouse.getWarehouseName());
         returnInfo.setTransportCenterCode(warehouse.getLogisticsCenterCode());
         returnInfo.setTransportCenterName(warehouse.getLogisticsCenterName());
-        if(StringUtils.isNotBlank(request.getChannelName())){
-            // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
-            returnInfo.setChannelName(request.getChannelName());
-            returnInfo.setChannelCode(request.getChannelName() == "爱亲科技" ? "1" :(request.getChannelName() == "萌贝树" ? "2" :
-                    (request.getChannelName() == "小红马" ? "3" : "4")));
+        returnInfo.setChannelName(request.getChannelName());
+        String channelCode;
+        // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
+        if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("爱亲科技")) {
+            channelCode = "1";
+        } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("萌贝树")) {
+            channelCode = "2";
+        } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("小红马")) {
+            channelCode = "3";
+        } else {
+            channelCode = "4";
         }
+        returnInfo.setChannelCode(channelCode);
         returnRequest.setReturnOrderInfo(returnInfo);
-        if(CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0){
+        if (CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0) {
             LOGGER.info("DL->耘链 推送耘链退货单商品信息为空");
             return null;
         }
         ReturnOrderDetailReq item;
         List<ReturnOrderDetailReq> itemList = Lists.newArrayList();
-        for (ProductRequest product : request.getProductList()){
+        for (ProductRequest product : request.getProductList()) {
             item = BeanCopyUtils.copy(product, ReturnOrderDetailReq.class);
             item.setReturnOrderDetailId(IdUtil.uuid());
             item.setReturnOrderCode(request.getReturnOrderCode());
@@ -280,10 +296,10 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
         // 调用耘链 生成耘链对应的退货单、出库单
         HttpResponse response = returnGoodsService.record(returnRequest);
-        if(response.getCode().equals(MessageId.SUCCESS_CODE)){
+        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
             LOGGER.info("DL->熙耘，保存退货单成功");
             info.setReturnStatus(Global.SUCCESS);
-        }else {
+        } else {
             LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
@@ -445,6 +461,18 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             dlAbutmentService.productInspection(request);
         }
         return request;
+    }
+
+    @Override
+    @Async("myTaskAsyncPool")
+    public void monthStockDlParameter(List<MonthStockRequest> list){
+        String url = DL_URL + "/update/productdate";
+        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(list), url);
+        if (dlResponse.getStatus() == 0) {
+            LOGGER.info("熙耘->DL，同步日期批次信息成功:{}", dlResponse.getMessage());
+        } else {
+            LOGGER.info("熙耘->DL，同步日期批次信息失败:{}", dlResponse.getMessage());
+        }
     }
 
 }

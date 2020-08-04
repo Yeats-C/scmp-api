@@ -25,4 +25,6 @@ public interface ParameterAssemblyService {
 
     ProductInspectionDlRequest productInspectionParameter(List<ProductSkuInspReport> productSkuInspReports);
 
+    void monthStockDlParameter(List<MonthStockRequest> list);
+
 }

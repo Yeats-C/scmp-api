@@ -3,6 +3,7 @@ package com.aiqin.bms.scmp.api.abutment.jobs.impl;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
+import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.product.dao.StockDayBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockDayBatch;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
@@ -15,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -39,6 +41,9 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
     private String DL_URL;
     @Resource
     private DLHttpClientUtil dlHttpClientUtil;
+    @Resource
+    @Lazy
+    private ParameterAssemblyService parameterAssemblyService;
 
     @Override
     @Scheduled(cron = "0 0/20 * * * ?")
@@ -96,13 +101,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
                 list.add(monthStockRequest);
             }
         }
+        parameterAssemblyService.monthStockDlParameter(list);
 
-        String url = DL_URL + "/update/productdate";
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(list), url);
-        if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，同步日期批次信息成功:{}", dlResponse.getMessage());
-        } else {
-            LOGGER.info("熙耘->DL，同步日期批次信息失败:{}", dlResponse.getMessage());
-        }
     }
 }
