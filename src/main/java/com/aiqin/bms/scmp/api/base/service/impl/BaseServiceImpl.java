@@ -222,7 +222,7 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    @Transactional(rollbackFor = Exception.class)
     public synchronized String getCode(String prefix, String Code) {
         EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
         String code;
