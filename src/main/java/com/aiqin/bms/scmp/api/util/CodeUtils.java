@@ -27,7 +27,7 @@ public class CodeUtils {
         if (redisTemplate.hasKey(redisKey)) {
             String code = redisTemplate.opsForValue().increment(redisKey, 1).toString();
             EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
-            encodingRuleDao.updateNumberValue(Long.parseLong(code), numberingType.getId());
+            int i = encodingRuleDao.updateNumberValueById(Long.parseLong(code), numberingType.getId());
             return code;
         } else {
             synchronized (CodeUtils.class) {
@@ -37,7 +37,7 @@ public class CodeUtils {
                     EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
                     Long numberingValue = numberingType.getNumberingValue() + 2L;
                     redisTemplate.opsForValue().set(redisKey, numberingValue + "");
-                    encodingRuleDao.updateNumberValue(numberingValue, numberingType.getId());
+                    encodingRuleDao.updateNumberValueById(numberingValue, numberingType.getId());
                     return numberingValue + "";
                 }
 
