@@ -113,14 +113,19 @@ public class AsynSaveDocuments {
      * @param code 销售单发货时候生成采购单保存
      */
     @Async("myTaskAsyncPool")
-    public synchronized void savePurchase(String code) {
+    public  void savePurchase(String code) {
         if (StringUtils.isBlank(code)) {
             log.info("异步保存销售发货单号为空");
             return;
         }
+        String lockKey = "lock:savePurchase:" + code;
+        String requestId = UUID.randomUUID().toString();
+        try {
         AsynSaveDocuments bean = applicationContext.getBean(AsynSaveDocuments.class);
         bean.savePurchaseOrder(code);
-
+        } finally {
+            redisTool.releaseDistributedLock(lockKey, requestId);
+        }
 
     }
 
