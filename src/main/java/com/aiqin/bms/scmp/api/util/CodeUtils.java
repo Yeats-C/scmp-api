@@ -28,16 +28,16 @@ public class CodeUtils {
             String code = redisTemplate.opsForValue().increment(redisKey, 1).toString();
             EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
             encodingRuleDao.updateNumberValue(Long.parseLong(code), numberingType.getId());
-
             return code;
         } else {
-            synchronized (this) {
+            synchronized (CodeUtils.class) {
                 if (redisTemplate.hasKey(redisKey)) {
                     return redisTemplate.opsForValue().increment(redisKey, 1).toString();
                 } else {
                     EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
-                    Long numberingValue = numberingType.getNumberingValue() + 100L;
+                    Long numberingValue = numberingType.getNumberingValue() + 2L;
                     redisTemplate.opsForValue().set(redisKey, numberingValue + "");
+                    encodingRuleDao.updateNumberValue(numberingValue, numberingType.getId());
                     return numberingValue + "";
                 }
 

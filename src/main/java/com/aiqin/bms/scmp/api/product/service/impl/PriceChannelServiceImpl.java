@@ -19,10 +19,7 @@ import com.aiqin.bms.scmp.api.product.mapper.PriceChannelMapper;
 import com.aiqin.bms.scmp.api.product.service.PriceChannelService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -37,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 
 /**
@@ -61,6 +59,8 @@ public class PriceChannelServiceImpl implements PriceChannelService {
 
     @Autowired
     private EncodingRuleDao encodingRuleDao;
+    @Resource
+    private CodeUtils codeUtils;
 
     /**
      * 查询List
@@ -142,11 +142,12 @@ public class PriceChannelServiceImpl implements PriceChannelService {
         }
         PriceChannel priceChannel = new PriceChannel();
         BeanCopyUtils.copy(addVo,priceChannel);
-        //设置编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.BASIC_PRICE_CHANNEL);
-        priceChannel.setPriceChannelCode(String.valueOf(encodingRule.getNumberingValue()));
+//        //设置编码
+//        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.BASIC_PRICE_CHANNEL);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.BASIC_PRICE_CHANNEL);
+        priceChannel.setPriceChannelCode(redisCode);
         // 更新编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+//        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         priceChannel.setPriceChannelEnable(StatusTypeCode.EN_ABLE.getStatus());
         priceChannel.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
         Integer m = ((PriceChannelService) AopContext.currentProxy()).insertSelective(priceChannel);

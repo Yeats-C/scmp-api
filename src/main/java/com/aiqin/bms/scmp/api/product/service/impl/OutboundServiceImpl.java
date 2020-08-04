@@ -229,15 +229,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Integer saveOutBoundInfo(OutboundReqVo stockReqVO) {
         try {
-            //编码生成
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+//            //编码生成
+//            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+            String outboundOderCode = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
-            String outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(outboundOderCode));
             int i = outboundDao.insert(outbound);
             log.info("出库主表保存结果:{}", i);
             int j = outboundProductDao.insertAll(outboundProducts);
@@ -250,8 +251,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 LOGGER.info("插入出库单批次结果:{}", count);
             }
 
-            //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+//            //更新编码
+//            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(),
                     ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),

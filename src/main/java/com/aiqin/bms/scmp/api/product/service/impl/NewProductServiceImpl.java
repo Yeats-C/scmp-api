@@ -703,12 +703,13 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             productSkuDraft.setProductCode(newProduct.getProductCode());
         }
         if(null == newProduct){
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
-            long code = encodingRule.getNumberingValue();
-            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+//            EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
+//            long code = encodingRule.getNumberingValue();
+//            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+            String code = codeUtils.getRedisCode("PRODUCT_CODE");
             // 等于null  不存在 新增
             NewProduct insetProduct = new NewProduct();
-            insetProduct.setProductCode(String.valueOf(code));
+            insetProduct.setProductCode(code);
             insetProduct.setProductName(skuInfo.getProductName());
             insetProduct.setCompanyCode(getUser().getCompanyCode());
             insetProduct.setCompanyName(getUser().getCompanyName());
@@ -722,7 +723,7 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
             insetProduct.setUpdateBy(getUser().getPersonName());
             insetProduct.setUpdateTime(date);
             newProductMapper.insertSelective(insetProduct);
-            productSkuDraft.setProductCode(String.valueOf(code));
+            productSkuDraft.setProductCode(code);
             return insetProduct;
         }
         return newProduct;
@@ -817,11 +818,12 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
                 saveSkuConfig.setConfigStatus(statusEnum.getStatus());
                 // 保存sku配置
                 ProductSkuConfig productSkuConfig = BeanCopyUtils.copy(config, ProductSkuConfig.class);
-                //设置编码
-                EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SKU_CONFIG_CODE);
-                // 更新数据库编码
-                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-                productSkuConfig.setConfigCode(String.valueOf(encodingRule.getNumberingValue()));
+//                //设置编码
+//                EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SKU_CONFIG_CODE);
+//                // 更新数据库编码
+//                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+                String redisCode = codeUtils.getRedisCode(EncodingRuleType.SKU_CONFIG_CODE);
+                productSkuConfig.setConfigCode(redisCode);
                 productSkuConfig.setProductCode(productSkuDraft.getProductCode());
                 productSkuConfig.setProductName(productSkuDraft.getProductName());
                 productSkuConfig.setSkuCode(productSkuDraft.getSkuCode());
