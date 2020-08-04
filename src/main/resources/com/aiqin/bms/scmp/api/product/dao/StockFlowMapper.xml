@@ -18,7 +18,7 @@
         <result column="before_allocation_way_count" jdbcType="BIGINT" property="beforeAllocationWayCount"/>
         <result column="after_allocation_way_count" jdbcType="BIGINT" property="afterAllocationWayCount"/>
         <result column="before_total_way_count" jdbcType="BIGINT" property="beforeTotalWayCount"/>
-        <result column="after_total_way_count" jdbcType="BIGINT" property="afterTotalWayNCount"/>
+        <result column="after_total_way_count" jdbcType="BIGINT" property="afterTotalWayCount"/>
         <result column="change_count" jdbcType="BIGINT" property="changeCount"/>
         <result column="operation_type" jdbcType="INTEGER" property="operationType"/>
         <result column="document_type" jdbcType="BIGINT" property="documentType"/>
