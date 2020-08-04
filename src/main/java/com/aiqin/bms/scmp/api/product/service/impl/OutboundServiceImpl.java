@@ -2,6 +2,7 @@ package com.aiqin.bms.scmp.api.product.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
@@ -70,6 +71,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -154,6 +156,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     private RedisLockService redisLockService;
 
+    @Resource
+    private CodeUtils codeUtils;
+
+
+
     @Override
     public BasePage<QueryOutboundResVo> getOutboundList(QueryOutboundReqVo vo) {
         try {
@@ -222,15 +229,16 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Integer saveOutBoundInfo(OutboundReqVo stockReqVO) {
         try {
-            //编码生成
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+//            //编码生成
+//            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+            String outboundOderCode = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
-            String outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(outboundOderCode));
             int i = outboundDao.insert(outbound);
             log.info("出库主表保存结果:{}", i);
             int j = outboundProductDao.insertAll(outboundProducts);
@@ -243,8 +251,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 LOGGER.info("插入出库单批次结果:{}", count);
             }
 
-            //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+//            //更新编码
+//            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(),
                     ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),
@@ -351,41 +359,44 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     public String saveOutbound(OutboundReqVo stockReqVO){
         String outboundOderCode = null;
         try {
-            //编码生成
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
-            // 给sku加锁
-            long time = System.currentTimeMillis() + 5;
-            if (!redisLockService.lock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time))) {
-                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
-                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
-            }
+//            //编码生成
+//            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+//            // 给sku加锁
+//            long time = System.currentTimeMillis() + 5;
+//            if (!redisLockService.lock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time))) {
+//                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+//                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+//            }
+            String code = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
-            outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+            outboundOderCode = String.valueOf(code);
             LOGGER.info("出库单号：" + outboundOderCode);
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(code));
             int i = outboundDao.insertSelective(outbound);
             log.info("插入出库单主表返回结果", i);
+            if(!CollectionUtils.isEmpty(outboundProducts)){
+                int j = outboundProductDao.insertAll(outboundProducts);
+                log.info("插入出库单商品表返回结果", j);
+            }
 
-            int j = outboundProductDao.insertAll(outboundProducts);
-            log.info("插入出库单商品表返回结果", j);
 
             if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
-                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(code));
                 int m = outboundBatchDao.insertAll(outboundBatches);
                 log.info("插入出库单商品批次表返回结果", m);
             }
 
             //更新编码
-            int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
-            LOGGER.info("变更出库单号：{}" + numberingType.getNumberingValue());
-            // 给sku解锁 - redis
-            redisLockService.unlock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time));
-            LOGGER.info("redis解锁出库单成功：{}" + numberingType.getNumberingValue());
+           // int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+//            LOGGER.info("变更出库单号：{}" + numberingType.getNumberingValue());
+//            // 给sku解锁 - redis
+//            redisLockService.unlock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time));
+//            LOGGER.info("redis解锁出库单成功：{}" + numberingType.getNumberingValue());
             // 保存日志
             productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(),stockReqVO,HandleTypeCoce.ADD_OUTBOUND_ODER.getName(),new Date(),stockReqVO.getCreateBy(), stockReqVO.getRemark());
 

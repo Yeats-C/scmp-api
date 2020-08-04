@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.asyn;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
@@ -21,10 +22,9 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.supplier.SupplyCompanyDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
-import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.RedisTool;
 import com.aiqin.ground.util.id.IdUtil;
-import com.aiqin.ground.util.json.JsonUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -105,13 +105,15 @@ public class AsynSaveDocuments {
     @Resource
     private EncodingRuleDao encodingRuleDao;
 
+     @Resource
+    private CodeUtils codeUtils;
+
 
     /**
      * @param code 销售单发货时候生成采购单保存
      */
     @Async("myTaskAsyncPool")
-    public void savePurchase(String code) {
-        log.info("=================");
+    public  void savePurchase(String code) {
         if (StringUtils.isBlank(code)) {
             log.info("异步保存销售发货单号为空");
             return;
@@ -119,12 +121,8 @@ public class AsynSaveDocuments {
         String lockKey = "lock:savePurchase:" + code;
         String requestId = UUID.randomUUID().toString();
         try {
-            if (!redisTool.tryGetDistributedLock(lockKey, requestId)) {
-                log.info("异步保存销售发货单重复请求单号={}", code);
-                return;
-            }
-            AsynSaveDocuments bean = applicationContext.getBean(AsynSaveDocuments.class);
-            bean.savePurchaseOrder(code);
+        AsynSaveDocuments bean = applicationContext.getBean(AsynSaveDocuments.class);
+        bean.savePurchaseOrder(code);
         } finally {
             redisTool.releaseDistributedLock(lockKey, requestId);
         }
@@ -179,11 +177,13 @@ public class AsynSaveDocuments {
             }
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
-
-
             // 获取采购单编码
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
-            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+            //String purchaseOrderCode = baseService.getCode(null, EncodingRuleType.PURCHASE_ORDER_CODE);
+//            // 变更采购单号
+//            EncodingRule encodingRule = encodingRuleDao.getNumberingType();
+//            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+//            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            String purchaseOrderCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_ORDER_CODE);
             savePurchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
             //状态直接已经完成
             String purchaseId = IdUtil.purchaseId();
@@ -251,7 +251,7 @@ public class AsynSaveDocuments {
                     if (Objects.nonNull(bySkuCode)) {
                         savePurchaseOrder.setSettlementMethodCode(bySkuCode.getSettlementMethodCode());
                         savePurchaseOrder.setSettlementMethodName(bySkuCode.getSettlementMethodName());
-                        tax=bySkuCode.getInputTaxRate();
+                        tax = bySkuCode.getInputTaxRate();
                     }
                 }
                 //获取含税单价取sku与供应商对应的采购价。
@@ -340,8 +340,7 @@ public class AsynSaveDocuments {
             }
             //保存主表数据
             this.purchaseOrderDao.insert(savePurchaseOrder);
-            // 变更采购单号
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+
 
             //保存明细表数据
             this.purchaseOrderProductDao.insertAll(purchaseOrderProduct);
@@ -411,9 +410,9 @@ public class AsynSaveDocuments {
             //实际赠品数量
             Integer actualGiftCount = 0;
             //product_count 商品数量
-            Long productCount=0L;
+            Long productCount = 0L;
             //gift_count 赠品数量
-            Long giftCount=0L;
+            Long giftCount = 0L;
             //进项税率
             BigDecimal tax = BigDecimal.ZERO;
             List<RejectRecordDetail> RejectRecordDetailList = new ArrayList<>();
@@ -444,7 +443,7 @@ public class AsynSaveDocuments {
                     if (Objects.nonNull(bySkuCode)) {
                         saveRejectRecord.setSettlementMethodCode(bySkuCode.getSettlementMethodCode());
                         saveRejectRecord.setSettlementMethodName(bySkuCode.getSettlementMethodName());
-                        tax=bySkuCode.getInputTaxRate();
+                        tax = bySkuCode.getInputTaxRate();
                     }
                 }
                 //获取含税单价取sku与供应商对应的采购价。
@@ -489,14 +488,14 @@ public class AsynSaveDocuments {
                     actualProductAmount = actualProductAmount.add(actualAmont);
                     //累加实际商品数量
                     actualProductCount = actualProductCount + actNum;
-                    productCount=productCount+returnDetail.getNum();
+                    productCount = productCount + returnDetail.getNum();
                 } else {
                     //累加赠品含税总价
                     giftTaxSum = giftTaxSum.add(actualAmont);
                     actualGiftAmount = actualGiftAmount.add(actualAmont);
                     //累加实际赠品数量
                     actualGiftCount = actualGiftCount + actNum;
-                    giftCount=giftCount+returnDetail.getNum();
+                    giftCount = giftCount + returnDetail.getNum();
 
                 }
                 detail.setTotalCount(returnDetail.getNum());

@@ -27,4 +27,12 @@
         <include refid="Base_Column_List" />
         from encoding_rule WHERE numbering_type = #{numberingType,jdbcType=VARCHAR}
     </select>
+
+
+    <update id="updateNumberValueById">
+        UPDATE encoding_rule SET numbering_value=#{numberingValue} WHERE
+
+       id = #{id,jdbcType=BIGINT}
+
+    </update>
 </mapper>

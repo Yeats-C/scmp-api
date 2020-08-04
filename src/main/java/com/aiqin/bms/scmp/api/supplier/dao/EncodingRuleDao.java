@@ -15,4 +15,6 @@ public interface EncodingRuleDao {
 
     EncodingRule getNumberingType(@Param("numberingType") String numberingType);
 
+    int updateNumberValueById(@Param("numberingValue") Long numberingValue, @Param("id") Long id);
+
 }

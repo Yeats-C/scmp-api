@@ -109,7 +109,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Autowired
     private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
-    @Resource
+    @Autowired
     private AsynSaveDocuments asynSaveDocuments;
 
     @Override

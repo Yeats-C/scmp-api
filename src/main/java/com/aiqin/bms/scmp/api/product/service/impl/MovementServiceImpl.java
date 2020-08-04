@@ -60,6 +60,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
@@ -137,6 +138,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     @Autowired
     @Lazy(true)
     private DlAbutmentService dlService;
+
+    @Resource
+    private CodeUtils codeUtils;
 
 
     /**
@@ -916,9 +920,10 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
     }
 
     public InboundReqSave handleTransferInbound(Allocation allocation, Map<String, OrderProductSkuResponse> productSkuMap, InboundTypeEnum inboundTypeEnum) {
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-        // 更新数据库编码尺度
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
+//        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+//        // 更新数据库编码尺度
+//        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
 
         InboundReqSave inbound = new InboundReqSave();
         OrderProductSkuResponse orderProductSkuResponse;
@@ -926,7 +931,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         List<InboundProductReqVo> products = Lists.newArrayList();
         for (AllocationProduct allocationProduct : allocation.getDetailList()) {
             product = new InboundProductReqVo();
-            product.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+            product.setInboundOderCode(redisCode);
             product.setLinenum(allocationProduct.getLineNum());
             product.setPreTaxPurchaseAmount(allocationProduct.getTaxPrice());
             product.setPreInboundMainNum(allocationProduct.getQuantity());
@@ -962,7 +967,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         InboundBatchReqVo inboundBatchReqVo;
         for (AllocationProductBatch batch : allocation.getDetailBatchList()) {
             inboundBatchReqVo = new InboundBatchReqVo();
-            inboundBatchReqVo.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+            inboundBatchReqVo.setInboundOderCode(redisCode);
             inboundBatchReqVo.setSkuName(batch.getSkuName());
             inboundBatchReqVo.setSkuCode(batch.getSkuCode());
             inboundBatchReqVo.setBatchCode(batch.getCallInBatchNumber());
@@ -980,7 +985,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             batchList.add(inboundBatchReqVo);
         }
         //入库编码
-        inbound.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+        inbound.setInboundOderCode(redisCode);
         //实际入库数量
         inbound.setPraInboundNum(allocation.getQuantity());
         //实际入库主数量

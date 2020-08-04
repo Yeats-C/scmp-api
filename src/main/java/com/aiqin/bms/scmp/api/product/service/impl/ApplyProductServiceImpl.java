@@ -21,8 +21,8 @@ import com.aiqin.bms.scmp.api.product.mapper.ApplyProductMapper;
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductSkuMapper;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -71,6 +72,10 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
 
     @Autowired
     private SkuInfoService skuInfoService;
+
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     @Transactional
     @Save
@@ -91,8 +96,8 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
 
     @Override
     @Transactional
-    public String saveList(ApplyDraftReqVO applyDraftReqVO,Long code) {
-        String fromNo = "SP"+ IdSequenceUtils.getInstance().nextId();
+    public String saveList(ApplyDraftReqVO applyDraftReqVO, Long code) {
+        String fromNo = "SP" + IdSequenceUtils.getInstance().nextId();
         try {
             List<ApplyProduct> applyProducts = new LinkedList<>();
             List<DraftSaveListReqVO> draftSaveListReqVOS = applyDraftReqVO.getDraftSaveListReqVO();
@@ -148,15 +153,16 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     public int insertProduct(NewProductSaveReqVO newProductSaveReqVO) {
         int flg = 0;
         try {
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
-            long code = encodingRule.getNumberingValue();
-            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+//            EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
+//            long code = encodingRule.getNumberingValue();
+//            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+            String code = codeUtils.getRedisCode("APPLY_PRODUCT_CODE");
             ApplyProduct applyProduct = new ApplyProduct();
-            applyProduct.setProductCode(Long.toString(code));
+            applyProduct.setProductCode(code);
             BeanCopyUtils.copy(newProductSaveReqVO, applyProduct);
             applyProduct.setApplyStatus(HandlingExceptionCode.ZERO);
             flg = ((ApplyProductService) AopContext.currentProxy()).insertSelective(applyProduct);
-            productCommonService.getInstance(code + "", HandleTypeCoce.APPLY_ADD_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), applyProduct, HandleTypeCoce.APPLY_ADD_PRODUCT.getName());
+            productCommonService.getInstance(code, HandleTypeCoce.APPLY_ADD_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), applyProduct, HandleTypeCoce.APPLY_ADD_PRODUCT.getName());
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new GroundRuntimeException(ex.getMessage());
@@ -230,7 +236,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public String workFlow(String applyCode) {
-        String fromNo = "SP"+ IdSequenceUtils.getInstance().nextId();
+        String fromNo = "SP" + IdSequenceUtils.getInstance().nextId();
         log.info("ApplyProductServiceImplProduct-workFlow-传入参数是：[{}]", JSON.toJSONString(applyCode));
         try {
             WorkFlowVO workFlowVO = new WorkFlowVO();
@@ -239,7 +245,7 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
             workFlowVO.setFormNo(fromNo);
             workFlowVO.setUpdateUrl(workFlowBaseUrl.callBackBaseUrl + WorkFlow.APPLY_GOODS.getNum());
             WorkFlowRespVO workFlowRespVO = callWorkFlowApi(workFlowVO, WorkFlow.APPLY_GOODS);
-            workFlowVO.setTitle(AuthenticationInterceptor.getCurrentAuthToken().getPersonName()+",进行商品申请");
+            workFlowVO.setTitle(AuthenticationInterceptor.getCurrentAuthToken().getPersonName() + ",进行商品申请");
             if (workFlowRespVO.getSuccess()) {
                 List<ApplyProduct> applyProducts = applyProductMapper.getApplyCode(applyCode);
                 applyProducts.forEach(applyProduct ->
@@ -276,44 +282,44 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
         //判断审核通过还是撤销，或者审核不通过
         List<ApplyProductSku> applyProductSkus = applyProductSkuMapper.selectByFormNO(vo.getFormNo());
         Date currentDate = new Date();
-        if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
-        //审批通过
-            if(CollectionUtils.isNotEmpty(applyProductSkus)){
+        if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_SUCCESS.getNumber())) {
+            //审批通过
+            if (CollectionUtils.isNotEmpty(applyProductSkus)) {
                 skuInfoService.skuWorkFlowCallback(workFlowCallbackVO);
             }
             return HandlingExceptionCode.FLOW_CALL_BACK_SUCCESS;
-        }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
+        } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())) {
             //审批不通过
             log.info("ApplyProductServiceImplProduct-workFlow-参数是：[{}]", JSON.toJSONString(workFlowCallbackVO));
-            if(CollectionUtils.isNotEmpty(applyProductSkus)){
-               //批量更新审核不通过
+            if (CollectionUtils.isNotEmpty(applyProductSkus)) {
+                //批量更新审核不通过
                 try {
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)3,vo.getFormNo(),vo.getApprovalUserName(),currentDate);
-                }catch (Exception e){
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte) 3, vo.getFormNo(), vo.getApprovalUserName(), currentDate);
+                } catch (Exception e) {
                     // 修改审批中的商品失败
                     return "false";
                 }
             }
             return "success";
-        } else if(vo.getApplyStatus().intValue()==ApplyStatus.REVOKED.getNumber()){
+        } else if (vo.getApplyStatus().intValue() == ApplyStatus.REVOKED.getNumber()) {
             //撤销
             log.info("ApplyProductServiceImplProduct-workFlow-参数是：[{}]", JSON.toJSONString(workFlowCallbackVO));
-            if(CollectionUtils.isNotEmpty(applyProductSkus)){
+            if (CollectionUtils.isNotEmpty(applyProductSkus)) {
                 //批量更新审核不通过
                 try {
                     String auditorBy = Objects.nonNull(vo.getApprovalUserName()) ? vo.getAuditorBy() : applyProductSkus.get(0).getCreateBy();
-                    int k = applyProductSkuMapper.updateStatusByFormNo((byte)4,vo.getFormNo(),auditorBy,currentDate);
-                } catch (Exception e){
+                    int k = applyProductSkuMapper.updateStatusByFormNo((byte) 4, vo.getFormNo(), auditorBy, currentDate);
+                } catch (Exception e) {
                     log.error(Global.ERROR, e);
                     // 修改审批中的sku失败
                     return "false";
                 }
             }
             return "success";
-        }else if(vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())){
+        } else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL.getNumber())) {
             //审批中节点
             return "success";
-        }else {
+        } else {
             return "false";
         }
     }
@@ -392,7 +398,6 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
     }
 
 
-
     @Override
     public ProductOperationLog malloc(NewProduct newProduct) {
         ProductOperationLog productOperationLog = new ProductOperationLog();
@@ -413,20 +418,20 @@ public class ApplyProductServiceImpl extends BaseServiceImpl implements ApplyPro
             workFlowVO.setFormNo(formNo);
             // 调用审批流的撤销接口
             WorkFlowRespVO workFlowRespVO = cancelWorkFlow(workFlowVO);
-            if(workFlowRespVO.getSuccess().equals(true)){
+            if (workFlowRespVO.getSuccess().equals(true)) {
                 return 1;
-            }else {
-                log.error("商品"+formNo+"撤销失败");
-                throw  new GroundRuntimeException("撤销失败");
+            } else {
+                log.error("商品" + formNo + "撤销失败");
+                throw new GroundRuntimeException("撤销失败");
             }
         } catch (Exception ex) {
-             throw new GroundRuntimeException(ex.getMessage());
+            throw new GroundRuntimeException(ex.getMessage());
         }
     }
 
     @Override
     public List<ApplyProduct> getProductApplyList(List<String> productCodes, Byte number) {
-        return applyProductMapper.getProductApplyList(productCodes,number);
+        return applyProductMapper.getProductApplyList(productCodes, number);
     }
 
 

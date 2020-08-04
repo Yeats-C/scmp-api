@@ -20,6 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryInfo
 import com.aiqin.bms.scmp.api.supplier.service.SupplierDictionaryInfoService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
@@ -32,6 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,6 +58,9 @@ public class PriceProjectServiceImpl implements PriceProjectService {
 
     @Autowired
     private SupplierDictionaryInfoService supplierDictionaryInfoService;
+
+    @Resource
+    private CodeUtils codeUtils;
 
     /**
      * 查询List
@@ -237,10 +242,11 @@ public class PriceProjectServiceImpl implements PriceProjectService {
         PriceProject priceProject = new PriceProject();
         BeanCopyUtils.copy(addVo,priceProject);
         //设置编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.BASIC_PRICE_PROJECT);
-        priceProject.setPriceProjectCode(String.valueOf(encodingRule.getNumberingValue()));
+//        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.BASIC_PRICE_PROJECT);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.BASIC_PRICE_PROJECT);
+        priceProject.setPriceProjectCode(redisCode);
         // 更新编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+//        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         priceProject.setPriceProjectEnable(StatusTypeCode.EN_ABLE.getStatus());
         priceProject.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
         return ((PriceProjectService) AopContext.currentProxy()).insertSelective(priceProject);
