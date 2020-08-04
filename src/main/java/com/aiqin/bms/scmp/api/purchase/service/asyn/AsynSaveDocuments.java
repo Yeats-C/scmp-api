@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.asyn;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
+import com.aiqin.bms.scmp.api.base.service.BaseService;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuDao;
@@ -102,6 +103,8 @@ public class AsynSaveDocuments {
 
     @Resource
     private EncodingRuleDao encodingRuleDao;
+    @Resource
+    private BaseService baseService;
 
 
     /**
@@ -167,11 +170,12 @@ public class AsynSaveDocuments {
             }
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
-
-
             // 获取采购单编码
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
-            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+            String purchaseOrderCode = baseService.getCode(null, EncodingRuleType.PURCHASE_ORDER_CODE);
+            // 变更采购单号
+            //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+            //String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+            //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             savePurchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
             //状态直接已经完成
             String purchaseId = IdUtil.purchaseId();
@@ -328,8 +332,7 @@ public class AsynSaveDocuments {
             }
             //保存主表数据
             this.purchaseOrderDao.insert(savePurchaseOrder);
-            // 变更采购单号
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+
 
             //保存明细表数据
             this.purchaseOrderProductDao.insertAll(purchaseOrderProduct);
