@@ -105,6 +105,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private StockDayBatchDao stockDayBatchDao;
     @Autowired
     private ProductSkuStockInfoMapper productSkuStockInfoMapper;
+    @Autowired
+    private StockFlowFailDao stockFlowFailDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -872,7 +874,20 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 Long preLockCount = request.getPreLockCount() == null ? 0L : request.getPreLockCount();
                 if (lockCount < preLockCount || inventoryCount < changeCount) {
                     LOGGER.error("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负,sku:" + request.getSkuCode());
-                    throw new BizException("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    //throw new BizException("wms回传出库减并解锁库存: 锁定库存、总库存在操作前后都不能为负，sku:" + request.getSkuCode());
+                    StockFlowFail flowFail = new StockFlowFail();
+                    flowFail.setFlowCode(stock.getStockCode());
+                    flowFail.setSkuCode(stock.getSkuCode());
+                    flowFail.setSkuName(stock.getSkuName());
+                    flowFail.setOperationType(operationType);
+                    flowFail.setSourceDocumentCode(request.getSourceDocumentCode());
+                    flowFail.setSourceDocumentType(request.getSourceDocumentType());
+                    flowFail.setChangeCount(changeCount);
+                    flowFail.setLockCount(preLockCount);
+                    flowFail.setStockType(1);
+                    Integer failCount = stockFlowFailDao.insert(flowFail);
+                    LOGGER.info("添加库存变更可用库存扣减失败日志：{}", failCount);
+                    break;
                 }
                 stock.setInventoryCount(inventoryCount - changeCount);
                 stock.setLockCount(lockCount - preLockCount);
@@ -1215,8 +1230,20 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             // 出库减并解锁库存逻辑
             case 10:
                 Long preLockCount = stockBatchInfo.getPreLockCount() == null ? 0L : stockBatchInfo.getPreLockCount();
-                if(lockCount < preLockCount || inventoryCount < changeCount){
+                if(inventoryCount < changeCount){
                     LOGGER.error("wms回传出库减并解锁批次库存: 锁定库存、总库存在操作前后都不能为负,sku:" + stockBatchInfo.getSkuCode());
+                    StockFlowFail flowFail = new StockFlowFail();
+                    flowFail.setFlowCode(stockBatch.getStockBatchCode());
+                    flowFail.setSkuCode(stockBatch.getSkuCode());
+                    flowFail.setSkuName(stockBatch.getSkuName());
+                    flowFail.setOperationType(operationType);
+                    flowFail.setSourceDocumentCode(stockBatchInfo.getSourceDocumentCode());
+                    flowFail.setSourceDocumentType(stockBatchInfo.getSourceDocumentType());
+                    flowFail.setChangeCount(changeCount);
+                    flowFail.setLockCount(preLockCount);
+                    flowFail.setStockType(1);
+                    Integer failCount = stockFlowFailDao.insert(flowFail);
+                    LOGGER.info("添加批次库存变更可用库存扣减失败日志：{}", failCount);
                     break;
                     //throw new BizException("wms回传出库减并批次库存: 锁定库存、总库存在操作前后都不能为负，sku:" + stockBatchInfo.getSkuCode());
                 }
@@ -1227,19 +1254,22 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     if(changeCount > availableCount) {
                         LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
                         //throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
+                        StockFlowFail flowFail = new StockFlowFail();
+                        flowFail.setFlowCode(stockBatch.getStockBatchCode());
+                        flowFail.setSkuCode(stockBatch.getSkuCode());
+                        flowFail.setSkuName(stockBatch.getSkuName());
+                        flowFail.setOperationType(operationType);
+                        flowFail.setSourceDocumentCode(stockBatchInfo.getSourceDocumentCode());
+                        flowFail.setSourceDocumentType(stockBatchInfo.getSourceDocumentType());
+                        flowFail.setChangeCount(changeCount);
+                        flowFail.setLockCount(preLockCount);
+                        flowFail.setStockType(1);
+                        Integer failCount = stockFlowFailDao.insert(flowFail);
+                        LOGGER.info("添加批次库存变更可用库存扣减失败日志：{}", failCount);
                         break;
                     }else {
                         stockBatch.setAvailableCount(availableCount - changeCount);
                     }
-//                    if(changeCount > preLockCount){
-//                        if(availableCount < (changeCount - preLockCount)){
-//                            LOGGER.error("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负,sku:" + stockBatchInfo.getSkuCode());
-//                            throw new BizException("wms回传出库减并解锁批次库存: 可用库存在操作前后不能为负，sku:" + stockBatchInfo.getSkuCode());
-//                        }
-//                        stockBatch.setAvailableCount(availableCount - (changeCount - preLockCount));
-//                    }else {
-//                        stockBatch.setAvailableCount(availableCount + (changeCount - preLockCount));
-//                    }
                 }
                 break;
             default:
