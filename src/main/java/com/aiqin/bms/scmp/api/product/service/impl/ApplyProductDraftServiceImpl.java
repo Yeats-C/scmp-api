@@ -12,9 +12,9 @@ import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespV
 import com.aiqin.bms.scmp.api.product.mapper.ApplyProductDraftMapper;
 import com.aiqin.bms.scmp.api.product.service.ApplyProductDraftService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 @Service
@@ -34,6 +35,9 @@ public class ApplyProductDraftServiceImpl implements ApplyProductDraftService {
 
     @Autowired
     private ApplyProductDraftMapper applyProductDraftMapper;
+
+    @Resource
+    private CodeUtils codeUtils;
 
 
     @Override
@@ -59,7 +63,7 @@ public class ApplyProductDraftServiceImpl implements ApplyProductDraftService {
     @Transactional(rollbackFor = Exception.class)
     public int insertSelective(ApplyProductDraft record) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
+        if (null != authToken) {
             record.setCompanyCode(authToken.getCompanyCode());
             record.setCompanyName(authToken.getCompanyName());
         }
@@ -82,7 +86,7 @@ public class ApplyProductDraftServiceImpl implements ApplyProductDraftService {
     @Transactional(rollbackFor = Exception.class)
     public int updateByPrimaryKeySelective(ApplyProductDraft record) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
+        if (null != authToken) {
             record.setCompanyCode(authToken.getCompanyCode());
             record.setCompanyName(authToken.getCompanyName());
         }
@@ -99,21 +103,22 @@ public class ApplyProductDraftServiceImpl implements ApplyProductDraftService {
     @Transactional(rollbackFor = Exception.class)
     public String insertProduct(NewProductSaveReqVO newProductSaveReqVO) {
         try {
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
-            long code = encodingRule.getNumberingValue();
-            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+//            EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
+//            long code = encodingRule.getNumberingValue();
+//            encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+            String code = codeUtils.getRedisCode("PRODUCT_CODE");
             Integer size = getName(newProductSaveReqVO.getProductName());
             if (size > 0) {
                 throw new GroundRuntimeException(HandlingExceptionCode.PRODUCT_IS_EXIST);
             }
             ApplyProductDraft applyProduct = new ApplyProductDraft();
-            applyProduct.setProductCode(code + "");
+            applyProduct.setProductCode(code);
             BeanCopyUtils.copy(newProductSaveReqVO, applyProduct);
             applyProduct.setDelFlag(HandlingExceptionCode.ZERO);
             applyProduct.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
             applyProduct.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
-             ((ApplyProductDraftService) AopContext.currentProxy()).insertSelective(applyProduct);
-             return Long.toString(code);
+            ((ApplyProductDraftService) AopContext.currentProxy()).insertSelective(applyProduct);
+            return code;
         } catch (Exception ex) {
             log.error(ex.getMessage());
             throw new GroundRuntimeException(ex.getMessage());
@@ -127,16 +132,16 @@ public class ApplyProductDraftServiceImpl implements ApplyProductDraftService {
             String code = newProductUpdateReqVO.getProductCode();
             ExceptionId(code);
             ApplyProductDraft applyProduct = applyProductDraftMapper.getProductCode(code);
-            if(null == applyProduct){
+            if (null == applyProduct) {
                 applyProduct = new ApplyProductDraft();
             }
             BeanCopyUtils.copy(newProductUpdateReqVO, applyProduct);
             int i = 0;
-            if(null != applyProduct.getId()){
+            if (null != applyProduct.getId()) {
                 applyProduct.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applyProduct.setApplyTypeName(StatusTypeCode.UPDATE_APPLY.getName());
                 i = ((ApplyProductDraftService) AopContext.currentProxy()).updateByPrimaryKeySelective(applyProduct);
-            }else{
+            } else {
                 applyProduct.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                 applyProduct.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                 i = ((ApplyProductDraftService) AopContext.currentProxy()).insertSelective(applyProduct);

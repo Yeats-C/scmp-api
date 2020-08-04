@@ -156,6 +156,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
     @Autowired
     private RedisLockService redisLockService;
 
+    @Resource
+    private CodeUtils codeUtils;
+
 
 
     @Override
@@ -363,7 +366,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 //                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
 //                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
 //            }
-            String code = super.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
+            String code = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
             Outbound outbound =  new Outbound();
             BeanCopyUtils.copy(stockReqVO,outbound);
             outboundOderCode = String.valueOf(code);
@@ -374,9 +377,11 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(code));
             int i = outboundDao.insertSelective(outbound);
             log.info("插入出库单主表返回结果", i);
+            if(!CollectionUtils.isEmpty(outboundProducts)){
+                int j = outboundProductDao.insertAll(outboundProducts);
+                log.info("插入出库单商品表返回结果", j);
+            }
 
-            int j = outboundProductDao.insertAll(outboundProducts);
-            log.info("插入出库单商品表返回结果", j);
 
             if(CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);

@@ -6,6 +6,7 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.dl.StockChangeRequest;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
+import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
@@ -53,10 +54,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.SupplyCompany;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.DateUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
 import com.aiqin.ground.util.id.IdUtil;
@@ -86,7 +84,7 @@ import java.util.*;
 
 @Service
 @Slf4j
-public class InboundServiceImpl implements InboundService {
+public class InboundServiceImpl  implements InboundService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
 
@@ -148,6 +146,10 @@ public class InboundServiceImpl implements InboundService {
     @Autowired
     @Lazy(true)
     private StockService stockService;
+
+    @Resource
+    private CodeUtils codeUtils;
+
 
     /**
      * 分页查询以及列表搜索
@@ -308,7 +310,9 @@ public class InboundServiceImpl implements InboundService {
             EncodingRule rule = null;
             if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
                 // 获取编码
-                rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+                //rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+
+
                 inbound.setInboundOderCode(rule.getNumberingValue().toString());
             }
 

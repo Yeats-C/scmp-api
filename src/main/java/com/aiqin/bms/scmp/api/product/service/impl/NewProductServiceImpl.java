@@ -143,19 +143,23 @@ public class NewProductServiceImpl extends BaseServiceImpl implements NewProduct
     @Autowired
     private ProductSkuDisInfoDao productSkuDisInfoDao;
 
+    @Resource
+    private CodeUtils codeUtils;
+
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public String insertProduct(NewProductSaveReqVO newProductSaveReqVO) {
         int flg = 0;
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
-        long code = encodingRule.getNumberingValue();
-        encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+//        EncodingRule encodingRule = encodingRuleDao.getNumberingType("PRODUCT_CODE");
+//        long code = encodingRule.getNumberingValue();
+//        encodingRuleDao.updateNumberValue(code, encodingRule.getId());
+        String code = codeUtils.getRedisCode("PRODUCT_CODE");
         NewProduct newProduct = new NewProduct();
-        newProduct.setProductCode(Long.toString(code));
+        newProduct.setProductCode(code);
         BeanCopyUtils.copy(newProductSaveReqVO, newProduct);
         flg = ((NewProductService) AopContext.currentProxy()).save(newProduct);
-        productCommonService.getInstance(Long.toString(code), HandleTypeCoce.ADD_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.ADD_PRODUCT.getName());
+        productCommonService.getInstance(code, HandleTypeCoce.ADD_PRODUCT.getStatus(), ObjectTypeCode.PRODUCT_MANAGEMENT.getStatus(), newProduct, HandleTypeCoce.ADD_PRODUCT.getName());
         return newProduct.getProductCode();
     }
 

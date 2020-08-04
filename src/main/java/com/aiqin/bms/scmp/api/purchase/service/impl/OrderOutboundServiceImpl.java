@@ -2,9 +2,6 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.InOutStatus;
-import com.aiqin.bms.scmp.api.common.BizException;
-import com.aiqin.bms.scmp.api.common.HandleTypeCoce;
-import com.aiqin.bms.scmp.api.common.ObjectTypeCode;
 import com.aiqin.bms.scmp.api.common.OutboundTypeEnum;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.OutboundBatchDao;
@@ -28,11 +25,10 @@ import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoItemProductBatchMapper;
 import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderOutboundService;
-import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -46,9 +42,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -77,6 +73,10 @@ public class OrderOutboundServiceImpl implements OrderOutboundService {
     private OutboundProductDao outboundProductDao;
     @Autowired
     private OutboundBatchDao outboundBatchDao;
+
+    @Resource
+    private CodeUtils codeUtils;
+
 
     @Override
     public HttpResponse insertOutboundByOrderCode(List<String> orderCodes) {
@@ -197,8 +197,8 @@ public class OrderOutboundServiceImpl implements OrderOutboundService {
         // 商品批次
         List<OrderInfoItemProductBatch> itemBatchList = vo.getItemBatchList();
         List<OutboundBatch> outboundBatches = new ArrayList<>();
-        if(CollectionUtils.isNotEmptyCollection(itemBatchList)){
-            for (OrderInfoItemProductBatch batchProduct: itemBatchList) {
+        if (CollectionUtils.isNotEmptyCollection(itemBatchList)) {
+            for (OrderInfoItemProductBatch batchProduct : itemBatchList) {
                 OutboundBatch outboundBatche = new OutboundBatch();
                 outboundBatche.setBatchCode(batchProduct.getBatchCode());
                 outboundBatche.setBatchInfoCode(batchProduct.getBatchInfoCode());
@@ -235,49 +235,50 @@ public class OrderOutboundServiceImpl implements OrderOutboundService {
 
     @Synchronized
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    public String saveOutbound(OutboundReqVo stockReqVO){
+    public String saveOutbound(OutboundReqVo stockReqVO) {
         String outboundOderCode = null;
         try {
-            //编码生成
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
-            // 给sku加锁
-            long time = System.currentTimeMillis() + 5;
-            if (!redisLockService.lock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time))) {
-                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
-                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
-            }
-            Outbound outbound =  new Outbound();
-            BeanCopyUtils.copy(stockReqVO,outbound);
-            outboundOderCode = String.valueOf(numberingType.getNumberingValue());
-            LOGGER.info("出库单号：" + outboundOderCode);
+//            //编码生成
+//            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+//            // 给sku加锁
+//            long time = System.currentTimeMillis() + 5;
+//            if (!redisLockService.lock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time))) {
+//                LOGGER.info("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+//                throw new BizException("redis给出库单号编码生成加锁失败：" + numberingType.getNumberingValue());
+//            }
+            String redisCode = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
+            Outbound outbound = new Outbound();
+            BeanCopyUtils.copy(stockReqVO, outbound);
+            outboundOderCode = String.valueOf(redisCode);
+            LOGGER.info("出库单号：{}" + outboundOderCode);
             outbound.setOutboundOderCode(outboundOderCode);
 
             List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
-            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+            outboundProducts.stream().forEach(outboundProduct -> outboundProduct.setOutboundOderCode(redisCode));
             int i = outboundDao.insertSelective(outbound);
-            log.info("插入出库单主表返回结果", i);
+            log.info("插入出库单主表返回结果={}", i);
 
             int j = outboundProductDao.insertAll(outboundProducts);
-            log.info("插入出库单商品表返回结果", j);
+            log.info("插入出库单商品表返回结果={}", j);
 
-            if(org.apache.commons.collections.CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())){
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockReqVO.getOutboundBatches())) {
                 List<OutboundBatch> outboundBatches = BeanCopyUtils.copyList(stockReqVO.getOutboundBatches(), OutboundBatch.class);
-                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(numberingType.getNumberingValue().toString()));
+                outboundBatches.stream().forEach(outboundBatch -> outboundBatch.setOutboundOderCode(redisCode));
                 int m = outboundBatchDao.insertAll(outboundBatches);
                 log.info("插入出库单商品批次表返回结果", m);
             }
 
-            //更新编码
-            int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
-            LOGGER.info("变更出库单号：{}" + numberingType.getNumberingValue());
-            // 给sku解锁 - redis
-            redisLockService.unlock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time));
-            LOGGER.info("redis解锁出库单成功：{}" + numberingType.getNumberingValue());
+//            //更新编码
+//            int value = encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+//            LOGGER.info("变更出库单号：{}" + numberingType.getNumberingValue());
+//            // 给sku解锁 - redis
+//            redisLockService.unlock(String.valueOf(numberingType.getNumberingValue()), String.valueOf(time));
+//            LOGGER.info("redis解锁出库单成功：{}" + numberingType.getNumberingValue());
 
             return outboundOderCode;
         } catch (Exception e) {
             log.error(Global.ERROR, e);
-            throw new GroundRuntimeException(String.format("保存出库单失败%s",e.getMessage()));
+            throw new GroundRuntimeException(String.format("保存出库单失败%s", e.getMessage()));
         }
     }
 }

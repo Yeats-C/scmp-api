@@ -55,12 +55,6 @@ public class BaseServiceImpl implements BaseService {
     @Resource
     private FormOperateService formOperateService;
 
-    private final String encoding_rule = "encoding_rule:%s";
-
-
-
-    @Autowired
-    private StringRedisTemplate redisTemplate;
 
     @Override
     public AuthToken getUser() {
@@ -243,25 +237,5 @@ public class BaseServiceImpl implements BaseService {
     }
 
 
-    @Override
-    public String getRedisCode(String key) {
-        String redisKey = String.format(encoding_rule, key);
-        if (redisTemplate.hasKey(redisKey)) {
-            return redisTemplate.opsForValue().increment(redisKey, 1).toString();
-        } else {
-            synchronized (this) {
-                if (redisTemplate.hasKey(redisKey)) {
-                    return redisTemplate.opsForValue().increment(redisKey, 1).toString();
-                } else {
-                    EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
-                    Long numberingValue = numberingType.getNumberingValue() + 100L;
-                    redisTemplate.opsForValue().set(redisKey, numberingValue + "");
-                    return numberingValue + "";
-                }
 
-            }
-
-        }
-
-    }
 }
