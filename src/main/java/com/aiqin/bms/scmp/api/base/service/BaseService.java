@@ -48,4 +48,11 @@ public interface BaseService {
      * @return java.lang.String
      */
     String getCode(String prefix, String Code);
+
+    /***
+     * 通过redis获取编码
+     * @param key
+     * @return
+     */
+    String getRedisCode(String key);
 }

@@ -25,7 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
@@ -38,10 +40,10 @@ import java.util.TreeMap;
 @Service
 @Slf4j
 public class BaseServiceImpl implements BaseService {
-	
-	@Value("${mgs.control.system-code}")
+
+    @Value("${mgs.control.system-code}")
     private String systemCode;
-	
+
     @Autowired
     private UrlConfig urlConfig;
 
@@ -53,16 +55,23 @@ public class BaseServiceImpl implements BaseService {
     @Resource
     private FormOperateService formOperateService;
 
+    private final String encoding_rule = "encoding_rule:%s";
+
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
     @Override
-    public AuthToken getUser(){
+    public AuthToken getUser() {
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(Objects.isNull(currentAuthToken)){
+        if (Objects.isNull(currentAuthToken)) {
             throw new BizException(ResultCode.LOGIN_ERROR);
         }
         return currentAuthToken;
     }
+
     @Override
-    public String getStoreApiUrl(String path){
+    public String getStoreApiUrl(String path) {
         StringBuilder sb = new StringBuilder();
         sb.append(urlConfig.STORE_API_URL).append("/backstage").append(path);
         return sb.toString();
@@ -70,7 +79,7 @@ public class BaseServiceImpl implements BaseService {
 
     @Override
     public WorkFlowRespVO callWorkFlowApi(WorkFlowVO vo, WorkFlow workFlow) {
-       log.info("BaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo),JSON.toJSONString(workFlow));
+        log.info("BaseServiceImpl-callWorkFlowApi-工作流vo是：[{}],枚举是：[{}]", JSON.toJSONString(vo), JSON.toJSONString(workFlow));
         AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         StartProcessParamVO paramVO = new StartProcessParamVO();
         paramVO.setCostType(workFlow.getKey());
@@ -84,7 +93,7 @@ public class BaseServiceImpl implements BaseService {
         paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setFormUpdateUrlType(FormUpdateUrlType.HTTP);
         paramVO.setReceiptType(systemCode);
-        
+
         paramVO.setPositionCode(vo.getPositionCode());
         paramVO.setSignTicket(IdUtil.uuid());
         if (StringUtils.isNotBlank(vo.getVariables())) {
@@ -95,9 +104,9 @@ public class BaseServiceImpl implements BaseService {
         HttpResponse response = formApplyCommonService.submitActBaseProcessScmp(paramVO);
         log.info("调用审批流发起申请返回结果,result={}", JSON.toJSON(response));
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-        if(Objects.equals(response.getCode(),"0")){
+        if (Objects.equals(response.getCode(), "0")) {
             workFlowRespVO.setSuccess(true);
-            Map<String,Integer> data = (Map<String,Integer>)response.getData();
+            Map<String, Integer> data = (Map<String, Integer>) response.getData();
             workFlowRespVO.setStatus(data.get("status"));
         } else {
             workFlowRespVO.setSuccess(false);
@@ -144,10 +153,11 @@ public class BaseServiceImpl implements BaseService {
 
     /**
      * 排序转map
+     *
+     * @param obj
+     * @return java.util.Map<java.lang.String                                                               ,                                                               java.lang.Object>
      * @author zth
      * @date 2019/1/18
-     * @param obj
-     * @return java.util.Map<java.lang.String,java.lang.Object>
      */
     private static Map<String, Object> objectToMap(Object obj) {
         try {
@@ -174,12 +184,14 @@ public class BaseServiceImpl implements BaseService {
             throw new GroundRuntimeException("转换失败！");
         }
     }
+
     /**
      * 设置状态
-     * @author zth
-     * @date 2019/1/22
+     *
      * @param costApplyO
      * @return com.aiqin.mgs.api.api.domain.request.workflow.WorkFlowCallbackVO
+     * @author zth
+     * @date 2019/1/22
      */
     protected WorkFlowCallbackVO updateSupStatus(WorkFlowCallbackVO costApplyO) {
         /**保存流程状态*/
@@ -189,7 +201,7 @@ public class BaseServiceImpl implements BaseService {
         } else if (TpmBpmUtils.isPass(costApplyO.getUpdateFormStatus(), costApplyO.getOptBtn())) {
             //审核中
             costApplyO.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
-        } else if(IndicatorStr.PROCESS_BTN_CANCEL.getCode().equals(costApplyO.getOptBtn())) {
+        } else if (IndicatorStr.PROCESS_BTN_CANCEL.getCode().equals(costApplyO.getOptBtn())) {
             //撤销
             costApplyO.setApplyStatus(ApplyStatus.REVOKED.getNumber());
         } else {
@@ -198,15 +210,16 @@ public class BaseServiceImpl implements BaseService {
         }
         return costApplyO;
     }
+
     @Override
-    public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo){
-        log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]",JSON.toJSONString(vo));
+    public WorkFlowRespVO cancelWorkFlow(WorkFlowVO vo) {
+        log.info("BaseServiceImpl-cancelWorkFlow-工作流vo是：[{}]", JSON.toJSONString(vo));
         // AuthToken currentAuthToken = AuthenticationInterceptor.getCurrentAuthToken();
         HttpResponse httpResponse = formOperateService.commonCancel(vo.getFormNo(), vo.getUsername());
         WorkFlowRespVO workFlowRespVO = new WorkFlowRespVO();
-        if(httpResponse.getCode().equals(MessageId.SUCCESS_CODE)){
+        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
             workFlowRespVO.setSuccess(Boolean.TRUE);
-        }else {
+        } else {
             workFlowRespVO.setSuccess(Boolean.FALSE);
             workFlowRespVO.setMsg(httpResponse.getMessage());
         }
@@ -214,17 +227,40 @@ public class BaseServiceImpl implements BaseService {
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public synchronized String getCode(String prefix, String Code){
+    @Transactional(rollbackFor = Exception.class, propagation = Propagation.REQUIRES_NEW)
+    public synchronized String getCode(String prefix, String Code) {
         EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
         String code;
-        if(StringUtils.isNotBlank(prefix)){
+        if (StringUtils.isNotBlank(prefix)) {
             code = prefix + numberingType.getNumberingValue();
-        }else {
+        } else {
             code = String.valueOf(numberingType.getNumberingValue());
         }
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
+        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         return code;
+    }
+
+
+    @Override
+    public String getRedisCode(String key) {
+        String redisKey = String.format(encoding_rule, key);
+        if (stringRedisTemplate.hasKey(redisKey)) {
+            return stringRedisTemplate.opsForValue().increment(redisKey, 1).toString();
+        } else {
+            synchronized (BaseServiceImpl.class) {
+                if (stringRedisTemplate.hasKey(redisKey)) {
+                    return stringRedisTemplate.opsForValue().increment(redisKey, 1).toString();
+                } else {
+                    EncodingRule numberingType = encodingRuleDao.getNumberingType(key);
+                    Long numberingValue = numberingType.getNumberingValue() + 100L;
+                    stringRedisTemplate.opsForValue().set(redisKey, numberingValue + "");
+                    return numberingValue + "";
+                }
+
+            }
+
+        }
+
     }
 }
