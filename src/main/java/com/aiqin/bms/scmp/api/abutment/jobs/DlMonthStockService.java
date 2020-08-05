@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface DlMonthStockService {
 
-    HttpResponse<List<MonthStockRequest>> monthStockDl();
+    HttpResponse<List<MonthStockRequest>> monthStockDl(String warehouseCode);
 }

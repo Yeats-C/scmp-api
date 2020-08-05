@@ -35,19 +35,19 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
 
     @Override
     //@Scheduled(cron = "0 0/30 * * * ?")
-    public HttpResponse<List<MonthStockRequest>> monthStockDl(){
+    public HttpResponse<List<MonthStockRequest>> monthStockDl(String warehouseCode){
 
         List<MonthStockRequest> list = Lists.newArrayList();
 
         // 查询德邦所有的库存信息
-        List<MonthStockRequest> stockDayBatches = stockDayBatchDao.stockDayByDl(DEBANG);
+        List<MonthStockRequest> stockDayBatches = stockDayBatchDao.stockDayByDl(DEBANG, warehouseCode);
         if(CollectionUtils.isNotEmptyCollection(stockDayBatches)){
             list.addAll(stockDayBatches);
             LOGGER.info("同步DL日期库存数据，德邦数量：{}", stockDayBatches.size());
         }
 
         // 查询京东所有的库存信息
-        List<MonthStockRequest> stockDayBatchJds = stockDayBatchDao.stockDayByDl(JINGDONG);
+        List<MonthStockRequest> stockDayBatchJds = stockDayBatchDao.stockDayByDl(JINGDONG, warehouseCode);
         if(CollectionUtils.isNotEmptyCollection(stockDayBatchJds)){
             list.addAll(stockDayBatchJds);
             LOGGER.info("同步DL日期库存数据，京东数量：{}", stockDayBatchJds.size());
