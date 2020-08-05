@@ -5,6 +5,7 @@ import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
 import com.aiqin.bms.scmp.api.product.dao.StockDayBatchDao;
 import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,8 +34,8 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
     private ParameterAssemblyService parameterAssemblyService;
 
     @Override
-    @Scheduled(cron = "0 0/30 * * * ?")
-    public void monthStockDl(){
+    //@Scheduled(cron = "0 0/30 * * * ?")
+    public HttpResponse<List<MonthStockRequest>> monthStockDl(){
 
         List<MonthStockRequest> list = Lists.newArrayList();
 
@@ -52,6 +53,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
             LOGGER.info("同步DL日期库存数据，京东数量：{}", stockDayBatchJds.size());
         }
         LOGGER.info("推送DL月份批次数据条数：{}", list.size());
-        parameterAssemblyService.monthStockDlParameter(list);
+        //parameterAssemblyService.monthStockDlParameter(list);
+        return HttpResponse.successGenerics(list);
     }
 }
