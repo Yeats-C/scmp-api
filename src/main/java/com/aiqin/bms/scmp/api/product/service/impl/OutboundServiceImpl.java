@@ -1028,7 +1028,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
-            LOGGER.info("wms回传成功，根据出库单信息，变更对应销售单的实际值：", outbound.getSourceOderCode());
+            LOGGER.info("wms回传成功，根据出库单信息，变更对应销售单的实际值：{}", outbound.getSourceOderCode());
             OutboundCallBackRequest request = new OutboundCallBackRequest();
             request.setOderCode(outbound.getSourceOderCode());
             request.setDeliveryTime(outbound.getOutboundTime());
