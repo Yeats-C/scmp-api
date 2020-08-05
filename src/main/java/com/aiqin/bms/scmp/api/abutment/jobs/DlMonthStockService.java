@@ -1,6 +1,11 @@
 package com.aiqin.bms.scmp.api.abutment.jobs;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest;
+import com.aiqin.ground.util.protocol.http.HttpResponse;
+
+import java.util.List;
+
 public interface DlMonthStockService {
 
-    void monthStockDl();
+    HttpResponse<List<MonthStockRequest>> monthStockDl();
 }
