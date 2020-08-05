@@ -254,8 +254,9 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //正式供应商编码
             applySupplyCompany.setSupplyCompanyCode(applySupplyCompanyReqVO.getApplySupplyCode());
             //供货单位申请编码
-            EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
-            applySupplyCompany.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
+            String code = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+            //long code = Long.parseLong(redisCode) + 1;
+            applySupplyCompany.setApplyCode(code);
             if(Objects.equals(Byte.valueOf("1"),applySupplyCompanyReqVO.getSource())){
                 applySupplyCompany.setApplyStatus(ApplyStatus.PENDING_SUBMISSION.getNumber());
                 applySupplyCompany.setEnable(s.getEnable());
@@ -275,7 +276,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             //存日志
             supplierCommonService.getInstance(applySupplyCompany.getApplyCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,HandleTypeCoce.PENDING.getName());
             //修改编码
-            encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+            //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
             //更新正式表的申请编码
             supplyCompanyMapper.updateApplyCodeBySupplyComCode(applySupplyCompany.getSupplyCompanyCode(),applySupplyCompany.getApplyCode());
             //发货信息
@@ -368,10 +369,9 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         String code = null;
         synchronized (ApplySupplyComServiceImpl.class){
             //供货单位申请编码
-            EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
-            code= String.valueOf(encodingRule.getNumberingValue()+1);
+             code = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
             //修改编码
-            encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+           // encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         }
 //        String code = getCode("", EncodingRuleType.APPLY_SUPPLY_COM_CODE);
 
@@ -678,8 +678,9 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         Long resultNum = 0L;
         String applySupplyCompanyCode = null;
         //供货单位申请编码
-        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
-        applySupplyCompanyReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
+        String code = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLY_COM_CODE);
+        //long code = Long.parseLong(redisCode) + 1;
+        applySupplyCompanyReqDTO.setApplyCode(code);
         if(CollectionUtils.isNotEmptyCollection(applySupplyCompanyReqDTO.getPurchaseGroupVos())){
             applySupplyCompanyReqDTO.setPurchasingGroupCode(StringUtils.join( applySupplyCompanyReqDTO.getPurchaseGroupVos().
                     stream().map(ApplySupplyCompanyPurchaseGroupReqVo :: getPurchasingGroupCode).collect(Collectors.toList()),","));
@@ -697,7 +698,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         //存日志
         supplierCommonService.getInstance(applySupplyCompanyReqDTO.getApplyCode()+"",handleTypeCoce.getStatus(), ObjectTypeCode.APPLY_SUPPLY_COMPANY.getStatus(),content,null,handleTypeCoce.getName());
         //修改编码
-        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         //发货信息
         if(CollectionUtils.isEmptyCollection(applySupplyCompanyReqDTO.getDeliveryInfoList())){
            throw new BizException(ResultCode.DELIVERY_RETURN_EMPTY);
@@ -800,17 +801,17 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 addSupplier(applySupplyCompany, supplyCompany);
                 supplyCompanyMapper.updateByPrimaryKey(supplyCompany);
             } else {
-                EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
+                String redisCode = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLY_COM_CODE);
                 supplyCompany.setId(null);
                 supplyCompany.setSupplyName(applySupplyCompany.getApplySupplyName());
                 supplyCompany.setSupplyType(applySupplyCompany.getApplySupplyType());
                 supplyCompany.setSupplyAbbreviation(applySupplyCompany.getApplyAbbreviation());
-                supplyCompany.setSupplyCode(String.valueOf(encodingRule.getNumberingValue()));
+                supplyCompany.setSupplyCode(redisCode);
                 content = HandleTypeCoce.ADD_SUPPLY_COMPANY.getName();
                 handleTypeCoce = HandleTypeCoce.ADD;
                 addSupplier(applySupplyCompany, supplyCompany);
                 supplyCompanyMapper.insert(supplyCompany);
-                encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+                //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
 
 

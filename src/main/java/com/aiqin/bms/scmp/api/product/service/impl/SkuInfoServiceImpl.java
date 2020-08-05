@@ -226,6 +226,9 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Autowired
     ProductSkuInspReportDao productSkuInspReportDao;
 
+    @Autowired
+    private CodeUtils codeUtils;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
@@ -311,15 +314,17 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
                 // ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.UPDATE.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.UPDATE_SKU.getName(),HandleTypeCoce.UPDATE.getName());
             } else {
-                EncodingRule encodingRule=encodingRuleDao.getNumberingType("PRODUCT_SKU_CODE");
-                Long thisCode = encodingRule.getNumberingValue();
+                //EncodingRule encodingRule=encodingRuleDao.getNumberingType("PRODUCT_SKU_CODE");
+                String redisCode = codeUtils.getRedisCode("PRODUCT_SKU_CODE");
+                //Long thisCode = encodingRule.getNumberingValue();
+                Long thisCode=Long.parseLong(redisCode);
                 productSkuDraft.setSkuCode(String.valueOf(thisCode+1));
                 productSkuDraft.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
                 productSkuDraft.setApplyTypeName(StatusTypeCode.ADD_APPLY.getName());
                 productSkuDraft.setChangeContent("新增SKU");
                 log.info(JSON.toJSONString(productSkuDraft));
                 // ((SkuInfoService) AopContext.currentProxy()).insertDraft(productSkuDraft);
-                encodingRuleDao.updateNumberValue(thisCode,encodingRule.getId());
+                //encodingRuleDao.updateNumberValue(thisCode,encodingRule.getId());
                 productCommonService.getInstance(productSkuDraft.getSkuCode(), HandleTypeCoce.ADD.getStatus(), ObjectTypeCode.SKU_MANAGEMENT.getStatus(),HandleTypeCoce.ADD_SKU.getName(),HandleTypeCoce.ADD.getName());
             }
             SkuTypeEnum skuTypeEnum = SkuTypeEnum.getSkuTypeEnumByType(productSkuDraft.getGoodsGifts());
@@ -1275,14 +1280,15 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //验证是否是同一种申请类型
         validateSameApply(productSkuDrafts);
         String formNo =  "SP"+ IdSequenceUtils.getInstance().nextId();
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
-        long code = encodingRule.getNumberingValue();
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType("APPLY_PRODUCT_CODE");
+        String code = codeUtils.getRedisCode("APPLY_PRODUCT_CODE");
+        //long code = encodingRule.getNumberingValue();
         List<ApplyProductSku> applyProductSkus = BeanCopyUtils.copyList(productSkuDrafts, ApplyProductSku.class);
         Date currentDate = new Date();
         String applyBy = getUser().getPersonName();
         Set<String> isRepeatSet = Sets.newHashSet();
         applyProductSkus.forEach(item->{
-            item.setApplyCode(String.valueOf(code));
+            item.setApplyCode(code);
             item.setSelectionEffectiveTime(saveSkuApplyInfoReqVO.getSelectionEffectiveTime());
             item.setSelectionEffectiveStartTime(saveSkuApplyInfoReqVO.getSelectionEffectiveStartTime());
             item.setApplyStatus(ApplyStatus.APPROVAL.getNumber());
@@ -1309,7 +1315,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             List<ApplyUseTagRecord> applyUseTagRecords = applyUseTagRecordService.getApplyUseTagRecordByAppUseObjectCodes(saveSkuApplyInfoReqVO.getSkuCodes(),TagTypeCode.SKU.getStatus());
             if(CollectionUtils.isNotEmpty(applyUseTagRecords)){
                 applyUseTagRecords.forEach(item->{
-                    item.setApplyUseObjectCode(String.valueOf(code));
+                    item.setApplyUseObjectCode(code);
                 });
                 applyUseTagRecordService.updateBatch(applyUseTagRecords);
             }
@@ -1357,7 +1363,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
         //保存审批附件信息
         approvalFileInfoService.batchSave(saveSkuApplyInfoReqVO.getApprovalFileInfos(),String.valueOf(code),formNo,ApprovalFileTypeEnum.SKU.getType());
         //修改申请编码
-        encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(Long.valueOf(code),encodingRule.getId());
         if (CollectionUtils.isNotEmpty(applyProductSkus)){
             //调用审批接口
             workFlow(String.valueOf(code),formNo,applyProductSkus,saveSkuApplyInfoReqVO.getDirectSupervisorCode(),approvalName,saveSkuApplyInfoReqVO.getPositionCode());

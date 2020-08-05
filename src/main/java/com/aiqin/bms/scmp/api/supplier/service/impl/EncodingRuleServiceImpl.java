@@ -4,10 +4,13 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.mapper.EncodingRuleMapper;
 import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
 
 @Service
 public class EncodingRuleServiceImpl implements EncodingRuleService {
@@ -15,6 +18,9 @@ public class EncodingRuleServiceImpl implements EncodingRuleService {
     private EncodingRuleDao encodingRuleDao;
     @Autowired
     private EncodingRuleMapper encodingRuleMapper;
+
+    @Resource
+    private CodeUtils codeUtils;
     @Override
     public Long getNumberValue(Long id) {
         return encodingRuleDao.getNumberValue(id);
@@ -32,7 +38,8 @@ public class EncodingRuleServiceImpl implements EncodingRuleService {
     }
 
     @Override
-    public EncodingRule getNumberingType(String numberingType) {
-        return encodingRuleDao.getNumberingType(numberingType);
+    public String getNumberingType(String numberingType) {
+        String redisCode = codeUtils.getRedisCode(numberingType);
+        return redisCode;
     }
 }

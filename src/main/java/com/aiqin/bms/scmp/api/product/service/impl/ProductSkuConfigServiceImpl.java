@@ -52,6 +52,7 @@ import com.google.gson.JsonObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.constraints.pl.REGON;
 import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -122,6 +123,9 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
     private ProductSkuCheckoutService productSkuCheckoutService;
     @Resource
     private ProductSkuSupplyUnitMapper productSkuSupplyUnitMapper;
+
+    @Resource
+    private CodeUtils codeUtils;
 
 
 
@@ -462,10 +466,11 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
             draft.setCompanyName(token.getCompanyName());
         }
         //设置编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SKU_CONFIG_CODE);
-        draft.setConfigCode(String.valueOf(encodingRule.getNumberingValue()));
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SKU_CONFIG_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.SKU_CONFIG_CODE);
+        draft.setConfigCode(redisCode);
         // 更新数据库编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         return draftMapper.insertSelective(draft);
     }
 
@@ -586,11 +591,12 @@ public class ProductSkuConfigServiceImpl extends BaseServiceImpl implements Prod
         String formNo;
         synchronized (ProductSkuConfigServiceImpl.class) {
             //获取编码
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
-            code = "CF"+numberingType.getNumberingValue().toString();
+            //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
+            String redisCode = codeUtils.getRedisCode(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
+            code = "CF"+redisCode;
             formNo = "SC" + IdSequenceUtils.getInstance().nextId();
             //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+            //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         }
         //验证是否有配置信息
         if (CollectionUtils.isNotEmpty(reqVo.getSkuConfigs())) {

@@ -24,10 +24,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.dictionary.DictionaryCode
 import com.aiqin.bms.scmp.api.supplier.mapper.*;
 import com.aiqin.bms.scmp.api.supplier.service.ContractService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
@@ -38,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -80,6 +78,9 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
     @Autowired
     private SupplierDictionaryInfoDao supplierDictionaryInfoDao;
 
+    @Autowired
+    private CodeUtils codeUtils;
+
     /**
      * 分页获取合同列表
      * @param vo
@@ -116,12 +117,12 @@ public class ContractServiceImpl extends BaseServiceImpl implements ContractServ
          BeanCopyUtils.copy(contractReqVo,contractDTO);
 
         //生成合同编号
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.CONTRACT_CODE);
-        contractDTO.setContractCode(String.valueOf(encodingRule.getNumberingValue()));
-
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.CONTRACT_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.CONTRACT_CODE);
+        contractDTO.setContractCode(redisCode);
         int k = ((ContractService) AopContext.currentProxy()).saveContractDetails(contractDTO);
         //更新数据库编码最大值
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         if(k > 0){
             try {
                 if (contractDTO.getRebateClause().equals((byte)1)){

@@ -96,6 +96,9 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     @Autowired
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
+    @Autowired
+    private CodeUtils codeUtils;
+
     @Override
     public BasePage<QueryProfitLossRespVo> findPage(QueryProfitLossVo vo) {
         PageHelper.startPage(vo.getPageNo(),vo.getPageSize());
@@ -427,15 +430,16 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
     }
 
     private InboundReqSave inbouont(ProfitLoss profitLoss, List<ProfitLossDetailRequest> profitLossProductList, List<ProfitLossProductBatch> batchList) {
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
         // 更新数据库编码尺度
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
         InboundReqSave inboundReqSave = new InboundReqSave();
         List<InboundProductReqVo> list = new ArrayList<>();
         List<InboundBatchReqVo> inboundBatchReqVos = new ArrayList<>();
         for (ProfitLossDetailRequest profitLossProduct : profitLossProductList) {
             InboundProductReqVo inboundProductReqVo = new InboundProductReqVo();
-            inboundProductReqVo.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+            inboundProductReqVo.setInboundOderCode(redisCode);
             inboundProductReqVo.setSkuCode(profitLossProduct.getSkuCode());
             inboundProductReqVo.setSkuName(profitLossProduct.getSkuName());
             inboundProductReqVo.setPictureUrl(profitLossProduct.getPictureUrl());
@@ -464,7 +468,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
        if(batchList != null){
            for (ProfitLossProductBatch profitLossProductBatch : batchList) {
                InboundBatchReqVo inboundProductReqVo = new InboundBatchReqVo();
-               inboundProductReqVo.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+               inboundProductReqVo.setInboundOderCode(redisCode);
                inboundProductReqVo.setSkuCode(profitLossProductBatch.getSkuCode());
                inboundProductReqVo.setSkuName(profitLossProductBatch.getSkuName());
                inboundProductReqVo.setBatchCode(profitLossProductBatch.getBatchCode());
@@ -495,7 +499,7 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
         inboundReqSave.setCompanyName(COMPANY_NAME);
         inboundReqSave.setInboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         inboundReqSave.setInboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
-        inboundReqSave.setInboundOderCode(String.valueOf(encodingRule.getNumberingValue()));
+        inboundReqSave.setInboundOderCode(redisCode);
 //        inboundReqSave.setInboundTypeCode(OutboundTypeEnum.PROFIT_LOSS.getCode());
 //        inboundReqSave.setInboundTypeName(OutboundTypeEnum.PROFIT_LOSS.getName());
         inboundReqSave.setSourceOderCode(profitLoss.getOrderCode());

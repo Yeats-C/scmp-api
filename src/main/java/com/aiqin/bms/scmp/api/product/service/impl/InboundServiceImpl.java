@@ -311,9 +311,10 @@ public class InboundServiceImpl  implements InboundService {
             if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())){
                 // 获取编码
                 //rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+                String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
 
 
-                inbound.setInboundOderCode(rule.getNumberingValue().toString());
+                inbound.setInboundOderCode(redisCode);
             }
 
             //插入入库单主表
@@ -335,7 +336,7 @@ public class InboundServiceImpl  implements InboundService {
 
             //更新编码表
             if(reqVo.getInboundTypeCode().equals(InboundTypeEnum.ORDER.getCode()) || reqVo.getInboundTypeCode().equals(InboundTypeEnum.ALLOCATE.getCode())) {
-                encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
+                //encodingRuleDao.updateNumberValue(rule.getNumberingValue(),rule.getId());
             }
 
             // 保存日志

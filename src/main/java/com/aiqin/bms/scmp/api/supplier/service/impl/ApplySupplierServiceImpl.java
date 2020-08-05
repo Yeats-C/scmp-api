@@ -119,15 +119,15 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
             ApplySupplierReqDTO applySupplierReqDTO = new ApplySupplierReqDTO();
             BeanCopyUtils.copy(supplierReq,applySupplierReqDTO);
             //供应商申请编码
-            EncodingRule encodingRule =encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLIER_CODE);
-            applySupplierReqDTO.setApplySupplierCode(String.valueOf(encodingRule.getNumberingValue()+1));
+            String encodingRule =encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLIER_CODE);
+            applySupplierReqDTO.setApplySupplierCode(encodingRule);
             applySupplierReqDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
             applySupplierReqDTO.setFormNo(getFormNO());
             applySupplierReqDTO.setEnable(StatusTypeCode.EN_ABLE.getStatus());
             resultNum = ((ApplySupplierService) AopContext.currentProxy()).insert(applySupplierReqDTO);
             String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplierReqDTO.getCreateBy()).replace(Global.APPLY_TYPE, "新增");
             supplierCommonService.getInstance(applySupplierReqDTO.getApplySupplierCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content,null,HandleTypeCoce.PENDING.getName());
-            encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+            //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
             //调用审批接口
             workFlow(applySupplierReqDTO);
         } catch (Exception ex){
@@ -174,18 +174,18 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 applySupplier.setApplyType(StatusTypeCode.UPDATE_APPLY.getStatus());
                 applySupplier.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
                 //供应商申请编码
-                EncodingRule encodingRule =encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLIER_CODE);
-                applySupplier.setApplySupplierCode(String.valueOf(encodingRule.getNumberingValue()+1));
+                String encodingRule =encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SUPPLIER_CODE);
+                applySupplier.setApplySupplierCode(encodingRule);
 //                applySupplier.setId(applySupplierId.getId());
                 applySupplier.setFormNo(getFormNO());
-               encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+               //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
 //            } else {
 //                throw new BizException(ResultCode.UPDATE_ERROR);
 //            }
             //执行修改供应商申请
             num = ((ApplySupplierService) AopContext.currentProxy()).insert(applySupplier);
             //修改供应商集团申请状态
-            supplierDao.updatetSupplierApplyStatusByCode(supplierUpdateReqVO.getSupplierCode(),String.valueOf(encodingRule.getNumberingValue()+1));
+            supplierDao.updatetSupplierApplyStatusByCode(supplierUpdateReqVO.getSupplierCode(),encodingRule);
 
             String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applySupplier.getUpdateBy()).replace(Global.APPLY_TYPE, "修改");
             supplierCommonService.getInstance(applySupplier.getApplySupplierCode(), HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_SUPPLIER.getStatus(), content,null,HandleTypeCoce.PENDING.getName());
@@ -469,9 +469,9 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 supplierMapper.updateByPrimaryKey(supplier);
             } else {
                 //供应商编码
-                EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_CODE);
+                String encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_CODE);
                 supplier.setId(null);
-                supplier.setSupplierCode(String.valueOf(encodingRule.getNumberingValue() + 1));
+                supplier.setSupplierCode(encodingRule);
                 supplier.setUpdateBy(applySupplier.getUpdateBy());
                 supplier.setUpdateTime(applySupplier.getUpdateTime());
                 handleTypeCoce = HandleTypeCoce.ADD;
@@ -479,7 +479,7 @@ public class ApplySupplierServiceImpl extends BaseServiceImpl implements ApplySu
                 supplier.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
                 supplierMapper.insert(supplier);
                 //更新编码
-                encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+                //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }
             //赋值供应商编码
             applySupplier.setSupplierCode(supplier.getSupplierCode());

@@ -62,6 +62,7 @@ import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
 import com.aiqin.bms.scmp.api.util.Calculate;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.http.HttpClient;
@@ -189,6 +190,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Autowired
     @Lazy(true)
     private DlAbutmentService dlAbutmentService;
+
+    @Autowired
+    private CodeUtils codeUtils;
 
 
     /**
@@ -407,10 +411,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
      */
     private String outboundRecord(OutboundReqVo stockReqVO) {
         //编码生成
-        EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
+        //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.OUT_BOUND_CODE);
         Outbound outbound = new Outbound();
         BeanCopyUtils.copy(stockReqVO, outbound);
-        String outboundOderCode = String.valueOf(numberingType.getNumberingValue());
+        String outboundOderCode = codeUtils.getRedisCode(EncodingRuleType.OUT_BOUND_CODE);
+        //String outboundOderCode = String.valueOf(numberingType.getNumberingValue());
         outbound.setOutboundOderCode(outboundOderCode);
 
         List<OutboundProduct> outboundProducts = BeanCopyUtils.copyList(stockReqVO.getList(), OutboundProduct.class);
@@ -428,7 +433,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         }
         //批次商品暂时没有
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+        //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         // 保存日志
         productCommonService.instanceThreeParty(outbound.getOutboundOderCode(), HandleTypeCoce.ADD_OUTBOUND_ODER.getStatus(), ObjectTypeCode.OUTBOUND_ODER.getStatus(), stockReqVO, HandleTypeCoce.ADD_OUTBOUND_ODER.getName(), new Date(), stockReqVO.getCreateBy(), stockReqVO.getRemark());
         return outboundOderCode;
@@ -775,26 +780,27 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         Inbound inbound = new Inbound();
         BeanCopyUtils.copy(reqVo, inbound);
         // 获取编码 尺度
-        EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
-        inbound.setInboundOderCode(rule.getNumberingValue().toString());
+        //EncodingRule rule = encodingRuleDao.getNumberingType(EncodingRuleType.IN_BOUND_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
+        inbound.setInboundOderCode(redisCode);
         //插入入库单主表
         int insert = inboundDao.insert(inbound);
         LOGGER.info("插入入库单主表返回结果:{}", insert);
         //  转化入库单sku实体
         List<InboundProduct> list = BeanCopyUtils.copyList(reqVo.getList(), InboundProduct.class);
-        list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+        list.stream().forEach(inboundItemReqVo -> inboundItemReqVo.setInboundOderCode(redisCode));
         //插入入库单商品表
         int insertProducts = inboundProductDao.insertBatch(list);
         LOGGER.info("插入入库单商品表返回结果:{}", insertProducts);
         //添加供应商对应的商品信息
         List<InboundBatchReqVo> batchList = reqVo.getInboundBatchReqVos();
         if(CollectionUtils.isNotEmpty(batchList)){
-            batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(rule.getNumberingValue().toString()));
+            batchList.stream().forEach(inboundBatchReqVo -> inboundBatchReqVo.setInboundOderCode(redisCode));
             Integer count = inboundBatchDao.insertList(batchList);
             LOGGER.info("插入入库单供应商对应的商品信息返回结果:{}", count);
         }
         //更新编码表
-        encodingRuleDao.updateNumberValue(rule.getNumberingValue(), rule.getId());
+        //encodingRuleDao.updateNumberValue(rule.getNumberingValue(), rule.getId());
         // 保存日志
         productCommonService.instanceThreeParty(inbound.getInboundOderCode(), HandleTypeCoce.ADD_INBOUND_ODER.getStatus(), ObjectTypeCode.INBOUND_ODER.getStatus(), reqVo, HandleTypeCoce.ADD_INBOUND_ODER.getName(), new Date(), reqVo.getCreateBy(), reqVo.getRemark());
         return inbound.getInboundOderCode();

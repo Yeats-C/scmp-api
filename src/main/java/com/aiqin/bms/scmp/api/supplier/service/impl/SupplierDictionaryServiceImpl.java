@@ -203,16 +203,16 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                 listDTO.getListInfo().forEach(infoReqVO -> {
                     SupplierDictionaryInfo supplierDic1 = new SupplierDictionaryInfo();
                     // 查询供应商字典详情表
-                    EncodingRule encodingRule1 = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_INFO_CODE);
-                    long coif = encodingRule1.getNumberingValue();
-                    encodingRuleService.updateNumberValue(coif, encodingRule1.getId());
+                    String coif = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_INFO_CODE);
+                    //long coif = encodingRule1.getNumberingValue();
+                    //encodingRuleService.updateNumberValue(coif, encodingRule1.getId());
                     supplierDic1.setSupplierContent(infoReqVO.getDictionaryContent());
                     supplierDic1.setSupplierDictionaryCode(code);
                     supplierDic1.setSupplierDictionaryName(codNa);
                     supplierDic1.setEnabled(HandlingExceptionCode.ZERO);
                     supplierDic1.setDelFlag(HandlingExceptionCode.ZERO);
                     supplierDic1.setSupplierDictionaryValue(infoReqVO.getDictionaryValue());
-                    supplierDic1.setSupplierDictionaryInfoCode(coif+"");
+                    supplierDic1.setSupplierDictionaryInfoCode(coif);
                     supplierDic1.setSupplierWeight(infoReqVO.getDictionaryWeight());
                     save.add(supplierDic1);
                 });
@@ -296,9 +296,9 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                             supplierDic.setSupplierWeight(infoReqVO.getDictionaryWeight());
                             update.add(supplierDic);
                         } else {
-                            EncodingRule encodingRule1 = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_INFO_CODE);
-                            long coif = encodingRule1.getNumberingValue();
-                            encodingRuleService.updateNumberValue(coif, encodingRule1.getId());
+                            String coif = encodingRuleService.getNumberingType(EncodingRuleType.SUPPLIER_DICTIONARY_INFO_CODE);
+                            //long coif = encodingRule1.getNumberingValue();
+                            //encodingRuleService.updateNumberValue(coif, encodingRule1.getId());
                             SupplierDictionaryInfo supplierDic1 = new SupplierDictionaryInfo();
                             supplierDic1.setSupplierContent(infoReqVO.getDictionaryContent());
                             supplierDic1.setSupplierDictionaryCode(finalCode);
@@ -307,7 +307,7 @@ public class SupplierDictionaryServiceImpl implements SupplierDictionaryService 
                             supplierDic1.setSupplierWeight(infoReqVO.getDictionaryWeight());
                             supplierDic1.setEnabled(HandlingExceptionCode.ZERO);
                             supplierDic1.setDelFlag(HandlingExceptionCode.ZERO);
-                            supplierDic1.setSupplierDictionaryInfoCode(coif+"");
+                            supplierDic1.setSupplierDictionaryInfoCode(coif);
                             save.add(supplierDic1);
                         }
                     });

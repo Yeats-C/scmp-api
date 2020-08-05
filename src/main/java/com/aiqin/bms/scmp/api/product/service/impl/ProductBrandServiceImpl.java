@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.service.ProductBrandService;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.bms.scmp.api.util.UploadFileUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
@@ -35,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -64,6 +66,9 @@ public class ProductBrandServiceImpl implements ProductBrandService {
     @Autowired
     private ApplyProductSkuMapper applyProductSkuMapper;
 
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer save(ProductBrandReqVO s) {
@@ -88,14 +93,15 @@ public class ProductBrandServiceImpl implements ProductBrandService {
             throw new GroundRuntimeException("品牌名称已存在，保存失败！");
         }
         //编码生成
-        EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.PRODUCT_BRAND_CODE);
-        if(Objects.isNull(numberingType)){
+        //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.PRODUCT_BRAND_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.PRODUCT_BRAND_CODE);
+        if(StringUtils.isBlank(redisCode)){
             throw new GroundRuntimeException("无法通过编码生成规则获取编码，保存失败！");
         }
         //设置编码
-        t.setBrandId(String.valueOf(numberingType.getNumberingValue()));
+        t.setBrandId(redisCode);
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
+        //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(),numberingType.getId());
         return ((ProductBrandService)AopContext.currentProxy()).saveBrandData(t);
     }
 

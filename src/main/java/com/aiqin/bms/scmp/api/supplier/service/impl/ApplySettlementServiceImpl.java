@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.supplier.service.impl;
 
+import com.aiqin.bms.scmp.api.account.domain.Util.CodeUtil;
 import com.aiqin.bms.scmp.api.base.ApplyStatus;
 import com.aiqin.bms.scmp.api.base.EncodingRuleType;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
@@ -20,6 +21,7 @@ import com.aiqin.bms.scmp.api.supplier.service.EncodingRuleService;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -29,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.Date;
 import java.util.Objects;
 
@@ -54,18 +57,22 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
     @Autowired
     private SettlementInfoDao settlementInfoDao;
 
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Long saveApply(ApplySettlementInfoReqVO applySettlementInfoReqVO) {
         ApplySettlementInfoReqDTO applySettlementInfoReqDTO = new ApplySettlementInfoReqDTO();
         BeanCopyUtils.copy(applySettlementInfoReqVO,applySettlementInfoReqDTO);
         //结算申请编码
-        Long thisCode=encodingRuleService.getNumberValue((long)12);
-        applySettlementInfoReqDTO.setApplyCode(String.valueOf(thisCode+1));
+        //Long thisCode=encodingRuleService.getNumberValue((long)12);
+        String redisCode = codeUtils.getRedisCode("APPLY_SETTLEMENT_CODE");
+        applySettlementInfoReqDTO.setApplyCode(redisCode);
         applySettlementInfoReqDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
         applySettlementInfoReqDTO.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
         Long resultNum = insertApplyAndLog(applySettlementInfoReqDTO);
-        encodingRuleService.updateNumberValue(thisCode,(long)12);
+        //encodingRuleService.updateNumberValue(thisCode,(long)12);
         return resultNum;
     }
 
@@ -138,13 +145,14 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public Long insideSaveApply(ApplySettlementDTO applySettlementDTO) {
-        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SETTLEMENT_CODE);
-        applySettlementDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
+        String code = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_SETTLEMENT_CODE);
+        //long code = Long.parseLong(redisCode) + 1;
+        applySettlementDTO.setApplyCode(code);
         ApplySettlementInfoReqDTO applySettlementInfoReqDTO = new ApplySettlementInfoReqDTO();
         applySettlementDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
         BeanCopyUtils.copy(applySettlementDTO,applySettlementInfoReqDTO);
         Long resultNum = insertApplyAndLog(applySettlementInfoReqDTO);
-        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         return resultNum;
     }
 
@@ -168,12 +176,13 @@ public class ApplySettlementServiceImpl extends BaseServiceImpl implements Apply
                     settlementInformation.setId(oldSetInfo.getId());
                     settlementInformationMapper.updateByPrimaryKey(settlementInformation);
                 } else {
-                    EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.SETTLEMENT_CODE);
+                    String code = encodingRuleService.getNumberingType(EncodingRuleType.SETTLEMENT_CODE);
                     settlementInformation.setId(null);
-                    settlementInformation.setSettlementCode(String.valueOf(encodingRule.getNumberingValue()+1));
+                    //long code = Long.parseLong(redisCode) + 1;
+                    settlementInformation.setSettlementCode(code);
                     settlementInformation.setApplySettlementInformationCode(applySettlementInformation.getApplyCode());
                     settlementInformationMapper.insert(settlementInformation);
-                    encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+                    //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                 }
             }else if (vo.getApplyStatus().equals(ApplyStatus.APPROVAL_FAILED.getNumber())){
                 //驳回, 设置状态

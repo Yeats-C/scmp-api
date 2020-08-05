@@ -117,12 +117,13 @@ public class ApplyDeliveryServiceImpl implements ApplyDeliveryService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public  Long insertApplyAndLog(ApplyDeliveryInfoReqDTO applyDeliveryInfoReqDTO){
         //收货信息申请编码
-        EncodingRule encodingRule = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_DELIVERY_CODE);
-        applyDeliveryInfoReqDTO.setApplyCode(String.valueOf(encodingRule.getNumberingValue()+1));
+       String  code = encodingRuleService.getNumberingType(EncodingRuleType.APPLY_DELIVERY_CODE);
+        //long code = Long.parseLong(redisCode) + 1;
+        applyDeliveryInfoReqDTO.setApplyCode(code);
         applyDeliveryInfoReqDTO.setApplyType(StatusTypeCode.ADD_APPLY.getStatus());
         applyDeliveryInfoReqDTO.setApplyStatus(StatusTypeCode.PENDING_STATUS.getStatus());
         Long resultNum = ((ApplyDeliveryService) AopContext.currentProxy()).insert(applyDeliveryInfoReqDTO);
-        encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleService.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         return resultNum;
     }
     /**

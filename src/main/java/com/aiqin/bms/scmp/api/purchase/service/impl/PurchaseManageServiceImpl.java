@@ -29,10 +29,7 @@ import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.response.purchasegroup.PurchaseGroupVo;
 import com.aiqin.bms.scmp.api.supplier.service.PurchaseGroupService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.Calculate;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
@@ -91,6 +88,8 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
     private PurchaseBatchDao purchaseBatchDao;
     @Resource
     private WmsCancelService wmsCancelService;
+    @Resource
+    private CodeUtils codeUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -100,12 +99,13 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         }
 
         // 获取采购单编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_ORDER_CODE);
+        String purchaseOrderCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_ORDER_CODE);
         // 新增采购单
         String purchaseId = IdUtil.purchaseId();
         PurchaseOrder purchaseOrder = request.getPurchaseOrder();
         purchaseOrder.setPurchaseOrderId(purchaseId);
-        String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
+        //String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
         purchaseOrder.setPurchaseOrderCode(purchaseOrderCode);
         purchaseOrder.setApprovalCode(purchaseOrderCode);
         purchaseOrder.setPurchaseOrderStatus(Global.PURCHASE_ORDER_0);
@@ -120,7 +120,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
         LOGGER.info("添加采购申信息:{}", orderCount);
 
         // 变更采购单号
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
 
         // 添加生成采购单操作日志
         log(purchaseId, request.getPurchaseOrder().getCreateById(), request.getPurchaseOrder().getCreateByName(),

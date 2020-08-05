@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.util.AuthToken;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.workflow.enumerate.WorkFlow;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowCallbackVO;
 import com.aiqin.bms.scmp.api.workflow.vo.request.WorkFlowVO;
@@ -54,6 +55,9 @@ public class BaseServiceImpl implements BaseService {
     private FormApplyCommonService formApplyCommonService;
     @Resource
     private FormOperateService formOperateService;
+
+    @Resource
+    private CodeUtils codeUtils;
 
 
     @Override
@@ -224,15 +228,16 @@ public class BaseServiceImpl implements BaseService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public synchronized String getCode(String prefix, String Code) {
-        EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
+        //EncodingRule numberingType = encodingRuleDao.getNumberingType(Code);
+        String redisCode = codeUtils.getRedisCode(Code);
         String code;
         if (StringUtils.isNotBlank(prefix)) {
-            code = prefix + numberingType.getNumberingValue();
+            code = prefix + redisCode;
         } else {
-            code = String.valueOf(numberingType.getNumberingValue());
+            code = redisCode;
         }
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+        //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         return code;
     }
 

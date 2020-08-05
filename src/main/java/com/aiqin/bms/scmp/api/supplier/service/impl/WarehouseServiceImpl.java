@@ -8,7 +8,6 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.supplier.dao.EncodingRuleDao;
 import com.aiqin.bms.scmp.api.supplier.dao.logisticscenter.LogisticsCenterDao;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
-import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.request.logisticscenter.dto.LogisticsCenterDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.vo.QueryWarehouseReqVo;
@@ -20,10 +19,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.QueryWarehouseR
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseApiResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.warehouse.WarehouseResVo;
 import com.aiqin.bms.scmp.api.supplier.service.WarehouseService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.github.pagehelper.PageHelper;
@@ -32,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -49,26 +46,30 @@ public class WarehouseServiceImpl implements WarehouseService {
     private WarehouseDao warehouseDao;
 
     @Autowired
-    private EncodingRuleDao  encodingRuleDao;
+    private EncodingRuleDao encodingRuleDao;
 
 
     @Autowired
     private LogisticsCenterDao logisticsCenterDao;
+
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     public BasePage<QueryWarehouseResVo> findWarehouseList(QueryWarehouseReqVo vo) {
 
         PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
+        if (null != authToken) {
             vo.setCompanyCode(authToken.getCompanyCode());
         }
         List<WarehouseDTO> warehouseDTOS = warehouseDao.findWarehouseList(vo);
         // 获取分页参数
-        BasePage<QueryWarehouseResVo> basePage = PageUtil.getPageList(vo.getPageNo(),warehouseDTOS);
+        BasePage<QueryWarehouseResVo> basePage = PageUtil.getPageList(vo.getPageNo(), warehouseDTOS);
         try {
-            basePage.setDataList(BeanCopyUtils.copyList(warehouseDTOS,QueryWarehouseResVo.class));
+            basePage.setDataList(BeanCopyUtils.copyList(warehouseDTOS, QueryWarehouseResVo.class));
             return basePage;
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         throw new GroundRuntimeException("分页查询失败");
@@ -76,6 +77,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 保存转化实体
+     *
      * @param warehouseReqVo
      * @return
      */
@@ -96,10 +98,11 @@ public class WarehouseServiceImpl implements WarehouseService {
         WarehouseDTO warehouseDTO = new WarehouseDTO();
         BeanCopyUtils.copy(warehouseReqVo, warehouseDTO);
         //设置库房编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.WAREHOUSE_CODE);
-        warehouseDTO.setWarehouseCode(String.valueOf(encodingRule.getNumberingValue()));
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.WAREHOUSE_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.WAREHOUSE_CODE);
+        warehouseDTO.setWarehouseCode(redisCode);
         // 更新数据库编码尺度
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         warehouseDTO.setDelFlag(Byte.parseByte("0"));
         warehouseDTO.setEnable(Byte.parseByte("0"));
@@ -114,6 +117,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 通过id查询库房详情
+     *
      * @param id
      * @return
      */
@@ -131,12 +135,13 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 修改转化实体
+     *
      * @param updateWarehouseReqVo
      * @return
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    public HttpResponse<Integer>updateWarehouse(UpdateWarehouseReqVo updateWarehouseReqVo) {
+    public HttpResponse<Integer> updateWarehouse(UpdateWarehouseReqVo updateWarehouseReqVo) {
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
         String companyCode = "";
         if (null != authToken) {
@@ -159,6 +164,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 保存库房实体
+     *
      * @param record
      * @return
      */
@@ -166,19 +172,21 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Save
     public int insertSelective(WarehouseDTO record) {
-        try{
+        try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
+            if (null != authToken) {
                 record.setCompanyCode(authToken.getCompanyCode());
                 record.setCompanyName(authToken.getCompanyName());
             }
-        return warehouseDao.insertSelective(record);
-        }catch (Exception e){
+            return warehouseDao.insertSelective(record);
+        } catch (Exception e) {
             throw new GroundRuntimeException("库房新增失败");
         }
     }
+
     /**
      * 更新库房实体
+     *
      * @param record
      * @return
      */
@@ -186,15 +194,16 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Update
     public int updateByPrimaryKeySelective(WarehouseDTO record) {
-        try{
+        try {
             return warehouseDao.updateByPrimaryKeySelective(record);
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new GroundRuntimeException("库房新增失败");
         }
     }
 
     /**
      * 根据库房编码查询库房
+     *
      * @param code
      * @return
      */
@@ -213,6 +222,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 根据物流中心编码查询库房列表
+     *
      * @param logisticsCenterCode
      * @return
      */
@@ -233,6 +243,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 根据地区编码查询库房
+     *
      * @param warehouseListReqVo
      * @return
      */
@@ -260,6 +271,7 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     /**
      * 通过物流中心编码获取有类型的库房
+     *
      * @param logisticsCenterCode
      * @param warehouseTypeCode
      * @return
@@ -267,8 +279,8 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public List<WarehouseResVo> getWarehouseTypeByLogisticsCenterCode(String logisticsCenterCode, Byte warehouseTypeCode) {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseTypeByLogisticsCenterCode(logisticsCenterCode, warehouseTypeCode);
-        if(CollectionUtils.isNotEmptyCollection(dtoList)){
-            return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
+        if (CollectionUtils.isNotEmptyCollection(dtoList)) {
+            return BeanCopyUtils.copyList(dtoList, WarehouseResVo.class);
         }
         return null;
     }
@@ -276,10 +288,12 @@ public class WarehouseServiceImpl implements WarehouseService {
     @Override
     public List<WarehouseResVo> getWarehouseByLogisticsCenterCodeAndNotExistsType(String logisticsCenterCode, Byte warehouseTypeCode) {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseByLogisticsCenterCodeAndNotExistsType(logisticsCenterCode, warehouseTypeCode);
-        return BeanCopyUtils.copyList(dtoList,WarehouseResVo.class);
+        return BeanCopyUtils.copyList(dtoList, WarehouseResVo.class);
     }
 
-    /** 通过仓库编码查询启用库房信息 */
+    /**
+     * 通过仓库编码查询启用库房信息
+     */
     @Override
     public List<WarehouseDTO> getWarehouseCodeByTransportCenterCode(String transportCenterCode) {
         List<WarehouseDTO> dtoList = warehouseDao.getWarehouseCodeByTransportCenterCode(transportCenterCode);

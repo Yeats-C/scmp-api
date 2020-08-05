@@ -8,5 +8,5 @@ public interface EncodingRuleService {
 
     int updateNumberValue(Long versionValue, Long id);
 
-    EncodingRule getNumberingType(String numberingType);
+    String getNumberingType(String numberingType);
 }
