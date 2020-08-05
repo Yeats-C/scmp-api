@@ -393,19 +393,27 @@ public class InboundServiceImpl  implements InboundService {
         return saveInbound(convert);
     }
 
-    /** 入库单采购推送给wms */
     @Override
-    //@Async("myTaskAsyncPool")
+    public void manualPurchaseAll(List<String> list){
+        LOGGER.info("手动批量采购入库推送wms：{}", JsonUtil.toJson(list));
+        if(CollectionUtils.isNotEmpty(list)){
+            for(String inboundOderCode : list){
+                this.pushWms(inboundOderCode);
+            }
+        }
+    }
+
+    @Override
     @Transactional(rollbackFor = Exception.class)
     public void pushWms(String inboundOderCode) {
-        LOGGER.info("采购调用wms开始:{}", inboundOderCode);
+        LOGGER.info("采购入库单开始调用wms:{}", inboundOderCode);
         // 查询入库单
         Inbound inbound = inboundDao.selectByCode(inboundOderCode);
         PurchaseInboundSource inboundSource = BeanCopyUtils.copy(inbound, PurchaseInboundSource.class);
         List<PurchaseInboundDetailSource> inboundProductList = inboundProductDao.wmsByInboundProduct(inbound.getInboundOderCode());
         inboundSource.setDetailList(inboundProductList);
         List<InboundBatch> inboundBatches = inboundBatchDao.selectInboundBatchList(inbound.getInboundOderCode());
-        if(CollectionUtils.isNotEmpty(inboundBatches)){
+        if (CollectionUtils.isNotEmpty(inboundBatches)) {
             List<BatchInfo> batchList = BeanCopyUtils.copyList(inboundBatches, BatchInfo.class);
             inboundSource.setBatchInfo(batchList);
         }
@@ -413,51 +421,46 @@ public class InboundServiceImpl  implements InboundService {
         //设置入库状态
         inbound.setInboundStatusCode(InOutStatus.SEND_INOUT.getCode());
         inbound.setInboundStatusName(InOutStatus.SEND_INOUT.getName());
-        PurchaseOrder purchaseOrder = null;
-        if(inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())){
-          // 查询对应的采购信息
-            purchaseOrder = new PurchaseOrder();
-            purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
-            purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
-            inboundSource.setContractCode(purchaseOrder.getContractCode());
-            inboundSource.setOperuserCode(purchaseOrder.getCreateById());
-            inboundSource.setOperuserName(purchaseOrder.getCreateByName());
-            inboundSource.setOperuserDate(inbound.getCreateTime());
-            inboundSource.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
-            inboundSource.setPurchaseOrderCode(purchaseOrder.getPurchaseOrderCode());
-            inboundSource.setRemark(purchaseOrder.getRemark());
-        }
-        Integer s = inboundDao.updateByPrimaryKeySelective(inbound);
-        LOGGER.info("开始调用wms，更改入库单的转态：{}", s);
+        // 查询对应的采购信息
+        PurchaseOrder purchaseOrder = new PurchaseOrder();
+        purchaseOrder.setPurchaseOrderCode(inbound.getSourceOderCode());
+        purchaseOrder = purchaseOrderDao.purchaseOrderInfo(purchaseOrder);
+        inboundSource.setContractCode(purchaseOrder.getContractCode());
+        inboundSource.setOperuserCode(purchaseOrder.getCreateById());
+        inboundSource.setOperuserName(purchaseOrder.getCreateByName());
+        inboundSource.setOperuserDate(inbound.getCreateTime());
+        inboundSource.setPreArrivalTime(purchaseOrder.getPreArrivalTime());
+        inboundSource.setPurchaseOrderCode(purchaseOrder.getPurchaseOrderCode());
+        inboundSource.setRemark(purchaseOrder.getRemark());
+
+        Integer count = inboundDao.updateByPrimaryKeySelective(inbound);
+        LOGGER.info("调用wms，更改采购入库单开始推送状态：{}", count);
 
         //保存日志
         productCommonService.instanceThreeParty(inboundOderCode, HandleTypeCoce.PULL_INBOUND_ODER.getStatus(),
                 ObjectTypeCode.INBOUND_ODER.getStatus(), inboundOderCode, HandleTypeCoce.PULL_INBOUND_ODER.getName(),
                 new Date(), inbound.getCreateBy(), null);
 
-        // 采购
-        if (inbound.getInboundTypeCode().equals(InboundTypeEnum.RETURN_SUPPLY.getCode())) {
-            // 添加采购开始入库日志
-            OperationLog operationLog = new OperationLog();
-            if (purchaseOrder != null) {
-                operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
-                operationLog.setCreateByName(inbound.getCreateBy());
-                operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
-                operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
-                operationLog.setCreateTime(new Date());
-                operationLog.setRemark(purchaseOrder.getApplyTypeForm());
-                purchaseManageService.addLog(operationLog);
-            }
+        // 添加采购开始入库日志
+        OperationLog operationLog = new OperationLog();
+        if (purchaseOrder != null) {
+            operationLog.setOperationId(purchaseOrder.getPurchaseOrderId());
+            operationLog.setCreateByName(inbound.getCreateBy());
+            operationLog.setOperationType(PurchaseOrderLogEnum.WAREHOUSING_BEGIN.getCode());
+            operationLog.setOperationContent("入库申请单" + inbound.getInboundOderCode() + "，开始入库");
+            operationLog.setCreateTime(new Date());
+            operationLog.setRemark(purchaseOrder.getApplyTypeForm());
+            purchaseManageService.addLog(operationLog);
+        }
 
-            LOGGER.info("向wms发送采购入库单的参数是：{}",  JsonUtil.toJson(inboundSource));
-            String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
-            HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
-            HttpResponse response = httpClient.action().result(HttpResponse.class);
-            if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("入库单推送wms成功:{}", inboundOderCode);
-            } else {
-                LOGGER.error("入库单推送wms失败:{}", response.getMessage());
-            }
+        LOGGER.info("向wms发送采购入库单的参数是：{}", JsonUtil.toJson(inboundSource));
+        String url = urlConfig.WMS_API_URL2 + "/purchase/source/inbound";
+        HttpClient httpClient = HttpClient.post(url).json(inboundSource).timeout(20000);
+        HttpResponse response = httpClient.action().result(HttpResponse.class);
+        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+            LOGGER.info("采购入库单推送wms成功:{}", inboundOderCode);
+        } else {
+            LOGGER.error("采购入库单推送wms失败:{}", response.getMessage());
         }
     }
 
