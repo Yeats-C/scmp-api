@@ -101,7 +101,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
                 list.add(monthStockRequest);
             }
         }
+        LOGGER.info("推送DL月份批次数据条数：{}", list.size());
         parameterAssemblyService.monthStockDlParameter(list);
-
     }
 }
