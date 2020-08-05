@@ -142,6 +142,14 @@ public class SaleSourcInfoSource implements Serializable {
     private String channelName;
 
 
+    @ApiModelProperty("业务形式")
+    @JsonProperty("business_form")
+    private Integer businessForm;
+
+
+
+
+
 
     @ApiModelProperty(value="订单类型")
     @JsonProperty("so_type")
