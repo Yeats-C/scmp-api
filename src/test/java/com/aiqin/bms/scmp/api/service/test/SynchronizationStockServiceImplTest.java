@@ -73,20 +73,19 @@ public class SynchronizationStockServiceImplTest {
 
     @Test
     public  void test2 (){
-        ExecutorService service = Executors.newFixedThreadPool(5);
-        final CountDownLatch latch = new CountDownLatch(5);
-        for (int i = 0; i < 5; i++) {
+        ExecutorService service = Executors.newFixedThreadPool(100);
+        final CountDownLatch latch = new CountDownLatch(100);
+        for (int i = 0; i < 100; i++) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
                     try {
                         System.out.println("子线程" + Thread.currentThread().getName() + "开始执行");
                         Thread.sleep((long) (Math.random() * 10000));
-                        System.out.println("子线程"+Thread.currentThread().getName()+"执行完成");
+                        //System.out.println("子线程"+Thread.currentThread().getName()+"执行完成");
                         latch.countDown();//当前线程调用此方法，则计数减一
-
                         String redisCode = codeUtils.getRedisCode("PROMOTION_NO");
-                        System.out.println("==========="+redisCode);
+                        System.out.println(redisCode);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
