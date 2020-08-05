@@ -466,15 +466,20 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
     @Override
     @Async("myTaskAsyncPool")
-    public void monthStockDlParameter(List<MonthStockRequest> list){
+    public void monthStockDlParameter(List<MonthStockRequest> list) {
+        List<List<MonthStockRequest>> partitionList = Lists.partition(list, 500);
         String url = DL_URL + "/update/productdate";
-        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(list), url);
-        if (dlResponse.getStatus() == 0) {
-            LOGGER.info("调用DL路径：{}", url);
-            LOGGER.info("熙耘->DL，同步日期批次信息成功:{}", dlResponse.getMessage());
-        } else {
-            LOGGER.info("熙耘->DL，同步日期批次信息失败:{}", dlResponse.getMessage());
+        LOGGER.info("调用DL路径：{}", url);
+        for (List<MonthStockRequest> monthList : partitionList) {
+            DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(monthList), url);
+            if (dlResponse.getStatus() == 0) {
+                LOGGER.info("熙耘->DL，同步日期批次信息成功:{}", dlResponse.getMessage());
+            } else {
+                LOGGER.info("熙耘->DL，同步日期批次信息失败:{}", dlResponse.getMessage());
+            }
         }
+
+
     }
 
 }
