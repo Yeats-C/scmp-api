@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * 描述: 出库单skuWMS回调申请实体
  */
@@ -34,6 +36,6 @@ public class OutboundProductCallBackReqVo {
 
     @ApiModelProperty(value="商品唯一码")
     @JsonProperty(value = "unique_code")
-    private String uniqueCode;
+    private List<String> uniqueCode;
 
 }

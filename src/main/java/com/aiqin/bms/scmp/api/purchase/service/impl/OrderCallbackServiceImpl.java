@@ -27,10 +27,7 @@ import com.aiqin.bms.scmp.api.product.mapper.*;
 import com.aiqin.bms.scmp.api.product.service.*;
 import com.aiqin.bms.scmp.api.product.web.DlAbutmentController;
 import com.aiqin.bms.scmp.api.purchase.domain.converter.OrderInfoToOutboundConverter;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItem;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoItemProductBatch;
-import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfoLog;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.*;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfoItem;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.transport.Transport;
@@ -189,6 +186,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     @Autowired
     @Lazy(true)
     private DlAbutmentService dlAbutmentService;
+    @Autowired
+    private ProductSkuUniqueCodeMapper productSkuUniqueCodeMapper;
 
 
     /**
@@ -1471,6 +1470,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         // 根据回传信息，更新销售单的实际发货信息
         OrderInfoItem orderInfoItem;
         List<OrderInfoItem> itemList = Lists.newArrayList();
+        List<ProductSkuUniqueCode> productSkuUniqueCodes = new ArrayList<>();
         Map<String, OrderInfoItem> product = new HashMap<>();
         String key;
         for (OutboundCallBackDetailRequest detail : detailList) {
@@ -1483,7 +1483,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         for (OutboundCallBackDetailRequest detail : detailList) {
             orderInfoItem = new OrderInfoItem();
             orderInfoItem.setActualDeliverNum(detail.getActualProductCount());
-            orderInfoItem.setUniqueCode(detail.getUniqueCode());
+//            orderInfoItem.setUniqueCode();
             // 根据单价计算总价
             key = String.format("%s,%s", response.getOrderCode(), detail.getSkuCode(), detail.getLineCode());
             OrderInfoItem item = product.get(key);
@@ -1500,6 +1500,17 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
             actualTotalChannelAmount = actualTotalChannelAmount.add(orderInfoItem.getActualTotalChannelPrice());
             actualTotalProductAmount = actualTotalProductAmount.add(orderInfoItem.getActualAmount());
+
+            List<String> uniqueCode = detail.getUniqueCode();
+            if (CollectionUtils.isNotEmpty(uniqueCode)){
+                for (String uc : uniqueCode) {
+                    ProductSkuUniqueCode productSkuUniqueCode = new ProductSkuUniqueCode();
+                    productSkuUniqueCode.setOrderCode(request.getOderCode());
+                    productSkuUniqueCode.setSkuCode(orderInfoItem.getSkuCode());
+                    productSkuUniqueCode.setSkuName(orderInfoItem.getSkuName());
+                    productSkuUniqueCode.setUniqueCode(uc);
+                }
+            }
             // 自动批次管理，wms回传添加销售单的批次
 //            if(request.getBatchManage().equals(Global.BATCH_MANAGE_0)){
 //                List<OrderInfoItemProductBatch> batchList = Lists.newArrayList();
@@ -1542,6 +1553,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
             //throw new GroundRuntimeException(String.format("发货回传失败"));
         }
         orderInfoItemMapper.updateBatch(itemList);
+        if (CollectionUtils.isNotEmpty(productSkuUniqueCodes)){
+            productSkuUniqueCodeMapper.insertAll(productSkuUniqueCodes);
+        }
         // 添加订单日志
         OrderInfoLog orderInfoLog = new OrderInfoLog(null, request.getOderCode(), OrderStatus.ALL_SHIPPED.getStatusCode(),
                 OrderStatus.ALL_SHIPPED.getBackgroundOrderStatus(),
