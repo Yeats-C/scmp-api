@@ -1,5 +1,6 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockDayBatch;
 import com.aiqin.bms.scmp.api.product.domain.pojo.StockMonthBatch;
 import org.apache.ibatis.annotations.Param;
@@ -21,6 +22,6 @@ public interface StockDayBatchDao {
     List<StockMonthBatch> dayBatchByGroup(@Param("synchrTime") Long synchrTime,
                                           @Param("wmsType") Integer wmsType);
 
-    List<StockDayBatch> stockDayByDl(Integer wmsType);
+    List<MonthStockRequest> stockDayByDl(Integer wmsType);
 
 }

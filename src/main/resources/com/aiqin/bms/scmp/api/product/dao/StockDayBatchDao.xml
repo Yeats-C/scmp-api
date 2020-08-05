@@ -78,10 +78,14 @@
     and wms_type = #{wmsType,jdbcType=INTEGER}
     group by skuCode, warehouseCode, batchCode
   </select>
-  <select id="stockDayByDl" resultMap="BaseResultMap">
-    select <include refid="Base_Column_List"/>
-    from stock_day_batch
-    where synchr_time =
-    (SELECT synchr_time from stock_month_batch where wms_type = #{wmsType} ORDER BY synchr_time desc limit 1)
+  <select id="stockDayByDl" resultType="com.aiqin.bms.scmp.api.abutment.domain.request.dl.MonthStockRequest">
+     select a.sku_code skuCode, a.warehouse_code, a.batch_code batchCode,sum(a.batch_count) batchCount, a.wms_type wmsType,
+          b.wms_warehouse_id warehouseCode, b.wms_warehouse_type wmsWarehouseType, b.wms_warehouse_name warehouseName
+     from stock_day_batch a
+     inner join warehouse b on a.warehouse_code = b.warehouse_code
+     where b.wms_warehouse_type = 1 and
+			a.synchr_time = (select c.synchr_time from stock_month_batch c where c.wms_type = #{wmsType,jdbcType=INTEGER}
+			group by c.synchr_time desc limit 1)
+     group by a.sku_code,a.batch_code,b.wms_warehouse_id
   </select>
 </mapper>
