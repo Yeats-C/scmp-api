@@ -33,7 +33,7 @@ public class DlMonthStockServiceImpl implements DlMonthStockService {
     private ParameterAssemblyService parameterAssemblyService;
 
     @Override
-    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void monthStockDl(){
 
         List<MonthStockRequest> list = Lists.newArrayList();
