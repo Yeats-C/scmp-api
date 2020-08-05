@@ -173,6 +173,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
                    item.setProductCount(batch.getTotalCount());
 //                   item.setBatchDate(DateUtils.strToDateLong(batch.getProductDate()));
                    item.setBatchDate(batch.getProductDate());
+                   item.setBatchCode(batch.getBatchCode());
                    itemList.add(item);
                }
             }else {
