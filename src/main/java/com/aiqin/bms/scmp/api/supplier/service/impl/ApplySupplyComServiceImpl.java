@@ -1020,7 +1020,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
         }
     }
     private void sendWms(ApplySupplyCompany applySupplyCompany) {
-        log.info("传wms供应商信息，传入参数是[{}]", JSON.toJSONString(applySupplyCompany));
+        log.info("传wms供应商信息，传入参数是[{}]", JsonUtil.toJson(applySupplyCompany));
         SupplierWms supplierWms=new SupplierWms();
         supplierWms.setAddress(applySupplyCompany.getAddress());
         supplierWms.setArea(applySupplyCompany.getArea());
@@ -1039,14 +1039,14 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
             url.append(urlConfig.WMS_API_URL2).append("/infoPushAndInquiry/source/supplierInfoPush" );
 //            HttpClient httpClient = HttpClient.get(url.toString());
             HttpClient httpClient = HttpClient.post(String.valueOf(url)).json(supplierWms).timeout(30000);
-            HttpResponse<RejectResponse> result = httpClient.action().result(new TypeReference<HttpResponse<RejectResponse>>(){
+            HttpResponse result = httpClient.action().result(new TypeReference<HttpResponse>(){
             });
             if (!Objects.equals(result.getCode(), MsgStatus.SUCCESS)) {
-                log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+                log.info("调用wms供应商信息失败，传入参数是:[{}]", JsonUtil.toJson(supplierWms));
             }
         } catch (Exception e) {
             e.printStackTrace();
-            log.info("穿入wms供应商信息失败，传入参数是[{}]", JSON.toJSONString(supplierWms));
+            log.info("传入wms供应商信息失败，传入参数是:[{}]", JsonUtil.toJson(supplierWms));
         }
     }
 
