@@ -90,10 +90,10 @@ public class InboundController {
 //        return HttpResponse.success();
 //    }
 
-    @ApiOperation("采购推送失败，重新推送wms")
-    @GetMapping("/wms/purchase")
-    public HttpResponse<InboundBatch> inboundOderCode(@RequestParam(value = "inbound_oder_code")String inboundOderCode){
-        inboundService.pushWms(inboundOderCode);
+    @ApiOperation("手动批量推送采购采购入库单")
+    @PostMapping("/wms/purchase")
+    public HttpResponse inboundOderCode(@RequestBody List<String> list){
+        inboundService.manualPurchaseAll(list);
         return HttpResponse.success();
     }
 //

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @program: scmp-api
  * @author: zhao shuai
@@ -30,5 +32,5 @@ public class OutboundCallBackDetailRequest {
 
     @ApiModelProperty(value="商品唯一码")
     @JsonProperty(value = "unique_code")
-    private String uniqueCode;
+    private List<String> uniqueCode;
 }

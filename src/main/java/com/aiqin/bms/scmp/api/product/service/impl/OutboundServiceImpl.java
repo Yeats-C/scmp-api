@@ -1028,7 +1028,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         outbound.setOutboundStatusCode(InOutStatus.COMPLETE_INOUT.getCode());
         outbound.setOutboundStatusName(InOutStatus.COMPLETE_INOUT.getName());
         if(outbound.getOutboundTypeCode().equals(OutboundTypeEnum.ORDER.getCode() )){
-            LOGGER.info("wms回传成功，根据出库单信息，变更对应销售单的实际值：", outbound.getSourceOderCode());
+            LOGGER.info("wms回传成功，根据出库单信息，变更对应销售单的实际值：{}", outbound.getSourceOderCode());
             OutboundCallBackRequest request = new OutboundCallBackRequest();
             request.setOderCode(outbound.getSourceOderCode());
             request.setDeliveryTime(outbound.getOutboundTime());
@@ -1055,9 +1055,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 orderItems.add(orderItem);
             }
             List<OutboundProductCallBackReqVo> detailList = requestVo.getDetailList();
-            Map<String, OutboundProductCallBackReqVo> skuMap = detailList.stream().collect(Collectors.toMap(OutboundProductCallBackReqVo::getSkuCode, input -> input, (k1, k2) -> k1));
+            Map<Long, OutboundProductCallBackReqVo> skuMap = detailList.stream().collect(Collectors.toMap(OutboundProductCallBackReqVo::getLineCode, input -> input, (k1, k2) -> k1));
             for (OutboundCallBackDetailRequest outboundCallBackDetailRequest : orderItems) {
-                if (skuMap.containsKey(outboundCallBackDetailRequest.getSkuCode())) {
+                if (skuMap.containsKey(outboundCallBackDetailRequest.getLineCode())) {
                     outboundCallBackDetailRequest.setUniqueCode(skuMap.get(outboundCallBackDetailRequest.getSkuCode()).getUniqueCode());
                 }
             }

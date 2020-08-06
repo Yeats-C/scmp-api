@@ -8,10 +8,7 @@ import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -74,10 +71,10 @@ public class DlController {
         return dlService.supplierInfo(request);
     }
 
-    @PostMapping("/syn/month/stock")
+    @GetMapping("/syn/month/stock")
     @ApiOperation(value = "熙耘->DL，德邦/京东月份批次库存同步")
-    public void monthStockDl() {
-        dlMonthStockService.monthStockDl();
+    public HttpResponse<List<MonthStockRequest>> monthStockDl(@RequestParam(value = "warehouse_code",required = false) String warehouseCode) {
+        return dlMonthStockService.monthStockDl(warehouseCode);
     }
 
     @PostMapping("/product/inspection")
