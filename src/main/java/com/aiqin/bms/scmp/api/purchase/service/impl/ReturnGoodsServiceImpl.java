@@ -380,12 +380,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         LOGGER.info("添加退货单退货收货的日志：{}", count);
 
         // 退货收货完成- 直送订单 回传运营中台
-        changeParameter(itemList.get(0).getReturnOrderCode());
+        HttpResponse response = changeParameter(itemList.get(0).getReturnOrderCode());
         // 推送结算
         //sapBaseDataService.saleAndReturn(itemList.get(0).getReturnOrderCode(), 1);
         //异步保存单据
         asynSaveDocuments.saveReject(itemList.get(0).getReturnOrderCode());
-        return HttpResponse.success();
+        return response;
     }
 
     @Override
@@ -625,8 +625,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             LOGGER.info("退货单回调成功");
             return HttpResponse.success();
         } else {
-            LOGGER.info("退货单回调失败：{}", httpResponse.getMessage());
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回调失败"));
+            LOGGER.info("退货单回调运营中台或者DL失败：{}", httpResponse.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单回调运营中台或者DL失败"));
         }
     }
 
