@@ -1058,7 +1058,10 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             Map<Long, OutboundProductCallBackReqVo> skuMap = detailList.stream().collect(Collectors.toMap(OutboundProductCallBackReqVo::getLineCode, input -> input, (k1, k2) -> k1));
             for (OutboundCallBackDetailRequest outboundCallBackDetailRequest : orderItems) {
                 if (skuMap.containsKey(outboundCallBackDetailRequest.getLineCode())) {
-                    outboundCallBackDetailRequest.setUniqueCode(skuMap.get(outboundCallBackDetailRequest.getSkuCode()).getUniqueCode());
+                    List<String> uniqueCode = skuMap.get(outboundCallBackDetailRequest.getLineCode()).getUniqueCode();
+                    if(CollectionUtils.isNotEmpty(uniqueCode)){
+                        outboundCallBackDetailRequest.setUniqueCode(uniqueCode);
+                    }
                 }
             }
             request.setDetailList(orderItems);

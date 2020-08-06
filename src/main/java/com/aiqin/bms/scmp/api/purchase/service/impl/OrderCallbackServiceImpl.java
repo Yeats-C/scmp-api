@@ -1509,6 +1509,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                     productSkuUniqueCode.setSkuCode(orderInfoItem.getSkuCode());
                     productSkuUniqueCode.setSkuName(orderInfoItem.getSkuName());
                     productSkuUniqueCode.setUniqueCode(uc);
+                    productSkuUniqueCodes.add(productSkuUniqueCode);
                 }
             }
             // 自动批次管理，wms回传添加销售单的批次
