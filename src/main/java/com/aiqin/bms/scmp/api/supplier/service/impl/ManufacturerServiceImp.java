@@ -24,6 +24,7 @@ import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
 import com.aiqin.bms.scmp.api.util.AuthToken;
 import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.PageUtil;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -34,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -49,13 +51,13 @@ import java.util.Set;
  */
 @Service
 @Slf4j
-public class ManufacturerServiceImp  implements ManufacturerService {
+public class ManufacturerServiceImp implements ManufacturerService {
 
     @Autowired
     private ManufacturerDao manufacturerDao;
 
     @Autowired
-    private  ManufacturerBrandDao manufacturerBrandDao;
+    private ManufacturerBrandDao manufacturerBrandDao;
 
     @Autowired
     private EncodingRuleDao encodingRuleDao;
@@ -65,8 +67,13 @@ public class ManufacturerServiceImp  implements ManufacturerService {
 
     @Autowired
     private OperationLogService operationLogService;
+
+    @Resource
+    private CodeUtils codeUtils;
+
     /**
      * 制造商列表查询
+     *
      * @param vo
      * @return
      */
@@ -74,13 +81,14 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     public BasePage<QueryManufacturerResVo> list(QueryManufacturerReqVo vo) {
         try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
+            if (null != authToken) {
                 vo.setCompanyCode(authToken.getCompanyCode());
             }
             PageHelper.startPage(vo.getPageNo(), vo.getPageSize());
             List<Manufacturer> manufacturerList = manufacturerDao.list(vo);
-            BasePage<QueryManufacturerResVo> basePage = PageUtil.getPageList(vo.getPageNo(),manufacturerList);
-            basePage.setDataList(BeanCopyUtils.copyList(manufacturerList,QueryManufacturerResVo.class));   ;
+            BasePage<QueryManufacturerResVo> basePage = PageUtil.getPageList(vo.getPageNo(), manufacturerList);
+            basePage.setDataList(BeanCopyUtils.copyList(manufacturerList, QueryManufacturerResVo.class));
+            ;
             return basePage;
         } catch (Exception ex) {
             log.error(ex.getMessage());
@@ -91,6 +99,7 @@ public class ManufacturerServiceImp  implements ManufacturerService {
 
     /**
      * 制造商新增转化实体
+     *
      * @param vo
      * @return
      */
@@ -100,41 +109,42 @@ public class ManufacturerServiceImp  implements ManufacturerService {
 
         String companyCode = "";
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
+        if (null != authToken) {
             companyCode = authToken.getCompanyCode();
         }
         // 验证名字是否重复
         String codNa = vo.getName();
-        Integer integer=manufacturerDao.checkName(codNa,null,companyCode);
-        if(integer>0){
+        Integer integer = manufacturerDao.checkName(codNa, null, companyCode);
+        if (integer > 0) {
             throw new GroundRuntimeException("制造商名称不能重复");
         }
 
         //制造商主体转化成数据库访问实体
         Manufacturer manufacturer = new Manufacturer();
-        BeanCopyUtils.copy(vo,manufacturer);
+        BeanCopyUtils.copy(vo, manufacturer);
         //产生编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.MANUFACTURER_CODE);
-        manufacturer.setManufacturerCode(String.valueOf(encodingRule.getNumberingValue()));
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.MANUFACTURER_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.MANUFACTURER_CODE);
+        manufacturer.setManufacturerCode(redisCode);
         //更新数据库编码尺度最大值
-        try{
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
-        }catch (Exception e){
+        try {
+            //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error("制造商编码尺度更新失败");
             throw new GroundRuntimeException("制造商编码尺度更新失败");
         }
         // 保存制造商主体
-        int k =((ManufacturerService) AopContext.currentProxy()).insert(manufacturer);
-        if(k>0){
+        int k = ((ManufacturerService) AopContext.currentProxy()).insert(manufacturer);
+        if (k > 0) {
             try {
-                List<ManufacturerBrand>list = BeanCopyUtils.copyList(vo.getList(),ManufacturerBrand.class);
+                List<ManufacturerBrand> list = BeanCopyUtils.copyList(vo.getList(), ManufacturerBrand.class);
                 //设置制造商关联品牌编码
                 list.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(String.valueOf(manufacturer.getManufacturerCode())));
-                int kp =((ManufacturerService) AopContext.currentProxy()).saveList(list);
-                if(kp>0){
-                    return  HttpResponse.success(kp);
-                }else {
+                int kp = ((ManufacturerService) AopContext.currentProxy()).saveList(list);
+                if (kp > 0) {
+                    return HttpResponse.success(kp);
+                } else {
                     log.error("制造商品牌转化实体失败");
                     throw new GroundRuntimeException("制造商品牌转化实体失败");
                 }
@@ -143,13 +153,15 @@ public class ManufacturerServiceImp  implements ManufacturerService {
                 log.error("制造商品牌转化实体失败");
                 throw new GroundRuntimeException("制造商品牌转化实体失败");
             }
-            }else {
+        } else {
             log.error("制造商主体保存失败");
             throw new GroundRuntimeException("制造商主体保存失败");
         }
-        }
+    }
+
     /**
      * 查询制造商
+     *
      * @param id
      * @return
      */
@@ -159,11 +171,11 @@ public class ManufacturerServiceImp  implements ManufacturerService {
         ManufacturerResVo manufacturerResVo = new ManufacturerResVo();
         //查询制造商主体
         Manufacturer manufacturer = manufacturerDao.selectByPrimaryKey(id);
-        BeanCopyUtils.copy(manufacturer,manufacturerResVo);
+        BeanCopyUtils.copy(manufacturer, manufacturerResVo);
         //查询制造商关联品牌
-        List<ManufacturerBrand>list = manufacturerBrandDao.selectByPrimaryKey(manufacturer.getManufacturerCode());
+        List<ManufacturerBrand> list = manufacturerBrandDao.selectByPrimaryKey(manufacturer.getManufacturerCode());
         try {
-            List<ManufacturerBrandResVo> manufacturerBrandResVoList=  BeanCopyUtils.copyList(list, ManufacturerBrandResVo.class);
+            List<ManufacturerBrandResVo> manufacturerBrandResVoList = BeanCopyUtils.copyList(list, ManufacturerBrandResVo.class);
             manufacturerResVo.setList(manufacturerBrandResVoList);
         } catch (Exception e) {
             log.error(Global.ERROR, e);
@@ -184,75 +196,78 @@ public class ManufacturerServiceImp  implements ManufacturerService {
         manufacturerResVo.setLogDataList(logDataList);
         return manufacturerResVo;
     }
+
     /**
      * 制造商修改转化实体
+     *
      * @param vo
      * @return
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
-    public HttpResponse<Integer>  update(ManufacturerUpdateReqVo vo) {
+    public HttpResponse<Integer> update(ManufacturerUpdateReqVo vo) {
         // 验证名字是否重复
         String companyCode = "";
         AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-        if(null != authToken){
+        if (null != authToken) {
             companyCode = authToken.getCompanyCode();
         }
         String codNa = vo.getName();
-        Integer integer=manufacturerDao.checkName(codNa,vo.getId(),companyCode);
-        if(integer>0){
+        Integer integer = manufacturerDao.checkName(codNa, vo.getId(), companyCode);
+        if (integer > 0) {
             throw new GroundRuntimeException("制造商名称不能重复");
         }
         Manufacturer manufacturer = new Manufacturer();
-        BeanCopyUtils.copy(vo,manufacturer);
-        int k = ((ManufacturerService)AopContext.currentProxy()).updateByPrimaryKeySelective(manufacturer);
-       if(k>0){
-           try {
-               List<ManufacturerBrand> list = BeanCopyUtils.copyList(vo.getList(),ManufacturerBrand.class);
-               //对于品牌设置两种处理方式，有id的执行修改操作，没有id的执行添加操作
-               List<ManufacturerBrand> saveList = new ArrayList<>();
-               List<ManufacturerBrand> updateList = new ArrayList<>();
-               for (ManufacturerBrand manufacturerBrand : list) {
-                   if(manufacturerBrand.getId()!=null){
-                       updateList.add(manufacturerBrand);
-                   }else {
-                       saveList.add(manufacturerBrand);
-                   }
-               }
-               if(saveList.size()>0){
-                   try{
-                       saveList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
-                       int kp = ((ManufacturerService) AopContext.currentProxy()).saveList(saveList);
-                   }catch (Exception e){
-                       log.error(Global.ERROR, e);
-                       log.error("制造商关联品牌添加失败");
-                       throw new GroundRuntimeException("制造商关联品牌添加失败");
-                   }
-               }
-               if(updateList.size()>0){
-                try{
-                    updateList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
-                    int kp = ((ManufacturerService) AopContext.currentProxy()).updateList(updateList);
-                }catch (Exception e){
-                    log.error(Global.ERROR, e);
-                    log.error("制造商关联品牌更新失败");
-                    throw new GroundRuntimeException("制造商关联品牌更新失败");
+        BeanCopyUtils.copy(vo, manufacturer);
+        int k = ((ManufacturerService) AopContext.currentProxy()).updateByPrimaryKeySelective(manufacturer);
+        if (k > 0) {
+            try {
+                List<ManufacturerBrand> list = BeanCopyUtils.copyList(vo.getList(), ManufacturerBrand.class);
+                //对于品牌设置两种处理方式，有id的执行修改操作，没有id的执行添加操作
+                List<ManufacturerBrand> saveList = new ArrayList<>();
+                List<ManufacturerBrand> updateList = new ArrayList<>();
+                for (ManufacturerBrand manufacturerBrand : list) {
+                    if (manufacturerBrand.getId() != null) {
+                        updateList.add(manufacturerBrand);
+                    } else {
+                        saveList.add(manufacturerBrand);
+                    }
                 }
-               }
-               return HttpResponse.success(k) ;
-           } catch (Exception e) {
-               log.error(Global.ERROR, e);
-               log.error("品牌实体转化失败");
-               throw new GroundRuntimeException("品牌实体转化失败");
-           }
-       }else{
-           log.error("制造商主体修改失败");
-           throw new GroundRuntimeException("制造商主体修改失败");
-       }
+                if (saveList.size() > 0) {
+                    try {
+                        saveList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
+                        int kp = ((ManufacturerService) AopContext.currentProxy()).saveList(saveList);
+                    } catch (Exception e) {
+                        log.error(Global.ERROR, e);
+                        log.error("制造商关联品牌添加失败");
+                        throw new GroundRuntimeException("制造商关联品牌添加失败");
+                    }
+                }
+                if (updateList.size() > 0) {
+                    try {
+                        updateList.stream().forEach(manufacturerBrand -> manufacturerBrand.setManufacturerCode(vo.getManufacturerCode()));
+                        int kp = ((ManufacturerService) AopContext.currentProxy()).updateList(updateList);
+                    } catch (Exception e) {
+                        log.error(Global.ERROR, e);
+                        log.error("制造商关联品牌更新失败");
+                        throw new GroundRuntimeException("制造商关联品牌更新失败");
+                    }
+                }
+                return HttpResponse.success(k);
+            } catch (Exception e) {
+                log.error(Global.ERROR, e);
+                log.error("品牌实体转化失败");
+                throw new GroundRuntimeException("品牌实体转化失败");
+            }
+        } else {
+            log.error("制造商主体修改失败");
+            throw new GroundRuntimeException("制造商主体修改失败");
+        }
     }
 
     /**
      * 保存制造商主体
+     *
      * @param record
      * @return
      */
@@ -260,15 +275,15 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Save
     public int insert(Manufacturer record) {
-        try{
+        try {
             AuthToken authToken = AuthenticationInterceptor.getCurrentAuthToken();
-            if(null != authToken){
+            if (null != authToken) {
                 record.setCompanyCode(authToken.getCompanyCode());
                 record.setCompanyName(authToken.getCompanyName());
             }
             record.setEnable(Byte.parseByte("0"));
             return manufacturerDao.insert(record);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error("制造商主体保存失败");
             throw new GroundRuntimeException("制造商主体保存失败");
@@ -277,16 +292,17 @@ public class ManufacturerServiceImp  implements ManufacturerService {
 
     /**
      * 批量插入制造商关联品牌
+     *
      * @return
      */
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @SaveList
     public int saveList(List<ManufacturerBrand> list) {
-        try{
+        try {
             list.stream().forEach(manufacturerBrand -> manufacturerBrand.setEnable(Byte.parseByte("1")));
             return manufacturerBrandDao.saveList(list);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error("制造商关联品牌保存失败");
             throw new GroundRuntimeException("制造商关联品牌保存失败");
@@ -297,22 +313,22 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @Update
     public int updateByPrimaryKeySelective(Manufacturer record) {
-            try{
-                return manufacturerDao.updateByPrimaryKeySelective(record);
-            }catch (Exception e){
-                log.error(e.getMessage());
-                log.error("制造商主体修改失败");
-                throw new GroundRuntimeException("制造商主体修改失败");
-            }
+        try {
+            return manufacturerDao.updateByPrimaryKeySelective(record);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            log.error("制造商主体修改失败");
+            throw new GroundRuntimeException("制造商主体修改失败");
+        }
     }
 
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     @UpdateList
     public int updateList(List<ManufacturerBrand> list) {
-        try{
+        try {
             return manufacturerBrandDao.updateByPrimaryKeySelective(list);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error("制造商品牌修改失败");
             throw new GroundRuntimeException("制造商品牌修改失败");
@@ -322,9 +338,9 @@ public class ManufacturerServiceImp  implements ManufacturerService {
     @Override
     @Transactional(rollbackFor = GroundRuntimeException.class)
     public int enable(String manufacturerCode, byte enable) {
-        try{
-            return manufacturerDao.enable(manufacturerCode,enable);
-        }catch (Exception e){
+        try {
+            return manufacturerDao.enable(manufacturerCode, enable);
+        } catch (Exception e) {
             log.error(e.getMessage());
             log.error("制造商品牌修改失败");
             throw new GroundRuntimeException("制造商品牌修改失败");
@@ -333,6 +349,6 @@ public class ManufacturerServiceImp  implements ManufacturerService {
 
     @Override
     public Map<String, Manufacturer> selectByManufactureNames(Set<String> manufactureList, String companyCode) {
-        return manufacturerDao.selectByManufactureNames(manufactureList,companyCode);
+        return manufacturerDao.selectByManufactureNames(manufactureList, companyCode);
     }
 }

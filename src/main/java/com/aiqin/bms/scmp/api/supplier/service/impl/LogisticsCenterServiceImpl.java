@@ -20,10 +20,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.Logistics
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.LogisticsCenterResVo;
 import com.aiqin.bms.scmp.api.supplier.domain.response.logisticscenter.QueryLogisticsCenterResVo;
 import com.aiqin.bms.scmp.api.supplier.service.LogisticsCenterService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.exception.GroundRuntimeException;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.aiqin.mgs.control.component.service.AreaBasicService;
@@ -62,6 +59,9 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
     private AreaBasicService areaBasicService;
     @Autowired
     private AreaBasicInfoServiceImpl areaBasicInfoService;
+
+    @Resource
+    private CodeUtils codeUtils;
 
     /**
      *  列表展示以及搜索
@@ -110,10 +110,11 @@ public class LogisticsCenterServiceImpl implements LogisticsCenterService {
        LogisticsCenterDTO  logisticsCenterDTO = new LogisticsCenterDTO();
        BeanCopyUtils.copy(logisticsCenterReqVo,logisticsCenterDTO);
         //设置库房编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.LOGISTICS_CENTER_CODE);
-        logisticsCenterDTO.setLogisticsCenterCode(String.valueOf(encodingRule.getNumberingValue()));
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.LOGISTICS_CENTER_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.LOGISTICS_CENTER_CODE);
+        logisticsCenterDTO.setLogisticsCenterCode(redisCode);
         // 更新数据库编码尺度
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),  encodingRule.getId());
         //设置采购组主体的删除状态，启用禁用状态
         logisticsCenterDTO.setDelFlag(Byte.parseByte("0"));
         logisticsCenterDTO.setEnable(Byte.parseByte("0"));

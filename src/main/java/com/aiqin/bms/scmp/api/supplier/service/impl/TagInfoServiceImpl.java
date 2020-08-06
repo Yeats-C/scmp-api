@@ -15,10 +15,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.tag.QueryTagRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.TagInfoMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.UseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -31,6 +28,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -53,6 +51,9 @@ public class TagInfoServiceImpl implements TagInfoService {
 
     @Autowired
     private UseTagRecordMapper useTagRecordMapper;
+
+    @Resource
+    private CodeUtils codeUtils;
     /**
      * 查询List分页
      *
@@ -132,10 +133,11 @@ public class TagInfoServiceImpl implements TagInfoService {
         TagInfo tagInfo = new TagInfo();
         BeanCopyUtils.copy(addVo,tagInfo);
         //设置编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.TAG_INFO_CODE);
-        tagInfo.setTagCode(String.valueOf(encodingRule.getNumberingValue()));
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.TAG_INFO_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.TAG_INFO_CODE);
+        tagInfo.setTagCode(redisCode);
         // 更新编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         tagInfo.setEnable(StatusTypeCode.EN_ABLE.getStatus());
         tagInfo.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
         ((TagInfoService) AopContext.currentProxy()).insertSelective(tagInfo);

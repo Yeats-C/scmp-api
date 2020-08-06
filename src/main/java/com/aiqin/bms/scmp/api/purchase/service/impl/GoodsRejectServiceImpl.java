@@ -134,6 +134,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     @Lazy
     private DlAbutmentService dlService;
 
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     public HttpResponse<PageResData<RejectApplyRecord>> rejectApplyList(RejectApplyQueryRequest rejectApplyQueryRequest) {
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
@@ -468,10 +471,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         try {
             // 获取退供申请单编码
             String rejectApplyCode;
-            EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
+            //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.GOODS_REJECT_CODE);
+            String redisCode = codeUtils.getRedisCode(EncodingRuleType.GOODS_REJECT_CODE);
             RejectApplyRecord rejectApplyRecord = BeanCopyUtils.copy(request, RejectApplyRecord.class);
             if(request.getChoiceType() == 0){
-                rejectApplyCode = "TS" + encodingRule.getNumberingValue();
+                rejectApplyCode = "TS" + redisCode;
                 rejectApplyRecord.setCreateById(authToken.getPersonId());
                 rejectApplyRecord.setCreateByName(authToken.getPersonName());
             }else {
@@ -514,7 +518,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 LOGGER.info("保存退供申请单条数:{}", rejectCount);
 
                 //更新编码
-                encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+                //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             }else {
                 Integer rejectCount = rejectApplyRecordDao.update(rejectApplyRecord);
                 LOGGER.info("修改退供申请单条数:{}", rejectCount);

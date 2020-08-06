@@ -26,10 +26,7 @@ import com.aiqin.bms.scmp.api.supplier.mapper.SupplierScoreMapper;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierScoreService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplyComService;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.CollectionUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.github.pagehelper.PageHelper;
 import com.google.common.collect.Lists;
 import org.springframework.aop.framework.AopContext;
@@ -37,6 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -62,6 +60,9 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
 
     @Autowired
     private TagInfoService tagInfoService;
+
+    @Resource
+    private CodeUtils codeUtils;
     /**
      * 列表查询
      *
@@ -92,11 +93,11 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
         BeanCopyUtils.copy(reqVo,score);
         //设置默认值
         //设置编码
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SUPPLIER_SCORE_CODE);
-        String code = String.valueOf(encodingRule.getNumberingValue());
-        score.setScoreCode(code);
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.SUPPLIER_SCORE_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.SUPPLIER_SCORE_CODE);
+        score.setScoreCode(redisCode);
         // 更新编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         score.setDelFlag(StatusTypeCode.UN_DEL_FLAG.getStatus());
         //评分写入数据库
         Integer num = ((SupplierScoreService) AopContext.currentProxy()).insert(score);
@@ -126,7 +127,7 @@ public class SupplierScoreServiceImpl implements SupplierScoreService {
             //保存标签记录
             tagInfoService.saveRecordListRepeat(useTagRecordReqVos);
         }
-        return code;
+        return redisCode;
     }
 
     /**

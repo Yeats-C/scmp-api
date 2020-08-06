@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.pojo.EncodingRule;
 import com.aiqin.bms.scmp.api.supplier.domain.pojo.PurchaseGroup;
 import com.aiqin.bms.scmp.api.supplier.domain.response.rule.DetailRespVo;
 import com.aiqin.bms.scmp.api.supplier.mapper.SupplierRuleMapper;
+import com.aiqin.bms.scmp.api.util.CodeUtils;
 import com.aiqin.bms.scmp.api.util.DateUtils;
 import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
@@ -69,6 +70,9 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
     @Resource
     private PurchaseManageService purchaseManageService;
 
+    @Resource
+    private CodeUtils codeUtils;
+
 //    @Scheduled(cron = "0 0 10 1 * ?")  //每月1号的10:00执行
 //    public void automatic(){
 //        DateTime dateTime = new DateTime(Calendar.getInstance().getTime());
@@ -99,8 +103,9 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
               purchaseApply.setCreateByName("系统");
               purchaseApply.setCreateById("0");
               // 生成申请采购单号
-              EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-              String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
+              //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+              String redisCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_APPLY_CODE);
+              String purchaseApplyCode = "CS" + redisCode;
               purchaseApply.setPurchaseApplyCode(purchaseApplyCode);
               // 查询sku 的相关数据
               List<PurchaseApplyProduct> applyProducts = biSmartReplenishmentDao.skuInfo(beginTime, finishTime, group.getPurchaseGroupCode());
@@ -145,7 +150,7 @@ public class AutomaticPurchaseServiceImpl implements AutomaticPurchaseService {
                   }
                   purchaseApplyProductDao.insertAll(productList);
               }
-              encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+              //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
               applyList.add(purchaseApply);
           }
             purchaseApplyDao.insertAll(applyList);

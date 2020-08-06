@@ -177,10 +177,10 @@ public class AsynSaveDocuments {
             }
             PurchaseOrder savePurchaseOrder = new PurchaseOrder();
             BeanUtils.copyProperties(order, savePurchaseOrder);
+
             // 获取采购单编码
             //String purchaseOrderCode = baseService.getCode(null, EncodingRuleType.PURCHASE_ORDER_CODE);
 //            // 变更采购单号
-//            EncodingRule encodingRule = encodingRuleDao.getNumberingType();
 //            String purchaseOrderCode = String.valueOf(encodingRule.getNumberingValue());
 //            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
             String purchaseOrderCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_ORDER_CODE);

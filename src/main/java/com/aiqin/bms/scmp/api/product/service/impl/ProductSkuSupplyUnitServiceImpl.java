@@ -93,6 +93,9 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
     @Autowired
     private ProductSkuPriceInfoService productSkuPriceInfoService;
 
+    @Autowired
+    private CodeUtils codeUtils;
+
     @Override
     @SaveList
     @Transactional(rollbackFor = Exception.class)
@@ -608,11 +611,12 @@ public class ProductSkuSupplyUnitServiceImpl extends BaseServiceImpl implements 
         String formNo;
         synchronized (ProductSkuConfigServiceImpl.class) {
             //获取编码
-            EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
-            code = "CF" + numberingType.getNumberingValue().toString();
+            //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
+            String redisCode = codeUtils.getRedisCode(EncodingRuleType.APPLY_SKU_CONFIG_CODE);
+            code = "CF" + redisCode;
             formNo = "SC" + IdSequenceUtils.getInstance().nextId();
             //更新编码
-            encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+            //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         }
 
         Date currentDate = new Date();

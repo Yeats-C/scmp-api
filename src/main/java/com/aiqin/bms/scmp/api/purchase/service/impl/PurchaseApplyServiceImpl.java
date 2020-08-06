@@ -123,6 +123,9 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
     @Resource
     private PurchaseOrderDao purchaseOrderDao;
 
+    @Resource
+    private CodeUtils codeUtils;
+
     @Override
     public HttpResponse applyList(PurchaseApplyRequest purchaseApplyRequest){
         List<PurchaseGroupVo> groupVoList = purchaseGroupService.getPurchaseGroup(null);
@@ -461,8 +464,9 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         }
 
         // 获取采购申请单号
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        String code = "CS" + String.valueOf(encodingRule.getNumberingValue());
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String code = "CS" + redisCode;
 
         // 采购申请单id
         String purchaseApplyId;
@@ -571,7 +575,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
             LOGGER.info("添加采购申请单:{}", applyCount);
 
             // 更新采购单号
-            encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+            //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
         }
 
         List<PurchaseApplyTransportCenter> purchaseTransportList = request.getPurchaseTransportList();
@@ -744,8 +748,9 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         // 采购申请单id
         String newApplyId = IdUtil.purchaseId();
         // 获取采购申请单号
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
-        String purchaseApplyCode = "CS" + String.valueOf(encodingRule.getNumberingValue());
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.PURCHASE_APPLY_CODE);
+        String purchaseApplyCode = "CS" + redisCode;
         // 添加采购申请单通用信息
         PurchaseApply purchaseApply = purchaseApplyDao.purchaseApplyInfo(purchaseApplyId);
         if(purchaseApply == null){
@@ -763,7 +768,7 @@ public class PurchaseApplyServiceImpl extends BaseServiceImpl implements Purchas
         LOGGER.info("添加采购申请单:{}", applyCount);
 
         // 更新采购单号
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(), encodingRule.getId());
 
         // 查询商品的分仓信息
         PurchaseApplyTransportCenter center = new PurchaseApplyTransportCenter();

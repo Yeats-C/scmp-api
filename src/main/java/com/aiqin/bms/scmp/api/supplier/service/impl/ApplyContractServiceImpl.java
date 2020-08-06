@@ -151,6 +151,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
     @Autowired
     private ProductBrandTypeDao productBrandTypeDao;
 
+    @Autowired
+    private CodeUtils codeUtils;
+
     /**
      * 分页获取申请合同列表
      *
@@ -183,8 +186,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         ApplyContractDTO applyContractDTO = new ApplyContractDTO();
         BeanCopyUtils.copy(applyContractReqVo,applyContractDTO);
         //生成合同申请编号
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+applyContractReqVo.getContractTypeCode());
-        String code = applyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+applyContractReqVo.getContractTypeCode());
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.APPLY_CONTRACT_CODE + applyContractReqVo.getContractTypeCode());
+        String code = applyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(Long.parseLong(redisCode));
         applyContractDTO.setApplyContractCode(code);
         //申请状态
         if(Objects.equals(Byte.valueOf("1"),applyContractReqVo.getSource())){
@@ -212,7 +216,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applyContractDTO.getCreateBy()).replace(Global.APPLY_TYPE, "新增");
          supplierCommonService.getInstance(applyContractDTO.getApplyContractCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content ,null,HandleTypeCoce.PENDING.getName());
         // 更新编码数据中的最大编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         if (CollectionUtils.isNotEmptyCollection(applyContractReqVo.getPlanTypeList())){
             List<ApplyContractPlanType> typeList = BeanCopyUtils.copyList(applyContractReqVo.getPlanTypeList(),ApplyContractPlanType.class);
             typeList.stream().forEach(planType -> planType.setApplyContractCode(applyContractDTO.getApplyContractCode()));
@@ -443,8 +447,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
         BeanCopyUtils.copy(updateApplyContractReqVo,applyContractDTO);
         //设置id
 //        applyContractDTO.setId(oldApplyContractDTO.getId());
-        EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+updateApplyContractReqVo.getContractTypeCode());
-        String code = updateApplyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
+        //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_CONTRACT_CODE+updateApplyContractReqVo.getContractTypeCode());
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.APPLY_CONTRACT_CODE + updateApplyContractReqVo.getContractTypeCode());
+        String code = updateApplyContractReqVo.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(Long.parseLong(redisCode));
         applyContractDTO.setApplyContractCode(code);
         applyContractDTO.setContractCode(oldApplyContractDTO.getContractCode());
         //申请状态
@@ -464,7 +469,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
 
         Long k = ((ApplyContractService) AopContext.currentProxy()).insertApplyContractDetails(applyContractDTO);
         // 更新编码数据中的最大编码
-        encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+        //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
         String content = ApplyStatus.PENDING.getContent().replace(Global.CREATE_BY, applyContractDTO.getUpdateBy()).replace(Global.APPLY_TYPE, "修改");
         supplierCommonService.getInstance(applyContractDTO.getApplyContractCode()+"", HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.APPLY_CONTRACT.getStatus(),content ,null,HandleTypeCoce.PENDING.getName());
         int i = applyContractPlanTypeMapper.deleteByContractCode(updateApplyContractReqVo.getApplyContractCode());
@@ -834,8 +839,9 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                     ContractDTO contractDTO = new ContractDTO();
                     BeanCopyUtils.copy(account,contractDTO);
                     //设置编码规则
-                    EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.CONTRACT_CODE+account.getContractTypeCode());
-                    String code = account.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(encodingRule.getNumberingValue());
+                    //EncodingRule encodingRule = encodingRuleDao.getNumberingType(EncodingRuleType.CONTRACT_CODE+account.getContractTypeCode());
+                    String redisCode = codeUtils.getRedisCode(EncodingRuleType.CONTRACT_CODE + account.getContractTypeCode());
+                    String code = account.getContractTypeCode()+DateUtils.getCurrentDateTime(DateUtils.YEAR_FORMAT)+fillZero(Long.parseLong(redisCode));
                     contractDTO.setContractCode(code);
                     contractDTO.setId(null);
                     contractDTO.setApplyContractCode(account.getApplyContractCode());
@@ -846,7 +852,7 @@ public class ApplyContractServiceImpl extends BaseServiceImpl implements ApplyCo
                     ContractReqVo contractReqVo = new ContractReqVo();
                     BeanCopyUtils.copy(contractDTO,contractReqVo);
                     //更新数据库编码最大值
-                    encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
+                    //encodingRuleDao.updateNumberValue(encodingRule.getNumberingValue(),encodingRule.getId());
                     account.setContractCode(contractDTO.getContractCode());
                     log.info("合同正式数据保存成功");
                     //保存日志信息

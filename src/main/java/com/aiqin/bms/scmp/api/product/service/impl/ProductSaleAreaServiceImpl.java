@@ -30,10 +30,7 @@ import com.aiqin.bms.scmp.api.supplier.domain.response.LogData;
 import com.aiqin.bms.scmp.api.supplier.domain.response.apply.DetailRequestRespVo;
 import com.aiqin.bms.scmp.api.supplier.service.OperationLogService;
 import com.aiqin.bms.scmp.api.supplier.service.SupplierCommonService;
-import com.aiqin.bms.scmp.api.util.AuthToken;
-import com.aiqin.bms.scmp.api.util.BeanCopyUtils;
-import com.aiqin.bms.scmp.api.util.IdSequenceUtils;
-import com.aiqin.bms.scmp.api.util.PageUtil;
+import com.aiqin.bms.scmp.api.util.*;
 import com.aiqin.bms.scmp.api.util.excel.exception.ExcelException;
 import com.aiqin.bms.scmp.api.util.excel.utils.ExcelUtil;
 import com.aiqin.bms.scmp.api.workflow.annotation.WorkFlowAnnotation;
@@ -122,6 +119,8 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
     private SupplierCommonService supplierCommonService;
     @Autowired
     private OperationLogService operationLogService;
+    @Autowired
+    private CodeUtils codeUtils;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -226,8 +225,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //拼装实体
         ProductSkuSaleAreaMainDraft copy = BeanCopyUtils.copy(request, ProductSkuSaleAreaMainDraft.class);
         //获取编码
-        EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.SALE_AREA_CODE);
-        String code = "SAD" + numberingType.getNumberingValue();
+        //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.SALE_AREA_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.SALE_AREA_CODE);
+        String code = "SAD" +redisCode;
         copy.setCode(code);
         List<ProductSkuSaleAreaInfoDraft> productSkuSaleAreaInfoDrafts = BeanCopyUtils.copyList(request.getAreaList(), ProductSkuSaleAreaInfoDraft.class);
         //设置主表编码
@@ -256,7 +256,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //保存数据
         saveDraftData(copy, productSkuSaleAreaInfoDrafts, channelDrafts);
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+        //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
 
         //新增日志
         SupplierOperationLog supplierOperationLog = new SupplierOperationLog();
@@ -344,8 +344,9 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         areaInfoList = BeanCopyUtils.copyList(areaList, ApplyProductSkuSaleAreaInfo.class);
         channelInfoList = BeanCopyUtils.copyList(channelList, ApplyProductSkuSaleAreaChannel.class);
         skuInfoList = BeanCopyUtils.copyList(skuList, ApplyProductSkuSaleArea.class);
-        EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SALE_AREA_CODE);
-        String code = "SAA" + numberingType.getNumberingValue();
+        //EncodingRule numberingType = encodingRuleDao.getNumberingType(EncodingRuleType.APPLY_SALE_AREA_CODE);
+        String redisCode = codeUtils.getRedisCode(EncodingRuleType.APPLY_SALE_AREA_CODE);
+        String code = "SAA" + redisCode;
         String formNo = "SAA" + IdSequenceUtils.getInstance().nextId();
         //封装数据
         temps.forEach(o -> {
@@ -364,7 +365,7 @@ public class ProductSaleAreaServiceImpl extends BaseServiceImpl implements Produ
         //删除草稿表中的数据
         deleteDraftBatchByCodes(dtos, skuList, areaList, channelList);
         //更新编码
-        encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
+        //encodingRuleDao.updateNumberValue(numberingType.getNumberingValue(), numberingType.getId());
         //存日志
         supplierCommonService.getInstance(formNo, HandleTypeCoce.PENDING.getStatus(), ObjectTypeCode.SALE_AREA.getStatus(), HandleTypeCoce.WAIT_SALE_AREA.getName(), null, HandleTypeCoce.PENDING.getName(), getUser().getPersonName());
         //调用审批的接口
