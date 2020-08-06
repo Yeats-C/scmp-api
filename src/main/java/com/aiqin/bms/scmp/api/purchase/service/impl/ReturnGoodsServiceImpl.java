@@ -357,8 +357,8 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrderInfo.setActualProductChannelTotalAmount(actualTotalChannelAmount);
         returnOrderInfo.setDeliveryTime(Calendar.getInstance().getTime());
         returnOrderInfo.setReturnOrderCode(itemList.get(0).getReturnOrderCode());
-        returnOrderInfo.setUpdateById(getUser().getPersonId());
-        returnOrderInfo.setUpdateByName(getUser().getPersonName());
+        returnOrderInfo.setUpdateById(itemList.get(0).getPersonId());
+        returnOrderInfo.setUpdateByName(itemList.get(0).getPersonName());
         returnOrderInfo.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
         returnOrderInfo.setTransportCompany(itemList.get(0).getTransportCompany());
         returnOrderInfo.setTransportCompanyCode(itemList.get(0).getTransportCompanyCode());
@@ -370,7 +370,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         ReturnOrderInfoLog log = new ReturnOrderInfoLog();
         log.setCompanyCode(Global.COMPANY_09);
         log.setCompanyName(Global.COMPANY_09_NAME);
-        log.setOperator(getUser().getPersonName());
+        log.setOperator(itemList.get(0).getPersonName());
         log.setOrderCode(itemList.get(0).getReturnOrderCode());
         log.setRemark(ReturnOrderStatus.RETURN_COMPLETED.getStandardDescription());
         log.setStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());

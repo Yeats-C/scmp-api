@@ -174,5 +174,13 @@ public class ReturnOrderInfoItem {
     @JsonProperty("transport_number")
     private String transportNumber;
 
+    @ApiModelProperty("人员编码")
+    @JsonProperty("person_id")
+    private String personId;
+
+    @ApiModelProperty("人员名称")
+    @JsonProperty("person_name")
+    private String personName;
+
 
 }
