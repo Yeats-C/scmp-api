@@ -1512,8 +1512,8 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 for (String uc : uniqueCode) {
                     ProductSkuUniqueCode productSkuUniqueCode = new ProductSkuUniqueCode();
                     productSkuUniqueCode.setOrderCode(request.getOderCode());
-                    productSkuUniqueCode.setSkuCode(orderInfoItem.getSkuCode());
-                    productSkuUniqueCode.setSkuName(orderInfoItem.getSkuName());
+                    productSkuUniqueCode.setSkuCode(detail.getSkuCode());
+                    productSkuUniqueCode.setSkuName(detail.getSkuName());
                     productSkuUniqueCode.setUniqueCode(uc);
                     productSkuUniqueCodes.add(productSkuUniqueCode);
                 }

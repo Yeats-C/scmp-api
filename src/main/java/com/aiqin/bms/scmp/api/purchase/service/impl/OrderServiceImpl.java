@@ -400,7 +400,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         changeOrderStatusReqVO.setOperator(getUser().getPersonName());
         changeOrderStatusReqVO.setOperatorCode(getUser().getPersonId());
         changeOrderStatusReqVO.setOrderCode(reqVO.getOrderCode());
-        changeOrderStatusReqVO.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+//        changeOrderStatusReqVO.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        changeOrderStatusReqVO.setOrderStatus(OrderStatus.ALL_SHIPPED.getStatusCode());
         changeOrderStatusReqVO.setTransportCompany(reqVO.getTransportCompany());
         changeOrderStatusReqVO.setTransportCompanyCode(reqVO.getTransportCompanyCode());
         changeOrderStatusReqVO.setTransportNumber(reqVO.getTransportNumber());

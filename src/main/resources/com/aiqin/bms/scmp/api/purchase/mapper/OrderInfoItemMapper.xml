@@ -111,7 +111,7 @@
              b.order_original_name orderOriginal,
              b.customer_name customerName,
              b.customer_code customerCode,
-      a.unique_code as uniqueCode,
+             d.unique_code as uniqueCode,
              a.sku_name skuName,
              a.sku_code skuCode,
              a.spec spec,
@@ -124,14 +124,14 @@
              b.warehouse_name warehouseName,
              a.give_promotion givePromotion,
              b.create_date createDate,
-      b.order_status as status,
+             b.order_status as status,
              b.create_by_name createByName,
              b.create_time createTime,
              b.update_by_name updateByName,
              b.update_time updateTime
       from order_info_item a
-               left join order_info b
-                         on a.order_code = b.order_code
+      left join order_info b on a.order_code = b.order_code
+      left join product_sku_unique_code d on d.order_code = b.order_code and d.sku_code = a.sku_code
       where b.company_code = #{companyCode}
       <if test="createDateStart != null">
         and b.create_time &gt;=#{createDateStart,jdbcType=TIMESTAMP}
@@ -161,9 +161,9 @@
         and b.order_code LIKE CONCAT(CONCAT('%',#{orderCode},'%'))
       </if>
       <if test="uniqueCode != null and uniqueCode != ''">
-        and a.unique_code = #{uniqueCode}
+        and d.unique_code = #{uniqueCode}
       </if>
-      and a.unique_code != ''
+      and d.unique_code != ''
     </select>
     <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
     delete from order_info_item
