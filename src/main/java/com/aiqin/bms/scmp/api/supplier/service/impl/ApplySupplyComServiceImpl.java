@@ -996,7 +996,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
 //            }
              sapSupplierList.add(sapSupplier);
 
-        sapSupplyAbutment(sapSupplierList);
+//        sapSupplyAbutment(sapSupplierList);
 
 
     }
