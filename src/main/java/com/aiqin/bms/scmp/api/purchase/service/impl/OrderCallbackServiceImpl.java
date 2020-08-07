@@ -1849,7 +1849,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setLogisticsCompany(request.getTransportCompanyCode());
         transport.setLogisticsCompanyName(request.getTransportCompanyName());
         transport.setLogisticsNumber(request.getTransportCode());
-        transport.setLogisticsFee(request.getTransportAmount());
+        transport.setLogisticsFee(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
         transport.setStandardLogisticsFee(request.getStandardLogisticsFee());
         transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee());
         transport.setTotalVolume(request.getTotalVolume());
@@ -1857,7 +1857,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setDeliverTo(request.getDeliverTo());
         transport.setStandardLogisticsFee(request.getStandardLogisticsFee() == null ? BigDecimal.ZERO : request.getStandardLogisticsFee());
         transport.setAdditionalLogisticsFee(request.getAdditionalLogisticsFee() == null ? BigDecimal.ZERO : request.getAdditionalLogisticsFee());
-        transport.setTransportAmount(transport.getStandardLogisticsFee().add(transport.getAdditionalLogisticsFee()));
+        transport.setTransportAmount(request.getTransportAmount());
         transport.setTransportTime(date);
         transport.setStatus(2);
         LOGGER.info("wms回传更新发运单,参数：[{}]", JsonUtil.toJson(transport));
