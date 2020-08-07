@@ -376,7 +376,16 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         List<List<ProductInspectionRequest>> inspList = Lists.partition(list, 100);
         for(List<ProductInspectionRequest> insp : inspList){
             ProductInspectionDlRequest request = new ProductInspectionDlRequest();
-            request.setDocumentCode(IdUtil.uuid());
+            DlOtherInfo info = new DlOtherInfo();
+            String uuid = IdUtil.uuid();
+            info.setDocumentCode(uuid);
+            info.setDocumentType(Global.INSPECTION_TYPE);
+            info.setBusinessType(Global.ECHO_TYPE);
+            info.setDocumentContent(JsonUtil.toJson(insp));
+            LOGGER.info("熙耘->DL，保存质检报告数量：{}", insp.size());
+            Integer logCount = dlOtherInfoDao.insert(info);
+            LOGGER.info("熙耘->DL，保存质检报告日志：{}", logCount);
+            request.setDocumentCode(uuid);
             request.setList(insp);
             HttpResponse response = this.productInspection(request);
             return response;
