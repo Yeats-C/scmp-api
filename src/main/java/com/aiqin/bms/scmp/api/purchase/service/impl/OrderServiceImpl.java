@@ -826,6 +826,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         String cTime = sf.format(Calendar.getInstance().getTime());
         ssis.setPayTime(pTime);
         ssis.setCreateTime(cTime);
+        ssis.setBusinessForm(request.getBusinessForm());
 
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
