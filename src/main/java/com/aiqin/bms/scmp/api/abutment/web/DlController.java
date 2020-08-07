@@ -83,6 +83,12 @@ public class DlController {
         return dlService.productInspection(request);
     }
 
+    @PostMapping("/manual/inspection")
+    @ApiOperation(value = "手动批量推送质检报告")
+    public HttpResponse manualInspection() {
+        return dlService.manualInspection();
+    }
+
 //    @PostMapping("/product")
 //    @ApiOperation(value = "耘链 DL商品信息")
 //    public HttpResponse productInfo(@RequestBody ProductInfoRequest request) {

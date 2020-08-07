@@ -1988,13 +1988,13 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     private void sapStorageAbutment(List<SapProductSku> productSkuList) {
         log.info("调用sap商品对接参数:{} ", JsonUtil.toJson(productSkuList));
         HttpClient client = HttpClient.post(PRODUCT_URL).json(productSkuList).timeout(10000);
-        HttpResponse httpResponse = client.action().result(HttpResponse.class);
-        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
-            log.info("调用sap商品对接成功:{}", httpResponse.getMessage());
-        } else {
-            log.error("调用sap商品对接异常:{}", httpResponse.getMessage());
-            throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
-        }
+//        HttpResponse httpResponse = client.action().result(HttpResponse.class);
+//        if (httpResponse.getCode().equals(MessageId.SUCCESS_CODE)) {
+//            log.info("调用sap商品对接成功:{}", httpResponse.getMessage());
+//        } else {
+//            log.error("调用sap商品对接异常:{}", httpResponse.getMessage());
+//            throw new GroundRuntimeException(String.format("调用sap商品对接异常:%s", httpResponse.getMessage()));
+//        }
     }
 
     private List<SapSkuSale> sapSkuSaleListHandler(ProductSkuCheckout productSkuCheckout, List<SapSkuSale> baseInfo2, List<QueryPriceChannelRespVo> priceChannels) {

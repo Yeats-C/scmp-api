@@ -58,6 +58,9 @@ public class QueryOrderProductListRespVO {
     @ApiModelProperty("仓库名称")
     private String warehouseName;
 
+    @ApiModelProperty("商品唯一码")
+    private String uniqueCode;
+
     @ApiModelProperty("是否是赠品(0否1是)")
     private Integer givePromotion;
 

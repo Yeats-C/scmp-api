@@ -202,4 +202,9 @@
     where sku_code = #{skuCode,jdbcType=VARCHAR}
     and production_date = #{productionDate,jdbcType=TIMESTAMP}
   </update>
+  <select id="inspectionReportAll" resultType="com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest">
+    SELECT
+    sku_code skuCode, production_date productDate, inspection_report_path inspectionReportPath
+    from product_sku_inspection_report
+  </select>
 </mapper>
