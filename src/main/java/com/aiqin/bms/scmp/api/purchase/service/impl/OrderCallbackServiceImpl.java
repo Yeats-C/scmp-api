@@ -1717,7 +1717,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                         batchRequest.setBatchCode(batchDetail.getBatchCode());
                         batchRequest.setProductDate(batchDetail.getProductDate());
                         batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
-                        batchRequest.setActualTotalCount(batchDetail.getTotalCount());
+                        batchRequest.setActualTotalCount(batchDetail.getActualTotalCount());
                         batchList.add(batchRequest);
                     }
                 }
