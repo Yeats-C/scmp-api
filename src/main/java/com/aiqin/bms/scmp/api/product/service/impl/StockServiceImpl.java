@@ -1542,8 +1542,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         }
 
         final String[] importRejectApplyHeaders = new String[]{
-                "库房编号", "编号", "税率", "存储仓位可用数量", "在途数量", "存储仓位数量", "退货仓位数量",
-                "存储仓位含税总金额", "退货仓位含税总金额", "含税进价"
+                "库房编号", "编号", "税率", "存储仓位可用数量", "在途数量", "存储仓位数量", "存储仓位含税总金额",
+                "退货仓位数量", "退货仓位含税金额", "含税进价"
         };
 
         try {
@@ -1618,11 +1618,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         stock.setInventoryCount(new BigDecimal(record[5]).longValue());
                         stock.setAvailableCount(new BigDecimal(record[3]).longValue());
                         stock.setLockCount(stock.getInventoryCount() - stock.getAvailableCount());
-                        stock.setPurchaseWayCount(new BigDecimal(record[4]).longValue());
-                        stock.setTotalWayCount(new BigDecimal(record[4]).longValue());
+                        stock.setPurchaseWayCount(10000L);
+                        stock.setTotalWayCount(10000L);
                     }else {
-                        stock.setInventoryCount(new BigDecimal(record[6]).longValue());
-                        stock.setAvailableCount(new BigDecimal(record[6]).longValue());
+                        stock.setInventoryCount(new BigDecimal(record[7]).longValue());
+                        stock.setAvailableCount(new BigDecimal(record[7]).longValue());
                         stock.setLockCount(0L);
                     }
                     stockList.add(stock);
