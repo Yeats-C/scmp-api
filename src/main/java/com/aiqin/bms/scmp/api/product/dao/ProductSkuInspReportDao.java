@@ -1,6 +1,7 @@
 package com.aiqin.bms.scmp.api.product.dao;
 
 
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSku;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ApplyProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
@@ -63,4 +64,6 @@ public interface ProductSkuInspReportDao {
     Integer getPersonIdByskuCode(@Param("personId")String personId, @Param("skuCode")String skuCode);
 
     List<InspectionReportRespVO> getInspectionReportsBySkuCode(@Param("skuCode")String skuCode);
+
+    List<ProductInspectionRequest> inspectionReportAll();
 }

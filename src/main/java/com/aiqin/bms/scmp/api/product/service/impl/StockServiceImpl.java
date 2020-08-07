@@ -1614,12 +1614,13 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stock.setCreateByName("系统导入");
                     stock.setUpdateById("0000");
                     stock.setUpdateByName("系统导入");
+                    stock.setPurchaseWayCount(10000L);
+                    stock.setTotalWayCount(10000L);
+                    stock.setAllocationWayCount(0L);
                     if(warehouse.getWmsWarehouseType() == 1){
                         stock.setInventoryCount(new BigDecimal(record[5]).longValue());
                         stock.setAvailableCount(new BigDecimal(record[3]).longValue());
                         stock.setLockCount(stock.getInventoryCount() - stock.getAvailableCount());
-                        stock.setPurchaseWayCount(10000L);
-                        stock.setTotalWayCount(10000L);
                     }else {
                         stock.setInventoryCount(new BigDecimal(record[7]).longValue());
                         stock.setAvailableCount(new BigDecimal(record[7]).longValue());
@@ -1628,6 +1629,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     stockList.add(stock);
                     Integer count = stockDao.insertBatch(stockList);
                     LOGGER.info("添加同步DL库存信息数量：{}", count);
+                    LOGGER.info("--------------:{}", JsonUtil.toJson(record));
                 }
             }
 
@@ -1638,6 +1640,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 //            }
 
         } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("导入DL库存数据失败:{}", e.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL库存数据失败"));
         }

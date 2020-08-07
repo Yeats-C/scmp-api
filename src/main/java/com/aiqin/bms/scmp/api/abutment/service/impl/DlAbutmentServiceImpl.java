@@ -8,20 +8,26 @@ import com.aiqin.bms.scmp.api.abutment.domain.DlOtherInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInfoRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.aiqin.bms.scmp.api.base.ResultCode;
 import com.aiqin.bms.scmp.api.constant.Global;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuInspReportDao;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
 import com.aiqin.bms.scmp.api.supplier.domain.request.warehouse.dto.WarehouseDTO;
 import com.aiqin.bms.scmp.api.util.DLHttpClientUtil;
+import com.aiqin.ground.util.id.IdUtil;
 import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
+import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +64,8 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     private OrderService orderService;
     @Resource
     private ReturnGoodsService returnGoodsService;
+    @Resource
+    private ProductSkuInspReportDao productSkuInspReportDao;
 
     @Override
     public HttpResponse orderInfo(OrderInfoRequest request){
@@ -359,6 +367,22 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更质检报告日志状态：{}", count);
         return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse manualInspection(){
+        // 查询所有的质检报告
+        List<ProductInspectionRequest> list = productSkuInspReportDao.inspectionReportAll();
+        List<List<ProductInspectionRequest>> inspList = Lists.partition(list, 100);
+        for(List<ProductInspectionRequest> insp : inspList){
+            ProductInspectionDlRequest request = new ProductInspectionDlRequest();
+            request.setDocumentCode(IdUtil.uuid());
+            request.setList(insp);
+            HttpResponse response = this.productInspection(request);
+            return response;
+        }
+        return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "推送质检报告失败"));
+
     }
 
     @Override

@@ -28,5 +28,7 @@ public interface DlAbutmentService {
 
     HttpResponse productInspection(ProductInspectionDlRequest request);
 
+    HttpResponse manualInspection();
+
     HttpResponse productInfo(ProductInfoRequest request);
 }
