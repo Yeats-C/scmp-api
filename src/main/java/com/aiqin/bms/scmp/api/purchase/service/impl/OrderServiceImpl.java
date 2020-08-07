@@ -476,7 +476,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        LOGGER.info("销售单未转换钱的数据====={}", JSONObject.toJSONString(request));
+        LOGGER.info("销售单未转换钱的数据====={}", JsonUtil.toJson(request));
         // 获取税率
         String key;
         Map<String, ProductSkuCheckout> product = new HashMap<>();
