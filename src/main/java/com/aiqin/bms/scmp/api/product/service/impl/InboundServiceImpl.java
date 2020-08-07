@@ -1064,7 +1064,7 @@ public class InboundServiceImpl  implements InboundService {
         for (InboundProduct product : list) {
             purchaseOrderProduct = new PurchaseOrderProduct();
             purchaseOrderProduct.setPurchaseOrderCode(sourceOderCode);
-            purchaseOrderProduct.setActualSingleCount(product.getPraInboundMainNum().intValue());
+            purchaseOrderProduct.setActualSingleCount(product.getPraInboundMainNum() == null ? 0 : product.getPraInboundMainNum().intValue());
             purchaseOrderProduct.setSkuCode(product.getSkuCode());
             purchaseOrderProduct.setLinnum(product.getLinenum().intValue());
             purchaseOrderProducts.add(purchaseOrderProduct);

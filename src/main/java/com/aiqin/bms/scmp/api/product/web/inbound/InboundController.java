@@ -104,10 +104,10 @@ public class InboundController {
 //        return HttpResponse.success();
 //    }
 //
-//    @ApiOperation("入库回调根据类型回传给来源单号状态测试")
-//    @PostMapping("/returnSource/test")
-//    public HttpResponse returnSource() {
-//        inboundService.returnSource(3304L);
-//        return HttpResponse.success();
-//    }
+    @ApiOperation("入库回调根据类型回传给来源单号状态测试")
+    @PostMapping("/returnSource/test")
+    public HttpResponse returnSource(@RequestParam(value = "inbound_code")long inboundCode) {
+        inboundService.returnSource(inboundCode);
+        return HttpResponse.success();
+    }
 }
