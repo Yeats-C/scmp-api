@@ -476,7 +476,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        LOGGER.info("销售单未转换钱的数据====={}", JSONObject.toJSONString(request));
+        LOGGER.info("销售单未转换钱的数据====={}", JsonUtil.toJson(request));
         // 获取税率
         String key;
         Map<String, ProductSkuCheckout> product = new HashMap<>();
@@ -826,6 +826,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         String cTime = sf.format(Calendar.getInstance().getTime());
         ssis.setPayTime(pTime);
         ssis.setCreateTime(cTime);
+        ssis.setBusinessForm(request.getBusinessForm());
 
         // 出库单商品信息
         List<SaleOutboundDetailedSource> plists = new ArrayList<>();
