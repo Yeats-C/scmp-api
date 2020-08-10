@@ -552,7 +552,7 @@ public class InboundServiceImpl  implements InboundService {
                LOGGER.info("入库单未查询到对应的商品信息：{}", JsonUtil.toJson(inboundProduct));
                throw new GroundRuntimeException("WMS回传入库单,未查询到对应的商品信息");
             }
-            Long actualTotalCount = inboundProduct.getActualTotalCount();
+            Long actualTotalCount = inboundProduct.getActualTotalCount() == null ? 0L : inboundProduct.getActualTotalCount();
             product.setPraInboundMainNum(actualTotalCount);
             Long baseContent = product.getInboundBaseContent() == null ? 1L : Long.valueOf(product.getInboundBaseContent());
             product.setPraInboundNum(actualTotalCount / baseContent);
