@@ -399,28 +399,28 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
     @Override
     @Async("myTaskAsyncPool")
-    public void echoOrderInfoParameter(EchoOrderRequest request, DlOrderBill info, String url){
+    public void echoOrderInfoParameter(EchoOrderRequest request, DlOrderBill info, String url) {
 
-    if (request.getOperationType() == 4) {
-        if (CollectionUtils.isNotEmpty(request.getProductList()) && request.getProductList().size() > 0) {
-            WarehouseDTO warehouse;
-            for (ProductRequest product : request.getProductList()) {
-                warehouse = warehouseDao.getWarehouseByCode(product.getWarehouseCode());
-                if (warehouse != null) {
-                    product.setWarehouseCode(warehouse.getWmsWarehouseId());
-                    product.setWarehouseName(warehouse.getWmsWarehouseName());
-                    product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-                    if (warehouse.getWmsWarehouseType() == 2) {
-                        product.setReturnType(2);
-                    } else {
-                        product.setReturnType(1);
+        if (request.getOperationType() == 4) {
+            if (CollectionUtils.isNotEmpty(request.getProductList()) && request.getProductList().size() > 0) {
+                WarehouseDTO warehouse;
+                for (ProductRequest product : request.getProductList()) {
+                    warehouse = warehouseDao.getWarehouseByCode(product.getWarehouseCode());
+                    if (warehouse != null) {
+                        product.setWarehouseCode(warehouse.getWmsWarehouseId());
+                        product.setWarehouseName(warehouse.getWmsWarehouseName());
+                        product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
+                        if (warehouse.getWmsWarehouseType() == 2) {
+                            product.setReturnType(2);
+                        } else {
+                            product.setReturnType(1);
+                        }
                     }
                 }
             }
         }
-    }
 
-    DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
+        DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
             LOGGER.info("熙耘->DL，保存回传DL单据成功");
             info.setReturnStatus(Global.SUCCESS);

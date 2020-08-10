@@ -13,10 +13,7 @@ import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundDao;
 import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuCheckoutDao;
-import com.aiqin.bms.scmp.api.product.domain.pojo.Inbound;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundBatch;
-import com.aiqin.bms.scmp.api.product.domain.pojo.InboundProduct;
-import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuCheckout;
+import com.aiqin.bms.scmp.api.product.domain.pojo.*;
 import com.aiqin.bms.scmp.api.product.domain.request.*;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundBatchReqVo;
 import com.aiqin.bms.scmp.api.product.domain.request.inbound.InboundProductReqVo;
@@ -204,9 +201,23 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse saveReturnInspection(ReturnInspectionRequest request) {
-        if (request == null) {
+        LOGGER.info("退货单开始退货验货：{}", request.getReturnOrderCode());
+        if (request == null || CollectionUtils.isEmptyCollection(request.getItemList())) {
+            LOGGER.info("操作退货验货信息不正确：{}", JsonUtil.toJson(request));
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
+        // 查询验货退货数量
+        long inspectionReturnSum = request.getItemList().stream().mapToLong(ReturnOrderInfoInspectionItem::getProductCount).sum();
+
+        // 查询退货单商品信息
+        List<ReturnOrderInfoItem> returnOrderInfoItems = returnOrderInfoItemMapper.selectByReturnOrderCode(request.getReturnOrderCode());
+        long returnSum = returnOrderInfoItems.stream().mapToLong(ReturnOrderInfoItem::getNum).sum();
+        if (inspectionReturnSum > returnSum) {
+            LOGGER.info("退货单验货退货数量大于商品退货数量。");
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单验货退货数量大于商品退货数量,请重新选择验货退货数量"));
+        }
+
         // 保存退货验货
         ReturnOrderInfo returnOrder = new ReturnOrderInfo();
         returnOrder.setReturnOrderCode(request.getReturnOrderCode());
@@ -215,84 +226,51 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         returnOrder.setUpdateByName(getUser().getPersonName());
         returnOrder.setOrderStatus(ReturnOrderStatus.WAITING_FOR_RETURN_TO_THE_WAREHOUSE.getStatusCode());
         Integer orderCount = returnOrderInfoMapper.update(returnOrder);
-        LOGGER.info("更新退货单保存验货备注信息：", orderCount);
-
-        if (CollectionUtils.isEmptyCollection(request.getItemList())) {
-            LOGGER.info("退货验货单的商品信息为空：{}", JsonUtil.toJson(request.getItemList()));
-            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货验货单的商品信息为空"));
-        }
+        LOGGER.info("更新退货单验货退货信息：{}", orderCount);
 
         // 查询商品信息
-        Map<String, ReturnOrderInfoItem> returnMap = new HashMap<>();
-        Map<String, ReturnOrderInfoInspectionItem> notMap = new HashMap<>();
         String key;
         String notKey;
+        Map<String, ReturnOrderInfoItem> returnMap = new HashMap<>();
+        Map<String, ReturnOrderInfoInspectionItem> notMap = new HashMap<>();
         for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
-            key = String.format("%s,%s", item.getSkuCode(), item.getLineCode());
             notKey = String.format("%s,%s,%s", item.getSkuCode(), item.getBatchCode(), item.getWarehouseCode());
-            if (returnMap.get(key) == null) {
-                returnMap.put(key, returnOrderInfoItemMapper.returnOrderOne(request.getReturnOrderCode(), item.getSkuCode(), item.getLineCode()));
-            }
             if (notMap.get(notKey) == null) {
                 notMap.put(notKey, item);
             } else {
-                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "数据重复不可提交"));
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退回验货数据重复不可提交"));
+            }
+
+            key = String.format("%s,%s", item.getSkuCode(), item.getLineCode());
+            if (returnMap.get(key) == null) {
+                returnMap.put(key, returnOrderInfoItemMapper.returnOrderOne(request.getReturnOrderCode(), item.getSkuCode(), item.getLineCode()));
             }
         }
 
         List<ReturnOrderInfoItem> itemList = Lists.newArrayList();
         ReturnOrderInfoItem returnOrderInfoItem;
-        List<ReturnOrderInfoInspectionItem> newBatchList = Lists.newArrayList();
 
-        // 根据sku和行号去重查询出多库房的数据
-        List<ReturnOrderInfoInspectionItem> items = request.getItemList().stream().collect(Collectors.collectingAndThen(
-                Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(o -> o.getWarehouseCode() + ";" + o.getSkuCode()))), ArrayList::new));
-        if (CollectionUtils.isNotEmptyCollection(items)) {
-            Map<String, ReturnOrderInfoInspectionItem> itemMap = new HashMap<>();
-            for (ReturnOrderInfoInspectionItem item : items) {
-                item.setLockType(1);
-                if (itemMap.get(item.getSkuCode()) == null) {
-                    itemMap.put(item.getSkuCode(), item);
-                } else {
-                    newBatchList.add(item);
-                }
-            }
-            LOGGER.info("已存在的商品信息：{}", JsonUtil.toJson(itemMap));
-        }
-
-        if (CollectionUtils.isNotEmptyCollection(newBatchList)) {
-            // 查询最后商品的行号
-            Long lineCode = returnOrderInfoItemMapper.returnOrderByLastLineCode(request.getReturnOrderCode());
-            Long line = lineCode;
-            for (ReturnOrderInfoInspectionItem item : newBatchList) {
+        // 查询最后商品的行号
+        Long lineCode = returnOrderInfoItemMapper.returnOrderByLastLineCode(request.getReturnOrderCode());
+        Long line = lineCode;
+        for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
+            item.setLockType(1);
+            key = String.format("%s,%s", item.getSkuCode(), item.getLineCode());
+            if(returnMap.get(key) == null){
                 ++line;
-                key = String.format("%s,%s", item.getSkuCode(), item.getLineCode());
-                returnOrderInfoItem = returnMap.get(key);
+                returnOrderInfoItem = new ReturnOrderInfoItem();
                 returnOrderInfoItem.setProductLineNum(line);
                 returnOrderInfoItem.setInsertType(0);
                 itemList.add(returnOrderInfoItem);
-                for (ReturnOrderInfoInspectionItem infoItem : request.getItemList()) {
-                    if (item.getSkuCode().equals(infoItem.getSkuCode()) && item.getWarehouseCode().equals(infoItem.getWarehouseCode())) {
-                        infoItem.setLineCode(line);
-                        break;
-                    }
-                }
             }
         }
 
         // 添加验货之后根据库房新增的商品
-        if (CollectionUtils.isNotEmptyCollection(itemList) && itemList.size() > 0) {
+        if (CollectionUtils.isNotEmptyCollection(itemList)) {
             Integer detailCount = returnOrderInfoItemMapper.insertList(itemList);
             LOGGER.info("验货之后根据库房新增的商品条数：", detailCount);
         }
 
-//        List<ReturnOrderInfoInspectionItem> list = Lists.newArrayList();
-//        for (ReturnOrderInfoInspectionItem item : request.getItemList()) {
-//            if (StringUtils.isBlank(item.getBatchCode())) {
-//                continue;
-//            }
-//            list.add(item);
-//        }
         if (CollectionUtils.isNotEmptyCollection(request.getItemList())) {
             Integer batchCount = returnOrderInfoInspectionItemMapper.insertBatch(request.getItemList());
             LOGGER.info("保存退货单验货商品信息：", batchCount);
@@ -777,9 +755,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         inbound.setSourceOderCode(returnOrderInfo.getReturnOrderCode());
         inbound.setLogisticsCenterCode(returnOrderInfo.getTransportCenterCode());
         inbound.setLogisticsCenterName(returnOrderInfo.getTransportCenterName());
-        inbound.setPreInboundNum(returnOrderInfo.getProductCount());
-        inbound.setPreMainUnitNum(returnOrderInfo.getProductCount());
-        inbound.setPreTaxAmount(returnOrderInfo.getReturnOrderAmount());
         inbound.setCountyCode(returnOrderInfo.getDistrictCode());
         inbound.setCountyName(returnOrderInfo.getDistrictName());
         inbound.setCreateBy(getUser().getPersonName());
@@ -812,10 +787,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 }
 
                 for (ReturnOrderInfoInspectionItem item : items) {
+                    if(StringUtils.isBlank(item.getBatchCode())){
+                        continue;
+                    }
                     inboundBatch = BeanCopyUtils.copy(item, InboundBatch.class);
                     inboundBatch.setInboundOderCode(inbound.getInboundOderCode());
                     inboundBatch.setTotalCount(item.getProductCount());
-                    inboundBatch.setActualTotalCount(item.getActualProductCount());
+                    //inboundBatch.setActualTotalCount(item.getActualProductCount());
                     inboundBatch.setCreateById(returnOrderInfo.getUpdateById());
                     inboundBatch.setCreateByName(returnOrderInfo.getUpdateByName());
                     inboundBatch.setUpdateById(returnOrderInfo.getUpdateById());
@@ -829,13 +807,14 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             List<ReturnOrderInfoItem> itemList = map.values().stream().collect(Collectors.toList());
             List<InboundProductReqVo> list = Lists.newArrayList();
             InboundProductReqVo inboundProductReqVo;
-            BigDecimal preAmount = BigDecimal.ZERO;
+            BigDecimal preAmount = BigDecimal.ZERO, preTaAmount = BigDecimal.ZERO;
+            Long productCount = 0L;
             // 查询退货单商品信息
             for (ReturnOrderInfoItem detail : itemList) {
                 inboundProductReqVo = BeanCopyUtils.copy(detail, InboundProductReqVo.class);
                 inboundProductReqVo.setNorms(detail.getSpec());
                 inboundProductReqVo.setInboundNorms(detail.getSpec());
-                inboundProductReqVo.setInboundBaseUnit(String.valueOf(detail.getZeroDisassemblyCoefficient()));
+                inboundProductReqVo.setInboundBaseUnit(detail.getZeroDisassemblyCoefficient() == null ? "1" : detail.getZeroDisassemblyCoefficient().toString());
                 inboundProductReqVo.setPreInboundNum(detail.getNum());
                 inboundProductReqVo.setPreInboundMainNum(detail.getNum());
                 inboundProductReqVo.setPreTaxPurchaseAmount(detail.getPrice());
@@ -855,10 +834,15 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                     }
                     BigDecimal noTax = Calculate.computeNoTaxPrice(detail.getAmount(), tax);
                     preAmount = preAmount.add(noTax);
+                    productCount += detail.getNum();
+                    preTaAmount = preTaAmount.add(detail.getAmount());
                 }
             }
             inbound.setList(list);
-            inbound.setPreAmount(returnOrderInfo.getProductTotalAmount());
+            inbound.setPreInboundNum(productCount);
+            inbound.setPreMainUnitNum(productCount);
+            inbound.setPreTaxAmount(preTaAmount);
+            inbound.setPreAmount(preAmount);
             inbound.setPreTax(inbound.getPreTaxAmount().subtract(preAmount));
             LOGGER.info("根据运营中台退货单，转换生成耘链入库单参数：{}", JsonUtil.toJson(inbound));
             inboundService.saveInbound(inbound);
