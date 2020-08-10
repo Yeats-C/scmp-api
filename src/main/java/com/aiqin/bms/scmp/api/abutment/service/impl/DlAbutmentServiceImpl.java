@@ -165,23 +165,6 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         } else if (request.getOperationType() == 4) {
             info.setDocumentType(Global.RETURN_INFO_TYPE);
             dlUrl = "/back/orderReturn";
-
-            if (CollectionUtils.isNotEmpty(request.getProductList()) && request.getProductList().size() > 0) {
-                WarehouseDTO warehouse;
-                for (ProductRequest product : request.getProductList()) {
-                    warehouse = warehouseDao.getWarehouseByCode(product.getWarehouseCode());
-                    if (warehouse != null) {
-                        product.setWarehouseCode(warehouse.getWmsWarehouseId());
-                        product.setWarehouseName(warehouse.getWmsWarehouseName());
-                        product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-                        if (warehouse.getWmsWarehouseType() == 2) {
-                            product.setReturnType(2);
-                        } else {
-                            product.setReturnType(1);
-                        }
-                    }
-                }
-            }
         } else {
             return null;
         }
@@ -195,7 +178,6 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("熙耘->DL，编辑回传单据日志：{}", logCount);
         }
-
         // 调用Dl 回传DL单据
         String url = DL_URL + dlUrl;
         parameterAssemblyService.echoOrderInfoParameter(request, info, url);
