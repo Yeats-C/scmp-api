@@ -49,4 +49,7 @@ public interface InboundDao {
     List<Inbound> inboundBySource(@Param("sourceOderCode")String sourceOderCode,
                                   @Param("inboundTypeCode")String inboundTypeCode);
 
+    Integer inboundIsComplete(@Param("sourceOderCode")String sourceOderCode,
+                              @Param("inboundTypeCode")String inboundTypeCode)
+
 }

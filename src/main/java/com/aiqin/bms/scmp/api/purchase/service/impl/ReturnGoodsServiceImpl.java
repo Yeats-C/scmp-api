@@ -628,7 +628,12 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         Long inboundCount = inbound.getPraMainUnitNum() == null ? 0L : inbound.getPraMainUnitNum();
         Long returnCount = returnOrderInfo.getActualProductCount() == null ? 0L : returnOrderInfo.getActualProductCount();
         returnOrder.setActualProductCount(inboundCount + returnCount);
-        returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+
+        // 判断所有入库单是否完成
+        Integer isComplete = inboundDao.inboundIsComplete(returnOrderInfo.getReturnOrderCode(), String.valueOf(InboundTypeEnum.ORDER.getCode()));
+        if(isComplete <= 0){
+            returnOrder.setOrderStatus(ReturnOrderStatus.RETURN_COMPLETED.getStatusCode());
+        }
         returnOrder.setUpdateByName(inbound.getUpdateBy());
 
         // 查询入库单的商品信息
@@ -736,7 +741,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         log.info("更新退货单主信息：{}", returnInfo);
 
         // 回传运营中台信息
-        changeParameter(returnOrder.getReturnOrderCode());
+        if(isComplete > 0){
+            changeParameter(returnOrder.getReturnOrderCode());
+        }
         return HttpResponse.success();
     }
 
