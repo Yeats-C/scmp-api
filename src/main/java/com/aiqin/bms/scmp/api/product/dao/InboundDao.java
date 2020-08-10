@@ -50,6 +50,6 @@ public interface InboundDao {
                                   @Param("inboundTypeCode")String inboundTypeCode);
 
     Integer inboundIsComplete(@Param("sourceOderCode")String sourceOderCode,
-                              @Param("inboundTypeCode")String inboundTypeCode)
+                              @Param("inboundTypeCode")String inboundTypeCode);
 
 }
