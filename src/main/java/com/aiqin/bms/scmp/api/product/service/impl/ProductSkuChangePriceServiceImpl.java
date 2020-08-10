@@ -10,6 +10,7 @@ import com.aiqin.bms.scmp.api.config.AuthenticationInterceptor;
 import com.aiqin.bms.scmp.api.constant.CommonConstant;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuChangePriceSaleAreaMapper;
+import com.aiqin.bms.scmp.api.product.dao.ProductSkuSupplyUnitDao;
 import com.aiqin.bms.scmp.api.product.dao.StockMonthBatchDao;
 import com.aiqin.bms.scmp.api.product.domain.ProductSkuChangePriceSaleArea;
 import com.aiqin.bms.scmp.api.product.domain.dto.changeprice.ProductSkuChangePriceDTO;
@@ -111,6 +112,8 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
     private StockMonthBatchDao stockMonthBatchDao;
     @Autowired
     private WarehouseDao warehouseDao;
+    @Autowired
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -934,6 +937,11 @@ public class ProductSkuChangePriceServiceImpl extends BaseServiceImpl implements
                         }
                     }
                     querySkuInfoRespVO.setBatchList(batchList);
+
+                    for (PriceChannelForChangePrice priceChannelForChangePrice : querySkuInfoRespVO.getPriceChannelList()) {
+                        ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitDao.selectOneBySkuCode(querySkuInfoRespVO.getSkuCode());
+                        priceChannelForChangePrice.setPurchasePriceNewest(productSkuSupplyUnit.getTaxIncludedPrice());
+                    }
                 }
             }
             BasePage basePage = new BasePage();
