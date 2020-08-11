@@ -777,8 +777,10 @@ public class InboundServiceImpl  implements InboundService {
                 key = String.format("%s,%s", batchInfo.getBatchCode(), batchInfo.getSkuCode());
                 inboundKey = String.format("%s,%s,%s", batchInfo.getBatchCode(), batchInfo.getSkuCode(), batchInfo.getLineCode());
                 Long count = batchInfo.getActualTotalCount() == null ? 0L : batchInfo.getActualTotalCount();
-                actualCountMap.put(key, count + actualCountMap.get(key));
-                inboundCountMap.put(inboundKey, count + actualCountMap.get(key));
+                Long actualCount = actualCountMap.get(key) == null ? 0L : actualCountMap.get(key);
+                Long inboundCount = inboundCountMap.get(inboundKey) == null ? 0L : inboundCountMap.get(inboundKey);
+                actualCountMap.put(key, count + actualCount);
+                inboundCountMap.put(inboundKey, count + inboundCount);
             }
 
             // 非自动批次，更新入库批次的信息

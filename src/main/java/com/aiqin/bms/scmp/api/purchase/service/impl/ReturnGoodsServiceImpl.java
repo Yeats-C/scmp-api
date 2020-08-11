@@ -738,6 +738,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 productBatch = new OrderInfoItemProductBatch();
                 productBatch.setLineCode(batch.getLineCode().longValue());
                 productBatch.setSkuCode(batch.getSkuCode());
+                productBatch.setBatchCode(batch.getBatchCode());
+                productBatch.setBeOverdueDate(batch.getBeOverdueDate());
+                productBatch.setProductDate(batch.getProductDate());
+                productBatch.setBatchRemark(batch.getBatchRemark());
+                productBatch.setBatchInfoCode(batch.getBatchInfoCode());
+                productBatch.setSupplierCode(inbound.getSupplierCode());
+                productBatch.setSupplierName(inbound.getSupplierName());
                 productBatch.setReturnTotalCount(batch.getActualTotalCount() + batchCount);
                 productBatch.setOrderCode(returnOrderInfo.getOrderCode());
                 orderInfoItemProductBatchMapper.updateByReturnBatchCount(productBatch);
