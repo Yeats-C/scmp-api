@@ -472,13 +472,13 @@ public class InboundServiceImpl  implements InboundService {
         LOGGER.info("WMS入库单回传参数:[{}]", JsonUtil.toJson(request));
         // 根据入库单号，查询入库单信息
         Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
-//        if(inbound == null){
-//            LOGGER.info("WMS入库单回传，耘链未查询到入库单，回传失败");
-//            throw new GroundRuntimeException("WMS入库单回传，耘链未查询到入库单，回传失败");
-//        }else if(inbound.getSynchrStatus().equals(Global.SYNCHR)){
-//            LOGGER.info("此单据已回传：{}", JsonUtil.toJson(inbound));
-//            throw new GroundRuntimeException("此单据已回传:{}" + inbound.getInboundOderCode());
-//        }
+        if(inbound == null){
+            LOGGER.info("WMS入库单回传，耘链未查询到入库单，回传失败");
+            throw new GroundRuntimeException("WMS入库单回传，耘链未查询到入库单，回传失败");
+        }else if(inbound.getSynchrStatus().equals(Global.SYNCHR)){
+            LOGGER.info("此单据已回传：{}", JsonUtil.toJson(inbound));
+            throw new GroundRuntimeException("此单据已回传:{}" + inbound.getInboundOderCode());
+        }
 
         // 设置入库单默认值
         inbound.setPraInboundNum(0L);

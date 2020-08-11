@@ -612,13 +612,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }else{
             outbound = outboundDao.selectByCode(request.getOutboundOderCode());
         }
-//        if (outbound == null) {
-//            LOGGER.info("WMS回传出库单信息为空");
-//            return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
-//        }else if(outbound.getSynchrStatus().equals(Global.SYNCHR)){
-//            LOGGER.info("此出库单单据已回传：{}", JsonUtil.toJson(outbound));
-//            throw new GroundRuntimeException("此单据已回传：" + outbound.getOutboundOderCode());
-//        }
+        if (outbound == null) {
+            LOGGER.info("WMS回传出库单信息为空");
+            return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+        }else if(outbound.getSynchrStatus().equals(Global.SYNCHR)){
+            LOGGER.info("此出库单单据已回传：{}", JsonUtil.toJson(outbound));
+            throw new GroundRuntimeException("此单据已回传：" + outbound.getOutboundOderCode());
+        }
 
         // 设置已回传默认值
         outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
