@@ -474,4 +474,79 @@
     where a.inbound_oder_code = #{inboundOderCode,jdbcType=VARCHAR}
     group by lineCode
   </select>
+  <update id="updateBulk" parameterType="java.util.List">
+    <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+      update inbound_product
+      <set>
+        <if test="item.inboundOderCode != null">
+          inbound_oder_code = #{item.inboundOderCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuCode != null">
+          sku_code = #{item.skuCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.skuName != null">
+          sku_name = #{item.skuName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.pictureUrl != null">
+          picture_url = #{item.pictureUrl,jdbcType=VARCHAR},
+        </if>
+        <if test="item.norms != null">
+          norms = #{item.norms,jdbcType=VARCHAR},
+        </if>
+        <if test="item.colorName != null">
+          color_name = #{item.colorName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.colorCode != null">
+          color_code = #{item.colorCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.model != null">
+          model = #{item.model,jdbcType=VARCHAR},
+        </if>
+        <if test="item.unitCode != null">
+          unit_code = #{item.unitCode,jdbcType=VARCHAR},
+        </if>
+        <if test="item.unitName != null">
+          unit_name = #{item.unitName,jdbcType=VARCHAR},
+        </if>
+        <if test="item.inboundNorms != null">
+          inbound_norms = #{item.inboundNorms,jdbcType=VARCHAR},
+        </if>
+        <if test="item.inboundBaseContent != null">
+          inbound_base_content = #{item.inboundBaseContent,jdbcType=VARCHAR},
+        </if>
+        <if test="item.preInboundNum != null">
+          pre_inbound_num = #{item.preInboundNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.preInboundMainNum != null">
+          pre_inbound_main_num = #{item.preInboundMainNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.preTaxPurchaseAmount != null">
+          pre_tax_purchase_amount = #{item.preTaxPurchaseAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.preTaxAmount != null">
+          pre_tax_amount = #{item.preTaxAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.praInboundNum != null">
+          pra_inbound_num = #{item.praInboundNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.praInboundMainNum != null">
+          pra_inbound_main_num = #{item.praInboundMainNum,jdbcType=BIGINT},
+        </if>
+        <if test="item.praTaxPurchaseAmount != null">
+          pra_tax_purchase_amount = #{item.praTaxPurchaseAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.praTaxAmount != null">
+          pra_tax_amount = #{item.praTaxAmount,jdbcType=DECIMAL},
+        </if>
+        <if test="item.updateBy != null">
+          update_by = #{item.updateBy,jdbcType=VARCHAR},
+        </if>
+        update_time = now(),
+        <if test="item.linenum != null">
+          linenum = #{item.linenum,jdbcType=BIGINT},
+        </if>
+      </set>
+      where id = #{item.id,jdbcType=BIGINT}
+    </foreach>
+  </update>
 </mapper>

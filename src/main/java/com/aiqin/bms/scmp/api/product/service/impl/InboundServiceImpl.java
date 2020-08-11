@@ -472,13 +472,13 @@ public class InboundServiceImpl  implements InboundService {
         LOGGER.info("WMS入库单回传参数:[{}]", JsonUtil.toJson(request));
         // 根据入库单号，查询入库单信息
         Inbound inbound = inboundDao.selectByCode(request.getInboundOderCode());
-        if(inbound == null){
-            LOGGER.info("WMS入库单回传，耘链未查询到入库单，回传失败");
-            throw new GroundRuntimeException("WMS入库单回传，耘链未查询到入库单，回传失败");
-        }else if(inbound.getSynchrStatus().equals(Global.SYNCHR)){
-            LOGGER.info("此单据已回传：{}", JsonUtil.toJson(inbound));
-            throw new GroundRuntimeException("此单据已回传:{}" + inbound.getInboundOderCode());
-        }
+//        if(inbound == null){
+//            LOGGER.info("WMS入库单回传，耘链未查询到入库单，回传失败");
+//            throw new GroundRuntimeException("WMS入库单回传，耘链未查询到入库单，回传失败");
+//        }else if(inbound.getSynchrStatus().equals(Global.SYNCHR)){
+//            LOGGER.info("此单据已回传：{}", JsonUtil.toJson(inbound));
+//            throw new GroundRuntimeException("此单据已回传:{}" + inbound.getInboundOderCode());
+//        }
 
         // 设置入库单默认值
         inbound.setPraInboundNum(0L);
@@ -544,6 +544,7 @@ public class InboundServiceImpl  implements InboundService {
         StockInfoRequest stockInfo;
         Long praInboundNum = 0L, praMainUnitNum = 0L;
         BigDecimal praTaxAmount = BigDecimal.ZERO, praAmount = BigDecimal.ZERO;
+        List<InboundProduct> inboundProducts = new ArrayList<>();
         for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
             // 查询对应订单的sku
             key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
@@ -561,8 +562,9 @@ public class InboundServiceImpl  implements InboundService {
                     .setScale(4, BigDecimal.ROUND_HALF_UP));
             product.setUpdateBy(request.getOperatorName());
             // 更新wms回传商品实际信息
-            Integer count = inboundProductDao.update(product);
-            LOGGER.info("更新入库单商品实际信息：{}" , count);
+            inboundProducts.add(product);
+//            Integer count = inboundProductDao.update(product);
+//            LOGGER.info("更新入库单商品实际信息：{}" , count);
 
             // 计算入库单主表的实际值
             praInboundNum = praInboundNum + product.getPraInboundNum();
@@ -620,6 +622,8 @@ public class InboundServiceImpl  implements InboundService {
             }
             productList.add(stockInfo);
         }
+        Integer count1 = inboundProductDao.updateBulk(inboundProducts);
+        LOGGER.info("更新入库单商品实际信息：{}" , count1);
         changeStockRequest.setStockList(productList);
 
         // 变更入库单批次的信息
