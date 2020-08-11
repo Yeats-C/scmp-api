@@ -29,6 +29,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         LOGGER.info("DL->熙耘，退货出库单参数：{}", JsonUtil.toJson(request));
         DlOrderBill info = new DlOrderBill();
         info.setDocumentCode(request.getReturnOrderCode());
-        info.setDocumentType(Global.RETURN_INFO_TYPE);
+        if(request.getBusinessForm() != null && request.getBusinessForm() == 7){
+            info.setDocumentType(Global.RETURN_INFO_TRANSPORT_TYPE);
+        }else {
+            info.setDocumentType(Global.RETURN_INFO_TYPE);
+        }
         info.setBusinessType(Global.PUSH_TYPE);
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);

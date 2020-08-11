@@ -15,8 +15,10 @@ import com.aiqin.bms.scmp.api.product.domain.pojo.ProductSkuInspReport;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderDetailReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnOrderInfoReq;
 import com.aiqin.bms.scmp.api.product.domain.request.ReturnReq;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.request.order.ErpOrderItem;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.dictionary.SupplierDictionaryInfoDao;
@@ -74,6 +76,8 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     private String DL_URL;
     @Resource
     private DLHttpClientUtil dlHttpClientUtil;
+    @Resource
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
 
     @Override
     @Async("myTaskAsyncPool")
@@ -202,107 +206,127 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Override
     @Async("myTaskAsyncPool")
     public ReturnReq returnInfoParameter(ReturnOrderInfoRequest request, DlOrderBill info) {
+        // 查询退货单是否已经回传
+        ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(request.getReturnOrderCode());
         ReturnReq returnRequest = new ReturnReq();
-        ReturnOrderInfoReq returnInfo = BeanCopyUtils.copy(request, ReturnOrderInfoReq.class);
-        returnInfo.setReturnOrderId(request.getReturnOrderId());
-        returnInfo.setOrderStoreCode(request.getOrderCode());
-        returnInfo.setRemark(request.getRemark());
-        // 默认公司为宁波熙耘
-        returnInfo.setCompanyCode(Global.COMPANY_09);
-        returnInfo.setCompanyName(Global.COMPANY_09_NAME);
-        returnInfo.setOrderType(request.getOrderType());
-        // 默认售后退货
-        returnInfo.setReturnOrderType(2);
-        returnInfo.setReturnLock(1);
-        // 默认已支付
-        returnInfo.setPaymentStatus(0);
-        // 默认转账
-        returnInfo.setPaymentCode("1");
-        returnInfo.setPaymentName("转账");
-        // 默认退货退款
-        returnInfo.setTreatmentMethod(1);
-        returnInfo.setStoreCode(request.getCustomerCode());
-        returnInfo.setStoreName(request.getCustomerName());
-        returnInfo.setLogisticsCompanyCode(request.getTransportCompanyCode());
-        returnInfo.setLogisticsCompanyName(request.getTransportCompanyName());
-        returnInfo.setLogisticsCode(request.getTransportCompanyNumber());
-        returnInfo.setReturnOrderAmount(request.getProductTotalAmount());
-        returnInfo.setReceivePerson(request.getConsignor());
-        returnInfo.setReceiveMobile(request.getConsignorPhone());
-        returnInfo.setTotalWeight(request.getWeight());
-        returnInfo.setTotalVolume(request.getVolume());
-        returnInfo.setReturnReasonContent(request.getReturnReason());
-        returnInfo.setUseStatus(0);
-        returnInfo.setUpdateById(request.getCreateById());
-        returnInfo.setUpdateByName(request.getCreateByName());
-        // 默认未退款
-        returnInfo.setRefundStatus(0);
-        // 默认整单退
-        returnInfo.setProcessType(0);
-        // 来源DL
-        returnInfo.setSourceType(4);
-        // 默认为DL平台类型
-        returnInfo.setPlatformType(1);
-        returnInfo.setCopartnerAreaId(request.getPartnerCode());
-        returnInfo.setCopartnerAreaName(request.getPartnerName());
-        // 转换库房信息
-        WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
-        if (warehouse == null) {
-            LOGGER.info("DL 推送退货单耘链的库房转换失败：{}", JsonUtil.toJson(request));
-            return null;
-        }
-        returnInfo.setWarehouseCode(warehouse.getWarehouseCode());
-        returnInfo.setWarehouseName(warehouse.getWarehouseName());
-        returnInfo.setTransportCenterCode(warehouse.getLogisticsCenterCode());
-        returnInfo.setTransportCenterName(warehouse.getLogisticsCenterName());
-        returnInfo.setChannelName(request.getChannelName());
-        String channelCode;
-        // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
-        if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("爱亲科技")) {
-            channelCode = "1";
-        } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("萌贝树")) {
-            channelCode = "2";
-        } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("小红马")) {
-            channelCode = "3";
-        } else {
-            channelCode = "4";
-        }
-        returnInfo.setChannelCode(channelCode);
-        returnRequest.setReturnOrderInfo(returnInfo);
-        if (CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0) {
-            LOGGER.info("DL->耘链 推送耘链退货单商品信息为空");
-            return null;
-        }
-        ReturnOrderDetailReq item;
-        List<ReturnOrderDetailReq> itemList = Lists.newArrayList();
-        for (ProductRequest product : request.getProductList()) {
-            item = BeanCopyUtils.copy(product, ReturnOrderDetailReq.class);
-            item.setReturnOrderDetailId(IdUtil.uuid());
-            item.setReturnOrderCode(request.getReturnOrderCode());
-            item.setModelCode(product.getModelNumber());
-            // 默认商品类型 - 商品
-            item.setProductType(product.getProductType());
-            item.setZeroDisassemblyCoefficient(1L);
-            item.setReturnProductCount(product.getTotalCount());
-            item.setTotalProductAmount(product.getProductTotalAmount());
-            item.setUseStatus(0);
-            item.setCreateById(request.getCreateById());
-            item.setCreateByName(request.getCreateByName());
-            item.setLineCode(product.getLineCode().longValue());
-            item.setReturnProductCount(product.getTotalCount());
-            itemList.add(item);
-        }
-        returnRequest.setReturnOrderDetailReqList(itemList);
-        LOGGER.info("DL->耘链 推送退货单到耘链的参数转换：{}", JsonUtil.toJson(returnRequest));
+        if(returnOrderInfo != null && request.getBusinessForm() == 7){
+            // 更新退货单的物流信息
+            ReturnOrderInfo returnOrder = new ReturnOrderInfo();
+            returnOrder.setReturnOrderCode(request.getReturnOrderCode());
+            returnOrder.setRemake(request.getRemark());
+            returnOrder.setTransportCompanyCode(request.getTransportCompanyCode());
+            returnOrder.setTransportCompany(request.getTransportCompanyName());
+            returnOrder.setTransportNumber(request.getTransportCompanyNumber());
+            Integer count = returnOrderInfoMapper.update(returnOrder);
+            if (count > 0) {
+                LOGGER.info("DL->熙耘，多次回传更新物流单信息成功");
+                info.setReturnStatus(Global.SUCCESS);
+            } else {
+                LOGGER.info("DL->熙耘，多次回传更新物流单信息失败");
+                info.setReturnStatus(Global.FAIL);
+            }
+        }else {
+            ReturnOrderInfoReq returnInfo = BeanCopyUtils.copy(request, ReturnOrderInfoReq.class);
+            returnInfo.setReturnOrderId(request.getReturnOrderId());
+            returnInfo.setOrderStoreCode(request.getOrderCode());
+            returnInfo.setRemark(request.getRemark());
+            // 默认公司为宁波熙耘
+            returnInfo.setCompanyCode(Global.COMPANY_09);
+            returnInfo.setCompanyName(Global.COMPANY_09_NAME);
+            returnInfo.setOrderType(request.getOrderType());
+            // 默认售后退货
+            returnInfo.setReturnOrderType(2);
+            returnInfo.setReturnLock(1);
+            // 默认已支付
+            returnInfo.setPaymentStatus(0);
+            // 默认转账
+            returnInfo.setPaymentCode("1");
+            returnInfo.setPaymentName("转账");
+            // 默认退货退款
+            returnInfo.setTreatmentMethod(1);
+            returnInfo.setStoreCode(request.getCustomerCode());
+            returnInfo.setStoreName(request.getCustomerName());
+            returnInfo.setLogisticsCompanyCode(request.getTransportCompanyCode());
+            returnInfo.setLogisticsCompanyName(request.getTransportCompanyName());
+            returnInfo.setLogisticsCode(request.getTransportCompanyNumber());
+            returnInfo.setReturnOrderAmount(request.getProductTotalAmount());
+            returnInfo.setReceivePerson(request.getConsignor());
+            returnInfo.setReceiveMobile(request.getConsignorPhone());
+            returnInfo.setTotalWeight(request.getWeight());
+            returnInfo.setTotalVolume(request.getVolume());
+            returnInfo.setReturnReasonContent(request.getReturnReason());
+            returnInfo.setUseStatus(0);
+            returnInfo.setUpdateById(request.getCreateById());
+            returnInfo.setUpdateByName(request.getCreateByName());
+            // 默认未退款
+            returnInfo.setRefundStatus(0);
+            // 默认整单退
+            returnInfo.setProcessType(0);
+            // 来源DL
+            returnInfo.setSourceType(4);
+            // 默认为DL平台类型
+            returnInfo.setPlatformType(1);
+            returnInfo.setCopartnerAreaId(request.getPartnerCode());
+            returnInfo.setCopartnerAreaName(request.getPartnerName());
+            // 转换库房信息
+            WarehouseDTO warehouse = warehouseDao.warehouseDl(request.getTransportCenterCode(), request.getWmsWarehouseType());
+            if (warehouse == null) {
+                LOGGER.info("DL 推送退货单耘链的库房转换失败：{}", JsonUtil.toJson(request));
+                return null;
+            }
+            returnInfo.setWarehouseCode(warehouse.getWarehouseCode());
+            returnInfo.setWarehouseName(warehouse.getWarehouseName());
+            returnInfo.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+            returnInfo.setTransportCenterName(warehouse.getLogisticsCenterName());
+            returnInfo.setChannelName(request.getChannelName());
+            String channelCode;
+            // 渠道类型 1爱亲科技、2萌贝树、3小红马、4爱亲母婴
+            if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("爱亲科技")) {
+                channelCode = "1";
+            } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("萌贝树")) {
+                channelCode = "2";
+            } else if (StringUtils.isNotBlank(request.getChannelName()) && request.getChannelName().equals("小红马")) {
+                channelCode = "3";
+            } else {
+                channelCode = "4";
+            }
+            returnInfo.setChannelCode(channelCode);
+            returnRequest.setReturnOrderInfo(returnInfo);
+            if (CollectionUtils.isEmpty(request.getProductList()) && request.getProductList().size() <= 0) {
+                LOGGER.info("DL->耘链 推送耘链退货单商品信息为空");
+                return null;
+            }
+            ReturnOrderDetailReq item;
+            List<ReturnOrderDetailReq> itemList = Lists.newArrayList();
+            for (ProductRequest product : request.getProductList()) {
+                item = BeanCopyUtils.copy(product, ReturnOrderDetailReq.class);
+                item.setReturnOrderDetailId(IdUtil.uuid());
+                item.setReturnOrderCode(request.getReturnOrderCode());
+                item.setModelCode(product.getModelNumber());
+                // 默认商品类型 - 商品
+                item.setProductType(product.getProductType());
+                item.setZeroDisassemblyCoefficient(1L);
+                item.setReturnProductCount(product.getTotalCount());
+                item.setTotalProductAmount(product.getProductTotalAmount());
+                item.setUseStatus(0);
+                item.setCreateById(request.getCreateById());
+                item.setCreateByName(request.getCreateByName());
+                item.setLineCode(product.getLineCode().longValue());
+                item.setReturnProductCount(product.getTotalCount());
+                itemList.add(item);
+            }
+            returnRequest.setReturnOrderDetailReqList(itemList);
+            LOGGER.info("DL->耘链 推送退货单到耘链的参数转换：{}", JsonUtil.toJson(returnRequest));
 
-        // 调用耘链 生成耘链对应的退货单、出库单
-        HttpResponse response = returnGoodsService.record(returnRequest);
-        if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-            LOGGER.info("DL->熙耘，保存退货单成功");
-            info.setReturnStatus(Global.SUCCESS);
-        } else {
-            LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
-            info.setReturnStatus(Global.FAIL);
+            // 调用耘链 生成耘链对应的退货单、出库单
+            HttpResponse response = returnGoodsService.record(returnRequest);
+            if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
+                LOGGER.info("DL->熙耘，保存退货单成功");
+                info.setReturnStatus(Global.SUCCESS);
+            } else {
+                LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
+                info.setReturnStatus(Global.FAIL);
+            }
         }
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("DL->熙耘，变更退货单日志状态：{}", count);

@@ -2,7 +2,6 @@ package com.aiqin.bms.scmp.api.abutment.web;
 
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
-import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionRequest;
 import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
