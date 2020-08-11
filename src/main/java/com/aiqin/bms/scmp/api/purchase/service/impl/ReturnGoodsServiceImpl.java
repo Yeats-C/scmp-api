@@ -867,7 +867,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                     BigDecimal noTax = Calculate.computeNoTaxPrice(inboundProductReqVo.getPreTaxAmount(), tax);
                     preAmount = preAmount.add(noTax);
                     productCount += aLong;
-                    preTaAmount = preTaAmount.add(detail.getAmount());
+                    preTaAmount = preTaAmount.add(inboundProductReqVo.getPreTaxAmount());
                 }
             }
             inbound.setList(list);
