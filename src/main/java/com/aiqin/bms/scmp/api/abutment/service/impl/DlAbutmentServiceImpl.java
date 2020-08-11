@@ -29,6 +29,7 @@ import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +103,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         LOGGER.info("DL->熙耘，退货出库单参数：{}", JsonUtil.toJson(request));
         DlOrderBill info = new DlOrderBill();
         info.setDocumentCode(request.getReturnOrderCode());
-        info.setDocumentType(Global.RETURN_INFO_TYPE);
+        if(request.getBusinessForm() != null && request.getBusinessForm() == 7){
+            info.setDocumentType(Global.RETURN_INFO_TRANSPORT_TYPE);
+        }else {
+            info.setDocumentType(Global.RETURN_INFO_TYPE);
+        }
         info.setBusinessType(Global.PUSH_TYPE);
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
@@ -165,23 +170,6 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         } else if (request.getOperationType() == 4) {
             info.setDocumentType(Global.RETURN_INFO_TYPE);
             dlUrl = "/back/orderReturn";
-
-            if (CollectionUtils.isNotEmpty(request.getProductList()) && request.getProductList().size() > 0) {
-                WarehouseDTO warehouse;
-                for (ProductRequest product : request.getProductList()) {
-                    warehouse = warehouseDao.getWarehouseByCode(product.getWarehouseCode());
-                    if (warehouse != null) {
-                        product.setWarehouseCode(warehouse.getWmsWarehouseId());
-                        product.setWarehouseName(warehouse.getWmsWarehouseName());
-                        product.setWmsWarehouseType(warehouse.getWmsWarehouseType());
-                        if (warehouse.getWmsWarehouseType() == 2) {
-                            product.setReturnType(2);
-                        } else {
-                            product.setReturnType(1);
-                        }
-                    }
-                }
-            }
         } else {
             return null;
         }
@@ -195,7 +183,6 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("熙耘->DL，编辑回传单据日志：{}", logCount);
         }
-
         // 调用Dl 回传DL单据
         String url = DL_URL + dlUrl;
         parameterAssemblyService.echoOrderInfoParameter(request, info, url);

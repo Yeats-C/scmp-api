@@ -685,4 +685,11 @@
     where source_oder_code = #{sourceOderCode}
     and inbound_type_code = #{inboundTypeCode}
   </select>
+  <select id="inboundIsComplete" resultType="java.lang.Integer">
+    select count(1)
+    from inbound
+    where source_oder_code = #{sourceOderCode}
+    and inbound_type_code = #{inboundTypeCode}
+    and inbound_status_code = 4
+  </select>
 </mapper>

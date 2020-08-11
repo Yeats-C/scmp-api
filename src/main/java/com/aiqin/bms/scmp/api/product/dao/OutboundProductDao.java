@@ -51,4 +51,6 @@ public interface OutboundProductDao {
     OutboundProduct selectByProductAmount(@Param("outboundOderCode") String outboundOderCode, @Param("lineCode") Long lineCode);
 
     Integer updateAll(List<UpdateOutboundProductReqVO> list);
+
+    Integer updateBulk(List<OutboundProduct> list);
 }

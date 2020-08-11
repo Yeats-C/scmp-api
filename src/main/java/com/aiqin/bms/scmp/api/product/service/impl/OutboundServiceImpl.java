@@ -612,13 +612,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         }else{
             outbound = outboundDao.selectByCode(request.getOutboundOderCode());
         }
-        if (outbound == null) {
-            LOGGER.info("WMS回传出库单信息为空");
-            return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
-        }else if(outbound.getSynchrStatus().equals(Global.SYNCHR)){
-            LOGGER.info("此出库单单据已回传：{}", JsonUtil.toJson(outbound));
-            throw new GroundRuntimeException("此单据已回传：" + outbound.getOutboundOderCode());
-        }
+//        if (outbound == null) {
+//            LOGGER.info("WMS回传出库单信息为空");
+//            return HttpResponse.failure(ResultCode.OUTBOUND_DATA_CAN_NOT_BE_NULL);
+//        }else if(outbound.getSynchrStatus().equals(Global.SYNCHR)){
+//            LOGGER.info("此出库单单据已回传：{}", JsonUtil.toJson(outbound));
+//            throw new GroundRuntimeException("此单据已回传：" + outbound.getOutboundOderCode());
+//        }
 
         // 设置已回传默认值
         outbound.setOutboundStatusCode(InOutStatus.RECEIVE_INOUT.getCode());
@@ -666,6 +666,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
         List<OutboundBatch> notOutboundBatches = Lists.newArrayList();
 
         // 更新出库商品信息
+        List<OutboundProduct> outboundProducts = new ArrayList<>();
         for (OutboundProductCallBackReqVo detail : request.getDetailList()) {
             // 查询对应的出库单商品信息
             outboundProduct = outboundProductDao.selectByLineCode(outbound.getOutboundOderCode(), detail.getSkuCode(), detail.getLineCode());
@@ -679,8 +680,9 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 outboundProduct.setPraTaxAmount(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum()).
                         multiply(outboundProduct.getPraTaxPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP));
 
-                Integer count = outboundProductDao.update(outboundProduct);
-                LOGGER.info("更新出库单商品信息：{}", count);
+                outboundProducts.add(outboundProduct);
+//                Integer count = outboundProductDao.update(outboundProduct);
+//                LOGGER.info("更新出库单商品信息：{}", count);
             }
 
             // 计算出库单总实际值
@@ -715,6 +717,8 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             stockInfoRequestList.add(stockInfoRequest);
 
         }
+        Integer count1 = outboundProductDao.updateBulk(outboundProducts);
+        LOGGER.info("更新出库单商品信息：{}", count1);
         outbound.setPraOutboundNum(praOutboundCount);
         outbound.setPraMainUnitNum(praTotalOutboundCount);
         outbound.setPraTaxAmount(praTotalOutboundAmount);

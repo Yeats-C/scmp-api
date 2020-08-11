@@ -312,12 +312,13 @@ public final class Global {
     public static final Integer INSPECTION_TYPE = 5;
 
     /**
-     *  Dl与耘链的推送单据类型 1.销售 2.退货  3.物流单 4.取消
+     *  Dl与耘链的推送单据类型 1.销售 2.退货  3.物流单 4.取消 5.退货单多次多次回传物流单信息
      */
     public static final Integer ORDER_TYPE  = 1;
     public static final Integer RETURN_INFO_TYPE = 2;
     public static final Integer ORDER_TRANSPORT_TYPE  = 3;
     public static final Integer CANCEL_ORDER_TYPE = 4;
+    public static final Integer RETURN_INFO_TRANSPORT_TYPE = 5;
 
     /**
      *  Dl与耘链的推送 业务单据类型 0 推送(DL->熙耘)  1.回传(熙耘->DL)

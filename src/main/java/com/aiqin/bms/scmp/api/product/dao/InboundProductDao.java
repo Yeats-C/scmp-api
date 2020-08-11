@@ -46,4 +46,6 @@ public interface InboundProductDao {
 
     List<PurchaseInboundDetailSource> wmsByInboundProduct(String inboundOderCode);
 
+    Integer updateBulk(List<InboundProduct> list);
+
 }

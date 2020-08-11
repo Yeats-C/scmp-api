@@ -147,6 +147,7 @@
     from inbound_batch
     where inbound_oder_code = #{inboundOderCode, jdbcType=VARCHAR}
     and line_code = #{lineCode, jdbcType=INTEGER}
+    and sku_code = #{skuCode, jdbcType=VARCHAR}
     <if test="batchCode != null">
       and batch_code = #{batchCode, jdbcType=VARCHAR}
     </if>

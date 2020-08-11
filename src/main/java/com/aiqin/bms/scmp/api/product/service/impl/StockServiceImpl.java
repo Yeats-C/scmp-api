@@ -21,6 +21,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.stock.StockMonthRequest;
 import com.aiqin.bms.scmp.api.product.domain.response.*;
 import com.aiqin.bms.scmp.api.product.domain.response.allocation.SkuBatchRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.BatchInfo;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SkuConfigsRepsVo;
 import com.aiqin.bms.scmp.api.product.domain.response.sku.config.SpareWarehouseRepsVo;
@@ -107,6 +108,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private ProductSkuStockInfoMapper productSkuStockInfoMapper;
     @Autowired
     private StockFlowFailDao stockFlowFailDao;
+    @Autowired
+    private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -1315,6 +1318,11 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         for (QuerySkuInfoRespVO querySkuInfoRespVO: skuBatchForChangePrice) {
             List<BatchInfo> batch = stockDao.getBatch(reqVO.getCompanyCode(), querySkuInfoRespVO.getSkuCode());
             querySkuInfoRespVO.setBatchList(batch);
+
+            for (PriceChannelForChangePrice priceChannelForChangePrice : querySkuInfoRespVO.getPriceChannelList()) {
+                ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitDao.selectOneBySkuCode(querySkuInfoRespVO.getSkuCode());
+                priceChannelForChangePrice.setPurchasePriceNewest(productSkuSupplyUnit.getTaxIncludedPrice());
+            }
         }
         BasePage pageList = new BasePage();
         pageList.setDataList(skuBatchForChangePrice);
