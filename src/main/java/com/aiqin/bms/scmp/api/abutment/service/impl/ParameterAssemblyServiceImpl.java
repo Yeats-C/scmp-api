@@ -254,7 +254,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             returnInfo.setReceiveMobile(request.getConsignorPhone());
             returnInfo.setTotalWeight(request.getWeight());
             returnInfo.setTotalVolume(request.getVolume());
-            returnInfo.setReturnReasonContent(request.getReturnReason());
+            returnInfo.setRemark(request.getReturnReason());
             returnInfo.setUseStatus(0);
             returnInfo.setUpdateById(request.getCreateById());
             returnInfo.setUpdateByName(request.getCreateByName());
