@@ -731,6 +731,13 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             } else {
                 Long batchCount = returnBatchItem.getActualProductCount() == null ? 0L : returnBatchItem.getActualProductCount();
                 returnBatchItem.setActualProductCount(batch.getActualTotalCount() + batchCount);
+                returnBatchItem.setBatchCode(batch.getBatchCode());
+                returnBatchItem.setBeOverdueDate(batch.getBeOverdueDate());
+                returnBatchItem.setProductDate(batch.getProductDate());
+                returnBatchItem.setBatchRemark(batch.getBatchRemark());
+                returnBatchItem.setBatchInfoCode(batch.getBatchInfoCode());
+                returnBatchItem.setSupplierCode(inbound.getSupplierCode());
+                returnBatchItem.setSupplierName(inbound.getSupplierName());
                 Integer i = returnOrderInfoInspectionItemMapper.update(returnBatchItem);
                 LOGGER.info("更新退货单批次：{}", i);
 
@@ -738,13 +745,6 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 productBatch = new OrderInfoItemProductBatch();
                 productBatch.setLineCode(batch.getLineCode().longValue());
                 productBatch.setSkuCode(batch.getSkuCode());
-                productBatch.setBatchCode(batch.getBatchCode());
-                productBatch.setBeOverdueDate(batch.getBeOverdueDate());
-                productBatch.setProductDate(batch.getProductDate());
-                productBatch.setBatchRemark(batch.getBatchRemark());
-                productBatch.setBatchInfoCode(batch.getBatchInfoCode());
-                productBatch.setSupplierCode(inbound.getSupplierCode());
-                productBatch.setSupplierName(inbound.getSupplierName());
                 productBatch.setReturnTotalCount(batch.getActualTotalCount() + batchCount);
                 productBatch.setOrderCode(returnOrderInfo.getOrderCode());
                 orderInfoItemProductBatchMapper.updateByReturnBatchCount(productBatch);
