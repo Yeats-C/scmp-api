@@ -658,13 +658,17 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             // 查询对应的退货单商品信息
             returnOrderInfoItem = returnOrderInfoItemMapper.returnOrderOne(inbound.getSourceOderCode(), product.getSkuCode(), product.getLinenum());
             Integer productCount = returnOrderInfoItem.getActualInboundNum() == null ? 0 : returnOrderInfoItem.getActualInboundNum();
-            returnOrderInfoItem.setActualInboundNum(productCount + product.getPraInboundMainNum().intValue());
+            Integer praInboundMainNum = product.getPraInboundMainNum() == null ? 0 : product.getPraInboundMainNum().intValue();
+            if(praInboundMainNum == 0){
+                continue;
+            }
+            returnOrderInfoItem.setActualInboundNum(productCount + praInboundMainNum);
             returnOrderInfoItem.setActualChannelUnitPrice(returnOrderInfoItem.getChannelUnitPrice());
-            BigDecimal channelAmount = BigDecimal.valueOf(product.getPraInboundMainNum()).multiply(
+            BigDecimal channelAmount = BigDecimal.valueOf(praInboundMainNum).multiply(
                     returnOrderInfoItem.getChannelUnitPrice()).setScale(4, BigDecimal.ROUND_HALF_UP);
             returnOrderInfoItem.setActualTotalChannelPrice(channelAmount.add(returnOrderInfoItem.getActualTotalChannelPrice()));
             returnOrderInfoItem.setActualAmount(returnOrderInfoItem.getPrice());
-            BigDecimal totalAmount = BigDecimal.valueOf(product.getPraInboundMainNum()).multiply(
+            BigDecimal totalAmount = BigDecimal.valueOf(praInboundMainNum).multiply(
                     returnOrderInfoItem.getPrice()).setScale(4, BigDecimal.ROUND_HALF_UP);
             returnOrderInfoItem.setActualPrice(totalAmount.add(returnOrderInfoItem.getActualPrice()));
             Integer returnInfoProduct = returnOrderInfoItemMapper.update(returnOrderInfoItem);
