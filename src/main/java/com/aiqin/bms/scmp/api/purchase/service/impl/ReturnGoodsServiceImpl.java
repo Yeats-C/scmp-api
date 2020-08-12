@@ -550,6 +550,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 returnOrderItem.setSkuName(item.getSkuName());
                 orderItems.add(returnOrderItem);
             } else {
+                if(item.getActualInboundNum() == null || item.getActualInboundNum() == 0){
+                    continue;
+                }
                 // 如果平台类型为l 赋值回传dl的参数
                 product = new ProductRequest();
                 product.setLineCode(item.getProductLineNum().intValue());
@@ -563,6 +566,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                         returnOrderInfoInspectionItemMapper.returnBatchList(item.getSkuCode(), returnOrderInfo.getReturnOrderCode(), item.getProductLineNum().intValue());
                 if (CollectionUtils.isNotEmptyCollection(productBatchItems) && productBatchItems.size() > 0) {
                     for (ReturnOrderInfoInspectionItem batchItem : productBatchItems) {
+                        if(batchItem.getActualProductCount() == null || batchItem.getActualProductCount() == 0){
+                            continue;
+                        }
                         batchRequest = new BatchRequest();
                         batchRequest.setLineCode(batchItem.getLineCode().intValue());
                         batchRequest.setSkuCode(batchItem.getSkuCode());
