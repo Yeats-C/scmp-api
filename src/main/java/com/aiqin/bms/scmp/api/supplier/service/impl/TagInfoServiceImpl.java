@@ -16,6 +16,7 @@ import com.aiqin.bms.scmp.api.supplier.mapper.TagInfoMapper;
 import com.aiqin.bms.scmp.api.supplier.mapper.UseTagRecordMapper;
 import com.aiqin.bms.scmp.api.supplier.service.TagInfoService;
 import com.aiqin.bms.scmp.api.util.*;
+import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.alibaba.fastjson.JSON;
@@ -226,14 +227,14 @@ public class TagInfoServiceImpl implements TagInfoService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Integer saveRecordList(List<SaveUseTagRecordReqVo> records) {
-        log.info("原始数据:{}",JSON.toJSON(records));
+        log.info("原始数据:{}", JsonUtil.toJson(records));
         for (SaveUseTagRecordReqVo record : records) {
             ArrayList<SaveUseTagRecordItemReqVo> reqVos = record.getItemReqVos().stream()
                     .collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(f -> f.getTagCode()))), ArrayList::new));
             record.setItemReqVos(reqVos);
         }
 
-        log.info("去重后的数据:{}",JSON.toJSON(records));
+        log.info("去重后的数据:{}", JsonUtil.toJson(records));
         //需要新增的数据
         List<UseTagRecordReqVo> addList = Lists.newArrayList();
         //需要修改的数据/不动的数据
@@ -254,13 +255,12 @@ public class TagInfoServiceImpl implements TagInfoService {
                 checkUseTagRecord(record.getUseObjectCode(),record.getTagTypeCode(),reqVos,addList,updateList,delList);
             } catch (Exception e) {
                 log.error(Global.ERROR, e);
-                throw new BizException(MessageId.create(Project.SUPPLIER_API, 63,
-                        "系统错误"));
+                throw new BizException(MessageId.create(Project.SUPPLIER_API, 63, "系统错误"));
             }
         }
-        log.info("需要新增的数据:{}",JSON.toJSON(addList));
-        log.info("需要修改的数据/不动的数据:{}",JSON.toJSON(updateList));
-        log.info("需要删除的数据:{}",JSON.toJSON(delList));
+        log.info("需要新增的数据:{}", JsonUtil.toJson(addList));
+        log.info("需要修改的数据/不动的数据:{}", JsonUtil.toJson(updateList));
+        log.info("需要删除的数据:{}", JsonUtil.toJson(delList));
         List<UpdateUseNumReqVo> reqVos = Lists.newArrayList();
         int num = 0;
         if (CollectionUtils.isNotEmptyCollection(addList)) {
@@ -272,7 +272,6 @@ public class TagInfoServiceImpl implements TagInfoService {
                 reqVos.add(reqVo);
             });
         }
-
         if (CollectionUtils.isNotEmptyCollection(delList)) {
             num += ((TagInfoService) AopContext.currentProxy()).updateRecordSelective(delList);
             delList.forEach(item->{
@@ -285,8 +284,6 @@ public class TagInfoServiceImpl implements TagInfoService {
         if (CollectionUtils.isNotEmptyCollection(reqVos)) {
             updateUseNum(reqVos);
         }
-
-
         return  num;
     }
 

@@ -233,7 +233,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
-        log.info("新增或修改sku商品信息，传入参数是[{}]", JSON.toJSONString(addSkuInfoReqVO));
+        log.info("新增或修改sku商品信息，传入参数是[{}]", JsonUtil.toJson(addSkuInfoReqVO));
         if (null != addSkuInfoReqVO && null != addSkuInfoReqVO.getProductSkuDraft()){
             //SKU基本信息
             ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
@@ -1819,7 +1819,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             boolean flag = applyProductSkus.get(i).getSelectionEffectiveTime() == 0;
             //判断不生效生效
             boolean beEffective = flag && applyProductSkus.get(i).getSelectionEffectiveStartTime().after(auditorTime);
-            //进行判断新增 还是修改
+            //进行判断1新增 还是0修改
             Integer flagNum=0;
 
             productSkuInfo.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
@@ -2377,6 +2377,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             for (PriceChannelForChangePrice priceChannelForChangePrice : respVo.getPriceChannelList()) {
                 ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitDao.selectOneBySkuCode(respVo.getSkuCode());
                 priceChannelForChangePrice.setPurchasePriceNewest(productSkuSupplyUnit.getTaxIncludedPrice());
+                priceChannelForChangePrice.setTaxCost(productSkuSupplyUnit.getTaxIncludedPrice());
             }
         }
 //        }else {
