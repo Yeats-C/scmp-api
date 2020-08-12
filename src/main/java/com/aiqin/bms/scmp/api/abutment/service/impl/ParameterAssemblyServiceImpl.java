@@ -391,7 +391,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
         // 保存DL推送熙耘门店信息日志
         DlOtherInfo info = new DlOtherInfo();
-        info.setDocumentCode(request.getSupplierCode());
+        info.setDocumentCode(supplierInfo.getSupplierCode());
         info.setDocumentType(Global.SUPPLIER_TYPE);
         info.setBusinessType(Global.ECHO_TYPE);
         info.setDocumentContent(JsonUtil.toJson(supplierInfo));

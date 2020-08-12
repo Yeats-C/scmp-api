@@ -739,7 +739,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             for (OutboundProductCallBackReqVo detail : details) {
                 // 正序查询sku的批次库存
                 List<StockBatch> batchList = stockBatchDao.stockBatchByReject(detail.getSkuCode(), outbound.getWarehouseCode(), null);
-                if (CollectionUtils.isEmpty(batchList) && batchList.size() > 0) {
+                if (CollectionUtils.isEmpty(batchList)) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息：{}", detail.getSkuCode());
                     continue;
                 }
@@ -753,7 +753,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 }
 
                 for (OutboundProductCallBackReqVo product : productList) {
-                    for (int i = 0; i <= batchList.size(); i++) {
+                    for (int i = 0; i < batchList.size(); i++) {
                         outboundBatch = new OutboundBatch();
                         outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                         outboundBatch.setBatchCode(batchList.get(i).getBatchCode());
@@ -810,7 +810,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                 }
             }
         } else {
-            if (CollectionUtils.isEmpty(request.getBatchList()) && request.getBatchList().size() <= 0) {
+            if (CollectionUtils.isEmpty(request.getBatchList())) {
                 LOGGER.info("wms回传出库单，非自动批次管理，未回传批次信息:{}", JsonUtil.toJson(request));
             } else {
                 Map<String, Long> actualTotalCountMap = new HashMap<>();
@@ -904,7 +904,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
 
                     // 查询批次数据
                     List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), outbound.getWarehouseCode(), batch.getBatchCode());
-                    if (CollectionUtils.isEmpty(batchList) && batchList.size() <= 0) {
+                    if (CollectionUtils.isEmpty(batchList)) {
                         notStockBatches.add(batch);
                         LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
                     }else {
@@ -915,7 +915,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             LOGGER.info("wms回传出库单，sku的实际批次库存总数大于所有sku批次的总库存:{}", batch.getSkuCode());
                         }else {
                             Long changeCount;
-                            for (int i = 0; i <= batchList.size(); i++) {
+                            for (int i = 0; i < batchList.size(); i++) {
                                 stockBatchInfoRequest = new StockBatchInfoRequest();
                                 stockBatchInfoRequest.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
                                 stockBatchInfoRequest.setTransportCenterCode(batchList.get(i).getTransportCenterCode());
