@@ -539,6 +539,9 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         BatchRequest batchRequest;
 
         for (ReturnOrderInfoItem item : infoItems) {
+            if(item.getActualInboundNum() == null){
+                continue;
+            }
             if (returnOrderInfo.getPlatformType().equals(Global.PLATFORM_TYPE_0)) {
                 returnOrderItem = new ReturnOrderDetailDLReq();
                 returnOrderItem.setActualReturnProductCount(item.getActualInboundNum().longValue());
@@ -764,7 +767,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
         log.info("更新退货单主信息：{}", returnInfo);
 
         // 回传运营中台信息
-        if(isComplete > 0){
+        if(isComplete <= 0){
             changeParameter(returnOrder.getReturnOrderCode());
         }
         return HttpResponse.success();
