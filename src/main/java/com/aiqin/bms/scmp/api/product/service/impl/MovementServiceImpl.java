@@ -258,6 +258,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             OutboundReqVo convert = handleTransferOutbound(addAllocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
             outboundService.saveOutbound(convert);
+
+            //生成调拨单
+            allocationInsert(addAllocation, type, typeName);
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
@@ -300,8 +303,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
             dlService.stockChange(stockChangeDl);
 
-            //生成调拨单
-            allocationInsert(addAllocation, type, typeName);
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
