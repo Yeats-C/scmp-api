@@ -257,8 +257,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(addAllocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
-            outboundService.saveOutbound(convert);
-
+            String outboundOderCode = outboundService.saveOutbound(convert);
+            addAllocation.setOutboundOderCode(outboundOderCode);
             //添加详情
             allocationProductMapper.saveList(addAllocation.getDetailList());
             //添加供应商和商品关系
@@ -287,8 +287,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
-            inboundService.saveInbound(inboundReqSave);
-
+            String inboundOderCode = inboundService.saveInbound(inboundReqSave);
+            addAllocation.setInboundOderCode(inboundOderCode);
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
             stockRequest.setOperationType(Global.STOCK_OPERATION_6);
