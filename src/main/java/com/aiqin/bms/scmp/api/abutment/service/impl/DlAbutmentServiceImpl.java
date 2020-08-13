@@ -12,11 +12,17 @@ import com.aiqin.bms.scmp.api.abutment.domain.request.product.ProductInspectionR
 import com.aiqin.bms.scmp.api.abutment.domain.response.DLResponse;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.ParameterAssemblyService;
+import com.aiqin.bms.scmp.api.base.OrderStatus;
 import com.aiqin.bms.scmp.api.base.PagesRequest;
 import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.base.ReturnOrderStatus;
 import com.aiqin.bms.scmp.api.constant.Global;
 import com.aiqin.bms.scmp.api.product.dao.ProductSkuInspReportDao;
+import com.aiqin.bms.scmp.api.purchase.domain.pojo.order.OrderInfo;
 import com.aiqin.bms.scmp.api.purchase.domain.pojo.returngoods.ReturnOrderInfo;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoRespVO;
+import com.aiqin.bms.scmp.api.purchase.mapper.OrderInfoMapper;
+import com.aiqin.bms.scmp.api.purchase.mapper.ReturnOrderInfoMapper;
 import com.aiqin.bms.scmp.api.purchase.service.OrderService;
 import com.aiqin.bms.scmp.api.purchase.service.ReturnGoodsService;
 import com.aiqin.bms.scmp.api.supplier.dao.warehouse.WarehouseDao;
@@ -67,6 +73,10 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     private ReturnGoodsService returnGoodsService;
     @Resource
     private ProductSkuInspReportDao productSkuInspReportDao;
+    @Resource
+    private OrderInfoMapper orderInfoMapper;
+    @Resource
+    private ReturnOrderInfoMapper returnOrderInfoMapper;
 
     @Override
     public HttpResponse orderInfo(OrderInfoRequest request){
@@ -256,6 +266,23 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         if (null == request) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
+        if (request.getCancelType() == 1) {
+            OrderInfo orderInfo = orderInfoMapper.selectByOrderCode2(request.getOrderCode());
+            if(orderInfo.getOrderStatus().equals(OrderStatus.TRANSACTION_TERMINATED_ABNORMALLY.getStatusCode()) ||
+                    orderInfo.getOrderStatus().equals(OrderStatus.CANCELLED.getStatusCode())){
+                LOGGER.info("重复调用，订单已经取消成功：", request.getOrderCode());
+                return HttpResponse.success();
+            }
+        }else {
+            ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(request.getOrderCode());
+            if(returnOrderInfo.getOrderStatus().equals(ReturnOrderStatus.RETURN_ABNORMALLY_TERMINATED.getStatusCode()) ||
+                    returnOrderInfo.getOrderStatus().equals(ReturnOrderStatus.cancelled.getStatusCode())){
+                LOGGER.info("重复调用，退货单已经取消成功：", request.getOrderCode());
+                return HttpResponse.success();
+            }
+        }
+
         LOGGER.info("DL->熙耘，单据取消参数：{}", JsonUtil.toJson(request));
         // 保存DL->熙耘，单据取消日志
         DlOrderBill info = new DlOrderBill();
