@@ -259,8 +259,12 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //调拨才有出库 出库单号
             outboundService.saveOutbound(convert);
 
-            //生成调拨单
-            allocationInsert(addAllocation, type, typeName);
+            //添加详情
+            allocationProductMapper.saveList(addAllocation.getDetailList());
+            //添加供应商和商品关系
+            if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(addAllocation.getDetailBatchList())){
+                allocationProductBatchMapper.saveList(addAllocation.getDetailBatchList());
+            }
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
@@ -303,6 +307,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDl));
             dlService.stockChange(stockChangeDl);
 
+            //生成调拨单
+            allocationInsert(addAllocation, type, typeName);
             return HttpResponse.success();
         } catch (GroundRuntimeException e) {
             LOGGER.error("订单回调异常:{}", e);
@@ -834,12 +840,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         allocation.setPatternType(2);
         allocation.setPatternName("wms方发起");
         allocationMapper.insertSelective(allocation);
-        //添加详情
-        allocationProductMapper.saveList(allocation.getDetailList());
-        //添加供应商和商品关系
-        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(allocation.getDetailBatchList())){
-            allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
-        }
     }
 
     private void handleProfitLossStockData(Allocation addAllocation, ChangeStockRequest changeStockRequest) {
