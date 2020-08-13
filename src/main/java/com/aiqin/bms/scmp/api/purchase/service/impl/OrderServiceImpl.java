@@ -1205,9 +1205,6 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         if (StringUtils.isBlank(orderCode)) {
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
-        // TODO 调用DL 取消的销售单接口
-
-
         // 取消销售单
         OrderInfo orderInfo = new OrderInfo();
         orderInfo.setOrderCode(orderCode);
