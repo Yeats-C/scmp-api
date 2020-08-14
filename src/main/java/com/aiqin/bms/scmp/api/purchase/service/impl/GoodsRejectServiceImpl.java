@@ -1091,7 +1091,14 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 dlProduct.setTotalCount(rejectRecordDetail.getActualTotalCount());
                 dlProduct.setProductAmount(rejectRecordDetail.getActualProductTotalAmount());
                 dlProduct.setTaxRate(rejectRecordDetail.getTaxRate());
-                Integer productType = rejectRecordDetail.getProductType() == 3 ? 1 : (rejectRecordDetail.getProductType() == 2 ? 2 : 1);
+                Integer productType;
+                if(rejectRecordDetail.getProductType().equals(2)){
+                    productType = 2;
+                }else if(rejectRecordDetail.getProductType().equals(1)){
+                    productType = 3;
+                }else {
+                    productType = 1;
+                }
                 dlProduct.setProductType(productType);
                 BigDecimal noTaxPrice = Calculate.computeNoTaxPrice(rejectRecordDetail.getProductAmount(), rejectRecordDetail.getTaxRate());
                 dlProduct.setNotProductAmount(noTaxPrice);
