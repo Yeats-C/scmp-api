@@ -110,9 +110,17 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         if(null == request){
             return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
         }
+
+        if(request.getBusinessForm() == null){
+            LOGGER.info("DL推送退货单业务形式不能为空：{}", request.getReturnOrderCode());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "退货单业务形式不能为空"));
+        }
+        // 拼接退货单号
+        String returnCode = request.getReturnOrderCode() + "-" + request.getBusinessForm();
+
         LOGGER.info("DL->熙耘，退货出库单参数：{}", JsonUtil.toJson(request));
         DlOrderBill info = new DlOrderBill();
-        info.setDocumentCode(request.getReturnOrderCode());
+        info.setDocumentCode(returnCode);
         if(request.getBusinessForm() != null && request.getBusinessForm() == 7){
             info.setDocumentType(Global.RETURN_INFO_TRANSPORT_TYPE);
         }else {
@@ -129,6 +137,7 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             LOGGER.info("DL->熙耘，编辑退货出库单日志：{}", logCount);
         }
 
+        request.setReturnOrderCode(returnCode);
         parameterAssemblyService.returnInfoParameter(request, info);
         return HttpResponse.success();
     }
@@ -178,6 +187,13 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
             info.setDocumentType(Global.ORDER_TYPE);
             dlUrl = "/back/subOrder";
         } else if (request.getOperationType() == 4) {
+            // 截取退货单号
+            String returnCode = request.getOrderCode();
+            boolean contains = returnCode.contains("-");
+            if(contains){
+                String str = returnCode.substring(0, returnCode.indexOf("-"));
+                request.setOrderCode(str);
+            }
             info.setDocumentType(Global.RETURN_INFO_TYPE);
             dlUrl = "/back/orderReturn";
         } else {
