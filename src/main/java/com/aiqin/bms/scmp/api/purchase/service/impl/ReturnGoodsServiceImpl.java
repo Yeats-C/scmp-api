@@ -566,6 +566,11 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                         returnOrderInfoInspectionItemMapper.returnBatchList(item.getSkuCode(), returnOrderInfo.getReturnOrderCode(), item.getProductLineNum().intValue());
                 if (CollectionUtils.isNotEmptyCollection(productBatchItems) && productBatchItems.size() > 0) {
                     for (ReturnOrderInfoInspectionItem batchItem : productBatchItems) {
+                        // 查询库房信息
+                        WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(batchItem.getWarehouseCode());
+                        if(warehouse == null || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+                            continue;
+                        }
                         if(batchItem.getActualProductCount() == null || batchItem.getActualProductCount() == 0){
                             continue;
                         }
