@@ -545,6 +545,16 @@ public class InboundServiceImpl  implements InboundService {
         Long praInboundNum = 0L, praMainUnitNum = 0L;
         BigDecimal praTaxAmount = BigDecimal.ZERO, praAmount = BigDecimal.ZERO;
         List<InboundProduct> inboundProducts = new ArrayList<>();
+
+        Map<String, Long> inboundActualCountMap = new HashMap<>();
+        for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
+            key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
+            Long actualCount = inboundProduct.getActualTotalCount() == null ? 0L : inboundProduct.getActualTotalCount();
+            Long count =  inboundActualCountMap.get(key) == null ? 0L : inboundActualCountMap.get(key);
+            inboundActualCountMap.put(key, actualCount + count);
+        }
+
+        Map<String, InboundProductCallBackRequest> inboundProductMap = new HashMap<>();
         for (InboundProductCallBackRequest inboundProduct : request.getProductList()) {
             // 查询对应订单的sku
             key = String.format("%s,%s,%s", inbound.getInboundOderCode(), inboundProduct.getSkuCode(), inboundProduct.getLineCode());
@@ -553,7 +563,15 @@ public class InboundServiceImpl  implements InboundService {
                LOGGER.info("入库单未查询到对应的商品信息：{}", JsonUtil.toJson(inboundProduct));
                throw new GroundRuntimeException("WMS回传入库单,未查询到对应的商品信息");
             }
-            Long actualTotalCount = inboundProduct.getActualTotalCount() == null ? 0L : inboundProduct.getActualTotalCount();
+
+            if(inboundProductMap.get(key) != null){
+                continue;
+            }else {
+                inboundProductMap.put(key, inboundProduct);
+            }
+
+
+            Long actualTotalCount = inboundActualCountMap.get(key) == null ? 0L : inboundActualCountMap.get(key);
             product.setPraInboundMainNum(actualTotalCount);
             Long baseContent = product.getInboundBaseContent() == null ? 1L : Long.valueOf(product.getInboundBaseContent());
             product.setPraInboundNum(actualTotalCount / baseContent);
@@ -572,7 +590,7 @@ public class InboundServiceImpl  implements InboundService {
             praTaxAmount = praTaxAmount.add(product.getPraTaxAmount());
             if(product.getTax() != null){
                 BigDecimal amount = Calculate.computeNoTaxPrice(product.getPraTaxAmount(), product.getTax());
-                praAmount = inbound.getPraAmount().add(amount);
+                praAmount = praAmount.add(amount);
             }
 
             // 设置库存变更参数
