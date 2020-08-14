@@ -1107,6 +1107,7 @@ public class InboundServiceImpl  implements InboundService {
             dlRequest.setOperationCode(order.getUpdateById());
             dlRequest.setOperationName(order.getUpdateByName());
             dlRequest.setPreArrivalTime(order.getPreArrivalTime());
+            dlRequest.setInboundTime(inbound.getInboundTime() == null ? Calendar.getInstance().getTime() : inbound.getInboundTime());
             dlRequest.setTotalCount(inbound.getPraMainUnitNum());
 
             List<ProductRequest> dlProductList = Lists.newArrayList();

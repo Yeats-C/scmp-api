@@ -257,7 +257,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(addAllocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
-            outboundService.saveOutbound(convert);
+            String outboundOderCode = outboundService.saveOutbound(convert);
+            addAllocation.setOutboundOderCode(outboundOderCode);
+            //添加详情
+            allocationProductMapper.saveList(addAllocation.getDetailList());
+            //添加供应商和商品关系
+            if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(addAllocation.getDetailBatchList())){
+                allocationProductBatchMapper.saveList(addAllocation.getDetailBatchList());
+            }
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
@@ -280,8 +287,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
-            inboundService.saveInbound(inboundReqSave);
-
+            String inboundOderCode = inboundService.saveInbound(inboundReqSave);
+            addAllocation.setInboundOderCode(inboundOderCode);
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
             stockRequest.setOperationType(Global.STOCK_OPERATION_6);
@@ -833,12 +840,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         allocation.setPatternType(2);
         allocation.setPatternName("wms方发起");
         allocationMapper.insertSelective(allocation);
-        //添加详情
-        allocationProductMapper.saveList(allocation.getDetailList());
-        //添加供应商和商品关系
-        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(allocation.getDetailBatchList())){
-            allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
-        }
     }
 
     private void handleProfitLossStockData(Allocation addAllocation, ChangeStockRequest changeStockRequest) {

@@ -280,7 +280,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
     public void synchrdlStockChange(Allocation allocation, List<AllocationProductResVo> products, List<AllocationProductBatchResVo> list, StockChangeRequest stockChangeDlRequest) {
         // 主表数据
         Long totalCount = 0L;
-        if (allocation.getInboundOderCode() == null) {
+        if (Global.DL_OPERATION_TYPE_2 == stockChangeDlRequest.getOperationType()) {
             stockChangeDlRequest.setWarehouseCode(allocation.getCallOutWarehouseCode());
             stockChangeDlRequest.setWarehouseName(allocation.getCallOutWarehouseName());
         } else {
