@@ -56,6 +56,11 @@ public class StockChangeRequest {
     @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
     private Date preArrivalTime;
 
+    @ApiModelProperty("实际入库时间")
+    @JsonProperty("inbound_time")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    private Date inboundTime;
+
     @ApiModelProperty(value="总数(采购、退供)")
     @JsonProperty("total_count")
     private Long totalCount;
