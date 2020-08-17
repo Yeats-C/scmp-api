@@ -801,9 +801,9 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
                 stockVoRequest.setChangeCount(allocationProduct.getQuantity());
                 stockVoRequest.setTaxRate(allocationProduct.getTax());
                 //设置类型
-                stockVoRequest.setDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                stockVoRequest.setDocumentType(Global.DOCUMENT_TYPE_6);
                 stockVoRequest.setDocumentCode(allocation.getAllocationCode());
-                stockVoRequest.setSourceDocumentType(AllocationTypeEnum.getAll().get(allocation.getAllocationType()).getLockType());
+                stockVoRequest.setSourceDocumentType(Global.DOCUMENT_TYPE_6);
                 stockVoRequest.setSourceDocumentCode(allocation.getAllocationCode());
                 stockVoRequest.setOperatorId(allocation.getUpdateById());
                 stockVoRequest.setOperatorName(allocation.getUpdateBy());

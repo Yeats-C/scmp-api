@@ -358,9 +358,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundReqSave.setInboundBatchList(null);
             inboundService.saveInbound(inboundReqSave);
-            // 出解锁库存
+            // 出减库存并解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -413,9 +413,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             finished(allocation1);
             updateOut(request, allocation1, detailLists, detailBatchList, productSkuMap);
             updateIn(request, allocation1, detailLists, detailBatchList, productSkuMap);
-            // 解锁库存
+            // 减库存并解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -869,9 +869,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockInfoRequest.setSkuName(itemReqVo.getSkuName());
-            stockInfoRequest.setDocumentType(11);
+            stockInfoRequest.setDocumentType(Global.DOCUMENT_TYPE_6);
             stockInfoRequest.setDocumentCode(itemReqVo.getAllocationCode());
-            stockInfoRequest.setSourceDocumentType(11);
+            stockInfoRequest.setSourceDocumentType(Global.DOCUMENT_TYPE_6);
             stockInfoRequest.setSourceDocumentCode(itemReqVo.getAllocationCode());
             stockInfoRequest.setOperatorName(itemReqVo.getCreateBy());
             list.add(stockInfoRequest);
