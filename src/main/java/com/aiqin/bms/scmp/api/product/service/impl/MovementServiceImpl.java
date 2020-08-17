@@ -855,7 +855,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
+           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_2 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
@@ -888,7 +888,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
                     stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
                     stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
-                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
+                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_2 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                         stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         stockBatchInfoRequest.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         stockBatchInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
