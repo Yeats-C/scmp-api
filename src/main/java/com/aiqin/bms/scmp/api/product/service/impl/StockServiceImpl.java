@@ -895,6 +895,19 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                 stock.setInventoryCount(inventoryCount - changeCount);
                 stock.setLockCount(lockCount - preLockCount);
                 break;
+            case 11:
+                // 预计在途数
+                Long preWay = request.getPreWayCount() == null ? 0L : request.getPreWayCount();
+                // 采购取消减在途
+                if (purchaseWayCount < preWay) {
+                    LOGGER.error("采购减在途: 采购在途数不能为负,sku:" + request.getSkuCode());
+                    throw new BizException("采购减在途: 采购在途数不能为负，sku:" + request.getSkuCode());
+                }
+                stock.setPurchaseWayCount(purchaseWayCount - preWay);
+                stock.setTotalWayCount(stock.getPurchaseWayCount() + stock.getAllocationWayCount());
+
+                break;
+
             default:
                 return null;
         }
