@@ -18,6 +18,10 @@ public class ProductRequest {
     @JsonProperty("line_code")
     private Integer lineCode;
 
+    @ApiModelProperty(value="退货销售单行号")
+    @JsonProperty("order_line_code")
+    private Long orderLineCode;
+
     @NotNull(message = "SKU不能为空")
     @ApiModelProperty(value="sku编码")
     @JsonProperty("sku_code")
