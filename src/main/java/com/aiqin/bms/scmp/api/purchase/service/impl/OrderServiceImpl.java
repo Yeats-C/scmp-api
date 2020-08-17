@@ -646,16 +646,18 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             List<OrderInfoItemProductBatch> itemBatchLists = new ArrayList<>();
             OrderInfoItemProductBatch orderInfoItemProductBatch;
             if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0) {
-                for (StockDayBatch stockDayBatch : stockDayBatches) {
-                    orderInfoItemProductBatch = new OrderInfoItemProductBatch();
-                    orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
-                    orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
-                    orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
-                    orderInfoItemProductBatch.setSkuName(stockDayBatch.getSkuName());
-                    orderInfoItemProductBatch.setProductDate(stockDayBatch.getProductDate());
-                    orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
-                    orderInfoItemProductBatch.setLineCode(stockDayBatch.getLineCode());
-                    itemBatchLists.add(orderInfoItemProductBatch);
+                if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_3) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_4)){
+                    for (StockDayBatch stockDayBatch : stockDayBatches) {
+                        orderInfoItemProductBatch = new OrderInfoItemProductBatch();
+                        orderInfoItemProductBatch.setOrderCode(vo.getOrderCode());
+                        orderInfoItemProductBatch.setSkuCode(stockDayBatch.getSkuCode());
+                        orderInfoItemProductBatch.setBatchCode(stockDayBatch.getBatchCode());
+                        orderInfoItemProductBatch.setSkuName(stockDayBatch.getSkuName());
+                        orderInfoItemProductBatch.setProductDate(stockDayBatch.getProductDate());
+                        orderInfoItemProductBatch.setTotalCount(stockDayBatch.getBatchCount());
+                        orderInfoItemProductBatch.setLineCode(stockDayBatch.getLineCode());
+                        itemBatchLists.add(orderInfoItemProductBatch);
+                    }
                 }
             }
             vo.setItemBatchList(itemBatchLists);
