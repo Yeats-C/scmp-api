@@ -536,6 +536,14 @@
     and sku_code = #{skuCode,jdbcType=VARCHAR}
     and callout_batch_number = #{batchCode,jdbcType=VARCHAR}
   </select>
+  <select id="selectByCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest">
+    select
+    callout_actual_total_count as actualTotalCount
+    from allocation_product_batch
+    where allocation_code = #{allocationCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
+    and callout_batch_number = #{batchCode,jdbcType=VARCHAR}
+  </select>
   <update id="updateByBatch" parameterType="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest">
     update allocation_product_batch
     <set>

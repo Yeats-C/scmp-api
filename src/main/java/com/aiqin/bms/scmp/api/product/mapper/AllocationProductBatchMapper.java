@@ -46,6 +46,9 @@ public interface AllocationProductBatchMapper {
     // 查看表里是否存在该条数据
     Integer selectCountByCode(@Param("allocationCode") String allocationCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
 
+    // 查看表里是否存在该条数据
+    AllocationBatchRequest selectByCode(@Param("allocationCode") String allocationCode, @Param("skuCode") String skuCode, @Param("batchCode") String batchCode);
+
     void updateByBatch(AllocationBatchRequest detail);
 
     void updateByBatchIn(AllocationBatchRequest detail);
