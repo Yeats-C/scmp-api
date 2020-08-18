@@ -18,7 +18,7 @@ public class SupplierImportUpdate extends BaseRowModel{
     /**
      * 表头
      */
-    public static final String HEDE = "SupplierImportUpdate(applySupplyCode=供应商编号, applySupplyName=供应商名称, applySupplyType=供应商类型, supplierName=所属集团, applyAbbreviation=简称, phone=电话, fax=传真, provinceName=省, cityName=市, districtName=县, address=详细地址, zipCode=邮编, email=邮箱, companyWebsite=公司网址, taxId=税号, registeredCapital=注册资金(万元), corporateRepresentative=法人代表, contactName=联系人姓名, mobilePhone=手机号, minOrderAmount=最低订货金额, maxOrderAmount=最高订货金额, sendProvinceName=发货省, sendCityName=发货市, sendDistrictName=发货县, sendingAddress=发货详细地址, returnProvinceName=退货省, returnCityName=退货市, returnDistrictName=退货县, returningAddress=退货详细地址)";
+    public static final String HEDE = "SupplierImportUpdate(applySupplyCode=供应商编号, applySupplyName=供应商名称, applySupplyType=供应商类型, supplierName=所属集团, applyAbbreviation=简称, phone=电话, fax=传真, provinceName=省, cityName=市, districtName=县, address=详细地址, zipCode=邮编, email=邮箱, companyWebsite=公司网址, taxId=税号, registeredCapital=注册资金(万元), corporateRepresentative=法人代表, contactName=联系人姓名, mobilePhone=手机号, minOrderAmount=最低订货金额, maxOrderAmount=最高订货金额, sendProvinceName=发货省, sendCityName=发货市, sendDistrictName=发货县, sendingAddress=发货详细地址, returnProvinceName=退货省, returnCityName=退货市, returnDistrictName=退货县, returningAddress=退货详细地址, property=属性)";
 
     @ApiModelProperty("供应商编号")
     @ExcelProperty(index = 0 , value = "供应商编号")
@@ -147,6 +147,10 @@ public class SupplierImportUpdate extends BaseRowModel{
     @ApiModelProperty("退货详细地址")
     @ExcelProperty(index = 28 , value = "退货详细地址")
     private String returningAddress;
+
+    @ApiModelProperty("属性")
+    @ExcelProperty(index = 37 , value = "属性")
+    private String property;
 
 //    @ApiModelProperty("退送至")
 //    @ExcelProperty(index = 31 , value = "退送至")
