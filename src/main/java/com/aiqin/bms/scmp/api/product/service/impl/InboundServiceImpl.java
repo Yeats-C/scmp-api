@@ -1155,7 +1155,7 @@ public class InboundServiceImpl  implements InboundService {
 
                 // 查询批次信息
                 List<PurchaseBatch> batches = purchaseBatchDao.purchaseBatchList(purchaseOrder.getPurchaseOrderCode(), product.getSkuCode(), product.getLinenum().intValue());
-                if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
+                if(CollectionUtils.isNotEmpty(batches)){
                     dlBatchList = Lists.newArrayList();
                     for (PurchaseBatch batch : batches){
                         dlBatch = new BatchRequest();
