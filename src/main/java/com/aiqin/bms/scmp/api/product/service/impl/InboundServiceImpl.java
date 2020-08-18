@@ -1154,10 +1154,11 @@ public class InboundServiceImpl  implements InboundService {
                 dlProduct.setNotProductAmount(noTaxPrice);
 
                 // 查询批次信息
-                List<PurchaseBatch> batches = purchaseBatchDao.purchaseBatchList(purchaseOrder.getPurchaseOrderCode(), product.getSkuCode(), product.getLinenum().intValue());
+                List<InboundBatch> batches = inboundBatchDao.inboundListBySku(product.getSkuCode(),
+                        inbound.getInboundOderCode(), product.getLinenum());
                 if(CollectionUtils.isNotEmpty(batches)){
                     dlBatchList = Lists.newArrayList();
-                    for (PurchaseBatch batch : batches){
+                    for (InboundBatch batch : batches){
                         dlBatch = new BatchRequest();
                         dlBatch.setLineCode(product.getLinenum().intValue());
                         dlBatch.setSkuCode(product.getSkuCode());
