@@ -360,7 +360,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
             ReturnOrderInfo returnOrderInfo = returnOrderInfoMapper.selectByCode(returnOrderCode);
             for (ReturnOrderInspectionResponse response : responses) {
                 if (StringUtils.isBlank(response.getSkuCode()) || response.getOrderLineCode() == null) {
-                    return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+                    continue;
                 }
                 List<OrderInfoItemProductBatch> batches = orderInfoItemProductBatchMapper.orderBatchList(
                         response.getSkuCode(), returnOrderInfo.getOrderCode(), response.getOrderLineCode().intValue());
