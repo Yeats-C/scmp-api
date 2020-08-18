@@ -39,4 +39,12 @@ public class OrderBatchStoreDetail implements Serializable {
     @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonProperty("product_date")
     private Date productDate;
+
+    @ApiModelProperty("销售数量")
+    @JsonProperty("total_count")
+    private Long totalCount;
+
+    @ApiModelProperty("实际销售数量")
+    @JsonProperty("actual_total_count")
+    private Long actualTotalCount;
 }
