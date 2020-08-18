@@ -1236,7 +1236,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             movementWmsProductoLists.add(movementWmsProductReqVo);
         }
         // 移库商品批次表数据
-        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(aProductBatchLists) && aProductBatchLists.size() > 0) {
+        if (org.apache.commons.collections.CollectionUtils.isNotEmpty(aProductBatchLists)) {
             WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation1.getCallOutWarehouseCode());
             for (AllocationProductBatchResVo aProductBatchList : aProductBatchLists) {
                 // 移库入库情况下不需要
