@@ -53,7 +53,8 @@ public class GoodsRejectApprovalServiceImpl extends BaseServiceImpl implements G
             if (record == null) {
                 //未查询到退供单信息
                 return WorkFlowReturn.FALSE;
-            } else if (!record.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_TO_REVIEW)) {
+            } else if (!record.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_TO_REVIEW) &&
+                    !record.getApplyRecordStatus().equals(RejectRecordStatus.REJECT_APPLY_UNDER_REVIEW)) {
                 //退供单是取消状态,不进行操作
                 LOGGER.info("退供申请单非待审核状态,无法进行审批:", vo.getFormNo());
                 return WorkFlowReturn.SUCCESS;
