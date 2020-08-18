@@ -5,6 +5,8 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
+
 /**
  * @Classname: OutboundProductCallBackReqVo
  * 描述: 出库单skuWMS回调申请实体
@@ -61,5 +63,9 @@ public class OutboundBatchCallBackReqVo {
     @ApiModelProperty(value="库位号")
     @JsonProperty("location_code")
     private String locationCode;
+
+    @ApiModelProperty(value="批次含税采购价")
+    @JsonProperty("purchase_price")
+    private BigDecimal purchasePrice;
 
 }

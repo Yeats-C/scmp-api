@@ -998,7 +998,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         rejectRecord.setActualReturnTaxAmount(actualReturnAmount);
 
         // 更新批次的实际信息
-        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0 &&
+        if(CollectionUtils.isNotEmpty(request.getBatchList()) &&
                 !request.getBatchManage().equals(Global.BATCH_MANAGE_0)){
 
             RejectRecordBatch rejectBatchListOne;
@@ -1024,37 +1024,42 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     }
                 }else {
                     // 非指定批次
-                    List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(),
-                            rejectRecord.getWarehouseCode(), batch.getBatchCode());
-                    BigDecimal amount = BigDecimal.ZERO;
-                    if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
-                        amount = batchList.get(0).getPurchasePrice() == null ? BigDecimal.ZERO : batchList.get(0).getPurchasePrice();
-                    }
                     recordBatch = new RejectRecordBatch();
                     recordBatch.setRejectRecordCode(rejectRecord.getRejectRecordCode());
                     recordBatch.setBatchCode(batch.getBatchCode());
-                    String batchInfoCode = batch.getSkuCode() + "_" + rejectRecord.getWarehouseCode() + "_" +
-                            batch.getBatchCode() + "_" + rejectRecord.getSupplierCode() + "_" +
-                            amount.stripTrailingZeros().toPlainString();
+                    String batchInfoCode;
+                    if(StringUtils.isBlank(batch.getBatchInfoCode())){
+                        List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(),
+                                rejectRecord.getWarehouseCode(), batch.getBatchCode());
+                        BigDecimal amount = BigDecimal.ZERO;
+                        if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
+                            amount = batchList.get(0).getPurchasePrice() == null ? BigDecimal.ZERO : batchList.get(0).getPurchasePrice();
+                        }
+                        batchInfoCode = batch.getSkuCode() + "_" + rejectRecord.getWarehouseCode() + "_" +
+                                batch.getBatchCode() + "_" + rejectRecord.getSupplierCode() + "_" +
+                                amount.stripTrailingZeros().toPlainString();
+                    }else {
+                        batchInfoCode = batch.getBatchInfoCode();
+                    }
                     recordBatch.setBatchInfoCode(batchInfoCode);
                     recordBatch.setSkuCode(batch.getSkuCode());
                     recordBatch.setSkuName(batch.getSkuName());
                     recordBatch.setSupplierCode(rejectRecord.getSupplierCode());
                     recordBatch.setSupplierName(rejectRecord.getSupplierName());
-                    recordBatch.setProductDate(DateUtils.currentDate());
+                    recordBatch.setProductDate(batch.getProductDate());
                     recordBatch.setTotalCount(batch.getTotalCount());
                     recordBatch.setActualTotalCount(batch.getActualTotalCount());
                     recordBatch.setLineCode(batch.getLineCode());
-                    recordBatch.setPurchasePrice(amount);
+                    recordBatch.setPurchasePrice(batch.getPurchasePrice());
                     recordBatches.add(recordBatch);
                 }
             }
-            if(CollectionUtils.isNotEmpty(notRecordBatches) && notRecordBatches.size() > 0){
+            if(CollectionUtils.isNotEmpty(notRecordBatches)){
                 LOGGER.info("wms回传成功，指定批次未查询到的批次信息：{}", JsonUtil.toJson(notRecordBatches));
             }
         }
 
-        if(CollectionUtils.isNotEmpty(recordBatches) && recordBatches.size() > 0){
+        if(CollectionUtils.isNotEmpty(recordBatches)){
             Integer count = rejectRecordBatchDao.insertAll(recordBatches);
             LOGGER.info("wms回传成功，新增退供批次信息：{}", count);
         }
@@ -1104,8 +1109,9 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                 dlProduct.setNotProductAmount(noTaxPrice);
                 dlProductList.add(dlProduct);
                 // 查询批次信息
-                List<ScmpPurchaseBatch> batches = rejectRecordBatchDao.rejectBatchListBySap(rejectRecordDetail.getSkuCode(), rejectRecordDetail.getRejectRecordCode(), rejectRecordDetail.getLineCode());
-                if(CollectionUtils.isNotEmpty(batches) && batches.size() > 0){
+                List<ScmpPurchaseBatch> batches = rejectRecordBatchDao.rejectBatchListBySap(rejectRecordDetail.getSkuCode(),
+                        rejectRecordDetail.getRejectRecordCode(), rejectRecordDetail.getLineCode());
+                if(CollectionUtils.isNotEmpty(batches)){
                     dlBatchList = Lists.newArrayList();
                     for (ScmpPurchaseBatch batch : batches){
                         dlBatch = new BatchRequest();
