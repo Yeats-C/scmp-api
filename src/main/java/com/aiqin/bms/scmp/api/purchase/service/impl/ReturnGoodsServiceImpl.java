@@ -528,7 +528,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                 returnOrderItem.setSkuName(item.getSkuName());
                 orderItems.add(returnOrderItem);
             } else {
-                if(item.getActualInboundNum() == null || item.getActualInboundNum() == 0){
+                if(item.getActualInboundNum() == null){
                     continue;
                 }
                 // 如果平台类型为l 赋值回传dl的参数
@@ -550,7 +550,7 @@ public class ReturnGoodsServiceImpl extends BaseServiceImpl implements ReturnGoo
                         if(warehouse == null || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
                             continue;
                         }
-                        if(batchItem.getActualProductCount() == null || batchItem.getActualProductCount() == 0){
+                        if(batchItem.getActualProductCount() == null){
                             continue;
                         }
                         batchRequest = new BatchRequest();
