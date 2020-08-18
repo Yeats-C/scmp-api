@@ -9,10 +9,7 @@ import com.aiqin.bms.scmp.api.base.*;
 import com.aiqin.bms.scmp.api.base.service.impl.BaseServiceImpl;
 import com.aiqin.bms.scmp.api.common.*;
 import com.aiqin.bms.scmp.api.constant.Global;
-import com.aiqin.bms.scmp.api.product.dao.InboundBatchDao;
-import com.aiqin.bms.scmp.api.product.dao.InboundDao;
-import com.aiqin.bms.scmp.api.product.dao.InboundProductDao;
-import com.aiqin.bms.scmp.api.product.dao.StockBatchDao;
+import com.aiqin.bms.scmp.api.product.dao.*;
 import com.aiqin.bms.scmp.api.product.domain.EnumReqVo;
 import com.aiqin.bms.scmp.api.product.domain.converter.SupplyReturnOrderMainReqVO2InboundSaveConverter;
 import com.aiqin.bms.scmp.api.product.domain.pojo.*;
@@ -149,6 +146,8 @@ public class InboundServiceImpl  implements InboundService {
 
     @Resource
     private CodeUtils codeUtils;
+    @Resource
+    private ProductSkuSalesInfoDao productSkuSalesInfoDao;
 
 
     /**
@@ -1286,6 +1285,7 @@ public class InboundServiceImpl  implements InboundService {
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 400, "退货单- 入库单未查询商品信息"));
         }
         List<PurchaseSaleStockRespVo> distributionInfoList;
+        PurchaseSaleStockRespVo purchaseSaleStockRespVo;
         for (InboundProduct product : inboundProducts) {
             source= new ReturnOrderChildSourceInit();
             source.setSkuCode(product.getSkuCode());
@@ -1298,9 +1298,13 @@ public class InboundServiceImpl  implements InboundService {
             source.setModel(product.getModel());
             // 查询分销单位  条形码
             distributionInfoList = productSkuDistributionInfoMapper.getList(product.getSkuCode());
-            if(CollectionUtils.isNotEmpty(distributionInfoList) && distributionInfoList.size() > 0){
-                source.setSkuBarCode(distributionInfoList.get(0).getBarCode());
+            if(CollectionUtils.isNotEmpty(distributionInfoList)){
+                //source.setSkuBarCode(distributionInfoList.get(0).getBarCode());
                 source.setPackgeUnit(distributionInfoList.get(0).getUnitName());
+            }
+            purchaseSaleStockRespVo = productSkuSalesInfoDao.selectBarCodeBySkuCode(product.getSkuCode());
+            if(purchaseSaleStockRespVo != null){
+                source.setSkuBarCode(purchaseSaleStockRespVo.getBarCode());
             }
             detailList.add(source);
         }
