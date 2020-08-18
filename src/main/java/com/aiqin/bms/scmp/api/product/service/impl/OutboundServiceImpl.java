@@ -681,16 +681,13 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         multiply(outboundProduct.getPraTaxPurchaseAmount()).setScale(4, BigDecimal.ROUND_HALF_UP));
 
                 outboundProducts.add(outboundProduct);
-//                Integer count = outboundProductDao.update(outboundProduct);
-//                LOGGER.info("更新出库单商品信息：{}", count);
             }
 
             // 计算出库单总实际值
-            praOutboundCount += outbound.getPraOutboundNum();
-            praTotalOutboundCount += outbound.getPraMainUnitNum();
-            praTotalOutboundAmount = outbound.getPraTaxAmount().add(outboundProduct.getPraTaxAmount());
-            praOutboundAmount = outbound.getPraAmount().add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxPurchaseAmount(), outboundProduct.getTax())
-                    .multiply(BigDecimal.valueOf(outboundProduct.getPraOutboundMainNum())));
+            praOutboundCount += outboundProduct.getPraOutboundNum();
+            praTotalOutboundCount += outboundProduct.getPraOutboundMainNum();
+            praTotalOutboundAmount = praTotalOutboundAmount.add(outboundProduct.getPraTaxAmount());
+            praOutboundAmount = praOutboundAmount.add(Calculate.computeNoTaxPrice(outboundProduct.getPraTaxAmount(), outboundProduct.getTax()));
 
             // 设置库存商品变更值
             stockInfoRequest = new StockInfoRequest();
@@ -893,7 +890,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             }
                             outboundBatch.setBatchInfoCode(batchInfoCode);
                             outboundBatch.setSupplierName(outbound.getSupplierName());
-                            outboundBatch.setTotalCount(batch.getActualTotalCount());
+                            outboundBatch.setTotalCount(actualCount);
                             outboundBatch.setCreateById(request.getOperatorId());
                             outboundBatch.setCreateByName(request.getOperatorName());
                             outboundBatch.setUpdateById(request.getOperatorId());
@@ -1067,18 +1064,32 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
             try {
                 LOGGER.info("wms回传成功，根据出库单信息更改对应退供单的实际值：{}", JsonUtil.toJson(outbound));
                 RejectStockRequest rejectStockRequest = new RejectStockRequest();
-                RejectDetailStockRequest rejectDetailStockRequest = new RejectDetailStockRequest();
+                RejectDetailStockRequest rejectDetail;
                 List<RejectDetailStockRequest> rejectDetailStockRequests = new ArrayList<>();
                 rejectStockRequest.setRejectRecordCode(outbound.getSourceOderCode());
                 for (OutboundProduct outboundProduct : list) {
-                    rejectDetailStockRequest.setLineCode(outboundProduct.getLinenum().intValue());
-                    rejectDetailStockRequest.setActualCount(outboundProduct.getPraOutboundMainNum());
-                    rejectDetailStockRequest.setActualAmount(outboundProduct.getPraTaxAmount());
-                    rejectDetailStockRequests.add(rejectDetailStockRequest);
+                    rejectDetail = new RejectDetailStockRequest();
+                    rejectDetail.setLineCode(outboundProduct.getLinenum().intValue());
+                    rejectDetail.setActualCount(outboundProduct.getPraOutboundMainNum());
+                    rejectDetail.setActualAmount(outboundProduct.getPraTaxAmount());
+                    rejectDetailStockRequests.add(rejectDetail);
                 }
                 rejectStockRequest.setDetailList(rejectDetailStockRequests);
-                if(CollectionUtils.isNotEmpty(batchList) && batchList.size() > 0){
-                    List<RejectRecordBatch> infoBatch = BeanCopyUtils.copyList(batchList, RejectRecordBatch.class);
+                if(CollectionUtils.isNotEmpty(batchList)){
+                    List<RejectRecordBatch> infoBatch = Lists.newArrayList();
+                    RejectRecordBatch recordBatch;
+                    OutboundProduct outboundProduct;
+                    for(OutboundBatch batch : batchList){
+                        recordBatch = BeanCopyUtils.copy(batch, RejectRecordBatch.class);
+                        outboundProduct = outboundProductDao.selectByLineCode(outbound.getSourceOderCode(), batch.getSkuCode(), batch.getLineCode());
+                        if(outboundProduct != null){
+                            recordBatch.setPurchasePrice(outboundProduct.getPreTaxPurchaseAmount());
+                        }else {
+                            recordBatch.setPurchasePrice(BigDecimal.ZERO);
+                        }
+                        recordBatch.setLineCode(batch.getLineCode().intValue());
+                        infoBatch.add(recordBatch);
+                    }
                     rejectStockRequest.setBatchList(infoBatch);
                 }
                 // 回传给退供

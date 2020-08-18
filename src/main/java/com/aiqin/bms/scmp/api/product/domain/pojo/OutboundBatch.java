@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 /**
@@ -97,6 +98,10 @@ public class OutboundBatch extends PagesRequest {
     @ApiModelProperty(value="修改人名称")
     @JsonProperty("update_by_name")
     private String updateByName;
+
+    @ApiModelProperty(value="批次含税采购价")
+    @JsonProperty("purchase_price")
+    private BigDecimal purchasePrice;
 
     public OutboundBatch(String outboundOderCode, Integer pageSize, Integer pageNo) {
         this.outboundOderCode = outboundOderCode;
