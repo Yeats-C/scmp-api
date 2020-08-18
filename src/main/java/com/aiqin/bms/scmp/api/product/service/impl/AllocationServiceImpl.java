@@ -1186,6 +1186,8 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         } else if (Global.MOVEMENT_TYPE_2 == data.getMovementType()) {
             AllocationTypeEnum enumByTypeIn = AllocationTypeEnum.getAllocationTypeEnumByType(allocation1.getAllocationType());
             InboundReqSave convert1 = new AllocationOrderToInboundConverter(warehouseService, enumByTypeIn, productSkuPicturesDao).convert(allocation);
+            String redisCode = codeUtils.getRedisCode(EncodingRuleType.IN_BOUND_CODE);
+            convert1.setInboundOderCode(redisCode);
             String inboundOderCode = inboundService.saveInbound(convert1);
             //更改调拨在途数
             allocation.setInboundOderCode(inboundOderCode);
