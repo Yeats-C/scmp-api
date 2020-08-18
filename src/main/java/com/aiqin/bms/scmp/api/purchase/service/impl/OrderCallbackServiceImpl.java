@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.service.impl;
 
+import com.aiqin.bms.scmp.api.abutment.dao.DlOrderBillDao;
+import com.aiqin.bms.scmp.api.abutment.domain.DlOrderBill;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.EchoOrderRequest;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.OrderTransportRequest;
@@ -67,6 +69,7 @@ import com.aiqin.ground.util.json.JsonUtil;
 import com.aiqin.ground.util.protocol.MessageId;
 import com.aiqin.ground.util.protocol.Project;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
+import com.alibaba.fastjson.JSONObject;
 import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -192,7 +195,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Autowired
     private CodeUtils codeUtils;
-
+    @Autowired
+    @Lazy(true)
+    private DlAbutmentService dlService;
+    @Resource
+    private DlOrderBillDao dlOrderBillDao;
 
     /**
      * 销售出库接口
@@ -2004,6 +2011,19 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         transport.setTransportTime(new Date());
         LOGGER.info("wms回传更新京东发运单运费,参数：[{}]", JsonUtil.toJson(transport));
         transportMapper.updateTransport(transport);
+        return HttpResponse.success();
+    }
+
+    @Override
+    public HttpResponse orderDl(List<String> orderCodes) {
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes);
+        for (DlOrderBill dlOrderBill : dlOrderBills) {
+            String documentContent = dlOrderBill.getDocumentContent();
+            LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
+            EchoOrderRequest echo = JSONObject.parseObject(documentContent, EchoOrderRequest.class);
+            LOGGER.info("获取数据转换对象信息,参数：[{}]", JsonUtil.toJson(echo));
+            dlService.echoOrderInfo(echo);
+        }
         return HttpResponse.success();
     }
 }

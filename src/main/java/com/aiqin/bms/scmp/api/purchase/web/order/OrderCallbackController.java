@@ -123,4 +123,11 @@ public class OrderCallbackController {
         return orderCallbackService.deliveryAmountSaveJd(request);
     }
 
+    @PostMapping("/order/dl")
+    @ApiOperation("熙耘订单批量推送dl")
+    public HttpResponse orderDl(@RequestBody List<String> orderCodes) {
+        LOGGER.info("熙耘订单批量推送dl信息,request:{}", JsonUtil.toJson(orderCodes));
+        return orderCallbackService.orderDl(orderCodes);
+    }
+
 }

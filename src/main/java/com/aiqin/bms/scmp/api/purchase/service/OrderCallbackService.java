@@ -9,6 +9,8 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * ━━━━━━神兽出没━━━━━━
@@ -53,4 +55,6 @@ public interface OrderCallbackService {
     HttpResponse deliveryCallBackSave(DpResponseContent request);
 
     HttpResponse deliveryAmountSaveJd(DeliveryCallBackRequest request);
+
+    HttpResponse orderDl(List<String> orderCodes);
 }

@@ -49,4 +49,12 @@
     and business_type = #{businessType,jdbcType=INTEGER}
     order by id desc limit 1
   </select>
+  <select id="selectByCodes" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from dl_order_bill
+    where document_code in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
 </mapper>
