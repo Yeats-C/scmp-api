@@ -28,6 +28,7 @@ import com.aiqin.bms.scmp.api.product.domain.request.sku.*;
 import com.aiqin.bms.scmp.api.product.domain.request.sku.config.SaveSkuConfigReqVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceChannelRespVo;
 import com.aiqin.bms.scmp.api.product.domain.response.basicprice.QueryPriceProjectRespVo;
+import com.aiqin.bms.scmp.api.product.domain.response.changeprice.PriceChannelForChangePrice;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.QuerySkuInfoRespVO;
 import com.aiqin.bms.scmp.api.product.domain.response.changeprice.supplierInfoVO;
 import com.aiqin.bms.scmp.api.product.domain.response.draft.ProductSkuDraftRespVo;
@@ -232,7 +233,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int saveDraftSkuInfo(AddSkuInfoReqVO addSkuInfoReqVO) {
-        log.info("新增或修改sku商品信息，传入参数是[{}]", JSON.toJSONString(addSkuInfoReqVO));
+        log.info("新增或修改sku商品信息，传入参数是[{}]", JsonUtil.toJson(addSkuInfoReqVO));
         if (null != addSkuInfoReqVO && null != addSkuInfoReqVO.getProductSkuDraft()){
             //SKU基本信息
             ProductSkuDraft productSkuDraft = addSkuInfoReqVO.getProductSkuDraft();
@@ -1818,7 +1819,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             boolean flag = applyProductSkus.get(i).getSelectionEffectiveTime() == 0;
             //判断不生效生效
             boolean beEffective = flag && applyProductSkus.get(i).getSelectionEffectiveStartTime().after(auditorTime);
-            //进行判断新增 还是修改
+            //进行判断1新增 还是0修改
             Integer flagNum=0;
 
             productSkuInfo.setApplyStatus(ApplyStatus.APPROVAL_SUCCESS.getNumber());
@@ -2356,7 +2357,7 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
             return PageUtil.getPageList(vo.getPageNo(), Lists.newArrayList());
         }
         List<Long> longs1 = PageUtil.myPage(longs, vo);
-        List<QuerySkuInfoRespVO> respVos = Lists.newArrayList();
+//        List<QuerySkuInfoRespVO> respVos = Lists.newArrayList();
 //        if (CommonConstant.PURCHASE_CHANGE_PRICE.equals(vo.getChangePriceType())){
 //            respVos = productSkuDao.selectSkuListForPurchasePrice(longs1);
             //采购变价需要查询渠道价
@@ -2371,7 +2372,14 @@ public class SkuInfoServiceImpl extends BaseServiceImpl implements SkuInfoServic
 //            }else if(CommonConstant.TEMP_PRICE.contains(vo.getChangePriceType())){
 //                vo.setChangePriceType(CommonConstant.TEMPORARY_CHANGE_PRICE);
 //            }
-            respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType(), vo.getChangePriceTypes());
+        List<QuerySkuInfoRespVO> respVos = productSkuDao.selectSkuListForSalePrice(longs1,vo.getChangePriceType(), vo.getChangePriceTypes());
+        for (QuerySkuInfoRespVO respVo : respVos) {
+            for (PriceChannelForChangePrice priceChannelForChangePrice : respVo.getPriceChannelList()) {
+                ProductSkuSupplyUnit productSkuSupplyUnit = productSkuSupplyUnitDao.selectOneBySkuCode(respVo.getSkuCode());
+                priceChannelForChangePrice.setPurchasePriceNewest(productSkuSupplyUnit.getTaxIncludedPrice());
+                priceChannelForChangePrice.setTaxCost(productSkuSupplyUnit.getTaxIncludedPrice());
+            }
+        }
 //        }else {
 //            throw new BizException(ResultCode.NOT_HAVE_PARAM);
 //        }

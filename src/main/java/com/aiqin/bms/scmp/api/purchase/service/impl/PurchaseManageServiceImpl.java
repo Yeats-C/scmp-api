@@ -227,7 +227,7 @@ public class PurchaseManageServiceImpl extends BaseServiceImpl implements Purcha
                     // 调用取消入库单
                     this.cancelInbound(order);
                     // 取消在途数
-                    this.wayNum(order, 8);
+                    this.wayNum(order, 11);
                 }else {
                     LOGGER.info("采购单非待确认、备货确认、发货确认状态");
                     return HttpResponse.failure(ResultCode.PURCHASE_ORDER_STATUS_FAIL);

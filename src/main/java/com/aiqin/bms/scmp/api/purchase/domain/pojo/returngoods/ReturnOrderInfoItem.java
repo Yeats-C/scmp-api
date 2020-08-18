@@ -182,5 +182,7 @@ public class ReturnOrderInfoItem {
     @JsonProperty("person_name")
     private String personName;
 
-
+    @ApiModelProperty(value="退货销售单行号")
+    @JsonProperty("order_line_code")
+    private Long orderLineCode;
 }

@@ -61,7 +61,7 @@ public class ReturnOrderInfoRequest extends CommonRequest{
     @JsonProperty("platform_type")
     private Integer platformType;
 
-    @ApiModelProperty(value="业务形式 0门店 1批发")
+    @ApiModelProperty(value="业务形式 1门店、2批发、3线上业务、4线下业务、5优选业务、6天猫业务、7小红马售后")
     @JsonProperty("business_form")
     private Integer businessForm;
 

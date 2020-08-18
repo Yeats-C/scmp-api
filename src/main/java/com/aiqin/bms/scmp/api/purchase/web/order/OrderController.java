@@ -155,7 +155,7 @@ public class OrderController {
     @PostMapping("/aiqin/sale")
     @ApiOperation(value = "根据爱亲供应链数据 生成耘链的销售单")
     public HttpResponse insertSaleOrder(@RequestBody ErpOrderInfo vo) {
-        LOGGER.info("爱亲供应链销售单参数{}", JsonUtil.toJson(vo));
+        LOGGER.info("爱亲供应链销售单参数====={}", JsonUtil.toJson(vo));
         return orderService.insertSaleOrder(vo);
     }
 

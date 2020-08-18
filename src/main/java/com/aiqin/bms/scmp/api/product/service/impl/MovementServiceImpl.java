@@ -257,7 +257,14 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             //生成出库单
             OutboundReqVo convert = handleTransferOutbound(addAllocation, productSkuMap, outboundTypeEnum);
             //调拨才有出库 出库单号
-            outboundService.saveOutbound(convert);
+            String outboundOderCode = outboundService.saveOutbound(convert);
+            addAllocation.setOutboundOderCode(outboundOderCode);
+            //添加详情
+            allocationProductMapper.saveList(addAllocation.getDetailList());
+            //添加供应商和商品关系
+            if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(addAllocation.getDetailBatchList())){
+                allocationProductBatchMapper.saveList(addAllocation.getDetailBatchList());
+            }
             // 完成直接减库存。
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
             changeStockRequest.setOperationType(Global.STOCK_OPERATION_4);
@@ -280,8 +287,8 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             dlService.stockChange(stockChangeDlRequest);
             //生成入库单
             InboundReqSave inboundReqSave = handleTransferInbound(addAllocation, productSkuMap, inboundTypeEnum);
-            inboundService.saveInbound(inboundReqSave);
-
+            String inboundOderCode = inboundService.saveInbound(inboundReqSave);
+            addAllocation.setInboundOderCode(inboundOderCode);
             // 完成直接加库存。
             ChangeStockRequest stockRequest = new ChangeStockRequest();
             stockRequest.setOperationType(Global.STOCK_OPERATION_6);
@@ -351,9 +358,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             allocation1.setInboundOderCode(inboundReqSave.getInboundOderCode());
             inboundReqSave.setInboundBatchList(null);
             inboundService.saveInbound(inboundReqSave);
-            // 出解锁库存
+            // 出减库存并解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -406,9 +413,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             finished(allocation1);
             updateOut(request, allocation1, detailLists, detailBatchList, productSkuMap);
             updateIn(request, allocation1, detailLists, detailBatchList, productSkuMap);
-            // 解锁库存
+            // 减库存并解锁库存
             ChangeStockRequest changeStockRequest = new ChangeStockRequest();
-            changeStockRequest.setOperationType(Global.STOCK_OPERATION_10);
+            changeStockRequest.setOperationType(Global.STOCK_OPERATION_2);
             handleProfitLossStockData(allocation1,changeStockRequest);
             HttpResponse httpResponse = stockService.stockAndBatchChange(changeStockRequest);
             if (!MsgStatus.SUCCESS.equals(httpResponse.getCode())) {
@@ -527,62 +534,64 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         // 查询批次数据
         List<InboundBatch> inboundBatchList = Lists.newArrayList();
         InboundBatch productBatch = null;
-        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0){
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
             for (MovementBatchWmsReq batch : request.getBatchList()) {
                 List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), allocation1.getCallInWarehouseCode(), batch.getBatchCode());
-                if (CollectionUtils.isEmpty(batchList) && batchList.size() <= 0) {
+                if (CollectionUtils.isEmpty(batchList)) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
                     AllocationProductBatch allocationProductBatch = allocationProductBatchMapper.selectAllocationOutByCode(allocation1.getInboundOderCode(), batch.getSkuCode(), batch.getLineCode().intValue());
                     productBatch = new InboundBatch();
-                    allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
+                    if(allocationProductBatch != null){
+                        allocationProductBatch.setAllocationCode(allocation1.getAllocationCode());
 //                    AllocationProductBatch allocationProductBatch1 =
-                    allocationProductBatch.setCallInBatchNumber(batch.getBatchCode());
-                    String batchInfoCode;
-                    if(StringUtils.isNotBlank(allocationProductBatch.getSupplierCode())){
-                        batchInfoCode = batch.getSkuCode() + "_" + allocation1.getCallInWarehouseCode() + "_" +
-                                batch.getBatchCode() + "_" + allocationProductBatch.getSupplierCode() + "_" +
-                                allocationProductBatch.getTaxPrice().stripTrailingZeros().toPlainString();
-                    }else {
-                        batchInfoCode = batch.getSkuCode() + "_" + allocation1.getCallInWarehouseCode() + "_" +
-                                batch.getBatchCode() + "_" + allocationProductBatch.getTaxPrice().stripTrailingZeros().toPlainString();
-                    }
-                    allocationProductBatch.setCallInBatchInfoCode(batchInfoCode);
-                    allocationProductBatch.setSupplierCode(allocationProductBatch.getSupplierCode());
-                    allocationProductBatch.setSkuCode(batch.getSkuCode());
-                    if(batch.getSkuName() == null){
-                        OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
-                        if(orderProductSkuResponse != null){
-                            batch.setSkuName(orderProductSkuResponse.getProductName());
-                            allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
-                            productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                        allocationProductBatch.setCallInBatchNumber(batch.getBatchCode());
+                        String batchInfoCode;
+                        if(StringUtils.isNotBlank(allocationProductBatch.getSupplierCode())){
+                            batchInfoCode = batch.getSkuCode() + "_" + allocation1.getCallInWarehouseCode() + "_" +
+                                    batch.getBatchCode() + "_" + allocationProductBatch.getSupplierCode() + "_" +
+                                    allocationProductBatch.getTaxPrice().stripTrailingZeros().toPlainString();
+                        }else {
+                            batchInfoCode = batch.getSkuCode() + "_" + allocation1.getCallInWarehouseCode() + "_" +
+                                    batch.getBatchCode() + "_" + allocationProductBatch.getTaxPrice().stripTrailingZeros().toPlainString();
                         }
-                    }else {
-                        allocationProductBatch.setSkuName(batch.getSkuName());
-                        productBatch.setSkuName(batch.getSkuName());
-                    }
-                    allocationProductBatch.setProductDate(batch.getProductDate());
-                    allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
-                    allocationProductBatch.setQuantity(batch.getQuantity());
-                    allocationProductBatch.setLineNum(Long.valueOf(batch.getLineCode()));
-                    allocationProductBatch.setTaxPrice(allocationProductBatch.getTaxPrice() == null ? BigDecimal.ZERO : allocationProductBatch.getTaxPrice());
-                    allocationProductBatch.setTax(allocationProductBatch.getTax() == null ? BigDecimal.ZERO : allocationProductBatch.getTax());
-                    allocationProductBatch.setTaxAmount(allocationProductBatch.getTaxPrice().multiply(new BigDecimal(batch.getQuantity())));
-                    allocationProductBatchMapper.updateByPrimaryKey(allocationProductBatch);
-                    detailBatchList.add(allocationProductBatch);
+                        allocationProductBatch.setCallInBatchInfoCode(batchInfoCode);
+                        allocationProductBatch.setSupplierCode(allocationProductBatch.getSupplierCode());
+                        allocationProductBatch.setSkuCode(batch.getSkuCode());
+                        if(batch.getSkuName() == null){
+                            OrderProductSkuResponse orderProductSkuResponse = productSkuMap.get(batch.getSkuCode());
+                            if(orderProductSkuResponse != null){
+                                batch.setSkuName(orderProductSkuResponse.getProductName());
+                                allocationProductBatch.setSkuName(orderProductSkuResponse.getProductName());
+                                productBatch.setSkuName(orderProductSkuResponse.getProductName());
+                            }
+                        }else {
+                            allocationProductBatch.setSkuName(batch.getSkuName());
+                            productBatch.setSkuName(batch.getSkuName());
+                        }
+                        allocationProductBatch.setProductDate(batch.getProductDate());
+                        allocationProductBatch.setCallInActualTotalCount(batch.getQuantity());
+                        allocationProductBatch.setQuantity(batch.getQuantity());
+                        allocationProductBatch.setLineNum(Long.valueOf(batch.getLineCode()));
+                        allocationProductBatch.setTaxPrice(allocationProductBatch.getTaxPrice() == null ? BigDecimal.ZERO : allocationProductBatch.getTaxPrice());
+                        allocationProductBatch.setTax(allocationProductBatch.getTax() == null ? BigDecimal.ZERO : allocationProductBatch.getTax());
+                        allocationProductBatch.setTaxAmount(allocationProductBatch.getTaxPrice().multiply(new BigDecimal(batch.getQuantity())));
+                        allocationProductBatchMapper.updateByPrimaryKey(allocationProductBatch);
+                        detailBatchList.add(allocationProductBatch);
 
 
-                    productBatch.setInboundOderCode(inbound.getInboundOderCode());
-                    productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
-                    productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
-                    productBatch.setSupplierCode(inbound.getSupplierCode());
+                        productBatch.setInboundOderCode(inbound.getInboundOderCode());
+                        productBatch.setBatchCode(allocationProductBatch.getCallInBatchNumber());
+                        productBatch.setBatchInfoCode(allocationProductBatch.getCallInBatchInfoCode());
+                        productBatch.setSupplierCode(inbound.getSupplierCode());
 //                    productBatch.setSupplierName(inbound.getSupplierName());
-                    productBatch.setSkuCode(batch.getSkuCode());
+                        productBatch.setSkuCode(batch.getSkuCode());
 
-                    productBatch.setProductDate(batch.getProductDate());
-                    productBatch.setTotalCount(batch.getQuantity());
-                    productBatch.setActualTotalCount(batch.getQuantity());
-                    productBatch.setLineCode(batch.getLineCode().intValue());
-                    inboundBatchList.add(productBatch);
+                        productBatch.setProductDate(batch.getProductDate());
+                        productBatch.setTotalCount(batch.getQuantity());
+                        productBatch.setActualTotalCount(batch.getQuantity());
+                        productBatch.setLineCode(batch.getLineCode().intValue());
+                        inboundBatchList.add(productBatch);
+                    }
                 }else {
                     Integer count1 = allocationProductBatchMapper.selectCountByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
                     if(count1 > 0){
@@ -728,18 +737,20 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         // 查询批次数据
         OutboundBatch outboundBatch;
         List<OutboundBatch> outboundBatches = Lists.newArrayList();
-        if(CollectionUtils.isNotEmpty(request.getBatchList()) && request.getBatchList().size() > 0){
+        if(CollectionUtils.isNotEmpty(request.getBatchList())){
             for (MovementBatchWmsReq batch : request.getBatchList()) {
                 List<StockBatch> batchList = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), allocation1.getCallOutWarehouseCode(), batch.getBatchCode());
-                if (CollectionUtils.isEmpty(batchList) && batchList.size() <= 0) {
+                if (CollectionUtils.isEmpty(batchList)) {
                     LOGGER.info("wms回传出库单，未查询到sku的批次库存信息:{}", batch.getSkuCode());
                 }else {
                     Integer count1 = allocationProductBatchMapper.selectCountByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
                     if(count1 > 0){
                         // 更新.
+                        AllocationBatchRequest aBatchRequest = allocationProductBatchMapper.selectByCode(allocation1.getAllocationCode(), batch.getSkuCode(), batch.getBatchCode());
                         AllocationBatchRequest detail = new AllocationBatchRequest();
                         detail.setAllocationCode(allocation1.getAllocationCode());
-                        detail.setActualTotalCount(batch.getQuantity());
+                        Long quantity = aBatchRequest.getActualTotalCount() == null ? 0 : aBatchRequest.getActualTotalCount();
+                        detail.setActualTotalCount(batch.getQuantity()+quantity);
                         detail.setBatchInfoCode(batchList.get(0).getBatchInfoCode());
                         allocationProductBatchMapper.updateByBatch(detail);
                     }else {
@@ -805,7 +816,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         productCommonService.instanceThreeParty(allocation1.getOutboundOderCode(), HandleTypeCoce.RETURN_OUTBOUND_ODER.getStatus(),
                 ObjectTypeCode.OUTBOUND_ODER.getStatus(), outbound, HandleTypeCoce.RETURN_OUTBOUND_ODER.getName(), new Date(),
                 outbound.getCreateBy(), null);
-        return false;
+        return true;
     }
 
     private void outbound(Allocation allocation) {
@@ -833,12 +844,6 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
         allocation.setPatternType(2);
         allocation.setPatternName("wms方发起");
         allocationMapper.insertSelective(allocation);
-        //添加详情
-        allocationProductMapper.saveList(allocation.getDetailList());
-        //添加供应商和商品关系
-        if(com.aiqin.bms.scmp.api.util.CollectionUtils.isNotEmptyCollection(allocation.getDetailBatchList())){
-            allocationProductBatchMapper.saveList(allocation.getDetailBatchList());
-        }
     }
 
     private void handleProfitLossStockData(Allocation addAllocation, ChangeStockRequest changeStockRequest) {
@@ -850,7 +855,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest = new StockInfoRequest();
             stockInfoRequest.setCompanyCode(COMPANY_CODE);
             stockInfoRequest.setCompanyName(COMPANY_NAME);
-           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
+           if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_2 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                stockInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());
                stockInfoRequest.setTransportCenterName(addAllocation.getCallOutLogisticsCenterName());
                stockInfoRequest.setWarehouseCode(addAllocation.getCallOutWarehouseCode());
@@ -868,9 +873,9 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
             stockInfoRequest.setChangeCount(Math.abs(itemReqVo.getQuantity()));
             stockInfoRequest.setSkuCode(itemReqVo.getSkuCode());
             stockInfoRequest.setSkuName(itemReqVo.getSkuName());
-            stockInfoRequest.setDocumentType(11);
+            stockInfoRequest.setDocumentType(Global.DOCUMENT_TYPE_6);
             stockInfoRequest.setDocumentCode(itemReqVo.getAllocationCode());
-            stockInfoRequest.setSourceDocumentType(11);
+            stockInfoRequest.setSourceDocumentType(Global.DOCUMENT_TYPE_6);
             stockInfoRequest.setSourceDocumentCode(itemReqVo.getAllocationCode());
             stockInfoRequest.setOperatorName(itemReqVo.getCreateBy());
             list.add(stockInfoRequest);
@@ -883,7 +888,7 @@ public class MovementServiceImpl extends BaseServiceImpl implements MovementServ
                     stockBatchInfoRequest.setCompanyName(COMPANY_NAME);
                     stockBatchInfoRequest.setSkuCode(allocationProductBatch.getSkuCode());
                     stockBatchInfoRequest.setSkuName(allocationProductBatch.getSkuName());
-                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_10 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
+                    if(changeStockRequest.getOperationType() == Global.STOCK_OPERATION_2 || changeStockRequest.getOperationType() == Global.STOCK_OPERATION_4){
                         stockBatchInfoRequest.setBatchCode(allocationProductBatch.getCallOutBatchNumber());
                         stockBatchInfoRequest.setBatchInfoCode(allocationProductBatch.getCallOutBatchInfoCode());
                         stockBatchInfoRequest.setTransportCenterCode(addAllocation.getCallOutLogisticsCenterCode());

@@ -1625,11 +1625,11 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         OrderInfo oi = orderInfoMapper.selectByOrderCode2(request.getOderCode());
         if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_0)){
             // 调用爱亲供应链的接口 回传销售单的发货等信息
-            LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + request);
+            LOGGER.info("调用爱亲供应链的接口 回传销售单的发货等信息:" + JsonUtil.toJson(request));
             this.updateAiqinOrder(request);
         }else if(Objects.equals(oi.getPlatformType(),Global.PLATFORM_TYPE_1)){
             // 调用dl的接口 回传销售单的发货等信息
-            LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + request);
+            LOGGER.info("调用dl的接口 回传销售单的发货等信息:" + JsonUtil.toJson(request));
             this.updateDlOrder(request);
         }else {
             return HttpResponse.failure(ResultCode.NOT_HAVE_PARAM,oi.getPlatformType());
@@ -1724,7 +1724,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                         batchRequest.setBatchCode(batchDetail.getBatchCode());
                         batchRequest.setProductDate(batchDetail.getProductDate());
                         batchRequest.setBeOverdueDate(batchDetail.getBeOverdueDate());
-                        batchRequest.setActualTotalCount(batchDetail.getTotalCount());
+                        batchRequest.setActualTotalCount(batchDetail.getActualTotalCount());
                         batchList.add(batchRequest);
                     }
                 }
