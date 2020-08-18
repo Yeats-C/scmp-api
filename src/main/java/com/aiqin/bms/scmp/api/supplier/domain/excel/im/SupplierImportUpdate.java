@@ -149,7 +149,7 @@ public class SupplierImportUpdate extends BaseRowModel{
     private String returningAddress;
 
     @ApiModelProperty("属性")
-    @ExcelProperty(index = 37 , value = "属性")
+    @ExcelProperty(index = 29 , value = "属性")
     private String property;
 
 //    @ApiModelProperty("退送至")
