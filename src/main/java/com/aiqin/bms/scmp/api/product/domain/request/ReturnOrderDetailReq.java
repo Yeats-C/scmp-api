@@ -129,4 +129,7 @@ public class ReturnOrderDetailReq {
     @ApiModelProperty(value="渠道总价")
     //@JsonProperty("channel_total_amount")
     private BigDecimal channelTotalAmount;
+
+    @ApiModelProperty(value = "dl - 退货单的销售单行号")
+    private Long orderLineCode;
 }

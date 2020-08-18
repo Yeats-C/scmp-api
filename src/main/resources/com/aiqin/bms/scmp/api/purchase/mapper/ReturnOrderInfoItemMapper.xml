@@ -36,15 +36,16 @@
     <result column="actual_price" jdbcType="DECIMAL" property="actualPrice" />
     <result column="tax" jdbcType="DECIMAL" property="tax" />
     <result column="insert_type" jdbcType="INTEGER" property="insertType" />
+    <result column="order_line_code" jdbcType="BIGINT" property="orderLineCode" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name,
-    color_code, model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
-    give_promotion, ifnull(price, 0) price, ifnull(num, 0) num, ifnull(amount, 0) amount, activity_code, product_line_num,
-    promotion_line_num, product_status, actual_inbound_num, company_name, company_code, ifnull(channel_unit_price, 0) channel_unit_price,
+    id, return_order_code, sku_code, sku_name, picture_url, spec, spec_code, color_name, color_code, model, model_code,
+    base_product_content, unit_code, unit_name, zero_disassembly_coefficient, give_promotion, ifnull(price, 0) price,
+    ifnull(num, 0) num, ifnull(amount, 0) amount, activity_code, product_line_num, promotion_line_num, product_status,
+    actual_inbound_num, company_name, company_code, ifnull(channel_unit_price, 0) channel_unit_price,
     ifnull(total_channel_price, 0) total_channel_price, ifnull(actual_channel_unit_price, 0) actual_channel_unit_price,
-    ifnull(actual_total_channel_price, 0) actual_total_channel_price,
-    ifnull(actual_amount, 0) actual_amount, ifnull(actual_price, 0) actual_price, tax, insert_type
+    ifnull(actual_total_channel_price, 0) actual_total_channel_price, ifnull(actual_amount, 0) actual_amount,
+    ifnull(actual_price, 0) actual_price, tax, insert_type, order_line_code
   </sql>
   <select id="selectByReturnOrderCode" parameterType="java.lang.String" resultMap="BaseResultMap">
       select
@@ -57,7 +58,7 @@
       color_code, model, model_code, base_product_content, unit_code, unit_name, zero_disassembly_coefficient,
       give_promotion, price, num, amount, activity_code, product_line_num, promotion_line_num, product_status,
       actual_inbound_num, company_name, company_code,  channel_unit_price, total_channel_price, actual_channel_unit_price,
-      actual_total_channel_price, actual_amount, actual_price, tax, insert_type)
+      actual_total_channel_price, actual_amount, actual_price, tax, insert_type, order_line_code)
     values
     <foreach collection="list" item="item"  separator=",">
     (#{item.returnOrderCode,jdbcType=VARCHAR}, #{item.skuCode,jdbcType=VARCHAR}, #{item.skuName,jdbcType=VARCHAR},
@@ -72,7 +73,8 @@
       #{item.companyCode,jdbcType=VARCHAR}, #{item.channelUnitPrice,jdbcType=DECIMAL},
       #{item.totalChannelPrice,jdbcType=DECIMAL}, #{item.actualChannelUnitPrice,jdbcType=DECIMAL},
       #{item.actualTotalChannelPrice,jdbcType=DECIMAL}, #{item.actualAmount,jdbcType=DECIMAL},
-      #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL}, #{item.insertType,jdbcType=INTEGER})
+      #{item.actualPrice,jdbcType=DECIMAL}, #{item.tax,jdbcType=DECIMAL}, #{item.insertType,jdbcType=INTEGER},
+      #{item.orderLineCode,jdbcType=BIGINT})
     </foreach>
   </insert>
     <update id="update">
@@ -176,6 +178,9 @@
             </if>
             <if test="insertType != null">
                 insert_type = #{insertType,jdbcType=INTEGER},
+            </if>
+            <if test="orderLineCode != null">
+                order_line_code = #{orderLineCode,jdbcType=BIGINT},
             </if>
         </set>
     where id = #{id,jdbcType=BIGINT}
