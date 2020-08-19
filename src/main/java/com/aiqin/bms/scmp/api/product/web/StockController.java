@@ -250,4 +250,16 @@ public class StockController {
     public HttpResponse importStockBatch(MultipartFile file) {
         return stockService.importStockBatch(file);
     }
+
+//    @PostMapping("/import/stock1")
+//    @ApiOperation("京东同步导入DL库存数据1")
+//    public HttpResponse importStock1(MultipartFile file) {
+//        return stockService.importStock1(file);
+//    }
+//
+//    @PostMapping("/import/stock/batch1")
+//    @ApiOperation("京东同步导入DL库存批次数据1")
+//    public HttpResponse importStockBatch1(MultipartFile file) {
+//        return stockService.importStockBatch1(file);
+//    }
 }

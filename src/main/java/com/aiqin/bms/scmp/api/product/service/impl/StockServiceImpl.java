@@ -110,6 +110,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
     private StockFlowFailDao stockFlowFailDao;
     @Autowired
     private ProductSkuSupplyUnitDao productSkuSupplyUnitDao;
+    @Autowired
+    private ProductSkuCheckoutDao productSkuCheckoutDao;
 
     /**
      * 功能描述: 查询库存商品(采购退供使用)
@@ -1668,7 +1670,6 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
         return HttpResponse.success();
     }
 
-
     @Override
     @Transactional(rollbackFor = Exception.class)
     public HttpResponse importStockBatch(MultipartFile file){
@@ -1790,6 +1791,183 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
 //            }
             LOGGER.info("--------------", result.length);
         } catch (Exception e) {
+            LOGGER.error("导入DL批次库存数据失败:{}", e.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL批次库存数据失败"));
+        }
+
+        return HttpResponse.success();
+    }
+
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse importStock1(MultipartFile file){
+        if (file == null) {
+            LOGGER.info("同步DL库存文件信息为空");
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+
+        final String[] importRejectApplyHeaders = new String[]{
+                "sku编号", "sku名称", "库存量", "可用量", "不可用量"
+        };
+
+        try {
+            String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
+            if (result.length < 2) {
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
+            if (StringUtils.isNotBlank(validResult)) {
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, validResult));
+            }
+
+            String[] record;
+            List<Stock> stockList = Lists.newArrayList();
+            Stock stock;
+            ProductSkuStockInfo productSkuStockInfo;
+
+            // 查询所有的库存单位信息
+            Map<String, ProductSkuStockInfo> stockMap = new HashMap<>();
+            for (int i = 1; i <= result.length -1; i++) {
+                record = result[i];
+                if (stockMap.get(record[0]) == null) {
+                    stockMap.put(record[0], productSkuStockInfoMapper.getBySkuCode(record[0]));
+                }
+            }
+            // 华北仓 销售：1071   特卖 ：1072  销售残品 ：1073
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode("1072");
+
+            for (int i = 1; i <= result.length -1; i++) {
+                LOGGER.info("-------------------: {}", i);
+                record = result[i];
+                stock = new Stock();
+                // 添加库存单位
+                productSkuStockInfo = stockMap.get(record[0]);
+                if (productSkuStockInfo != null) {
+                    stock.setUnitCode(productSkuStockInfo.getUnitCode());
+                    stock.setUnitName(productSkuStockInfo.getUnitName());
+                }
+                stock.setStockCode("ST" + IdSequenceUtils.getInstance().nextId());
+                stock.setCompanyCode(Global.COMPANY_09);
+                stock.setCompanyName(Global.COMPANY_09_NAME);
+                stock.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                stock.setTransportCenterName(warehouse.getLogisticsCenterName());
+                stock.setWarehouseCode(warehouse.getWarehouseCode());
+                stock.setWarehouseName(warehouse.getWarehouseName());
+                stock.setWarehouseType(warehouse.getWarehouseTypeCode().intValue());
+                stock.setSkuCode(record[0]);
+                stock.setSkuName(record[1]);
+                stock.setInventoryCount(Long.valueOf(record[2]));
+                stock.setAvailableCount(Long.valueOf(record[3]));
+                stock.setLockCount(stock.getInventoryCount() - stock.getAvailableCount());
+                stock.setPurchaseWayCount(10000L);
+                stock.setTotalWayCount(10000L);
+                stock.setAllocationWayCount(0L);
+                stock.setNewPurchasePrice(BigDecimal.ZERO);
+                stock.setUseStatus(0);
+                ProductSkuCheckout info = productSkuCheckoutDao.getInfo(record[0]);
+                if(info != null){
+                    stock.setTaxRate(info.getOutputTaxRate());
+                }
+                stock.setTaxCost(BigDecimal.ZERO);
+                stock.setCreateById("0000");
+                stock.setCreateByName("系统导入");
+                stock.setUpdateById("0000");
+                stock.setUpdateByName("系统导入");
+                stockList.add(stock);
+                //Integer count = stockDao.insertBatch(stockList);
+                //LOGGER.info("添加同步DL库存信息数量：{}", count);
+                //LOGGER.info("--------------:{}", JsonUtil.toJson(record));
+            }
+
+            // 添加库存信息
+            if (CollectionUtils.isNotEmpty(stockList)) {
+                Integer count = stockDao.insertBatch(stockList);
+                LOGGER.info("添加同步DL库存信息数量：{}", count);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            LOGGER.error("导入DL库存数据失败:{}", e.getMessage());
+            return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL库存数据失败"));
+        }
+        return HttpResponse.success();
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public HttpResponse importStockBatch1(MultipartFile file){
+        if (file == null) {
+            LOGGER.info("同步DL批次库存文件信息为空");
+            return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+        }
+
+        final String[] importRejectApplyHeaders = new String[]{
+                "sku编号", "sku名称", "库存量", "可用量", "不可用量", "生产日期"
+        };
+
+        try {
+            String[][] result = FileReaderUtil.readExcel(file, importRejectApplyHeaders.length);
+            if (result.length < 2) {
+                return HttpResponse.failure(ResultCode.REQUIRED_PARAMETER);
+            }
+            String validResult = FileReaderUtil.validStoreValue(result, importRejectApplyHeaders);
+            if (StringUtils.isNotBlank(validResult)) {
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, validResult));
+            }
+
+            String[] record;
+            // 华北仓 销售：1071   特卖 ：1072  销售残品 ：1073
+            WarehouseDTO warehouse = warehouseDao.getWarehouseByCode("1072");
+
+            List<StockBatch> stockList = Lists.newArrayList();
+            StockBatch stockBatch;
+
+            for (int i = 1; i <= result.length -1; i++) {
+                record = result[i];
+                stockBatch = new StockBatch();
+                // 添加库存单位
+                stockBatch.setStockBatchCode("SB" + IdSequenceUtils.getInstance().nextId());
+                stockBatch.setCompanyCode(Global.COMPANY_09);
+                stockBatch.setCompanyName(Global.COMPANY_09_NAME);
+                stockBatch.setTransportCenterCode(warehouse.getLogisticsCenterCode());
+                stockBatch.setTransportCenterName(warehouse.getLogisticsCenterName());
+                stockBatch.setWarehouseCode(warehouse.getWarehouseCode());
+                stockBatch.setWarehouseName(warehouse.getWarehouseName());
+                stockBatch.setWarehouseType(warehouse.getWarehouseTypeCode().toString());
+                stockBatch.setSkuCode(record[0]);
+                stockBatch.setSkuName(record[1]);
+                stockBatch.setBatchCode(record[5]);
+                stockBatch.setProductDate(record[5]);
+                stockBatch.setInventoryCount(Long.valueOf(new BigDecimal(record[2]).stripTrailingZeros().toPlainString()));
+                stockBatch.setAvailableCount(Long.valueOf(new BigDecimal(record[3]).stripTrailingZeros().toPlainString()));
+                stockBatch.setLockCount(stockBatch.getInventoryCount() - stockBatch.getAvailableCount());
+                stockBatch.setPurchasePrice(BigDecimal.ZERO);
+                ProductSkuCheckout info = productSkuCheckoutDao.getInfo(record[0]);
+                if (info != null) {
+                    stockBatch.setTaxRate(info.getOutputTaxRate());
+                }
+                stockBatch.setTaxCost(BigDecimal.ZERO);
+                stockBatch.setBeOverdueDate(record[4]);
+                stockBatch.setPurchasePrice(BigDecimal.ZERO);
+                stockBatch.setCreateById("0000");
+                stockBatch.setCreateByName("系统导入");
+                stockBatch.setUpdateById("0000");
+                stockBatch.setUpdateByName("系统导入");
+                String batchInfoCode = record[0] + "_" + warehouse.getWarehouseCode() + "_" + record[5] + "_0";
+                stockBatch.setBatchInfoCode(batchInfoCode);
+                stockList.add(stockBatch);
+                //Integer count = stockBatchDao.insert(stockBatch);
+                //LOGGER.info("添加同步DL批次库存信息数量：{}", count);
+            }
+
+            // 添加库存信息
+            if(CollectionUtils.isNotEmpty(stockList)){
+                Integer count = stockBatchDao.insertAll(stockList);
+                LOGGER.info("添加同步DL批次库存信息数量：{}", count);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
             LOGGER.error("导入DL批次库存数据失败:{}", e.getMessage());
             return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, "导入DL批次库存数据失败"));
         }
