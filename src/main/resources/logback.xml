@@ -60,6 +60,21 @@
         <appender-ref ref="CALLBACK_FILE"/>
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
+    <logger name="druid.sql.Statement" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="com.aiqin.bms.scmp.api.product.dao" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="com.aiqin.bms.scmp.api.purchase.dao" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="com.aiqin.bms.scmp.api.supplier.dao" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
+    <logger name="com.aiqin.bms.scmp.api.abutment.dao" level="INFO" additivity="false">
+        <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
+    </logger>
     <logger name="com.aiqin.bms.scmp.api" level="DEBUG" additivity="false">
         <appender-ref ref="${LOGGER_APPENDER:-CONSOLE}"/>
     </logger>
