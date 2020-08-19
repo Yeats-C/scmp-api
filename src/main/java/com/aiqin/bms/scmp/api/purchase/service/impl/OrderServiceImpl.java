@@ -822,6 +822,8 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
         ssis.setInvoiceBank(request.getInvoiceBank());
         ssis.setInvoiceBankAccount(request.getInvoiceBankAccount());
         ssis.setRemake(request.getRemake());
+        ssis.setVolume(request.getVolume());
+        ssis.setWeight(request.getWeight());
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String pTime = sf.format(Calendar.getInstance().getTime());
         String cTime = sf.format(Calendar.getInstance().getTime());

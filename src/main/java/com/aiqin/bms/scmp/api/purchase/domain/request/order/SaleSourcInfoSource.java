@@ -146,7 +146,13 @@ public class SaleSourcInfoSource implements Serializable {
     @JsonProperty("business_form")
     private Integer businessForm;
 
+    @ApiModelProperty("体积")
+    @JsonProperty("volume")
+    private Long volume;
 
+    @ApiModelProperty("重量")
+    @JsonProperty("weight")
+    private Long weight;
 
 
 
