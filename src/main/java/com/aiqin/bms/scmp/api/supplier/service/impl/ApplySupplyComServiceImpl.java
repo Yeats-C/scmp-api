@@ -1673,15 +1673,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 }
             }
             //供应商集团
-            if(StringUtils.isNotBlank(supplierImport.getSupplierName())){
-                Supplier supplier = supplierList.get(supplierImport.getSupplierName().trim());
-                if(Objects.isNull(supplier)){
-                    error.add("未找到对应名称的供应商集团");
-                }else {
-                    reqVO.setSupplierCode(supplier.getSupplierCode());
-                    reqVO.setSupplierName(supplier.getSupplierName());
-                }
-            }
+//            if(StringUtils.isNotBlank(supplierImport.getSupplierName())){
+//                Supplier supplier = supplierList.get(supplierImport.getSupplierName().trim());
+//                if(Objects.isNull(supplier)){
+//                    error.add("未找到对应名称的供应商集团");
+//                }else {
+//                    reqVO.setSupplierCode(supplier.getSupplierCode());
+//                    reqVO.setSupplierName(supplier.getSupplierName());
+//                }
+//            }
             //简称
             if(StringUtils.isBlank(supplierImport.getApplyAbbreviation())){
 //                error.add("简称不能为空");
@@ -2035,7 +2035,7 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                     }
                 }
             }else {
-                AreaInfo areaInfo1 = areaTree.get(province);
+                 AreaInfo areaInfo1 = areaTree.get(province);
                 if(Objects.isNull(areaInfo1)){
                     error.add(checkAreaEnum.getProvince());
                 }else {
@@ -2174,15 +2174,15 @@ public class ApplySupplyComServiceImpl extends BaseServiceImpl implements ApplyS
                 }
             }
             //供应商集团
-            if(StringUtils.isNotBlank(supplierImport.getSupplierName())){
-                Supplier supplier = supplierList.get(supplierImport.getSupplierName().trim());
-                if(Objects.isNull(supplier)){
-                    error.add("未找到对应名称的供应商集团");
-                }else {
-                    reqVO.setSupplierCode(supplier.getSupplierCode());
-                    reqVO.setSupplierName(supplier.getSupplierName());
-                }
-            }
+//            if(StringUtils.isNotBlank(supplierImport.getSupplierName())){
+//                Supplier supplier = supplierList.get(supplierImport.getSupplierName().trim());
+//                if(Objects.isNull(supplier)){
+//                    error.add("未找到对应名称的供应商集团");
+//                }else {
+//                    reqVO.setSupplierCode(supplier.getSupplierCode());
+//                    reqVO.setSupplierName(supplier.getSupplierName());
+//                }
+//            }
             //简称
             if(StringUtils.isBlank(supplierImport.getApplyAbbreviation())){
 //                error.add("简称不能为空");
