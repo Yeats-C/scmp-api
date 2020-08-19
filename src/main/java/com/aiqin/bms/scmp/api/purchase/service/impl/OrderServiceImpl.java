@@ -1258,6 +1258,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             HttpResponse response = wmsCancelService.wmsCancel(cancelSource);
             if (!response.getCode().equals(MessageId.SUCCESS_CODE)) {
                 log.info("取消订单传wms失败！！！", JsonUtil.toJson(cancelSource));
+                return HttpResponse.failure(MessageId.create(Project.SCMP_API, 500, response.getMessage()));
             }
         }
         return HttpResponse.success(true);
