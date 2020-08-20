@@ -87,6 +87,8 @@
       <result column="business_form" jdbcType="TINYINT" property="businessForm" />
       <result column="tax_id" jdbcType="VARCHAR" property="taxId" />
       <result column="order_product_type" jdbcType="TINYINT" property="orderProductType" />
+      <result column="channel_code" jdbcType="VARCHAR" property="channelCode" />
+      <result column="channel_name" jdbcType="VARCHAR" property="channelName" />
   </resultMap>
   <sql id="Base_Column_List">
       id, order_code, order_type, order_type_code, customer_name, customer_code, create_date,
@@ -104,7 +106,7 @@
     update_time, actual_product_channel_total_amount, actual_order_amount, actual_product_num,
     order_original_name, actual_weight, actual_volume, actual_product_total_amount,transport_company,
 transport_company_code,
-transport_number, platform_type, business_form, tax_id, order_product_type
+transport_number, platform_type, business_form, tax_id, order_product_type, channel_code,channel_name
   </sql>
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select
