@@ -1287,6 +1287,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             vo.setItemBatchMonthList(infoBtachMonth);
             // 出库单号
             Outbound outbound = outboundDao.selectOutbouondBySourceCode(orderInfo.getOrderCode());
+            LOGGER.info("手动从耘链销售单转换后的参数信息：{}", JsonUtil.toJson(vo));
             SaleSourcInfoSource saleSourcInfoSource = insertWms(vo, outbound.getOutboundOderCode());
             LOGGER.info("手动推送耘链销售单生成wms参数信息：{}", JsonUtil.toJson(saleSourcInfoSource));
             String url = urlConfig.WMS_API_URL2 + "/sale/source/outbound";
