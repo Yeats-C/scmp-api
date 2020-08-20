@@ -1269,6 +1269,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
     @Override
     public HttpResponse insertWmsOrder(List<String> orderCodes) {
         List<OrderInfo> orderInfos = orderInfoMapper.selectByOrderCodes(orderCodes);
+        LOGGER.info("手动从耘链销售单推送wms参数信息：{}", JsonUtil.toJson(orderInfos));
         for (OrderInfo orderInfo : orderInfos) {
             // 主表
             OrderInfoReqVO vo = BeanCopyUtils.copy(orderInfo, OrderInfoReqVO.class);
@@ -1287,7 +1288,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             // 出库单号
             Outbound outbound = outboundDao.selectOutbouondBySourceCode(orderInfo.getOrderCode());
             SaleSourcInfoSource saleSourcInfoSource = insertWms(vo, outbound.getOutboundOderCode());
-            LOGGER.info("耘链销售单生成wms参数信息：{}", JsonUtil.toJson(saleSourcInfoSource));
+            LOGGER.info("手动推送耘链销售单生成wms参数信息：{}", JsonUtil.toJson(saleSourcInfoSource));
             String url = urlConfig.WMS_API_URL2 + "/sale/source/outbound";
             HttpClient httpClient = HttpClient.post(url).json(saleSourcInfoSource).timeout(200000);
             HttpResponse orderDto = httpClient.action().result(HttpResponse.class);

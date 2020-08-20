@@ -437,12 +437,10 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
                     if (rejectApplyDetailHandleResponse.getStockCount() < rejectCount) {
                         response.setErrorInfo(String.format("第%d行,可用库存数量小于销售数量",i));
                     }
-                    if(warehouse.getBatchManage() == 0){
-                        continue;
+                    if(!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)){
+                        String key = this.rejectBatch(response, rejectApply);
+                        response.setBatchList(rejectApply.get(key));
                     }
-                    // 查询对应的批次信息
-                    String key = this.rejectBatch(response, rejectApply);
-                    response.setBatchList(rejectApply.get(key));
                 } else {
                     response.setErrorInfo(String.format("第%d行,未查询到对应的商品",i));
                 }
