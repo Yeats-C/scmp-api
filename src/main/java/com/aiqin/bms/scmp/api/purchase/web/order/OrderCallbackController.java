@@ -137,7 +137,7 @@ public class OrderCallbackController extends BaseController {
 
     @PostMapping("/adminHandToScmp")
     @ApiOperation(value = "手动wms推送scmp")
-    public HttpResponse<Object> adminHandToScmp(@RequestBody @Validated AdminHandToScmpReq req, BindingResult br) {
+    public synchronized HttpResponse<Object> adminHandToScmp(@RequestBody @Validated AdminHandToScmpReq req, BindingResult br) {
         LOGGER.info("管理端手动回调scmp 参数：{}", JsonUtil.toJson(req));
         super.checkParameters(br);
         try {
