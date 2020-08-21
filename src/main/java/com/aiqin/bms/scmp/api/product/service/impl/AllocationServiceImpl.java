@@ -221,7 +221,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
         stockChangeRequest.setOperationType(1);
         LOGGER.info("保存调拨单商品批次表数据参数{}", JsonUtil.toJson(list));
         WarehouseDTO warehouse = warehouseDao.getWarehouseByCode(allocation.getCallOutWarehouseCode());
-        if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_1) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)) {
+        if (!warehouse.getBatchManage().equals(Global.BATCH_MANAGE_0)) {
             int kp = ((AllocationService) AopContext.currentProxy()).saveListBatch(list);
             if (kp <= 0) {
                 log.error("调拨单sku批次数据保存失败");
@@ -1417,14 +1417,15 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             List<SkuBatchRespVO> skuBatchRespVOS = stockBatchDao.selectStockBatch(mBtachLists.getSkuCode(), mBtachLists.getTransportCenterCode(), mBtachLists.getWarehouseCode());
             mBtachLists.setSkuBatchRespVOS(skuBatchRespVOS);
 //            批次管理 0：自动批次管理 1：全部制定批次模式 2：部分指定批次模式
-            if (Objects.equals(Global.BATCH_MANAGE_2, mBtachLists.getBatchManage())) {
-                Integer count = productSkuBatchMapper.productSkuBatchExist(mBtachLists.getSkuCode(), mBtachLists.getWarehouseCode());
-                if (count > 0) {
-                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
-                } else {
-                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
-                }
-            }
+            //  商品sku是否指定批次 (0:指定 1:不指定)
+//            if (Objects.equals(Global.BATCH_MANAGE_2, mBtachLists.getBatchManage()) || Objects.equals(Global.BATCH_MANAGE_4, mBtachLists.getBatchManage()) || Objects.equals(Global.BATCH_MANAGE_6, mBtachLists.getBatchManage())) {
+//                Integer count = productSkuBatchMapper.productSkuBatchExist(mBtachLists.getSkuCode(), mBtachLists.getWarehouseCode());
+//                if (count > 0) {
+//                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_0);
+//                } else {
+//                    mBtachLists.setSkuBatchManage(Global.WAREHOUSE_BATCH_MANAGE_SKU_1);
+//                }
+//            }
         }
         BasePage basePage = new BasePage();
         basePage.setDataList(mLists);
