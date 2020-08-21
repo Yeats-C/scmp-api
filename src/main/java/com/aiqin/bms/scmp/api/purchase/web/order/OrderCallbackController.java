@@ -1,5 +1,7 @@
 package com.aiqin.bms.scmp.api.purchase.web.order;
 
+import com.aiqin.bms.scmp.api.base.ResultCode;
+import com.aiqin.bms.scmp.api.common.BaseController;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsOutReq;
 import com.aiqin.bms.scmp.api.product.domain.request.movement.MovementWmsReq;
 import com.aiqin.bms.scmp.api.product.domain.request.outbound.DeliveryCallBackRequest;
@@ -11,6 +13,7 @@ import com.aiqin.bms.scmp.api.product.service.ProfitLossService;
 import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.AdminHandToScmpReq;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
 import com.aiqin.bms.scmp.api.purchase.web.GoodsRejectController;
 import com.aiqin.ground.util.json.JsonUtil;
@@ -18,6 +21,8 @@ import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -25,7 +30,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/order/callback")
-public class OrderCallbackController {
+public class OrderCallbackController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectController.class);
 
@@ -128,6 +133,19 @@ public class OrderCallbackController {
     public HttpResponse orderDl(@RequestBody List<String> orderCodes) {
         LOGGER.info("熙耘订单批量推送dl信息,request:{}", JsonUtil.toJson(orderCodes));
         return orderCallbackService.orderDl(orderCodes);
+    }
+
+    @PostMapping("/adminHandToScmp")
+    @ApiOperation(value = "手动wms推送scmp")
+    public HttpResponse<Object> adminHandToScmp(@RequestBody @Validated AdminHandToScmpReq req, BindingResult br) {
+        LOGGER.info("管理端手动回调scmp 参数：{}", JsonUtil.toJson(req));
+        super.checkParameters(br);
+        try {
+            return orderCallbackService.adminHandToScmp(req);
+        } catch (Exception e) {
+            LOGGER.info("管理端手动回调scmp:{}", e);
+            return HttpResponse.failure(ResultCode.HAND_PUSH_ERROR);
+        }
     }
 
 }

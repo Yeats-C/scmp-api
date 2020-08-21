@@ -219,4 +219,9 @@ public interface ResultCode {
     MessageId WAREHOUSE_IS_NULL = MessageId.create(Project.SCMP_API, 1009, "配送未找到对应的库房");
 
 
+    //手动推送
+    MessageId HAND_PUSH_ERROR = MessageId.create(Project.WMSA_API, 00014, "推送异常");
+
+
+
 }

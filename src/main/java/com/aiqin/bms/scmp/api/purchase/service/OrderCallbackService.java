@@ -7,6 +7,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.OutboundRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.ReturnRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.ProfitLossRequest;
 import com.aiqin.bms.scmp.api.purchase.domain.request.callback.TransfersRequest;
+import com.aiqin.bms.scmp.api.purchase.domain.request.order.AdminHandToScmpReq;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 
 import java.util.List;
@@ -57,4 +58,6 @@ public interface OrderCallbackService {
     HttpResponse deliveryAmountSaveJd(DeliveryCallBackRequest request);
 
     HttpResponse orderDl(List<String> orderCodes);
+
+    HttpResponse<Object> adminHandToScmp(AdminHandToScmpReq req);
 }
