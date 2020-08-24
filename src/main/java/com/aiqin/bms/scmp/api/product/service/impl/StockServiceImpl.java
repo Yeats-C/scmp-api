@@ -719,7 +719,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            LOGGER.error("操作库存失败", e.getMessage());
+            LOGGER.error("操作库存失败, {}", e.getMessage());
             throw new BizException("操作库存失败");
         }
         return HttpResponse.success();
