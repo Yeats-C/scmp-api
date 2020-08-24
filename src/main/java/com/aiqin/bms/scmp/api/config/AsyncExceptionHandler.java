@@ -15,8 +15,6 @@ public class AsyncExceptionHandler implements AsyncUncaughtExceptionHandler {
 //            GroundRuntimeException asyncException = (GroundRuntimeException) throwable;
 //            log.info("asyncException:{}", asyncException.getMessage());
 //        }
-        log.error("Async method: {} has uncaught exception,params:{}", method.getName(), JSON.toJSONString(objects));
-        log.error("the stack info:");
-        throwable.printStackTrace();
+        log.error("Async method: {} has uncaught exception, ERROR:{} params:{}", method.getName(), throwable.getMessage(), JSON.toJSONString(objects));
     }
 }
