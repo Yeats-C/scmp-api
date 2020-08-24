@@ -24,6 +24,7 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter {
                         "/static/**",
                         "/index.html",
                         "/order/callback/**",
+                        "/order/cancel",
                         "/product/inbound/workFlowCallBack",
                         "/product/outbound/workFlowCallBack",
                         "/product/allocation/workFlowCallBack",
