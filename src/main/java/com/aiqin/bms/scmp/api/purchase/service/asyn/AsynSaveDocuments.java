@@ -121,6 +121,10 @@ public class AsynSaveDocuments {
         String lockKey = "lock:savePurchase:" + code;
         String requestId = UUID.randomUUID().toString();
         try {
+            if (!redisTool.tryGetDistributedLock(lockKey, requestId)) {
+                log.info("异步保存销售单重复请求单号={}", code);
+                return;
+            }
         AsynSaveDocuments bean = applicationContext.getBean(AsynSaveDocuments.class);
         bean.savePurchaseOrder(code);
         } finally {
