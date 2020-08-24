@@ -449,7 +449,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             LOGGER.info("熙耘->DL，保存回传DL单据成功");
             info.setReturnStatus(Global.SUCCESS);
         } else {
-            LOGGER.info("熙耘->DL，保存回传单据失败：{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存回传单据失败：{}， 单号：{}", dlResponse.getMessage(), request.getOrderCode());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
