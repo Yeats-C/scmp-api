@@ -15,4 +15,5 @@ public interface DlOrderBillDao {
 
     List<DlOrderBill> selectByCodes(@Param("list")List<String> list);
 
+    List<DlOrderBill> pullOrderDl(@Param("day") String day);
 }

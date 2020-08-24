@@ -3,10 +3,12 @@ package com.aiqin.bms.scmp.api.abutment.web;
 import com.aiqin.bms.scmp.api.abutment.domain.DlStoreInfo;
 import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.jobs.DlMonthStockService;
+import com.aiqin.bms.scmp.api.abutment.jobs.DlScheduledService;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.ground.util.protocol.http.HttpResponse;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -21,6 +23,9 @@ public class DlController {
     private DlAbutmentService dlService;
     @Resource
     private DlMonthStockService dlMonthStockService;
+    @Resource
+    @Lazy(true)
+    private DlScheduledService dlScheduledService;
 
     @PostMapping("/order/info")
     @ApiOperation(value = "DL->熙耘，推送耘链销售单")
@@ -93,4 +98,10 @@ public class DlController {
 //    public HttpResponse productInfo(@RequestBody ProductInfoRequest request) {
 //        return dlService.productInfo(request);
 //    }
+
+    @PostMapping("/scheduled/order")
+    @ApiOperation(value = "手动执行定时任务批量推送订单信息到dl")
+    public HttpResponse pullOrderDl() {
+         return dlScheduledService.pullOrderDl();
+    }
 }

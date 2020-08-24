@@ -644,7 +644,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
             List<StockDayBatch> stockDayBatches = stockService.monthBatch(stockMonthRequest);
             List<OrderInfoItemProductBatch> itemBatchLists = new ArrayList<>();
             OrderInfoItemProductBatch orderInfoItemProductBatch;
-            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches) && stockDayBatches.size() > 0) {
+            if (org.apache.commons.collections.CollectionUtils.isNotEmpty(stockDayBatches)) {
                 if(warehouse.getBatchManage().equals(Global.BATCH_MANAGE_5) || warehouse.getBatchManage().equals(Global.BATCH_MANAGE_6)){
                     for (StockDayBatch stockDayBatch : stockDayBatches) {
                         orderInfoItemProductBatch = new OrderInfoItemProductBatch();
