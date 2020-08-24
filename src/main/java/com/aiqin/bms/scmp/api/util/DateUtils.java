@@ -62,6 +62,18 @@ public class DateUtils {
         return dateTime.toString(PATTERN_DATE);
     }
 
+    /**
+     * 获取所在天的时间<br>
+     */
+    public static String sameDay(){
+        Calendar ca = Calendar.getInstance();
+        ca.setTime(new Date());
+        ca.add(Calendar.DATE,0);
+        Date date = ca.getTime();
+        DateTime dateTime = new DateTime(date);
+        return dateTime.toString(PATTERN_DATE);
+    }
+
     public static int getYear() {
         Calendar sysDate = Calendar.getInstance();
         return sysDate.get(Calendar.YEAR);

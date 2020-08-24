@@ -58,4 +58,9 @@
     </foreach>
     and business_type  = 1
   </select>
+  <select id="pullOrderDl" resultMap="BaseResultMap">
+    select <include refid="Base_Column_List"></include>
+    from dl_order_bill
+    where document_type = 1 and business_type = 1 and create_time >= #{day} and return_status is null;
+  </select>
 </mapper>
