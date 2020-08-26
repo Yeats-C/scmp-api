@@ -1037,13 +1037,14 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             } else {
                 stockBatch = stockBatchDao.stockBatchAndSku(batch);
                 String batchInfoCode;
+                BigDecimal taxCost = batch.getTaxCost() == null ? BigDecimal.ZERO : batch.getTaxCost();
                 if(StringUtils.isNotBlank(batch.getSupplierCode() )){
                     batchInfoCode = batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
                             batch.getBatchCode() + "_" + batch.getSupplierCode() + "_" +
-                            batch.getTaxCost().stripTrailingZeros().toPlainString();
+                            taxCost.stripTrailingZeros().toPlainString();
                 }else {
                     batchInfoCode = batch.getSkuCode() + "_" + batch.getWarehouseCode() + "_" +
-                            batch.getBatchCode() + "_" +  batch.getTaxCost().stripTrailingZeros().toPlainString();
+                            batch.getBatchCode() + "_" +  taxCost.stripTrailingZeros().toPlainString();
                 }
                 if(stockBatchMap.get(batchInfoCode) == null && stockBatch != null){
                     stockBatchMap.put(batchInfoCode, stockBatch);
@@ -1064,7 +1065,8 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
             if(StringUtils.isNotBlank(stockBatchInfo.getBatchInfoCode())){
                 redisKey = stockBatchInfo.getBatchInfoCode();
             }else {
-                String taxCost = stockBatchInfo.getTaxCost().stripTrailingZeros().toPlainString();
+                BigDecimal bigDecimal = stockBatchInfo.getTaxCost() == null ? BigDecimal.ZERO : stockBatchInfo.getTaxCost();
+                String taxCost = bigDecimal.stripTrailingZeros().toPlainString();
                 if(StringUtils.isNotBlank(stockBatchInfo.getSupplierCode() )){
                     redisKey = stockBatchInfo.getSkuCode() + "_" + stockBatchInfo.getWarehouseCode() + "_" +
                             stockBatchInfo.getBatchCode() + "_" + stockBatchInfo.getSupplierCode() + "_" + taxCost;
@@ -1444,7 +1446,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                     months.add(monthBatch);
                     continue;
                 }
-                for (int i = 0; i <= batchList.size(); i++) {
+                for (int i = 0; i < batchList.size(); i++) {
                     batchFlow = new StockMonthBatchFlow();
                     // 添加日期批次库存流水
                     batchFlow.setSkuCode(monthBatch.getSkuCode());
@@ -1469,15 +1471,15 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         days.add(batchList.get(i));
                         break;
                     }else {
+                        Long batchCount = batchList.get(i).getBatchCount();
                         changeCount =  monthBatch.getBatchCount() - batchList.get(i).getBatchCount();
                         batchList.get(i).setBatchCount(0L);
                         Integer count = stockDayBatchDao.update(batchList.get(i));
                         LOGGER.info("更新京东日期批次库存：{}", count);
-
+                        monthBatch.setBatchCount(changeCount);
                         batchFlow.setAfterBatchCount(0L);
                         monthFlows.add(batchFlow);
-
-                        batchList.get(i).setBatchCount(batchList.get(i).getBatchCount());
+                        batchList.get(i).setBatchCount(batchCount);
                         batchList.get(i).setLineCode(monthBatch.getLineCode());
                         batchList.get(i).setSkuName(monthBatch.getSkuName());
                         batchList.get(i).setProductDate(monthBatch.getProductDate());
