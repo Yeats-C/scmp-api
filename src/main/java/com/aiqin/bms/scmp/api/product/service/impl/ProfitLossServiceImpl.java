@@ -350,13 +350,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     }
 
                     // 损 操作完调用dl库存同步接口
-                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
-                    stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
-                    stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_5);
-                    stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
-                    profitSynchrdlStockChange(profitLoss, loss, batchList, stockChangeDlRequest);
-                    LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                    dlAbutmentService.stockChange(stockChangeDlRequest);
+//                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
+//                    stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
+//                    stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_5);
+//                    stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_2);
+//                    profitSynchrdlStockChange(profitLoss, loss, batchList, stockChangeDlRequest);
+//                    LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+//                    dlAbutmentService.stockChange(stockChangeDlRequest);
                 }
                 if(CollectionUtils.isNotEmptyCollection(profit)){
                     //操作类型 直接加库存 6
@@ -369,13 +369,13 @@ public class ProfitLossServiceImpl extends BaseServiceImpl implements ProfitLoss
                     }
 
                     // 溢 操作完调用dl库存同步接口
-                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
-                    stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
-                    stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_9);
-                    stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
-                    profitSynchrdlStockChange(profitLoss, profit, batchList, stockChangeDlRequest);
-                    LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
-                    dlAbutmentService.stockChange(stockChangeDlRequest);
+//                    StockChangeRequest stockChangeDlRequest = new StockChangeRequest();
+//                    stockChangeDlRequest.setOrderCode(profitLoss.getOrderCode());
+//                    stockChangeDlRequest.setOrderType(Global.DL_ORDER_TYPE_9);
+//                    stockChangeDlRequest.setOperationType(Global.DL_OPERATION_TYPE_1);
+//                    profitSynchrdlStockChange(profitLoss, profit, batchList, stockChangeDlRequest);
+//                    LOGGER.info("调用完库存锁定调用同步dl库存参数数据:{}", JsonUtil.toJson(stockChangeDlRequest));
+//                    dlAbutmentService.stockChange(stockChangeDlRequest);
                 }
             }
             // 损溢单完成调用sap
