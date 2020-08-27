@@ -124,7 +124,8 @@
       </if>
     </set>
     where outbound_oder_code = #{outboundOderCode,jdbcType=VARCHAR}
-    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    and sku_code = #{skuCode,jdbcType=VARCHAR}
     and line_code = #{lineCode,jdbcType=BIGINT}
   </update>
 

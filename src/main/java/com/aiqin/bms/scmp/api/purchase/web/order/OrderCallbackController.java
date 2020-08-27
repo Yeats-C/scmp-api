@@ -148,4 +148,11 @@ public class OrderCallbackController extends BaseController {
         }
     }
 
+    @PostMapping("/order/sku/stock")
+    @ApiOperation("查询订单缺库存的商品编码")
+    public HttpResponse orderSkuStock(@RequestBody List<String> orderCodes) {
+        LOGGER.info("查询订单缺库存的商品编码,request:{}", JsonUtil.toJson(orderCodes));
+        return orderCallbackService.orderSkuStock(orderCodes);
+    }
+
 }

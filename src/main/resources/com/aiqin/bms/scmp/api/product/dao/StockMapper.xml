@@ -1334,5 +1334,11 @@
             AND c.product_name LIKE CONCAT('',#{spuName,jdbcType=VARCHAR},'%')
         </if>
     </select>
+    <select id="selectAvailableCountBySkuCode" resultMap="BaseResultMap">
+        select <include refid="Base_Column_List"/>
+        from stock
+        where sku_code = #{skuCode,jdbcType=VARCHAR}
+        and transport_center_code = #{transportCenterCode,jdbcType=VARCHAR} and warehouse_code = #{warehouseCode,jdbcType=VARCHAR}
+    </select>
 
 </mapper>

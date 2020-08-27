@@ -552,7 +552,7 @@ public class OrderServiceImpl extends BaseServiceImpl implements OrderService {
 
                 // 进行锁库存操作
                 ChangeStockRequest stockChangeRequest = new ChangeStockRequest();
-                stockChangeRequest.setOperationType(1);
+                stockChangeRequest.setOperationType(Global.STOCK_OPERATION_1);
                 handleProfitLossStockData(vo, stockChangeRequest, insertOutbound);
                 LOGGER.error("订单同步耘链锁库存：参数{}", JsonUtil.toJson(stockChangeRequest));
                 if (warehouse.getBatchManage().equals(Global.BATCH_MANAGE_2)) {

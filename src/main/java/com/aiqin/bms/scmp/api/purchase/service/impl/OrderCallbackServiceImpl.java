@@ -2,10 +2,7 @@ package com.aiqin.bms.scmp.api.purchase.service.impl;
 
 import com.aiqin.bms.scmp.api.abutment.dao.DlOrderBillDao;
 import com.aiqin.bms.scmp.api.abutment.domain.DlOrderBill;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.BatchRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.EchoOrderRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.OrderTransportRequest;
-import com.aiqin.bms.scmp.api.abutment.domain.request.dl.ProductRequest;
+import com.aiqin.bms.scmp.api.abutment.domain.request.dl.*;
 import com.aiqin.bms.scmp.api.abutment.service.DlAbutmentService;
 import com.aiqin.bms.scmp.api.abutment.service.SapBaseDataService;
 import com.aiqin.bms.scmp.api.base.*;
@@ -43,6 +40,7 @@ import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportAddRequ
 import com.aiqin.bms.scmp.api.purchase.domain.request.transport.TransportOrdersResquest;
 import com.aiqin.bms.scmp.api.purchase.domain.response.InnerValue;
 import com.aiqin.bms.scmp.api.purchase.domain.response.order.OrderProductSkuResponse;
+import com.aiqin.bms.scmp.api.purchase.domain.response.order.QueryOrderInfoItemRespVO;
 import com.aiqin.bms.scmp.api.purchase.mapper.*;
 import com.aiqin.bms.scmp.api.purchase.service.GoodsRejectService;
 import com.aiqin.bms.scmp.api.purchase.service.OrderCallbackService;
@@ -202,6 +200,9 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
     private DlAbutmentService dlService;
     @Resource
     private DlOrderBillDao dlOrderBillDao;
+    @Autowired
+    @Lazy(true)
+    private StockDao stockDao;
 
     /**
      * 销售出库接口
@@ -1602,7 +1603,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
                 productBatch.setLineCode(batch.getLineCode());
                 productBatch.setBatchRemark(batch.getBatchRemark());
 
-                Integer i = orderInfoItemProductBatchDao.selectBatchList(batch.getSkuCode(), request.getOderCode(), batch.getBatchInfoCode());
+                Integer i = orderInfoItemProductBatchDao.selectBatchList(batch.getSkuCode(), request.getOderCode(), batch.getBatchCode(), batch.getLineCode());
                 if (i > 0) {
                     batchListUpdate.add(productBatch);
                 } else {
@@ -2021,7 +2022,7 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
 
     @Override
     public HttpResponse orderDl(List<String> orderCodes) {
-        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes);
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 1);
         for (DlOrderBill dlOrderBill : dlOrderBills) {
             String documentContent = dlOrderBill.getDocumentContent();
             LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
@@ -2040,5 +2041,37 @@ public class OrderCallbackServiceImpl implements OrderCallbackService {
         HttpResponse<Object>  response = httpClient.action().result(new TypeReference<HttpResponse<Object>>() {});
 
         return response;
+    }
+
+    @Override
+    public HttpResponse orderSkuStock(List<String> orderCodes) {
+        List<String> lists = new ArrayList<>();
+        List<DlOrderBill> dlOrderBills = dlOrderBillDao.selectByCodes(orderCodes, 0);
+        for (DlOrderBill dlOrderBill : dlOrderBills) {
+            String documentContent = dlOrderBill.getDocumentContent();
+            LOGGER.info("获取对象信息,参数：[{}]", JsonUtil.toJson(documentContent));
+            OrderInfoRequest echo = JSONObject.parseObject(documentContent, OrderInfoRequest.class);
+            LOGGER.info("获取数据转换对象信息,参数：[{}]", JsonUtil.toJson(echo));
+            List<ProductRequest> productList = echo.getProductList();
+            // 转换库房信息
+            WarehouseDTO warehouse = warehouseDao.warehouseDl(echo.getWarehouseCode(), echo.getWmsWarehouseType());
+            if(warehouse == null){
+                LOGGER.info("DL 推送销售单耘链的库房转换失败：{}", JsonUtil.toJson(echo));
+                return null;
+            }
+            if(CollectionUtils.isEmpty(echo.getProductList()) && echo.getProductList().size() == 0){
+                LOGGER.info("DL 推送耘链销售单商品信息为空：{}", JsonUtil.toJson(echo));
+                return null;
+            }
+            for (ProductRequest product : productList){
+                Stock stock = stockDao.selectAvailableCountBySkuCode(product.getSkuCode(), warehouse.getLogisticsCenterCode(), warehouse.getWarehouseCode());
+                if(stock.getAvailableCount() < product.getTotalCount()){
+                    String s = product.getSkuCode()+"库存不足,表库存"+ stock.getAvailableCount() +" 商品库存:" + product.getTotalCount();
+                    lists.add(s);
+                }
+            }
+        }
+        return HttpResponse.success(lists);
+
     }
 }

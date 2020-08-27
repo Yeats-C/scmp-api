@@ -129,4 +129,8 @@ public interface StockDao {
     List<Stock> stockByWarehouseTypeSum();
 
     Integer getSkuBatchForChangePriceCount(QuerySkuInfoReqVO reqVO);
+
+    Stock selectAvailableCountBySkuCode(@Param("skuCode") String skuCode,
+                                  @Param("transportCenterCode")String transportCenterCode,
+                                  @Param("warehouseCode") String warehouseCode);
 }
