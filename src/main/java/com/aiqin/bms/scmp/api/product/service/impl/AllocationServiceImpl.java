@@ -102,7 +102,7 @@ import java.util.stream.Collectors;
 @WorkFlowAnnotation(WorkFlow.APPLY_ALLOCATTION)
 public class AllocationServiceImpl extends BaseServiceImpl implements AllocationService, WorkFlowHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(GoodsRejectServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AllocationServiceImpl.class);
 
     @Autowired
     private AllocationMapper allocationMapper;
@@ -1178,6 +1178,7 @@ public class AllocationServiceImpl extends BaseServiceImpl implements Allocation
             // wms发起移库不用操作
         } else if (Global.MOVEMENT_TYPE_1 == data.getMovementType()) {
             // 传出库
+            movementWmsReqVo.setFlag(null);
             if (allocation1.getInboundOderCode() == null) {
                 movementWmsReqVo.setFlag("0");
             } else {

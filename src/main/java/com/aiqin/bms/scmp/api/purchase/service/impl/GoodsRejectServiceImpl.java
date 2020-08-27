@@ -573,6 +573,11 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
     public HttpResponse<RejectResponse> rejectInfo(String rejectRecordCode) {
         RejectRecord rejectRecord = rejectRecordDao.selectByRejectCode(rejectRecordCode);
         RejectResponse response = BeanCopyUtils.copy(rejectRecord, RejectResponse.class);
+        // 查询出库单号
+        Outbound outbound = outboundDao.selectBySourceCode(rejectRecordCode, String.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode()));
+        if(outbound != null){
+            response.setOutboundOderCode(outbound.getOutboundOderCode());
+        }
         // 查询退供文件
         List<FileRecord> fileList = fileRecordDao.fileList(rejectRecord.getRejectApplyRecordCode());
         // 查询退供日志
@@ -947,7 +952,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
 
         for(RejectDetailStockRequest detail:request.getDetailList()){
             // 查询对应的退供单商品信息
-            rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(), detail.getLineCode());
+            rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(),
+                    detail.getLineCode(), detail.getSkuCode());
             rejectRecordDetail.setActualTotalCount(detail.getActualCount());
             rejectRecordDetail.setActualProductTotalAmount(detail.getActualAmount());
             Integer count = rejectRecordDetailDao.update(rejectRecordDetail);
@@ -1087,7 +1093,8 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
             BatchRequest dlBatch;
 
             for(RejectDetailStockRequest detail:request.getDetailList()){
-                rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(), detail.getLineCode());
+                rejectRecordDetail = rejectRecordDetailDao.rejectRecordByLineCode(request.getRejectRecordCode(),
+                        detail.getLineCode(), detail.getSkuCode());
                 dlProduct = new ProductRequest();
                 dlProduct.setLineCode(detail.getLineCode());
                 dlProduct.setSkuCode(rejectRecordDetail.getSkuCode());

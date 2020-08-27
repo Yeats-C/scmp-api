@@ -19,7 +19,8 @@ public interface RejectRecordDetailDao {
     List<RejectRecordDetail> selectByRejectId(@Param("rejectRecordId") String rejectRecordId);
 
     RejectRecordDetail rejectRecordByLineCode(@Param("rejectRecordCode") String rejectRecordCode,
-                                              @Param("lineCode") Integer lineCode);
+                                              @Param("lineCode") Integer lineCode,
+                                              @Param("skuCode") String skuCode);
 
     List<String> selectByRejectCodeList(@Param("list") List<String> purchaseOrderCodeList);
 }

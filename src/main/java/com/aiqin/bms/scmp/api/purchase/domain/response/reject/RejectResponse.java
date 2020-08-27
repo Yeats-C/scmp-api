@@ -12,6 +12,10 @@ import java.util.List;
 @Data
 public class RejectResponse extends RejectRecord {
 
+    @ApiModelProperty("出库单编号")
+    @JsonProperty("outbound_oder_code")
+    private String outboundOderCode;
+
     @ApiModelProperty("文件列表")
     @JsonProperty("file_list")
     private List<FileRecord> fileList;

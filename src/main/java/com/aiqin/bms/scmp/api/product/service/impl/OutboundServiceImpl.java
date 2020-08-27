@@ -1072,6 +1072,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                     rejectDetail.setLineCode(outboundProduct.getLinenum().intValue());
                     rejectDetail.setActualCount(outboundProduct.getPraOutboundMainNum());
                     rejectDetail.setActualAmount(outboundProduct.getPraTaxAmount());
+                    rejectDetail.setSkuCode(outboundProduct.getSkuCode());
                     rejectDetailStockRequests.add(rejectDetail);
                 }
                 rejectStockRequest.setDetailList(rejectDetailStockRequests);
