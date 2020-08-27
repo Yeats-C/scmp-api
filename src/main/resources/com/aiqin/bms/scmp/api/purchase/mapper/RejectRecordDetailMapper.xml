@@ -195,6 +195,7 @@
         from reject_record_detail
         where reject_record_code = #{rejectRecordCode,jdbcType=VARCHAR}
         and line_code = #{lineCode,jdbcType=INTEGER}
+        and sku_code = #{skuCode,jdbcType=VARCHAR}
     </select>
     <select id="selectByRejectCodeList" resultType="string">
         select

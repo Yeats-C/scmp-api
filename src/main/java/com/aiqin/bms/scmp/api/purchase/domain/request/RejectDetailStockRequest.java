@@ -46,4 +46,8 @@ public class RejectDetailStockRequest {
     @ApiModelProperty(value="行号")
     @JsonProperty("line_code")
     private Integer lineCode;
+
+    @ApiModelProperty(value="sku编码")
+    @JsonProperty("sku_code")
+    private String skuCode;
 }
