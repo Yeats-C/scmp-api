@@ -577,6 +577,7 @@ public class GoodsRejectServiceImpl extends BaseServiceImpl implements GoodsReje
         Outbound outbound = outboundDao.selectBySourceCode(rejectRecordCode, String.valueOf(OutboundTypeEnum.RETURN_SUPPLY.getCode()));
         if(outbound != null){
             response.setOutboundOderCode(outbound.getOutboundOderCode());
+            response.setOutboundOderId(outbound.getId());
         }
         // 查询退供文件
         List<FileRecord> fileList = fileRecordDao.fileList(rejectRecord.getRejectApplyRecordCode());

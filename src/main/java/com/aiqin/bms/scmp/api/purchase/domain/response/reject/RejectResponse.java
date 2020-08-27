@@ -13,6 +13,10 @@ import java.util.List;
 public class RejectResponse extends RejectRecord {
 
     @ApiModelProperty("出库单编号")
+    @JsonProperty("outbound_oder_id")
+    private Long outboundOderId;
+
+    @ApiModelProperty("出库单编号")
     @JsonProperty("outbound_oder_code")
     private String outboundOderCode;
 
