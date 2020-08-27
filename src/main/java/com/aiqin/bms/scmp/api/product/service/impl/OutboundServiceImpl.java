@@ -861,34 +861,33 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                             LOGGER.info("出库单指定批次未查询到的出库批次信息：{}",  JsonUtil.toJson(notOutboundBatches));
                         }
                     }else {
+                        StringBuilder batchInfoCode = new StringBuilder();
+                        List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
+                        if (CollectionUtils.isNotEmpty(batches)) {
+                            batchInfoCode.append(batches.get(0).getBatchInfoCode());
+                            outboundBatch.setSupplierCode(batches.get(0).getSupplierCode());
+                        }else{
+                            batchInfoCode.append(batch.getSkuCode()).append("_");
+                            batchInfoCode.append(outbound.getWarehouseCode() ).append("_");
+                            batchInfoCode.append(batch.getBatchCode()).append("_");
+                            if(StringUtils.isNotBlank(outbound.getSupplierCode())){
+                                batchInfoCode.append(outbound.getSupplierCode()).append("_");
+                            }
+                            batchInfoCode.append(0);
+                            outboundBatch.setSupplierCode(outbound.getSupplierCode());
+                        }
                         // 非指定批次
                         if(outboundBatch != null){
+                            outboundBatch.setBatchInfoCode(batchInfoCode.toString());
                             outboundBatch.setActualTotalCount(actualCount);
                             Integer k = outboundBatchDao.update(outboundBatch);
                             LOGGER.info("更新出库单批次信息：{}", k);
                         }else {
-                            List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
-                            BigDecimal amount = BigDecimal.ZERO;
-                            String batchInfoCode;
-
                             // 新增出库单的批次信息
                             outboundBatch = BeanCopyUtils.copy(batch, OutboundBatch.class);
                             outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                             outboundBatch.setActualTotalCount(actualCount);
-
-                            if (CollectionUtils.isNotEmpty(batches)) {
-                                batchInfoCode = batches.get(0).getBatchInfoCode();
-                                outboundBatch.setSupplierCode(batches.get(0).getSupplierCode());
-                            }else if (StringUtils.isNotBlank(outbound.getSupplierCode())) {
-                                batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                        batch.getBatchCode() + "_" + outbound.getSupplierCode() + "_" +
-                                        amount.stripTrailingZeros().toPlainString();
-                                outboundBatch.setSupplierCode(outbound.getSupplierCode());
-                            } else {
-                                batchInfoCode = batch.getSkuCode() + "_" + outbound.getWarehouseCode() + "_" +
-                                        batch.getBatchCode() + "_" + amount.stripTrailingZeros().toPlainString();
-                            }
-                            outboundBatch.setBatchInfoCode(batchInfoCode);
+                            outboundBatch.setBatchInfoCode(batchInfoCode.toString());
                             outboundBatch.setSupplierName(outbound.getSupplierName());
                             outboundBatch.setTotalCount(actualCount);
                             outboundBatch.setCreateById(request.getOperatorId());

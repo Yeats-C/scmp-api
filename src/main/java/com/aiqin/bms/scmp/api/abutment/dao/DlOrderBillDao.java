@@ -13,7 +13,7 @@ public interface DlOrderBillDao {
 
     DlOrderBill selectByCode(DlOrderBill info);
 
-    List<DlOrderBill> selectByCodes(@Param("list")List<String> list);
+    List<DlOrderBill> selectByCodes(@Param("list")List<String> list, @Param("type") Integer type);
 
     List<DlOrderBill> pullOrderDl(@Param("day") String day);
 }

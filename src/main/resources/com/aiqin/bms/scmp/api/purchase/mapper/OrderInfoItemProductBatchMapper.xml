@@ -391,11 +391,15 @@
         <if test="item.actualTotalCount != null">
           actual_total_count = #{item.actualTotalCount,jdbcType=BIGINT},
         </if>
+        <if test="item.batchInfoCode != null">
+          batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR},
+        </if>
         update_time = now()
       </set>
       where order_code = #{item.orderCode,jdbcType=VARCHAR}
       and sku_code = #{item.skuCode,jdbcType=VARCHAR}
-      and batch_info_code = #{item.batchInfoCode,jdbcType=VARCHAR}
+      and batch_code = #{item.batchCode,jdbcType=VARCHAR}
+      and line_code = #{item.lineCode,jdbcType=BIGINT}
     </foreach>
   </update>
   <select id="selectBatchList" resultType="java.lang.Integer">
@@ -403,7 +407,8 @@
     from order_info_item_product_batch
     where order_code = #{orderCode,jdbcType=VARCHAR}
     and sku_code = #{skuCode,jdbcType=VARCHAR}
-    and batch_info_code = #{batchInfoCode,jdbcType=VARCHAR}
+    and batch_code = #{batchCode,jdbcType=VARCHAR}
+    and line_code = #{lineCode,jdbcType=BIGINT}
   </select>
   <update id="updateByReturnBatchCount">
     update order_info_item_product_batch set

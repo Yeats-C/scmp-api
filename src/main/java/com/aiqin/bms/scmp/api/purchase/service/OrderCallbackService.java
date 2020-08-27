@@ -60,4 +60,6 @@ public interface OrderCallbackService {
     HttpResponse orderDl(List<String> orderCodes);
 
     HttpResponse<Object> adminHandToScmp(AdminHandToScmpReq req);
+
+    HttpResponse orderSkuStock(List<String> orderCodes);
 }

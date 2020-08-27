@@ -1467,7 +1467,7 @@ public class StockServiceImpl extends BaseServiceImpl implements StockService {
                         batchList.get(i).setBatchCount(monthBatch.getBatchCount());
                         batchList.get(i).setLineCode(monthBatch.getLineCode());
                         batchList.get(i).setSkuName(monthBatch.getSkuName());
-                        batchList.get(i).setProductDate(monthBatch.getProductDate());
+                        batchList.get(i).setProductDate(batchList.get(i).getBatchCode());
                         days.add(batchList.get(i));
                         break;
                     }else {
