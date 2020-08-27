@@ -35,10 +35,9 @@ public class OrderBatchStoreDetail implements Serializable {
     @JsonProperty("batch_info_code")
     private String batchInfoCode;
 
-    @ApiModelProperty(value = "生产日期")
-    @JsonFormat(timezone = "GMT+8",pattern = "yyyy-MM-dd HH:mm:ss")
+    @ApiModelProperty(value="生产日期")
     @JsonProperty("product_date")
-    private Date productDate;
+    private String productDate;
 
     @ApiModelProperty("销售数量")
     @JsonProperty("total_count")
