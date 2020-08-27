@@ -865,7 +865,6 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         List<StockBatch> batches = stockBatchDao.stockBatchByOutbound(batch.getSkuCode(), warehouse.getWarehouseCode(), batch.getBatchCode());
                         if (CollectionUtils.isNotEmpty(batches)) {
                             batchInfoCode.append(batches.get(0).getBatchInfoCode());
-                            outboundBatch.setSupplierCode(batches.get(0).getSupplierCode());
                         }else{
                             batchInfoCode.append(batch.getSkuCode()).append("_");
                             batchInfoCode.append(outbound.getWarehouseCode() ).append("_");
@@ -874,7 +873,7 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                                 batchInfoCode.append(outbound.getSupplierCode()).append("_");
                             }
                             batchInfoCode.append(0);
-                            outboundBatch.setSupplierCode(outbound.getSupplierCode());
+
                         }
                         // 非指定批次
                         if(outboundBatch != null){
@@ -885,6 +884,12 @@ public class OutboundServiceImpl extends BaseServiceImpl implements OutboundServ
                         }else {
                             // 新增出库单的批次信息
                             outboundBatch = BeanCopyUtils.copy(batch, OutboundBatch.class);
+                            if(CollectionUtils.isNotEmpty(batches)){
+                                outboundBatch.setSupplierCode(batches.get(0).getSupplierCode());
+                            }else{
+                                outboundBatch.setSupplierCode(outbound.getSupplierCode());
+                            }
+
                             outboundBatch.setOutboundOderCode(outbound.getOutboundOderCode());
                             outboundBatch.setActualTotalCount(actualCount);
                             outboundBatch.setBatchInfoCode(batchInfoCode.toString());
