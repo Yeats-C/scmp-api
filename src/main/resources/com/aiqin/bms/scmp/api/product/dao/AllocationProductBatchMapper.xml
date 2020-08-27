@@ -538,7 +538,7 @@
   </select>
   <select id="selectByCode" resultType="com.aiqin.bms.scmp.api.product.domain.request.allocation.AllocationBatchRequest">
     select
-    callout_actual_total_count as actualTotalCount
+    ifnull(callout_actual_total_count,0) as actualTotalCount
     from allocation_product_batch
     where allocation_code = #{allocationCode,jdbcType=VARCHAR}
     and sku_code = #{skuCode,jdbcType=VARCHAR}
