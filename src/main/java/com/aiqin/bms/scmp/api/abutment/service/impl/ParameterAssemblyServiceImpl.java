@@ -237,7 +237,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             returnInfo.setCompanyName(Global.COMPANY_09_NAME);
             returnInfo.setOrderType(request.getOrderType());
             // 默认售后退货
-            returnInfo.setReturnOrderType(2);
+            returnInfo.setReturnOrderType(4);
             returnInfo.setReturnLock(1);
             // 默认已支付
             returnInfo.setPaymentStatus(0);
