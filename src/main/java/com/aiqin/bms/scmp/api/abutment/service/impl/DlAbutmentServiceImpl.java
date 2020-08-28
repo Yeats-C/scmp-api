@@ -88,9 +88,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         // 查询单据日志是否存在
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
         if(dlOrderBill == null){
+            info.setResponseCount(0);
             Integer logCount = dlOrderBillDao.insert(info);
-            LOGGER.info("DL->熙耘，保存销售单日志：{}", logCount);
+            LOGGER.info("DL->熙耘，保存销售单日志：{}, 销售单号：{}", logCount, request.getOrderCode());
         }else {
+            info.setResponseCount(dlOrderBill.getResponseCount() + 1);
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("DL->熙耘，编辑销售单日志：{}", logCount);
         }
@@ -125,9 +127,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
         if(dlOrderBill == null){
+            info.setResponseCount(0);
             Integer logCount = dlOrderBillDao.insert(info);
-            LOGGER.info("DL->熙耘，保存退货出库单日志：{}", logCount);
+            LOGGER.info("DL->熙耘，保存退货出库单日志：{}, 退货单号：{}", logCount, request.getOrderCode());
         }else {
+            info.setResponseCount(dlOrderBill.getResponseCount() + 1);
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("DL->熙耘，编辑退货出库单日志：{}", logCount);
         }
@@ -151,9 +155,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
         if (dlOrderBill == null) {
+            info.setResponseCount(0);
             Integer logCount = dlOrderBillDao.insert(info);
-            LOGGER.info("熙耘->DL，保存销售物流单日志：{}", logCount);
+            LOGGER.info("熙耘->DL，保存销售物流单日志：{}, 物流单号:{}", logCount, request.getTransportCode());
         } else {
+            info.setResponseCount(dlOrderBill.getResponseCount() + 1);
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("熙耘->DL，编辑销售物流单日志：{}", logCount);
         }
@@ -198,9 +204,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
         if (dlOrderBill == null) {
+            info.setResponseCount(0);
             Integer logCount = dlOrderBillDao.insert(info);
-            LOGGER.info("熙耘->DL，保存回传单据日志：{}", logCount);
+            LOGGER.info("熙耘->DL，保存回传单据日志：{}, 回传单据单号：{}", logCount, request.getOrderCode());
         } else {
+            info.setResponseCount(dlOrderBill.getResponseCount() + 1);
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("熙耘->DL，编辑回传单据日志：{}", logCount);
         }
@@ -303,9 +311,11 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         info.setDocumentContent(JsonUtil.toJson(request));
         DlOrderBill dlOrderBill = dlOrderBillDao.selectByCode(info);
         if(dlOrderBill == null){
+            info.setResponseCount(0);
             Integer logCount = dlOrderBillDao.insert(info);
-            LOGGER.info("DL->熙耘，保存取消单据日志：{}", logCount);
+            LOGGER.info("DL->熙耘，保存取消单据日志：{}, 单据号：{}", logCount, request.getOrderCode());
         }else {
+            info.setResponseCount(dlOrderBill.getResponseCount() + 1);
             Integer logCount = dlOrderBillDao.update(info);
             LOGGER.info("DL->熙耘，编辑取消单据日志：{}", logCount);
         }
@@ -324,13 +334,14 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         }
 
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存取消单据成功");
+            LOGGER.info("DL->熙耘，保存取消单据成功！单据号：{}", request.getOrderCode());
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("DL->熙耘，保存取消单据失败:{}", response.getMessage());
+            LOGGER.info("DL->熙耘，保存取消单据失败! 单据号：{}， 错误信息：{}", request.getOrderCode(), response.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
+        info.setResponseDesc(response.getMessage());
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("DL->熙耘，变更取消单据日志状态：{}", count);
         return HttpResponse.success();
@@ -356,13 +367,14 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         String url = DL_URL + "/update/supplier";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存供应商信息成功");
+            LOGGER.info("熙耘->DL，保存供应商信息成功！供应商编码：{}", request.getSupplierCode());
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("熙耘->DL，保存供应商信息失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存供应商信息失败! 供应商编码：{}， 错误信息：{}",request.getSupplierCode(), dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
+        info.setResponseDesc(dlResponse.getMessage());
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更供应商日志状态：{}", count);
@@ -372,7 +384,6 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
     @Override
     @Async("myTaskAsyncPool")
     public HttpResponse productInspection(ProductInspectionDlRequest request) {
-
         DlOtherInfo info = new DlOtherInfo();
         info.setDocumentCode(request.getDocumentCode());
         info.setDocumentType(Global.INSPECTION_TYPE);
@@ -381,13 +392,14 @@ public class DlAbutmentServiceImpl implements DlAbutmentService {
         String url = DL_URL + "/update/inspectionreport";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request.getList()), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存质检报告信息成功");
+            LOGGER.info("熙耘->DL，保存质检报告信息成功! 质检报告编码：{}", request.getDocumentCode());
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("熙耘->DL，保存质检报告信息失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存质检报告信息失败！ 质检报告编码:{}， 错误信息：{}", request.getDocumentCode(), dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
+        info.setResponseDesc(dlResponse.getMessage());
         info.setRequestUrl(url);
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更质检报告日志状态：{}", count);

@@ -8,19 +8,22 @@
     <result column="business_type" jdbcType="INTEGER" property="businessType" />
     <result column="return_status" jdbcType="INTEGER" property="returnStatus" />
     <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="response_desc" jdbcType="VARCHAR" property="responseDesc" />
+    <result column="response_count" jdbcType="INTEGER" property="responseCount" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="document_content" jdbcType="VARCHAR" property="documentContent" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, document_code, document_type, business_type, return_status, request_url, create_time, update_time, document_content
+    id, document_code, document_type, business_type, return_status, request_url, create_time, update_time, document_content,
+    response_desc, response_count
   </sql>
   <insert id="insert">
     insert into dl_order_bill (document_code, document_type, business_type, return_status, request_url, 
-      create_time, update_time, document_content)
+      create_time, update_time, document_content, response_desc, response_count)
     values (#{documentCode,jdbcType=VARCHAR}, #{documentType,jdbcType=INTEGER}, 
-      #{businessType,jdbcType=INTEGER}, #{returnStatus,jdbcType=INTEGER}, #{requestUrl,jdbcType=VARCHAR}, 
-      now(), now(), #{documentContent,jdbcType=VARCHAR})
+      #{businessType,jdbcType=INTEGER}, #{returnStatus,jdbcType=INTEGER}, #{requestUrl,jdbcType=VARCHAR}, now(), now(),
+      #{documentContent,jdbcType=VARCHAR}, #{responseDesc,jdbcType=VARCHAR}, #{responseCount,jdbcType=INTEGER})
   </insert>
   <update id="update">
     update dl_order_bill
@@ -34,6 +37,12 @@
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       <if test="documentContent != null">
         document_content = #{documentContent,jdbcType=LONGVARCHAR},
+      </if>
+      <if test="responseDesc != null">
+        response_desc = #{responseDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="responseCount != null">
+        response_count = #{responseCount,jdbcType=INTEGER},
       </if>
     </set>
     where document_code = #{documentCode,jdbcType=VARCHAR}

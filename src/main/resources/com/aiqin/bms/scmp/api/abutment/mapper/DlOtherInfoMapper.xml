@@ -9,28 +9,42 @@
     <result column="stock_type" jdbcType="INTEGER" property="stockType" />
     <result column="return_status" jdbcType="INTEGER" property="returnStatus" />
     <result column="request_url" jdbcType="VARCHAR" property="requestUrl" />
+    <result column="response_desc" jdbcType="VARCHAR" property="responseDesc" />
+    <result column="response_count" jdbcType="INTEGER" property="responseCount" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="document_content" jdbcType="VARCHAR" property="documentContent" />
   </resultMap>
   <sql id="Base_Column_List">
     id, dl_code, document_code, document_type, business_type, stock_type, return_status, request_url,
-    create_time, update_time, document_content
+    create_time, update_time, document_content, response_desc, response_count
   </sql>
   <insert id="insert">
     insert into dl_other_info (document_code, document_type, business_type, stock_type, return_status,
-      request_url, create_time, update_time, document_content)
+      request_url, create_time, update_time, document_content, response_desc, response_count)
     values (#{documentCode,jdbcType=VARCHAR}, #{documentType,jdbcType=INTEGER}, #{businessType,jdbcType=INTEGER},
       #{stockType,jdbcType=INTEGER}, #{returnStatus,jdbcType=INTEGER}, #{requestUrl,jdbcType=VARCHAR}, now(), now(),
-      #{documentContent,jdbcType=VARCHAR})
+      #{documentContent,jdbcType=VARCHAR}, #{responseDesc,jdbcType=VARCHAR}, #{responseCount,jdbcType=INTEGER})
   </insert>
   <update id="update">
      update dl_other_info
-     set return_status = #{returnStatus,jdbcType=INTEGER},
-     update_time = now()
+      <set>
+          <if test="responseDesc != null">
+              response_desc = #{responseDesc,jdbcType=VARCHAR},
+          </if>
+          <if test="responseCount != null">
+              response_count = #{responseCount,jdbcType=INTEGER},
+          </if>
+          <if test="returnStatus != null">
+              return_status = #{returnStatus,jdbcType=INTEGER},
+          </if>
+          update_time = now(),
+      </set>
      where document_code = #{documentCode,jdbcType=VARCHAR}
+      and document_type = #{documentType,jdbcType=INTEGER}
      <if test="stockType != null">
          and stock_type = #{stockType,jdbcType=INTEGER}
      </if>
+      order by id  desc limit 1
   </update>
 </mapper>

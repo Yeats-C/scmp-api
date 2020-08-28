@@ -38,6 +38,14 @@ public class DlOtherInfo {
     @JsonProperty("request_url")
     private String requestUrl;
 
+    @ApiModelProperty(value="响应描述")
+    @JsonProperty("response_desc")
+    private String responseDesc;
+
+    @ApiModelProperty(value="调用次数")
+    @JsonProperty("response_count")
+    private Integer responseCount;
+
     @ApiModelProperty(value="创建时间")
     @JsonProperty("create_time")
     private Date createTime;

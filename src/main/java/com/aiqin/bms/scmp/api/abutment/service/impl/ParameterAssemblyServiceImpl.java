@@ -191,12 +191,14 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         // 调用耘链接口 生成对应的销售单信息
         HttpResponse response = orderService.insertSaleOrder(orderInfo);
         if(response.getCode().equals(MessageId.SUCCESS_CODE)){
-            LOGGER.info("DL->熙耘，保存耘链销售单成功");
+            LOGGER.info("DL->熙耘，保存耘链销售单成功, 销售单号：{}", request.getOrderCode());
             info.setReturnStatus(Global.SUCCESS);
         }else {
-            LOGGER.info("DL->熙耘，保存耘链销售单失败", response.getMessage());
+            LOGGER.info("DL->熙耘，保存耘链销售单失败！ 销售单号:{}, 错误信息：{}", request.getOrderCode(), response.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
+        info.setResponseDesc(response.getMessage());
+
         // 调用之后变更日志状态
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("DL->熙耘，变更销售单日志状态：{}", count);
@@ -222,7 +224,7 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
                 LOGGER.info("DL->熙耘，多次回传更新物流单信息成功");
                 info.setReturnStatus(Global.SUCCESS);
             } else {
-                LOGGER.info("DL->熙耘，多次回传更新物流单信息失败");
+                LOGGER.info("DL->熙耘，多次回传更新物流单信息失败！ 退货单号：{}", request.getReturnOrderCode());
                 info.setReturnStatus(Global.FAIL);
             }
         }else {
@@ -321,12 +323,13 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
             // 调用耘链 生成耘链对应的退货单、出库单
             HttpResponse response = returnGoodsService.record(returnRequest);
             if (response.getCode().equals(MessageId.SUCCESS_CODE)) {
-                LOGGER.info("DL->熙耘，保存退货单成功");
+                LOGGER.info("DL->熙耘，保存退货单成功! 退货单号：{}", request.getReturnOrderCode());
                 info.setReturnStatus(Global.SUCCESS);
             } else {
-                LOGGER.info("DL->熙耘，保存退货单失败:{}", response.getMessage());
+                LOGGER.info("DL->熙耘，保存退货单失败! 退货单号:{}， 错误信息：{}", request.getReturnOrderCode(), response.getMessage());
                 info.setReturnStatus(Global.FAIL);
             }
+            info.setResponseDesc(response.getMessage());
         }
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("DL->熙耘，变更退货单日志状态：{}", count);
@@ -409,14 +412,15 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         String url = DL_URL + "/back/logisticsOrder";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存销售物流单成功");
+            LOGGER.info("熙耘->DL，保存销售物流单成功! 物流单号：{}", request.getTransportCode());
             info.setReturnStatus(Global.SUCCESS);
         } else {
-            LOGGER.info("熙耘->DL，保存销售物流单失败:{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存销售物流单失败! 物流单号：{}, 错误信息：{}",  request.getTransportCode(), dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
         info.setRequestUrl(url);
+        info.setResponseDesc(dlResponse.getMessage());
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("熙耘->DL，变更销售物流单日志状态：{}", count);
     }
@@ -424,7 +428,6 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
     @Override
     @Async("myTaskAsyncPool")
     public void echoOrderInfoParameter(EchoOrderRequest request, DlOrderBill info, String url) {
-
         if (request.getOperationType() == 4) {
             if (CollectionUtils.isNotEmpty(request.getProductList()) && request.getProductList().size() > 0) {
                 WarehouseDTO warehouse;
@@ -446,13 +449,14 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
 
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存回传DL单据成功");
+            LOGGER.info("熙耘->DL，保存回传DL单据成功! 单据编号：{}", request.getOrderCode());
             info.setReturnStatus(Global.SUCCESS);
         } else {
-            LOGGER.info("熙耘->DL，保存回传单据失败：{}， 单号：{}", dlResponse.getMessage(), request.getOrderCode());
+            LOGGER.info("熙耘->DL，保存回传单据失败! 单号：{}, 错误信息：{}",  request.getOrderCode(), dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
+        info.setResponseDesc(dlResponse.getMessage());
         info.setRequestUrl(url);
         Integer count = dlOrderBillDao.update(info);
         LOGGER.info("熙耘->DL，变更回传单据日志状态：{}", count);
@@ -464,14 +468,15 @@ public class ParameterAssemblyServiceImpl implements ParameterAssemblyService {
         String url = DL_URL + "/back/stock/change";
         DLResponse dlResponse = dlHttpClientUtil.HttpHandler1(JsonUtil.toJson(request), url);
         if (dlResponse.getStatus() == 0) {
-            LOGGER.info("熙耘->DL，保存库存变更成功");
+            LOGGER.info("熙耘->DL，保存库存变更成功! 单据号：{}", request.getOrderCode());
             info.setReturnStatus(Global.SUCCESS);
         } else {
-            LOGGER.info("熙耘->DL，保存库存变更失败：{}", dlResponse.getMessage());
+            LOGGER.info("熙耘->DL，保存库存变更失败! 单据号：{}， 错误信息：{}", request.getOrderCode(), dlResponse.getMessage());
             info.setReturnStatus(Global.FAIL);
         }
         // 调用之后变更日志状态
         info.setRequestUrl(url);
+        info.setResponseDesc(dlResponse.getMessage());
         Integer count = dlOtherInfoDao.update(info);
         LOGGER.info("熙耘->DL，变更库存变更日志状态：{}", count);
     }
