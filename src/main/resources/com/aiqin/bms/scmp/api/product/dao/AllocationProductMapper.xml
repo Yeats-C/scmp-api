@@ -393,14 +393,14 @@
   </select>
   <update id="updateQuantityBySkuCodeAndSource">
      update allocation_product
-    set callout_actual_total_count = #{quantity,jdbcType=BIGINT}
+    set callout_actual_total_count = #{calloutActualTotalCount,jdbcType=BIGINT}
      where allocation_code = #{allocationCode,jdbcType=VARCHAR}
      and sku_code = #{skuCode,jdbcType=VARCHAR}
      and line_num = #{lineNum,jdbcType=VARCHAR}
   </update>
   <update id="updateQuantityBySkuCodeAndSourceIn">
      update allocation_product
-    set callin_actual_total_count = #{quantity,jdbcType=BIGINT}
+    set callin_actual_total_count = #{callinActualTotalCount,jdbcType=BIGINT}
      where allocation_code = #{allocationCode,jdbcType=VARCHAR}
      and sku_code = #{skuCode,jdbcType=VARCHAR}
      and line_num = #{lineNum,jdbcType=VARCHAR}
